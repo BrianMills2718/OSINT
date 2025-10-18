@@ -20,6 +20,7 @@ import litellm
 
 from database_integration_base import QueryResult
 from api_request_tracker import log_request
+from adaptive_analyzer import AdaptiveAnalyzer
 
 
 class ResultAnalyzer:
@@ -42,14 +43,18 @@ class ResultAnalyzer:
         )
     """
 
-    def __init__(self, llm_model="gpt-4o-mini"):
+    def __init__(self, llm_model="gpt-4o-mini", enable_adaptive=True):
         """
         Initialize the result analyzer.
 
         Args:
             llm_model: LLM model to use for qualitative analysis and synthesis
+            enable_adaptive: Enable adaptive code-based analysis (Ditto-style)
         """
         self.llm_model = llm_model
+        self.enable_adaptive = enable_adaptive
+        if enable_adaptive:
+            self.adaptive_analyzer = AdaptiveAnalyzer(llm_model=llm_model)
 
     async def analyze_results(self,
                              results: Dict[str, QueryResult],
@@ -79,16 +84,34 @@ class ResultAnalyzer:
         quant = self._quantitative_analysis(results)
         print(f"    ✓ Quantitative: {quant['total_results']:,} results across {quant['databases']} databases")
 
+        # Adaptive analysis (Ditto-style code generation)
+        adaptive = None
+        if self.enable_adaptive:
+            try:
+                adaptive = await self.adaptive_analyzer.analyze(results, research_question)
+                if adaptive["success"]:
+                    print(f"    ✓ Adaptive: Code-based analysis completed")
+                else:
+                    print(f"    ⚠️  Adaptive: {adaptive['error']}")
+            except Exception as e:
+                print(f"    ⚠️  Adaptive analysis failed: {e}")
+
         # Qualitative analysis (LLM-powered)
-        qual = await self._qualitative_analysis(results, research_question, quant)
+        qual = await self._qualitative_analysis(results, research_question, quant, adaptive)
         print(f"    ✓ Qualitative: Key findings identified")
 
-        return {
+        analysis = {
             "quantitative": quant,
             "qualitative": qual,
             "databases_analyzed": list(results.keys()),
             "timestamp": datetime.now().isoformat()
         }
+
+        # Add adaptive results if available
+        if adaptive and adaptive["success"]:
+            analysis["adaptive"] = adaptive
+
+        return analysis
 
     def _quantitative_analysis(self, results: Dict[str, QueryResult]) -> Dict[str, Any]:
         """
@@ -212,7 +235,8 @@ class ResultAnalyzer:
     async def _qualitative_analysis(self,
                                    results: Dict[str, QueryResult],
                                    research_question: str,
-                                   quant: Dict) -> Dict[str, Any]:
+                                   quant: Dict,
+                                   adaptive: Optional[Dict] = None) -> Dict[str, Any]:
         """
         Perform LLM-powered qualitative analysis.
 
@@ -240,6 +264,18 @@ class ResultAnalyzer:
                 # Take top 5 results as sample
                 samples[result.source] = result.results[:5]
 
+        # Include adaptive analysis insights if available
+        adaptive_section = ""
+        if adaptive and adaptive.get("success"):
+            adaptive_section = f"""
+
+Adaptive Analysis (Code-Generated Insights):
+{chr(10).join(adaptive.get('insights', []))}
+
+Full Analysis Output:
+{adaptive.get('output', '')[:2000]}
+"""
+
         prompt = f"""You are a research analyst reviewing search results to answer a research question.
 
 Research Question: "{research_question}"
@@ -248,7 +284,7 @@ Quantitative Summary:
 - Total results: {quant['total_results']:,}
 - Databases searched: {quant['databases']}
 - By database: {json.dumps(quant['by_database'], indent=2)}
-
+{adaptive_section}
 Sample Results from each database:
 {json.dumps(samples, indent=2, default=str)[:5000]}
 

@@ -112,7 +112,10 @@ Generate search parameters for the ClearanceJobs API:
 - posted_days_ago: How recent the postings (integer, 0-365, where 0 = any time)
 
 Guidelines:
-- keywords: Use specific job-related terms, avoid very long queries
+- keywords: BE SPECIFIC with multi-word job titles (e.g., "cybersecurity engineer" NOT just "cybersecurity", "network administrator" NOT just "network")
+  * Use full job titles: "cybersecurity analyst", "intelligence analyst", "software engineer"
+  * Avoid single generic words that match too broadly
+  * Focus on the actual POSITION, not just the field
 - clearances: Only specify if the question mentions clearance requirements
 - posted_days_ago: Only filter by date if recency is mentioned (e.g., "recent", "new", "this week")
 
@@ -125,10 +128,10 @@ Question: "What cybersecurity jobs with TS/SCI are available?"
 Response:
 {{
   "relevant": true,
-  "keywords": "cybersecurity",
+  "keywords": "cybersecurity analyst",
   "clearances": ["TS/SCI"],
   "posted_days_ago": 0,
-  "reasoning": "Looking for cybersecurity jobs requiring TS/SCI clearance"
+  "reasoning": "Looking for cybersecurity analyst positions requiring TS/SCI clearance"
 }}
 
 Example 2:

@@ -210,6 +210,13 @@ class IntelligentExecutor:
             output.append(f"  Total Results: {quant.get('total_results', 0):,}")
             output.append(f"  Databases: {quant.get('databases', 0)}")
 
+            # Adaptive (code-generated)
+            if "adaptive" in analysis and analysis["adaptive"].get("success"):
+                adaptive = analysis["adaptive"]
+                output.append(f"\n🤖 Adaptive Analysis (Code-Generated):")
+                for insight in adaptive.get("insights", []):
+                    output.append(f"    • {insight}")
+
             # Qualitative
             output.append(f"\n🔍 Qualitative Insights:")
 
