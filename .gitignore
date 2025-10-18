@@ -1,0 +1,41 @@
+# Environment variables and secrets
+.env
+.streamlit/secrets.toml
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+venv/
+env/
+ENV/
+
+# API request logs (contains sensitive data)
+api_requests.jsonl
+
+# Test files
+test_*.py
+*_test.py
+
+# Streamlit
+streamlit.log
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# ClearanceJobs submodule cache
+ClearanceJobs/__pycache__/
+ClearanceJobs/ClearanceJobs/__pycache__/
