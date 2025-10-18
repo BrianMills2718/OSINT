@@ -10,7 +10,8 @@ from pathlib import Path
 LOG_FILE = Path(__file__).parent / "api_requests.jsonl"
 
 
-def log_request(api_name, endpoint, status_code, response_time_ms=None, error_message=None, request_params=None):
+def log_request(api_name, endpoint, status_code, response_time_ms=None, error_message=None,
+                request_params=None, cost_usd=None, result_count=None, session_id=None):
     """
     Log an API request with timestamp and details.
 
@@ -21,6 +22,9 @@ def log_request(api_name, endpoint, status_code, response_time_ms=None, error_me
         response_time_ms: Response time in milliseconds
         error_message: Error message if request failed
         request_params: Dict of request parameters (will be sanitized to remove API keys)
+        cost_usd: Estimated cost in USD (for LLM calls)
+        result_count: Number of results returned
+        session_id: Session ID for grouping related requests
     """
     log_entry = {
         "timestamp": datetime.now().isoformat(),
@@ -29,7 +33,10 @@ def log_request(api_name, endpoint, status_code, response_time_ms=None, error_me
         "status_code": status_code,
         "response_time_ms": response_time_ms,
         "error": error_message,
-        "params": sanitize_params(request_params) if request_params else None
+        "params": sanitize_params(request_params) if request_params else None,
+        "cost_usd": cost_usd,
+        "result_count": result_count,
+        "session_id": session_id
     }
 
     # Append to JSONL file (one JSON object per line)
@@ -287,3 +294,136 @@ if __name__ == "__main__":
                 print(f"    Requests in last 24hrs: {event['requests_before_in_24hours']}")
                 if event["error_message"]:
                     print(f"    Error: {event['error_message']}")
+
+
+def get_cost_summary(hours=24):
+    """
+    Get cost summary for API and LLM usage.
+
+    Args:
+        hours: Look back this many hours
+
+    Returns:
+        Dict with cost breakdown
+    """
+    if not LOG_FILE.exists():
+        return {"error": "No request log file found"}
+
+    from datetime import timedelta
+
+    cutoff_time = datetime.now() - timedelta(hours=hours)
+
+    total_cost = 0
+    cost_by_api = {}
+    llm_calls = 0
+    api_calls = 0
+
+    with open(LOG_FILE, "r") as f:
+        for line in f:
+            try:
+                entry = json.loads(line.strip())
+                entry_time = datetime.fromisoformat(entry["timestamp"])
+
+                if entry_time < cutoff_time:
+                    continue
+
+                cost = entry.get("cost_usd", 0) or 0
+                total_cost += cost
+
+                api = entry["api"]
+                if api not in cost_by_api:
+                    cost_by_api[api] = {"cost": 0, "calls": 0}
+
+                cost_by_api[api]["cost"] += cost
+                cost_by_api[api]["calls"] += 1
+
+                if entry["endpoint"] == "LLM":
+                    llm_calls += 1
+                else:
+                    api_calls += 1
+
+            except (json.JSONDecodeError, KeyError):
+                continue
+
+    return {
+        "period_hours": hours,
+        "total_cost_usd": total_cost,
+        "llm_calls": llm_calls,
+        "api_calls": api_calls,
+        "cost_per_call": total_cost / (llm_calls + api_calls) if (llm_calls + api_calls) > 0 else 0,
+        "by_api": cost_by_api,
+        "projected_monthly_cost": (total_cost / hours) * 24 * 30 if hours > 0 else 0
+    }
+
+
+def get_performance_summary(hours=24):
+    """
+    Get performance summary for all APIs.
+
+    Args:
+        hours: Look back this many hours
+
+    Returns:
+        Dict with performance metrics
+    """
+    if not LOG_FILE.exists():
+        return {"error": "No request log file found"}
+
+    from datetime import timedelta
+
+    cutoff_time = datetime.now() - timedelta(hours=hours)
+
+    perf_by_api = {}
+
+    with open(LOG_FILE, "r") as f:
+        for line in f:
+            try:
+                entry = json.loads(line.strip())
+                entry_time = datetime.fromisoformat(entry["timestamp"])
+
+                if entry_time < cutoff_time:
+                    continue
+
+                api = entry["api"]
+                if api not in perf_by_api:
+                    perf_by_api[api] = {
+                        "response_times": [],
+                        "successes": 0,
+                        "failures": 0,
+                        "results": []
+                    }
+
+                rt = entry.get("response_time_ms")
+                if rt:
+                    perf_by_api[api]["response_times"].append(rt)
+
+                if entry["status_code"] in [200, 201]:
+                    perf_by_api[api]["successes"] += 1
+                else:
+                    perf_by_api[api]["failures"] += 1
+
+                result_count = entry.get("result_count", 0) or 0
+                if result_count > 0:
+                    perf_by_api[api]["results"].append(result_count)
+
+            except (json.JSONDecodeError, KeyError):
+                continue
+
+    # Calculate statistics
+    summary = {}
+    for api, data in perf_by_api.items():
+        rts = data["response_times"]
+        results = data["results"]
+
+        summary[api] = {
+            "total_calls": data["successes"] + data["failures"],
+            "success_rate": data["successes"] / (data["successes"] + data["failures"])
+                if (data["successes"] + data["failures"]) > 0 else 0,
+            "avg_response_time_ms": sum(rts) / len(rts) if rts else 0,
+            "p50_response_time_ms": sorted(rts)[len(rts) // 2] if rts else 0,
+            "p95_response_time_ms": sorted(rts)[int(len(rts) * 0.95)] if rts else 0,
+            "avg_results": sum(results) / len(results) if results else 0,
+            "total_results": sum(results)
+        }
+
+    return summary
