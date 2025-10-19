@@ -183,16 +183,17 @@ This file tracks ongoing development tasks for the multi-database agentic search
 - ✅ **Live API tests: SUCCESSFUL!**
 
 **Live API Test Results**:
-- ✅ SAM.gov: Query generation working, API calls successful (5997ms)
-- ✅ DVIDS: Query generation working, 1,000 results retrieved (1280ms)
-- ✅ Parallel Executor: Multi-database search working (3.4s for 2 databases)
+- ✅ SAM.gov: Query generation working, API calls successful (9411ms)
+- ✅ DVIDS: Query generation working, 1,000 results retrieved (1338ms)
+- ✅ Parallel Executor: Multi-database search working (5.2s for 2 databases)
 - ✅ Relevance detection: Correctly filters irrelevant databases
-- ✅ gpt-4o-mini: LLM integration working for query generation
+- ✅ **gpt-5-mini: WORKING PERFECTLY!** ⭐
 
-**Configuration Note**:
-- Created `config.yaml` to use `gpt-4o-mini` instead of `gpt-5-mini` for testing
-- gpt-5-mini may not be available yet or has LiteLLM compatibility issues
-- System works perfectly with gpt-4o-mini
+**gpt-5-mini Fix**:
+- ✅ Fixed bug in `extract_responses_content()` - was not checking if `response.output` was None
+- ✅ Updated extraction logic to match working examples from `docs/examples/llm_research_examples/`
+- ✅ No compatibility issues - the bug was in our code, not the model!
+- ✅ System now uses gpt-5-mini by default as originally intended
 
 **Next Steps**:
 1. ~~Install Streamlit for web UI testing~~ (not in venv)
