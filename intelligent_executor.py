@@ -40,7 +40,7 @@ class IntelligentExecutor:
     across databases and collect and analyze the data and refine its searches"
     """
 
-    def __init__(self, max_concurrent=10, max_refinements=2, llm_model="gpt-4o-mini"):
+    def __init__(self, max_concurrent=10, max_refinements=2, llm_model="gpt-5-mini"):
         """
         Initialize the intelligent executor.
 

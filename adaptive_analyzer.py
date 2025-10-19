@@ -26,7 +26,7 @@ import tempfile
 import os
 from typing import Dict, List, Any, Optional
 from datetime import datetime
-import litellm
+from llm_utils import acompletion
 
 from database_integration_base import QueryResult
 from api_request_tracker import log_request
@@ -40,7 +40,7 @@ class AdaptiveAnalyzer:
     executes it safely, and returns results.
     """
 
-    def __init__(self, llm_model="gpt-4o-mini", timeout_seconds=30):
+    def __init__(self, llm_model="gpt-5-mini", timeout_seconds=30):
         """
         Initialize the adaptive analyzer.
 
@@ -285,7 +285,7 @@ Return a brief plan (3-5 bullet points) describing the analysis approach.
 """
 
         try:
-            response = await litellm.acompletion(
+            response = await acompletion(
                 model=self.llm_model,
                 messages=[{"role": "user", "content": prompt}]
             )
@@ -357,7 +357,7 @@ Return ONLY the Python code, no explanations.
 """
 
         try:
-            response = await litellm.acompletion(
+            response = await acompletion(
                 model=self.llm_model,
                 messages=[{"role": "user", "content": prompt}]
             )
@@ -510,7 +510,7 @@ Return ONLY the corrected Python code, no explanations.
 """
 
         try:
-            response = await litellm.acompletion(
+            response = await acompletion(
                 model=self.llm_model,
                 messages=[{"role": "user", "content": prompt}]
             )
@@ -567,7 +567,7 @@ Example: ["Job postings increased 23% over 3 months", "California has 45% of all
         }
 
         try:
-            response = await litellm.acompletion(
+            response = await acompletion(
                 model=self.llm_model,
                 messages=[{"role": "user", "content": prompt}],
                 response_format={

@@ -12,7 +12,7 @@ from datetime import datetime
 import sys
 import os
 
-import litellm
+from llm_utils import acompletion
 
 from database_integration_base import (
     DatabaseIntegration,
@@ -181,8 +181,8 @@ Response:
             "additionalProperties": False
         }
 
-        response = await litellm.acompletion(
-            model="gpt-4o-mini",
+        response = await acompletion(
+            model="gpt-5-mini",
             messages=[{"role": "user", "content": prompt}],
             response_format={
                 "type": "json_schema",

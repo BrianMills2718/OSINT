@@ -16,7 +16,7 @@ import json
 from typing import Dict, List, Any, Optional
 from datetime import datetime
 from collections import Counter
-import litellm
+from llm_utils import acompletion
 
 from database_integration_base import QueryResult
 from api_request_tracker import log_request
@@ -43,7 +43,7 @@ class ResultAnalyzer:
         )
     """
 
-    def __init__(self, llm_model="gpt-4o-mini", enable_adaptive=True):
+    def __init__(self, llm_model="gpt-5-mini", enable_adaptive=True):
         """
         Initialize the result analyzer.
 
@@ -346,7 +346,7 @@ Return JSON with these fields:
         }
 
         try:
-            response = await litellm.acompletion(
+            response = await acompletion(
                 model=self.llm_model,
                 messages=[{"role": "user", "content": prompt}],
                 response_format={
@@ -472,7 +472,7 @@ Return JSON with:
         }
 
         try:
-            response = await litellm.acompletion(
+            response = await acompletion(
                 model=self.llm_model,
                 messages=[{"role": "user", "content": prompt}],
                 response_format={

@@ -15,7 +15,7 @@ import asyncio
 import json
 from typing import Dict, List, Tuple, Optional
 from datetime import datetime
-import litellm
+from llm_utils import acompletion
 
 from parallel_executor import ParallelExecutor
 from database_integration_base import DatabaseIntegration, QueryResult
@@ -411,8 +411,8 @@ Include a "refinement_reasoning" field explaining your change.
         try:
             # Use the database's own generate_query method to ensure correct schema
             # But provide context about the refinement
-            response = await litellm.acompletion(
-                model="gpt-4o-mini",
+            response = await acompletion(
+                model="gpt-5-mini",
                 messages=[{"role": "user", "content": prompt}],
                 response_format={"type": "json_object"}
             )

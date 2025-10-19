@@ -52,7 +52,7 @@ async def test_research_assistant():
     executor = IntelligentExecutor(
         max_concurrent=5,
         max_refinements=2,
-        llm_model="gpt-4o-mini"
+        llm_model="gpt-5-mini"
     )
 
     # Test with a research question
