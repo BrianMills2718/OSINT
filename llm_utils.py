@@ -134,20 +134,21 @@ class UnifiedLLM:
         Returns:
             Extracted text content
         """
-        texts = []
-
-        if hasattr(response, 'output'):
+        # FIXED: Check response.output exists AND is not None
+        if hasattr(response, 'output') and response.output:
             for item in response.output:
-                if hasattr(item, 'content'):
-                    for c in item.content:
-                        if hasattr(c, 'text'):
-                            texts.append(c.text)
-                elif hasattr(item, 'type') and item.type == 'message':
-                    for c in item.content:
-                        if hasattr(c, 'text'):
-                            texts.append(c.text)
+                # Look for the message type output
+                if hasattr(item, 'type') and item.type == 'message':
+                    if hasattr(item, 'content'):
+                        texts = []
+                        for content in item.content:
+                            if hasattr(content, 'text'):
+                                texts.append(content.text)
+                        if texts:
+                            return "\n".join(texts)
 
-        return "\n".join(texts) if texts else str(response)
+        # Fallback: return string representation
+        return str(response)
 
     @classmethod
     async def acompletion(cls,
