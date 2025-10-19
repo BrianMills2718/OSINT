@@ -16,7 +16,7 @@ Features:
 - Automatic API routing based on model
 - Provider fallback support (try alternative models if primary fails)
 - Configuration integration
-- Cost tracking
+- Cost tracking (LiteLLM built-in)
 """
 
 import litellm
@@ -24,6 +24,7 @@ import asyncio
 import json
 from typing import List, Dict, Any, Optional
 import logging
+from datetime import datetime
 
 # Import config (will use default if config.yaml doesn't exist)
 try:
@@ -32,6 +33,13 @@ try:
 except Exception:
     HAS_CONFIG = False
     config = None
+
+# Cost tracking storage
+_cost_tracker = {
+    "total_cost": 0.0,
+    "calls": [],
+    "by_model": {}
+}
 
 
 class UnifiedLLM:
@@ -277,4 +285,111 @@ async def acompletion(model: str, messages: List[Dict[str, str]], **kwargs) -> A
     Returns:
         Response object
     """
-    return await UnifiedLLM.acompletion(model, messages, **kwargs)
+    start_time = datetime.now()
+    response = await UnifiedLLM.acompletion(model, messages, **kwargs)
+
+    # Calculate and track cost using LiteLLM's built-in function
+    try:
+        cost = litellm.completion_cost(completion_response=response)
+        if cost > 0:
+            _track_cost(model, cost, start_time)
+    except Exception as e:
+        # Cost tracking failed - log but don't fail the request
+        logging.debug(f"Cost tracking failed: {e}")
+
+    return response
+
+
+# ============================================================================
+# Cost Tracking Functions
+# ============================================================================
+
+def _track_cost(model: str, cost: float, timestamp: datetime):
+    """Track cost of an LLM call."""
+    global _cost_tracker
+
+    _cost_tracker["total_cost"] += cost
+    _cost_tracker["calls"].append({
+        "model": model,
+        "cost": cost,
+        "timestamp": timestamp.isoformat()
+    })
+
+    if model not in _cost_tracker["by_model"]:
+        _cost_tracker["by_model"][model] = {"cost": 0.0, "calls": 0}
+
+    _cost_tracker["by_model"][model]["cost"] += cost
+    _cost_tracker["by_model"][model]["calls"] += 1
+
+
+def get_total_cost() -> float:
+    """
+    Get total cost of all LLM calls since program start.
+
+    Returns:
+        Total cost in USD
+    """
+    return _cost_tracker["total_cost"]
+
+
+def get_cost_breakdown() -> Dict[str, Any]:
+    """
+    Get detailed cost breakdown by model.
+
+    Returns:
+        Dict with cost information:
+        {
+            "total_cost": 0.15,
+            "by_model": {
+                "gpt-5-mini": {"cost": 0.10, "calls": 5},
+                "gpt-5-nano": {"cost": 0.05, "calls": 10}
+            },
+            "num_calls": 15
+        }
+    """
+    return {
+        "total_cost": _cost_tracker["total_cost"],
+        "by_model": _cost_tracker["by_model"],
+        "num_calls": len(_cost_tracker["calls"])
+    }
+
+
+def get_cost_summary() -> str:
+    """
+    Get human-readable cost summary.
+
+    Returns:
+        Formatted cost summary string
+    """
+    breakdown = get_cost_breakdown()
+
+    lines = [
+        "=" * 60,
+        "LLM COST SUMMARY",
+        "=" * 60,
+        f"Total Cost: ${breakdown['total_cost']:.4f}",
+        f"Total Calls: {breakdown['num_calls']}",
+        "",
+        "By Model:",
+        "-" * 60
+    ]
+
+    for model, data in sorted(breakdown['by_model'].items()):
+        avg_cost = data['cost'] / data['calls'] if data['calls'] > 0 else 0
+        lines.append(
+            f"  {model:30s} ${data['cost']:>8.4f}  ({data['calls']:>4d} calls, ${avg_cost:.4f}/call)"
+        )
+
+    lines.append("=" * 60)
+
+    return "\n".join(lines)
+
+
+def reset_cost_tracking():
+    """Reset cost tracking (useful for per-query tracking)."""
+    global _cost_tracker
+    _cost_tracker = {
+        "total_cost": 0.0,
+        "calls": [],
+        "by_model": {}
+    }

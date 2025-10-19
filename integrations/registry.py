@@ -8,6 +8,7 @@ from integrations.government.sam_integration import SAMIntegration
 from integrations.government.dvids_integration import DVIDSIntegration
 from integrations.government.usajobs_integration import USAJobsIntegration
 from integrations.government.clearancejobs_integration import ClearanceJobsIntegration
+from integrations.government.fbi_vault import FBIVaultIntegration
 
 # Social integrations will be added later
 # from integrations.social.reddit_integration import RedditIntegration
@@ -27,6 +28,7 @@ class IntegrationRegistry:
         self.register(DVIDSIntegration)
         self.register(USAJobsIntegration)
         self.register(ClearanceJobsIntegration)
+        self.register(FBIVaultIntegration)
 
         # Social media sources (Phase 3)
         # self.register(RedditIntegration)
