@@ -63,4 +63,4 @@ experiments/**/*.jsonl
 # Large data files (legacy, now in data/)
 *_articles/
 *_articles_extracted/
-archive/
+/archive/
