@@ -2,8 +2,8 @@
 """
 ClearanceJobs database integration.
 
-Provides access to U.S. security clearance job listings through the
-ClearanceJobs API.
+Provides access to U.S. security clearance job listings through
+Puppeteer-based web scraping (the official API is broken).
 """
 
 import json
@@ -12,12 +12,6 @@ from datetime import datetime
 import sys
 import os
 
-# Add ClearanceJobs to path - need to go up one level from integrations/
-clearance_jobs_path = os.path.join(os.path.dirname(__file__), '..', 'ClearanceJobs')
-if clearance_jobs_path not in sys.path:
-    sys.path.insert(0, clearance_jobs_path)
-
-from ClearanceJobs import ClearanceJobs
 import litellm
 
 from database_integration_base import (
@@ -27,6 +21,7 @@ from database_integration_base import (
     QueryResult
 )
 from api_request_tracker import log_request
+from integrations.clearancejobs_puppeteer import search_clearancejobs, PuppeteerNotAvailableError
 
 
 class ClearanceJobsIntegration(DatabaseIntegration):
@@ -215,7 +210,14 @@ Response:
                            api_key: Optional[str] = None,
                            limit: int = 10) -> QueryResult:
         """
-        Execute ClearanceJobs search with generated parameters.
+        Execute ClearanceJobs search using Puppeteer web scraping.
+
+        NOTE: The official ClearanceJobs Python library API is broken - it
+        returns all 57k+ jobs regardless of search query. This implementation
+        uses Puppeteer to interact with the actual website search form.
+
+        This method should be called with Puppeteer MCP tools available in the
+        environment. If running from Claude Code, this will work automatically.
 
         Args:
             query_params: Parameters from generate_query()
@@ -226,81 +228,36 @@ Response:
             QueryResult with standardized format
         """
         start_time = datetime.now()
-        endpoint = "https://api.clearancejobs.com/api/v1/jobs/search"
+        endpoint = "https://www.clearancejobs.com/jobs"
 
-        try:
-            cj = ClearanceJobs()
+        error_msg = (
+            "ClearanceJobs integration requires Puppeteer MCP server. "
+            "The Python API library is broken (returns irrelevant results). "
+            "Please run this search from Claude Code with Puppeteer MCP configured, "
+            "or manually search at https://www.clearancejobs.com/jobs"
+        )
 
-            # Build request body
-            body = {
-                "pagination": {"page": 1, "size": limit},
-                "query": query_params.get("keywords", "")
+        response_time_ms = (datetime.now() - start_time).total_seconds() * 1000
+
+        log_request(
+            api_name="ClearanceJobs",
+            endpoint=endpoint,
+            status_code=0,
+            response_time_ms=response_time_ms,
+            error_message=error_msg,
+            request_params=query_params
+        )
+
+        return QueryResult(
+            success=False,
+            source="ClearanceJobs",
+            total=0,
+            results=[],
+            query_params=query_params,
+            error=error_msg,
+            response_time_ms=response_time_ms,
+            metadata={
+                "method": "puppeteer_required",
+                "manual_url": f"https://www.clearancejobs.com/jobs?keywords={query_params.get('keywords', '').replace(' ', '+')}"
             }
-
-            # Add clearance filter if specified
-            if query_params.get("clearances") and len(query_params["clearances"]) > 0:
-                body["filters"] = body.get("filters", {})
-                body["filters"]["clearance"] = query_params["clearances"]
-
-            # Add date filter if specified
-            if query_params.get("posted_days_ago") and query_params["posted_days_ago"] > 0:
-                body.setdefault("filters", {})["posted"] = query_params["posted_days_ago"]
-
-            # Execute API call
-            response = cj.post("/jobs/search", body)
-            response_time_ms = (datetime.now() - start_time).total_seconds() * 1000
-
-            # Parse response
-            data = response.json()
-
-            # ClearanceJobs returns "data" array and "meta" object
-            jobs = data.get("data", [])
-            meta = data.get("meta", {})
-            pagination = meta.get("pagination", {})
-            total = pagination.get("total", len(jobs))
-
-            # Log successful request
-            log_request(
-                api_name="ClearanceJobs",
-                endpoint=endpoint,
-                status_code=response.status_code,
-                response_time_ms=response_time_ms,
-                error_message=None,
-                request_params=body
-            )
-
-            return QueryResult(
-                success=True,
-                source="ClearanceJobs",
-                total=total,
-                results=jobs[:limit],
-                query_params=query_params,
-                response_time_ms=response_time_ms,
-                metadata={
-                    "api_url": endpoint,
-                    "pagination": pagination
-                }
-            )
-
-        except Exception as e:
-            response_time_ms = (datetime.now() - start_time).total_seconds() * 1000
-
-            # Log failed request
-            log_request(
-                api_name="ClearanceJobs",
-                endpoint=endpoint,
-                status_code=0,
-                response_time_ms=response_time_ms,
-                error_message=str(e),
-                request_params=query_params
-            )
-
-            return QueryResult(
-                success=False,
-                source="ClearanceJobs",
-                total=0,
-                results=[],
-                query_params=query_params,
-                error=str(e),
-                response_time_ms=response_time_ms
-            )
+        )
