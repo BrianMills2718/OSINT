@@ -19,6 +19,7 @@ from database_integration_base import (
     QueryResult
 )
 from api_request_tracker import log_request
+from config_loader import config
 
 
 class DVIDSIntegration(DatabaseIntegration):
@@ -208,7 +209,7 @@ Response:
         }
 
         response = await acompletion(
-            model="gpt-5-mini",
+            model=config.get_model("query_generation"),
             messages=[{"role": "user", "content": prompt}],
             response_format={
                 "type": "json_schema",
@@ -295,7 +296,7 @@ Response:
                 params["to_publishdate"] = f"{query_params['to_date']}T23:59:59Z"
 
             # Execute API call
-            response = requests.get(endpoint, params=params, timeout=20)
+            response = requests.get(endpoint, params=params, timeout=config.get_database_config("dvids")["timeout"])
             response.raise_for_status()
             response_time_ms = (datetime.now() - start_time).total_seconds() * 1000
 

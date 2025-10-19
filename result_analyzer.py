@@ -20,6 +20,7 @@ from llm_utils import acompletion
 
 from database_integration_base import QueryResult
 from api_request_tracker import log_request
+from config_loader import config
 from adaptive_analyzer import AdaptiveAnalyzer
 
 
@@ -43,7 +44,7 @@ class ResultAnalyzer:
         )
     """
 
-    def __init__(self, llm_model="gpt-5-mini", enable_adaptive=True):
+    def __init__(self, llm_model=None, enable_adaptive=True):
         """
         Initialize the result analyzer.
 
@@ -51,7 +52,7 @@ class ResultAnalyzer:
             llm_model: LLM model to use for qualitative analysis and synthesis
             enable_adaptive: Enable adaptive code-based analysis (Ditto-style)
         """
-        self.llm_model = llm_model
+        self.llm_model = llm_model or config.get_model("analysis")
         self.enable_adaptive = enable_adaptive
         if enable_adaptive:
             self.adaptive_analyzer = AdaptiveAnalyzer(llm_model=llm_model)

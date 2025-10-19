@@ -11,12 +11,27 @@ Other models use litellm.completion() API:
 - messages (list)
 - response_format (dict)
 - Standard response structure
+
+Features:
+- Automatic API routing based on model
+- Provider fallback support (try alternative models if primary fails)
+- Configuration integration
+- Cost tracking
 """
 
 import litellm
 import asyncio
 import json
 from typing import List, Dict, Any, Optional
+import logging
+
+# Import config (will use default if config.yaml doesn't exist)
+try:
+    from config_loader import config
+    HAS_CONFIG = True
+except Exception:
+    HAS_CONFIG = False
+    config = None
 
 
 class UnifiedLLM:
@@ -139,20 +154,65 @@ class UnifiedLLM:
                           model: str,
                           messages: List[Dict[str, str]],
                           response_format: Optional[Dict] = None,
+                          fallback: bool = True,
                           **kwargs) -> Any:
         """
-        Unified async completion supporting both APIs.
+        Unified async completion supporting both APIs with fallback.
 
         Automatically routes to responses() or completion() based on model.
+        If primary model fails and fallback is enabled, tries fallback models.
 
         Args:
             model: Model name (e.g., "gpt-5-mini", "gpt-4o-mini")
             messages: List of message dicts
             response_format: Standard response format dict
+            fallback: Enable fallback to alternative models (default: True)
             **kwargs: Additional parameters (max_tokens, temperature, etc.)
 
         Returns:
             Response object (format depends on API used)
+
+        Raises:
+            Exception: If all models (primary + fallbacks) fail
+        """
+
+        # Determine models to try
+        models_to_try = [model]
+
+        if fallback and HAS_CONFIG and config.fallback_enabled:
+            models_to_try.extend(config.fallback_models)
+
+        last_error = None
+
+        # Try each model in sequence
+        for attempt_model in models_to_try:
+            try:
+                return await cls._single_completion(
+                    attempt_model, messages, response_format, **kwargs
+                )
+            except Exception as e:
+                last_error = e
+                if attempt_model != models_to_try[-1]:
+                    logging.warning(
+                        f"Model {attempt_model} failed: {e}. Trying fallback..."
+                    )
+                continue
+
+        # All models failed
+        raise Exception(
+            f"All models failed. Last error from {models_to_try[-1]}: {last_error}"
+        )
+
+    @classmethod
+    async def _single_completion(cls,
+                                 model: str,
+                                 messages: List[Dict[str, str]],
+                                 response_format: Optional[Dict] = None,
+                                 **kwargs) -> Any:
+        """
+        Execute a single completion attempt with the specified model.
+
+        Internal method used by acompletion for retries/fallback.
         """
 
         if cls.is_responses_api_model(model):
@@ -161,8 +221,9 @@ class UnifiedLLM:
             text_format = cls.convert_response_format(response_format)
 
             # Convert max_tokens to max_output_tokens for responses() API
-            if 'max_tokens' in kwargs:
-                kwargs['max_output_tokens'] = kwargs.pop('max_tokens')
+            kwargs_copy = kwargs.copy()
+            if 'max_tokens' in kwargs_copy:
+                kwargs_copy['max_output_tokens'] = kwargs_copy.pop('max_tokens')
 
             # Wrap sync responses() in executor
             loop = asyncio.get_event_loop()
@@ -172,7 +233,7 @@ class UnifiedLLM:
                     model=model,
                     input=input_text,
                     text=text_format,
-                    **kwargs
+                    **kwargs_copy
                 )
             )
 

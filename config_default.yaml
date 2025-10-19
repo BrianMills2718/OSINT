@@ -1,0 +1,118 @@
+# Default Configuration for AI Research System
+# This file contains sensible defaults for all configurable parameters.
+# Copy to config.yaml and customize as needed.
+
+# ============================================================================
+# LLM Configuration
+# ============================================================================
+# LiteLLM supports 100+ providers - just change the model name!
+# Examples:
+#   OpenAI: "gpt-5-mini", "gpt-4o", "gpt-4o-mini"
+#   Anthropic: "claude-3-5-sonnet-20241022", "claude-3-opus-20240229"
+#   Google: "gemini/gemini-2.0-flash-exp", "gemini/gemini-1.5-pro"
+#   Local: "ollama/llama3", "ollama/mistral"
+
+llm:
+  # Default model for all operations (can be overridden per-operation)
+  default_model: "gpt-5-mini"
+
+  # Operation-specific model configurations
+  # Each can have: model, temperature, max_tokens
+
+  query_generation:
+    model: "gpt-5-mini"           # Model for generating database queries
+    temperature: 0.7              # Balanced creativity/precision
+    max_tokens: 500               # Queries are typically short
+
+  refinement:
+    model: "gpt-5-mini"           # Model for refining poor queries
+    temperature: 0.8              # Slightly more creative for alternatives
+    max_tokens: 500
+
+  analysis:
+    model: "gpt-5-mini"           # Model for analyzing results
+    temperature: 0.3              # More deterministic for analysis
+    max_tokens: 1500              # Analysis can be detailed
+
+  synthesis:
+    model: "gpt-5-mini"           # Model for synthesizing final answers
+    temperature: 0.5              # Balanced for coherent narratives
+    max_tokens: 2000              # Final answers can be long
+
+  code_generation:
+    model: "gpt-5-mini"           # Model for generating analysis code
+    temperature: 0.2              # Very deterministic for code
+    max_tokens: 1000              # Code is typically concise
+
+# ============================================================================
+# Execution Configuration
+# ============================================================================
+execution:
+  max_concurrent: 10              # Max parallel API calls (balance speed/rate limits)
+  max_refinements: 2              # Max query refinement iterations
+  default_result_limit: 10        # Default results per database
+  enable_adaptive_analysis: true  # Enable Ditto-style code generation
+  enable_auto_refinement: true    # Enable automatic query refinement
+
+# ============================================================================
+# Timeout Configuration (all in seconds)
+# ============================================================================
+timeouts:
+  api_request: 30                 # HTTP requests to external APIs
+  llm_request: 60                 # LLM API calls
+  code_execution: 30              # Generated code execution
+  total_search: 300               # Total time for complete search (5 min)
+
+# ============================================================================
+# Database-Specific Settings
+# ============================================================================
+databases:
+  sam:
+    enabled: true
+    timeout: 30                   # SAM.gov can be slow
+    default_date_range_days: 60   # Default lookback period
+
+  usajobs:
+    enabled: true
+    timeout: 20
+    results_per_page: 100         # USAJobs API max
+
+  dvids:
+    enabled: true
+    timeout: 20
+    default_date_range_days: 90   # Military media archives
+
+  clearancejobs:
+    enabled: true
+    requires_puppeteer: true      # Needs browser automation
+    timeout: 45                   # Longer for Puppeteer operations
+
+# ============================================================================
+# Provider Fallback (LiteLLM Feature)
+# ============================================================================
+# If primary model fails, automatically try fallback models
+# This provides resilience across providers
+provider_fallback:
+  enabled: false                  # Disabled by default (set true to enable)
+  fallback_models:
+    - "gpt-4o-mini"               # Fallback to GPT-4o-mini
+    - "claude-3-5-sonnet-20241022"  # Then try Claude
+    - "gemini/gemini-2.0-flash-exp" # Then Gemini
+
+# ============================================================================
+# Cost Management
+# ============================================================================
+cost_management:
+  max_cost_per_query: 0.50        # USD - abort if query exceeds this
+  track_costs: true               # Log LLM API costs
+  warn_on_expensive_queries: true # Warn if query > 50% of max
+
+# ============================================================================
+# Logging Configuration
+# ============================================================================
+logging:
+  level: "INFO"                   # DEBUG, INFO, WARNING, ERROR
+  log_llm_calls: true             # Log all LLM API calls
+  log_api_calls: true             # Log all database API calls
+  log_file: "research.log"        # Log file path (null for stdout only)
+  log_to_stdout: true             # Also print to console

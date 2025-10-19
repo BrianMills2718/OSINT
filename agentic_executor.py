@@ -20,6 +20,7 @@ from llm_utils import acompletion
 from parallel_executor import ParallelExecutor
 from database_integration_base import DatabaseIntegration, QueryResult
 from api_request_tracker import log_request
+from config_loader import config
 
 
 class AgenticExecutor(ParallelExecutor):
@@ -47,7 +48,7 @@ class AgenticExecutor(ParallelExecutor):
     4. Return best results
     """
 
-    def __init__(self, max_concurrent: int = 10, max_refinements: int = 2):
+    def __init__(self, max_concurrent: int = None, max_refinements: int = None):
         """
         Initialize the agentic executor.
 
@@ -55,6 +56,8 @@ class AgenticExecutor(ParallelExecutor):
             max_concurrent: Maximum number of concurrent API calls
             max_refinements: Maximum refinement iterations per database (1-3 recommended)
         """
+        max_concurrent = max_concurrent or config.max_concurrent
+        max_refinements = max_refinements or config.max_refinements
         super().__init__(max_concurrent)
         self.max_refinements = max(1, min(max_refinements, 3))  # Clamp 1-3
 
@@ -412,7 +415,7 @@ Include a "refinement_reasoning" field explaining your change.
             # Use the database's own generate_query method to ensure correct schema
             # But provide context about the refinement
             response = await acompletion(
-                model="gpt-5-mini",
+                model=config.get_model("refinement"),
                 messages=[{"role": "user", "content": prompt}],
                 response_format={"type": "json_object"}
             )

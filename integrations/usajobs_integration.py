@@ -19,6 +19,7 @@ from database_integration_base import (
     QueryResult
 )
 from api_request_tracker import log_request
+from config_loader import config
 
 
 class USAJobsIntegration(DatabaseIntegration):
@@ -215,7 +216,7 @@ Response:
         }
 
         response = await acompletion(
-            model="gpt-5-mini",
+            model=config.get_model("query_generation"),
             messages=[{"role": "user", "content": prompt}],
             response_format={
                 "type": "json_schema",
@@ -301,7 +302,7 @@ Response:
             }
 
             # Execute API call
-            response = requests.get(endpoint, params=params, headers=headers, timeout=20)
+            response = requests.get(endpoint, params=params, headers=headers, timeout=config.get_database_config("usajobs")["timeout"])
             response.raise_for_status()
             response_time_ms = (datetime.now() - start_time).total_seconds() * 1000
 

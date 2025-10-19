@@ -30,6 +30,7 @@ from llm_utils import acompletion
 
 from database_integration_base import QueryResult
 from api_request_tracker import log_request
+from config_loader import config
 
 
 class AdaptiveAnalyzer:
@@ -40,7 +41,7 @@ class AdaptiveAnalyzer:
     executes it safely, and returns results.
     """
 
-    def __init__(self, llm_model="gpt-5-mini", timeout_seconds=30):
+    def __init__(self, llm_model=None, timeout_seconds=None):
         """
         Initialize the adaptive analyzer.
 
@@ -48,8 +49,8 @@ class AdaptiveAnalyzer:
             llm_model: LLM model for code generation
             timeout_seconds: Max execution time for generated code
         """
-        self.llm_model = llm_model
-        self.timeout_seconds = timeout_seconds
+        self.llm_model = llm_model or config.get_model("code_generation")
+        self.timeout_seconds = timeout_seconds or config.get_timeout("code_execution")
 
     async def analyze(self,
                      results: Dict[str, QueryResult],
