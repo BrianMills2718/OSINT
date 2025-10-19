@@ -39,3 +39,15 @@ Thumbs.db
 # ClearanceJobs submodule cache
 ClearanceJobs/__pycache__/
 ClearanceJobs/ClearanceJobs/__pycache__/
+
+# Discord scraping
+exports/
+dce-cli/
+dce-cli.zip
+DiscordChatExporter/
+nohup.out
+
+# Large data files
+*_articles/
+*_articles_extracted/
+archive/
