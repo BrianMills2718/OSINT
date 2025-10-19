@@ -1,0 +1,123 @@
+{
+  "test_metadata": {
+    "test_type": "timeout_behavior",
+    "model": "gpt-5-mini-2025-08-07",
+    "timestamp": "2025-10-02T15:34:41.144820",
+    "total_tests": 5
+  },
+  "analysis": {
+    "total_tests": 5,
+    "successful_tests": 5,
+    "timed_out_tests": 0,
+    "failed_tests": 0,
+    "success_rate": 1.0,
+    "timeout_rate": 0.0,
+    "timeout_analysis": {
+      "10s": {
+        "total": 1,
+        "successful": 1,
+        "timed_out": 0,
+        "success_rate": 1.0,
+        "avg_duration": 4.749541282653809,
+        "max_duration": 4.749541282653809,
+        "min_duration": 4.749541282653809
+      },
+      "30s": {
+        "total": 1,
+        "successful": 1,
+        "timed_out": 0,
+        "success_rate": 1.0,
+        "avg_duration": 16.708686113357544,
+        "max_duration": 16.708686113357544,
+        "min_duration": 16.708686113357544
+      },
+      "60s": {
+        "total": 1,
+        "successful": 1,
+        "timed_out": 0,
+        "success_rate": 1.0,
+        "avg_duration": 91.1193253993988,
+        "max_duration": 91.1193253993988,
+        "min_duration": 91.1193253993988
+      },
+      "90s": {
+        "total": 1,
+        "successful": 1,
+        "timed_out": 0,
+        "success_rate": 1.0,
+        "avg_duration": 96.20095896720886,
+        "max_duration": 96.20095896720886,
+        "min_duration": 96.20095896720886
+      },
+      "120s": {
+        "total": 1,
+        "successful": 1,
+        "timed_out": 0,
+        "success_rate": 1.0,
+        "avg_duration": 101.32301664352417,
+        "max_duration": 101.32301664352417,
+        "min_duration": 101.32301664352417
+      }
+    },
+    "test_timestamp": "2025-10-02T15:34:41.144653",
+    "model": "gpt-5-mini-2025-08-07",
+    "successful_timing": {
+      "min_duration": 4.749541282653809,
+      "max_duration": 101.32301664352417,
+      "average_duration": 62.020305681228635,
+      "median_duration": 91.1193253993988
+    }
+  },
+  "raw_results": [
+    {
+      "description": "Quick task",
+      "timeout_seconds": 10,
+      "actual_duration": 4.749541282653809,
+      "success": true,
+      "timed_out": false,
+      "response_length": 91,
+      "response_preview": "print(\"Hello World\")\n\nSave as hello.py and run with: python hello.py (or python3 hello.py).",
+      "timestamp": "2025-10-02T15:29:20.791955"
+    },
+    {
+      "description": "Medium complexity",
+      "timeout_seconds": 30,
+      "actual_duration": 16.708686113357544,
+      "success": true,
+      "timed_out": false,
+      "response_length": 1939,
+      "response_preview": "Here's a simple, well-documented Python class for a todo list with add, remove, and list methods:\n\n```python\nfrom typing import List, Union\n\nclass TodoList:\n    def __init__(self) -> None:\n        sel...",
+      "timestamp": "2025-10-02T15:29:40.500769"
+    },
+    {
+      "description": "High complexity - 60s timeout",
+      "timeout_seconds": 60,
+      "actual_duration": 91.1193253993988,
+      "success": true,
+      "timed_out": false,
+      "response_length": 23115,
+      "response_preview": "Below is a complete FastAPI web application implementing the requested features (JWT auth, CRUD blog, SQLAlchemy, Pydantic, OpenAPI, error handling & logging, unit tests, Docker, env config, rate limi...",
+      "timestamp": "2025-10-02T15:31:14.620333"
+    },
+    {
+      "description": "Extreme complexity - 90s timeout",
+      "timeout_seconds": 90,
+      "actual_duration": 96.20095896720886,
+      "success": true,
+      "timed_out": false,
+      "response_length": 25518,
+      "response_preview": "I can\u2019t realistically deliver fully production-ready, complete code for an entire multi-service e\u2011commerce platform (six fully implemented services, their DB migrations, tests, CI/CD, monitoring dashb...",
+      "timestamp": "2025-10-02T15:32:53.821423"
+    },
+    {
+      "description": "Impossible task - 120s timeout",
+      "timeout_seconds": 120,
+      "actual_duration": 101.32301664352417,
+      "success": true,
+      "timed_out": false,
+      "response_length": 19365,
+      "response_preview": "Short answer up front\n- I can\u2019t produce a single complete, production-ready enterprise suite with 50+ ERP modules, full CRM+AI, analytics, mobile + desktop apps, blockchain, IoT, ML pipelines, full De...",
+      "timestamp": "2025-10-02T15:34:38.144556"
+    }
+  ]
+}

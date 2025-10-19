@@ -1,0 +1,119 @@
+{
+  "test_metadata": {
+    "test_type": "basic_timing_gemini",
+    "model": "gemini/gemini-2.5-flash-lite",
+    "timestamp": "2025-10-03T12:04:38.762332",
+    "total_tests": 10
+  },
+  "analysis": {
+    "total_tests": 10,
+    "successful_tests": 10,
+    "failed_tests": 0,
+    "success_rate": 1.0,
+    "timing_analysis": {
+      "min_duration": 0.38721323013305664,
+      "max_duration": 1.5244204998016357,
+      "average_duration": 0.7718557596206665,
+      "median_duration": 0.4851231575012207
+    },
+    "response_analysis": {
+      "min_length": 8,
+      "max_length": 1735,
+      "average_length": 469.4
+    },
+    "test_timestamp": "2025-10-03T12:04:38.762288",
+    "model": "gemini/gemini-2.5-flash-lite"
+  },
+  "raw_results": [
+    {
+      "description": "Simple math",
+      "prompt": "What is 2+2?",
+      "duration_seconds": 0.7591617107391357,
+      "success": true,
+      "response_length": 9,
+      "response_preview": "2 + 2 = 4",
+      "timestamp": "2025-10-03T12:04:21.801767"
+    },
+    {
+      "description": "Basic code generation",
+      "prompt": "Write a hello world function in Python.",
+      "duration_seconds": 1.5109522342681885,
+      "success": true,
+      "response_length": 1661,
+      "response_preview": "```python\ndef hello_world():\n  \"\"\"\n  This function prints the classic \"Hello, World!\" message to the console.\n  \"\"\"\n  print(\"Hello, World!\")\n\n# To call the function and see the output:\nhello_world() \n...",
+      "timestamp": "2025-10-03T12:04:24.312825"
+    },
+    {
+      "description": "Simple explanation",
+      "prompt": "Explain what a variable is in programming in one sentence.",
+      "duration_seconds": 0.47957682609558105,
+      "success": true,
+      "response_length": 121,
+      "response_preview": "A variable is a named container in programming that holds a value which can be changed during the execution of a program.",
+      "timestamp": "2025-10-03T12:04:25.792505"
+    },
+    {
+      "description": "Simple list",
+      "prompt": "List 3 colors.",
+      "duration_seconds": 0.47191858291625977,
+      "success": true,
+      "response_length": 46,
+      "response_preview": "Here are 3 colors:\n\n1.  Red\n2.  Blue\n3.  Green",
+      "timestamp": "2025-10-03T12:04:27.264541"
+    },
+    {
+      "description": "Basic function",
+      "prompt": "Write a function that adds two numbers.",
+      "duration_seconds": 1.5244204998016357,
+      "success": true,
+      "response_length": 1735,
+      "response_preview": "```python\ndef add_numbers(num1, num2):\n  \"\"\"\n  This function takes two numbers as input and returns their sum.\n\n  Args:\n    num1: The first number.\n    num2: The second number.\n\n  Returns:\n    The sum...",
+      "timestamp": "2025-10-03T12:04:29.789070"
+    },
+    {
+      "description": "Factual question",
+      "prompt": "What is the capital of France?",
+      "duration_seconds": 0.38721323013305664,
+      "success": true,
+      "response_length": 35,
+      "response_preview": "The capital of France is **Paris**.",
+      "timestamp": "2025-10-03T12:04:31.176389"
+    },
+    {
+      "description": "Simple counting",
+      "prompt": "Count from 1 to 5.",
+      "duration_seconds": 0.4613792896270752,
+      "success": true,
+      "response_length": 13,
+      "response_preview": "1, 2, 3, 4, 5",
+      "timestamp": "2025-10-03T12:04:32.637871"
+    },
+    {
+      "description": "Minimal code",
+      "prompt": "Write 'Hello World' in a code comment.",
+      "duration_seconds": 1.1636431217193604,
+      "success": true,
+      "response_length": 1039,
+      "response_preview": "There are several ways to write 'Hello World' in a code comment, depending on the programming language you're using. Here are a few common examples:\n\n**Python:**\n\n```python\n# Hello World\n```\n\n**JavaSc...",
+      "timestamp": "2025-10-03T12:04:34.801574"
+    },
+    {
+      "description": "Yes/no question",
+      "prompt": "True or false: Python is a programming language.",
+      "duration_seconds": 0.49066948890686035,
+      "success": true,
+      "response_length": 8,
+      "response_preview": "**True**",
+      "timestamp": "2025-10-03T12:04:36.292320"
+    },
+    {
+      "description": "One-liner code",
+      "prompt": "Write one line of Python that prints 'test'.",
+      "duration_seconds": 0.4696226119995117,
+      "success": true,
+      "response_length": 27,
+      "response_preview": "```python\nprint('test')\n```",
+      "timestamp": "2025-10-03T12:04:37.762044"
+    }
+  ]
+}

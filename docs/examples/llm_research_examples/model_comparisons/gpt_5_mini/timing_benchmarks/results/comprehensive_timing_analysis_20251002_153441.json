@@ -1,0 +1,409 @@
+{
+  "test_metadata": {
+    "timestamp": "2025-10-02T15:34:41.145064",
+    "model": "gpt-5-mini-2025-08-07",
+    "test_suites": [
+      "basic",
+      "component",
+      "timeout"
+    ],
+    "completed_suites": [
+      "basic",
+      "component",
+      "timeout"
+    ]
+  },
+  "summary": {
+    "total_tests_across_all_suites": 22,
+    "successful_tests_across_all_suites": 22,
+    "overall_success_rate": 1.0,
+    "timing_range": {
+      "fastest_response": 1.6378653049468994,
+      "slowest_response": 101.32301664352417,
+      "response_time_spread": 99.68515133857727
+    }
+  },
+  "recommendations": {
+    "current_timeout": 60,
+    "observed_performance": {
+      "max_response_time": 101.32301664352417,
+      "avg_response_time": 39.28545622030894,
+      "response_time_spread": 99.68515133857727
+    },
+    "timeout_options": {
+      "conservative": {
+        "timeout_seconds": 202,
+        "rationale": "2x max observed (101.3s), handles edge cases"
+      },
+      "balanced": {
+        "timeout_seconds": 151,
+        "rationale": "1.5x max observed (101.3s), good reliability"
+      },
+      "aggressive": {
+        "timeout_seconds": 121,
+        "rationale": "1.2x max observed (101.3s), fail fast"
+      }
+    },
+    "recommendation": "balanced",
+    "details": [
+      "Basic tasks: avg 4.7s, max 16.6s",
+      "Component generation: avg 54.6s, max 89.0s",
+      "Timeout rate at various limits: 0.0%"
+    ]
+  },
+  "raw_data": {
+    "basic": {
+      "results": [
+        {
+          "description": "Simple math",
+          "prompt": "What is 2+2?",
+          "duration_seconds": 2.3453874588012695,
+          "success": true,
+          "response_length": 10,
+          "response_preview": "2 + 2 = 4.",
+          "timestamp": "2025-10-02T15:21:30.471616"
+        },
+        {
+          "description": "Basic code generation",
+          "prompt": "Write a hello world function in Python.",
+          "duration_seconds": 4.623630523681641,
+          "success": true,
+          "response_length": 199,
+          "response_preview": "Here's a minimal Python function that prints \"Hello, world!\":\n\n```python\ndef hello_world():\n    \"\"\"Prints Hello, world!\"\"\"\n    print(\"Hello, world!\")\n\nif __name__ == \"__main__\":\n    hello_world()\n```",
+          "timestamp": "2025-10-02T15:21:36.095385"
+        },
+        {
+          "description": "Simple explanation",
+          "prompt": "Explain what a variable is in programming in one sentence.",
+          "duration_seconds": 1.8485448360443115,
+          "success": true,
+          "response_length": 117,
+          "response_preview": "A variable is a named storage location in a program that holds a value which can be read or changed during execution.",
+          "timestamp": "2025-10-02T15:21:38.944042"
+        },
+        {
+          "description": "Simple list",
+          "prompt": "List 3 colors.",
+          "duration_seconds": 3.8995044231414795,
+          "success": true,
+          "response_length": 20,
+          "response_preview": "- Red\n- Blue\n- Green",
+          "timestamp": "2025-10-02T15:21:43.843687"
+        },
+        {
+          "description": "Basic function",
+          "prompt": "Write a function that adds two numbers.",
+          "duration_seconds": 9.210114240646362,
+          "success": true,
+          "response_length": 849,
+          "response_preview": "Here are simple add functions in several common languages.\n\nPython\ndef add(a, b):\n    return a + b\n\n# example\nprint(add(2, 3))  # 5\n\nJavaScript\nfunction add(a, b) {\n    return a + b;\n}\n\n// example\ncon...",
+          "timestamp": "2025-10-02T15:21:54.053925"
+        },
+        {
+          "description": "Factual question",
+          "prompt": "What is the capital of France?",
+          "duration_seconds": 1.6378653049468994,
+          "success": true,
+          "response_length": 31,
+          "response_preview": "The capital of France is Paris.",
+          "timestamp": "2025-10-02T15:21:56.691868"
+        },
+        {
+          "description": "Simple counting",
+          "prompt": "Count from 1 to 5.",
+          "duration_seconds": 2.102614164352417,
+          "success": true,
+          "response_length": 9,
+          "response_preview": "1\n2\n3\n4\n5",
+          "timestamp": "2025-10-02T15:21:59.794599"
+        },
+        {
+          "description": "Minimal code",
+          "prompt": "Write 'Hello World' in a code comment.",
+          "duration_seconds": 16.565807819366455,
+          "success": true,
+          "response_length": 201,
+          "response_preview": "Python:\n# Hello World\n\nJavaScript / Java / C++ / C# / C:\n // Hello World\n/* Hello World */\n\nBash / Ruby / Perl / R / PowerShell:\n# Hello World\n\nHTML:\n<!-- Hello World -->\n\nSQL / Haskell:\n-- Hello Worl...",
+          "timestamp": "2025-10-02T15:22:17.360493"
+        },
+        {
+          "description": "Yes/no question",
+          "prompt": "True or false: Python is a programming language.",
+          "duration_seconds": 1.8161506652832031,
+          "success": true,
+          "response_length": 50,
+          "response_preview": "True. Python is a high-level programming language.",
+          "timestamp": "2025-10-02T15:22:20.176768"
+        },
+        {
+          "description": "One-liner code",
+          "prompt": "Write one line of Python that prints 'test'.",
+          "duration_seconds": 3.03130841255188,
+          "success": true,
+          "response_length": 13,
+          "response_preview": "print('test')",
+          "timestamp": "2025-10-02T15:22:24.208158"
+        }
+      ],
+      "analysis": {
+        "total_tests": 10,
+        "successful_tests": 10,
+        "failed_tests": 0,
+        "success_rate": 1.0,
+        "timing_analysis": {
+          "min_duration": 1.6378653049468994,
+          "max_duration": 16.565807819366455,
+          "average_duration": 4.708092784881591,
+          "median_duration": 2.6883479356765747
+        },
+        "response_analysis": {
+          "min_length": 9,
+          "max_length": 849,
+          "average_length": 149.9
+        },
+        "test_timestamp": "2025-10-02T15:22:25.208338",
+        "model": "gpt-5-mini-2025-08-07"
+      },
+      "status": "completed"
+    },
+    "component": {
+      "results": [
+        {
+          "description": "Simple Store Component",
+          "expected_complexity": "Low",
+          "prompt_length": 944,
+          "duration_seconds": 36.43099403381348,
+          "success": true,
+          "response_length": 8905,
+          "estimated_code_lines": 192,
+          "response_preview": "from typing import Any, Dict, List, Optional\nimport uuid\nimport datetime\nimport threading\nimport logging\nimport copy\n\nfrom autocoder_cc.components.smart_bases import SmartTransformer\n\nlogger = logging.getLogger(__name__)\nlogger.addHandler(logging.NullHandler())\n\n\nclass TodoError(Exception):\n    \"\"\"C...",
+          "timestamp": "2025-10-02T15:23:06.639823"
+        },
+        {
+          "description": "API Endpoint Component",
+          "expected_complexity": "Medium",
+          "prompt_length": 880,
+          "duration_seconds": 54.161898374557495,
+          "success": true,
+          "response_length": 7614,
+          "estimated_code_lines": 162,
+          "response_preview": "from typing import Dict, List, Optional\nimport textwrap\n\nfrom autocoder_cc.components.smart_bases import SmartSource\n\n\nclass TodoAPIEndpoint(SmartSource):\n    \"\"\"\n    SmartSource component that generates a FastAPI Todo CRUD application as a source string.\n    The generate() method returns the full P...",
+          "timestamp": "2025-10-02T15:24:02.801818"
+        },
+        {
+          "description": "Complex Controller Component",
+          "expected_complexity": "High",
+          "prompt_length": 1106,
+          "duration_seconds": 43.09941911697388,
+          "success": true,
+          "response_length": 15144,
+          "estimated_code_lines": 231,
+          "response_preview": "from typing import Any, Dict, Callable, Tuple\nimport logging\nimport time\nimport random\nfrom functools import wraps\n\nfrom autocoder_cc.components.smart_bases import SmartSplitter\n\nlogger = logging.getLogger(__name__)\nlogger.setLevel(logging.INFO)\n\n\ndef retry(max_attempts: int = 3, initial_delay: floa...",
+          "timestamp": "2025-10-02T15:24:47.901427"
+        },
+        {
+          "description": "Data Transformer Component",
+          "expected_complexity": "Medium",
+          "prompt_length": 1041,
+          "duration_seconds": 79.80735158920288,
+          "success": true,
+          "response_length": 26378,
+          "estimated_code_lines": 473,
+          "response_preview": "from typing import Any, Dict, List, Optional, Union\nimport json\nimport csv\nimport io\nimport re\nimport logging\nimport copy\nimport base64\nfrom xml.etree import ElementTree as ET\n\nfrom cryptography.fernet import Fernet, InvalidToken\nimport requests\nfrom jsonschema import validate as jsonschema_validate...",
+          "timestamp": "2025-10-02T15:26:09.708999"
+        },
+        {
+          "description": "Message Consumer Component",
+          "expected_complexity": "Medium",
+          "prompt_length": 996,
+          "duration_seconds": 89.03258538246155,
+          "success": true,
+          "response_length": 23719,
+          "estimated_code_lines": 454,
+          "response_preview": "from typing import Dict, Any, Optional, List, Tuple\nimport threading\nimport time\nimport heapq\nimport logging\nimport random\nimport math\nimport json\nimport requests\nimport smtplib\nfrom email.message import EmailMessage\nfrom prometheus_client import Counter, Histogram, Gauge\nfrom autocoder_cc.component...",
+          "timestamp": "2025-10-02T15:27:40.741791"
+        },
+        {
+          "description": "Simple Filter Component",
+          "expected_complexity": "Low",
+          "prompt_length": 783,
+          "duration_seconds": 22.403920888900757,
+          "success": true,
+          "response_length": 5456,
+          "estimated_code_lines": 122,
+          "response_preview": "from typing import Any, Dict, List, Optional, Union\nimport logging\n\nfrom autocoder_cc.components.smart_bases import SmartTransformer\n\nlogger = logging.getLogger(__name__)\n\n\nclass AgeFilter(SmartTransformer):\n    \"\"\"\n    Filter component that accepts/rejects users based on an age range.\n\n    Configur...",
+          "timestamp": "2025-10-02T15:28:05.145859"
+        },
+        {
+          "description": "Event Aggregator Component",
+          "expected_complexity": "High",
+          "prompt_length": 914,
+          "duration_seconds": 57.442140102386475,
+          "success": true,
+          "response_length": 18420,
+          "estimated_code_lines": 362,
+          "response_preview": "from typing import List, Dict, Any, Callable, Optional, Tuple\nfrom datetime import datetime, timedelta\nimport math\nimport statistics\nfrom collections import defaultdict, Counter, OrderedDict\nfrom autocoder_cc.components.smart_bases import SmartMerger\n\n\nclass EventAggregator(SmartMerger):\n    \"\"\"\n   ...",
+          "timestamp": "2025-10-02T15:29:06.804960"
+        }
+      ],
+      "analysis": {
+        "total_tests": 7,
+        "successful_tests": 7,
+        "failed_tests": 0,
+        "success_rate": 1.0,
+        "overall_timing": {
+          "min_duration": 22.403920888900757,
+          "max_duration": 89.03258538246155,
+          "average_duration": 54.62547278404236,
+          "median_duration": 54.161898374557495
+        },
+        "code_generation": {
+          "min_lines": 122,
+          "max_lines": 473,
+          "average_lines": 285.14285714285717
+        },
+        "by_complexity": {
+          "Low": {
+            "count": 2,
+            "avg_duration": 29.417457461357117,
+            "max_duration": 36.43099403381348,
+            "avg_lines": 157
+          },
+          "Medium": {
+            "count": 3,
+            "avg_duration": 74.3339451154073,
+            "max_duration": 89.03258538246155,
+            "avg_lines": 363
+          },
+          "High": {
+            "count": 2,
+            "avg_duration": 50.270779609680176,
+            "max_duration": 57.442140102386475,
+            "avg_lines": 296.5
+          }
+        },
+        "test_timestamp": "2025-10-02T15:29:08.805175",
+        "model": "gpt-5-mini-2025-08-07"
+      },
+      "status": "completed"
+    },
+    "timeout": {
+      "results": [
+        {
+          "description": "Quick task",
+          "timeout_seconds": 10,
+          "actual_duration": 4.749541282653809,
+          "success": true,
+          "timed_out": false,
+          "response_length": 91,
+          "response_preview": "print(\"Hello World\")\n\nSave as hello.py and run with: python hello.py (or python3 hello.py).",
+          "timestamp": "2025-10-02T15:29:20.791955"
+        },
+        {
+          "description": "Medium complexity",
+          "timeout_seconds": 30,
+          "actual_duration": 16.708686113357544,
+          "success": true,
+          "timed_out": false,
+          "response_length": 1939,
+          "response_preview": "Here's a simple, well-documented Python class for a todo list with add, remove, and list methods:\n\n```python\nfrom typing import List, Union\n\nclass TodoList:\n    def __init__(self) -> None:\n        sel...",
+          "timestamp": "2025-10-02T15:29:40.500769"
+        },
+        {
+          "description": "High complexity - 60s timeout",
+          "timeout_seconds": 60,
+          "actual_duration": 91.1193253993988,
+          "success": true,
+          "timed_out": false,
+          "response_length": 23115,
+          "response_preview": "Below is a complete FastAPI web application implementing the requested features (JWT auth, CRUD blog, SQLAlchemy, Pydantic, OpenAPI, error handling & logging, unit tests, Docker, env config, rate limi...",
+          "timestamp": "2025-10-02T15:31:14.620333"
+        },
+        {
+          "description": "Extreme complexity - 90s timeout",
+          "timeout_seconds": 90,
+          "actual_duration": 96.20095896720886,
+          "success": true,
+          "timed_out": false,
+          "response_length": 25518,
+          "response_preview": "I can\u2019t realistically deliver fully production-ready, complete code for an entire multi-service e\u2011commerce platform (six fully implemented services, their DB migrations, tests, CI/CD, monitoring dashb...",
+          "timestamp": "2025-10-02T15:32:53.821423"
+        },
+        {
+          "description": "Impossible task - 120s timeout",
+          "timeout_seconds": 120,
+          "actual_duration": 101.32301664352417,
+          "success": true,
+          "timed_out": false,
+          "response_length": 19365,
+          "response_preview": "Short answer up front\n- I can\u2019t produce a single complete, production-ready enterprise suite with 50+ ERP modules, full CRM+AI, analytics, mobile + desktop apps, blockchain, IoT, ML pipelines, full De...",
+          "timestamp": "2025-10-02T15:34:38.144556"
+        }
+      ],
+      "analysis": {
+        "total_tests": 5,
+        "successful_tests": 5,
+        "timed_out_tests": 0,
+        "failed_tests": 0,
+        "success_rate": 1.0,
+        "timeout_rate": 0.0,
+        "timeout_analysis": {
+          "10s": {
+            "total": 1,
+            "successful": 1,
+            "timed_out": 0,
+            "success_rate": 1.0,
+            "avg_duration": 4.749541282653809,
+            "max_duration": 4.749541282653809,
+            "min_duration": 4.749541282653809
+          },
+          "30s": {
+            "total": 1,
+            "successful": 1,
+            "timed_out": 0,
+            "success_rate": 1.0,
+            "avg_duration": 16.708686113357544,
+            "max_duration": 16.708686113357544,
+            "min_duration": 16.708686113357544
+          },
+          "60s": {
+            "total": 1,
+            "successful": 1,
+            "timed_out": 0,
+            "success_rate": 1.0,
+            "avg_duration": 91.1193253993988,
+            "max_duration": 91.1193253993988,
+            "min_duration": 91.1193253993988
+          },
+          "90s": {
+            "total": 1,
+            "successful": 1,
+            "timed_out": 0,
+            "success_rate": 1.0,
+            "avg_duration": 96.20095896720886,
+            "max_duration": 96.20095896720886,
+            "min_duration": 96.20095896720886
+          },
+          "120s": {
+            "total": 1,
+            "successful": 1,
+            "timed_out": 0,
+            "success_rate": 1.0,
+            "avg_duration": 101.32301664352417,
+            "max_duration": 101.32301664352417,
+            "min_duration": 101.32301664352417
+          }
+        },
+        "test_timestamp": "2025-10-02T15:34:41.144653",
+        "model": "gpt-5-mini-2025-08-07",
+        "successful_timing": {
+          "min_duration": 4.749541282653809,
+          "max_duration": 101.32301664352417,
+          "average_duration": 62.020305681228635,
+          "median_duration": 91.1193253993988
+        }
+      },
+      "status": "completed"
+    }
+  }
+}

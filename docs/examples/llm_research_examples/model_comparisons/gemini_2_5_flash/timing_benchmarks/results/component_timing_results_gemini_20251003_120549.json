@@ -1,0 +1,126 @@
+{
+  "test_metadata": {
+    "test_type": "component_generation_timing_gemini",
+    "model": "gemini/gemini-2.5-flash-lite",
+    "timestamp": "2025-10-03T12:05:49.771205",
+    "total_tests": 7
+  },
+  "analysis": {
+    "total_tests": 7,
+    "successful_tests": 7,
+    "failed_tests": 0,
+    "success_rate": 1.0,
+    "overall_timing": {
+      "min_duration": 4.281569004058838,
+      "max_duration": 12.668108701705933,
+      "average_duration": 8.143887111118861,
+      "median_duration": 7.800516843795776
+    },
+    "code_generation": {
+      "min_lines": 127,
+      "max_lines": 302,
+      "average_lines": 229
+    },
+    "by_complexity": {
+      "Low": {
+        "count": 2,
+        "avg_duration": 7.688350439071655,
+        "max_duration": 10.8405179977417,
+        "avg_lines": 185
+      },
+      "Medium": {
+        "count": 3,
+        "avg_duration": 8.250064849853516,
+        "max_duration": 12.668108701705933,
+        "avg_lines": 236.33333333333334
+      },
+      "High": {
+        "count": 2,
+        "avg_duration": 8.440157175064087,
+        "max_duration": 10.349599361419678,
+        "avg_lines": 262
+      }
+    },
+    "test_timestamp": "2025-10-03T12:05:49.771105",
+    "model": "gemini/gemini-2.5-flash-lite"
+  },
+  "raw_results": [
+    {
+      "description": "Simple Store Component",
+      "expected_complexity": "Low",
+      "prompt_length": 944,
+      "duration_seconds": 10.8405179977417,
+      "success": true,
+      "response_length": 13475,
+      "estimated_code_lines": 243,
+      "response_preview": "```python\nimport logging\nfrom typing import Dict, Any, List\n\nfrom autocoder_cc.components.smart_bases import SmartTransformer\n\n# Configure logging\nlogging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')\n\n\nclass TodoStore(SmartTransformer):\n    \"\"\"\n    A SmartTrans...",
+      "timestamp": "2025-10-03T12:04:49.603229"
+    },
+    {
+      "description": "API Endpoint Component",
+      "expected_complexity": "Medium",
+      "prompt_length": 880,
+      "duration_seconds": 4.281569004058838,
+      "success": true,
+      "response_length": 7190,
+      "estimated_code_lines": 173,
+      "response_preview": "```python\nfrom typing import List, Optional\n\nfrom fastapi import FastAPI, HTTPException, Path, Query, status\nfrom pydantic import BaseModel\nfrom autocoder_cc.components.smart_bases import SmartSource\n\n\nclass TodoItem(BaseModel):\n    id: int\n    title: str\n    description: Optional[str] = None\n    co...",
+      "timestamp": "2025-10-03T12:04:55.884967"
+    },
+    {
+      "description": "Complex Controller Component",
+      "expected_complexity": "High",
+      "prompt_length": 1106,
+      "duration_seconds": 6.530714988708496,
+      "success": true,
+      "response_length": 12828,
+      "estimated_code_lines": 225,
+      "response_preview": "```python\nimport logging\nfrom typing import Dict, Any\n\nfrom autocoder_cc.components.smart_bases import SmartSplitter\nfrom autocoder_cc.components.smart_bases import SmartProcessor  # Assuming this exists for processors\nfrom autocoder_cc.metrics import Metrics  # Assuming a metrics library exists\n\n# ...",
+      "timestamp": "2025-10-03T12:05:04.415831"
+    },
+    {
+      "description": "Data Transformer Component",
+      "expected_complexity": "Medium",
+      "prompt_length": 1041,
+      "duration_seconds": 7.800516843795776,
+      "success": true,
+      "response_length": 14132,
+      "estimated_code_lines": 234,
+      "response_preview": "```python\nimport json\nimport xml.etree.ElementTree as ET\nimport csv\nfrom io import StringIO\nfrom typing import Dict, Any, Optional, List\nfrom datetime import datetime\n\nfrom autocoder_cc.components.smart_bases import SmartTransformer\nfrom autocoder_cc.exceptions import ComponentError\n\n# Placeholder f...",
+      "timestamp": "2025-10-03T12:05:14.216480"
+    },
+    {
+      "description": "Message Consumer Component",
+      "expected_complexity": "Medium",
+      "prompt_length": 996,
+      "duration_seconds": 12.668108701705933,
+      "success": true,
+      "response_length": 16008,
+      "estimated_code_lines": 302,
+      "response_preview": "```python\nimport logging\nfrom typing import Dict, Any\nfrom datetime import datetime, timedelta\n\n# Assume these are available from your project's internal libraries\n# For demonstration purposes, we'll use placeholder implementations.\nfrom autocoder_cc.components.smart_bases import SmartSink\nfrom auto...",
+      "timestamp": "2025-10-03T12:05:28.884766"
+    },
+    {
+      "description": "Simple Filter Component",
+      "expected_complexity": "Low",
+      "prompt_length": 783,
+      "duration_seconds": 4.536182880401611,
+      "success": true,
+      "response_length": 6916,
+      "estimated_code_lines": 127,
+      "response_preview": "```python\nfrom typing import Dict, Any, Optional, Tuple\nfrom autocoder_cc.components.smart_bases import SmartTransformer\nimport logging\n\nlogger = logging.getLogger(__name__)\n\n\nclass AgeFilter(SmartTransformer):\n    \"\"\"\n    A filter component that filters users based on a configurable age range.\n\n   ...",
+      "timestamp": "2025-10-03T12:05:35.421081"
+    },
+    {
+      "description": "Event Aggregator Component",
+      "expected_complexity": "High",
+      "prompt_length": 914,
+      "duration_seconds": 10.349599361419678,
+      "success": true,
+      "response_length": 19247,
+      "estimated_code_lines": 299,
+      "response_preview": "```python\nfrom typing import List, Dict, Any, Callable, Optional\nfrom collections import defaultdict\nfrom datetime import datetime, timedelta\nimport statistics\n\n# Assume SmartMerger is defined in autocoder_cc.components.smart_bases\n# For the purpose of this example, we'll provide a mock implementati...",
+      "timestamp": "2025-10-03T12:05:47.770961"
+    }
+  ]
+}

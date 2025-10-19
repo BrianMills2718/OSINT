@@ -1,0 +1,126 @@
+{
+  "test_metadata": {
+    "test_type": "component_generation_timing",
+    "model": "gpt-5-mini-2025-08-07",
+    "timestamp": "2025-10-02T15:29:08.805278",
+    "total_tests": 7
+  },
+  "analysis": {
+    "total_tests": 7,
+    "successful_tests": 7,
+    "failed_tests": 0,
+    "success_rate": 1.0,
+    "overall_timing": {
+      "min_duration": 22.403920888900757,
+      "max_duration": 89.03258538246155,
+      "average_duration": 54.62547278404236,
+      "median_duration": 54.161898374557495
+    },
+    "code_generation": {
+      "min_lines": 122,
+      "max_lines": 473,
+      "average_lines": 285.14285714285717
+    },
+    "by_complexity": {
+      "Low": {
+        "count": 2,
+        "avg_duration": 29.417457461357117,
+        "max_duration": 36.43099403381348,
+        "avg_lines": 157
+      },
+      "Medium": {
+        "count": 3,
+        "avg_duration": 74.3339451154073,
+        "max_duration": 89.03258538246155,
+        "avg_lines": 363
+      },
+      "High": {
+        "count": 2,
+        "avg_duration": 50.270779609680176,
+        "max_duration": 57.442140102386475,
+        "avg_lines": 296.5
+      }
+    },
+    "test_timestamp": "2025-10-02T15:29:08.805175",
+    "model": "gpt-5-mini-2025-08-07"
+  },
+  "raw_results": [
+    {
+      "description": "Simple Store Component",
+      "expected_complexity": "Low",
+      "prompt_length": 944,
+      "duration_seconds": 36.43099403381348,
+      "success": true,
+      "response_length": 8905,
+      "estimated_code_lines": 192,
+      "response_preview": "from typing import Any, Dict, List, Optional\nimport uuid\nimport datetime\nimport threading\nimport logging\nimport copy\n\nfrom autocoder_cc.components.smart_bases import SmartTransformer\n\nlogger = logging.getLogger(__name__)\nlogger.addHandler(logging.NullHandler())\n\n\nclass TodoError(Exception):\n    \"\"\"C...",
+      "timestamp": "2025-10-02T15:23:06.639823"
+    },
+    {
+      "description": "API Endpoint Component",
+      "expected_complexity": "Medium",
+      "prompt_length": 880,
+      "duration_seconds": 54.161898374557495,
+      "success": true,
+      "response_length": 7614,
+      "estimated_code_lines": 162,
+      "response_preview": "from typing import Dict, List, Optional\nimport textwrap\n\nfrom autocoder_cc.components.smart_bases import SmartSource\n\n\nclass TodoAPIEndpoint(SmartSource):\n    \"\"\"\n    SmartSource component that generates a FastAPI Todo CRUD application as a source string.\n    The generate() method returns the full P...",
+      "timestamp": "2025-10-02T15:24:02.801818"
+    },
+    {
+      "description": "Complex Controller Component",
+      "expected_complexity": "High",
+      "prompt_length": 1106,
+      "duration_seconds": 43.09941911697388,
+      "success": true,
+      "response_length": 15144,
+      "estimated_code_lines": 231,
+      "response_preview": "from typing import Any, Dict, Callable, Tuple\nimport logging\nimport time\nimport random\nfrom functools import wraps\n\nfrom autocoder_cc.components.smart_bases import SmartSplitter\n\nlogger = logging.getLogger(__name__)\nlogger.setLevel(logging.INFO)\n\n\ndef retry(max_attempts: int = 3, initial_delay: floa...",
+      "timestamp": "2025-10-02T15:24:47.901427"
+    },
+    {
+      "description": "Data Transformer Component",
+      "expected_complexity": "Medium",
+      "prompt_length": 1041,
+      "duration_seconds": 79.80735158920288,
+      "success": true,
+      "response_length": 26378,
+      "estimated_code_lines": 473,
+      "response_preview": "from typing import Any, Dict, List, Optional, Union\nimport json\nimport csv\nimport io\nimport re\nimport logging\nimport copy\nimport base64\nfrom xml.etree import ElementTree as ET\n\nfrom cryptography.fernet import Fernet, InvalidToken\nimport requests\nfrom jsonschema import validate as jsonschema_validate...",
+      "timestamp": "2025-10-02T15:26:09.708999"
+    },
+    {
+      "description": "Message Consumer Component",
+      "expected_complexity": "Medium",
+      "prompt_length": 996,
+      "duration_seconds": 89.03258538246155,
+      "success": true,
+      "response_length": 23719,
+      "estimated_code_lines": 454,
+      "response_preview": "from typing import Dict, Any, Optional, List, Tuple\nimport threading\nimport time\nimport heapq\nimport logging\nimport random\nimport math\nimport json\nimport requests\nimport smtplib\nfrom email.message import EmailMessage\nfrom prometheus_client import Counter, Histogram, Gauge\nfrom autocoder_cc.component...",
+      "timestamp": "2025-10-02T15:27:40.741791"
+    },
+    {
+      "description": "Simple Filter Component",
+      "expected_complexity": "Low",
+      "prompt_length": 783,
+      "duration_seconds": 22.403920888900757,
+      "success": true,
+      "response_length": 5456,
+      "estimated_code_lines": 122,
+      "response_preview": "from typing import Any, Dict, List, Optional, Union\nimport logging\n\nfrom autocoder_cc.components.smart_bases import SmartTransformer\n\nlogger = logging.getLogger(__name__)\n\n\nclass AgeFilter(SmartTransformer):\n    \"\"\"\n    Filter component that accepts/rejects users based on an age range.\n\n    Configur...",
+      "timestamp": "2025-10-02T15:28:05.145859"
+    },
+    {
+      "description": "Event Aggregator Component",
+      "expected_complexity": "High",
+      "prompt_length": 914,
+      "duration_seconds": 57.442140102386475,
+      "success": true,
+      "response_length": 18420,
+      "estimated_code_lines": 362,
+      "response_preview": "from typing import List, Dict, Any, Callable, Optional, Tuple\nfrom datetime import datetime, timedelta\nimport math\nimport statistics\nfrom collections import defaultdict, Counter, OrderedDict\nfrom autocoder_cc.components.smart_bases import SmartMerger\n\n\nclass EventAggregator(SmartMerger):\n    \"\"\"\n   ...",
+      "timestamp": "2025-10-02T15:29:06.804960"
+    }
+  ]
+}

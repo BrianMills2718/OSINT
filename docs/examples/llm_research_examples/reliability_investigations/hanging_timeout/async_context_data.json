@@ -1,0 +1,178 @@
+{
+  "working_before": {
+    "timestamp": 1759970923.7107987,
+    "context_name": "working_before",
+    "thread_name": "MainThread",
+    "thread_id": 140004225355904,
+    "process_id": 95512,
+    "loop_exists": true,
+    "loop_running": true,
+    "loop_closed": false,
+    "loop_debug": false,
+    "active_threads": 1,
+    "thread_names": [
+      "MainThread"
+    ],
+    "call_stack_depth": 10,
+    "task_count": 1,
+    "task_states": [
+      "<Task pending name='Task-1' coro=<run_context_analysis() running at /home/brian/projects/autocoder4_cc/api_hang_timeout/async_context_analyzer.py:243> cb=[_run_until_complete_cb() at /usr/lib/python3.12/asyncio/base_events.py:182]>"
+    ],
+    "pending_tasks": [
+      "<Task pending name='Task-1' coro=<run_context_analysis() running at /home/brian/projects/autocoder4_cc/api_hang_timeout/async_context_analyzer.py:243> cb=[_run_until_complete_cb() at /usr/lib/python3.12/asyncio/base_events.py:182]>"
+    ],
+    "memory_mb": 21.875,
+    "open_files": 3,
+    "connections": 0,
+    "cpu_percent": 0.0
+  },
+  "working_init": {
+    "timestamp": 1759970931.3146334,
+    "context_name": "working_init",
+    "thread_name": "MainThread",
+    "thread_id": 140004225355904,
+    "process_id": 95512,
+    "loop_exists": true,
+    "loop_running": true,
+    "loop_closed": false,
+    "loop_debug": false,
+    "active_threads": 1,
+    "thread_names": [
+      "MainThread"
+    ],
+    "call_stack_depth": 10,
+    "task_count": 1,
+    "task_states": [
+      "<Task pending name='Task-1' coro=<run_context_analysis() running at /home/brian/projects/autocoder4_cc/api_hang_timeout/async_context_analyzer.py:243> cb=[_run_until_complete_cb() at /usr/lib/python3.12/asyncio/base_events.py:182]>"
+    ],
+    "pending_tasks": [
+      "<Task pending name='Task-1' coro=<run_context_analysis() running at /home/brian/projects/autocoder4_cc/api_hang_timeout/async_context_analyzer.py:243> cb=[_run_until_complete_cb() at /usr/lib/python3.12/asyncio/base_events.py:182]>"
+    ],
+    "memory_mb": 216.07421875,
+    "open_files": 3,
+    "connections": 0,
+    "cpu_percent": 0.0
+  },
+  "working_after": {
+    "timestamp": 1759970976.7539957,
+    "context_name": "working_after",
+    "thread_name": "MainThread",
+    "thread_id": 140004225355904,
+    "process_id": 95512,
+    "loop_exists": true,
+    "loop_running": true,
+    "loop_closed": false,
+    "loop_debug": false,
+    "active_threads": 3,
+    "thread_names": [
+      "MainThread",
+      "asyncio_0",
+      "ThreadPoolExecutor-0_0"
+    ],
+    "call_stack_depth": 10,
+    "task_count": 2,
+    "task_states": [
+      "<Task pending name='Task-1' coro=<run_context_analysis() running at /home/brian/projects/autocoder4_cc/api_hang_timeout/async_context_analyzer.py:243> cb=[_run_until_complete_cb() at /usr/lib/python3.12/asyncio/base_events.py:182]>",
+      "<Task pending name='Task-5' coro=<_client_async_logging_helper() running at /home/brian/.local/lib/python3.12/site-packages/litellm/utils.py:823>>"
+    ],
+    "pending_tasks": [
+      "<Task pending name='Task-1' coro=<run_context_analysis() running at /home/brian/projects/autocoder4_cc/api_hang_timeout/async_context_analyzer.py:243> cb=[_run_until_complete_cb() at /usr/lib/python3.12/asyncio/base_events.py:182]>",
+      "<Task pending name='Task-5' coro=<_client_async_logging_helper() running at /home/brian/.local/lib/python3.12/site-packages/litellm/utils.py:823>>"
+    ],
+    "memory_mb": 220.57421875,
+    "open_files": 3,
+    "connections": 1,
+    "cpu_percent": 0.0
+  },
+  "hanging_before": {
+    "timestamp": 1759970976.7559154,
+    "context_name": "hanging_before",
+    "thread_name": "MainThread",
+    "thread_id": 140004225355904,
+    "process_id": 95512,
+    "loop_exists": true,
+    "loop_running": true,
+    "loop_closed": false,
+    "loop_debug": false,
+    "active_threads": 3,
+    "thread_names": [
+      "MainThread",
+      "asyncio_0",
+      "ThreadPoolExecutor-0_0"
+    ],
+    "call_stack_depth": 10,
+    "task_count": 2,
+    "task_states": [
+      "<Task pending name='Task-1' coro=<run_context_analysis() running at /home/brian/projects/autocoder4_cc/api_hang_timeout/async_context_analyzer.py:246> cb=[_run_until_complete_cb() at /usr/lib/python3.12/asyncio/base_events.py:182]>",
+      "<Task pending name='Task-5' coro=<_client_async_logging_helper() running at /home/brian/.local/lib/python3.12/site-packages/litellm/utils.py:823>>"
+    ],
+    "pending_tasks": [
+      "<Task pending name='Task-1' coro=<run_context_analysis() running at /home/brian/projects/autocoder4_cc/api_hang_timeout/async_context_analyzer.py:246> cb=[_run_until_complete_cb() at /usr/lib/python3.12/asyncio/base_events.py:182]>",
+      "<Task pending name='Task-5' coro=<_client_async_logging_helper() running at /home/brian/.local/lib/python3.12/site-packages/litellm/utils.py:823>>"
+    ],
+    "memory_mb": 220.57421875,
+    "open_files": 3,
+    "connections": 1,
+    "cpu_percent": 0.0
+  },
+  "hanging_before_generation": {
+    "timestamp": 1759970984.0048435,
+    "context_name": "hanging_before_generation",
+    "thread_name": "MainThread",
+    "thread_id": 140004225355904,
+    "process_id": 95512,
+    "loop_exists": true,
+    "loop_running": true,
+    "loop_closed": false,
+    "loop_debug": false,
+    "active_threads": 3,
+    "thread_names": [
+      "MainThread",
+      "asyncio_0",
+      "ThreadPoolExecutor-0_0"
+    ],
+    "call_stack_depth": 10,
+    "task_count": 2,
+    "task_states": [
+      "<Task pending name='Task-1' coro=<run_context_analysis() running at /home/brian/projects/autocoder4_cc/api_hang_timeout/async_context_analyzer.py:246> cb=[_run_until_complete_cb() at /usr/lib/python3.12/asyncio/base_events.py:182]>",
+      "<Task pending name='Task-5' coro=<_client_async_logging_helper() running at /home/brian/.local/lib/python3.12/site-packages/litellm/utils.py:823>>"
+    ],
+    "pending_tasks": [
+      "<Task pending name='Task-1' coro=<run_context_analysis() running at /home/brian/projects/autocoder4_cc/api_hang_timeout/async_context_analyzer.py:246> cb=[_run_until_complete_cb() at /usr/lib/python3.12/asyncio/base_events.py:182]>",
+      "<Task pending name='Task-5' coro=<_client_async_logging_helper() running at /home/brian/.local/lib/python3.12/site-packages/litellm/utils.py:823>>"
+    ],
+    "memory_mb": 222.69921875,
+    "open_files": 3,
+    "connections": 2,
+    "cpu_percent": 0.0
+  },
+  "hanging_during": {
+    "timestamp": 1759971006.3978949,
+    "context_name": "hanging_during",
+    "thread_name": "MainThread",
+    "thread_id": 140004225355904,
+    "process_id": 95512,
+    "loop_exists": true,
+    "loop_running": true,
+    "loop_closed": false,
+    "loop_debug": false,
+    "active_threads": 3,
+    "thread_names": [
+      "MainThread",
+      "asyncio_0",
+      "ThreadPoolExecutor-0_0"
+    ],
+    "call_stack_depth": 10,
+    "task_count": 1,
+    "task_states": [
+      "<Task pending name='Task-1' coro=<run_context_analysis() running at /home/brian/projects/autocoder4_cc/api_hang_timeout/async_context_analyzer.py:246> cb=[_run_until_complete_cb() at /usr/lib/python3.12/asyncio/base_events.py:182]>"
+    ],
+    "pending_tasks": [
+      "<Task pending name='Task-1' coro=<run_context_analysis() running at /home/brian/projects/autocoder4_cc/api_hang_timeout/async_context_analyzer.py:246> cb=[_run_until_complete_cb() at /usr/lib/python3.12/asyncio/base_events.py:182]>"
+    ],
+    "memory_mb": 223.57421875,
+    "open_files": 3,
+    "connections": 2,
+    "cpu_percent": 0.0
+  }
+}

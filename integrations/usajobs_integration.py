@@ -12,13 +12,13 @@ from datetime import datetime
 import requests
 from llm_utils import acompletion
 
-from database_integration_base import (
+from core.database_integration_base import (
     DatabaseIntegration,
     DatabaseMetadata,
     DatabaseCategory,
     QueryResult
 )
-from api_request_tracker import log_request
+from core.api_request_tracker import log_request
 from config_loader import config
 
 

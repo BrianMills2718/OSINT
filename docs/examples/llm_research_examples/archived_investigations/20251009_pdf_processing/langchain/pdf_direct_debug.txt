@@ -1,0 +1,6 @@
+I don’t have the PDF yet. Please upload the UFO witness database PDF or share a publicly accessible link to it, and I’ll extract all witness entries.
+
+Quick clarifications to ensure accuracy:
+- If “Deceased” or “Public” status isn’t explicitly stated in the document, should I default them to 0?
+- Country: should I use the exact country code as printed (e.g., “USA”, “UK”), and if only a country name appears, should I convert to the standard code or keep it verbatim?
+- The output will be very large (700+ entries). Is it acceptable to deliver the JSON in multiple sequential messages to avoid size limits?

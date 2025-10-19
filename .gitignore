@@ -16,8 +16,7 @@ ENV/
 api_requests.jsonl
 
 # Test files
-test_*.py
-*_test.py
+# (now in tests/ directory, don't ignore)
 
 # Streamlit
 streamlit.log
@@ -47,7 +46,21 @@ dce-cli.zip
 DiscordChatExporter/
 nohup.out
 
-# Large data files
+# Data directory (all data files)
+data/
+!data/.gitkeep
+
+# User config (don't commit personal settings)
+config.yaml
+
+# Experiments data
+experiments/**/*.json
+experiments/**/*.log
+experiments/**/*.txt
+experiments/**/*.jsonl
+!experiments/**/.gitkeep
+
+# Large data files (legacy, now in data/)
 *_articles/
 *_articles_extracted/
 archive/
