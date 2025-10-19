@@ -7,10 +7,16 @@
 # ============================================================================
 # LiteLLM supports 100+ providers - just change the model name!
 # Examples:
-#   OpenAI: "gpt-5-mini", "gpt-4o", "gpt-4o-mini"
+#   OpenAI GPT-5: "gpt-5", "gpt-5-mini", "gpt-5-nano" (recommended: gpt-5-nano for cost)
+#   OpenAI GPT-4: "gpt-4o", "gpt-4o-mini"
 #   Anthropic: "claude-3-5-sonnet-20241022", "claude-3-opus-20240229"
 #   Google: "gemini/gemini-2.0-flash-exp", "gemini/gemini-1.5-pro"
 #   Local: "ollama/llama3", "ollama/mistral"
+#
+# Model Recommendations by Cost/Performance:
+#   - gpt-5-nano: Lowest cost, good for simple queries (~10x cheaper than gpt-5-mini)
+#   - gpt-5-mini: Best balance of cost/performance (current default)
+#   - gpt-5: Highest quality, highest cost
 
 llm:
   # Default model for all operations (can be overridden per-operation)
