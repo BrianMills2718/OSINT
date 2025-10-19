@@ -221,10 +221,14 @@ class UnifiedLLM:
             input_text = cls.convert_messages_to_input(messages)
             text_format = cls.convert_response_format(response_format)
 
-            # Convert max_tokens to max_output_tokens for responses() API
+            # IMPORTANT: DO NOT use max_output_tokens with gpt-5-mini!
+            # gpt-5 uses reasoning tokens before output tokens.
+            # If max_output_tokens is set, it can exhaust them on reasoning
+            # and return empty output (while still billing you).
+            # Let the model use as many tokens as it needs.
             kwargs_copy = kwargs.copy()
-            if 'max_tokens' in kwargs_copy:
-                kwargs_copy['max_output_tokens'] = kwargs_copy.pop('max_tokens')
+            kwargs_copy.pop('max_tokens', None)  # Remove if accidentally passed
+            kwargs_copy.pop('max_output_tokens', None)  # Remove if accidentally passed
 
             # Wrap sync responses() in executor
             loop = asyncio.get_event_loop()
