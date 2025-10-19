@@ -297,7 +297,7 @@ Response:
             # USAJobs requires specific headers
             headers = {
                 "Host": "data.usajobs.gov",
-                "User-Agent": "claude-code-research@anthropic.com",  # Required by API
+                "User-Agent": "brianmills2718@gmail.com",  # Required by API
                 "Authorization-Key": api_key
             }
 
