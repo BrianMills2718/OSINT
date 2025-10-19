@@ -3,7 +3,7 @@
 ClearanceJobs database integration.
 
 Provides access to U.S. security clearance job listings through
-Puppeteer-based web scraping (the official API is broken).
+Playwright-based web scraping (the official API is broken).
 """
 
 import json
@@ -22,7 +22,7 @@ from core.database_integration_base import (
 )
 from core.api_request_tracker import log_request
 from config_loader import config
-from integrations.clearancejobs_puppeteer import search_clearancejobs, PuppeteerNotAvailableError
+from integrations.clearancejobs_playwright import search_clearancejobs
 
 
 class ClearanceJobsIntegration(DatabaseIntegration):
@@ -49,9 +49,9 @@ class ClearanceJobsIntegration(DatabaseIntegration):
             id="clearancejobs",
             category=DatabaseCategory.JOBS,
             requires_api_key=False,
-            cost_per_query_estimate=0.001,  # LLM cost only, API is free
-            typical_response_time=2.0,      # seconds
-            rate_limit_daily=None,          # Unknown
+            cost_per_query_estimate=0.001,  # LLM cost only, web scraping is free
+            typical_response_time=5.0,      # seconds (browser automation)
+            rate_limit_daily=None,          # Unknown (be respectful)
             description="U.S. security clearance job listings (government contractor positions)"
         )
 
@@ -211,14 +211,11 @@ Response:
                            api_key: Optional[str] = None,
                            limit: int = 10) -> QueryResult:
         """
-        Execute ClearanceJobs search using Puppeteer web scraping.
+        Execute ClearanceJobs search using Playwright web scraping.
 
         NOTE: The official ClearanceJobs Python library API is broken - it
         returns all 57k+ jobs regardless of search query. This implementation
-        uses Puppeteer to interact with the actual website search form.
-
-        This method should be called with Puppeteer MCP tools available in the
-        environment. If running from Claude Code, this will work automatically.
+        uses Playwright to interact with the actual website search form.
 
         Args:
             query_params: Parameters from generate_query()
@@ -231,34 +228,95 @@ Response:
         start_time = datetime.now()
         endpoint = "https://www.clearancejobs.com/jobs"
 
-        error_msg = (
-            "ClearanceJobs integration requires Puppeteer MCP server. "
-            "The Python API library is broken (returns irrelevant results). "
-            "Please run this search from Claude Code with Puppeteer MCP configured, "
-            "or manually search at https://www.clearancejobs.com/jobs"
-        )
+        try:
+            # Extract keywords from query params
+            keywords = query_params.get("keywords", "")
 
-        response_time_ms = (datetime.now() - start_time).total_seconds() * 1000
+            if not keywords:
+                return QueryResult(
+                    success=False,
+                    source="ClearanceJobs",
+                    total=0,
+                    results=[],
+                    query_params=query_params,
+                    error="No keywords provided for search"
+                )
 
-        log_request(
-            api_name="ClearanceJobs",
-            endpoint=endpoint,
-            status_code=0,
-            response_time_ms=response_time_ms,
-            error_message=error_msg,
-            request_params=query_params
-        )
+            # Call the Playwright scraper
+            scrape_result = await search_clearancejobs(
+                keywords=keywords,
+                limit=limit,
+                headless=True
+            )
 
-        return QueryResult(
-            success=False,
-            source="ClearanceJobs",
-            total=0,
-            results=[],
-            query_params=query_params,
-            error=error_msg,
-            response_time_ms=response_time_ms,
-            metadata={
-                "method": "puppeteer_required",
-                "manual_url": f"https://www.clearancejobs.com/jobs?keywords={query_params.get('keywords', '').replace(' ', '+')}"
-            }
-        )
+            response_time_ms = (datetime.now() - start_time).total_seconds() * 1000
+
+            # Log the scraping attempt
+            log_request(
+                api_name="ClearanceJobs",
+                endpoint=endpoint,
+                status_code=200 if scrape_result["success"] else 500,
+                response_time_ms=response_time_ms,
+                error_message=scrape_result.get("error"),
+                request_params={"keywords": keywords, "limit": limit}
+            )
+
+            if not scrape_result["success"]:
+                return QueryResult(
+                    success=False,
+                    source="ClearanceJobs",
+                    total=0,
+                    results=[],
+                    query_params=query_params,
+                    error=scrape_result.get("error", "Unknown scraping error"),
+                    response_time_ms=response_time_ms
+                )
+
+            # Filter by clearance level if specified
+            jobs = scrape_result["jobs"]
+            clearances_filter = query_params.get("clearances", [])
+
+            if clearances_filter:
+                filtered_jobs = []
+                for job in jobs:
+                    job_clearance = job.get("clearance", "").lower()
+                    if any(cl.lower() in job_clearance for cl in clearances_filter):
+                        filtered_jobs.append(job)
+                jobs = filtered_jobs
+
+            return QueryResult(
+                success=True,
+                source="ClearanceJobs",
+                total=scrape_result["total"],
+                results=jobs[:limit],
+                query_params=query_params,
+                response_time_ms=response_time_ms,
+                metadata={
+                    "scraping_method": "Playwright",
+                    "filtered_by_clearance": len(clearances_filter) > 0,
+                    "clearance_filters": clearances_filter
+                }
+            )
+
+        except Exception as e:
+            response_time_ms = (datetime.now() - start_time).total_seconds() * 1000
+
+            # Log failed request
+            log_request(
+                api_name="ClearanceJobs",
+                endpoint=endpoint,
+                status_code=0,
+                response_time_ms=response_time_ms,
+                error_message=str(e),
+                request_params=query_params
+            )
+
+            return QueryResult(
+                success=False,
+                source="ClearanceJobs",
+                total=0,
+                results=[],
+                query_params=query_params,
+                error=str(e),
+                response_time_ms=response_time_ms
+            )

@@ -1,0 +1,47 @@
+
+Guides - Authentication
+
+Accessing the various USAJOBS APIs will require an API Key. To request an API Key, please go the the API Request page and fill out an application. Authentication is not required when using the codelist APIs.
+
+To instantiate the REST API, an HTTP GET will be used. All interactions with USAJOBS are via HTTP. When making requests you will need to provide three parameters in the request header. Below is a list of the required header parameters with description.
+Parameter 	Description
+Host 	The host specifies the resource being requested. This value will always be "data.usajobs.gov"
+User-Agent 	The user-agent parameter tells USAJOBS who is originating the request. This value should be the email address used when requesting the API Key.
+Authorization-Key 	The authorization-key parameter will be used to determine what type of access you have. This value should be the API Key you were provided when requesting access.
+
+In addition to the header parameters you will need to provide the API endpoint along with any query parameters appended to the URL which will drive the results outcome desired.
+
+Below is an example of a job search request which uses the query parameter for occupational series to select all jobs for Information Technology Management.
+
+$ curl -H 'Host: data.usajobs.gov' \
+  'User-Agent: $YOUR_EMAIL' \   
+  'Authorization-Key: $AUTH_KEY' \   
+  https://data.usajobs.gov/api/search?JobCategoryCode=2210
+
+
+
+
+Guides - Rate Limiting
+Search Jobs API
+
+    Defaults to only "Public" jobs
+    User must make additional request to search for "Status" jobs
+    Maximum of 10,000 rows per query
+    Maximum of 500 rows per page
+
+Code List API
+
+    No limits
+
+Dynamic Search
+
+    No limits
+
+
+Guides - Terms of Use
+
+This U. S. Federal Government system is to be used by authorized users only. Information from this system resides on computer systems funded by the government. The data and documents on this system include Federal records that may contain sensitive information protected by various Federal statutes, including the Privacy Act, 5 U.S.C. § 552a.
+
+All access or use of this system constitutes user understanding and acceptance of these terms and constitutes unconditional consent to review, monitoring and action by all authorized government and law enforcement personnel. While using this system your use may be monitored, recorded and subject to audit.
+
+Unauthorized user attempts or acts to (1) access, upload, change, or delete or deface information on this system, (2) modify this system, (3) deny access to this system, (4) accrue resources for unauthorized use or (5) otherwise misuse this system are strictly prohibited. Such attempts or acts are subject to action that may result in criminal, civil, or administrative penalties.

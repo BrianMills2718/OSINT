@@ -1,0 +1,882 @@
+
+
+General - Quick Start
+Request API Key
+
+In order to use the search API you will first need to obtain an API Key. To request an API Key, please go the the API Request page and fill out an application.
+Make an API Call
+
+Once you have successfully obtained an API Key through submitting an API Request Application you will be able to access the search APIs.
+
+Note: All /codelist/ endpoints do not require an authorization key.
+
+Now execute the following command to search all job opportunity announcements that are in the field of Information Technology Management, Occupational Series: 2210. Be sure to replace $YOUR_EMAIL with the email address you entered on the API request form and $AUTH_KEY with the authorization key sent to your email.
+
+ curl -H 'Host: data.usajobs.gov' \
+   'User-Agent: $YOUR_EMAIL' \
+   'Authorization-Key: $AUTH_KEY' \
+   https://data.usajobs.gov/api/search?JobCategoryCode=2210
+
+
+
+U.S. flag signifying that this is a United States federal government website An official website of the United States Government
+Developer Site
+
+    General
+        Overview
+        Quick Start
+        Hiring Paths
+    Tutorials
+    Guides
+    API Reference
+    Schemas
+
+General - Overview
+
+Thank you for visiting the new USAJOBS Developer web site. Here you will find documentation on all facets of integrating or using services provided by USAJOBS. You can learn about all the various functionality that you can take advantage of on your own website or app which includes dynamic search, RSS feeds, job exports and rich REST services.
+Learn more by checking out our tutorials...
+
+    Search Jobs
+    Code Lists
+    Past job announcements
+
+USAJOBS footer logo
+
+USAJOBS is a United States Office of Personnel Management website.
+LinkedIn YouTube
+
+    About USAJOBS
+    Accessibility
+    FOIA
+    Inspector general
+    No Fear Act Data
+    Privacy policy
+    Reports and publications
+    Terms and conditions
+    USA.gov
+
+    Vote.gov
+
+
+Tutorials - Search Jobs
+
+This tutorial will show you how to search USAJOBS for open job opportunity announcments using the REST based API. A detailed reference on this API endpoint can be found at GET /api/Search.
+
+Before proceeding with this tutorial you will first need to obtain an API Key if you do not already have one. To request an API Key, please go the the API Request page and fill out an application.
+Step 1: Set up a request
+
+To instantiate the Search REST API, we first need to set up the request. Note that all interactions with USAJOBS are via HTTP. The request must include 3 parameters defined in the header, which include: Host, User Agent, and Authorization Key. The base URL for the Search API is: https://data.usajobs.gov/api/search.
+JavaScript
+cURL
+
+var request = require('request');  
+              
+var host = 'data.usajobs.gov';  
+var userAgent = 'your@email.address';  
+var authKey = 'YourAPIKey';    
+            
+request({      
+    url: 'https://data.usajobs.gov/api/search',      
+    method: 'GET',      
+    headers: {          
+        "Host": host,          
+        "User-Agent": userAgent,          
+        "Authorization-Key": authKey      
+    }  
+}, function(error, response, body) {      
+    var data = JSON.parse(body);  
+});
+
+Step 2: Define query paramters
+
+Now we have the structure of our request built, we need to define query parameters that will be appended to the base URL to drive the specific results desired. The full list of acceptable query parameters for this API endpoint can be found at: GET /api/Search. For purposes of this tutorial, we will perform a search for Information Technology Management jobs which are defined by Occupational Series "2210". A complete list of Agency Subelement codes can be found at: API-Reference/GET-codelist-agencysubelements.
+JavaScript
+cURL
+
+var request = require('request');    
+            
+var host = 'data.usajobs.gov';  
+var userAgent = 'your@email.address';  
+var authKey = 'YourAPIKey';    
+            
+request({      
+    url: 'https://data.usajobs.gov/api/search?JobCategoryCode=2210&Keyword=Software Development&LocationName=Washington, DC',      
+    method: 'GET',      
+    headers: {          
+        "Host": host,          
+        "User-Agent": userAgent,          
+        "Authorization-Key": authKey      
+    }  
+}, function(error, response, body) {      
+    var data = JSON.parse(body);  
+});
+
+Step 3: Execute Job Search
+
+We have set up the logic to make a request and defined what we are searching for (Search Criteria: Jobs that have an occupational series "2210", Information Technology Management). Now, let's execute the code and view the results.
+
+Search Result (JSON):
+{     
+    "LanguageCode": "EN",     
+    "SearchParameters": { },     
+    "SearchResult": {         
+        "SearchResultCount": 25,         
+        "SearchResultCountAll": 279,         
+        "SearchResultItems": [...],         
+        "UserArea": {             
+            "NumberOfPages": "12",             
+            "IsRadialSearch": false         
+        }     
+    } 
+}
+
+The search REST API returns a JSON object with the following attributes. A more detailed explanation of the response object can be found at: API-Reference/GET-api-Search.
+Name 	Description 	Type
+LanguageCode 	Response Langauge 	String
+SearchParameters 	Query parameters used in search request. 	Object
+SearchResult 		Object
+ SearchResultCount 	Number of records returned in response object. 	Integer
+ SearchResultCountAll 	Total Number of records that matched search criteria. 	Integer
+ SearchResultItems 	Array of job opportunity announcement objects that matched search criteria. 	Array
+ UserAreas 		Object
+  NumberOfPages 	Number of pages based on SearchResultCount divided by SearchResultCountAll. 	Integer
+  IsRadialSearch 	If a radial search was used or not. 	Boolean
+
+After looking at the response, we see that our search matched 279 jobs and returned the first 25 matches. Let's be more specific in our search to improve our results and reduce the number of matches. The next step will show you how you can use multiple query parameters in your search.
+
+Note: The number of results returned per request defaults to 25 but can be defined in your request up to 500 per request.
+Step 4: Combine query parameters to refine search
+
+You can use any combination of query parameters to further refine your search. All parameters support multiple search values which must be separated by a colon.
+
+Lets take our current search for Information Technology Management positions and filter the results by using the keyword and location query parameters.
+
+ Keyword: Software Development LocationName: Washington, DC 
+
+JavaScript
+cURL
+
+var request = require('request');    
+            
+var host = 'data.usajobs.gov';  
+var userAgent = 'your@email.address';  
+var authKey = 'YourAPIKey';    
+            
+request({      
+    url: 'https://data.usajobs.gov/api/search?JobCategoryCode=2210&Keyword=Software Development&LocationName=Washington, DC',      
+    method: 'GET',      
+    headers: {          
+        "Host": host,          
+        "User-Agent": userAgent,          
+        "Authorization-Key": authKey      
+    }  
+}, function(error, response, body) {      
+    var data = JSON.parse(body);  
+});
+
+
+Tutorials - Code List
+
+This tutorial will show you how to use the USAJOBS Code List API to obtain code values used by the search APIs. The base URL for the Search API is: https://data.usajobs.gov/api/codelist/[endpoint].
+Agency Subelements
+
+The Agency Subelements endpoint returns a list of agencies and the corresponding organization code. The code value in each list item is used to filter search results using the Organization parameter.
+JavaScript
+cURL
+
+var request = require('request');    
+            
+request({     
+    url: 'https://data.usajobs.gov/api/codelist/agencysubelements',     
+    method: 'GET' 
+}, function(error, response, body) {     
+    var data = JSON.parse(body); 
+});
+
+Result (JSON):
+{     
+    "CodeList": [{         
+        "ValidValue": [             
+            {                 
+                "Code": "LP00",                 
+                "Value": "Government Publishing Office",                 
+                "LastModified": "2015-03-10T00:00:00",                 
+                "IsDisabled": "No"             
+            },             
+            ...         
+        ],         
+        "id": "AgencySubElement"     
+    }],     
+    "DateGenerated": "2015-04-05T18:55:44.3995692-04:00" 
+}
+
+Occupational Series
+
+The Occupational Series endpoint returns a list of job categories and the corresponding job category code. The code value in each list item is used to filter search results using the JobCategoryCode parameter.
+JavaScript
+cURL
+
+var request = require('request');    
+            
+request({     
+    url: 'https://data.usajobs.gov/api/codelist/occupationalseries',     
+    method: 'GET' 
+}, function(error, response, body) {     
+    var data = JSON.parse(body); 
+});
+
+Result (JSON):
+{     
+    "CodeList": [{         
+        "ValidValue": [             
+            {                 
+                "Code": "0308",                                                           
+                "Value": "Records & Information Management",                                                           
+                "LastModified": "2015-04-24T00:00:00",                                                          
+                "IsDisabled": "No"             
+            },             ,
+            ...         
+        ],         
+        "id": "OccupationalSeries"     
+    }],     
+    "DateGenerated": "2015-04-05T18:55:44.3995692-04:00" 
+}
+
+Pay Plans
+
+The Pay Plans endpoint returns a list of pay plans and the corresponding pay plan code.
+JavaScript
+cURL
+
+var request = require('request');    
+            
+request({     
+    url: 'https://data.usajobs.gov/api/codelist/payplans',     
+    method: 'GET' 
+}, function(error, response, body) {     
+    var data = JSON.parse(body); 
+});
+
+Result (JSON):
+{     
+    "CodeList": [{         
+        "ValidValue": [             
+            {                 
+                "Code": "IM",                                                           
+                "Value": "Incident Management",                                                           
+                "LastModified": "2015-11-16T13:54:25.87",                                                           
+                "IsDisabled": "No"             
+            },             
+            ...         
+        ],         
+        "id": "PayPlans"     
+    }],     
+    "DateGenerated": "2015-04-05T18:55:44.3995692-04:00" 
+}
+
+Postal Codes
+
+The Postal Codes endpoint returns a list of postal code values.
+JavaScript
+cURL
+
+var request = require('request');    
+            
+request({     
+    url: 'https://data.usajobs.gov/api/codelist/postalcodes',     
+    method: 'GET' 
+}, function(error, response, body) {     
+    var data = JSON.parse(body); 
+});
+
+Result (JSON):
+{     
+    "CodeList": [{         
+        "ValidValue": [             
+            {                 
+                "Code": "11358",                                                           
+                "RefLocID": 109953,                                                           
+                "City": "Auburndale",                                                           
+                "USCounty": "Queens County",                                                           
+                "CountrySubdivision": "NY",                                                           
+                "Country": "US",                                                           
+                "LastModified": "2015-11-16T13:54:25.87",                                                           
+                "IsDisabled": "No"                
+            },             
+            ...         
+        ],         
+        "id": "PostalCode"     
+    }],     
+    "DateGenerated": "2015-04-05T18:55:44.3995692-04:00" 
+}
+
+Geographic Locations Codes
+
+The Geographic Locations endpoint returns a list of geographic location values.
+JavaScript
+cURL
+
+var request = require('request');    
+            
+request({     
+    url: 'https://data.usajobs.gov/api/codelist/geoloccodes',     
+    method: 'GET' 
+}, function(error, response, body) {     
+    var data = JSON.parse(body); 
+});
+
+Result (JSON):
+{     
+    "CodeList": [{         
+        "ValidValue": [             
+            {                 
+                "Code": "530539053",                               
+                "City": "Dupont",                               
+                "USCounty": "Pierce County",                               
+                "CountrySubdivision": "WA",                               
+                "Country": "US",                               
+                "LastModified": "2014-03-10T00:00:00",                               
+                "IsDisabled": "No"                
+            },             
+            ...         
+        ],         
+        "id": "GeoLocCode"     
+    }],     
+    "DateGenerated": "2015-04-05T18:55:44.3995692-04:00" 
+}
+
+Countries
+
+The Countries endpoint returns a list of countries.
+JavaScript
+cURL
+
+var request = require('request');    
+            
+request({     
+    url: 'https://data.usajobs.gov/api/codelist/countries',     
+    method: 'GET' 
+}, function(error, response, body) {     
+    var data = JSON.parse(body); 
+});
+
+Result (JSON):
+{     
+    "CodeList": [{         
+        "ValidValue": [             
+            {                 
+                "Code": "TL",                 
+                "Value": "Timor-Leste",                 
+                "LastModified": "2012-12-02T00:00:00",                 
+                "IsDisabled": "No"               
+            },             
+            ...         
+        ],         
+        "id": "CountryCode"     
+    }],     
+    "DateGenerated": "2015-04-05T18:55:44.3995692-04:00" 
+}
+
+Country Subdivisions
+
+The Country Subdivisions endpoint returns a list of states, provinces or territories within countries.
+JavaScript
+cURL
+
+var request = require('request');    
+            
+request({     
+    url: 'https://data.usajobs.gov/api/codelist/countrysubdivisions',     
+    method: 'GET' 
+}, function(error, response, body) {     
+    var data = JSON.parse(body); 
+});
+
+Result (JSON):
+{     
+    "CodeList": [{         
+        "ValidValue": [             
+            {                 
+                "Code": "UT",                 
+                "Value": "Utah",                 
+                "ParentCode": "US",                 
+                "LastModified": "2011-07-08T00:00:00",                 
+                "IsDisabled": "No"               
+            },             
+            ...         
+        ],         
+        "id": "CountrySubdivisionCode"     
+    }],     
+    "DateGenerated": "2015-04-05T18:55:44.3995692-04:00" 
+}
+
+
+Tutorials - Past job announcements
+
+This tutorial will show you how to use the USAJOBS Historic JOAs API to obtain job postings filtered by a standard set of parameters. The base URL for the Search API is: https://data.usajobs.gov/api/historicjoa.
+Step 1: Set up a request
+
+To instantiate the Historic JOAs REST API, first set up the request. Note that all interactions with USAJOBS are via HTTP. The request does not require parameters. The base URL for the Search API is: https://data.usajobs.gov/api/historicjoa.
+JavaScript
+cURL
+
+var request = require('request');    
+            
+request({     
+    url: 'https://data.usajobs.gov/api/historicjoa',     
+    method: 'GET' 
+}, function(error, response, body) {     
+    var data = JSON.parse(body); 
+});
+
+Step 2: Define query parameters
+
+Next define optional query parameters that will be appended to the base URL to return a subset of JOAs. The full list of acceptable query parameters for this API endpoint can be found at: GET /api/HistoricJoa. For purposes of this tutorial, we will perform a search for Information Technology Management jobs which are defined by PositionSeries "2210".
+JavaScript
+cURL
+
+var request = require('request');    
+            
+request({     
+    url: 'https://data.usajobs.gov/api/historicjoa?PositionSeries=2210',     
+    method: 'GET' 
+}, function(error, response, body) {     
+    var data = JSON.parse(body); 
+});
+
+Step 3: Execute Job Search
+
+Once the request with parameters is made (Search Criteria: Jobs that have an position series "2210", Information Technology Management). Now, let's execute the code and view the results.
+
+Search Result (JSON):
+{       
+    "paging": {         
+        "metadata": {             
+            "totalCount": 992,             
+            "pageSize": 10,             
+            "currentPage": 2,             
+            "totalPages": 100         
+        },         
+        "previous": "/api/historicjoa?PositionSeries=2210&pagesize=10&pagenumber=1",         
+        "next": "/api/historicjoa?PositionSeries=2210&pagesize=10&pagenumber=3"     
+    },     
+    "data": [         
+        {             
+            "usajobsControlNumber": 23728600,             
+            "hiringAgencyCode": "NF00    ",             
+            "hiringAgencyName": "National Science Foundation",             
+            "hiringDepartmentCode": "NF00    ",             
+            "hiringDepartmentName": "National Science Foundation",             
+            "agencyLevel": 1,             
+            "agencyLevelSort": "National Science Foundation",             
+            "appointmentType": "Permanent",             
+            "workSchedule": "Full-time",             
+            "payPlan": "GS",             
+            "salaryType": "Per Year",             
+            "vendor": "NA",             
+            "travelRequirement": "NA",             
+            "teleworkEligible": "N",             
+            "serviceType": "NA",             
+            "securityClearanceRequired": "N",             
+            "securityClearance": "NA",             
+            "whoMayApply": "Public",             
+            "announcementClosingTypeCode": "0",             
+            "announcementClosingTypeDescription": "NA",             
+            "positionOpenDate": "2016-12-01T00:00:00",             
+            "positionCloseDate": "2016-12-19T00:00:00",             
+            "positionExpireDate": "1900-01-01T00:00:00",             
+            "announcementNumber": "DIS-2017-0005",             
+            "hiringSubelementName": "NA",             
+            "positionTitle": "IT Specialist (IT Security & Privacy Policy & Planning), GS-2210-14 DE",             
+            "minimumGrade": "14",             
+            "maximumGrade": "14",             
+            "promotionPotential": "14",             
+            "minimumSalary": 108887.0000,             
+            "maximumSalary": 141555.0000,             
+            "supervisoryStatus": "Y",             
+            "drugTestRequired": "N",             
+            "relocationExpensesReimbursed": "Y",             
+            "totalOpenings": "0    ",             
+            "disableAppyOnline": "N",             
+            "positionOpeningStatus": "Applications under review",             
+            "hiringPaths": [],             
+            "jobCategories": [                 
+                {                     
+                    "series": "2210"                 
+                }             
+            ],             
+            "positionLocations": [                 
+                {                     
+                    "positionLocationId": 963897,                     
+                    "positionLocationCity": "Arlington",                     
+                    "positionLocationState": "Virginia",                     
+                    "positionLocationCountry": "United States"                 
+                }             
+            ]         
+        }     
+    ] 
+}
+
+The search REST API returns a JSON object with the following attributes. A more detailed explanation of the response object can be found at: API-Reference/GET-api-HistoricJoa.
+Step 4: Combine query parameters to refine search
+
+Combine any query parameters to further refine your search. All parameters support multiple search values which must be separated by a comma.
+
+Lets take our current search for Information Technology Management positions and filter the results by using the StartPositionOpenDate and EndPositionOpenDate parameters. These options let you filter the Announcement Open date by a date range.
+
+ StartPositionOpenDate: 10-01-2015
+ EndPositionOpenDate: 09-30-2016
+
+JavaScript
+cURL
+
+var request = require('request');    
+            
+request({     
+    url: 'https://data.usajobs.gov/api/historicjoa?PageSize=10&PageNumber=2&PositionSeries=2210&StartPositionOpenDate=10-01-2015&EndPositionOpenDate=09-30-2016',     
+    method: 'GET' 
+}, function(error, response, body) {     
+    var data = JSON.parse(body); 
+});
+
+
+
+General - Hiring Paths
+The public (PUBLIC)
+Is Valid
+or national
+authorized by the united states citizenship and immigration services to work
+citizens of the united states
+lawfully admitted for permanent residency
+nationals
+non citizen
+non -citizen
+non- citizen
+non us citizen
+non- us citizen
+non-citezen
+non-citizen
+noncitizens may
+non-citizens may
+non-citizens only
+non-citzen
+non-u. s. citizen
+non-u.s citizen
+non-u.s. citizen
+non-us citizen
+permanent resident
+proper authorization to work in the united
+u. s. citizens
+u.s citizen
+u.s. citizen
+u.s.citizen
+united state citizens
+united states cititzen
+united states citizen
+united states citzen
+us citizen
+us citzen
+Not Valid
+us citizens with veterans preference only
+Land & base management (LAND)
+Is Valid
+base management
+land management
+Not Valid
+Federal employees - Competitive service (FED-COMPETITIVE)
+Is Valid
+and other federal agencies
+career status
+civilian employee
+current and former status employees
+current employees of other federal agenc
+current employees of the federal
+current federal employee
+current or former career
+current permanent
+current status
+current status employee
+current, permanent employees of other federal
+current, permanent employees of the fed
+current, permanent federal employee
+delegated examining unit
+employees eligible under
+employees of other fed
+employees with competitive status
+federal agencies other than va
+federal employee
+merit promotion
+merit promotion plan
+non-va federal
+permanent employee
+qualified individuals within the civil service
+serving on a career
+status candidate
+status consideration
+Not Valid
+applicants eligible for appointment under special appointing authorities (i.e. veoa, sch. a, etc.) should also apply under
+applicants with status or those eligible under special hiring authorities, should apply under
+apply under the merit promotion announcement
+commissioned officers interested in performing the duties of this position within the commissioned corps must
+current federal employees with competitive status, former federal employees with reinstatement eligibility, veterans and other eligible for special hiring authorities, and those eligible under an interchange agreement should also apply under
+current permanent naf/apf employee
+current permanent on board tennessee army national guard technicians
+current permanent technicians
+federal career or career-conditional status within
+federal career/career-conditional status within
+federal employees with permanent status or individuals eligible for special appointing authorities may also apply to
+federal employees with permanent status or individuals eligible for special appointing authorities should apply to
+individuals eligible for merit promotion may also apply to
+position is also being advertised to status candidates via merit promotion procedures. the announcement number is
+status applicants are current federal civilian employees in the competitive service on permanent career or career-conditional appointments or former federal employees with reinstatement eligibility
+status candidates – nlrb employees only, agency wide
+status candidates may also apply under
+this position is also advertised to status candidates as a merit promotion announcem ent, vacancy
+this position is also advertised to status candidates as a merit promotion announcement, vacancy
+this position is also being advertised to all u.s. citizens via merit promotion procedures. the announcement number is
+this position is also being advertised under vacancy announcement
+this position is also being announced under merit promotion, under
+va long beach hims permanent employees only
+you do not need to be a current or former federal employee to apply
+Career transition (CTAP, ICTAP, RPL) (FED-TRANSITION)
+Is Valid
+catp
+CATP
+ctap
+CTAP
+(/catp
+(/CATP
+(/ctap
+(/CTAP
+(catp
+(CATP
+(ctap
+(CTAP
+Career Transition Assistance Program
+icatp
+ICATP
+ictap
+ICTAP
+Interagency Career Transition Assistance Program
+Reemployment Priority List (RPL)
+Not Valid
+Federal employees - Excepted service (FED-EXCEPTED)
+Is Valid
+Excepted Service
+Not Valid
+Veterans (VET)
+Is Valid
+(vra)
+30% disab
+30% or more
+active duty military
+air force reserve
+eligible veteran
+eligible veternas
+evho
+expanded veteran hiring opportunity
+involuntary separated military
+ismp
+military members
+preference eligible
+preference will be given to veterans
+separated military preference
+veoa
+veteran preferance
+veteran preference
+veteran‚Äôs preference
+veterans employment opportunity act
+veterans preference
+veteran's preference
+veterans recruitment
+veterans' recruitment
+veteran's recruitment
+veterans who are in country
+veterans will receive preference
+veterans with preference
+vra
+Not Valid
+applicants who are eligible for status , veoa or non-competitive consideration are encouraged to apply to announcement
+citizens applicants with status or those eligible under special hiring authorities (e.g., veoa, schedule a, etc.), should apply under the concurrently advertised merit promotion vacancy announcement
+for current and former federal employees with competitive status, reinstatement eligibles, interagency career transition assistance program (ictap) eligibles, veterans (veoa, vra and 30% disabled), and special non-competitive appointment eligibles (e.g., persons with disabilities, certain military spouses, peace corps and vista volunteers, etc.)
+for status applicants, veterans employment opportunity act (veoa) & persons eligible under these non-competitive authorities: veterans' recruitment appointment (vra); 30% or more compensably disabled veterans; persons w/disabilities (schedule a); present/former peace corps (pc) personnel & former pc volunteers. to be considered for each, apply to both jobs
+for status applicants, veterans employment opportunity act (veoa) applicants & persons eligible under these non-competitive authorities: 30% or more compensably disabled veterans; and persons w/disabilities (schedule a); to be considered for each, apply to both jobs
+for status applicants, veterans employment opportunity act (veoa) applicants & persons eligible under these non-competitive authorities: persons w/disabilities (schedule a); present/former peace corps (pc) personnel & former pc volunteers. to be considered for each, apply to both jobs
+if you intend to apply under a special hiring authority (e.g. schedule a, veoa, etc.), please apply under
+if you intend to apply under a special hiring authority (e.g. schedule a, vra, veoa, etc.), please also apply under
+if you intend to apply under a special hiring authority (e.g. schedule a, vra, veoa, etc.), please apply under
+military membership
+veterans preference does not apply for current permanent federal agency employees
+Students (STUDENT)
+Is Valid
+attend a local high school
+attend school
+currently enrolled
+doj intern
+education program within the preceding 2 years
+education program within the preceding two years
+education program within the previous 2 years
+education program within the previous two years
+enrolled or accepted
+intern
+pathways intern
+student
+who are enrolled
+Not Valid
+all u.s. citizens eligible for the internship program
+internal
+international
+Recent graduates (GRADUATES)
+Is Valid
+recent grad
+recent graduate
+Not Valid
+all u.s. citizens eligible for the internship program
+internal
+international
+Individuals with disabilities (DISABILITY)
+Is Valid
+individuals with a disab
+individuals with disab
+schedule a
+Not Valid
+applicants with status or those eligible under special hiring authorities (e.g., veoa, schedule a, etc.), should apply under the concurrently advertised merit promotion vacancy announcement
+employees serving on schedule b, c, or d or term appointments are generally not eligible to apply
+for current and former federal employees with competitive status, reinstatement eligibles, interagency career transition assistance program (ictap) eligibles, veterans (veoa, vra and 30% disabled), and special non-competitive appointment eligibles (e.g., persons with disabilities, certain military spouses, peace corps and vista volunteers, etc.)
+for status applicants, veterans employment opportunity act (veoa) & persons eligible under these non-competitive authorities: veterans' recruitment appointment (vra); 30% or more compensably disabled veterans; persons w/disabilities (schedule a); present/former peace corps (pc) personnel & former pc volunteers. to be considered for each, apply to both jobs
+for status applicants, veterans employment opportunity act (veoa) applicants & persons eligible under these non-competitive authorities: 30% or more compensably disabled veterans; and persons w/disabilities (schedule a); to be considered for each, apply to both jobs
+for status applicants, veterans employment opportunity act (veoa) applicants & persons eligible under these non-competitive authorities: persons w/disabilities (schedule a); present/former peace corps (pc) personnel & former pc volunteers. to be considered for each, apply to both jobs
+if you intend to apply under a special hiring authority (e.g. schedule a, veoa, etc.), please apply under the merit promotion announcement
+if you intend to apply under a special hiring authority (e.g. schedule a, vra, veoa, etc.), please also apply under the merit promotion announcement
+if you intend to apply under a special hiring authority (e.g. schedule a, vra, veoa, etc.), please apply under the merit promotion announcement
+Military spouses (MSPOUSE)
+Is Valid
+sep,
+(sep)
+military spouse
+preference eligible
+spouse employment preference
+spouse of active duty
+spouse/family member of an active duty
+Not Valid
+Family of overseas employees (OVERSEAS)
+Is Valid
+12721
+efm
+eligible family member
+family member preference
+fmp
+oversea
+Not Valid
+Agency Overseas Development Program (ODP)
+Peace Corps & AmeriCorps Vista (PEACE)
+Is Valid
+ameri corp
+americorp
+peace
+peace corp
+peacecorp
+rpcv
+vista
+Not Valid
+National Guard & Reserves (NGUARD)
+Is Valid
+1st area
+2nd area
+3rd area
+4th area
+area 1
+area 2
+area 3
+area 4
+area i
+area one
+area three
+area two
+areas 1
+areas 2
+areas 3
+areas 4
+areas i
+areas one
+areas three
+areas two
+arng
+current employed at 239th combat
+current mements of the 115th cptf
+excepted - commissioned officer
+excepted - enlisted
+excepted - officer
+excepted service - commissioned officer
+excepted service - enlisted
+excepted service - officer
+guard
+kyang
+military members
+national guard
+Not Valid
+1st area of consideration
+2nd area of consideration
+3rd area of consideration
+4th area of consideration
+coast guard
+Native Americans (NATIVE)
+Is Valid
+indian
+native
+Not Valid
+indiana
+Internal to an agency - appears on USAJOBS (FED-INTERNAL-SEARCH)
+Is Valid
+agency employee
+air force employee
+chief counsel employee
+current cyss
+current employed at the
+current permanent ann arbor
+current permanent bay pines
+current permanent career
+current permanent cavhcs
+current permanent department of defense
+current permanent dodea
+current permanent facility
+current permanent vhso
+current veteran affairs
+cys employee
+dcips employee
+dcips) employee
+deca employee
+dfas employee
+dhshq employee
+dodea
+employees already working at
+employees only
+faa wide
+fdic employee
+federal judiciary employee
+fsa employee
+gsa employee
+health care system
+healthcare system
+hud employee
+internal announcement
+internal employee
+navy employee
+nds) employee
+savahcs employee
+va employee
+va nationwide
+vamc employee
+veteran affair
+veteran affairs
+veterans health
+Not Valid
+current federal employees only
+current, permanent federal employees only
+external announcement
+facility, va, or other federal employees must apply under the internal announcement
+open to current permanent federal employees only
+u.s. citizens and current permanent federal agency employees
+u.s. citizens and other current permanent federal employees of other agencies
+us citizens and current permanent federal agency employees
+us citizens and other current permanent federal employees of other agencies

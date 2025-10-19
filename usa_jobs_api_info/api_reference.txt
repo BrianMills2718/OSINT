@@ -1,0 +1,132 @@
+
+U.S. flag signifying that this is a United States federal government website An official website of the United States Government
+Developer Site
+
+    General
+    Tutorials
+    Guides
+    API Reference
+        Overview
+        GET /api/HistoricJoa
+        GET /api/HistoricJoa/AnnouncementText
+        GET /api/Search
+        GET /codelist/academichonors
+        GET /codelist/academiclevels
+        GET /codelist/actioncode
+        GET /codelist/agencysubelements
+        GET /codelist/announcementclosingtype
+        GET /codelist/applicantsuppliers
+        GET /codelist/applicationstatuses
+        GET /codelist/countries
+        GET /codelist/countrysubdivisions
+        GET /codelist/cyberworkgroupings
+        GET /codelist/cyberworkroles
+        GET /codelist/degreetypecode
+        GET /codelist/disabilities
+        GET /codelist/documentations
+        GET /codelist/documentformats
+        GET /codelist/ethnicity
+        GET /codelist/federalemploymentstatuses
+        GET /codelist/geoloccodes
+        GET /codelist/gsageoloccodes
+        GET /codelist/hiringpaths
+        GET /codelist/keystandardrequirements
+        GET /codelist/languagecodes
+        GET /codelist/languageproficiency
+        GET /codelist/locationexpansions
+        GET /codelist/militarystatuscodes
+        GET /codelist/missioncriticalcodes
+        GET /codelist/occupationalseries
+        GET /codelist/payplans
+        GET /codelist/positionofferingtypes
+        GET /codelist/positionopeningstatuses
+        GET /codelist/positionscheduletypes
+        GET /codelist/postalcodes
+        GET /codelist/racecodes
+        GET /codelist/refereetypecodes
+        GET /codelist/remunerationrateintervalcodes
+        GET /codelist/requiredstandarddocuments
+        GET /codelist/securityclearances
+        GET /codelist/servicetypes
+        GET /codelist/specialhirings
+        GET /codelist/travelpercentages
+        GET /codelist/whomayapply
+        POST /textmessaging/sendmessage
+        POST /textmessaging/status
+    Schemas
+
+API Reference - Overview
+
+An application programming interface (API) is used to retrieve information from our jobs database. There are currently three USAJOBS REST based APIs available: Search, Historic JOAs, and Announcement Text.
+Authentication
+
+The search jobs require authentication using an API Key provided by USAJOBS after submitting the API Request form.
+
+The code list endpoints do not require authentication.
+Pagination
+
+The search jobs API has the potential to return a large array of objects.
+
+The API will leverage paging to return the results in groups of 250 JOAs per page by default. This can be adjusted by passing the parameter "ResultsPerPage" with a number up to 500. Specific pages are retrieved by passing the parameter "Page" with the number of the paged result desired. The following example would return page three containing 50 results (i.e. results 151 - 200).
+
+https://data.usajobs.gov/api/Search?Page=3&ResultsPerPage=50
+API Endpoints
+
+All API endpoints use a GET HTTP Request Method
+Name 	Endpoint
+Search Jobs 	/api/Search
+Agency Subelements Code List 	/codelist/agencysubelements
+Occupational Series Code List 	/codelist/occupationalseries
+Pay Plans Code List 	/codelist/payplans
+Postal Codes Code List 	/codelist/postalcodes
+Geo-Loc Codes Code List 	/codelist/geoloccodes
+GSA Geo-Loc Codes Code List 	/codelist/gsageoloccodes
+Countries Code List 	/codelist/countries
+Country Subdivisions Code List 	/codelist/countrysubdivisions
+Travel Code List 	/codelist/travelpercentages
+Position Schedule Types Code List 	/codelist/positionscheduletypes
+Position Offering Types Code List 	/codelist/positionofferingtypes
+Who May Apply Code List 	/codelist/whomayapply
+Hiring Paths Types Code List 	/codelist/hiringpaths
+Academic Honors Code List 	/codelist/academichonors
+Action Code List 	/codelist/actioncodes
+Degree Type Code List 	/codelist/degreetypecodes
+Document Format Code List 	/codelist/documentformats
+Race Code List 	/codelist/racecodes
+Ethnicity Code List 	/codelist/ethnicities
+Documentations Code List 	/codelist/documentations
+Federal Employment Statuses Code List 	/codelist/federalemploymentstatuses
+Language Proficiencies Code List 	/codelist/languageproficiencies
+Language Code List 	/codelist/languagecodes
+Military Status Code List 	/codelist/militarystatuscodes
+Referee Type Code List 	/codelist/refereetypecodes
+Special Hirings Code List 	/codelist/specialhirings
+Remuneration Rate Interval Code List 	/codelist/remunerationrateintervalcodes
+Application Status Code List 	/codelist/applicationstatuses
+Academic Levels Code List 	/codelist/academiclevels
+Security Clearances Code List 	/codelist/securityclearances
+Key Standard Requirements Code List 	/codelist/keystandardrequirements
+Required Standard Documents Code List 	/codelist/requiredstandarddocuments
+Disabilities Code List 	/codelist/disabilities
+Applicant Suppliers Code List 	/codelist/applicantsuppliers
+Mission Critical Code List 	/codelist/missioncriticalcodes
+Announcement Closing Types Code List 	/codelist/announcementclosingtypes
+Service Types Code List 	/codelist/servicetypes
+Location Expansions Code List 	/codelist/locationexpansions
+USAJOBS footer logo
+
+USAJOBS is a United States Office of Personnel Management website.
+LinkedIn YouTube
+
+    About USAJOBS
+    Accessibility
+    FOIA
+    Inspector general
+    No Fear Act Data
+    Privacy policy
+    Reports and publications
+    Terms and conditions
+    USA.gov
+
+    Vote.gov
+

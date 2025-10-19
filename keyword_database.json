@@ -1,0 +1,4971 @@
+{
+  "metadata": {
+    "created": "2025-10-18 22:15:52.598048",
+    "total_themes": 24,
+    "total_keywords": 1216,
+    "total_boolean_queries": 40
+  },
+  "themes": {
+    "U.S. Politics & Government": {
+      "primary_terms": [
+        "Donald Trump",
+        "Joe Biden",
+        "Kamala Harris",
+        "J.D. Vance",
+        "Kash Patel",
+        "Los Angeles",
+        "Marco Rubio",
+        "Sebastian Gorka",
+        "Alexandria Ocasio-Cortez",
+        "Charlie Kirk",
+        "Gerry Connolly",
+        "Mitch McConnell",
+        "Nancy Pelosi",
+        "Pam Bondi",
+        "Tim Walz",
+        "Zohran Mamdani",
+        "January 6",
+        "JD Vance",
+        "Chris Murphy",
+        "Gavin Newsom",
+        "Karine Jean-Pierre",
+        "Madison, Wisconsin",
+        "Matt Gaetz",
+        "Minnesota",
+        "New York",
+        "New York City",
+        "Nikki Haley",
+        "presidential debate",
+        "republican primary",
+        "Robert F. Kennedy Jr.",
+        "State of the Union",
+        "Tulsi Gabbard",
+        "War Powers Report",
+        "Washington, D.C.",
+        "Government shutdown",
+        "Deaths in office",
+        "Washington D.C.",
+        "Presidential campaign",
+        "USA / United States",
+        "Presidential election"
+      ],
+      "related_concepts": [
+        "u.s. politics",
+        "congressional oversight",
+        "gerontocracy",
+        "United States politics",
+        "election interference",
+        "election security",
+        "politicization of the military",
+        "protest",
+        "public opinion",
+        "Washington establishment",
+        "white supremacy",
+        "aging politician",
+        "antifa",
+        "bureaucracy",
+        "diversity equity and inclusion rollback",
+        "executive order",
+        "fascism accusation",
+        "political accountability",
+        "political polarization",
+        "political rhetoric",
+        "polling",
+        "populism",
+        "revolving door",
+        "U.S. election",
+        "Public opinion",
+        "Politicization",
+        "Politics",
+        "Youth vote",
+        "Federal bureaucracy",
+        "Polling",
+        "government transparency",
+        "Intraparty conflict",
+        "War powers",
+        "Political leadership",
+        "Politician health",
+        "Presidential health",
+        "political influence",
+        "Partisanship",
+        "financial-disclosures",
+        "Political violence",
+        "progressive left",
+        "Populism",
+        "Vice presidency"
+      ],
+      "organizations": [
+        "Congress",
+        "Trump Administration",
+        "Biden Administration",
+        "Democratic Party",
+        "U.S. Congress",
+        "Trump Campaign",
+        "MAGA",
+        "House Oversight Committee",
+        "Internal Revenue Service",
+        "U.S. Senate",
+        "White House",
+        "Republican Party",
+        "ICE (Immigration and Customs Enforcement)",
+        "Government Accountability Office (GAO)"
+      ],
+      "acronyms": [],
+      "multi_word_phrases": [],
+      "indicators": []
+    },
+    "National Security & Intelligence": {
+      "primary_terms": [
+        "National Security Presidential Memorandum 7",
+        "Elias Rodriguez",
+        "William Burns"
+      ],
+      "related_concepts": [
+        "domestic terrorism",
+        "intelligence community",
+        "counterterrorism",
+        "intelligence",
+        "U.S. intelligence",
+        "foreign influence",
+        "covert operation",
+        "government secrecy",
+        "information warfare",
+        "manifesto",
+        "military intelligence",
+        "secrecy",
+        "classification",
+        "classified program",
+        "counterintelligence",
+        "cyber operation",
+        "declassification",
+        "domestic extremism",
+        "extremism",
+        "foreign influence operation",
+        "great power competition",
+        "influence operations",
+        "intelligence agency",
+        "intelligence failure",
+        "intelligence leak",
+        "intelligence sharing",
+        "military secrecy",
+        "national security state",
+        "presidential protection",
+        "russian interference",
+        "signals intelligence",
+        "terrorism designation",
+        "war on terror",
+        "Leaks and whistleblowers",
+        "special access programs",
+        "Online radicalization",
+        "Violent extremism",
+        "security clearances",
+        "Hostage Recovery",
+        "National-security",
+        "Presidential security",
+        "espionage",
+        "copycat attacks",
+        "open-source intelligence",
+        "transnational organized crime",
+        "space/satellite intelligence",
+        "offensive cyber operations"
+      ],
+      "organizations": [
+        "FBI",
+        "Central Intelligence Agency",
+        "NSA",
+        "U.S. Intelligence Community",
+        "Intelligence Community",
+        "U.S. Cyber Command",
+        "Defense Intelligence Agency",
+        "Director of National Intelligence",
+        "National Counterterrorism Center",
+        "Office of the Director of National Intelligence"
+      ],
+      "acronyms": [
+        "NSA",
+        "CIA",
+        "DHS"
+      ],
+      "multi_word_phrases": [
+        {
+          "phrase": "national security",
+          "count": 1686,
+          "importance": 10
+        },
+        {
+          "phrase": "intelligence community",
+          "count": 363,
+          "importance": 10
+        },
+        {
+          "phrase": "s intelligence",
+          "count": 249,
+          "importance": 10
+        },
+        {
+          "phrase": "national intelligence",
+          "count": 135,
+          "importance": 10
+        },
+        {
+          "phrase": "intelligence report",
+          "count": 102,
+          "importance": 10
+        },
+        {
+          "phrase": "intelligence official",
+          "count": 99,
+          "importance": 9
+        },
+        {
+          "phrase": "national security state",
+          "count": 357,
+          "importance": 10
+        },
+        {
+          "phrase": "national security advisor",
+          "count": 60,
+          "importance": 6
+        },
+        {
+          "phrase": "s intelligence community",
+          "count": 54,
+          "importance": 5
+        },
+        {
+          "phrase": "national security threat",
+          "count": 48,
+          "importance": 4
+        },
+        {
+          "phrase": "intelligence community s",
+          "count": 45,
+          "importance": 4
+        },
+        {
+          "phrase": "s national security",
+          "count": 45,
+          "importance": 4
+        },
+        {
+          "phrase": "senior intelligence official",
+          "count": 45,
+          "importance": 4
+        },
+        {
+          "phrase": "national security community",
+          "count": 45,
+          "importance": 4
+        },
+        {
+          "phrase": "our national security",
+          "count": 36,
+          "importance": 3
+        },
+        {
+          "phrase": "national security establishment",
+          "count": 36,
+          "importance": 3
+        },
+        {
+          "phrase": "national security council",
+          "count": 33,
+          "importance": 3
+        },
+        {
+          "phrase": "national security officials",
+          "count": 33,
+          "importance": 3
+        },
+        {
+          "phrase": "other national security",
+          "count": 33,
+          "importance": 3
+        },
+        {
+          "phrase": "national security leaders",
+          "count": 33,
+          "importance": 3
+        },
+        {
+          "phrase": "director of national intelligence",
+          "count": 114,
+          "importance": 10
+        },
+        {
+          "phrase": "national security state s",
+          "count": 48,
+          "importance": 4
+        },
+        {
+          "phrase": "intelligence surveillance and reconnaissance",
+          "count": 30,
+          "importance": 3
+        },
+        {
+          "phrase": "what the national security",
+          "count": 18,
+          "importance": 1
+        },
+        {
+          "phrase": "white house national security",
+          "count": 15,
+          "importance": 1
+        },
+        {
+          "phrase": "threat to national security",
+          "count": 15,
+          "importance": 1
+        },
+        {
+          "phrase": "one senior intelligence official",
+          "count": 15,
+          "importance": 1
+        },
+        {
+          "phrase": "top national security officials",
+          "count": 15,
+          "importance": 1
+        },
+        {
+          "phrase": "national intelligence avril haines",
+          "count": 15,
+          "importance": 1
+        },
+        {
+          "phrase": "office of intelligence analysis",
+          "count": 15,
+          "importance": 1
+        },
+        {
+          "phrase": "counterterrorism at the national security",
+          "count": 15,
+          "importance": 1
+        },
+        {
+          "phrase": "director of national intelligence avril",
+          "count": 12,
+          "importance": 1
+        },
+        {
+          "phrase": "what the national security state",
+          "count": 12,
+          "importance": 1
+        },
+        {
+          "phrase": "office of intelligence and analysis",
+          "count": 12,
+          "importance": 1
+        },
+        {
+          "phrase": "national security advisor mike waltz",
+          "count": 12,
+          "importance": 1
+        },
+        {
+          "phrase": "director of national intelligence tulsi",
+          "count": 12,
+          "importance": 1
+        },
+        {
+          "phrase": "up to the national security",
+          "count": 12,
+          "importance": 1
+        },
+        {
+          "phrase": "intelligence community and the fbi",
+          "count": 9,
+          "importance": 0
+        },
+        {
+          "phrase": "member of the senate intelligence",
+          "count": 9,
+          "importance": 0
+        }
+      ],
+      "indicators": []
+    },
+    "Civil Liberties & Surveillance": {
+      "primary_terms": [],
+      "related_concepts": [
+        "surveillance",
+        "civil liberties",
+        "privacy",
+        "censorship",
+        "media censorship",
+        "antisemitism",
+        "social media monitoring",
+        "campus protest",
+        "domestic military deployment",
+        "free speech",
+        "transparency",
+        "whistleblowing",
+        "dehumanization",
+        "First Amendment",
+        "student activism",
+        "transgender rights",
+        "transparency and secrecy",
+        "whistleblower",
+        "data privacy",
+        "Political repression",
+        "Civil Liberties",
+        "Government overreach",
+        "privacy and civil liberties",
+        "surveillance-state"
+      ],
+      "organizations": [],
+      "acronyms": [],
+      "multi_word_phrases": [],
+      "indicators": []
+    },
+    "Military & Defense": {
+      "primary_terms": [
+        "Mark Milley",
+        "Lloyd Austin",
+        "Tower 22",
+        "Operation Excalibur",
+        "U.S. military base",
+        "War games"
+      ],
+      "related_concepts": [
+        "military industrial complex",
+        "civil military relations",
+        "civil-military relations",
+        "defense spending",
+        "militarization",
+        "ATACMS missile",
+        "cyber warfare",
+        "defense budget",
+        "defense policy",
+        "deterrence",
+        "drone warfare",
+        "electronic warfare",
+        "military accountability",
+        "military deployment",
+        "military exercises",
+        "military readiness",
+        "military spending",
+        "nuclear escalation",
+        "nuclear weapon",
+        "special operations",
+        "special operations forces",
+        "submarine operation",
+        "U.S. military deployment",
+        "veteran",
+        "military",
+        "Defense industry",
+        "drones",
+        "Nuclear deterrence",
+        "War",
+        "Veterans and service members",
+        "counter-drone defenses",
+        "Civilian control of the military",
+        "Joint All-Domain Operations (JADO)"
+      ],
+      "organizations": [
+        "Pentagon",
+        "U.S. military",
+        "National Guard",
+        "CENTCOM",
+        "U.S. Army",
+        "Department of Defense",
+        "U.S. Navy",
+        "U.S. Africa Command",
+        "Joint Special Operations Command",
+        "U.S. Air Force",
+        "U.S. Military",
+        "California National Guard",
+        "NORAD",
+        "United States military",
+        "IDF (Israeli Defense Forces)",
+        "Israeli military"
+      ],
+      "acronyms": [
+        "DOD"
+      ],
+      "multi_word_phrases": [
+        {
+          "phrase": "s military",
+          "count": 432,
+          "importance": 10
+        },
+        {
+          "phrase": "pentagon s",
+          "count": 162,
+          "importance": 10
+        },
+        {
+          "phrase": "defense department",
+          "count": 132,
+          "importance": 10
+        },
+        {
+          "phrase": "s troops",
+          "count": 99,
+          "importance": 9
+        },
+        {
+          "phrase": "military s",
+          "count": 93,
+          "importance": 9
+        },
+        {
+          "phrase": "armed forces",
+          "count": 84,
+          "importance": 8
+        },
+        {
+          "phrase": "secretary of defense",
+          "count": 189,
+          "importance": 10
+        },
+        {
+          "phrase": "department of defense",
+          "count": 57,
+          "importance": 5
+        },
+        {
+          "phrase": "pentagon press secretary",
+          "count": 36,
+          "importance": 3
+        },
+        {
+          "phrase": "defense pete hegseth",
+          "count": 30,
+          "importance": 3
+        },
+        {
+          "phrase": "defense lloyd austin",
+          "count": 30,
+          "importance": 3
+        },
+        {
+          "phrase": "secretary of defense pete",
+          "count": 30,
+          "importance": 3
+        },
+        {
+          "phrase": "control of the military",
+          "count": 30,
+          "importance": 3
+        },
+        {
+          "phrase": "secretary of defense lloyd",
+          "count": 27,
+          "importance": 2
+        },
+        {
+          "phrase": "united states armed forces",
+          "count": 18,
+          "importance": 1
+        },
+        {
+          "phrase": "air and missile defense",
+          "count": 15,
+          "importance": 1
+        },
+        {
+          "phrase": "former secretary of defense",
+          "count": 15,
+          "importance": 1
+        },
+        {
+          "phrase": "pentagon deputy press secretary",
+          "count": 15,
+          "importance": 1
+        },
+        {
+          "phrase": "secretary of defense pete hegseth",
+          "count": 30,
+          "importance": 3
+        },
+        {
+          "phrase": "civilian control of the military",
+          "count": 30,
+          "importance": 3
+        },
+        {
+          "phrase": "secretary of defense lloyd austin",
+          "count": 27,
+          "importance": 2
+        },
+        {
+          "phrase": "pentagon deputy press secretary sabrina",
+          "count": 15,
+          "importance": 1
+        },
+        {
+          "phrase": "active duty in a combat",
+          "count": 9,
+          "importance": 0
+        },
+        {
+          "phrase": "duty in a combat zone",
+          "count": 9,
+          "importance": 0
+        },
+        {
+          "phrase": "pentagon press secretary brig gen",
+          "count": 9,
+          "importance": 0
+        }
+      ],
+      "indicators": []
+    },
+    "Foreign Policy & Conflicts": {
+      "primary_terms": [
+        "Iran",
+        "Israel",
+        "Middle East",
+        "Russia",
+        "Gaza",
+        "Ukraine",
+        "China",
+        "Israel Gaza Conflict",
+        "Vladimir Putin",
+        "Yemen",
+        "gaza protests",
+        "gaza war",
+        "ukraine war",
+        "Benjamin Netanyahu",
+        "Israel Hamas War",
+        "Jordan",
+        "Indo-Pacific",
+        "Mexico",
+        "Russia Ukraine War",
+        "Syria",
+        "9/11",
+        "Antony Blinken",
+        "Bakhmut",
+        "Europe",
+        "Iraq",
+        "Iraq War",
+        "Israel Palestine Conflict",
+        "Israel Hamas Conflict",
+        "Israel Iran Conflict",
+        "Lebanon",
+        "Qatar",
+        "Rafah",
+        "Saudi Arabia",
+        "Ukraine Russia War",
+        "Venezuela",
+        "Volodymyr Zelenskyy",
+        "West Africa"
+      ],
+      "related_concepts": [
+        "u.s. foreign policy",
+        "U.S. foreign policy",
+        "airstrike",
+        "humanitarian crisis",
+        "iran backed militia",
+        "israel palestine",
+        "military aid",
+        "political violence",
+        "pro palestinian protest",
+        "U.S. Israel relations",
+        "U.S. military aid",
+        "ceasefire",
+        "foreign policy",
+        "military escalation",
+        "public diplomacy",
+        "U.S. Saudi relations"
+      ],
+      "organizations": [
+        "Hamas",
+        "State Department",
+        "North Atlantic Treaty Organization",
+        "Houthi movement",
+        "Hezbollah",
+        "United States Agency for International Development",
+        "Islamic State",
+        "Wagner Group"
+      ],
+      "acronyms": [],
+      "multi_word_phrases": [],
+      "indicators": []
+    },
+    "Healthcare": {
+      "primary_terms": [
+        "Brian Thompson",
+        "Andrew Witty"
+      ],
+      "related_concepts": [
+        "health insurance",
+        "esophageal cancer",
+        "health insurance industry",
+        "healthcare industry",
+        "healthcare policy"
+      ],
+      "organizations": [
+        "UnitedHealthcare",
+        "UnitedHealth Group",
+        "Blue Cross Blue Shield"
+      ],
+      "acronyms": [],
+      "multi_word_phrases": [],
+      "indicators": []
+    },
+    "Media & Journalism": {
+      "primary_terms": [
+        "Pete Hegseth",
+        "Ken Klippenstein",
+        "Super Bowl",
+        "Jeffrey Goldberg"
+      ],
+      "related_concepts": [
+        "news roundup",
+        "disinformation",
+        "media coverage",
+        "media criticism",
+        "misinformation",
+        "press freedom",
+        "journalism",
+        "claim denial",
+        "investigative reporting",
+        "journalism ethics",
+        "media bias",
+        "editorial independence",
+        "fact checking",
+        "independent journalism",
+        "investigative journalism",
+        "leaked document",
+        "media relations"
+      ],
+      "organizations": [
+        "Property of the People",
+        "NBC News",
+        "Intercept",
+        "Morning Joe",
+        "MSNBC",
+        "Substack",
+        "Washington Post"
+      ],
+      "acronyms": [],
+      "multi_word_phrases": [],
+      "indicators": []
+    },
+    "Technology & Corporate Power": {
+      "primary_terms": [
+        "Elon Musk"
+      ],
+      "related_concepts": [
+        "cybersecurity",
+        "social media",
+        "artificial intelligence",
+        "big tech",
+        "content moderation",
+        "corporate communication",
+        "corporate power",
+        "tiktok ban"
+      ],
+      "organizations": [
+        "TikTok",
+        "X",
+        "Meta",
+        "ByteDance",
+        "Discord",
+        "SpaceX",
+        "Tesla"
+      ],
+      "acronyms": [],
+      "multi_word_phrases": [],
+      "indicators": []
+    },
+    "Immigration & Border Security": {
+      "primary_terms": [
+        "Alejandro Mayorkas"
+      ],
+      "related_concepts": [
+        "immigration enforcement",
+        "immigration",
+        "border security",
+        "deportation",
+        "anti Immigration and Customs Enforcement protest",
+        "immigration policy"
+      ],
+      "organizations": [
+        "U.S. Immigration and Customs Enforcement",
+        "Department of Homeland Security",
+        "Customs and Border Protection",
+        "U.S. Customs and Border Protection",
+        "Global Entry"
+      ],
+      "acronyms": [],
+      "multi_word_phrases": [],
+      "indicators": []
+    },
+    "Domestic Policy & Social Issues": {
+      "primary_terms": [
+        "Luigi Mangione"
+      ],
+      "related_concepts": [
+        "Healthcare policy",
+        "Ageism",
+        "Generational change",
+        "Labor movement",
+        "student protests",
+        "LGBTQ+",
+        "DEI",
+        "Housing crisis",
+        "Working-class issues",
+        "Protests",
+        "Racism and dehumanization",
+        "rent control",
+        "Antisemitism",
+        "civil unrest",
+        "COVID-19",
+        "Climate change",
+        "fentanyl"
+      ],
+      "organizations": [],
+      "acronyms": [],
+      "multi_word_phrases": [
+        {
+          "phrase": "domestic violent",
+          "count": 111,
+          "importance": 10
+        }
+      ],
+      "indicators": []
+    },
+    "Law Enforcement & Justice": {
+      "primary_terms": [
+        "assassination attempt",
+        "Jeffrey Epstein",
+        "Christopher Wray"
+      ],
+      "related_concepts": [
+        "law enforcement",
+        "cartel",
+        "gun violence",
+        "mass shooting"
+      ],
+      "organizations": [
+        "Secret Service",
+        "Department of Justice",
+        "New York Police Department",
+        "Mara Salvatrucha",
+        "Supreme Court",
+        "fusion center",
+        "Joint Terrorism Task Force"
+      ],
+      "acronyms": [
+        "FBI",
+        "DOJ"
+      ],
+      "multi_word_phrases": [
+        {
+          "phrase": "law enforcement",
+          "count": 546,
+          "importance": 10
+        },
+        {
+          "phrase": "fbi director",
+          "count": 171,
+          "importance": 10
+        },
+        {
+          "phrase": "justice department",
+          "count": 159,
+          "importance": 10
+        },
+        {
+          "phrase": "fbi s",
+          "count": 153,
+          "importance": 10
+        },
+        {
+          "phrase": "fbi director kash",
+          "count": 72,
+          "importance": 7
+        },
+        {
+          "phrase": "local law enforcement",
+          "count": 72,
+          "importance": 7
+        },
+        {
+          "phrase": "federal law enforcement",
+          "count": 69,
+          "importance": 6
+        },
+        {
+          "phrase": "law enforcement agencies",
+          "count": 60,
+          "importance": 6
+        },
+        {
+          "phrase": "homeland security investigations",
+          "count": 45,
+          "importance": 4
+        },
+        {
+          "phrase": "fbi director christopher",
+          "count": 39,
+          "importance": 3
+        },
+        {
+          "phrase": "law enforcement agency",
+          "count": 36,
+          "importance": 3
+        },
+        {
+          "phrase": "fbi director kash patel",
+          "count": 72,
+          "importance": 7
+        },
+        {
+          "phrase": "fbi director christopher wray",
+          "count": 39,
+          "importance": 3
+        },
+        {
+          "phrase": "homeland security investigations hsi",
+          "count": 30,
+          "importance": 3
+        },
+        {
+          "phrase": "local law enforcement agencies",
+          "count": 15,
+          "importance": 1
+        },
+        {
+          "phrase": "state and local law enforcement",
+          "count": 27,
+          "importance": 2
+        },
+        {
+          "phrase": "committee which oversees the fbi",
+          "count": 12,
+          "importance": 1
+        },
+        {
+          "phrase": "klippenstein fbi director kash patel",
+          "count": 12,
+          "importance": 1
+        },
+        {
+          "phrase": "fbi director kash patel s",
+          "count": 9,
+          "importance": 0
+        },
+        {
+          "phrase": "doj and fbi is going",
+          "count": 9,
+          "importance": 0
+        },
+        {
+          "phrase": "fbi is going to continue",
+          "count": 9,
+          "importance": 0
+        }
+      ],
+      "indicators": []
+    },
+    "Education/Academia": {
+      "primary_terms": [],
+      "related_concepts": [],
+      "organizations": [
+        "Columbia University"
+      ],
+      "acronyms": [],
+      "multi_word_phrases": [],
+      "indicators": []
+    },
+    "Entertainment/Culture": {
+      "primary_terms": [
+        "Taylor Swift"
+      ],
+      "related_concepts": [],
+      "organizations": [],
+      "acronyms": [],
+      "multi_word_phrases": [],
+      "indicators": []
+    },
+    "Media & Press": {
+      "primary_terms": [],
+      "related_concepts": [
+        "Media and journalism",
+        "Right-wing media",
+        "Disinformation",
+        "manifestos"
+      ],
+      "organizations": [
+        "New York Times"
+      ],
+      "acronyms": [],
+      "multi_word_phrases": [],
+      "indicators": []
+    },
+    "Foreign Policy & International Relations": {
+      "primary_terms": [
+        "Mohammed bin Salman",
+        "Palestine",
+        "ukraine",
+        "Afghanistan"
+      ],
+      "related_concepts": [
+        "foreign-interference",
+        "Authoritarianism",
+        "foreign-policy",
+        "visa policy",
+        "Humanitarian aid",
+        "foreign-aid",
+        "Diplomacy",
+        "escalation",
+        "Proxy warfare",
+        "geopolitics"
+      ],
+      "organizations": [],
+      "acronyms": [],
+      "multi_word_phrases": [],
+      "indicators": []
+    },
+    "Technology & Digital Policy": {
+      "primary_terms": [],
+      "related_concepts": [
+        "Social media moderation",
+        "AI regulation",
+        "biometrics",
+        "Platform governance",
+        "Social media algorithms",
+        "social-engineering"
+      ],
+      "organizations": [],
+      "acronyms": [],
+      "multi_word_phrases": [],
+      "indicators": []
+    },
+    "War Crimes & Human Rights": {
+      "primary_terms": [
+        "Jamal Khashoggi"
+      ],
+      "related_concepts": [
+        "Civilian Casualties",
+        "Humanitarian crisis"
+      ],
+      "organizations": [],
+      "acronyms": [],
+      "multi_word_phrases": [],
+      "indicators": []
+    },
+    "Legal & Judicial": {
+      "primary_terms": [],
+      "related_concepts": [
+        "FOIA / transparency",
+        "Whistleblowers",
+        "child sexual abuse",
+        "Freedom of Information Act",
+        "DNA forensics",
+        "Financial crime"
+      ],
+      "organizations": [],
+      "acronyms": [],
+      "multi_word_phrases": [],
+      "indicators": []
+    },
+    "Corporate & Business": {
+      "primary_terms": [],
+      "related_concepts": [
+        "Philanthropy",
+        "crowdfunding",
+        "insider trading",
+        "corporate misconduct",
+        "corporate influence",
+        "corporate accountability",
+        "corporate security",
+        "stock market"
+      ],
+      "organizations": [
+        "Auto industry"
+      ],
+      "acronyms": [],
+      "multi_word_phrases": [],
+      "indicators": []
+    },
+    "International Relations & Diplomacy": {
+      "primary_terms": [],
+      "related_concepts": [],
+      "organizations": [],
+      "acronyms": [
+        "USAID",
+        "NATO"
+      ],
+      "multi_word_phrases": [],
+      "indicators": []
+    },
+    "Terrorism & Counterterrorism": {
+      "primary_terms": [],
+      "related_concepts": [],
+      "organizations": [],
+      "acronyms": [
+        "ISIS"
+      ],
+      "multi_word_phrases": [
+        {
+          "phrase": "domestic terrorism",
+          "count": 213,
+          "importance": 10
+        },
+        {
+          "phrase": "violent extremists",
+          "count": 126,
+          "importance": 10
+        },
+        {
+          "phrase": "violent extremist",
+          "count": 99,
+          "importance": 9
+        },
+        {
+          "phrase": "domestic violent extremists",
+          "count": 63,
+          "importance": 6
+        },
+        {
+          "phrase": "war on terrorism",
+          "count": 39,
+          "importance": 3
+        },
+        {
+          "phrase": "national counterterrorism center",
+          "count": 36,
+          "importance": 3
+        },
+        {
+          "phrase": "domestic violent extremist",
+          "count": 36,
+          "importance": 3
+        },
+        {
+          "phrase": "joint terrorism task",
+          "count": 33,
+          "importance": 3
+        },
+        {
+          "phrase": "domestic terrorism investigations",
+          "count": 33,
+          "importance": 3
+        },
+        {
+          "phrase": "senior director for counterterrorism",
+          "count": 27,
+          "importance": 2
+        },
+        {
+          "phrase": "joint terrorism task forces",
+          "count": 24,
+          "importance": 2
+        },
+        {
+          "phrase": "endorse or espouse terrorist",
+          "count": 15,
+          "importance": 1
+        },
+        {
+          "phrase": "counterterrorism czar sebastian gorka",
+          "count": 15,
+          "importance": 1
+        },
+        {
+          "phrase": "counterterrorism at the national",
+          "count": 15,
+          "importance": 1
+        },
+        {
+          "phrase": "antifa as a domestic terrorist",
+          "count": 12,
+          "importance": 1
+        },
+        {
+          "phrase": "any student who promotes terrorism",
+          "count": 9,
+          "importance": 0
+        },
+        {
+          "phrase": "who promotes terrorism on behalf",
+          "count": 9,
+          "importance": 0
+        },
+        {
+          "phrase": "terrorism on behalf of hamas",
+          "count": 9,
+          "importance": 0
+        },
+        {
+          "phrase": "hamas on the terrorist watchlist",
+          "count": 9,
+          "importance": 0
+        }
+      ],
+      "indicators": []
+    },
+    "Immigration": {
+      "primary_terms": [],
+      "related_concepts": [],
+      "organizations": [],
+      "acronyms": [
+        "ICE",
+        "CBP"
+      ],
+      "multi_word_phrases": [
+        {
+          "phrase": "secret service",
+          "count": 339,
+          "importance": 10
+        },
+        {
+          "phrase": "vice president",
+          "count": 165,
+          "importance": 10
+        },
+        {
+          "phrase": "customs and border",
+          "count": 66,
+          "importance": 6
+        },
+        {
+          "phrase": "secret service s",
+          "count": 54,
+          "importance": 5
+        },
+        {
+          "phrase": "department of justice",
+          "count": 36,
+          "importance": 3
+        },
+        {
+          "phrase": "vice president harris",
+          "count": 33,
+          "importance": 3
+        },
+        {
+          "phrase": "armed services committee",
+          "count": 33,
+          "importance": 3
+        },
+        {
+          "phrase": "customs and border protection",
+          "count": 63,
+          "importance": 6
+        },
+        {
+          "phrase": "office of the director",
+          "count": 42,
+          "importance": 4
+        },
+        {
+          "phrase": "vice president j d",
+          "count": 18,
+          "importance": 1
+        },
+        {
+          "phrase": "vice president j d vance",
+          "count": 18,
+          "importance": 1
+        },
+        {
+          "phrase": "customs and border protection cbp",
+          "count": 18,
+          "importance": 1
+        },
+        {
+          "phrase": "influence and perception management office",
+          "count": 15,
+          "importance": 1
+        },
+        {
+          "phrase": "leaked ice letter to rep",
+          "count": 12,
+          "importance": 1
+        },
+        {
+          "phrase": "anti-ice protests in los angeles",
+          "count": 9,
+          "importance": 0
+        }
+      ],
+      "indicators": []
+    },
+    "Government Oversight & Accountability": {
+      "primary_terms": [],
+      "related_concepts": [],
+      "organizations": [],
+      "acronyms": [
+        "IRS"
+      ],
+      "multi_word_phrases": [],
+      "indicators": []
+    },
+    "General": {
+      "primary_terms": [],
+      "related_concepts": [],
+      "organizations": [],
+      "acronyms": [],
+      "multi_word_phrases": [
+        {
+          "phrase": "united states",
+          "count": 837,
+          "importance": 10
+        },
+        {
+          "phrase": "social media",
+          "count": 732,
+          "importance": 10
+        },
+        {
+          "phrase": "homeland security",
+          "count": 639,
+          "importance": 10
+        },
+        {
+          "phrase": "william m",
+          "count": 639,
+          "importance": 10
+        },
+        {
+          "phrase": "m arkin",
+          "count": 639,
+          "importance": 10
+        },
+        {
+          "phrase": "there s",
+          "count": 609,
+          "importance": 10
+        },
+        {
+          "phrase": "donald trump",
+          "count": 576,
+          "importance": 10
+        },
+        {
+          "phrase": "doesn t",
+          "count": 567,
+          "importance": 10
+        },
+        {
+          "phrase": "isn t",
+          "count": 555,
+          "importance": 10
+        },
+        {
+          "phrase": "white house",
+          "count": 546,
+          "importance": 10
+        },
+        {
+          "phrase": "if you",
+          "count": 495,
+          "importance": 10
+        },
+        {
+          "phrase": "share edited",
+          "count": 447,
+          "importance": 10
+        },
+        {
+          "phrase": "biden administration",
+          "count": 426,
+          "importance": 10
+        },
+        {
+          "phrase": "please become",
+          "count": 420,
+          "importance": 10
+        },
+        {
+          "phrase": "middle east",
+          "count": 402,
+          "importance": 10
+        },
+        {
+          "phrase": "more than",
+          "count": 393,
+          "importance": 10
+        },
+        {
+          "phrase": "biden s",
+          "count": 390,
+          "importance": 10
+        },
+        {
+          "phrase": "didn t",
+          "count": 387,
+          "importance": 10
+        },
+        {
+          "phrase": "news media",
+          "count": 378,
+          "importance": 10
+        },
+        {
+          "phrase": "new york",
+          "count": 369,
+          "importance": 10
+        },
+        {
+          "phrase": "security state",
+          "count": 363,
+          "importance": 10
+        },
+        {
+          "phrase": "trump administration",
+          "count": 333,
+          "importance": 10
+        },
+        {
+          "phrase": "government secrets",
+          "count": 333,
+          "importance": 10
+        },
+        {
+          "phrase": "special operations",
+          "count": 324,
+          "importance": 10
+        },
+        {
+          "phrase": "not just",
+          "count": 321,
+          "importance": 10
+        },
+        {
+          "phrase": "black box",
+          "count": 315,
+          "importance": 10
+        },
+        {
+          "phrase": "keep doing",
+          "count": 306,
+          "importance": 10
+        },
+        {
+          "phrase": "bill's black",
+          "count": 306,
+          "importance": 10
+        },
+        {
+          "phrase": "my work",
+          "count": 303,
+          "importance": 10
+        },
+        {
+          "phrase": "s not",
+          "count": 294,
+          "importance": 10
+        },
+        {
+          "phrase": "support my",
+          "count": 282,
+          "importance": 10
+        },
+        {
+          "phrase": "major media",
+          "count": 276,
+          "importance": 10
+        },
+        {
+          "phrase": "president trump",
+          "count": 273,
+          "importance": 10
+        },
+        {
+          "phrase": "federal government",
+          "count": 267,
+          "importance": 10
+        },
+        {
+          "phrase": "consider becoming",
+          "count": 264,
+          "importance": 10
+        },
+        {
+          "phrase": "israel s",
+          "count": 258,
+          "importance": 10
+        },
+        {
+          "phrase": "receive new",
+          "count": 258,
+          "importance": 10
+        },
+        {
+          "phrase": "new posts",
+          "count": 258,
+          "importance": 10
+        },
+        {
+          "phrase": "last year",
+          "count": 252,
+          "importance": 10
+        },
+        {
+          "phrase": "when i",
+          "count": 240,
+          "importance": 10
+        },
+        {
+          "phrase": "administration s",
+          "count": 240,
+          "importance": 10
+        },
+        {
+          "phrase": "wasn t",
+          "count": 240,
+          "importance": 10
+        },
+        {
+          "phrase": "i think",
+          "count": 240,
+          "importance": 10
+        },
+        {
+          "phrase": "s government",
+          "count": 234,
+          "importance": 10
+        },
+        {
+          "phrase": "work consider",
+          "count": 234,
+          "importance": 10
+        },
+        {
+          "phrase": "told me",
+          "count": 228,
+          "importance": 10
+        },
+        {
+          "phrase": "american people",
+          "count": 228,
+          "importance": 10
+        },
+        {
+          "phrase": "what s",
+          "count": 225,
+          "importance": 10
+        },
+        {
+          "phrase": "here s",
+          "count": 225,
+          "importance": 10
+        },
+        {
+          "phrase": "president biden",
+          "count": 219,
+          "importance": 10
+        },
+        {
+          "phrase": "won t",
+          "count": 219,
+          "importance": 10
+        },
+        {
+          "phrase": "s what",
+          "count": 219,
+          "importance": 10
+        },
+        {
+          "phrase": "air force",
+          "count": 216,
+          "importance": 10
+        },
+        {
+          "phrase": "state department",
+          "count": 204,
+          "importance": 10
+        },
+        {
+          "phrase": "iran s",
+          "count": 204,
+          "importance": 10
+        },
+        {
+          "phrase": "people who",
+          "count": 198,
+          "importance": 10
+        },
+        {
+          "phrase": "government s",
+          "count": 198,
+          "importance": 10
+        },
+        {
+          "phrase": "first time",
+          "count": 198,
+          "importance": 10
+        },
+        {
+          "phrase": "national guard",
+          "count": 198,
+          "importance": 10
+        },
+        {
+          "phrase": "you re",
+          "count": 195,
+          "importance": 10
+        },
+        {
+          "phrase": "other words",
+          "count": 195,
+          "importance": 10
+        },
+        {
+          "phrase": "he said",
+          "count": 192,
+          "importance": 10
+        },
+        {
+          "phrase": "york times",
+          "count": 192,
+          "importance": 10
+        },
+        {
+          "phrase": "not only",
+          "count": 183,
+          "importance": 10
+        },
+        {
+          "phrase": "task force",
+          "count": 183,
+          "importance": 10
+        },
+        {
+          "phrase": "pdf file",
+          "count": 180,
+          "importance": 10
+        },
+        {
+          "phrase": "file download",
+          "count": 180,
+          "importance": 10
+        },
+        {
+          "phrase": "aren t",
+          "count": 180,
+          "importance": 10
+        },
+        {
+          "phrase": "help us",
+          "count": 180,
+          "importance": 10
+        },
+        {
+          "phrase": "joe biden",
+          "count": 177,
+          "importance": 10
+        },
+        {
+          "phrase": "last week",
+          "count": 177,
+          "importance": 10
+        },
+        {
+          "phrase": "reader-supported publication",
+          "count": 174,
+          "importance": 10
+        },
+        {
+          "phrase": "download download",
+          "count": 171,
+          "importance": 10
+        },
+        {
+          "phrase": "no one",
+          "count": 171,
+          "importance": 10
+        },
+        {
+          "phrase": "hey all",
+          "count": 165,
+          "importance": 10
+        },
+        {
+          "phrase": "hasn t",
+          "count": 153,
+          "importance": 10
+        },
+        {
+          "phrase": "help me",
+          "count": 153,
+          "importance": 10
+        },
+        {
+          "phrase": "nuclear weapons",
+          "count": 147,
+          "importance": 10
+        },
+        {
+          "phrase": "saudi arabia",
+          "count": 147,
+          "importance": 10
+        },
+        {
+          "phrase": "los angeles",
+          "count": 147,
+          "importance": 10
+        },
+        {
+          "phrase": "what he",
+          "count": 144,
+          "importance": 10
+        },
+        {
+          "phrase": "last month",
+          "count": 144,
+          "importance": 10
+        },
+        {
+          "phrase": "what i",
+          "count": 141,
+          "importance": 10
+        },
+        {
+          "phrase": "former president",
+          "count": 141,
+          "importance": 10
+        },
+        {
+          "phrase": "about what",
+          "count": 141,
+          "importance": 10
+        },
+        {
+          "phrase": "america s",
+          "count": 141,
+          "importance": 10
+        },
+        {
+          "phrase": "russia s",
+          "count": 141,
+          "importance": 10
+        },
+        {
+          "phrase": "support our",
+          "count": 138,
+          "importance": 10
+        },
+        {
+          "phrase": "foreign influence",
+          "count": 138,
+          "importance": 10
+        },
+        {
+          "phrase": "i reported",
+          "count": 138,
+          "importance": 10
+        },
+        {
+          "phrase": "al qaeda",
+          "count": 138,
+          "importance": 10
+        },
+        {
+          "phrase": "some kind",
+          "count": 135,
+          "importance": 10
+        },
+        {
+          "phrase": "rather than",
+          "count": 135,
+          "importance": 10
+        },
+        {
+          "phrase": "kamala harris",
+          "count": 135,
+          "importance": 10
+        },
+        {
+          "phrase": "ken here",
+          "count": 135,
+          "importance": 10
+        },
+        {
+          "phrase": "our work",
+          "count": 132,
+          "importance": 10
+        },
+        {
+          "phrase": "what we",
+          "count": 132,
+          "importance": 10
+        },
+        {
+          "phrase": "m not",
+          "count": 132,
+          "importance": 10
+        },
+        {
+          "phrase": "so much",
+          "count": 132,
+          "importance": 10
+        },
+        {
+          "phrase": "attorney general",
+          "count": 132,
+          "importance": 10
+        },
+        {
+          "phrase": "elon musk",
+          "count": 129,
+          "importance": 10
+        },
+        {
+          "phrase": "foreign policy",
+          "count": 129,
+          "importance": 10
+        },
+        {
+          "phrase": "s own",
+          "count": 126,
+          "importance": 10
+        },
+        {
+          "phrase": "top secret",
+          "count": 126,
+          "importance": 10
+        },
+        {
+          "phrase": "presidential election",
+          "count": 123,
+          "importance": 10
+        },
+        {
+          "phrase": "his own",
+          "count": 123,
+          "importance": 10
+        },
+        {
+          "phrase": "wouldn t",
+          "count": 120,
+          "importance": 10
+        },
+        {
+          "phrase": "gift subscription",
+          "count": 120,
+          "importance": 10
+        },
+        {
+          "phrase": "how many",
+          "count": 117,
+          "importance": 10
+        },
+        {
+          "phrase": "t know",
+          "count": 117,
+          "importance": 10
+        },
+        {
+          "phrase": "kash patel",
+          "count": 114,
+          "importance": 10
+        },
+        {
+          "phrase": "trump campaign",
+          "count": 114,
+          "importance": 10
+        },
+        {
+          "phrase": "washington post",
+          "count": 114,
+          "importance": 10
+        },
+        {
+          "phrase": "we need",
+          "count": 114,
+          "importance": 10
+        },
+        {
+          "phrase": "president s",
+          "count": 111,
+          "importance": 10
+        },
+        {
+          "phrase": "t want",
+          "count": 111,
+          "importance": 10
+        },
+        {
+          "phrase": "s just",
+          "count": 108,
+          "importance": 10
+        },
+        {
+          "phrase": "people s",
+          "count": 108,
+          "importance": 10
+        },
+        {
+          "phrase": "i know",
+          "count": 108,
+          "importance": 10
+        },
+        {
+          "phrase": "democratic party",
+          "count": 108,
+          "importance": 10
+        },
+        {
+          "phrase": "luigi mangione",
+          "count": 105,
+          "importance": 10
+        },
+        {
+          "phrase": "executive order",
+          "count": 105,
+          "importance": 10
+        },
+        {
+          "phrase": "which i",
+          "count": 105,
+          "importance": 10
+        },
+        {
+          "phrase": "s war",
+          "count": 105,
+          "importance": 10
+        },
+        {
+          "phrase": "i wrote",
+          "count": 105,
+          "importance": 10
+        },
+        {
+          "phrase": "you think",
+          "count": 105,
+          "importance": 10
+        },
+        {
+          "phrase": "ukraine war",
+          "count": 105,
+          "importance": 10
+        },
+        {
+          "phrase": "t just",
+          "count": 102,
+          "importance": 10
+        },
+        {
+          "phrase": "here please",
+          "count": 102,
+          "importance": 10
+        },
+        {
+          "phrase": "when asked",
+          "count": 102,
+          "importance": 10
+        },
+        {
+          "phrase": "about how",
+          "count": 102,
+          "importance": 10
+        },
+        {
+          "phrase": "super bowl",
+          "count": 102,
+          "importance": 10
+        },
+        {
+          "phrase": "when he",
+          "count": 99,
+          "importance": 9
+        },
+        {
+          "phrase": "far more",
+          "count": 99,
+          "importance": 9
+        },
+        {
+          "phrase": "even if",
+          "count": 99,
+          "importance": 9
+        },
+        {
+          "phrase": "cold war",
+          "count": 99,
+          "importance": 9
+        },
+        {
+          "phrase": "t even",
+          "count": 99,
+          "importance": 9
+        },
+        {
+          "phrase": "which he",
+          "count": 99,
+          "importance": 9
+        },
+        {
+          "phrase": "control code",
+          "count": 99,
+          "importance": 9
+        },
+        {
+          "phrase": "all please",
+          "count": 96,
+          "importance": 9
+        },
+        {
+          "phrase": "press release",
+          "count": 96,
+          "importance": 9
+        },
+        {
+          "phrase": "vance dossier",
+          "count": 96,
+          "importance": 9
+        },
+        {
+          "phrase": "when you",
+          "count": 96,
+          "importance": 9
+        },
+        {
+          "phrase": "report says",
+          "count": 96,
+          "importance": 9
+        },
+        {
+          "phrase": "no evidence",
+          "count": 93,
+          "importance": 9
+        },
+        {
+          "phrase": "trump said",
+          "count": 93,
+          "importance": 9
+        },
+        {
+          "phrase": "right now",
+          "count": 93,
+          "importance": 9
+        },
+        {
+          "phrase": "you don",
+          "count": 93,
+          "importance": 9
+        },
+        {
+          "phrase": "press secretary",
+          "count": 93,
+          "importance": 9
+        },
+        {
+          "phrase": "federal law",
+          "count": 93,
+          "importance": 9
+        },
+        {
+          "phrase": "young people",
+          "count": 93,
+          "importance": 9
+        },
+        {
+          "phrase": "dissemination control",
+          "count": 93,
+          "importance": 9
+        },
+        {
+          "phrase": "haven t",
+          "count": 90,
+          "importance": 9
+        },
+        {
+          "phrase": "s top",
+          "count": 90,
+          "importance": 9
+        },
+        {
+          "phrase": "no longer",
+          "count": 90,
+          "importance": 9
+        },
+        {
+          "phrase": "media s",
+          "count": 90,
+          "importance": 9
+        },
+        {
+          "phrase": "task forces",
+          "count": 90,
+          "importance": 9
+        },
+        {
+          "phrase": "carried out",
+          "count": 87,
+          "importance": 8
+        },
+        {
+          "phrase": "how much",
+          "count": 87,
+          "importance": 8
+        },
+        {
+          "phrase": "press conference",
+          "count": 87,
+          "importance": 8
+        },
+        {
+          "phrase": "d vance",
+          "count": 87,
+          "importance": 8
+        },
+        {
+          "phrase": "said he",
+          "count": 87,
+          "importance": 8
+        },
+        {
+          "phrase": "biden said",
+          "count": 87,
+          "importance": 8
+        },
+        {
+          "phrase": "north korea",
+          "count": 87,
+          "importance": 8
+        },
+        {
+          "phrase": "s going",
+          "count": 87,
+          "importance": 8
+        },
+        {
+          "phrase": "ordinary people",
+          "count": 87,
+          "importance": 8
+        },
+        {
+          "phrase": "talk about",
+          "count": 87,
+          "importance": 8
+        },
+        {
+          "phrase": "department s",
+          "count": 84,
+          "importance": 8
+        },
+        {
+          "phrase": "i hope",
+          "count": 84,
+          "importance": 8
+        },
+        {
+          "phrase": "not even",
+          "count": 84,
+          "importance": 8
+        },
+        {
+          "phrase": "ve seen",
+          "count": 84,
+          "importance": 8
+        },
+        {
+          "phrase": "you know",
+          "count": 84,
+          "importance": 8
+        },
+        {
+          "phrase": "tell me",
+          "count": 84,
+          "importance": 8
+        },
+        {
+          "phrase": "public safety",
+          "count": 84,
+          "importance": 8
+        },
+        {
+          "phrase": "even more",
+          "count": 81,
+          "importance": 8
+        },
+        {
+          "phrase": "work ken",
+          "count": 81,
+          "importance": 8
+        },
+        {
+          "phrase": "so many",
+          "count": 81,
+          "importance": 8
+        },
+        {
+          "phrase": "couldn t",
+          "count": 81,
+          "importance": 8
+        },
+        {
+          "phrase": "william m arkin",
+          "count": 639,
+          "importance": 10
+        },
+        {
+          "phrase": "becoming a paid",
+          "count": 309,
+          "importance": 10
+        },
+        {
+          "phrase": "posts and support",
+          "count": 255,
+          "importance": 10
+        },
+        {
+          "phrase": "department of homeland",
+          "count": 234,
+          "importance": 10
+        },
+        {
+          "phrase": "work consider becoming",
+          "count": 234,
+          "importance": 10
+        },
+        {
+          "phrase": "my work consider",
+          "count": 225,
+          "importance": 10
+        },
+        {
+          "phrase": "free or paid",
+          "count": 213,
+          "importance": 10
+        },
+        {
+          "phrase": "becoming a free",
+          "count": 210,
+          "importance": 10
+        },
+        {
+          "phrase": "new york times",
+          "count": 192,
+          "importance": 10
+        },
+        {
+          "phrase": "pdf file download",
+          "count": 180,
+          "importance": 10
+        },
+        {
+          "phrase": "file download download",
+          "count": 171,
+          "importance": 10
+        },
+        {
+          "phrase": "publication to receive",
+          "count": 165,
+          "importance": 10
+        },
+        {
+          "phrase": "doing this work",
+          "count": 156,
+          "importance": 10
+        },
+        {
+          "phrase": "there s no",
+          "count": 150,
+          "importance": 10
+        },
+        {
+          "phrase": "there is no",
+          "count": 141,
+          "importance": 10
+        },
+        {
+          "phrase": "support our work",
+          "count": 126,
+          "importance": 10
+        },
+        {
+          "phrase": "give a gift",
+          "count": 117,
+          "importance": 10
+        },
+        {
+          "phrase": "director of national",
+          "count": 114,
+          "importance": 10
+        },
+        {
+          "phrase": "members of congress",
+          "count": 111,
+          "importance": 10
+        },
+        {
+          "phrase": "war in gaza",
+          "count": 102,
+          "importance": 10
+        },
+        {
+          "phrase": "ken here please",
+          "count": 99,
+          "importance": 9
+        },
+        {
+          "phrase": "over the past",
+          "count": 99,
+          "importance": 9
+        },
+        {
+          "phrase": "all please become",
+          "count": 93,
+          "importance": 9
+        },
+        {
+          "phrase": "you don t",
+          "count": 93,
+          "importance": 9
+        },
+        {
+          "phrase": "hey all please",
+          "count": 90,
+          "importance": 9
+        },
+        {
+          "phrase": "here please become",
+          "count": 90,
+          "importance": 9
+        },
+        {
+          "phrase": "j d vance",
+          "count": 87,
+          "importance": 8
+        },
+        {
+          "phrase": "biden administration s",
+          "count": 87,
+          "importance": 8
+        },
+        {
+          "phrase": "war in ukraine",
+          "count": 87,
+          "importance": 8
+        },
+        {
+          "phrase": "when it comes",
+          "count": 87,
+          "importance": 8
+        },
+        {
+          "phrase": "doing this newsletter",
+          "count": 87,
+          "importance": 8
+        },
+        {
+          "phrase": "dissemination control code",
+          "count": 87,
+          "importance": 8
+        },
+        {
+          "phrase": "we don t",
+          "count": 81,
+          "importance": 8
+        },
+        {
+          "phrase": "secretary of state",
+          "count": 81,
+          "importance": 8
+        },
+        {
+          "phrase": "here s what",
+          "count": 81,
+          "importance": 8
+        },
+        {
+          "phrase": "war with iran",
+          "count": 78,
+          "importance": 7
+        },
+        {
+          "phrase": "war on terror",
+          "count": 78,
+          "importance": 7
+        },
+        {
+          "phrase": "if you re",
+          "count": 75,
+          "importance": 7
+        },
+        {
+          "phrase": "director kash patel",
+          "count": 72,
+          "importance": 7
+        },
+        {
+          "phrase": "special operations command",
+          "count": 72,
+          "importance": 7
+        },
+        {
+          "phrase": "become a paying",
+          "count": 72,
+          "importance": 7
+        },
+        {
+          "phrase": "homeland security s",
+          "count": 69,
+          "importance": 6
+        },
+        {
+          "phrase": "around the world",
+          "count": 66,
+          "importance": 6
+        },
+        {
+          "phrase": "ceo brian thompson",
+          "count": 66,
+          "importance": 6
+        },
+        {
+          "phrase": "he didn t",
+          "count": 63,
+          "importance": 6
+        },
+        {
+          "phrase": "web join chat",
+          "count": 63,
+          "importance": 6
+        },
+        {
+          "phrase": "president joe biden",
+          "count": 63,
+          "importance": 6
+        },
+        {
+          "phrase": "across the country",
+          "count": 63,
+          "importance": 6
+        },
+        {
+          "phrase": "gift subscription share",
+          "count": 63,
+          "importance": 6
+        },
+        {
+          "phrase": "foreign malign influence",
+          "count": 60,
+          "importance": 6
+        },
+        {
+          "phrase": "help us keep",
+          "count": 60,
+          "importance": 6
+        },
+        {
+          "phrase": "others won t",
+          "count": 57,
+          "importance": 5
+        },
+        {
+          "phrase": "special operations forces",
+          "count": 57,
+          "importance": 5
+        },
+        {
+          "phrase": "president biden s",
+          "count": 54,
+          "importance": 5
+        },
+        {
+          "phrase": "chief of staff",
+          "count": 54,
+          "importance": 5
+        },
+        {
+          "phrase": "earlier this month",
+          "count": 54,
+          "importance": 5
+        },
+        {
+          "phrase": "s government s",
+          "count": 54,
+          "importance": 5
+        },
+        {
+          "phrase": "president donald trump",
+          "count": 51,
+          "importance": 5
+        },
+        {
+          "phrase": "state and local",
+          "count": 51,
+          "importance": 5
+        },
+        {
+          "phrase": "trump administration s",
+          "count": 51,
+          "importance": 5
+        },
+        {
+          "phrase": "joint special operations",
+          "count": 51,
+          "importance": 5
+        },
+        {
+          "phrase": "i didn t",
+          "count": 48,
+          "importance": 4
+        },
+        {
+          "phrase": "isn t just",
+          "count": 48,
+          "importance": 4
+        },
+        {
+          "phrase": "we publish what",
+          "count": 48,
+          "importance": 4
+        },
+        {
+          "phrase": "s no evidence",
+          "count": 48,
+          "importance": 4
+        },
+        {
+          "phrase": "attack on israel",
+          "count": 48,
+          "importance": 4
+        },
+        {
+          "phrase": "you a sense",
+          "count": 48,
+          "importance": 4
+        },
+        {
+          "phrase": "security state s",
+          "count": 48,
+          "importance": 4
+        },
+        {
+          "phrase": "joe biden s",
+          "count": 45,
+          "importance": 4
+        },
+        {
+          "phrase": "work please become",
+          "count": 45,
+          "importance": 4
+        },
+        {
+          "phrase": "subscription share edited",
+          "count": 45,
+          "importance": 4
+        },
+        {
+          "phrase": "unitedhealthcare ceo brian",
+          "count": 45,
+          "importance": 4
+        },
+        {
+          "phrase": "i wrote about",
+          "count": 45,
+          "importance": 4
+        },
+        {
+          "phrase": "if you think",
+          "count": 45,
+          "importance": 4
+        },
+        {
+          "phrase": "request for comment",
+          "count": 45,
+          "importance": 4
+        },
+        {
+          "phrase": "gift subscription leave",
+          "count": 45,
+          "importance": 4
+        },
+        {
+          "phrase": "hey all ken",
+          "count": 45,
+          "importance": 4
+        },
+        {
+          "phrase": "here are some",
+          "count": 45,
+          "importance": 4
+        },
+        {
+          "phrase": "social media posts",
+          "count": 45,
+          "importance": 4
+        },
+        {
+          "phrase": "transnational criminal organizations",
+          "count": 45,
+          "importance": 4
+        },
+        {
+          "phrase": "control code sigma",
+          "count": 45,
+          "importance": 4
+        },
+        {
+          "phrase": "code sigma rd-sg-",
+          "count": 45,
+          "importance": 4
+        },
+        {
+          "phrase": "sigma rd-sg- dissemination",
+          "count": 45,
+          "importance": 4
+        },
+        {
+          "phrase": "rd-sg- dissemination control",
+          "count": 45,
+          "importance": 4
+        },
+        {
+          "phrase": "earlier this year",
+          "count": 42,
+          "importance": 4
+        },
+        {
+          "phrase": "behind the scenes",
+          "count": 42,
+          "importance": 4
+        },
+        {
+          "phrase": "then there s",
+          "count": 42,
+          "importance": 4
+        },
+        {
+          "phrase": "publish what others",
+          "count": 42,
+          "importance": 4
+        },
+        {
+          "phrase": "former president trump",
+          "count": 42,
+          "importance": 4
+        },
+        {
+          "phrase": "not at war",
+          "count": 42,
+          "importance": 4
+        },
+        {
+          "phrase": "sense of how",
+          "count": 42,
+          "importance": 4
+        },
+        {
+          "phrase": "he doesn t",
+          "count": 42,
+          "importance": 4
+        },
+        {
+          "phrase": "more and more",
+          "count": 42,
+          "importance": 4
+        },
+        {
+          "phrase": "our work please",
+          "count": 42,
+          "importance": 4
+        },
+        {
+          "phrase": "all ken here",
+          "count": 42,
+          "importance": 4
+        },
+        {
+          "phrase": "there are no",
+          "count": 42,
+          "importance": 4
+        },
+        {
+          "phrase": "social media companies",
+          "count": 42,
+          "importance": 4
+        },
+        {
+          "phrase": "just don t",
+          "count": 42,
+          "importance": 4
+        },
+        {
+          "phrase": "we re going",
+          "count": 42,
+          "importance": 4
+        },
+        {
+          "phrase": "what others won",
+          "count": 39,
+          "importance": 3
+        },
+        {
+          "phrase": "israel s war",
+          "count": 39,
+          "importance": 3
+        },
+        {
+          "phrase": "war powers report",
+          "count": 39,
+          "importance": 3
+        },
+        {
+          "phrase": "director christopher wray",
+          "count": 39,
+          "importance": 3
+        },
+        {
+          "phrase": "s not just",
+          "count": 39,
+          "importance": 3
+        },
+        {
+          "phrase": "attorney general pam",
+          "count": 39,
+          "importance": 3
+        },
+        {
+          "phrase": "general pam bondi",
+          "count": 39,
+          "importance": 3
+        },
+        {
+          "phrase": "support for israel",
+          "count": 39,
+          "importance": 3
+        },
+        {
+          "phrase": "s foreign policy",
+          "count": 39,
+          "importance": 3
+        },
+        {
+          "phrase": "little more than",
+          "count": 39,
+          "importance": 3
+        },
+        {
+          "phrase": "millions of americans",
+          "count": 39,
+          "importance": 3
+        },
+        {
+          "phrase": "command and control",
+          "count": 39,
+          "importance": 3
+        },
+        {
+          "phrase": "end the war",
+          "count": 36,
+          "importance": 3
+        },
+        {
+          "phrase": "prime minister benjamin",
+          "count": 36,
+          "importance": 3
+        },
+        {
+          "phrase": "minister benjamin netanyahu",
+          "count": 36,
+          "importance": 3
+        },
+        {
+          "phrase": "men and women",
+          "count": 36,
+          "importance": 3
+        },
+        {
+          "phrase": "take a look",
+          "count": 36,
+          "importance": 3
+        },
+        {
+          "phrase": "you can t",
+          "count": 36,
+          "importance": 3
+        },
+        {
+          "phrase": "s special operations",
+          "count": 36,
+          "importance": 3
+        },
+        {
+          "phrase": "people don t",
+          "count": 36,
+          "importance": 3
+        },
+        {
+          "phrase": "we ve seen",
+          "count": 36,
+          "importance": 3
+        },
+        {
+          "phrase": "federal government s",
+          "count": 36,
+          "importance": 3
+        },
+        {
+          "phrase": "invasion of ukraine",
+          "count": 36,
+          "importance": 3
+        },
+        {
+          "phrase": "please help me",
+          "count": 36,
+          "importance": 3
+        },
+        {
+          "phrase": "afford to keep",
+          "count": 36,
+          "importance": 3
+        },
+        {
+          "phrase": "we haven t",
+          "count": 36,
+          "importance": 3
+        },
+        {
+          "phrase": "if you want",
+          "count": 36,
+          "importance": 3
+        },
+        {
+          "phrase": "securely via signal",
+          "count": 36,
+          "importance": 3
+        },
+        {
+          "phrase": "you can see",
+          "count": 36,
+          "importance": 3
+        },
+        {
+          "phrase": "special access program",
+          "count": 36,
+          "importance": 3
+        },
+        {
+          "phrase": "aiding and abetting",
+          "count": 36,
+          "importance": 3
+        },
+        {
+          "phrase": "during a press",
+          "count": 33,
+          "importance": 3
+        },
+        {
+          "phrase": "doesn t even",
+          "count": 33,
+          "importance": 3
+        },
+        {
+          "phrase": "use of nuclear",
+          "count": 33,
+          "importance": 3
+        },
+        {
+          "phrase": "world war ii",
+          "count": 33,
+          "importance": 3
+        },
+        {
+          "phrase": "war with china",
+          "count": 33,
+          "importance": 3
+        },
+        {
+          "phrase": "newsletter is reader-funded",
+          "count": 33,
+          "importance": 3
+        },
+        {
+          "phrase": "what s going",
+          "count": 33,
+          "importance": 3
+        },
+        {
+          "phrase": "hope you ll",
+          "count": 33,
+          "importance": 3
+        },
+        {
+          "phrase": "s air force",
+          "count": 33,
+          "importance": 3
+        },
+        {
+          "phrase": "secretary of homeland",
+          "count": 33,
+          "importance": 3
+        },
+        {
+          "phrase": "doesn t want",
+          "count": 33,
+          "importance": 3
+        },
+        {
+          "phrase": "sources tell me",
+          "count": 33,
+          "importance": 3
+        },
+        {
+          "phrase": "said on x",
+          "count": 33,
+          "importance": 3
+        },
+        {
+          "phrase": "asked if he",
+          "count": 33,
+          "importance": 3
+        },
+        {
+          "phrase": "join chat give",
+          "count": 33,
+          "importance": 3
+        },
+        {
+          "phrase": "number of people",
+          "count": 33,
+          "importance": 3
+        },
+        {
+          "phrase": "social media platforms",
+          "count": 33,
+          "importance": 3
+        },
+        {
+          "phrase": "white house press",
+          "count": 33,
+          "importance": 3
+        },
+        {
+          "phrase": "way of life",
+          "count": 33,
+          "importance": 3
+        },
+        {
+          "phrase": "death to america",
+          "count": 33,
+          "importance": 3
+        },
+        {
+          "phrase": "hard to see",
+          "count": 30,
+          "importance": 3
+        },
+        {
+          "phrase": "when i asked",
+          "count": 30,
+          "importance": 3
+        },
+        {
+          "phrase": "s central command",
+          "count": 30,
+          "importance": 3
+        },
+        {
+          "phrase": "afghanistan and iraq",
+          "count": 30,
+          "importance": 3
+        },
+        {
+          "phrase": "he s not",
+          "count": 30,
+          "importance": 3
+        },
+        {
+          "phrase": "screenshot of leaked",
+          "count": 30,
+          "importance": 3
+        },
+        {
+          "phrase": "i hope you",
+          "count": 30,
+          "importance": 3
+        },
+        {
+          "phrase": "when asked about",
+          "count": 30,
+          "importance": 3
+        },
+        {
+          "phrase": "we are not",
+          "count": 30,
+          "importance": 3
+        },
+        {
+          "phrase": "white house s",
+          "count": 30,
+          "importance": 3
+        },
+        {
+          "phrase": "secretary kristi noem",
+          "count": 30,
+          "importance": 3
+        },
+        {
+          "phrase": "need your support",
+          "count": 30,
+          "importance": 3
+        },
+        {
+          "phrase": "leaked to me",
+          "count": 30,
+          "importance": 3
+        },
+        {
+          "phrase": "new posts and support",
+          "count": 255,
+          "importance": 10
+        },
+        {
+          "phrase": "posts and support my",
+          "count": 246,
+          "importance": 10
+        },
+        {
+          "phrase": "department of homeland security",
+          "count": 234,
+          "importance": 10
+        },
+        {
+          "phrase": "my work consider becoming",
+          "count": 225,
+          "importance": 10
+        },
+        {
+          "phrase": "consider becoming a free",
+          "count": 207,
+          "importance": 10
+        },
+        {
+          "phrase": "pdf file download download",
+          "count": 171,
+          "importance": 10
+        },
+        {
+          "phrase": "publication to receive new",
+          "count": 165,
+          "importance": 10
+        },
+        {
+          "phrase": "reader-supported publication to receive",
+          "count": 162,
+          "importance": 10
+        },
+        {
+          "phrase": "keep doing this work",
+          "count": 150,
+          "importance": 10
+        },
+        {
+          "phrase": "secrets is a reader-supported",
+          "count": 147,
+          "importance": 10
+        },
+        {
+          "phrase": "give a gift subscription",
+          "count": 117,
+          "importance": 10
+        },
+        {
+          "phrase": "ken here please become",
+          "count": 90,
+          "importance": 9
+        },
+        {
+          "phrase": "hey all please become",
+          "count": 87,
+          "importance": 8
+        },
+        {
+          "phrase": "keep doing this newsletter",
+          "count": 87,
+          "importance": 8
+        },
+        {
+          "phrase": "updates and to support",
+          "count": 84,
+          "importance": 8
+        },
+        {
+          "phrase": "doing this work ken",
+          "count": 75,
+          "importance": 7
+        },
+        {
+          "phrase": "please become a paying",
+          "count": 72,
+          "importance": 7
+        },
+        {
+          "phrase": "available in the substack",
+          "count": 63,
+          "importance": 6
+        },
+        {
+          "phrase": "app and on web",
+          "count": 63,
+          "importance": 6
+        },
+        {
+          "phrase": "one of the most",
+          "count": 57,
+          "importance": 5
+        },
+        {
+          "phrase": "there s no evidence",
+          "count": 48,
+          "importance": 4
+        },
+        {
+          "phrase": "gift subscription share edited",
+          "count": 45,
+          "importance": 4
+        },
+        {
+          "phrase": "unitedhealthcare ceo brian thompson",
+          "count": 45,
+          "importance": 4
+        },
+        {
+          "phrase": "boots on the ground",
+          "count": 45,
+          "importance": 4
+        },
+        {
+          "phrase": "consider becoming a paid",
+          "count": 45,
+          "importance": 4
+        },
+        {
+          "phrase": "dissemination control code sigma",
+          "count": 45,
+          "importance": 4
+        },
+        {
+          "phrase": "control code sigma rd-sg-",
+          "count": 45,
+          "importance": 4
+        },
+        {
+          "phrase": "code sigma rd-sg- dissemination",
+          "count": 45,
+          "importance": 4
+        },
+        {
+          "phrase": "sigma rd-sg- dissemination control",
+          "count": 45,
+          "importance": 4
+        },
+        {
+          "phrase": "rd-sg- dissemination control code",
+          "count": 45,
+          "importance": 4
+        },
+        {
+          "phrase": "we publish what others",
+          "count": 42,
+          "importance": 4
+        },
+        {
+          "phrase": "support our work please",
+          "count": 42,
+          "importance": 4
+        },
+        {
+          "phrase": "hey all ken here",
+          "count": 42,
+          "importance": 4
+        },
+        {
+          "phrase": "publish what others won",
+          "count": 39,
+          "importance": 3
+        },
+        {
+          "phrase": "what others won t",
+          "count": 39,
+          "importance": 3
+        },
+        {
+          "phrase": "give you a sense",
+          "count": 39,
+          "importance": 3
+        },
+        {
+          "phrase": "attorney general pam bondi",
+          "count": 39,
+          "importance": 3
+        },
+        {
+          "phrase": "property of the people",
+          "count": 36,
+          "importance": 3
+        },
+        {
+          "phrase": "prime minister benjamin netanyahu",
+          "count": 36,
+          "importance": 3
+        },
+        {
+          "phrase": "afford to keep doing",
+          "count": 36,
+          "importance": 3
+        },
+        {
+          "phrase": "joint special operations command",
+          "count": 33,
+          "importance": 3
+        },
+        {
+          "phrase": "secretary of homeland security",
+          "count": 33,
+          "importance": 3
+        },
+        {
+          "phrase": "all ken here please",
+          "count": 33,
+          "importance": 3
+        },
+        {
+          "phrase": "web join chat give",
+          "count": 33,
+          "importance": 3
+        },
+        {
+          "phrase": "chat give a gift",
+          "count": 33,
+          "importance": 3
+        },
+        {
+          "phrase": "use of nuclear weapons",
+          "count": 30,
+          "importance": 3
+        },
+        {
+          "phrase": "war in the middle",
+          "count": 30,
+          "importance": 3
+        },
+        {
+          "phrase": "respond to a request",
+          "count": 30,
+          "importance": 3
+        },
+        {
+          "phrase": "secretary of state marco",
+          "count": 30,
+          "importance": 3
+        },
+        {
+          "phrase": "our work please become",
+          "count": 30,
+          "importance": 3
+        },
+        {
+          "phrase": "stay on this story",
+          "count": 30,
+          "importance": 3
+        },
+        {
+          "phrase": "global war on terror",
+          "count": 30,
+          "importance": 3
+        },
+        {
+          "phrase": "your support to survive",
+          "count": 30,
+          "importance": 3
+        },
+        {
+          "phrase": "me securely via signal",
+          "count": 30,
+          "importance": 3
+        },
+        {
+          "phrase": "former president donald trump",
+          "count": 27,
+          "importance": 2
+        },
+        {
+          "phrase": "s war in gaza",
+          "count": 27,
+          "importance": 2
+        },
+        {
+          "phrase": "state and local law",
+          "count": 27,
+          "importance": 2
+        },
+        {
+          "phrase": "press secretary sabrina singh",
+          "count": 27,
+          "importance": 2
+        },
+        {
+          "phrase": "j d vance dossier",
+          "count": 27,
+          "importance": 2
+        },
+        {
+          "phrase": "we haven t taken",
+          "count": 27,
+          "importance": 2
+        },
+        {
+          "phrase": "which means we need",
+          "count": 27,
+          "importance": 2
+        },
+        {
+          "phrase": "means we need your",
+          "count": 27,
+          "importance": 2
+        },
+        {
+          "phrase": "we need your support",
+          "count": 27,
+          "importance": 2
+        },
+        {
+          "phrase": "most lethal fighting force",
+          "count": 27,
+          "importance": 2
+        },
+        {
+          "phrase": "text me securely via",
+          "count": 27,
+          "importance": 2
+        },
+        {
+          "phrase": "so we can keep",
+          "count": 27,
+          "importance": 2
+        },
+        {
+          "phrase": "no end in sight",
+          "count": 27,
+          "importance": 2
+        },
+        {
+          "phrase": "during a press conference",
+          "count": 24,
+          "importance": 2
+        },
+        {
+          "phrase": "william m arkin we",
+          "count": 24,
+          "importance": 2
+        },
+        {
+          "phrase": "israeli prime minister benjamin",
+          "count": 24,
+          "importance": 2
+        },
+        {
+          "phrase": "reader-funded to receive new",
+          "count": 24,
+          "importance": 2
+        },
+        {
+          "phrase": "during the obama administration",
+          "count": 24,
+          "importance": 2
+        },
+        {
+          "phrase": "i hope you ll",
+          "count": 24,
+          "importance": 2
+        },
+        {
+          "phrase": "reader-supported to receive new",
+          "count": 24,
+          "importance": 2
+        },
+        {
+          "phrase": "new york times reported",
+          "count": 24,
+          "importance": 2
+        },
+        {
+          "phrase": "ve included a copy",
+          "count": 24,
+          "importance": 2
+        },
+        {
+          "phrase": "there s no reason",
+          "count": 24,
+          "importance": 2
+        },
+        {
+          "phrase": "newsletter is reader supported",
+          "count": 24,
+          "importance": 2
+        },
+        {
+          "phrase": "ads which means we",
+          "count": 24,
+          "importance": 2
+        },
+        {
+          "phrase": "murder of unitedhealthcare ceo",
+          "count": 24,
+          "importance": 2
+        },
+        {
+          "phrase": "force in the world",
+          "count": 24,
+          "importance": 2
+        },
+        {
+          "phrase": "white house press secretary",
+          "count": 24,
+          "importance": 2
+        },
+        {
+          "phrase": "national special security event",
+          "count": 24,
+          "importance": 2
+        },
+        {
+          "phrase": "so you don t",
+          "count": 24,
+          "importance": 2
+        },
+        {
+          "phrase": "climate and environmental change",
+          "count": 24,
+          "importance": 2
+        },
+        {
+          "phrase": "anywhere in the world",
+          "count": 21,
+          "importance": 2
+        },
+        {
+          "phrase": "reported at the time",
+          "count": 21,
+          "importance": 2
+        },
+        {
+          "phrase": "said in a statement",
+          "count": 21,
+          "importance": 2
+        },
+        {
+          "phrase": "homeland secretary kristi noem",
+          "count": 21,
+          "importance": 2
+        },
+        {
+          "phrase": "united states of america",
+          "count": 21,
+          "importance": 2
+        },
+        {
+          "phrase": "president of the united",
+          "count": 21,
+          "importance": 2
+        },
+        {
+          "phrase": "secretary of state antony",
+          "count": 21,
+          "importance": 2
+        },
+        {
+          "phrase": "not hard to see",
+          "count": 21,
+          "importance": 2
+        },
+        {
+          "phrase": "hard to see why",
+          "count": 21,
+          "importance": 2
+        },
+        {
+          "phrase": "part of the reason",
+          "count": 21,
+          "importance": 2
+        },
+        {
+          "phrase": "said in an interview",
+          "count": 21,
+          "importance": 2
+        },
+        {
+          "phrase": "industry and have zero",
+          "count": 21,
+          "importance": 2
+        },
+        {
+          "phrase": "we can keep doing",
+          "count": 21,
+          "importance": 2
+        },
+        {
+          "phrase": "long as it takes",
+          "count": 21,
+          "importance": 2
+        },
+        {
+          "phrase": "inside the united states",
+          "count": 21,
+          "importance": 2
+        },
+        {
+          "phrase": "said in a press",
+          "count": 21,
+          "importance": 2
+        },
+        {
+          "phrase": "within the united states",
+          "count": 21,
+          "importance": 2
+        },
+        {
+          "phrase": "hey folks ken here",
+          "count": 21,
+          "importance": 2
+        },
+        {
+          "phrase": "folks ken here become",
+          "count": 21,
+          "importance": 2
+        },
+        {
+          "phrase": "influence and perception management",
+          "count": 21,
+          "importance": 2
+        },
+        {
+          "phrase": "operation iraqi freedom operation",
+          "count": 21,
+          "importance": 2
+        },
+        {
+          "phrase": "freedom of information act",
+          "count": 18,
+          "importance": 1
+        },
+        {
+          "phrase": "report pdf file download",
+          "count": 18,
+          "importance": 1
+        },
+        {
+          "phrase": "state of the union",
+          "count": 18,
+          "importance": 1
+        },
+        {
+          "phrase": "hey guys ken here",
+          "count": 18,
+          "importance": 1
+        },
+        {
+          "phrase": "united states is not",
+          "count": 18,
+          "importance": 1
+        },
+        {
+          "phrase": "president joe biden s",
+          "count": 18,
+          "importance": 1
+        },
+        {
+          "phrase": "cold war with china",
+          "count": 18,
+          "importance": 1
+        },
+        {
+          "phrase": "october attack on israel",
+          "count": 18,
+          "importance": 1
+        },
+        {
+          "phrase": "remains to be seen",
+          "count": 18,
+          "importance": 1
+        },
+        {
+          "phrase": "deputy press secretary sabrina",
+          "count": 18,
+          "importance": 1
+        },
+        {
+          "phrase": "president j d vance",
+          "count": 18,
+          "importance": 1
+        },
+        {
+          "phrase": "updates and to help",
+          "count": 18,
+          "importance": 1
+        },
+        {
+          "phrase": "i think it s",
+          "count": 18,
+          "importance": 1
+        },
+        {
+          "phrase": "weapons of mass destruction",
+          "count": 18,
+          "importance": 1
+        },
+        {
+          "phrase": "keep this newsletter alive",
+          "count": 18,
+          "importance": 1
+        },
+        {
+          "phrase": "foreign malign influence center",
+          "count": 18,
+          "importance": 1
+        },
+        {
+          "phrase": "use of the word",
+          "count": 18,
+          "importance": 1
+        },
+        {
+          "phrase": "work possible by becoming",
+          "count": 18,
+          "importance": 1
+        },
+        {
+          "phrase": "goes on to say",
+          "count": 18,
+          "importance": 1
+        },
+        {
+          "phrase": "we still don t",
+          "count": 18,
+          "importance": 1
+        },
+        {
+          "phrase": "young men and women",
+          "count": 18,
+          "importance": 1
+        },
+        {
+          "phrase": "which is to say",
+          "count": 18,
+          "importance": 1
+        },
+        {
+          "phrase": "some of the most",
+          "count": 18,
+          "importance": 1
+        },
+        {
+          "phrase": "reader supported we haven",
+          "count": 18,
+          "importance": 1
+        },
+        {
+          "phrase": "supported we haven t",
+          "count": 18,
+          "importance": 1
+        },
+        {
+          "phrase": "t taken a dime",
+          "count": 18,
+          "importance": 1
+        },
+        {
+          "phrase": "dime from corporate industry",
+          "count": 18,
+          "importance": 1
+        },
+        {
+          "phrase": "zero ads which means",
+          "count": 18,
+          "importance": 1
+        },
+        {
+          "phrase": "msnbc s morning joe",
+          "count": 18,
+          "importance": 1
+        },
+        {
+          "phrase": "members of the news",
+          "count": 18,
+          "importance": 1
+        },
+        {
+          "phrase": "blue cross blue shield",
+          "count": 18,
+          "importance": 1
+        },
+        {
+          "phrase": "world s largest manhunt",
+          "count": 18,
+          "importance": 1
+        },
+        {
+          "phrase": "make this work possible",
+          "count": 18,
+          "importance": 1
+        },
+        {
+          "phrase": "here for the first",
+          "count": 18,
+          "importance": 1
+        },
+        {
+          "phrase": "racially or ethnically motivated",
+          "count": 18,
+          "importance": 1
+        },
+        {
+          "phrase": "hammer operation iraqi freedom",
+          "count": 18,
+          "importance": 1
+        },
+        {
+          "phrase": "one of the few",
+          "count": 15,
+          "importance": 1
+        },
+        {
+          "phrase": "updates on this breaking",
+          "count": 15,
+          "importance": 1
+        },
+        {
+          "phrase": "wars in the middle",
+          "count": 15,
+          "importance": 1
+        },
+        {
+          "phrase": "m arkin we publish",
+          "count": 15,
+          "importance": 1
+        },
+        {
+          "phrase": "arkin we publish what",
+          "count": 15,
+          "importance": 1
+        },
+        {
+          "phrase": "guys ken here please",
+          "count": 15,
+          "importance": 1
+        },
+        {
+          "phrase": "powers report to congress",
+          "count": 15,
+          "importance": 1
+        },
+        {
+          "phrase": "not been previously reported",
+          "count": 15,
+          "importance": 1
+        },
+        {
+          "phrase": "throughout the middle east",
+          "count": 15,
+          "importance": 1
+        },
+        {
+          "phrase": "s special operations forces",
+          "count": 15,
+          "importance": 1
+        },
+        {
+          "phrase": "member of the senate",
+          "count": 15,
+          "importance": 1
+        },
+        {
+          "phrase": "council on foreign relations",
+          "count": 15,
+          "importance": 1
+        },
+        {
+          "phrase": "us keep an eye",
+          "count": 15,
+          "importance": 1
+        },
+        {
+          "phrase": "help us keep reporting",
+          "count": 15,
+          "importance": 1
+        },
+        {
+          "phrase": "here s what he",
+          "count": 15,
+          "importance": 1
+        },
+        {
+          "phrase": "klippenstein is a reader-supported",
+          "count": 15,
+          "importance": 1
+        },
+        {
+          "phrase": "homeland security kristi noem",
+          "count": 15,
+          "importance": 1
+        },
+        {
+          "phrase": "department of government efficiency",
+          "count": 15,
+          "importance": 1
+        },
+        {
+          "phrase": "democratic members of congress",
+          "count": 15,
+          "importance": 1
+        },
+        {
+          "phrase": "according to an internal",
+          "count": 15,
+          "importance": 1
+        },
+        {
+          "phrase": "s special operations command",
+          "count": 15,
+          "importance": 1
+        },
+        {
+          "phrase": "updates and to make",
+          "count": 15,
+          "importance": 1
+        },
+        {
+          "phrase": "homeland security secretary alejandro",
+          "count": 15,
+          "importance": 1
+        },
+        {
+          "phrase": "security secretary alejandro mayorkas",
+          "count": 15,
+          "importance": 1
+        },
+        {
+          "phrase": "over the past year",
+          "count": 15,
+          "importance": 1
+        },
+        {
+          "phrase": "m proud to say",
+          "count": 15,
+          "importance": 1
+        },
+        {
+          "phrase": "no reason to think",
+          "count": 15,
+          "importance": 1
+        },
+        {
+          "phrase": "when asked if he",
+          "count": 15,
+          "importance": 1
+        },
+        {
+          "phrase": "secretary sabrina singh said",
+          "count": 15,
+          "importance": 1
+        },
+        {
+          "phrase": "new posts and support my",
+          "count": 246,
+          "importance": 10
+        },
+        {
+          "phrase": "becoming a free or paid",
+          "count": 204,
+          "importance": 10
+        },
+        {
+          "phrase": "work consider becoming a free",
+          "count": 198,
+          "importance": 10
+        },
+        {
+          "phrase": "reader-supported publication to receive new",
+          "count": 162,
+          "importance": 10
+        },
+        {
+          "phrase": "government secrets is a reader-supported",
+          "count": 147,
+          "importance": 10
+        },
+        {
+          "phrase": "secrets is a reader-supported publication",
+          "count": 147,
+          "importance": 10
+        },
+        {
+          "phrase": "keep doing this work ken",
+          "count": 75,
+          "importance": 7
+        },
+        {
+          "phrase": "updates and to support our",
+          "count": 75,
+          "importance": 7
+        },
+        {
+          "phrase": "chat available in the substack",
+          "count": 63,
+          "importance": 6
+        },
+        {
+          "phrase": "available in the substack app",
+          "count": 63,
+          "importance": 6
+        },
+        {
+          "phrase": "substack app and on web",
+          "count": 63,
+          "importance": 6
+        },
+        {
+          "phrase": "app and on web join",
+          "count": 63,
+          "importance": 6
+        },
+        {
+          "phrase": "give a gift subscription share",
+          "count": 63,
+          "importance": 6
+        },
+        {
+          "phrase": "give a gift subscription leave",
+          "count": 45,
+          "importance": 4
+        },
+        {
+          "phrase": "dissemination control code sigma rd-sg-",
+          "count": 45,
+          "importance": 4
+        },
+        {
+          "phrase": "control code sigma rd-sg- dissemination",
+          "count": 45,
+          "importance": 4
+        },
+        {
+          "phrase": "code sigma rd-sg- dissemination control",
+          "count": 45,
+          "importance": 4
+        },
+        {
+          "phrase": "sigma rd-sg- dissemination control code",
+          "count": 45,
+          "importance": 4
+        },
+        {
+          "phrase": "rd-sg- dissemination control code sigma",
+          "count": 42,
+          "importance": 4
+        },
+        {
+          "phrase": "we publish what others won",
+          "count": 39,
+          "importance": 3
+        },
+        {
+          "phrase": "publish what others won t",
+          "count": 39,
+          "importance": 3
+        },
+        {
+          "phrase": "department of homeland security s",
+          "count": 39,
+          "importance": 3
+        },
+        {
+          "phrase": "here please become a paying",
+          "count": 39,
+          "importance": 3
+        },
+        {
+          "phrase": "hey all ken here please",
+          "count": 33,
+          "importance": 3
+        },
+        {
+          "phrase": "all ken here please become",
+          "count": 33,
+          "importance": 3
+        },
+        {
+          "phrase": "join chat give a gift",
+          "count": 33,
+          "importance": 3
+        },
+        {
+          "phrase": "chat give a gift subscription",
+          "count": 33,
+          "importance": 3
+        },
+        {
+          "phrase": "war in the middle east",
+          "count": 30,
+          "importance": 3
+        },
+        {
+          "phrase": "secretary of state marco rubio",
+          "count": 30,
+          "importance": 3
+        },
+        {
+          "phrase": "support our work please become",
+          "count": 30,
+          "importance": 3
+        },
+        {
+          "phrase": "work consider becoming a paid",
+          "count": 30,
+          "importance": 3
+        },
+        {
+          "phrase": "israel s war in gaza",
+          "count": 27,
+          "importance": 2
+        },
+        {
+          "phrase": "which means we need your",
+          "count": 27,
+          "importance": 2
+        },
+        {
+          "phrase": "means we need your support",
+          "count": 27,
+          "importance": 2
+        },
+        {
+          "phrase": "need your support to survive",
+          "count": 27,
+          "importance": 2
+        },
+        {
+          "phrase": "text me securely via signal",
+          "count": 27,
+          "importance": 2
+        },
+        {
+          "phrase": "nonprofit property of the people",
+          "count": 24,
+          "importance": 2
+        },
+        {
+          "phrase": "israeli prime minister benjamin netanyahu",
+          "count": 24,
+          "importance": 2
+        },
+        {
+          "phrase": "newsletter is reader-funded to receive",
+          "count": 24,
+          "importance": 2
+        },
+        {
+          "phrase": "not respond to a request",
+          "count": 24,
+          "importance": 2
+        },
+        {
+          "phrase": "story by becoming a paid",
+          "count": 24,
+          "importance": 2
+        },
+        {
+          "phrase": "ads which means we need",
+          "count": 24,
+          "importance": 2
+        },
+        {
+          "phrase": "murder of unitedhealthcare ceo brian",
+          "count": 24,
+          "importance": 2
+        },
+        {
+          "phrase": "fighting force in the world",
+          "count": 24,
+          "importance": 2
+        },
+        {
+          "phrase": "me stay on this story",
+          "count": 24,
+          "importance": 2
+        },
+        {
+          "phrase": "president of the united states",
+          "count": 21,
+          "importance": 2
+        },
+        {
+          "phrase": "you a sense of how",
+          "count": 21,
+          "importance": 2
+        },
+        {
+          "phrase": "department of homeland security dhs",
+          "count": 21,
+          "importance": 2
+        },
+        {
+          "phrase": "secretary of state antony blinken",
+          "count": 21,
+          "importance": 2
+        },
+        {
+          "phrase": "s not hard to see",
+          "count": 21,
+          "importance": 2
+        },
+        {
+          "phrase": "not hard to see why",
+          "count": 21,
+          "importance": 2
+        },
+        {
+          "phrase": "possible by becoming a paid",
+          "count": 21,
+          "importance": 2
+        },
+        {
+          "phrase": "corporate industry and have zero",
+          "count": 21,
+          "importance": 2
+        },
+        {
+          "phrase": "industry and have zero ads",
+          "count": 21,
+          "importance": 2
+        },
+        {
+          "phrase": "so we can keep doing",
+          "count": 21,
+          "importance": 2
+        },
+        {
+          "phrase": "hey folks ken here become",
+          "count": 21,
+          "importance": 2
+        },
+        {
+          "phrase": "report pdf file download download",
+          "count": 18,
+          "importance": 1
+        },
+        {
+          "phrase": "deputy press secretary sabrina singh",
+          "count": 18,
+          "importance": 1
+        },
+        {
+          "phrase": "more updates and to support",
+          "count": 18,
+          "importance": 1
+        },
+        {
+          "phrase": "newsletter is reader supported we",
+          "count": 18,
+          "importance": 1
+        },
+        {
+          "phrase": "reader supported we haven t",
+          "count": 18,
+          "importance": 1
+        },
+        {
+          "phrase": "supported we haven t taken",
+          "count": 18,
+          "importance": 1
+        },
+        {
+          "phrase": "haven t taken a dime",
+          "count": 18,
+          "importance": 1
+        },
+        {
+          "phrase": "taken a dime from corporate",
+          "count": 18,
+          "importance": 1
+        },
+        {
+          "phrase": "zero ads which means we",
+          "count": 18,
+          "importance": 1
+        },
+        {
+          "phrase": "members of the news media",
+          "count": 18,
+          "importance": 1
+        },
+        {
+          "phrase": "here for the first time",
+          "count": 18,
+          "importance": 1
+        },
+        {
+          "phrase": "hammer operation iraqi freedom operation",
+          "count": 18,
+          "importance": 1
+        },
+        {
+          "phrase": "updates on this breaking story",
+          "count": 15,
+          "importance": 1
+        },
+        {
+          "phrase": "wars in the middle east",
+          "count": 15,
+          "importance": 1
+        },
+        {
+          "phrase": "william m arkin we publish",
+          "count": 15,
+          "importance": 1
+        },
+        {
+          "phrase": "m arkin we publish what",
+          "count": 15,
+          "importance": 1
+        },
+        {
+          "phrase": "arkin we publish what others",
+          "count": 15,
+          "importance": 1
+        },
+        {
+          "phrase": "hey guys ken here please",
+          "count": 15,
+          "importance": 1
+        },
+        {
+          "phrase": "guys ken here please become",
+          "count": 15,
+          "importance": 1
+        },
+        {
+          "phrase": "states is not at war",
+          "count": 15,
+          "importance": 1
+        },
+        {
+          "phrase": "i reported at the time",
+          "count": 15,
+          "importance": 1
+        },
+        {
+          "phrase": "war powers report to congress",
+          "count": 15,
+          "importance": 1
+        },
+        {
+          "phrase": "hamas october attack on israel",
+          "count": 15,
+          "importance": 1
+        },
+        {
+          "phrase": "help us keep an eye",
+          "count": 15,
+          "importance": 1
+        },
+        {
+          "phrase": "newsletter is reader-supported to receive",
+          "count": 15,
+          "importance": 1
+        },
+        {
+          "phrase": "klippenstein is a reader-supported publication",
+          "count": 15,
+          "importance": 1
+        },
+        {
+          "phrase": "secretary of homeland security kristi",
+          "count": 15,
+          "importance": 1
+        },
+        {
+          "phrase": "updates and to help us",
+          "count": 15,
+          "importance": 1
+        },
+        {
+          "phrase": "homeland security secretary alejandro mayorkas",
+          "count": 15,
+          "importance": 1
+        },
+        {
+          "phrase": "press secretary sabrina singh said",
+          "count": 15,
+          "importance": 1
+        },
+        {
+          "phrase": "support our work by subscribing",
+          "count": 15,
+          "importance": 1
+        },
+        {
+          "phrase": "william m arkin this newsletter",
+          "count": 15,
+          "importance": 1
+        },
+        {
+          "phrase": "so you don t miss",
+          "count": 15,
+          "importance": 1
+        },
+        {
+          "phrase": "ve broken story after story",
+          "count": 15,
+          "importance": 1
+        },
+        {
+          "phrase": "assessment pdf file download download",
+          "count": 15,
+          "importance": 1
+        },
+        {
+          "phrase": "re thankful for this newsletter",
+          "count": 15,
+          "importance": 1
+        },
+        {
+          "phrase": "racially or ethnically motivated violent",
+          "count": 15,
+          "importance": 1
+        },
+        {
+          "phrase": "under the freedom of information",
+          "count": 12,
+          "importance": 1
+        },
+        {
+          "phrase": "state of the union speech",
+          "count": 12,
+          "importance": 1
+        },
+        {
+          "phrase": "our work and for updates",
+          "count": 12,
+          "importance": 1
+        },
+        {
+          "phrase": "hack of the trump campaign",
+          "count": 12,
+          "importance": 1
+        },
+        {
+          "phrase": "war anywhere in the world",
+          "count": 12,
+          "importance": 1
+        },
+        {
+          "phrase": "end the war in ukraine",
+          "count": 12,
+          "importance": 1
+        },
+        {
+          "phrase": "gerontocracy rule by the elderly",
+          "count": 12,
+          "importance": 1
+        },
+        {
+          "phrase": "we are not at war",
+          "count": 12,
+          "importance": 1
+        },
+        {
+          "phrase": "big part of the reason",
+          "count": 12,
+          "importance": 1
+        },
+        {
+          "phrase": "s no reason to think",
+          "count": 12,
+          "importance": 1
+        },
+        {
+          "phrase": "need more people to become",
+          "count": 12,
+          "importance": 1
+        },
+        {
+          "phrase": "more people to become paid",
+          "count": 12,
+          "importance": 1
+        },
+        {
+          "phrase": "william m arkin help us",
+          "count": 12,
+          "importance": 1
+        },
+        {
+          "phrase": "ve never had my chance",
+          "count": 12,
+          "importance": 1
+        },
+        {
+          "phrase": "time to pass the torch",
+          "count": 12,
+          "importance": 1
+        },
+        {
+          "phrase": "threats to the united states",
+          "count": 12,
+          "importance": 1
+        },
+        {
+          "phrase": "against the war in gaza",
+          "count": 12,
+          "importance": 1
+        },
+        {
+          "phrase": "threats to conduct a mass",
+          "count": 12,
+          "importance": 1
+        },
+        {
+          "phrase": "work and for more updates",
+          "count": 12,
+          "importance": 1
+        },
+        {
+          "phrase": "you can decide for yourself",
+          "count": 12,
+          "importance": 1
+        },
+        {
+          "phrase": "world s largest manhunt against",
+          "count": 12,
+          "importance": 1
+        },
+        {
+          "phrase": "s largest manhunt against anyone",
+          "count": 12,
+          "importance": 1
+        },
+        {
+          "phrase": "manhunt against anyone that wishes",
+          "count": 12,
+          "importance": 1
+        },
+        {
+          "phrase": "he didn t talk about",
+          "count": 12,
+          "importance": 1
+        },
+        {
+          "phrase": "chairman of the joint chiefs",
+          "count": 12,
+          "importance": 1
+        },
+        {
+          "phrase": "interest of the united states",
+          "count": 12,
+          "importance": 1
+        },
+        {
+          "phrase": "pencil to a knife fight",
+          "count": 12,
+          "importance": 1
+        },
+        {
+          "phrase": "jdam guidance kits to attach",
+          "count": 12,
+          "importance": 1
+        },
+        {
+          "phrase": "mass shooting or an act",
+          "count": 12,
+          "importance": 1
+        },
+        {
+          "phrase": "constitution of the united states",
+          "count": 12,
+          "importance": 1
+        },
+        {
+          "phrase": "we do stories others won",
+          "count": 12,
+          "importance": 1
+        },
+        {
+          "phrase": "stories others won t touch",
+          "count": 12,
+          "importance": 1
+        },
+        {
+          "phrase": "happy thanksgiving if you re",
+          "count": 12,
+          "importance": 1
+        },
+        {
+          "phrase": "thanksgiving if you re thankful",
+          "count": 12,
+          "importance": 1
+        },
+        {
+          "phrase": "thankful for this newsletter help",
+          "count": 12,
+          "importance": 1
+        },
+        {
+          "phrase": "joint special operations command jsoc",
+          "count": 12,
+          "importance": 1
+        },
+        {
+          "phrase": "kk how do you feel",
+          "count": 12,
+          "importance": 1
+        },
+        {
+          "phrase": "how do you feel about",
+          "count": 12,
+          "importance": 1
+        },
+        {
+          "phrase": "special operations forces handling category",
+          "count": 12,
+          "importance": 1
+        }
+      ],
+      "indicators": []
+    }
+  },
+  "synonyms": {
+    "FBI": [
+      "Federal Bureau of Investigation",
+      "FBI",
+      "Bureau"
+    ],
+    "CIA": [
+      "Central Intelligence Agency",
+      "CIA",
+      "Agency"
+    ],
+    "DHS": [
+      "Department of Homeland Security",
+      "DHS",
+      "Homeland Security"
+    ],
+    "DOD": [
+      "Department of Defense",
+      "DOD",
+      "Pentagon"
+    ],
+    "NSA": [
+      "National Security Agency",
+      "NSA"
+    ],
+    "ICE": [
+      "Immigration and Customs Enforcement",
+      "ICE"
+    ],
+    "CBP": [
+      "Customs and Border Protection",
+      "CBP",
+      "Border Patrol"
+    ],
+    "FOIA": [
+      "Freedom of Information Act",
+      "FOIA"
+    ],
+    "ISIS": [
+      "Islamic State",
+      "ISIS",
+      "ISIL",
+      "Daesh"
+    ],
+    "NATO": [
+      "North Atlantic Treaty Organization",
+      "NATO"
+    ],
+    "domestic terrorism": [
+      "domestic terrorism",
+      "domestic extremism",
+      "homegrown terrorism"
+    ],
+    "white supremacy": [
+      "white supremacy",
+      "white nationalism",
+      "white nationalist"
+    ],
+    "accelerationism": [
+      "accelerationism",
+      "accelerationist",
+      "militant accelerationism"
+    ],
+    "DOJ": [
+      "DOJ"
+    ],
+    "USAID": [
+      "USAID"
+    ],
+    "IRS": [
+      "IRS"
+    ]
+  },
+  "boolean_queries": {
+    "U.S. Politics & Government": [
+      {
+        "name": "U.S. Politics & Government - News Coverage",
+        "query": "(\"Donald Trump\" OR \"Joe Biden\" OR \"Kamala Harris\") AND (news OR investigation OR report)",
+        "sources": [
+          "Google News",
+          "NewsAPI"
+        ]
+      },
+      {
+        "name": "U.S. Politics & Government - Academic Research",
+        "query": "(\"u.s. politics\" OR \"congressional oversight\" OR \"gerontocracy\" OR \"United States politics\" OR \"election interference\") AND (study OR research OR analysis)",
+        "sources": [
+          "Google Scholar",
+          "Academic databases"
+        ]
+      }
+    ],
+    "National Security & Intelligence": [
+      {
+        "name": "National Security & Intelligence - Government Documents",
+        "query": "site:(.gov OR .mil) (\"NSA\" OR \"CIA\" OR \"DHS\") AND (\"report\" OR \"assessment\" OR \"memo\")",
+        "sources": [
+          "Google",
+          "Government sites"
+        ]
+      },
+      {
+        "name": "National Security & Intelligence - News Coverage",
+        "query": "(\"National Security Presidential Memorandum 7\" OR \"Elias Rodriguez\" OR \"William Burns\" OR \"national security\" OR \"intelligence community\") AND (news OR investigation OR report)",
+        "sources": [
+          "Google News",
+          "NewsAPI"
+        ]
+      },
+      {
+        "name": "National Security & Intelligence - Academic Research",
+        "query": "(\"domestic terrorism\" OR \"intelligence community\" OR \"counterterrorism\" OR \"intelligence\" OR \"U.S. intelligence\") AND (study OR research OR analysis)",
+        "sources": [
+          "Google Scholar",
+          "Academic databases"
+        ]
+      }
+    ],
+    "Civil Liberties & Surveillance": [
+      {
+        "name": "Civil Liberties & Surveillance - Academic Research",
+        "query": "(\"surveillance\" OR \"civil liberties\" OR \"privacy\" OR \"censorship\" OR \"media censorship\") AND (study OR research OR analysis)",
+        "sources": [
+          "Google Scholar",
+          "Academic databases"
+        ]
+      }
+    ],
+    "Military & Defense": [
+      {
+        "name": "Military & Defense - Government Documents",
+        "query": "site:(.gov OR .mil) (\"DOD\") AND (\"report\" OR \"assessment\" OR \"memo\")",
+        "sources": [
+          "Google",
+          "Government sites"
+        ]
+      },
+      {
+        "name": "Military & Defense - News Coverage",
+        "query": "(\"Mark Milley\" OR \"Lloyd Austin\" OR \"Tower 22\" OR \"s military\" OR \"pentagon s\") AND (news OR investigation OR report)",
+        "sources": [
+          "Google News",
+          "NewsAPI"
+        ]
+      },
+      {
+        "name": "Military & Defense - Academic Research",
+        "query": "(\"military industrial complex\" OR \"civil military relations\" OR \"civil-military relations\" OR \"defense spending\" OR \"militarization\") AND (study OR research OR analysis)",
+        "sources": [
+          "Google Scholar",
+          "Academic databases"
+        ]
+      }
+    ],
+    "Foreign Policy & Conflicts": [
+      {
+        "name": "Foreign Policy & Conflicts - News Coverage",
+        "query": "(\"Iran\" OR \"Israel\" OR \"Middle East\") AND (news OR investigation OR report)",
+        "sources": [
+          "Google News",
+          "NewsAPI"
+        ]
+      },
+      {
+        "name": "Foreign Policy & Conflicts - Academic Research",
+        "query": "(\"u.s. foreign policy\" OR \"U.S. foreign policy\" OR \"airstrike\" OR \"humanitarian crisis\" OR \"iran backed militia\") AND (study OR research OR analysis)",
+        "sources": [
+          "Google Scholar",
+          "Academic databases"
+        ]
+      }
+    ],
+    "Healthcare": [
+      {
+        "name": "Healthcare - News Coverage",
+        "query": "(\"Brian Thompson\" OR \"Andrew Witty\") AND (news OR investigation OR report)",
+        "sources": [
+          "Google News",
+          "NewsAPI"
+        ]
+      },
+      {
+        "name": "Healthcare - Academic Research",
+        "query": "(\"health insurance\" OR \"esophageal cancer\" OR \"health insurance industry\" OR \"healthcare industry\" OR \"healthcare policy\") AND (study OR research OR analysis)",
+        "sources": [
+          "Google Scholar",
+          "Academic databases"
+        ]
+      }
+    ],
+    "Media & Journalism": [
+      {
+        "name": "Media & Journalism - News Coverage",
+        "query": "(\"Pete Hegseth\" OR \"Ken Klippenstein\" OR \"Super Bowl\") AND (news OR investigation OR report)",
+        "sources": [
+          "Google News",
+          "NewsAPI"
+        ]
+      },
+      {
+        "name": "Media & Journalism - Academic Research",
+        "query": "(\"news roundup\" OR \"disinformation\" OR \"media coverage\" OR \"media criticism\" OR \"misinformation\") AND (study OR research OR analysis)",
+        "sources": [
+          "Google Scholar",
+          "Academic databases"
+        ]
+      }
+    ],
+    "Technology & Corporate Power": [
+      {
+        "name": "Technology & Corporate Power - News Coverage",
+        "query": "(\"Elon Musk\") AND (news OR investigation OR report)",
+        "sources": [
+          "Google News",
+          "NewsAPI"
+        ]
+      },
+      {
+        "name": "Technology & Corporate Power - Academic Research",
+        "query": "(\"cybersecurity\" OR \"social media\" OR \"artificial intelligence\" OR \"big tech\" OR \"content moderation\") AND (study OR research OR analysis)",
+        "sources": [
+          "Google Scholar",
+          "Academic databases"
+        ]
+      }
+    ],
+    "Immigration & Border Security": [
+      {
+        "name": "Immigration & Border Security - News Coverage",
+        "query": "(\"Alejandro Mayorkas\") AND (news OR investigation OR report)",
+        "sources": [
+          "Google News",
+          "NewsAPI"
+        ]
+      },
+      {
+        "name": "Immigration & Border Security - Academic Research",
+        "query": "(\"immigration enforcement\" OR \"immigration\" OR \"border security\" OR \"deportation\" OR \"anti Immigration and Customs Enforcement protest\") AND (study OR research OR analysis)",
+        "sources": [
+          "Google Scholar",
+          "Academic databases"
+        ]
+      }
+    ],
+    "Domestic Policy & Social Issues": [
+      {
+        "name": "Domestic Policy & Social Issues - News Coverage",
+        "query": "(\"Luigi Mangione\" OR \"domestic violent\") AND (news OR investigation OR report)",
+        "sources": [
+          "Google News",
+          "NewsAPI"
+        ]
+      },
+      {
+        "name": "Domestic Policy & Social Issues - Academic Research",
+        "query": "(\"Healthcare policy\" OR \"Ageism\" OR \"Generational change\" OR \"Labor movement\" OR \"student protests\") AND (study OR research OR analysis)",
+        "sources": [
+          "Google Scholar",
+          "Academic databases"
+        ]
+      }
+    ],
+    "Law Enforcement & Justice": [
+      {
+        "name": "Law Enforcement & Justice - Government Documents",
+        "query": "site:(.gov OR .mil) (\"FBI\" OR \"DOJ\") AND (\"report\" OR \"assessment\" OR \"memo\")",
+        "sources": [
+          "Google",
+          "Government sites"
+        ]
+      },
+      {
+        "name": "Law Enforcement & Justice - News Coverage",
+        "query": "(\"assassination attempt\" OR \"Jeffrey Epstein\" OR \"Christopher Wray\" OR \"law enforcement\" OR \"fbi director\") AND (news OR investigation OR report)",
+        "sources": [
+          "Google News",
+          "NewsAPI"
+        ]
+      },
+      {
+        "name": "Law Enforcement & Justice - Academic Research",
+        "query": "(\"law enforcement\" OR \"cartel\" OR \"gun violence\" OR \"mass shooting\") AND (study OR research OR analysis)",
+        "sources": [
+          "Google Scholar",
+          "Academic databases"
+        ]
+      }
+    ],
+    "Entertainment/Culture": [
+      {
+        "name": "Entertainment/Culture - News Coverage",
+        "query": "(\"Taylor Swift\") AND (news OR investigation OR report)",
+        "sources": [
+          "Google News",
+          "NewsAPI"
+        ]
+      }
+    ],
+    "Media & Press": [
+      {
+        "name": "Media & Press - Academic Research",
+        "query": "(\"Media and journalism\" OR \"Right-wing media\" OR \"Disinformation\" OR \"manifestos\") AND (study OR research OR analysis)",
+        "sources": [
+          "Google Scholar",
+          "Academic databases"
+        ]
+      }
+    ],
+    "Foreign Policy & International Relations": [
+      {
+        "name": "Foreign Policy & International Relations - News Coverage",
+        "query": "(\"Mohammed bin Salman\" OR \"Palestine\" OR \"ukraine\") AND (news OR investigation OR report)",
+        "sources": [
+          "Google News",
+          "NewsAPI"
+        ]
+      },
+      {
+        "name": "Foreign Policy & International Relations - Academic Research",
+        "query": "(\"foreign-interference\" OR \"Authoritarianism\" OR \"foreign-policy\" OR \"visa policy\" OR \"Humanitarian aid\") AND (study OR research OR analysis)",
+        "sources": [
+          "Google Scholar",
+          "Academic databases"
+        ]
+      }
+    ],
+    "Technology & Digital Policy": [
+      {
+        "name": "Technology & Digital Policy - Academic Research",
+        "query": "(\"Social media moderation\" OR \"AI regulation\" OR \"biometrics\" OR \"Platform governance\" OR \"Social media algorithms\") AND (study OR research OR analysis)",
+        "sources": [
+          "Google Scholar",
+          "Academic databases"
+        ]
+      }
+    ],
+    "War Crimes & Human Rights": [
+      {
+        "name": "War Crimes & Human Rights - News Coverage",
+        "query": "(\"Jamal Khashoggi\") AND (news OR investigation OR report)",
+        "sources": [
+          "Google News",
+          "NewsAPI"
+        ]
+      },
+      {
+        "name": "War Crimes & Human Rights - Academic Research",
+        "query": "(\"Civilian Casualties\" OR \"Humanitarian crisis\") AND (study OR research OR analysis)",
+        "sources": [
+          "Google Scholar",
+          "Academic databases"
+        ]
+      }
+    ],
+    "Legal & Judicial": [
+      {
+        "name": "Legal & Judicial - Academic Research",
+        "query": "(\"FOIA / transparency\" OR \"Whistleblowers\" OR \"child sexual abuse\" OR \"Freedom of Information Act\" OR \"DNA forensics\") AND (study OR research OR analysis)",
+        "sources": [
+          "Google Scholar",
+          "Academic databases"
+        ]
+      }
+    ],
+    "Corporate & Business": [
+      {
+        "name": "Corporate & Business - Academic Research",
+        "query": "(\"Philanthropy\" OR \"crowdfunding\" OR \"insider trading\" OR \"corporate misconduct\" OR \"corporate influence\") AND (study OR research OR analysis)",
+        "sources": [
+          "Google Scholar",
+          "Academic databases"
+        ]
+      }
+    ],
+    "International Relations & Diplomacy": [
+      {
+        "name": "International Relations & Diplomacy - Government Documents",
+        "query": "site:(.gov OR .mil) (\"USAID\" OR \"NATO\") AND (\"report\" OR \"assessment\" OR \"memo\")",
+        "sources": [
+          "Google",
+          "Government sites"
+        ]
+      }
+    ],
+    "Terrorism & Counterterrorism": [
+      {
+        "name": "Terrorism & Counterterrorism - Government Documents",
+        "query": "site:(.gov OR .mil) (\"ISIS\") AND (\"report\" OR \"assessment\" OR \"memo\")",
+        "sources": [
+          "Google",
+          "Government sites"
+        ]
+      },
+      {
+        "name": "Terrorism & Counterterrorism - News Coverage",
+        "query": "(\"domestic terrorism\" OR \"violent extremists\") AND (news OR investigation OR report)",
+        "sources": [
+          "Google News",
+          "NewsAPI"
+        ]
+      }
+    ],
+    "Immigration": [
+      {
+        "name": "Immigration - Government Documents",
+        "query": "site:(.gov OR .mil) (\"ICE\" OR \"CBP\") AND (\"report\" OR \"assessment\" OR \"memo\")",
+        "sources": [
+          "Google",
+          "Government sites"
+        ]
+      },
+      {
+        "name": "Immigration - News Coverage",
+        "query": "(\"secret service\" OR \"vice president\") AND (news OR investigation OR report)",
+        "sources": [
+          "Google News",
+          "NewsAPI"
+        ]
+      }
+    ],
+    "Government Oversight & Accountability": [
+      {
+        "name": "Government Oversight & Accountability - Government Documents",
+        "query": "site:(.gov OR .mil) (\"IRS\") AND (\"report\" OR \"assessment\" OR \"memo\")",
+        "sources": [
+          "Google",
+          "Government sites"
+        ]
+      }
+    ],
+    "General": [
+      {
+        "name": "General - News Coverage",
+        "query": "(\"united states\" OR \"social media\") AND (news OR investigation OR report)",
+        "sources": [
+          "Google News",
+          "NewsAPI"
+        ]
+      }
+    ]
+  }
+}

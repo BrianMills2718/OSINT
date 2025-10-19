@@ -1,0 +1,87 @@
+
+U.S. flag signifying that this is a United States federal government website An official website of the United States Government
+Developer Site
+
+    General
+    Tutorials
+    Guides
+    API Reference
+    Schemas
+
+Schemas - Overview
+
+This documentation provides information to Vendors that wish to become an integration partner with USAJOBS. Please read the SIF Guide for detailed information. Do you have a questions or concern? Please email vendor-help@usajobs.gov.
+Documentation
+
+    SIF Guide Data Dictionary -All SIF Schemas UAT Data Dictionary -All SIF Schemas Single Sign On Guide SIF Registration Forms Connecting to USAJOBS API Data VendorList USAJOBS Production Integration Checklist 
+
+Links
+
+    Production Environment WSDL and XSD files
+        CodeLists - used by SIF for "open" list validations
+        Integration Services WSDL
+        HR-XML XSD
+        OAGIS Datatypes XSD - used by HR-XML
+        OAGIS XSD
+        USAJOBS - Primary XSD
+        XSLT Job Preview
+        XSLT Preview Resume
+    UAT Environment WSDL and XSD files
+        CodeLists - used by SIF for "open" list validations
+        Integration Services WSDL
+        Integration Services WSDL - Strongly Typed
+        HR-XML XSD
+        HR-XML XSD - Strongly Typed
+        OAGIS Datatypes XSD - used by HR-XML
+        OAGIS XSD
+        USAJOBS - Primary XSD
+        USAJOBS - Primary XSD - Strongly Typed
+        XSLT Job Preview
+        XSLT Preview Resume
+    Test Environment WSDL and XSD files
+        CodeLists - used by SIF for "open" list validations
+        Integration Services WSDL
+        HR-XML XSD
+        OAGIS Datatypes XSD - used by HR-XML
+        OAGIS XSD
+        USAJOBS - Primary XSD
+        XSLT Job Preview
+        XSLT Preview Resume
+    Sample Agency Transfer XMLs
+        AcknowledgeCandidate-StatusUpdate
+        AcknowledgePositionOpening_JOAError
+        AcknowledgePositionOpening-JOAAccept
+        CancelPositionOpening
+        Candidate_Notification_Formpost_HRXML
+        ChangeCandidate-StatusUpdate
+        GetCandidate-Document
+        GetCandidate-ProfileResume
+        GetUserAccount
+        ProcessPositionOpening-JOAAdd
+        ProcessPositionOpening-JOAChange
+        ShowCandidate-DocumentAccept
+        ShowCandidate-DocumentReject
+        ShowCandidate-ProfileOnly-ResumeDocAccepted
+        ShowCandidate-ProfileResumeAccepted
+        ShowCandidate-ProfileResumeRejected
+        ShowUserAccount
+        SSOJAVA
+        WebServicesHTTP_Example_UISJOAAdd_vbs
+
+USAJOBS footer logo
+
+USAJOBS is a United States Office of Personnel Management website.
+LinkedIn YouTube
+
+    About USAJOBS
+    Accessibility
+    FOIA
+    Inspector general
+    No Fear Act Data
+    Privacy policy
+    Reports and publications
+    Terms and conditions
+    USA.gov
+
+    Vote.gov
+

@@ -1,0 +1,79 @@
+KEYWORD EXTRACTION SUMMARY
+======================================================================
+
+TF-IDF Terms: 0
+
+Top 20 TF-IDF terms:
+
+
+Named Entities:
+
+
+Acronyms: 821
+  - FBI (1461 mentions)
+  - ICE (423 mentions)
+  - CIA (309 mentions)
+  - NATO (285 mentions)
+  - CEO (213 mentions)
+  - US (201 mentions)
+  - ISIS (198 mentions)
+  - DHS (192 mentions)
+  - PDF (186 mentions)
+  - NSPM (168 mentions)
+  - USS (156 mentions)
+  - NBC (153 mentions)
+  - CNN (150 mentions)
+  - NSA (138 mentions)
+  - IRS (135 mentions)
+  - AI (132 mentions)
+  - CBP (120 mentions)
+  - UK (99 mentions)
+  - USAID (99 mentions)
+  - DC (99 mentions)
+
+
+N-grams:
+  2-grams: 90355
+    - u s (2910 mentions)
+    - national security (1686 mentions)
+    - ken klippenstein (1059 mentions)
+    - paid subscriber (909 mentions)
+    - trump s (903 mentions)
+    - united states (837 mentions)
+    - don t (828 mentions)
+    - social media (732 mentions)
+    - i ve (693 mentions)
+    - comment share (642 mentions)
+  3-grams: 131454
+    - leave a comment (696 mentions)
+    - william m arkin (639 mentions)
+    - edited by william (612 mentions)
+    - paid subscriber subscribe (516 mentions)
+    - become a paid (387 mentions)
+    - comment share edited (375 mentions)
+    - u s military (360 mentions)
+    - national security state (357 mentions)
+    - box of government (315 mentions)
+    - becoming a paid (309 mentions)
+  4-grams: 146062
+    - leave a comment share (642 mentions)
+    - subscribe leave a comment (633 mentions)
+    - edited by william m (612 mentions)
+    - share edited by william (444 mentions)
+    - become a paid subscriber (378 mentions)
+    - please become a paid (321 mentions)
+    - black box of government (315 mentions)
+    - box of government secrets (315 mentions)
+    - becoming a paid subscriber (306 mentions)
+    - so i can keep (264 mentions)
+  5-grams: 148046
+    - edited by william m arkin (612 mentions)
+    - subscribe leave a comment share (591 mentions)
+    - share edited by william m (444 mentions)
+    - leave a comment share edited (375 mentions)
+    - comment share edited by william (372 mentions)
+    - please become a paid subscriber (318 mentions)
+    - black box of government secrets (315 mentions)
+    - bill's black box of government (306 mentions)
+    - subscriber subscribe leave a comment (264 mentions)
+    - receive new posts and support (255 mentions)

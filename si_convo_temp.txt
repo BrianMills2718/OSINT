@@ -1,0 +1,242 @@
+Rakorski — 10/8/2025 5:42 PM
+i assume its the same for codex
+but its really built for developer teams so that we could both work on the code at the same time without fucking each other
+SignalsIntelligence — 10/8/2025 5:43 PM
+I definitely haven't done anything like that with claude
+sign into the server with credentials I gave you and try codex out on there
+Rakorski — 10/8/2025 5:45 PM
+sounds good. im about to finish up on the comp for tonight but i do think the wiki idea is good
+SignalsIntelligence — 10/8/2025 5:46 PM
+I'm going to start learning about what implementing a true knowledge graph entails
+Rakorski — 10/8/2025 5:46 PM
+reading about it is incredibly confusing
+but basically it comes down to a few things
+SignalsIntelligence — 10/8/2025 5:47 PM
+without AI to explain a lot of this stuff and give me examples I'd be screwed
+Rakorski — 10/8/2025 5:47 PM
+what types of entities/nodes do you have and what properties do they have
+what types of edges/relations do you have and what properties do they have
+what is the domain and range of the edges
+i.e. you might have a witnessing relation that has a domain "person" and a range of "ufo sighting"
+and then past that it is what is the format of the information (is it a string for a name, a number in ISO format for a date) etc
+that is basically the limit of knowledge graphs
+SignalsIntelligence — 10/8/2025 5:49 PM
+We should jump on the phone soon so we can actually discuss
+or voice chat
+Rakorski — 10/8/2025 5:50 PM
+until you get into "hypergraphs" where you turn the edges themselves into nodes which allows non binary relationships which is really what you need for complex information
+and at that point the relationships turn into roles in a relationship
+for example a movie might have a "casting for a movie" might be a relationship that has roles of actor name, year of movie, and name of movie
+SignalsIntelligence — 10/8/2025 5:51 PM
+Going to take me some time to wrap my mind around this
+Rakorski — 10/8/2025 5:52 PM
+took my a long time reading hundreds of different perspectives to realize its not as complicated as every article ive read makes it sound
+Rakorski — 10/8/2025 6:10 PM
+new version:
+here is the hyper-kg 
+Image
+Rakorski — 10/8/2025 6:18 PM
+and here is the kg
+Image
+the same information is represented iether way
+but all of the relations in the kg are sobsumed into the casting relation which becomes  a node and then all the edges become the different part of the asting relation.
+in either case the wiki looks like this:
+Leonardo DiCaprio
+[[IsA::Person]]
+[[ActedIn::Titanic]]
+[[Played::Jack]]
+[[PortrayedIn::Titanic]]
+[[ActiveInYear::1997]]
+[[Context::1997]]
+
+Linked entities:
+→ [[Person]]
+→ [[Titanic]]
+→ [[Jack]]
+→ [[1997]]
+
+---
+
+Titanic
+[[IsA::Movie]]
+[[HasActor::Leonardo DiCaprio]]
+[[FeaturesCharacter::Jack]]
+[[Depicted::Jack]]
+[[FeaturedActor::Leonardo DiCaprio]]
+[[ReleasedInYear::1997]]
+[[Context::1997]]
+
+Linked entities:
+→ [[Movie]]
+→ [[Leonardo DiCaprio]]
+→ [[Jack]]
+→ [[1997]]
+
+---
+
+Jack
+[[IsA::Character]]
+[[AppearsIn::Titanic]]
+[[PortrayedBy::Leonardo DiCaprio]]
+[[SetInYear::1997]]
+[[Context::1997]]
+
+Linked entities:
+→ [[Character]]
+→ [[Titanic]]
+→ [[Leonardo DiCaprio]]
+→ [[1997]]
+
+---
+
+Person
+[[HasInstance::Leonardo DiCaprio]]
+[[Context::1997]]
+
+Linked entities:
+→ [[Leonardo DiCaprio]]
+→ [[1997]]
+
+---
+
+Movie
+[[HasInstance::Titanic]]
+[[Context::1997]]
+
+Linked entities:
+→ [[Titanic]]
+→ [[1997]]
+
+---
+
+Character
+[[HasInstance::Jack]]
+[[Context::1997]]
+
+Linked entities:
+→ [[Jack]]
+→ [[1997]]
+
+---
+
+1997
+[[IsA::Year]]
+[[ContextFor::Leonardo DiCaprio]]
+[[ContextFor::Titanic]]
+[[ContextFor::Jack]]
+[[ContextFor::Person]]
+[[ContextFor::Movie]]
+[[ContextFor::Character]]
+
+Linked entities:
+→ [[Leonardo DiCaprio]]
+→ [[Titanic]]
+→ [[Jack]]
+→ [[Person]]
+→ [[Movie]]
+→ [[Character]]
+Rakorski — 10/10/2025 12:44 PM
+(if you saw a message i shared something i was going to share all my notes files with you but realized i have a bunch of private messages i would need to scrub)
+i dont know if you saw this ⁠UAP Research Server⁠
+maybe Eduardo will share his ontology
+SignalsIntelligence — 10/10/2025 12:50 PM
+After doing some research, I don’t think the knowledge graph will be as hard to implement as I thought. I think the real challenge will be automating putting data into it and getting people to manually input any data that can’t be automated
+Rakorski — 10/10/2025 12:50 PM
+yeah especially if its a wiki based system
+which is really tags not a full knoweldge graph
+SignalsIntelligence — 10/10/2025 12:50 PM
+We can start small and expand over time
+We’d use wikibase and then mirror the data to neo4j for visualization
+Wikibase has some limitations, but because it integrates easily with mediawiki  without easily broken custom bridges and the wiki is what will get users to the table, I think we necessarily need to use wikibase. 
+I've gotten the page creation to a pretty good place
+https://www.wikidisc.org/wiki/Malmstrom_UFO_Incident
+Malmstrom UFO Incident
+Rakorski — 10/10/2025 12:55 PM
+very cool. the case information box is a really nice touch
+I like the idea of creating See Also even if they dont exist yet
+gives a lot more visibility for development 
+SignalsIntelligence — 10/10/2025 12:56 PM
+Yeah. Eventually I can set up the bot to crawl the created pages for see alsos and have it create those too 
+What I've been doing for non UI related stuff is having claude give me the plan for changes, then asking what codex thinks about it, then giving codex's thoughts to claude, and then giving claude's final plan to codex to implement it, and then asking claude to evaluate the implementation and suggest improvements. It works really well.
+Rakorski — 10/10/2025 1:00 PM
+yeah i do the same thing but without codex
+but when i do it the chatbots dont have a great understanding of the codebase like claude code and codex do so im sure your method would work better
+SignalsIntelligence — 10/10/2025 1:01 PM
+Yeah, when both of them can look at the code it is so much better
+Rakorski — 10/10/2025 1:03 PM
+dsid you use deep research to get the lins?
+im confused on the deepimal numbers in the references
+Image
+SignalsIntelligence — 10/10/2025 1:05 PM
+The what?
+Rakorski — 10/10/2025 1:06 PM
+sorry decimal
+the 1.00 1.01 1.02 etc
+SignalsIntelligence — 10/10/2025 1:07 PM
+Those just refer to instances of a reference being used in the text above, so "1.03" refers to the third instance of the first reference, "3.05" refers to the fifth instance of the third reference. The references at the bottom are created automatically as they are used in the text above, so when a new reference is used in the text, it gets added at the bottom and then when users go to add a citation that source is in a list for them to select.
+Rakorski — 10/10/2025 1:07 PM
+ahh thats cool
+SignalsIntelligence — 10/10/2025 1:09 PM
+Yeah, I thought the reference list had to be manually created
+Classification Systems for UFO Encounters
+
+Introduction
+
+Efforts to categorize UFO sightings have led to several classification systems in ufology. These systems aim to standardize how encounters are described, from Dr. J. Allen Hynek’s famous “Close Encounters” scale introduced in the 1970s to later frameworks by researchers like Jacques Vallée, and organizational schemas used by groups such as MUFON and CUFOS. Each system has its own structure and purpose – some focus on the proximity and type of UFO encounter (e.g. whether physical evidence or beings were observed) while others introduce multiple dimensions including credibility and strangeness of the report. In this report, we compare the major UFO encounter classification systems – Hynek’s scale, Vallée’s typology, MUFON’s and CUFOS’s categorizations, and other notable proposals – analyzing their structure, strengths, and limitations in terms of standardization, clarity, and ability to capture relevant case characteristics. We then propose a new, improved classification system that synthesizes these insights. The new system is designed for ease of use by researchers, field investigators, and even the public, and is well-suited for collaborative databases or knowledge graphs where structured data about UFO cases is needed.
+... (38 KB left)
+Expand
+message.txt
+88 KB
+What do you think about the classification system chatgpt came up with?
+Might be easier to read here: https://chatgpt.com/share/68e966b6-9a5c-8004-9707-8e382ea672f0
+ChatGPT
+ChatGPT - UFO encounter scale comparison
+Shared via ChatGPT
+Image
+Rakorski — 10/10/2025 1:11 PM
+this is what is used in the case information box right?
+SignalsIntelligence — 10/10/2025 1:11 PM
+Yeah, right now it is using CE-II, CE-III etc
+Rakorski — 10/10/2025 3:12 PM
+thanks for pushing me to get codex in parallel with claude code
+very cool
+SignalsIntelligence — 10/10/2025 3:21 PM
+Definitely. Make sure you install the GPT-5 codex model, it’s not on there by default
+Rakorski — 10/10/2025 3:21 PM
+i see this
+Image
+is that what you mean?
+SignalsIntelligence — 10/10/2025 3:21 PM
+Oh okay, maybe it is on there by default now
+I just use codex high all the time 
+There isn’t a planning mode so you have to tell it not to make changes without approval
+Rakorski — 10/10/2025 3:22 PM
+SignalsIntelligence — 10/12/2025 11:39 AM
+I'm starting to work on dialing in the person page bot, do you have any thoughts on how to handle disputed information on someone's background - military, career, education, etc.?
+Rakorski — 10/12/2025 11:40 AM
+The IC has a framework for information credibility
+that might be the most straightforward approach
+tyring to find it now
+SignalsIntelligence — 10/12/2025 11:42 AM
+I'm anticipating the person pages to be highly contentious, would like to limit as much as possible
+Rakorski — 10/12/2025 11:43 AM
+im still over here praying for peace in the middle east
+i like to hope for things that are actually possible
+SignalsIntelligence — 10/12/2025 11:44 AM
+This page is from the latest version of the case page bot: https://www.wikidisc.org/wiki/Rendlesham_Forest_Incident
+Rendlesham Forest Incident
+I added a timeline section and removed cultural impact section. Not sure if I should keep timeline.
+If you see improvement in the included sections, I'm all ears
+The sources could probably use improvement, but it's difficult. The only easy change would be to instruct it to use more of the wikipedia page sources
+Might try that out, didn't want to just copy all of wikipedia's sources
+SignalsIntelligence — 10/13/2025 10:43 AM
+https://query.wikidisc.org/#%23defaultView%3ATable%0A%20%20PREFIX%20wd%3A%20%20<https%3A%2F%2Fdata.wikidisc.org%2Fentity%2F>%0A%20%20PREFIX%20wdt%3A%20<https%3A%2F%2Fdata.wikidisc.org%2Fprop%2Fdirect%2F>%0A%0A%20%20SELECT%20%3Fitem%20%3FitemLabel%20%3FitemDescription%20%3FclassLabel%0A%20%20%20%20%20%20%20%20%20(GROUP_CONCAT(DISTINCT%20%3Fclaim%3B%20separator%3D"%20⏐%20")%20AS%20%3Fclaims)%0A%20%20WHERE%20%7B%0A%20%20%20%20VALUES%20%3Fitem%20%7B%0A%20%20%20%20%20%20wd%3AQ3%20%20wd%3AQ4%20%20wd%3AQ5%20%20wd%3AQ6%20%20wd%3AQ7%20%20wd%3AQ8%20%20wd%3AQ9%20%20wd%3AQ10%0A%20%20%20%20%20%20wd%3AQ11%20wd%3AQ12%20wd%3AQ13%20wd%3AQ14%20wd%3AQ15%20wd%3AQ16%20wd%3AQ17%20wd%3AQ18%0A%20%20%20%20%20%20wd%3AQ19%20wd%3AQ20%20wd%3AQ21%20wd%3AQ22%20wd%3AQ23%20wd%3AQ24%20wd%3AQ25%0A%20%20%20%20%20%20wd%3AQ26%20wd%3AQ27%20wd%3AQ28%20wd%3AQ29%20wd%3AQ30%20wd%3AQ31%0A%20%20%20%20%20%20wd%3AQ32%20wd%3AQ33%20wd%3AQ34%20wd%3AQ35%20wd%3AQ36%20wd%3AQ37%20wd%3AQ38%20wd%3AQ39%20wd%3AQ40%0A%20%20%20%20%20%20wd%3AQ41%20wd%3AQ42%20wd%3AQ43%20wd%3AQ44%20wd%3AQ45%20wd%3AQ46%0A%20%20%20%20%20%20wd%3AQ47%20wd%3AQ48%20wd%3AQ49%0A%20%20%20%20%7D%0A%0A%20%20%20%20%3Fitem%20wdt%3AP1%20%3Fclass%20.%0A%0A%20%20%20%20OPTIONAL%20%7B%0A%20%20%20%20%20%20VALUES%20%3FshowProp%20%7B%20wdt%3AP1%20wdt%3AP3%20wdt%3AP4%20wdt%3AP5%20wdt%3AP9%20wdt%3AP10%20wdt%3AP11%20wdt%3AP12%20wdt%3AP13%20wdt%3AP14%20wdt%3AP15%20wdt%3AP19%20%7D%0A%20%20%20%20%20%20%3Fitem%20%3FshowProp%20%3Fvalue%20.%0A%20%20%20%20%20%20BIND(REPLACE(STR(%3FshowProp)%2C%20STR(wdt%3A)%2C%20"P")%20AS%20%3Fpid)%0A%20%20%20%20%20%20BIND(CONCAT(%3Fpid%2C%20"%20→%20"%2C%20COALESCE(STR(%3Fvalue)%2C%20""))%20AS%20%3Fclaim)%0A%20%20%20%20%7D%0A%0A%20%20%20%20SERVICE%20wikibase%3Alabel%20%7B%20bd%3AserviceParam%20wikibase%3Alanguage%20"en".%20%7D%0A%20%20%7D%0A%20%20GROUP%20BY%20%3Fitem%20%3FitemLabel%20%3FitemDescription%20%3FclassLabel%0A%20%20ORDER%20BY%20%3Fitem%0A
+https://query.wikidisc.org/embed.html#%23defaultView%3AGraph%0A%20%20PREFIX%20wd%3A%20%20<https%3A%2F%2Fdata.wikidisc.org%2Fentity%2F>%0A%20%20PREFIX%20wdt%3A%20<https%3A%2F%2Fdata.wikidisc.org%2Fprop%2Fdirect%2F>%0A%0A%20%20SELECT%20%3Fprogram%20%3FprogramLabel%20%3Fparent%20%3FparentLabel%20WHERE%20%7B%0A%20%20%20%20%3Fprogram%20wdt%3AP1%20wd%3AQ5%20%3B%0A%20%20%20%20%20%20%20%20%20%20%20%20%20wdt%3AP12%20%3Fparent%20.%0A%20%20%20%20SERVICE%20wikibase%3Alabel%20%7B%20bd%3AserviceParam%20wikibase%3Alanguage%20"en".%20%7D%0A%20%20%7D%0A
+That's not accurate, I just used some sample data that was AI generated
+But, it's working
+SignalsIntelligence — 10/13/2025 12:14 PM
+You should assess whether this system meets our needs. There isn't any visual editing, would need to use neo4j for that which I think is possible.
+Rakorski — Yesterday at 7:59 PM
+https://www.jstor.org/stable/43995333
+Image
+ill come back to the wiki stuff this weekend
