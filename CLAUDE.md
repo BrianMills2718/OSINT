@@ -195,12 +195,97 @@ This file tracks ongoing development tasks for the multi-database agentic search
 - ✅ No compatibility issues - the bug was in our code, not the model!
 - ✅ System now uses gpt-5-mini by default as originally intended
 
+### Phase 3: USAJobs Integration (2025-10-18)
+- [x] **Add USAJobs API key** ✅
+  - API Key: HjEl/dTPVCjHZkuxXawTVo+DLiZTfsDJorrOhswQNlc=
+  - Email: brianmills2718@gmail.com
+  - Documentation: usa_jobs_api_info/
+
+- [x] **Test USAJobs live** ✅
+  - Data science jobs: 5 results (2078ms)
+  - Cybersecurity jobs: 2 results (1835ms)
+  - Query generation working
+  - All headers configured correctly
+
+- [x] **All 3 database integrations tested** ✅
+  - SAM.gov: 4.5s ✅
+  - DVIDS: 1.0s ✅
+  - USAJobs: 2.3s ✅
+  - ClearanceJobs: Puppeteer ✅
+
 **Next Steps**:
 1. ~~Install Streamlit for web UI testing~~ (not in venv)
 2. ~~Run live integration tests with API keys~~ ✅ DONE
 3. ~~Test actual search execution with real queries~~ ✅ DONE
-4. Clean up untracked files (data organization)
-5. Update old test files with new import paths
+4. ~~Test USAJobs API~~ ✅ DONE
+5. Clean up untracked files (data organization)
+6. Update old test files with new import paths
+
+## Codex-Generated Structural Issues
+
+### Issue #110: Tier 4 Harness Config Gap (Codex Generated)
+**Priority**: Critical
+**Impact**: False negatives in test execution, tests don't measure real deployment conditions
+
+**Problem**: Tier 4's inferred runner doesn't use the actual blueprint or harness. Tests run in a simulated environment that doesn't match deployment, leading to false passing/failing tests.
+
+**Solution**: Replace Tier 4's inferred runner with contract-driven fixtures:
+- Load the blueprint
+- Build the real harness
+- Hydrate required config/resources
+- Execute components via the harness so behavior is measured under the same conditions we deploy
+
+**Tasks**:
+- [ ] Refactor Tier 4 harness to use blueprint + fixtures
+- [ ] Implement config/resource hydration from blueprint
+- [ ] Execute components through real harness instead of inferred runner
+- [ ] Rerun failing systems to confirm fix eliminates false negatives
+
+### Issue #111: Missing Contract-Driven Test Specs (Codex Generated)
+**Priority**: High
+**Impact**: LLM has to imagine test cases from scratch, inconsistent test quality
+
+**Problem**: No per-recipe test specifications exist. The system asks the LLM to generate test cases without guidance, leading to inconsistent and incomplete testing.
+
+**Solution**: Define per-recipe test specifications (inputs, expected invariants, fixture builders). Let Tier 4 pick the right spec instead of asking the LLM to imagine test cases from scratch.
+
+**Tasks**:
+- [ ] Define contract specs for Source recipes (fixtures + invariants)
+- [ ] Define contract specs for Transformer recipes
+- [ ] Define contract specs for Sink recipes
+- [ ] Create fixture builder framework
+- [ ] Update Tier 4 to select appropriate spec per recipe type
+
+### Issue #112: Bundler Syntax Corruption (Codex Generated)
+**Priority**: High
+**Impact**: Generated scripts have syntax errors, deployment failures
+
+**Problem**: The Tier 4 bundler uses text-splicing to combine components, which corrupts syntax and breaks generated scripts.
+
+**Solution**: Build regression harness and patch bundler to import components instead of text-splicing them.
+
+**Tasks**:
+- [ ] Build regression harness that round-trips generated scripts through ast.parse
+- [ ] Identify all text-splicing locations in bundler
+- [ ] Refactor bundler to import components instead of splicing
+- [ ] Run regression suite to verify no syntax corruption
+- [ ] Add continuous validation to prevent future regressions
+
+### Issue #113: Prompt-Driven Maintenance Spiral (Codex Generated)
+**Priority**: Medium
+**Impact**: Increasing prompt complexity, harder to maintain, unclear what rules are still needed
+
+**Problem**: Prompt tweaks accumulate over time to patch structural issues. Once structural fixes are in place, many prompt rules may be redundant but we don't know which ones.
+
+**Solution**: Treat prompt tweaks as last-mile polish—once the test harness enforces real contracts, re-run the evidence suite and keep only the prompt rules still needed.
+
+**Tasks**:
+- [ ] Document all current prompt rules and their purpose
+- [ ] Wait for Issues #110-#112 to be resolved (structural fixes)
+- [ ] Rerun full evidence suite with structural fixes
+- [ ] Identify which prompt rules are still needed
+- [ ] Remove redundant prompt rules
+- [ ] Recalculate zero-intervention metric to measure improvement
 
 ## Notes
 
