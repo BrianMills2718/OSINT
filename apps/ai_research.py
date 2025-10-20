@@ -14,9 +14,10 @@ from datetime import datetime, timedelta
 # Add parent directory to path for imports
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-from ClearanceJobs import ClearanceJobs
-from core.api_request_tracker import log_request
-from usajobs_execute import execute_usajobs_search
+# Old imports removed - now using registry-driven approach
+# from ClearanceJobs import ClearanceJobs
+# from core.api_request_tracker import log_request
+# from usajobs_execute import execute_usajobs_search
 
 # Load environment variables from .env file in project directory
 # This works for local development. For production (Streamlit Cloud),
@@ -391,122 +392,58 @@ def render_ai_research_tab(openai_api_key_from_ui, dvids_api_key, sam_api_key, u
                     st.markdown(f"**Overall Strategy:** {queries['research_strategy']}")
                     st.markdown("---")
 
-                    col_s1, col_s2 = st.columns(2)
+                    # Dynamic columns based on number of sources
+                    selected_sources = queries['selected_sources']
+                    cols = st.columns(len(selected_sources))
 
-                    with col_s1:
-                        st.markdown("**🏢 ClearanceJobs**")
-                        if queries['clearancejobs']['relevant']:
-                            st.markdown(f"Keywords: `{queries['clearancejobs']['keywords']}`")
-                            st.caption(queries['clearancejobs']['reasoning'])
-                        else:
-                            st.caption("❌ Not relevant for this query")
-
-                        st.markdown("**📸 DVIDS**")
-                        if queries['dvids']['relevant']:
-                            st.markdown(f"Keywords: `{queries['dvids']['keywords']}`")
-                            st.caption(queries['dvids']['reasoning'])
-                        else:
-                            st.caption("❌ Not relevant for this query")
-
-                    with col_s2:
-                        st.markdown("**📋 SAM.gov**")
-                        if queries['sam_gov']['relevant']:
-                            st.markdown(f"Keywords: `{queries['sam_gov']['keywords']}`")
-                            st.caption(queries['sam_gov']['reasoning'])
-                        else:
-                            st.caption("❌ Not relevant for this query")
-
-                        st.markdown("**💼 USAJobs**")
-                        if queries['usajobs']['relevant']:
-                            st.markdown(f"Keywords: `{queries['usajobs']['keywords']}`")
-                            st.caption(queries['usajobs']['reasoning'])
-                        else:
-                            st.caption("❌ Not relevant for this query")
+                    for idx, selected in enumerate(selected_sources):
+                        with cols[idx]:
+                            st.markdown(f"**{selected.get('source_id', 'Unknown')}**")
+                            st.markdown(f"Keywords: `{selected.get('keywords', 'N/A')}`")
+                            st.caption(selected.get('reasoning', 'No reasoning provided'))
 
             except Exception as e:
                 st.error(f"❌ Failed to generate queries: {str(e)}")
                 return
 
         # Step 2: Execute searches
-        with st.spinner("🔎 Searching across all databases..."):
+        with st.spinner("🔎 Searching across selected databases..."):
             all_results = {}
 
-            # Show debug info
-            with st.expander("🔍 Debug: Actual API Queries", expanded=False):
-                st.markdown("### Query Parameters Sent to Each API")
-                st.json(queries)
+            # Build API key dict
+            api_keys = {
+                "dvids": dvids_api_key,
+                "sam": sam_api_key,
+                "usajobs": usajobs_api_key,
+                # Add others as needed - registry will handle any source
+            }
 
-            # ClearanceJobs
-            if queries['clearancejobs']['relevant']:
-                with st.status("Searching ClearanceJobs..."):
-                    result = execute_clearancejobs_search(queries['clearancejobs'], results_per_db)
-                    all_results['ClearanceJobs'] = result
+            # Execute searches in parallel
+            import asyncio
 
-                    # Show actual query sent
-                    if result.get('debug_query'):
-                        st.write("**Query sent:**")
-                        st.json(result['debug_query'])
+            async def search_all_sources():
+                tasks = []
+                for selected in queries['selected_sources']:
+                    source_id = selected['source_id']
+                    keywords = selected['keywords']
+                    task = execute_search_via_registry(source_id, keywords, api_keys, results_per_db)
+                    tasks.append(task)
 
-                    if result['success']:
-                        st.write(f"✅ Found {result['total']} results")
-                    else:
-                        st.write(f"❌ Error: {result.get('error')}")
-            else:
-                all_results['ClearanceJobs'] = {"success": True, "total": 0, "results": [], "skipped": True}
+                return await asyncio.gather(*tasks)
 
-            # DVIDS
-            if queries['dvids']['relevant']:
-                with st.status("Searching DVIDS..."):
-                    result = execute_dvids_search(queries['dvids'], dvids_api_key, results_per_db)
-                    all_results['DVIDS'] = result
+            # Run async searches
+            results_list = asyncio.run(search_all_sources())
 
-                    # Show actual query sent
-                    if result.get('debug_query'):
-                        st.write("**Query sent:**")
-                        st.json(result['debug_query'])
+            # Convert to dict keyed by source
+            for result in results_list:
+                source_name = result.get('source', 'Unknown')
+                all_results[source_name] = result
 
-                    if result['success']:
-                        st.write(f"✅ Found {result['total']} results")
-                    else:
-                        st.write(f"❌ Error: {result.get('error')}")
-            else:
-                all_results['DVIDS'] = {"success": True, "total": 0, "results": [], "skipped": True}
-
-            # SAM.gov
-            if queries['sam_gov']['relevant']:
-                with st.status("Searching SAM.gov..."):
-                    result = execute_sam_search(queries['sam_gov'], sam_api_key, results_per_db)
-                    all_results['SAM.gov'] = result
-
-                    # Show actual query sent
-                    if result.get('debug_query'):
-                        st.write("**Query sent:**")
-                        st.json(result['debug_query'])
-
-                    if result['success']:
-                        st.write(f"✅ Found {result['total']} results")
-                    else:
-                        st.write(f"❌ Error: {result.get('error')}")
-            else:
-                all_results['SAM.gov'] = {"success": True, "total": 0, "results": [], "skipped": True}
-
-            # USAJobs
-            if queries['usajobs']['relevant']:
-                with st.status("Searching USAJobs..."):
-                    result = execute_usajobs_search(queries['usajobs'], usajobs_api_key, results_per_db)
-                    all_results['USAJobs'] = result
-
-                    # Show actual query sent
-                    if result.get('debug_query'):
-                        st.write("**Query sent:**")
-                        st.json(result['debug_query'])
-
-                    if result['success']:
-                        st.write(f"✅ Found {result['total']} results")
-                    else:
-                        st.write(f"❌ Error: {result.get('error')}")
-            else:
-                all_results['USAJobs'] = {"success": True, "total": 0, "results": [], "skipped": True}
+                # Show status
+                if result['success']:
+                    st.success(f"✅ {source_name}: Found {result['total']} results")
+                else:
+                    st.error(f"❌ {source_name}: {result.get('error', 'Unknown error')}")
 
         # Step 3: Summarize results
         with st.spinner("📝 Analyzing and summarizing results..."):
@@ -526,62 +463,72 @@ def render_ai_research_tab(openai_api_key_from_ui, dvids_api_key, sam_api_key, u
 
         for db_name, result in all_results.items():
             with st.expander(f"{db_name} ({result.get('total', 0)} results)", expanded=False):
-                if result.get('skipped'):
-                    st.info("Skipped - not relevant to research question")
-                elif not result['success']:
+                if not result['success']:
                     st.error(f"Error: {result.get('error')}")
                 elif not result['results']:
                     st.info("No results found")
                 else:
-                    # Display results based on database type
-                    if db_name == "ClearanceJobs":
-                        for idx, job in enumerate(result['results'], 1):
-                            st.markdown(f"**{idx}. {job.get('title', 'Untitled')}**")
-                            st.caption(f"Company: {job.get('company', 'N/A')} | Location: {job.get('location', 'N/A')}")
-                            if job.get('url'):
-                                st.markdown(f"[View Job]({job['url']})")
-                            st.markdown("---")
+                    # GENERIC display - works for all sources
+                    for idx, item in enumerate(result['results'], 1):
+                        # Try common title fields
+                        title = (item.get('title') or
+                                item.get('job_name') or
+                                item.get('name') or
+                                item.get('MatchedObjectDescriptor', {}).get('PositionTitle') or
+                                'Untitled')
 
-                    elif db_name == "DVIDS":
-                        for idx, item in enumerate(result['results'], 1):
-                            st.markdown(f"**{idx}. {item.get('title', 'Untitled')}**")
-                            st.caption(f"Type: {item.get('type', 'N/A')} | Date: {item.get('date', 'N/A')}")
-                            if item.get('url'):
-                                st.markdown(f"[View]({item['url']})")
-                            st.markdown("---")
+                        st.markdown(f"**{idx}. {title}**")
 
-                    elif db_name == "SAM.gov":
-                        for idx, opp in enumerate(result['results'], 1):
-                            st.markdown(f"**{idx}. {opp.get('title', 'Untitled')}**")
-                            st.caption(f"Type: {opp.get('type', 'N/A')} | Posted: {opp.get('postedDate', 'N/A')[:10]}")
-                            if opp.get('uiLink'):
-                                st.markdown(f"[View Opportunity]({opp['uiLink']})")
-                            st.markdown("---")
+                        # Show URL if available
+                        url = (item.get('url') or
+                              item.get('job_url') or
+                              item.get('uiLink') or
+                              item.get('MatchedObjectDescriptor', {}).get('PositionURI'))
+                        if url:
+                            st.markdown(f"[View]({url})")
 
-                    elif db_name == "USAJobs":
-                        for idx, item in enumerate(result['results'], 1):
-                            job_data = item.get('MatchedObjectDescriptor', {})
-                            st.markdown(f"**{idx}. {job_data.get('PositionTitle', 'Untitled')}**")
+                        # Show common metadata fields if available
+                        metadata_parts = []
 
-                            # Agency and location
-                            org = job_data.get('OrganizationName', 'N/A')
-                            location_list = job_data.get('PositionLocationDisplay', 'N/A')
+                        # Date fields
+                        date_val = (item.get('date') or
+                                   item.get('date_published') or
+                                   item.get('postedDate') or
+                                   item.get('updated'))
+                        if date_val:
+                            metadata_parts.append(f"Date: {str(date_val)[:10]}")
 
-                            # Pay range
-                            pay_info = job_data.get('PositionRemuneration', [])
-                            if pay_info and len(pay_info) > 0:
-                                min_pay = pay_info[0].get('MinimumRange', 'N/A')
-                                max_pay = pay_info[0].get('MaximumRange', 'N/A')
-                                pay_display = f"${min_pay} - ${max_pay}"
-                            else:
-                                pay_display = 'N/A'
+                        # Type/Category
+                        type_val = (item.get('type') or
+                                   item.get('category'))
+                        if type_val:
+                            metadata_parts.append(f"Type: {type_val}")
 
-                            st.caption(f"Agency: {org} | Location: {location_list}")
-                            st.caption(f"Pay: {pay_display}")
+                        # Company/Organization
+                        org_val = (item.get('company') or
+                                  item.get('company_name') or
+                                  item.get('organization') or
+                                  item.get('MatchedObjectDescriptor', {}).get('OrganizationName'))
+                        if org_val:
+                            metadata_parts.append(f"Org: {org_val}")
 
-                            if job_data.get('PositionURI'):
-                                st.markdown(f"[View Job]({job_data['PositionURI']})")
-                            st.markdown("---")
+                        # Location
+                        loc_val = (item.get('location') or
+                                  item.get('PositionLocationDisplay'))
+                        if loc_val:
+                            metadata_parts.append(f"Location: {loc_val}")
+
+                        if metadata_parts:
+                            st.caption(" | ".join(metadata_parts))
+
+                        # Show description/content if available
+                        desc = (item.get('description') or
+                               item.get('preview_text') or
+                               item.get('content'))
+                        if desc:
+                            st.caption(desc[:200] + "..." if len(str(desc)) > 200 else desc)
+
+                        st.markdown("---")
 
                     # Export button for each database
                     import pandas as pd
@@ -590,9 +537,9 @@ def render_ai_research_tab(openai_api_key_from_ui, dvids_api_key, sam_api_key, u
                     st.download_button(
                         f"📥 Download {db_name} Results (CSV)",
                         csv,
-                        f"{db_name.lower()}_{datetime.now().strftime('%Y%m%d')}.csv",
+                        f"{db_name.lower().replace(' ', '_')}_{datetime.now().strftime('%Y%m%d')}.csv",
                         "text/csv",
-                        key=f"download_{db_name}"
+                        key=f"download_{db_name.replace(' ', '_')}"
                     )
 
     elif search_btn and not research_question:
