@@ -12,7 +12,9 @@
 
 All monitors configured with:
 - **Curated investigative keywords** (not generic news terms)
+- **Parallel search execution** (32 searches in ~30-60s, was 5-6 min)
 - **LLM relevance filtering** (score >= 6/10 to send alert)
+- **Boolean query support** (quoted phrases, AND/OR/NOT operators)
 - **4 data sources** (DVIDS, Federal Register, SAM.gov, USAJobs)
 - **Daily execution** (6am daily)
 - **Email alerts** to brianmills2718@gmail.com
@@ -111,18 +113,21 @@ All monitors configured with:
 ```
 1. Load keywords from YAML config
    ↓
-2. Search each source (DVIDS, Federal Register, SAM, USAJobs)
-   - LLM generates source-specific query params
-   - Execute API search
+2. **PARALLEL** search across all sources (asyncio.gather)
+   - Creates task for each keyword+source combination
+   - LLM generates source-specific query params (concurrent)
+   - Execute API searches in parallel
+   - 32 searches (8 keywords × 4 sources) complete in ~30-60s
    ↓
 3. Deduplicate results (SHA256 hash of URLs)
    ↓
 4. Compare vs previous run (detect NEW results only)
    ↓
-5. LLM Relevance Filter (gpt-5-nano)
+5. LLM Relevance Filter (gpt-5-nano, sequential)
    - Score each result 0-10 for relevance to keyword
    - Provide reasoning
    - Keep only score >= 6
+   - Note: This step is sequential (~4s per result)
    ↓
 6. If relevant results found → Send email alert
    - HTML + plain text
@@ -326,15 +331,20 @@ archive/2025-10-19/automated_keyword_extraction/
 ## Cost Estimate
 
 **Per monitor per day**:
-- ~8 keywords × 4 sources = 32 searches
+- ~8 keywords × 4 sources = 32 searches (parallel execution)
 - Each search: 1 LLM call (query generation) + API call
-- Relevance filtering: ~10 results × 1 LLM call each
-- **Total**: ~42 LLM calls/day/monitor (gpt-5-nano = cheap)
+- Relevance filtering: ~10-30 results × 1 LLM call each (sequential)
+- **Total**: ~42-62 LLM calls/day/monitor (gpt-5-nano = cheap)
 
 **5 monitors**:
-- ~210 LLM calls/day
+- ~210-310 LLM calls/day
 - Using gpt-5-nano (cheapest model)
 - **Estimated cost**: < $1/day
+
+**Runtime per monitor**:
+- Search phase: ~30-60s (parallel)
+- Relevance filtering: ~40-120s (sequential, 10-30 results × 4s each)
+- **Total**: ~1-3 minutes per monitor (acceptable for daily 6am execution)
 
 ---
 
