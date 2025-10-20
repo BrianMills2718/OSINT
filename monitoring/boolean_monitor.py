@@ -113,27 +113,28 @@ class BooleanMonitor:
 
     async def execute_search(self, keywords: List[str]) -> List[Dict]:
         """
-        Execute searches across configured sources.
+        Execute searches across configured sources IN PARALLEL.
 
         Calls existing integrations:
         - DVIDSIntegration
         - SAMIntegration
         - USAJobsIntegration
         - search_clearancejobs (Playwright)
+        - FederalRegisterIntegration
 
         Args:
-            keywords: List of keywords to search
+            keywords: List of keywords to search (supports Boolean operators)
 
         Returns:
             List of standardized results: [{"title": ..., "url": ..., "source": ..., "date": ...}]
         """
-        logger.info(f"Executing search for {len(keywords)} keywords across {len(self.config.sources)} sources")
-
-        all_results = []
+        logger.info(f"Executing PARALLEL search for {len(keywords)} keywords across {len(self.config.sources)} sources")
 
         # Import integrations (add parent directory to path for imports)
         import sys
         from pathlib import Path
+        import asyncio
+
         project_root = Path(__file__).parent.parent
         if str(project_root) not in sys.path:
             sys.path.insert(0, str(project_root))
@@ -143,121 +144,153 @@ class BooleanMonitor:
 
         load_dotenv()
 
-        # Search each configured source
+        # Create search tasks for ALL keyword+source combinations
+        search_tasks = []
+
         for source in self.config.sources:
-            logger.info(f"Searching source: {source}")
+            for keyword in keywords:
+                # Create a task for each keyword+source combination
+                task = self._search_single_source(source, keyword)
+                search_tasks.append(task)
 
-            try:
-                if source == "dvids":
-                    from integrations.government.dvids_integration import DVIDSIntegration
-                    dvids = DVIDSIntegration()
-                    api_key = os.getenv('DVIDS_API_KEY', '')
+        # Execute ALL searches in parallel
+        logger.info(f"Launching {len(search_tasks)} parallel searches ({len(keywords)} keywords × {len(self.config.sources)} sources)")
+        results_lists = await asyncio.gather(*search_tasks, return_exceptions=True)
 
-                    # Search for each keyword
-                    for keyword in keywords:
-                        query_params = await dvids.generate_query(keyword)
-                        if query_params:
-                            result = await dvids.execute_search(query_params, api_key, limit=10)
-                            if result.success:
-                                # Convert QueryResult to standard format
-                                for item in result.results:
-                                    all_results.append({
-                                        "title": item.get('title', 'Untitled'),
-                                        "url": item.get('url', ''),
-                                        "source": "DVIDS",
-                                        "date": item.get('date_published', item.get('publishdate', '')),
-                                        "description": item.get('description', ''),
-                                        "keyword": keyword  # Track which keyword found this
-                                    })
-                                logger.info(f"  DVIDS: Found {len(result.results)} results for '{keyword}'")
+        # Flatten results and handle exceptions
+        all_results = []
+        errors = 0
+        for result in results_lists:
+            if isinstance(result, Exception):
+                logger.warning(f"Search task failed: {str(result)}")
+                errors += 1
+            elif isinstance(result, list):
+                all_results.extend(result)
 
-                elif source == "sam":
-                    from integrations.government.sam_integration import SAMIntegration
-                    sam = SAMIntegration()
-                    api_key = os.getenv('SAM_GOV_API_KEY', '')
-
-                    for keyword in keywords:
-                        query_params = await sam.generate_query(keyword)
-                        if query_params:
-                            result = await sam.execute_search(query_params, api_key, limit=10)
-                            if result.success:
-                                for item in result.results:
-                                    all_results.append({
-                                        "title": item.get('title', 'Untitled'),
-                                        "url": item.get('uiLink', ''),
-                                        "source": "SAM.gov",
-                                        "date": item.get('postedDate', ''),
-                                        "description": item.get('description', ''),
-                                        "keyword": keyword
-                                    })
-                                logger.info(f"  SAM.gov: Found {len(result.results)} results for '{keyword}'")
-
-                elif source == "usajobs":
-                    from integrations.government.usajobs_integration import USAJobsIntegration
-                    usajobs = USAJobsIntegration()
-                    api_key = os.getenv('USAJOBS_API_KEY', '')
-
-                    for keyword in keywords:
-                        query_params = await usajobs.generate_query(keyword)
-                        if query_params:
-                            result = await usajobs.execute_search(query_params, api_key, limit=10)
-                            if result.success:
-                                for item in result.results:
-                                    all_results.append({
-                                        "title": item.get('PositionTitle', 'Untitled'),
-                                        "url": item.get('PositionURI', ''),
-                                        "source": "USAJobs",
-                                        "date": item.get('PublicationStartDate', ''),
-                                        "description": item.get('PositionFormattedDescription', [{}])[0].get('Content', ''),
-                                        "keyword": keyword
-                                    })
-                                logger.info(f"  USAJobs: Found {len(result.results)} results for '{keyword}'")
-
-                elif source == "clearancejobs":
-                    from integrations.government.clearancejobs_playwright import search_clearancejobs
-                    for keyword in keywords:
-                        result = await search_clearancejobs(keyword, limit=10, headless=True)
-                        if result.get('success'):
-                            for job in result.get('jobs', []):
-                                all_results.append({
-                                    "title": job.get('title', 'Untitled'),
-                                    "url": job.get('url', ''),
-                                    "source": "ClearanceJobs",
-                                    "date": job.get('updated', ''),
-                                    "description": job.get('description', ''),
-                                    "keyword": keyword
-                                })
-                            logger.info(f"  ClearanceJobs: Found {len(result.get('jobs', []))} results for '{keyword}'")
-
-                elif source == "federal_register":
-                    from integrations.government.federal_register import FederalRegisterIntegration
-                    fed_reg = FederalRegisterIntegration()
-
-                    for keyword in keywords:
-                        query_params = await fed_reg.generate_query(keyword)
-                        if query_params:
-                            result = await fed_reg.execute_search(query_params, api_key=None, limit=10)
-                            if result.success:
-                                for item in result.results:
-                                    all_results.append({
-                                        "title": item.get('title', 'Untitled'),
-                                        "url": item.get('html_url', ''),
-                                        "source": "Federal Register",
-                                        "date": item.get('publication_date', ''),
-                                        "description": item.get('abstract', ''),
-                                        "keyword": keyword
-                                    })
-                                logger.info(f"  Federal Register: Found {len(result.results)} results for '{keyword}'")
-
-                else:
-                    logger.warning(f"Unknown source: {source}")
-
-            except Exception as e:
-                logger.error(f"Error searching {source}: {str(e)}")
-                continue
-
-        logger.info(f"Search complete: {len(all_results)} total results from {len(self.config.sources)} sources")
+        logger.info(f"Parallel search complete: {len(all_results)} total results from {len(search_tasks)} searches ({errors} errors)")
         return all_results
+
+    async def _search_single_source(self, source: str, keyword: str) -> List[Dict]:
+        """
+        Search a single source for a single keyword.
+
+        This method is called in parallel by execute_search().
+
+        Args:
+            source: Source name ("dvids", "sam", "usajobs", "federal_register")
+            keyword: Keyword to search (supports Boolean operators)
+
+        Returns:
+            List of results from this source+keyword combination
+        """
+        import os
+
+        results = []
+
+        try:
+            if source == "dvids":
+                from integrations.government.dvids_integration import DVIDSIntegration
+                dvids = DVIDSIntegration()
+                api_key = os.getenv('DVIDS_API_KEY', '')
+
+                query_params = await dvids.generate_query(keyword)
+                if query_params:
+                    result = await dvids.execute_search(query_params, api_key, limit=10)
+                    if result.success:
+                        # Convert QueryResult to standard format
+                        for item in result.results:
+                            results.append({
+                                "title": item.get('title', 'Untitled'),
+                                "url": item.get('url', ''),
+                                "source": "DVIDS",
+                                "date": item.get('date_published', item.get('publishdate', '')),
+                                "description": item.get('description', ''),
+                                "keyword": keyword  # Track which keyword found this
+                            })
+                        logger.info(f"  DVIDS: Found {len(result.results)} results for '{keyword}'")
+
+            elif source == "sam":
+                from integrations.government.sam_integration import SAMIntegration
+                sam = SAMIntegration()
+                api_key = os.getenv('SAM_GOV_API_KEY', '')
+
+                query_params = await sam.generate_query(keyword)
+                if query_params:
+                    result = await sam.execute_search(query_params, api_key, limit=10)
+                    if result.success:
+                        for item in result.results:
+                            results.append({
+                                "title": item.get('title', 'Untitled'),
+                                "url": item.get('uiLink', ''),
+                                "source": "SAM.gov",
+                                "date": item.get('postedDate', ''),
+                                "description": item.get('description', ''),
+                                "keyword": keyword
+                            })
+                        logger.info(f"  SAM.gov: Found {len(result.results)} results for '{keyword}'")
+
+            elif source == "usajobs":
+                from integrations.government.usajobs_integration import USAJobsIntegration
+                usajobs = USAJobsIntegration()
+                api_key = os.getenv('USAJOBS_API_KEY', '')
+
+                query_params = await usajobs.generate_query(keyword)
+                if query_params:
+                    result = await usajobs.execute_search(query_params, api_key, limit=10)
+                    if result.success:
+                        for item in result.results:
+                            results.append({
+                                "title": item.get('PositionTitle', 'Untitled'),
+                                "url": item.get('PositionURI', ''),
+                                "source": "USAJobs",
+                                "date": item.get('PublicationStartDate', ''),
+                                "description": item.get('PositionFormattedDescription', [{}])[0].get('Content', ''),
+                                "keyword": keyword
+                            })
+                        logger.info(f"  USAJobs: Found {len(result.results)} results for '{keyword}'")
+
+            elif source == "clearancejobs":
+                from integrations.government.clearancejobs_playwright import search_clearancejobs
+                result = await search_clearancejobs(keyword, limit=10, headless=True)
+                if result.get('success'):
+                    for job in result.get('jobs', []):
+                        results.append({
+                            "title": job.get('title', 'Untitled'),
+                            "url": job.get('url', ''),
+                            "source": "ClearanceJobs",
+                            "date": job.get('updated', ''),
+                            "description": job.get('description', ''),
+                            "keyword": keyword
+                        })
+                    logger.info(f"  ClearanceJobs: Found {len(result.get('jobs', []))} results for '{keyword}'")
+
+            elif source == "federal_register":
+                from integrations.government.federal_register import FederalRegisterIntegration
+                fed_reg = FederalRegisterIntegration()
+
+                query_params = await fed_reg.generate_query(keyword)
+                if query_params:
+                    result = await fed_reg.execute_search(query_params, api_key=None, limit=10)
+                    if result.success:
+                        for item in result.results:
+                            results.append({
+                                "title": item.get('title', 'Untitled'),
+                                "url": item.get('html_url', ''),
+                                "source": "Federal Register",
+                                "date": item.get('publication_date', ''),
+                                "description": item.get('abstract', ''),
+                                "keyword": keyword
+                            })
+                        logger.info(f"  Federal Register: Found {len(result.results)} results for '{keyword}'")
+
+            else:
+                logger.warning(f"Unknown source: {source}")
+
+        except Exception as e:
+            logger.error(f"Error searching {source} for '{keyword}': {str(e)}")
+            # Return empty list on error (don't crash entire monitor)
+
+        return results
 
     def deduplicate_results(self, results: List[Dict]) -> List[Dict]:
         """
