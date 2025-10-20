@@ -74,31 +74,36 @@ def generate_search_queries(research_question, comprehensive_mode=False):
 
     # LLM prompt - dynamic from registry, changes based on mode
     if comprehensive_mode:
-        task_instruction = "Select ALL databases that could provide relevant information for this research question."
+        task_instruction = "Select EVERY database that could provide relevant information for this research question."
         selection_guidance = """
 IMPORTANT:
 - Include EVERY database that might have relevant information
 - Only exclude databases that are clearly irrelevant
-- Cast a wide net - when in doubt, include it
+- Cast a very wide net - when in doubt, include it
 - Keep keywords simple and focused
 - source_id MUST be one of: {', '.join([s['id'] for s in source_list])}
 
 Example: For "cybersecurity jobs", include:
 - clearancejobs (security cleared jobs)
 - usajobs (federal cybersecurity positions)
-- sam (cybersecurity contracts - related)
+- sam (cybersecurity contracts - related to jobs)
 - dvids (might have cyber warfare content)
-Exclude only: discord (unless specifically about community discussions), fbi_vault (unless about investigations)
+Exclude only: discord (not about jobs), fbi_vault (not about jobs)
 """
     else:
-        task_instruction = "Select the 2-3 MOST relevant databases for this research question."
+        task_instruction = "Select ALL databases that are relevant for this research question."
         selection_guidance = """
 IMPORTANT:
-- Select ONLY 2-3 most relevant databases (not all of them!)
-- Prioritize databases most likely to have direct answers
+- Include ALL databases that have relevant information
+- Only exclude databases that are clearly NOT relevant
+- Use your judgment - include sources that could help answer the question
 - Keep keywords simple and focused
 - Prioritize free sources (requires_api_key: false) when quality is similar
 - source_id MUST be one of: {', '.join([s['id'] for s in source_list])}
+
+Examples:
+- For "JTTF activity": Include discord (real-time chatter), fbi_vault (official docs), maybe dvids (operations). Exclude clearancejobs, sam, usajobs (not about jobs/contracts).
+- For "cybersecurity jobs": Include clearancejobs, usajobs. Optionally sam (contracts). Exclude discord, fbi_vault, dvids.
 """
 
     prompt = f"""You are a research assistant with access to multiple databases.
@@ -397,9 +402,9 @@ def render_ai_research_tab(openai_api_key_from_ui, dvids_api_key, sam_api_key, u
 
     with col1:
         comprehensive_mode = st.checkbox(
-            "🔍 Comprehensive Search (search all relevant databases)",
+            "🔍 Comprehensive Search (maximum coverage)",
             value=False,
-            help="When enabled, searches ALL databases that might have relevant info. When disabled, AI picks 2-3 most relevant sources (faster, cheaper)."
+            help="Enable to cast the widest possible net - includes every database that could potentially have relevant info. Disable for more selective, focused results."
         )
 
     with col2:
@@ -413,9 +418,9 @@ def render_ai_research_tab(openai_api_key_from_ui, dvids_api_key, sam_api_key, u
 
     # Info about search mode
     if comprehensive_mode:
-        st.info("💡 **Comprehensive mode**: AI will search ALL databases that could provide relevant information. This is slower and more expensive, but ensures nothing is missed.")
+        st.info("💡 **Comprehensive mode**: Searches EVERY database that might have relevant info. Slower and more expensive, but ensures exhaustive coverage.")
     else:
-        st.info("💡 **Smart mode** (default): AI picks 2-3 most relevant databases. Faster and cheaper. Use comprehensive mode if you need exhaustive coverage.")
+        st.info("💡 **Intelligent mode** (default): AI selects all relevant databases while excluding clearly irrelevant sources. Balances coverage with efficiency.")
 
     # Search button
     search_btn = st.button("🚀 Research", type="primary", use_container_width=True, key="ai_search_btn")
