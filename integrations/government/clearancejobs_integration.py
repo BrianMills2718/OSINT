@@ -67,7 +67,8 @@ class ClearanceJobsIntegration(DatabaseIntegration):
         """
         Generate ClearanceJobs query parameters using LLM.
 
-        Returns keywords + clearance levels + recency filters.
+        NOTE: The Playwright scraper only supports keyword search.
+        Clearance levels and recency are extracted from results, not used as filters.
 
         Args:
             research_question: The user's research question
@@ -77,9 +78,7 @@ class ClearanceJobsIntegration(DatabaseIntegration):
 
         Example Return:
             {
-                "keywords": "cybersecurity engineer",
-                "clearance_levels": ["TS/SCI"],
-                "posted_within_days": 30
+                "keywords": "cybersecurity engineer"
             }
         """
 
@@ -89,22 +88,8 @@ Research Question: {research_question}
 
 Generate search parameters:
 - keywords: Search terms for job titles/descriptions (string, keep focused - 2-3 words max)
-- clearance_levels: Required clearances (array from: "TS/SCI", "Top Secret", "Secret", "Confidential", "Public Trust", or empty array for all)
-- posted_within_days: How recent (integer: 7, 14, 30, 60, or 0 for all time)
 
-Clearance level guidelines:
-- "TS/SCI" - Most restrictive, for intelligence/defense/cyber
-- "Top Secret" - High-level government work
-- "Secret" - Standard cleared positions
-- "Confidential" - Entry-level cleared work
-- "Public Trust" - Government positions without clearance
-- Use empty array if clearance level not specified
-
-Recency guidelines:
-- Use 7 for "recent" or "latest"
-- Use 30 for "last month" or default
-- Use 60 for "past couple months"
-- Use 0 for "all jobs" or unspecified timeframe
+NOTE: The search only supports keyword filtering. Clearance levels and recency are shown in results but cannot be filtered.
 
 If this question is not about security-cleared jobs or employment, return relevant: false.
 
@@ -121,22 +106,12 @@ Return JSON with these exact fields."""
                     "type": "string",
                     "description": "Search keywords for job titles and descriptions"
                 },
-                "clearance_levels": {
-                    "type": "array",
-                    "items": {"type": "string"},
-                    "description": "Required clearance levels, empty array for all"
-                },
-                "posted_within_days": {
-                    "type": "integer",
-                    "description": "Days back to search, 0 for all time",
-                    "minimum": 0
-                },
                 "reasoning": {
                     "type": "string",
                     "description": "Brief explanation of the query strategy"
                 }
             },
-            "required": ["relevant", "keywords", "clearance_levels", "posted_within_days", "reasoning"],
+            "required": ["relevant", "keywords", "reasoning"],
             "additionalProperties": False
         }
 
@@ -159,9 +134,7 @@ Return JSON with these exact fields."""
             return None
 
         return {
-            "keywords": result["keywords"],
-            "clearance_levels": result["clearance_levels"],
-            "posted_within_days": result["posted_within_days"]
+            "keywords": result["keywords"]
         }
 
     async def execute_search(self,
@@ -198,7 +171,7 @@ Return JSON with these exact fields."""
                 return QueryResult(
                     success=True,
                     source="ClearanceJobs",
-                    total=len(result.get("jobs", [])),
+                    total=result.get("total", len(result.get("jobs", []))),
                     results=result.get("jobs", []),
                     query_params=query_params,
                     response_time_ms=response_time_ms,

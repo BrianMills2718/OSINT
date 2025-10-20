@@ -160,7 +160,7 @@ If not about cleared jobs, return relevant: false.
                 return QueryResult(
                     success=True,
                     source="ClearanceJobs",
-                    total=len(result.get("jobs", [])),
+                    total=result.get("total", len(result.get("jobs", []))),
                     results=result.get("jobs", []),
                     query_params=query_params,
                     response_time_ms=response_time_ms
@@ -324,21 +324,22 @@ Return JSON array of selected sources."""
     }
     
     # Call LLM
-    response = litellm.responses(
+    from llm_utils import acompletion
+
+    response = await acompletion(
         model="gpt-5-mini",
-        input=prompt,
-        text={
-            "format": {
-                "type": "json_schema",
+        messages=[{"role": "user", "content": prompt}],
+        response_format={
+            "type": "json_schema",
+            "json_schema": {
+                "strict": True,
                 "name": "source_selection",
-                "schema": schema,
-                "strict": True
+                "schema": schema
             }
         }
     )
-    
-    result_text = get_text(response)
-    return json.loads(result_text)
+
+    return json.loads(response.choices[0].message.content)
 ```
 
 **Changes**:
@@ -408,7 +409,7 @@ async def execute_search_via_registry(source_id: str, keywords: str, api_keys: D
                 }
         
         # Generate source-specific query params via integration's LLM
-        query_params = await integration.generate_query(keywords)
+        query_params = await integration.generate_query(research_question=keywords)
         
         if not query_params:
             return {
@@ -632,7 +633,7 @@ async def _search_single_source(self, source: str, keyword: str) -> List[Dict]:
                 return []
         
         # Generate query parameters
-        query_params = await integration.generate_query(keyword)
+        query_params = await integration.generate_query(research_question=keyword)
         
         if not query_params:
             logger.info(f"  {integration.metadata.name}: Skipped (not relevant for '{keyword}')")
