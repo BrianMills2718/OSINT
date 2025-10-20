@@ -16,6 +16,7 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 
 from ClearanceJobs import ClearanceJobs
 from core.api_request_tracker import log_request
+from usajobs_execute import execute_usajobs_search
 
 # Load environment variables from .env file in project directory
 # This works for local development. For production (Streamlit Cloud),
@@ -41,8 +42,8 @@ def get_text(resp):
 
 def generate_search_queries(research_question):
     """
-    Use AI to generate appropriate search queries for all three databases.
-    Returns structured JSON with queries for ClearanceJobs, DVIDS, and SAM.gov.
+    Use AI to generate appropriate search queries for all four databases.
+    Returns structured JSON with queries for ClearanceJobs, DVIDS, SAM.gov, and USAJobs.
     """
 
     # Get today's date and a date 60 days ago for context
@@ -475,8 +476,6 @@ def render_ai_research_tab(openai_api_key_from_ui, dvids_api_key, sam_api_key, u
     st.markdown("### 🤖 AI-Powered Research Assistant")
     st.caption("Ask a research question and AI will search across all databases and summarize results")
 
-    # TODO: Integrate USAJobs into AI Research (currently only ClearanceJobs, DVIDS, SAM.gov)
-
     # Get OpenAI API key from multiple sources (priority order):
     # 1. User input in sidebar (highest priority - allows override)
     # 2. Streamlit secrets (for Streamlit Cloud deployment)
@@ -675,6 +674,24 @@ def render_ai_research_tab(openai_api_key_from_ui, dvids_api_key, sam_api_key, u
             else:
                 all_results['SAM.gov'] = {"success": True, "total": 0, "results": [], "skipped": True}
 
+            # USAJobs
+            if queries['usajobs']['relevant']:
+                with st.status("Searching USAJobs..."):
+                    result = execute_usajobs_search(queries['usajobs'], usajobs_api_key, results_per_db)
+                    all_results['USAJobs'] = result
+
+                    # Show actual query sent
+                    if result.get('debug_query'):
+                        st.write("**Query sent:**")
+                        st.json(result['debug_query'])
+
+                    if result['success']:
+                        st.write(f"✅ Found {result['total']} results")
+                    else:
+                        st.write(f"❌ Error: {result.get('error')}")
+            else:
+                all_results['USAJobs'] = {"success": True, "total": 0, "results": [], "skipped": True}
+
         # Step 3: Summarize results
         with st.spinner("📝 Analyzing and summarizing results..."):
             try:
@@ -723,6 +740,31 @@ def render_ai_research_tab(openai_api_key_from_ui, dvids_api_key, sam_api_key, u
                             st.caption(f"Type: {opp.get('type', 'N/A')} | Posted: {opp.get('postedDate', 'N/A')[:10]}")
                             if opp.get('uiLink'):
                                 st.markdown(f"[View Opportunity]({opp['uiLink']})")
+                            st.markdown("---")
+
+                    elif db_name == "USAJobs":
+                        for idx, item in enumerate(result['results'], 1):
+                            job_data = item.get('MatchedObjectDescriptor', {})
+                            st.markdown(f"**{idx}. {job_data.get('PositionTitle', 'Untitled')}**")
+
+                            # Agency and location
+                            org = job_data.get('OrganizationName', 'N/A')
+                            location_list = job_data.get('PositionLocationDisplay', 'N/A')
+
+                            # Pay range
+                            pay_info = job_data.get('PositionRemuneration', [])
+                            if pay_info and len(pay_info) > 0:
+                                min_pay = pay_info[0].get('MinimumRange', 'N/A')
+                                max_pay = pay_info[0].get('MaximumRange', 'N/A')
+                                pay_display = f"${min_pay} - ${max_pay}"
+                            else:
+                                pay_display = 'N/A'
+
+                            st.caption(f"Agency: {org} | Location: {location_list}")
+                            st.caption(f"Pay: {pay_display}")
+
+                            if job_data.get('PositionURI'):
+                                st.markdown(f"[View Job]({job_data['PositionURI']})")
                             st.markdown("---")
 
                     # Export button for each database
