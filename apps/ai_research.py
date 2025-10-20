@@ -52,10 +52,11 @@ def generate_search_queries(research_question):
     today_str = today.strftime("%Y-%m-%d")
     sixty_days_ago_str = sixty_days_ago.strftime("%Y-%m-%d")
 
-    prompt = f"""You are a research assistant helping to search across three databases:
+    prompt = f"""You are a research assistant helping to search across four databases:
 1. ClearanceJobs - Security clearance job postings
 2. DVIDS - Military media (photos, videos, news articles)
 3. SAM.gov - Government contract opportunities
+4. USAJobs - Federal government job postings
 
 **IMPORTANT DATE CONTEXT:**
 - Today's date is: {today_str}
@@ -73,12 +74,14 @@ Generate appropriate search queries for each database. For each database, determ
 **KEYWORD EXAMPLES:**
 - Good for DVIDS: "JTTF" or "counterterrorism" (short and simple)
 - Good for SAM.gov: "counterterrorism" or "intelligence" (broad terms that appear in contracts)
+- Good for USAJobs: "counterterrorism analyst" or "intelligence" (job title keywords)
 - Bad: "Joint Terrorism Task Force, JTTF, counterterrorism" (too complex, has commas)
 - Bad for SAM.gov: "JTTF" or "Joint Terrorism Task Force" (too specific, unlikely in contracts)
 
 **DATE FORMAT REQUIREMENTS:**
 - DVIDS: YYYY-MM-DD format (e.g., "{sixty_days_ago_str}")
 - SAM.gov: MM/DD/YYYY format (e.g., "{sixty_days_ago.strftime('%m/%d/%Y')}")
+- USAJobs: YYYY-MM-DD format (e.g., "{sixty_days_ago_str}")
 - Use dates between {sixty_days_ago_str} and {today_str} ONLY
 
 Return a JSON object with search parameters for each database according to the schema.
@@ -152,12 +155,34 @@ If a database is not relevant to the research question, set "relevant": false fo
                 "required": ["relevant", "keywords", "posted_from", "posted_to", "naics_codes", "reasoning"],
                 "additionalProperties": False
             },
+            "usajobs": {
+                "type": "object",
+                "properties": {
+                    "relevant": {"type": "boolean"},
+                    "keywords": {"type": "string"},
+                    "date_from": {
+                        "type": "string",
+                        "description": "Start date in YYYY-MM-DD format, empty string if not relevant"
+                    },
+                    "date_to": {
+                        "type": "string",
+                        "description": "End date in YYYY-MM-DD format, empty string if not relevant"
+                    },
+                    "pay_grade_low": {
+                        "type": "string",
+                        "description": "Minimum pay grade (e.g., 'GS-9'), empty string if not relevant"
+                    },
+                    "reasoning": {"type": "string"}
+                },
+                "required": ["relevant", "keywords", "date_from", "date_to", "pay_grade_low", "reasoning"],
+                "additionalProperties": False
+            },
             "research_strategy": {
                 "type": "string",
                 "description": "Overall strategy for how these queries will help answer the research question"
             }
         },
-        "required": ["clearancejobs", "dvids", "sam_gov", "research_strategy"],
+        "required": ["clearancejobs", "dvids", "sam_gov", "usajobs", "research_strategy"],
         "additionalProperties": False
     }
 
@@ -551,7 +576,7 @@ def render_ai_research_tab(openai_api_key_from_ui, dvids_api_key, sam_api_key, u
                     st.markdown(f"**Overall Strategy:** {queries['research_strategy']}")
                     st.markdown("---")
 
-                    col_s1, col_s2, col_s3 = st.columns(3)
+                    col_s1, col_s2 = st.columns(2)
 
                     with col_s1:
                         st.markdown("**🏢 ClearanceJobs**")
@@ -561,7 +586,6 @@ def render_ai_research_tab(openai_api_key_from_ui, dvids_api_key, sam_api_key, u
                         else:
                             st.caption("❌ Not relevant for this query")
 
-                    with col_s2:
                         st.markdown("**📸 DVIDS**")
                         if queries['dvids']['relevant']:
                             st.markdown(f"Keywords: `{queries['dvids']['keywords']}`")
@@ -569,11 +593,18 @@ def render_ai_research_tab(openai_api_key_from_ui, dvids_api_key, sam_api_key, u
                         else:
                             st.caption("❌ Not relevant for this query")
 
-                    with col_s3:
+                    with col_s2:
                         st.markdown("**📋 SAM.gov**")
                         if queries['sam_gov']['relevant']:
                             st.markdown(f"Keywords: `{queries['sam_gov']['keywords']}`")
                             st.caption(queries['sam_gov']['reasoning'])
+                        else:
+                            st.caption("❌ Not relevant for this query")
+
+                        st.markdown("**💼 USAJobs**")
+                        if queries['usajobs']['relevant']:
+                            st.markdown(f"Keywords: `{queries['usajobs']['keywords']}`")
+                            st.caption(queries['usajobs']['reasoning'])
                         else:
                             st.caption("❌ Not relevant for this query")
 

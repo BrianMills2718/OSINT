@@ -100,7 +100,7 @@ def get_request_stats(api_name=None, hours=24):
 
                 requests.append(entry)
 
-                # Track rate limit hits
+                # Track rate limit hits (429) and failed requests (status 0 or 5xx)
                 if entry["status_code"] == 429:
                     rate_limit_hits.append(entry)
 
@@ -108,10 +108,15 @@ def get_request_stats(api_name=None, hours=24):
                 continue
 
     # Calculate statistics
+    failed_requests = [r for r in requests if r["status_code"] in [0, 429] or r["status_code"] >= 500]
+    successful_requests = [r for r in requests if r["status_code"] in [200, 201]]
+
     stats = {
         "total_requests": len(requests),
         "rate_limit_hits": len(rate_limit_hits),
-        "success_rate": (len(requests) - len(rate_limit_hits)) / len(requests) if requests else 0,
+        "failed_requests": len(failed_requests),
+        "successful_requests": len(successful_requests),
+        "success_rate": len(successful_requests) / len(requests) if requests else 0,
         "apis": {}
     }
 
@@ -126,6 +131,9 @@ def get_request_stats(api_name=None, hours=24):
     # Calculate per-API stats
     for api, api_reqs in api_groups.items():
         api_429s = [r for r in api_reqs if r["status_code"] == 429]
+        api_failed = [r for r in api_reqs if r["status_code"] in [0, 429] or r["status_code"] >= 500]
+        api_status_0 = [r for r in api_reqs if r["status_code"] == 0]
+        api_successful = [r for r in api_reqs if r["status_code"] in [200, 201]]
 
         # Calculate time between requests
         api_reqs_sorted = sorted(api_reqs, key=lambda x: x["timestamp"])
@@ -138,11 +146,15 @@ def get_request_stats(api_name=None, hours=24):
 
         stats["apis"][api] = {
             "total_requests": len(api_reqs),
+            "successful_requests": len(api_successful),
+            "failed_requests": len(api_failed),
             "rate_limit_hits": len(api_429s),
-            "success_rate": (len(api_reqs) - len(api_429s)) / len(api_reqs) if api_reqs else 0,
+            "status_0_errors": len(api_status_0),
+            "success_rate": len(api_successful) / len(api_reqs) if api_reqs else 0,
             "avg_time_between_requests_sec": sum(time_gaps) / len(time_gaps) if time_gaps else 0,
             "min_time_between_requests_sec": min(time_gaps) if time_gaps else 0,
-            "rate_limit_timestamps": [r["timestamp"] for r in api_429s]
+            "rate_limit_timestamps": [r["timestamp"] for r in api_429s],
+            "status_0_timestamps": [r["timestamp"] for r in api_status_0]
         }
 
     return stats

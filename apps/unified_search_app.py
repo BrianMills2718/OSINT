@@ -160,24 +160,35 @@ with st.sidebar:
                 st.caption("Last 24 hours")
 
                 if stats.get("total_requests", 0) > 0:
-                    st.metric("Total Requests", stats["total_requests"])
-                    st.metric("Rate Limit Hits", stats["rate_limit_hits"],
-                             delta=None if stats["rate_limit_hits"] == 0 else "⚠️",
-                             delta_color="off" if stats["rate_limit_hits"] == 0 else "inverse")
+                    col_m1, col_m2, col_m3 = st.columns(3)
+                    with col_m1:
+                        st.metric("Total Requests", stats["total_requests"])
+                    with col_m2:
+                        st.metric("Successful", stats.get("successful_requests", 0))
+                    with col_m3:
+                        st.metric("Failed", stats.get("failed_requests", 0),
+                                 delta=None if stats.get("failed_requests", 0) == 0 else "⚠️",
+                                 delta_color="off" if stats.get("failed_requests", 0) == 0 else "inverse")
 
                     for api, api_stats in stats.get("apis", {}).items():
                         st.markdown(f"**{api}**")
-                        cols = st.columns(3)
+                        cols = st.columns(4)
                         with cols[0]:
-                            st.caption(f"Requests: {api_stats['total_requests']}")
+                            st.caption(f"Total: {api_stats['total_requests']}")
                         with cols[1]:
-                            st.caption(f"429 Errors: {api_stats['rate_limit_hits']}")
+                            st.caption(f"✅ Success: {api_stats.get('successful_requests', 0)}")
                         with cols[2]:
+                            st.caption(f"❌ Failed: {api_stats.get('failed_requests', 0)}")
+                        with cols[3]:
                             success_pct = f"{api_stats['success_rate']*100:.0f}%"
-                            st.caption(f"Success: {success_pct}")
+                            st.caption(f"Rate: {success_pct}")
 
-                        if api_stats['rate_limit_timestamps']:
-                            st.warning(f"⚠️ Rate limited at: {api_stats['rate_limit_timestamps'][-1]}")
+                        # Show specific error types
+                        if api_stats['rate_limit_hits'] > 0:
+                            st.warning(f"⚠️ Rate limits (429): {api_stats['rate_limit_hits']} - Last: {api_stats['rate_limit_timestamps'][-1]}")
+
+                        if api_stats.get('status_0_errors', 0) > 0:
+                            st.error(f"❌ Status 0 errors: {api_stats['status_0_errors']} (timeouts/connection errors) - Last: {api_stats.get('status_0_timestamps', ['N/A'])[-1]}")
                 else:
                     st.info("No API requests logged yet")
             else:
@@ -186,12 +197,13 @@ with st.sidebar:
             st.caption(f"Stats unavailable: {str(e)}")
 
 # Create tabs
-tab1, tab2, tab3, tab4, tab5 = st.tabs([
+tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs([
     "🏢 ClearanceJobs (Jobs)",
     "📸 DVIDS (Media)",
     "📋 SAM.gov (Contracts)",
     "💼 USAJobs (Federal Jobs)",
-    "🤖 AI Research"
+    "🤖 AI Research",
+    "📊 Monitor Management"
 ])
 
 # ============================================================================
@@ -241,6 +253,13 @@ with tab4:
 with tab5:
     from ai_research import render_ai_research_tab
     render_ai_research_tab(openai_api_key, dvids_api_key, sam_api_key, usajobs_api_key)
+
+# ============================================================================
+# TAB 6: MONITOR MANAGEMENT
+# ============================================================================
+with tab6:
+    from monitor_management import render_monitor_management_tab
+    render_monitor_management_tab()
 
 # Footer
 st.markdown("---")
