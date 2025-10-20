@@ -10,7 +10,10 @@ from integrations.government.usajobs_integration import USAJobsIntegration
 from integrations.government.clearancejobs_integration import ClearanceJobsIntegration
 from integrations.government.fbi_vault import FBIVaultIntegration
 
-# Social integrations will be added later
+# Import social integrations
+from integrations.social.discord_integration import DiscordIntegration
+
+# Future social integrations
 # from integrations.social.reddit_integration import RedditIntegration
 
 
@@ -30,7 +33,10 @@ class IntegrationRegistry:
         self.register(ClearanceJobsIntegration)
         self.register(FBIVaultIntegration)
 
-        # Social media sources (Phase 3)
+        # Social media sources
+        self.register(DiscordIntegration)
+
+        # Future social media sources (Phase 3)
         # self.register(RedditIntegration)
         # self.register(TwitterIntegration)
         # self.register(TelegramIntegration)

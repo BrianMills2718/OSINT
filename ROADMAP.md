@@ -249,16 +249,17 @@ Basic web interface for non-technical team to ask questions and get results.
 
 ## Phase 3: Social Media Integration (Weeks 6-7)
 
-**Status**: NOT STARTED
+**Status**: STARTED - Discord integration complete (Phase 3A)
 **Target Start**: 2025-11-19
 **Target Completion**: 2025-12-02
 
 ### Objectives
 
-Add Reddit, 4chan, and optionally Twitter monitoring to expand coverage beyond government sources.
+Add Reddit, 4chan, Discord, and optionally Twitter monitoring to expand coverage beyond government sources.
 
 ### Key Deliverables
 
+- [x] Discord adapter (searches local exports) - **COMPLETE 2025-10-19**
 - [ ] Reddit adapter (PRAW)
 - [ ] 4chan adapter
 - [ ] Twitter adapter (optional, budget-dependent)
@@ -280,31 +281,62 @@ Add Reddit, 4chan, and optionally Twitter monitoring to expand coverage beyond g
 
 ### Tasks
 
-1. **Reddit adapter** (PRAW library):
+1. **Discord adapter** (local export search): ✅ COMPLETE
+   - [x] Export Discord servers (Bellingcat, Project OWL)
+   - [x] Implement keyword search of local JSON files
+   - [x] Add to database registry
+   - [x] Test with CLI (777 results in 978ms)
+   - [ ] Optional: Add to Boolean monitors
+   - [ ] Optional: Optimize with SQLite FTS5 indexing
+
+2. **Reddit adapter** (PRAW library):
    - [ ] Subreddit search
    - [ ] Post/comment tracking
    - [ ] Add to database registry
    - [ ] Test with monitors
 
-2. **4chan adapter**:
+3. **4chan adapter**:
    - [ ] Board monitoring (JSON API)
    - [ ] Thread tracking
    - [ ] Add to database registry
 
-3. **Twitter adapter** (optional):
+4. **Twitter adapter** (optional):
    - [ ] Basic tier setup ($100/month)
    - [ ] Keyword search
    - [ ] User timeline tracking
    - [ ] Rate limit handling
 
-4. **Add to monitors**:
-   - [ ] Update existing NVE monitor to include Reddit, 4chan
+5. **Add to monitors**:
+   - [ ] Update existing NVE monitor to include Discord, Reddit, 4chan
    - [ ] Test alerts work
    - [ ] Verify deduplication
 
+### Actual Results (Phase 3A - Discord)
+
+**Completed**: 2025-10-19
+
+**Discord Integration**:
+- ✅ integrations/social/discord_integration.py (322 lines)
+- ✅ Searches local JSON exports (no API key required)
+- ✅ Keyword extraction and scoring (simple stopword removal)
+- ✅ Test results: 777 messages found in 978ms for "ukraine intelligence"
+- ✅ Registered in platform registry as "discord" (social_general category)
+- ⚠️ 4 corrupted JSON files detected (from interrupted exports)
+
+**Data Available**:
+- Bellingcat server: 479 files, 16 MB, 35 days history
+- Project OWL server: Partial export (some files corrupted)
+- Location: data/exports/
+
+**Next Steps**:
+- Fix corrupted JSON files
+- Continue backfill for complete history
+- Consider SQLite FTS5 indexing for optimization
+- Optionally add to Boolean monitors
+
 ### Estimated Effort
 
-**Time**: 40-50 hours
+**Time**: 40-50 hours (5-10 hours spent on Discord, 30-40 hours remaining)
 **Complexity**: Medium (Twitter API is complex)
 **Cost**: $0-100/month (Twitter Basic tier if chosen)
 
@@ -565,7 +597,7 @@ Polish and advanced capabilities based on usage feedback.
 
 **Phase 0**: 100% COMPLETE ✅
 - **Completed**: 2025-10-18
-- **All 4 integrations working**: SAM.gov, DVIDS, USAJobs, ClearanceJobs
+- **All 5 integrations working**: SAM.gov, DVIDS, USAJobs, ClearanceJobs, Discord (added 2025-10-19)
 
 **Phase 1**: 100% COMPLETE ✅ + OPTIMIZED
 - **Completed**: 2025-10-19
@@ -591,6 +623,7 @@ Polish and advanced capabilities based on usage feedback.
 | 2025-10-19 | Implement parallel search execution | Sequential searches took 5-6 minutes | 10x speedup (30-60s for 32 searches) |
 | 2025-10-19 | Defer FBI Vault and Congress.gov | FBI Vault blocked by Cloudflare, Congress.gov not critical | Focus on working sources first |
 | 2025-10-19 | Curate keywords manually vs automated extraction | Automated extraction had quality issues (possessives, filler words) | Higher quality monitors with ~100 curated keywords |
+| 2025-10-19 | Add Discord integration (Phase 3A) | Already have Discord exports from Bellingcat/Project OWL | First social media source, enables OSINT community discussions |
 
 ---
 

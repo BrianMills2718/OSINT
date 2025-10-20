@@ -200,9 +200,10 @@ Validation: ✅ Service running, all monitors scheduled, first execution tomorro
 | **DVIDS** | [PASS] | Live test: 1000 results in 1.1s | None | Ready for production |
 | **USAJobs** | [PASS] | Live test: 3 results in 3.6s | None | Ready for production |
 | **ClearanceJobs** | [PASS] | Playwright installed, chromium ready | Function-based (not class), needs wrapper | Test via existing UI |
+| **Discord** | [PASS] | CLI test: 777 results in 978ms, searches local exports | 4 corrupted JSON files skipped, local search only | Ready for production |
 | **FBI Vault** | [BLOCKED] | Cloudflare 403 blocking | Cannot bypass bot protection | **DEFER** - Not critical for MVP |
 
-**Phase 0 Database Status**: 4 of 5 working (80%), 1 deferred
+**Phase 0 Database Status**: 5 of 6 working (83%), 1 deferred
 
 ---
 
@@ -318,6 +319,47 @@ streamlit run apps/unified_search_app.py
 - Modified: apps/clearancejobs_search.py (now uses clearancejobs_playwright.py)
 
 **Next Step**: Begin Phase 1 (Boolean Monitoring MVP)
+
+### ✅ Discord Integration Working (2025-10-19)
+
+**Command**:
+```bash
+python3 test_discord_cli.py "ukraine intelligence"
+```
+
+**Evidence**:
+- ✅ Integration registered in registry with ID "discord"
+- ✅ Category: social_general (first social media source)
+- ✅ Search test: 777 results in 978ms
+- ✅ Keyword extraction working: ["ukraine", "intelligence"]
+- ✅ Results include server, channel, author, timestamp, matched keywords
+- ✅ No API key required (searches local exports)
+- ⚠️ 4 corrupted JSON files detected (skipped automatically)
+
+**Results Sample**:
+```
+Server: Project Owl: The OSINT Community
+Channel: russia-ukraine-spec
+Author: dan0010940
+Content: https://meduza.io/en/news/2025/09/25/ukraine-planning-new-offensive...
+Matched keywords: ['ukraine', 'intelligence']
+Score: 1.00
+```
+
+**Files Created**:
+- integrations/social/discord_integration.py (322 lines)
+- integrations/social/__init__.py
+- test_discord_cli.py (test script)
+
+**Data Available**:
+- Bellingcat server: 479 files, 16 MB, 35 days of history
+- Project OWL server: Partial export (some files corrupted)
+- Location: data/exports/
+
+**Next Steps**:
+- Fix corrupted JSON files from interrupted exports
+- Consider SQLite FTS5 indexing for faster search (Phase 3A optimization)
+- Add Discord to Boolean monitors (optional)
 
 ---
 
