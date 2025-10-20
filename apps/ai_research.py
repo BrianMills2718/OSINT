@@ -41,12 +41,15 @@ def get_text(resp):
     return "\n".join(texts)
 
 
-def generate_search_queries(research_question):
+def generate_search_queries(research_question, comprehensive_mode=False):
     """
     Use AI to generate appropriate search queries using registry for dynamic source discovery.
 
+    Args:
+        research_question: The user's research question
+        comprehensive_mode: If True, select ALL relevant sources. If False, select 2-3 most relevant.
+
     Returns structured JSON with selected sources and keywords for each.
-    LLM selects 2-3 MOST relevant sources (not all sources).
     Each integration's generate_query() will add source-specific parameters.
     """
     from integrations.registry import registry
@@ -69,7 +72,35 @@ def generate_search_queries(research_question):
             "typical_response_time": meta.typical_response_time
         })
 
-    # LLM prompt - dynamic from registry
+    # LLM prompt - dynamic from registry, changes based on mode
+    if comprehensive_mode:
+        task_instruction = "Select ALL databases that could provide relevant information for this research question."
+        selection_guidance = """
+IMPORTANT:
+- Include EVERY database that might have relevant information
+- Only exclude databases that are clearly irrelevant
+- Cast a wide net - when in doubt, include it
+- Keep keywords simple and focused
+- source_id MUST be one of: {', '.join([s['id'] for s in source_list])}
+
+Example: For "cybersecurity jobs", include:
+- clearancejobs (security cleared jobs)
+- usajobs (federal cybersecurity positions)
+- sam (cybersecurity contracts - related)
+- dvids (might have cyber warfare content)
+Exclude only: discord (unless specifically about community discussions), fbi_vault (unless about investigations)
+"""
+    else:
+        task_instruction = "Select the 2-3 MOST relevant databases for this research question."
+        selection_guidance = """
+IMPORTANT:
+- Select ONLY 2-3 most relevant databases (not all of them!)
+- Prioritize databases most likely to have direct answers
+- Keep keywords simple and focused
+- Prioritize free sources (requires_api_key: false) when quality is similar
+- source_id MUST be one of: {', '.join([s['id'] for s in source_list])}
+"""
+
     prompt = f"""You are a research assistant with access to multiple databases.
 
 Available Databases:
@@ -77,7 +108,7 @@ Available Databases:
 
 Research Question: {research_question}
 
-Task: Select the 2-3 MOST relevant databases for this research question.
+Task: {task_instruction}
 
 Consider:
 - Database category and description
@@ -89,11 +120,7 @@ For each selected database, provide:
 - keywords: Search keywords (1-3 focused terms, NOT a sentence)
 - reasoning: Why this database is relevant (1 sentence)
 
-IMPORTANT:
-- Select ONLY 2-3 most relevant databases (not all of them!)
-- Keep keywords simple and focused
-- Prioritize free sources (requires_api_key: false) when quality is similar
-- source_id MUST be one of: {', '.join([s['id'] for s in source_list])}
+{selection_guidance}
 
 Return JSON array of selected sources."""
 
@@ -365,8 +392,16 @@ def render_ai_research_tab(openai_api_key_from_ui, dvids_api_key, sam_api_key, u
         key="ai_research_question"
     )
 
-    # Number of results per database
+    # Search options
     col1, col2 = st.columns([3, 1])
+
+    with col1:
+        comprehensive_mode = st.checkbox(
+            "🔍 Comprehensive Search (search all relevant databases)",
+            value=False,
+            help="When enabled, searches ALL databases that might have relevant info. When disabled, AI picks 2-3 most relevant sources (faster, cheaper)."
+        )
+
     with col2:
         results_per_db = st.number_input(
             "Results per database",
@@ -376,6 +411,12 @@ def render_ai_research_tab(openai_api_key_from_ui, dvids_api_key, sam_api_key, u
             key="ai_results_limit"
         )
 
+    # Info about search mode
+    if comprehensive_mode:
+        st.info("💡 **Comprehensive mode**: AI will search ALL databases that could provide relevant information. This is slower and more expensive, but ensures nothing is missed.")
+    else:
+        st.info("💡 **Smart mode** (default): AI picks 2-3 most relevant databases. Faster and cheaper. Use comprehensive mode if you need exhaustive coverage.")
+
     # Search button
     search_btn = st.button("🚀 Research", type="primary", use_container_width=True, key="ai_search_btn")
 
@@ -383,7 +424,7 @@ def render_ai_research_tab(openai_api_key_from_ui, dvids_api_key, sam_api_key, u
         # Step 1: Generate queries
         with st.spinner("🧠 Analyzing your question and generating search queries..."):
             try:
-                queries = generate_search_queries(research_question)
+                queries = generate_search_queries(research_question, comprehensive_mode=comprehensive_mode)
 
                 st.success("✅ Generated search strategy")
 
