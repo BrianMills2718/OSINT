@@ -42,148 +42,94 @@ def get_text(resp):
 
 def generate_search_queries(research_question):
     """
-    Use AI to generate appropriate search queries for all four databases.
-    Returns structured JSON with queries for ClearanceJobs, DVIDS, SAM.gov, and USAJobs.
+    Use AI to generate appropriate search queries using registry for dynamic source discovery.
+
+    Returns structured JSON with selected sources and keywords for each.
+    LLM selects 2-3 MOST relevant sources (not all sources).
+    Each integration's generate_query() will add source-specific parameters.
     """
+    from integrations.registry import registry
 
-    # Get today's date and a date 60 days ago for context
-    today = datetime.now()
-    sixty_days_ago = today - timedelta(days=60)
+    # Get all available sources from registry
+    all_sources = registry.get_all()
 
-    today_str = today.strftime("%Y-%m-%d")
-    sixty_days_ago_str = sixty_days_ago.strftime("%Y-%m-%d")
+    # Build source list with metadata for LLM
+    source_list = []
+    for source_id, source_class in all_sources.items():
+        temp_instance = source_class()
+        meta = temp_instance.metadata
 
-    prompt = f"""You are a research assistant helping to search across four databases:
-1. ClearanceJobs - Security clearance job postings
-2. DVIDS - Military media (photos, videos, news articles)
-3. SAM.gov - Government contract opportunities
-4. USAJobs - Federal government job postings
+        source_list.append({
+            "id": source_id,
+            "name": meta.name,
+            "category": meta.category.value,
+            "description": meta.description,
+            "requires_api_key": meta.requires_api_key,
+            "typical_response_time": meta.typical_response_time
+        })
 
-**IMPORTANT DATE CONTEXT:**
-- Today's date is: {today_str}
-- 60 days ago was: {sixty_days_ago_str}
-- When specifying date ranges, use dates between these two dates (in the PAST)
-- For "last couple months", use approximately {sixty_days_ago_str} to {today_str}
+    # LLM prompt - dynamic from registry
+    prompt = f"""You are a research assistant with access to multiple databases.
+
+Available Databases:
+{json.dumps(source_list, indent=2)}
 
 Research Question: {research_question}
 
-Generate appropriate search queries for each database. For each database, determine:
-- Keywords to search (use SIMPLE keywords - just the most important 1-3 words, NO commas)
-- Relevant filters that would help narrow results
-- Whether this database is relevant for the research question
+Task: Select the 2-3 MOST relevant databases for this research question.
 
-**KEYWORD EXAMPLES:**
-- Good for DVIDS: "JTTF" or "counterterrorism" (short and simple)
-- Good for SAM.gov: "counterterrorism" or "intelligence" (broad terms that appear in contracts)
-- Good for USAJobs: "counterterrorism analyst" or "intelligence" (job title keywords)
-- Bad: "Joint Terrorism Task Force, JTTF, counterterrorism" (too complex, has commas)
-- Bad for SAM.gov: "JTTF" or "Joint Terrorism Task Force" (too specific, unlikely in contracts)
+Consider:
+- Database category and description
+- Response time (prefer fast sources for exploratory queries)
+- API key requirements (note which require keys)
 
-**DATE FORMAT REQUIREMENTS:**
-- DVIDS: YYYY-MM-DD format (e.g., "{sixty_days_ago_str}")
-- SAM.gov: MM/DD/YYYY format (e.g., "{sixty_days_ago.strftime('%m/%d/%Y')}")
-- USAJobs: YYYY-MM-DD format (e.g., "{sixty_days_ago_str}")
-- Use dates between {sixty_days_ago_str} and {today_str} ONLY
+For each selected database, provide:
+- source_id: The database ID (must match an id from Available Databases list)
+- keywords: Search keywords (1-3 focused terms, NOT a sentence)
+- reasoning: Why this database is relevant (1 sentence)
 
-Return a JSON object with search parameters for each database according to the schema.
-If a database is not relevant to the research question, set "relevant": false for that database."""
+IMPORTANT:
+- Select ONLY 2-3 most relevant databases (not all of them!)
+- Keep keywords simple and focused
+- Prioritize free sources (requires_api_key: false) when quality is similar
+- source_id MUST be one of: {', '.join([s['id'] for s in source_list])}
 
-    # Define the JSON schema for structured output
-    query_schema = {
+Return JSON array of selected sources."""
+
+    # Generic schema - works for any number of sources
+    schema = {
         "type": "object",
         "properties": {
-            "clearancejobs": {
-                "type": "object",
-                "properties": {
-                    "relevant": {"type": "boolean"},
-                    "keywords": {"type": "string"},
-                    "clearances": {
-                        "type": "array",
-                        "items": {"type": "string"},
-                        "description": "List of clearance levels, empty if not relevant"
+            "selected_sources": {
+                "type": "array",
+                "items": {
+                    "type": "object",
+                    "properties": {
+                        "source_id": {
+                            "type": "string",
+                            "description": "Database ID from available list"
+                        },
+                        "keywords": {
+                            "type": "string",
+                            "description": "Search keywords (1-3 terms)"
+                        },
+                        "reasoning": {
+                            "type": "string",
+                            "description": "Why this database is relevant"
+                        }
                     },
-                    "posted_days_ago": {
-                        "type": "integer",
-                        "description": "Number of days ago the job was posted, 0 if not relevant"
-                    },
-                    "reasoning": {"type": "string"}
+                    "required": ["source_id", "keywords", "reasoning"],
+                    "additionalProperties": False
                 },
-                "required": ["relevant", "keywords", "clearances", "posted_days_ago", "reasoning"],
-                "additionalProperties": False
-            },
-            "dvids": {
-                "type": "object",
-                "properties": {
-                    "relevant": {"type": "boolean"},
-                    "keywords": {"type": "string"},
-                    "media_types": {
-                        "type": "array",
-                        "items": {"type": "string"},
-                        "description": "Leave empty array - not supported by API. Will search all media types."
-                    },
-                    "date_from": {
-                        "type": "string",
-                        "description": "Leave empty string - date filtering not reliably supported by DVIDS API"
-                    },
-                    "date_to": {
-                        "type": "string",
-                        "description": "Leave empty string - date filtering not reliably supported by DVIDS API"
-                    },
-                    "reasoning": {"type": "string"}
-                },
-                "required": ["relevant", "keywords", "media_types", "date_from", "date_to", "reasoning"],
-                "additionalProperties": False
-            },
-            "sam_gov": {
-                "type": "object",
-                "properties": {
-                    "relevant": {"type": "boolean"},
-                    "keywords": {"type": "string"},
-                    "posted_from": {
-                        "type": "string",
-                        "description": "Start date in MM/DD/YYYY format, empty string if not relevant"
-                    },
-                    "posted_to": {
-                        "type": "string",
-                        "description": "End date in MM/DD/YYYY format, empty string if not relevant"
-                    },
-                    "naics_codes": {
-                        "type": "string",
-                        "description": "Comma-separated NAICS codes, empty string if not relevant"
-                    },
-                    "reasoning": {"type": "string"}
-                },
-                "required": ["relevant", "keywords", "posted_from", "posted_to", "naics_codes", "reasoning"],
-                "additionalProperties": False
-            },
-            "usajobs": {
-                "type": "object",
-                "properties": {
-                    "relevant": {"type": "boolean"},
-                    "keywords": {"type": "string"},
-                    "date_from": {
-                        "type": "string",
-                        "description": "Start date in YYYY-MM-DD format, empty string if not relevant"
-                    },
-                    "date_to": {
-                        "type": "string",
-                        "description": "End date in YYYY-MM-DD format, empty string if not relevant"
-                    },
-                    "pay_grade_low": {
-                        "type": "string",
-                        "description": "Minimum pay grade (e.g., 'GS-9'), empty string if not relevant"
-                    },
-                    "reasoning": {"type": "string"}
-                },
-                "required": ["relevant", "keywords", "date_from", "date_to", "pay_grade_low", "reasoning"],
-                "additionalProperties": False
+                "minItems": 1,
+                "maxItems": 4
             },
             "research_strategy": {
                 "type": "string",
-                "description": "Overall strategy for how these queries will help answer the research question"
+                "description": "Overall strategy for answering the research question"
             }
         },
-        "required": ["clearancejobs", "dvids", "sam_gov", "usajobs", "research_strategy"],
+        "required": ["selected_sources", "research_strategy"],
         "additionalProperties": False
     }
 
@@ -194,8 +140,8 @@ If a database is not relevant to the research question, set "relevant": false fo
         text={
             "format": {
                 "type": "json_schema",
-                "name": "search_queries",
-                "schema": query_schema,
+                "name": "source_selection",
+                "schema": schema,
                 "strict": True
             }
         }
@@ -206,68 +152,88 @@ If a database is not relevant to the research question, set "relevant": false fo
     return json.loads(result_text)
 
 
-def execute_clearancejobs_search(query_params, limit=10):
-    """Execute ClearanceJobs search based on AI-generated parameters."""
+async def execute_search_via_registry(source_id: str, research_question: str, api_keys: dict, limit: int = 10) -> dict:
+    """
+    Execute search via registry for any source.
+
+    Args:
+        source_id: Database ID (e.g., "dvids", "sam", "clearancejobs")
+        research_question: Research question to generate query from
+        api_keys: Dict mapping source_id to API key
+        limit: Max results
+
+    Returns:
+        Dict with {success, total, results, source, error}
+    """
+    from integrations.registry import registry
+
     start_time = datetime.now()
-    endpoint = "https://api.clearancejobs.com/api/v1/jobs/search"
 
     try:
-        cj = ClearanceJobs()
+        # Get integration class from registry
+        integration_class = registry.get(source_id)
+        if not integration_class:
+            return {
+                "success": False,
+                "total": 0,
+                "results": [],
+                "source": source_id,
+                "error": f"Unknown source: {source_id}"
+            }
 
-        body = {
-            "pagination": {"page": 1, "size": limit},
-            "query": query_params.get("keywords", "")
-        }
+        # Instantiate integration
+        integration = integration_class()
 
-        # Add clearances if specified (non-empty array)
-        if query_params.get("clearances") and len(query_params["clearances"]) > 0:
-            body["filters"] = body.get("filters", {})
-            body["filters"]["clearance"] = query_params["clearances"]
+        # Get API key if needed
+        api_key = None
+        if integration.metadata.requires_api_key:
+            api_key = api_keys.get(source_id)
+            if not api_key:
+                return {
+                    "success": False,
+                    "total": 0,
+                    "results": [],
+                    "source": integration.metadata.name,
+                    "error": f"API key required for {integration.metadata.name}"
+                }
 
-        # Add date filter if specified (non-zero value)
-        if query_params.get("posted_days_ago") and query_params["posted_days_ago"] > 0:
-            body["filters"] = body.get("filters", {})
-            body["filters"]["posted"] = query_params["posted_days_ago"]
+        # Generate source-specific query params via integration's LLM
+        query_params = await integration.generate_query(research_question=research_question)
 
-        response = cj.post("/jobs/search", body)
+        if not query_params:
+            return {
+                "success": False,
+                "total": 0,
+                "results": [],
+                "source": integration.metadata.name,
+                "error": "Query generation returned no parameters (source deemed not relevant)"
+            }
+
+        # Execute search
+        result = await integration.execute_search(query_params, api_key, limit)
+
         response_time_ms = (datetime.now() - start_time).total_seconds() * 1000
 
-        # Log successful request
-        log_request("ClearanceJobs", endpoint, response.status_code, response_time_ms, None, body)
-
-        data = response.json()
-
-        # ClearanceJobs returns "data" array and "meta" object
-        jobs = data.get("data", [])
-        meta = data.get("meta", {})
-        pagination = meta.get("pagination", {})
-        total = pagination.get("total", len(jobs))  # Fall back to job count if no pagination info
-
+        # Convert QueryResult to dict format
         return {
-            "success": True,
-            "total": total,
-            "results": jobs[:limit],
-            "source": "ClearanceJobs",
-            "debug_query": {
-                "endpoint": "POST /jobs/search",
-                "body": body
-            }
+            "success": result.success,
+            "total": result.total,
+            "results": result.results,
+            "source": result.source,
+            "error": result.error,
+            "response_time_ms": response_time_ms,
+            "query_params": query_params
         }
 
     except Exception as e:
-        # Log failed request
         response_time_ms = (datetime.now() - start_time).total_seconds() * 1000
-        status_code = getattr(e, 'response', None) and e.response.status_code or 0
-        log_request("ClearanceJobs", endpoint, status_code, response_time_ms, str(e), body if 'body' in locals() else query_params)
-
         return {
             "success": False,
+            "total": 0,
+            "results": [],
+            "source": source_id,
             "error": str(e),
-            "source": "ClearanceJobs",
-            "debug_query": {
-                "endpoint": "POST /jobs/search",
-                "attempted_body": body if 'body' in locals() else query_params
-            }
+            "response_time_ms": response_time_ms
         }
 
 

@@ -17,7 +17,7 @@ sys.path.insert(0, 'ClearanceJobs')
 
 # Page config
 st.set_page_config(
-    page_title="Unified Search - ClearanceJobs, DVIDS & SAM.gov",
+    page_title="Multi-Source Intelligence Research Platform",
     page_icon="🔍",
     layout="wide",
     initial_sidebar_state="expanded"
@@ -54,8 +54,8 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # Header
-st.markdown('<div class="main-header">🔍 Unified Multi-Source Search</div>', unsafe_allow_html=True)
-st.markdown('<div class="sub-header">Search across ClearanceJobs, DVIDS, SAM.gov, and USAJobs from a single interface</div>', unsafe_allow_html=True)
+st.markdown('<div class="main-header">🔍 Multi-Source Intelligence Research</div>', unsafe_allow_html=True)
+st.markdown('<div class="sub-header">AI-powered search across government databases, contracts, jobs, and military media</div>', unsafe_allow_html=True)
 
 # Sidebar configuration
 with st.sidebar:
@@ -196,77 +196,89 @@ with st.sidebar:
         except Exception as e:
             st.caption(f"Stats unavailable: {str(e)}")
 
-# Create tabs
-tab1, tab2, tab3, tab4, tab5, tab6 = st.tabs([
-    "🏢 ClearanceJobs (Jobs)",
-    "📸 DVIDS (Media)",
-    "📋 SAM.gov (Contracts)",
-    "💼 USAJobs (Federal Jobs)",
+# Create main tabs - New UX with User Guide first, then primary features
+tab1, tab2, tab3, tab4 = st.tabs([
+    "📖 User Guide",
     "🤖 AI Research",
-    "📊 Monitor Management"
+    "📊 Monitor Management",
+    "⚙️ Advanced Search"
 ])
 
 # ============================================================================
-# TAB 1: CLEARANCEJOBS
+# TAB 1: USER GUIDE
 # ============================================================================
 with tab1:
-    from clearancejobs_search import render_clearancejobs_tab
-    render_clearancejobs_tab(results_per_page, enable_rate_limiting)
+    from user_guide import render_user_guide_tab
+    render_user_guide_tab()
 
 # ============================================================================
-# TAB 2: DVIDS
+# TAB 2: AI RESEARCH (PRIMARY INTERFACE)
 # ============================================================================
 with tab2:
-    from dvids_search import render_dvids_tab
-    render_dvids_tab(dvids_api_key, results_per_page, enable_rate_limiting)
-
-# ============================================================================
-# TAB 3: SAM.GOV
-# ============================================================================
-with tab3:
-    from sam_search import render_sam_tab
-    render_sam_tab(sam_api_key, results_per_page, enable_rate_limiting)
-
-# ============================================================================
-# TAB 4: USAJOBS
-# ============================================================================
-with tab4:
-    st.markdown("### 💼 Federal Job Opportunities")
-    st.caption("Search federal government jobs on USAJobs.gov • API key required")
-
-    if not usajobs_api_key:
-        st.warning("⚠️ **API Key Required** - Please add your USAJobs API key in the sidebar")
-        st.info("🔑 Get your free API key at: https://developer.usajobs.gov/APIRequest/Index")
-    else:
-        st.info("🚧 **USAJobs tab UI coming soon!** For now, use the AI Research tab which includes USAJobs in multi-source search.")
-        st.markdown("""
-        **USAJobs is already integrated** in the backend and works through:
-        - The **AI Research tab** (multi-source intelligent search)
-        - Direct API calls via Python
-
-        A dedicated USAJobs search interface is planned for a future update.
-        """)
-
-# ============================================================================
-# TAB 5: AI RESEARCH
-# ============================================================================
-with tab5:
     from ai_research import render_ai_research_tab
     render_ai_research_tab(openai_api_key, dvids_api_key, sam_api_key, usajobs_api_key)
 
 # ============================================================================
-# TAB 6: MONITOR MANAGEMENT
+# TAB 3: MONITOR MANAGEMENT
 # ============================================================================
-with tab6:
+with tab3:
     from monitor_management import render_monitor_management_tab
     render_monitor_management_tab()
+
+# ============================================================================
+# TAB 4: ADVANCED SEARCH (NESTED TABS FOR INDIVIDUAL SOURCES)
+# ============================================================================
+with tab4:
+    st.markdown("### ⚙️ Advanced Search - Individual Data Sources")
+    st.caption("Search individual sources directly with custom filters (for advanced users)")
+
+    st.info("💡 **New to this tool?** Most users should use the **🤖 AI Research** tab instead - it searches all sources automatically and is much easier!")
+
+    st.markdown("---")
+
+    # Nested tabs for individual sources
+    subtab1, subtab2, subtab3, subtab4 = st.tabs([
+        "🏢 ClearanceJobs",
+        "📸 DVIDS",
+        "📋 SAM.gov",
+        "💼 USAJobs"
+    ])
+
+    with subtab1:
+        from clearancejobs_search import render_clearancejobs_tab
+        render_clearancejobs_tab(results_per_page, enable_rate_limiting)
+
+    with subtab2:
+        from dvids_search import render_dvids_tab
+        render_dvids_tab(dvids_api_key, results_per_page, enable_rate_limiting)
+
+    with subtab3:
+        from sam_search import render_sam_tab
+        render_sam_tab(sam_api_key, results_per_page, enable_rate_limiting)
+
+    with subtab4:
+        st.markdown("### 💼 Federal Job Opportunities")
+        st.caption("Search federal government jobs on USAJobs.gov • API key required")
+
+        if not usajobs_api_key:
+            st.warning("⚠️ **API Key Required** - Please add your USAJobs API key in the sidebar")
+            st.info("🔑 Get your free API key at: https://developer.usajobs.gov/APIRequest/Index")
+        else:
+            st.info("🚧 **USAJobs individual search UI coming soon!** For now, use the AI Research tab which includes USAJobs in multi-source search.")
+            st.markdown("""
+            **USAJobs is already integrated** in the backend and works through:
+            - The **🤖 AI Research tab** (multi-source intelligent search) - RECOMMENDED
+            - Direct API calls via Python
+
+            A dedicated USAJobs search interface is planned for a future update.
+            """)
 
 # Footer
 st.markdown("---")
 col_f1, col_f2, col_f3 = st.columns(3)
 with col_f1:
-    st.caption("📖 [User Guide](README_UNIFIED_APP.md)")
+    st.caption("💡 **New?** Check the User Guide tab for tutorials and FAQs")
 with col_f2:
-    st.caption("🔧 [Technical Docs](INTEGRATION_ANALYSIS.md)")
+    st.caption("🤖 **Recommended:** Start with AI Research for best results")
 with col_f3:
     st.caption("⚠️ Respect API limits and terms of service")
