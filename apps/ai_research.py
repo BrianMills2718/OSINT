@@ -425,8 +425,9 @@ def render_ai_research_tab(openai_api_key_from_ui, dvids_api_key, sam_api_key, u
                 tasks = []
                 for selected in queries['selected_sources']:
                     source_id = selected['source_id']
-                    keywords = selected['keywords']
-                    task = execute_search_via_registry(source_id, keywords, api_keys, results_per_db)
+                    # Pass full research question, not just keywords
+                    # Each integration's generate_query() will see the full context
+                    task = execute_search_via_registry(source_id, research_question, api_keys, results_per_db)
                     tasks.append(task)
 
                 return await asyncio.gather(*tasks)

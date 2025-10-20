@@ -16,7 +16,8 @@ from core.database_integration_base import (
     DatabaseCategory,
     QueryResult
 )
-from integrations.government.clearancejobs_playwright import search_clearancejobs
+# Lazy import - only load Playwright when actually searching
+# from integrations.government.clearancejobs_playwright import search_clearancejobs
 from llm_utils import acompletion
 from config_loader import config
 
@@ -158,6 +159,9 @@ Return JSON with these exact fields."""
         start_time = datetime.now()
 
         try:
+            # Lazy import - only import Playwright when actually executing
+            from integrations.government.clearancejobs_playwright import search_clearancejobs
+
             # Call existing Playwright scraper
             result = await search_clearancejobs(
                 keywords=query_params.get("keywords", ""),
