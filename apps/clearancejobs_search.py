@@ -5,7 +5,13 @@ import pandas as pd
 import time
 import json
 import asyncio
+import sys
+from pathlib import Path
 from datetime import datetime
+
+# Add parent directory to path for imports
+sys.path.insert(0, str(Path(__file__).parent.parent))
+
 from integrations.government.clearancejobs_playwright import search_clearancejobs
 
 

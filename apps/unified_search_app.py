@@ -55,7 +55,7 @@ st.markdown("""
 
 # Header
 st.markdown('<div class="main-header">🔍 Unified Multi-Source Search</div>', unsafe_allow_html=True)
-st.markdown('<div class="sub-header">Search across ClearanceJobs, DVIDS, and SAM.gov from a single interface</div>', unsafe_allow_html=True)
+st.markdown('<div class="sub-header">Search across ClearanceJobs, DVIDS, SAM.gov, and USAJobs from a single interface</div>', unsafe_allow_html=True)
 
 # Sidebar configuration
 with st.sidebar:
@@ -122,16 +122,34 @@ with st.sidebar:
         enable_rate_limiting = st.checkbox("Rate limiting", value=True,
                                           help="Adds 1s delay between searches")
 
+    # USAJobs API Key - check secrets first, then env
+    usajobs_default = ""
+    try:
+        if hasattr(st, 'secrets') and "USAJOBS_API_KEY" in st.secrets:
+            usajobs_default = st.secrets["USAJOBS_API_KEY"]
+    except:
+        pass
+    if not usajobs_default:
+        usajobs_default = os.getenv("USAJOBS_API_KEY", "")
+
+    usajobs_api_key = st.text_input(
+        "USAJobs API Key",
+        value=usajobs_default if usajobs_default else "",
+        type="password",
+        help="Get your key at developer.usajobs.gov"
+    )
+
     st.markdown("---")
     st.markdown("### 📊 Available Sources")
     st.markdown("✅ **ClearanceJobs** - No auth required")
     st.markdown(f"{'✅' if dvids_api_key else '⚠️'} **DVIDS** - API key {'configured' if dvids_api_key else 'needed'}")
     st.markdown(f"{'✅' if sam_api_key else '⚠️'} **SAM.gov** - API key {'configured' if sam_api_key else 'needed'}")
+    st.markdown(f"{'✅' if usajobs_api_key else '⚠️'} **USAJobs** - API key {'configured' if usajobs_api_key else 'needed'}")
 
     # Rate limit tracking stats
     with st.expander("📈 API Usage Stats", expanded=False):
         try:
-            from api_request_tracker import get_request_stats
+            from core.api_request_tracker import get_request_stats
             from pathlib import Path
 
             log_file = Path("api_requests.jsonl")
@@ -168,10 +186,11 @@ with st.sidebar:
             st.caption(f"Stats unavailable: {str(e)}")
 
 # Create tabs
-tab1, tab2, tab3, tab4 = st.tabs([
+tab1, tab2, tab3, tab4, tab5 = st.tabs([
     "🏢 ClearanceJobs (Jobs)",
     "📸 DVIDS (Media)",
     "📋 SAM.gov (Contracts)",
+    "💼 USAJobs (Federal Jobs)",
     "🤖 AI Research"
 ])
 
@@ -197,11 +216,31 @@ with tab3:
     render_sam_tab(sam_api_key, results_per_page, enable_rate_limiting)
 
 # ============================================================================
-# TAB 4: AI RESEARCH
+# TAB 4: USAJOBS
 # ============================================================================
 with tab4:
+    st.markdown("### 💼 Federal Job Opportunities")
+    st.caption("Search federal government jobs on USAJobs.gov • API key required")
+
+    if not usajobs_api_key:
+        st.warning("⚠️ **API Key Required** - Please add your USAJobs API key in the sidebar")
+        st.info("🔑 Get your free API key at: https://developer.usajobs.gov/APIRequest/Index")
+    else:
+        st.info("🚧 **USAJobs tab UI coming soon!** For now, use the AI Research tab which includes USAJobs in multi-source search.")
+        st.markdown("""
+        **USAJobs is already integrated** in the backend and works through:
+        - The **AI Research tab** (multi-source intelligent search)
+        - Direct API calls via Python
+
+        A dedicated USAJobs search interface is planned for a future update.
+        """)
+
+# ============================================================================
+# TAB 5: AI RESEARCH
+# ============================================================================
+with tab5:
     from ai_research import render_ai_research_tab
-    render_ai_research_tab(openai_api_key, dvids_api_key, sam_api_key)
+    render_ai_research_tab(openai_api_key, dvids_api_key, sam_api_key, usajobs_api_key)
 
 # Footer
 st.markdown("---")

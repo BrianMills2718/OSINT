@@ -4,13 +4,18 @@
 import streamlit as st
 import json
 import os
+import sys
 from pathlib import Path
 from dotenv import load_dotenv
 import litellm
 import requests
 from datetime import datetime, timedelta
+
+# Add parent directory to path for imports
+sys.path.insert(0, str(Path(__file__).parent.parent))
+
 from ClearanceJobs import ClearanceJobs
-from api_request_tracker import log_request
+from core.api_request_tracker import log_request
 
 # Load environment variables from .env file in project directory
 # This works for local development. For production (Streamlit Cloud),
@@ -439,11 +444,13 @@ Be concise but thorough. Focus on insights that directly relate to the research 
     return get_text(response)
 
 
-def render_ai_research_tab(openai_api_key_from_ui, dvids_api_key, sam_api_key):
+def render_ai_research_tab(openai_api_key_from_ui, dvids_api_key, sam_api_key, usajobs_api_key=None):
     """Render the AI Research tab in the Streamlit app."""
 
     st.markdown("### 🤖 AI-Powered Research Assistant")
     st.caption("Ask a research question and AI will search across all databases and summarize results")
+
+    # TODO: Integrate USAJobs into AI Research (currently only ClearanceJobs, DVIDS, SAM.gov)
 
     # Get OpenAI API key from multiple sources (priority order):
     # 1. User input in sidebar (highest priority - allows override)
