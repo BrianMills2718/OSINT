@@ -46,7 +46,7 @@ class FBIVaultIntegration(DatabaseIntegration):
         return DatabaseMetadata(
             name="FBI Vault",
             id="fbi_vault",
-            category=DatabaseCategory.GENERAL,
+            category=DatabaseCategory.GOV_FBI,
             requires_api_key=False,
             cost_per_query_estimate=0.001,  # LLM cost only, scraping is free
             typical_response_time=3.0,

@@ -1,0 +1,753 @@
+brian@DESKTOP-79G7E9D:~/sam_gov$ ssh rakorski@64.227.96.30
+rakorski@64.227.96.30's password: 
+Permission denied, please try again.
+rakorski@64.227.96.30's password: 
+Permission denied, please try again.
+rakorski@64.227.96.30's password: 
+rakorski@64.227.96.30: Permission denied (publickey,password).
+brian@DESKTOP-79G7E9D:~/sam_gov$ ssh rakorski@64.227.96.30
+rakorski@64.227.96.30's password: 
+Permission denied, please try again.
+rakorski@64.227.96.30's password: 
+Welcome to Ubuntu 24.04.3 LTS (GNU/Linux 6.8.0-85-generic x86_64)
+
+ * Documentation:  https://help.ubuntu.com
+ * Management:     https://landscape.canonical.com
+ * Support:        https://ubuntu.com/pro
+
+ System information as of Mon Oct 20 02:55:05 UTC 2025
+
+  System load:  0.99               Processes:             208
+  Usage of /:   57.8% of 47.39GB   Users logged in:       2
+  Memory usage: 64%                IPv4 address for eth0: 64.227.96.30
+  Swap usage:   93%                IPv4 address for eth0: 10.48.0.8
+
+Expanded Security Maintenance for Applications is not enabled.
+
+29 updates can be applied immediately.
+To see these additional updates run: apt list --upgradable
+
+Enable ESM Apps to receive additional future security updates.
+See https://ubuntu.com/esm or run: sudo pro status
+
+
+Last login: Mon Oct 20 01:59:10 2025 from 172.58.131.244
+rakorski@MediaWiki-UFOs:~$ 
+rakorski@MediaWiki-UFOs:~$ 
+rakorski@MediaWiki-UFOs:~$  # Search for cargo files/directories on the server
+  sudo find / -type d -name "*cargo*" -o -name "*Cargo*" 2>/dev/null | grep -v ".cargo" | head -20
+
+  # Search for cargo references in Mozart code
+  sudo grep -r "cargo" /root/mozart/ 2>/dev/null | head -20
+  sudo grep -r "Cargo" /root/mozart/ 2>/dev/null | head -20
+
+  # Check what the seed_wikibase.py script actually does
+  sudo cat /root/mozart/scripts/seed_wikibase.py
+[sudo] password for rakorski: 
+Sorry, try again.
+[sudo] password for rakorski: 
+/var/lib/docker/volumes/mediawiki-stack_mediawiki_data/_data/skins/Citizen/skinStyles/extensions/Cargo
+/var/lib/docker/volumes/mediawiki-stack_mediawiki_data/_data/extensions/Cargo
+/var/lib/docker/volumes/mediawiki-stack_mediawiki_data/_data/extensions/Cargo/includes/CargoFileData.php
+/var/lib/docker/volumes/mediawiki-stack_mediawiki_data/_data/extensions/Cargo/includes/CargoBackLinks.php
+/var/lib/docker/volumes/mediawiki-stack_mediawiki_data/_data/extensions/Cargo/includes/CargoTableSchema.php
+/var/lib/docker/volumes/mediawiki-stack_mediawiki_data/_data/extensions/Cargo/includes/api/CargoAutocompleteAPI.php
+/var/lib/docker/volumes/mediawiki-stack_mediawiki_data/_data/extensions/Cargo/includes/api/CargoFormatParamsAPI.php
+/var/lib/docker/volumes/mediawiki-stack_mediawiki_data/_data/extensions/Cargo/includes/api/CargoRecreateTablesAPI.php
+/var/lib/docker/volumes/mediawiki-stack_mediawiki_data/_data/extensions/Cargo/includes/api/CargoQueryAutocompleteAPI.php
+/var/lib/docker/volumes/mediawiki-stack_mediawiki_data/_data/extensions/Cargo/includes/api/CargoTablesAPI.php
+/var/lib/docker/volumes/mediawiki-stack_mediawiki_data/_data/extensions/Cargo/includes/api/CargoFieldsAPI.php
+/var/lib/docker/volumes/mediawiki-stack_mediawiki_data/_data/extensions/Cargo/includes/api/CargoQueryAPI.php
+/var/lib/docker/volumes/mediawiki-stack_mediawiki_data/_data/extensions/Cargo/includes/api/CargoRecreateDataAPI.php
+/var/lib/docker/volumes/mediawiki-stack_mediawiki_data/_data/extensions/Cargo/includes/api/CargoRecreateSpecialTableAPI.php
+/var/lib/docker/volumes/mediawiki-stack_mediawiki_data/_data/extensions/Cargo/includes/CargoGanttData.php
+/var/lib/docker/volumes/mediawiki-stack_mediawiki_data/_data/extensions/Cargo/includes/parserfunctions/CargoQuery.php
+/var/lib/docker/volumes/mediawiki-stack_mediawiki_data/_data/extensions/Cargo/includes/parserfunctions/CargoDisplayMap.php
+/var/lib/docker/volumes/mediawiki-stack_mediawiki_data/_data/extensions/Cargo/includes/parserfunctions/CargoCompoundQuery.php
+/var/lib/docker/volumes/mediawiki-stack_mediawiki_data/_data/extensions/Cargo/includes/parserfunctions/CargoDeclare.php
+/var/lib/docker/volumes/mediawiki-stack_mediawiki_data/_data/extensions/Cargo/includes/parserfunctions/CargoRecurringEvent.php
+/root/mozart/.artifacts/tehran-ufo-incident-1976.json:            "verbatim": "According to brokerage companies, war risk insurance rates have more than tripled since the onset of the Israel-Iran conflict, with shippers now demanding 0.2% of cargo value ($300,000 for a VLCC tanker) for tankers passing through the Persian Gulf.",
+/root/mozart/.artifacts/tehran-ufo-incident-1976.json:          "verbatim": "According to brokerage companies, war risk insurance rates have more than tripled since the onset of the Israel-Iran conflict, with shippers now demanding 0.2% of cargo value ($300,000 for a VLCC tanker) for tankers passing through the Persian Gulf.",
+/root/mozart/.cache/uv/archive-v0/nqaGx2RMZwc0lPlhNyDkY/pydantic_core-2.33.2.dist-info/METADATA:It's possible to profile the code using the [`flamegraph` utility from `flamegraph-rs`](https://github.com/flamegraph-rs/flamegraph). (Tested on Linux.) You can install this with `cargo install flamegraph`.
+/root/mozart/.cache/uv/archive-v0/gbhpyQeVA8c475O23X6Sj/tld/res/effective_tld_names_public_only.dat.txt:cargo.aero
+/root/mozart/.cache/uv/archive-v0/gbhpyQeVA8c475O23X6Sj/tld/res/effective_tld_names.dat.txt:cargo.aero
+/root/mozart/.cache/uv/archive-v0/gbhpyQeVA8c475O23X6Sj/tld/tests/res/effective_tld_names_custom.dat.txt:cargo.aero
+/root/mozart/.cache/uv/archive-v0/mUFsGT3qQzXrCbHcgVS49/googleapiclient/discovery_cache/documents/ondemandscanning.v1.json:"description": "Selects a repo using a Google Cloud Platform project ID (e.g., winged-cargo-31) and a repo name within that project.",
+/root/mozart/.cache/uv/archive-v0/mUFsGT3qQzXrCbHcgVS49/googleapiclient/discovery_cache/documents/clouddebugger.v2.json:      "description": "Selects a repo using a Google Cloud Platform project ID (e.g. winged-cargo-31) and a repo name within that project.",
+/root/mozart/.cache/uv/archive-v0/mUFsGT3qQzXrCbHcgVS49/googleapiclient/discovery_cache/documents/ondemandscanning.v1beta1.json:"description": "Selects a repo using a Google Cloud Platform project ID (e.g., winged-cargo-31) and a repo name within that project.",
+/root/mozart/.cache/uv/archive-v0/mUFsGT3qQzXrCbHcgVS49/googleapiclient/discovery_cache/documents/containeranalysis.v1.json:"description": "Selects a repo using a Google Cloud Platform project ID (e.g., winged-cargo-31) and a repo name within that project.",
+/root/mozart/.cache/uv/archive-v0/mUFsGT3qQzXrCbHcgVS49/googleapiclient/discovery_cache/documents/containeranalysis.v1beta1.json:"description": "Selects a repo using a Google Cloud Platform project ID (e.g., winged-cargo-31) and a repo name within that project.",
+/root/mozart/.cache/uv/archive-v0/mUFsGT3qQzXrCbHcgVS49/googleapiclient/discovery_cache/documents/containeranalysis.v1alpha1.json:"description": "Selects a repo using a Google Cloud Platform project ID (e.g., winged-cargo-31) and a repo name within that project.",
+/root/mozart/.cache/brave/f1dc87696f7c28467af49054acd482a48bf035e8821cc88692df605e95459341.json:    "note": "On November 17, 1986, <strong>the Japanese crew of a JAL Boeing 747 cargo freighter witnessed threeunidentified objects after sunset, while flying over eastern Alaska, USA</strong>. The objects seemed toprefer the cover of darkness to their left, and to avoid the brighter skies to their right.",
+/root/mozart/.cache/brave/f1dc87696f7c28467af49054acd482a48bf035e8821cc88692df605e95459341.json:    "note": "<strong>Three UFOs played tag with Japan Air Lines (JAL) cargo flight 1628 for 50 minutes while they were visually observed by a sometimes terrified flight crew</strong>. During the last 30 minutes the UFOs were tracked on military and civilian radar, and the entire encounter was verified by a high-level ...",
+/root/mozart/.cache/brave/f1dc87696f7c28467af49054acd482a48bf035e8821cc88692df605e95459341.json:    "note": "On November 17, 1986, <strong>the Japanese crew of a JAL Boeing 747 cargo freighter witnessed threeunidentified objects after sunset, while flying over eastern Alaska, USA</strong>. The objects seemed toprefer the cover of darkness to their left, and to avoid the brighter skies to their right.",
+/root/mozart/.cache/brave/f1dc87696f7c28467af49054acd482a48bf035e8821cc88692df605e95459341.json:    "note": "On the evening of November 17th of 1986, Japan Airlines flight 1628, a Boeing 747-200F cargo aircraft, was <strong>en route from Paris to a layover in Anchorage, Alaska on its way to Tokyo</strong>.",
+/root/mozart/.cache/brave/f1dc87696f7c28467af49054acd482a48bf035e8821cc88692df605e95459341.json:    "note": "Japan Air Lines flight 1628 was a <strong>UFO incident that occurred on November 17, 1986 involving a Japanese Boeing 747-200F cargo aircraft</strong>. The aircraft was en route from Paris to Narita International Airport, near Tokyo, with a cargo of Beaujolais wine. On the Reykjavík to Anchorage section of ...",
+/root/mozart/.cache/brave/f1dc87696f7c28467af49054acd482a48bf035e8821cc88692df605e95459341.json:    "note": "A veteran pilot whose UFO sighting was confirmed on radar screens says that the thing was so enormous that his Japan Airlines cargo plane was tiny compared to the mysterious object.",
+/root/mozart/.cache/brave/f1dc87696f7c28467af49054acd482a48bf035e8821cc88692df605e95459341.json:    "note": "Japan Air Lines <strong>flight</strong> <strong>1628</strong> was a UFO <strong>incident</strong> that occurred on November 17, <strong>1986</strong> involving a Japanese Boeing 747-200F cargo aircraft. The aircraft was en route from Paris to Narita International Airport, near Tokyo, with a cargo of Beaujolais wine. On the Reykjavík to Anchorage section of ...",
+/root/mozart/.cache/brave/f1dc87696f7c28467af49054acd482a48bf035e8821cc88692df605e95459341.json:    "note": "On November 17, <strong>1986</strong>, Japan Airlines <strong>Flight</strong> <strong>1628</strong>, a cargo <strong>flight</strong> from Paris to Narita International Airport near Tokyo, experienced a mysterious encounter while",
+/root/mozart/app/normalize/geonames.py:        """Build a hierarchical string for Cargo WITHIN queries."""
+/root/mozart/.cache/uv/archive-v0/nqaGx2RMZwc0lPlhNyDkY/pydantic_core-2.33.2.dist-info/METADATA:1. Bump package version locally. Do not just edit `Cargo.toml` on Github, you need both `Cargo.toml` and `Cargo.lock` to be updated.
+/root/mozart/.cache/uv/archive-v0/mUFsGT3qQzXrCbHcgVS49/googleapiclient/discovery_cache/documents/ondemandscanning.v1.json:"Rust packages from Cargo (GitHub ecosystem is `RUST`).",
+/root/mozart/.cache/uv/archive-v0/mUFsGT3qQzXrCbHcgVS49/googleapiclient/discovery_cache/documents/ondemandscanning.v1beta1.json:"Rust packages from Cargo (GitHub ecosystem is `RUST`).",
+/root/mozart/.cache/brave/f1dc87696f7c28467af49054acd482a48bf035e8821cc88692df605e95459341.json:    "url": "https://en.wikipedia.org/wiki/Japan_Air_Lines_Cargo_Flight_1628",
+/root/mozart/.cache/brave/f1dc87696f7c28467af49054acd482a48bf035e8821cc88692df605e95459341.json:    "title": "Japan Air Lines Cargo Flight 1628 - Wikipedia",
+/root/mozart/.cache/brave/f1dc87696f7c28467af49054acd482a48bf035e8821cc88692df605e95459341.json:    "note": "Japan Air Lines Cargo Flight 1628 ... 17, 1986. During the flight, <strong>Captain Kenji Terauchi reported seeing three objects he described as &quot;two small ships and the mothership&quot;.</strong> The FAA in Anchorage only saw Flight 1628 on their radar. Two other nearby planes only saw Flight 1628 and no other objects.",
+/root/mozart/.cache/brave/159d6360323a3f86c8bed055c63d35f19ea7cde5d5f025e4bbeff457ec9af592.json:    "url": "https://en.wikipedia.org/wiki/Japan_Air_Lines_Cargo_Flight_1628",
+/root/mozart/.cache/brave/159d6360323a3f86c8bed055c63d35f19ea7cde5d5f025e4bbeff457ec9af592.json:    "title": "Japan Air Lines Cargo Flight 1628 - Wikipedia",
+/root/mozart/.cache/perplexity/fea90b78f57f8d8898d291f26dea2f80f3e99aed61b96d2b75afbdcf595e13ca.json:    "url": "https://en.wikipedia.org/wiki/Japan_Air_Lines_Cargo_Flight_1628",
+/root/mozart/.cache/perplexity/fea90b78f57f8d8898d291f26dea2f80f3e99aed61b96d2b75afbdcf595e13ca.json:    "title": "https://en.wikipedia.org/wiki/Japan_Air_Lines_Cargo_Flight_1628",
+/root/mozart/.cache/perplexity/4ffe05843ad55588cedfd9a73956b50e2f1e5a677dea4bfbf4349e0eedaf9730.json:    "url": "https://en.wikipedia.org/wiki/Japan_Air_Lines_Cargo_Flight_1628",
+/root/mozart/.cache/perplexity/4ffe05843ad55588cedfd9a73956b50e2f1e5a677dea4bfbf4349e0eedaf9730.json:    "title": "https://en.wikipedia.org/wiki/Japan_Air_Lines_Cargo_Flight_1628",
+/root/mozart/.cache/perplexity/8436ccbdff08dd27eeab614277c59d106dd57667203994d1ec11ebb47e37da13.json:    "url": "https://en.wikipedia.org/wiki/Japan_Air_Lines_Cargo_Flight_1628",
+/root/mozart/.cache/perplexity/8436ccbdff08dd27eeab614277c59d106dd57667203994d1ec11ebb47e37da13.json:    "title": "https://en.wikipedia.org/wiki/Japan_Air_Lines_Cargo_Flight_1628",
+/root/mozart/.venv/lib/python3.12/site-packages/googleapiclient/discovery_cache/documents/ondemandscanning.v1.json:"Rust packages from Cargo (GitHub ecosystem is `RUST`).",
+/root/mozart/.venv/lib/python3.12/site-packages/googleapiclient/discovery_cache/documents/ondemandscanning.v1beta1.json:"Rust packages from Cargo (GitHub ecosystem is `RUST`).",
+/root/mozart/.venv/lib/python3.12/site-packages/pydantic_core-2.33.2.dist-info/METADATA:1. Bump package version locally. Do not just edit `Cargo.toml` on Github, you need both `Cargo.toml` and `Cargo.lock` to be updated.
+/root/mozart/.out/Tehran_UFO_Incident_1976.wikitext:* [[Japan Air Lines Cargo Flight 1628 incident]]
+/root/mozart/logs/27dbcd2c510e40f69a0ee192244ebf7c.result.json:    "https://en.wikipedia.org/wiki/Japan_Air_Lines_Cargo_Flight_1628",
+#!/usr/bin/env python3
+"""Seed Wikibase items according to predefined batches."""
+
+from __future__ import annotations
+
+import json
+import os
+from dataclasses import dataclass, field
+from typing import Dict, List, Optional
+
+import httpx
+
+CALENDAR_MODEL = "http://www.wikidata.org/entity/Q1985727"
+
+
+def require_env(name: str) -> str:
+    value = os.environ.get(name)
+    if not value:
+        raise RuntimeError(f"Missing environment variable: {name}")
+    return value
+
+
+def numeric_id(qid: str) -> int:
+    if not qid.startswith("Q"):
+        raise ValueError(f"Expected QID starting with 'Q', got {qid}")
+    return int(qid[1:])
+
+
+def make_item_value(qid: str) -> dict:
+    return {
+        "type": "wikibase-entityid",
+        "value": {
+            "entity-type": "item",
+            "numeric-id": numeric_id(qid),
+            "id": qid,
+        },
+    }
+
+
+def make_time_value(time: str, precision: int) -> dict:
+    return {
+        "type": "time",
+        "value": {
+            "time": time,
+            "timezone": 0,
+            "before": 0,
+            "after": 0,
+            "precision": precision,
+            "calendarmodel": CALENDAR_MODEL,
+        },
+    }
+
+
+def make_url_value(url: str) -> dict:
+    return {"type": "string", "value": url}
+
+
+def make_monolingual_value(text: str, language: str = "en") -> dict:
+    return {"type": "monolingualtext", "value": {"text": text, "language": language}}
+
+
+@dataclass
+class SnakSpec:
+    property: str
+    value: dict
+
+
+@dataclass
+class ClaimSpec:
+    property: str
+    value: dict
+    qualifiers: List[SnakSpec] = field(default_factory=list)
+    references: List[List[SnakSpec]] = field(default_factory=list)
+
+
+class WikibaseClient:
+    def __init__(self, api_url: str, username: str, password: str) -> None:
+        self.api_url = api_url
+        self.username = username
+        self.password = password
+        self.client = httpx.Client(timeout=30.0)
+        self.csrf_token: Optional[str] = None
+
+    def login(self) -> None:
+        token_payload = self.client.post(
+            self.api_url,
+            data={"action": "query", "meta": "tokens", "type": "login", "format": "json"},
+        ).json()
+        login_token = token_payload["query"]["tokens"]["logintoken"]
+        login_result = self.client.post(
+            self.api_url,
+            data={
+                "action": "login",
+                "lgname": self.username,
+                "lgpassword": self.password,
+                "lgtoken": login_token,
+                "format": "json",
+            },
+        ).json()
+        if login_result.get("login", {}).get("result") != "Success":
+            raise RuntimeError(f"Login failed: {login_result}")
+
+    def ensure_csrf(self) -> str:
+        if self.csrf_token:
+            return self.csrf_token
+        token_payload = self.client.post(
+            self.api_url, data={"action": "query", "meta": "tokens", "format": "json"}
+        ).json()
+        token = token_payload["query"]["tokens"]["csrftoken"]
+        self.csrf_token = token
+        return token
+
+    def create_item(
+        self,
+        label: str,
+        description: str,
+        claims: List[ClaimSpec] | None = None,
+    ) -> str:
+        data: Dict[str, object] = {
+            "labels": {"en": {"language": "en", "value": label}},
+            "descriptions": {"en": {"language": "en", "value": description}},
+        }
+        if claims:
+            data["claims"] = [self._claim_to_json(claim) for claim in claims]
+        payload = {
+            "action": "wbeditentity",
+            "format": "json",
+            "new": "item",
+            "token": self.ensure_csrf(),
+            "data": json.dumps(data),
+        }
+        response = self.client.post(self.api_url, data=payload).json()
+        if "entity" not in response:
+            raise RuntimeError(f"Failed to create item: {response}")
+        return response["entity"]["id"]
+
+    def add_claims(self, qid: str, claims: List[ClaimSpec]) -> None:
+        payload = {
+            "action": "wbeditentity",
+            "format": "json",
+            "id": qid,
+            "token": self.ensure_csrf(),
+            "data": json.dumps({"claims": [self._claim_to_json(claim) for claim in claims]}),
+        }
+        response = self.client.post(self.api_url, data=payload).json()
+        if "entity" not in response:
+            raise RuntimeError(f"Failed to add claims to {qid}: {response}")
+
+    def set_claim(self, qid: str, claim: ClaimSpec) -> None:
+        self.add_claims(qid, [claim])
+
+    def _claim_to_json(self, claim: ClaimSpec) -> dict:
+        claim_json = {
+            "mainsnak": {
+                "snaktype": "value",
+                "property": claim.property,
+                "datavalue": claim.value,
+            },
+            "type": "statement",
+            "rank": "normal",
+        }
+        if claim.qualifiers:
+            qualifiers_dict: Dict[str, List[dict]] = {}
+            order: List[str] = []
+            for qualifier in claim.qualifiers:
+                qualifiers_dict.setdefault(qualifier.property, []).append(
+                    {
+                        "snaktype": "value",
+                        "property": qualifier.property,
+                        "datavalue": qualifier.value,
+                    }
+                )
+                if qualifier.property not in order:
+                    order.append(qualifier.property)
+            claim_json["qualifiers"] = qualifiers_dict
+            claim_json["qualifiers-order"] = order
+        if claim.references:
+            refs_json = []
+            for ref_snaks in claim.references:
+                ref_dict: Dict[str, List[dict]] = {}
+                order: List[str] = []
+                for snak in ref_snaks:
+                    ref_dict.setdefault(snak.property, []).append(
+                        {
+                            "snaktype": "value",
+                            "property": snak.property,
+                            "datavalue": snak.value,
+                        }
+                    )
+                    if snak.property not in order:
+                        order.append(snak.property)
+                refs_json.append({"snaks": ref_dict, "snaks-order": order})
+            claim_json["references"] = refs_json
+        return claim_json
+
+
+def main() -> None:
+    api_url = require_env("WIKIBASE_API_URL")
+    username = require_env("WIKIBASE_USERNAME")
+    password = require_env("WIKIBASE_PASSWORD")
+    client = WikibaseClient(api_url, username, password)
+    client.login()
+
+    # Mapping from instruction PIDs to actual Wikibase property IDs
+    pid = {
+        "P1": "P1",
+        "P2": "P2",
+        "P29": "P9",
+        "P25": "P6",
+        "P33": "P13",
+        "P32": "P12",
+        "P30": "P10",
+        "P31": "P11",
+        "P34": "P14",
+        "P41": "P17",
+        "P35": "P15",
+        "P20_URL": "P19",
+        "P22_ROLE": "P3",
+        "P50_EMPLOYER": "P4",
+        "P28_URL": "P19",
+        "P51_AFFILIATION": "P5",
+        "P60_ACCORDING_TO": "P25",
+        "P40_STATED_IN": "P21",
+        "P38_REFERENCE_URL": "P22",
+        "P39_RETRIEVED": "P23",
+        "P36_AUTHOR": "P16",
+        "P42_ABOUT": "P20",
+    }
+
+    entities: Dict[str, str] = {}
+
+    # Step A1: create class items
+    entities["QCLASS_ORG"] = client.create_item(
+        label="Organization",
+        description="Organization of any kind (government, private, NGO, media, academic)",
+    )
+    entities["QCLASS_PERSON"] = client.create_item(
+        label="Person",
+        description="Human individual",
+    )
+    entities["QCLASS_PROGRAM"] = client.create_item(
+        label="Program",
+        description="Formal program or project (often government-run)",
+        claims=[
+            ClaimSpec(
+                property=pid["P2"],
+                value=make_item_value(entities["QCLASS_ORG"]),
+            )
+        ],
+    )
+    entities["QCLASS_DOCUMENT"] = client.create_item(
+        label="Document",
+        description="Source document (report, hearing transcript, FOIA release, news article, book, paper)",
+    )
+    entities["QCLASS_ROLE"] = client.create_item(
+        label="Role (class)",
+        description="Container class for person role vocabulary",
+    )
+    entities["QCLASS_ORGTYPE"] = client.create_item(
+        label="Organization type (class)",
+        description="Container class for organization type vocabulary",
+    )
+    entities["QCLASS_DOCTYPE"] = client.create_item(
+        label="Document type (class)",
+        description="Container class for document type vocabulary",
+    )
+    entities["QCLASS_COUNTRY"] = client.create_item(
+        label="Country",
+        description="Sovereign state",
+    )
+
+    # Step A2: controlled vocabularies
+    # Roles
+    roles = [
+        ("Witness", "Person who observed a UAP event"),
+        ("Whistleblower", "Person alleging inside knowledge or wrongdoing related to UAP matters"),
+        ("Journalist", "Person who reports on UAP topics"),
+        ("Scientist", "Scientist involved in UAP-related work"),
+        ("Researcher", "UFO/UAP researcher"),
+        ("Intelligence officer", "Current or former intelligence professional"),
+        ("Government official", "Current or former public official"),
+        ("Pilot", "Aviation professional (civilian or military)"),
+    ]
+    for label, desc in roles:
+        qid = client.create_item(
+            label=label,
+            description=desc,
+            claims=[
+                ClaimSpec(
+                    property=pid["P1"],
+                    value=make_item_value(entities["QCLASS_ROLE"]),
+                )
+            ],
+        )
+        entities[f"QROLE_{label.replace(' ', '_').upper()}"] = qid
+
+    # Organization types
+    org_types = [
+        ("Government agency", "Public sector body"),
+        ("Military unit", "Armed forces unit/formation"),
+        ("Government program", "Program run by a government department or agency"),
+        ("Civilian research organization", "Private/NGO research group"),
+        ("Media organization", "News media outlet"),
+        ("Academic institution", "University or research institute"),
+        ("Private company", "For-profit company"),
+    ]
+    for label, desc in org_types:
+        qid = client.create_item(
+            label=label,
+            description=desc,
+            claims=[
+                ClaimSpec(
+                    property=pid["P1"],
+                    value=make_item_value(entities["QCLASS_ORGTYPE"]),
+                )
+            ],
+        )
+        entities[f"QORGTYPE_{label.replace(' ', '_').replace('/', '_').upper()}"] = qid
+
+    # Document types
+    doc_types = [
+        ("Government report", "Official government report"),
+        ("Congressional hearing transcript", "Official hearing transcript"),
+        ("News article", "Published news story"),
+        ("FOIA release", "Released under FOIA"),
+        ("Scientific paper", "Academic or technical paper"),
+        ("Book", "Published book"),
+    ]
+    for label, desc in doc_types:
+        qid = client.create_item(
+            label=label,
+            description=desc,
+            claims=[
+                ClaimSpec(
+                    property=pid["P1"],
+                    value=make_item_value(entities["QCLASS_DOCTYPE"]),
+                )
+            ],
+        )
+        entities[f"QDOCTYPE_{label.replace(' ', '_').replace('/', '_').upper()}"] = qid
+
+    # Country: United States
+    entities["Q_COUNTRY_USA"] = client.create_item(
+        label="United States",
+        description="Country",
+        claims=[
+            ClaimSpec(
+                property=pid["P1"],
+                value=make_item_value(entities["QCLASS_COUNTRY"]),
+            )
+        ],
+    )
+
+    # Step B: Organizations & Programs
+    # Helper for organization creation
+    def create_org(key: str, label: str, desc: str, org_type_key: str, country_key: str, website: str | None = None, parent_key: str | None = None, inception: tuple[str, int] | None = None, dissolved: tuple[str, int] | None = None) -> None:
+        claims: List[ClaimSpec] = [
+            ClaimSpec(property=pid["P1"], value=make_item_value(entities["QCLASS_ORG"])),
+            ClaimSpec(property=pid["P29"], value=make_item_value(entities[org_type_key])),
+            ClaimSpec(property=pid["P25"], value=make_item_value(entities[country_key])),
+        ]
+        if website:
+            claims.append(ClaimSpec(property=pid["P33"], value=make_url_value(website)))
+        if parent_key:
+            claims.append(ClaimSpec(property=pid["P32"], value=make_item_value(entities[parent_key])))
+        if inception:
+            claims.append(
+                ClaimSpec(property=pid["P30"], value=make_time_value(inception[0], inception[1]))
+            )
+        if dissolved:
+            claims.append(
+                ClaimSpec(property=pid["P31"], value=make_time_value(dissolved[0], dissolved[1]))
+            )
+        entities[key] = client.create_item(label=label, description=desc, claims=claims)
+
+    create_org(
+        key="QID_US_Department_of_Defense",
+        label="United States Department of Defense",
+        desc="US federal executive department for national defense",
+        org_type_key="QORGTYPE_GOVERNMENT_AGENCY",
+        country_key="Q_COUNTRY_USA",
+        website="https://www.defense.gov/",
+    )
+
+    create_org(
+        key="QID_DIA",
+        label="Defense Intelligence Agency",
+        desc="US defense intelligence agency",
+        org_type_key="QORGTYPE_GOVERNMENT_AGENCY",
+        country_key="Q_COUNTRY_USA",
+        parent_key="QID_US_Department_of_Defense",
+    )
+
+    create_org(
+        key="QID_NGA",
+        label="National Geospatial-Intelligence Agency",
+        desc="US geospatial-intelligence agency",
+        org_type_key="QORGTYPE_GOVERNMENT_AGENCY",
+        country_key="Q_COUNTRY_USA",
+    )
+
+    create_org(
+        key="QID_EARTHTECH",
+        label="EarthTech International / Institute for Advanced Studies at Austin",
+        desc="Private research organization in Austin, Texas",
+        org_type_key="QORGTYPE_PRIVATE_COMPANY",
+        country_key="Q_COUNTRY_USA",
+        website="https://earthtech.org/",
+    )
+
+    create_org(
+        key="QID_NIDS",
+        label="National Institute for Discovery Science",
+        desc="Private anomaly research org (1995–2004) founded by Robert Bigelow",
+        org_type_key="QORGTYPE_CIVILIAN_RESEARCH_ORGANIZATION",
+        country_key="Q_COUNTRY_USA",
+        inception=("+1995-01-01T00:00:00Z", 11),
+        dissolved=("+2004-10-01T00:00:00Z", 11),
+    )
+
+    # Additional publishers needed for documents
+    create_org(
+        key="QID_ODNI",
+        label="Office of the Director of National Intelligence",
+        desc="US intelligence community coordination office",
+        org_type_key="QORGTYPE_GOVERNMENT_AGENCY",
+        country_key="Q_COUNTRY_USA",
+        website="https://www.dni.gov/",
+    )
+
+    create_org(
+        key="QID_US_House_Committee_on_Oversight_and_Accountability",
+        label="United States House Committee on Oversight and Accountability",
+        desc="Oversight committee of the US House of Representatives",
+        org_type_key="QORGTYPE_GOVERNMENT_AGENCY",
+        country_key="Q_COUNTRY_USA",
+        website="https://oversight.house.gov/",
+    )
+
+    create_org(
+        key="QID_New_York_Times",
+        label="The New York Times",
+        desc="United States newspaper and media organization",
+        org_type_key="QORGTYPE_MEDIA_ORGANIZATION",
+        country_key="Q_COUNTRY_USA",
+        website="https://www.nytimes.com/",
+    )
+
+    # Programs
+    def create_program(key: str, label: str, desc: str, parent_key: str, inception: tuple[str, int], dissolved: tuple[str, int] | None = None) -> None:
+        claims: List[ClaimSpec] = [
+            ClaimSpec(property=pid["P1"], value=make_item_value(entities["QCLASS_PROGRAM"])),
+            ClaimSpec(property=pid["P29"], value=make_item_value(entities["QORGTYPE_GOVERNMENT_PROGRAM"])),
+            ClaimSpec(property=pid["P32"], value=make_item_value(entities[parent_key])),
+            ClaimSpec(property=pid["P30"], value=make_time_value(inception[0], inception[1])),
+        ]
+        if dissolved:
+            claims.append(
+                ClaimSpec(property=pid["P31"], value=make_time_value(dissolved[0], dissolved[1]))
+            )
+        entities[key] = client.create_item(label=label, description=desc, claims=claims)
+
+    create_program(
+        key="QID_AAWSAP",
+        label="Advanced Aerospace Weapon System Applications Program (AAWSAP)",
+        desc="DIA program initiated in 2008",
+        parent_key="QID_DIA",
+        inception=("+2008-09-29T00:00:00Z", 11),
+    )
+
+    create_program(
+        key="QID_AATIP",
+        label="Advanced Aerospace Threat Identification Program (AATIP)",
+        desc="US program to study UAP/UFOs (publicly revealed in 2017)",
+        parent_key="QID_DIA",
+        inception=("+2007-01-01T00:00:00Z", 9),
+        dissolved=("+2012-12-31T00:00:00Z", 9),
+    )
+
+    # Step C: Documents
+    def create_document(
+        key: str,
+        label: str,
+        desc: str,
+        dtype_key: str,
+        publisher_key: str,
+        publication_date: tuple[str, int],
+        url: str,
+    ) -> None:
+        claims = [
+            ClaimSpec(property=pid["P1"], value=make_item_value(entities["QCLASS_DOCUMENT"])),
+            ClaimSpec(property=pid["P34"], value=make_item_value(entities[dtype_key])),
+            ClaimSpec(property=pid["P41"], value=make_item_value(entities[publisher_key])),
+            ClaimSpec(property=pid["P35"], value=make_time_value(publication_date[0], publication_date[1])),
+            ClaimSpec(property=pid["P20_URL"], value=make_url_value(url)),
+        ]
+        entities[key] = client.create_item(label=label, description=desc, claims=claims)
+
+    create_document(
+        key="QID_DOC_ODNI_2021",
+        label="ODNI Preliminary Assessment: Unidentified Aerial Phenomena (2021)",
+        desc="US intelligence community preliminary report on UAP",
+        dtype_key="QDOCTYPE_GOVERNMENT_REPORT",
+        publisher_key="QID_ODNI",
+        publication_date=("+2021-06-25T00:00:00Z", 11),
+        url="https://www.dni.gov/files/ODNI/documents/assessments/Prelimary-Assessment-UAP-20210625.pdf",
+    )
+
+    create_document(
+        key="QID_DOC_HOUSE_HEARING_2023",
+        label="US House Oversight UAP Hearing Transcript (July 26, 2023)",
+        desc="Official transcript incl. testimony by David Grusch, David Fravor, Ryan Graves",
+        dtype_key="QDOCTYPE_CONGRESSIONAL_HEARING_TRANSCRIPT",
+        publisher_key="QID_US_House_Committee_on_Oversight_and_Accountability",
+        publication_date=("+2023-07-26T00:00:00Z", 11),
+        url="https://www.congress.gov/118/meeting/house/116282/documents/HHRG-118-GO06-Transcript-20230726.pdf",
+    )
+
+    create_document(
+        key="QID_DOC_PUTHOFF_DIRD_2009",
+        label="DIA DIRD: Advanced Space Propulsion Based on Vacuum (2009)",
+        desc="AAWSAP technical reference authored by Harold E. Puthoff",
+        dtype_key="QDOCTYPE_SCIENTIFIC_PAPER",
+        publisher_key="QID_DIA",
+        publication_date=("+2009-03-29T00:00:00Z", 11),
+        url="https://publicintelligence.net/dia-advanced-space-propulsion/",
+    )
+
+    create_document(
+        key="QID_DOC_NYT_2017",
+        label="NYT: Glowing Auras and ‘Black Money’: The Pentagon’s Mysterious U.F.O. Program (2017)",
+        desc="New York Times report revealing AATIP program",
+        dtype_key="QDOCTYPE_NEWS_ARTICLE",
+        publisher_key="QID_New_York_Times",
+        publication_date=("+2017-12-16T00:00:00Z", 11),
+        url="https://www.nytimes.com/2017/12/16/us/politics/pentagon-program-ufo-harry-reid.html",
+    )
+
+    # Step D: People
+    def create_person(key: str, label: str, desc: str, roles: List[str], employer_key: str, url: str, country_key: str = "Q_COUNTRY_USA") -> None:
+        claims = [
+            ClaimSpec(property=pid["P1"], value=make_item_value(entities["QCLASS_PERSON"])),
+            ClaimSpec(property=pid["P50_EMPLOYER"], value=make_item_value(entities[employer_key])),
+            ClaimSpec(property=pid["P25"], value=make_item_value(entities[country_key])),
+            ClaimSpec(property=pid["P28_URL"], value=make_url_value(url)),
+        ]
+        for role_key in roles:
+            claims.append(
+                ClaimSpec(property=pid["P22_ROLE"], value=make_item_value(entities[role_key]))
+            )
+        entities[key] = client.create_item(label=label, description=desc, claims=claims)
+
+    create_person(
+        key="QID_LUIS_ELIZONDO",
+        label="Luis Elizondo",
+        desc="Former US DoD intelligence officer associated publicly with AATIP",
+        roles=["QROLE_INTELLIGENCE_OFFICER"],
+        employer_key="QID_US_Department_of_Defense",
+        url="https://www.washingtonpost.com/world/national-security/head-of-pentagons-secret-ufo-office-sought-to-make-evidence-public/2017/12/16/90bcb7cc-e2b2-11e7-8679-a9728984779c_story.html",
+    )
+
+    create_person(
+        key="QID_DAVID_GRUSCH",
+        label="David Grusch",
+        desc="Former USAF/NGA intelligence officer; 2023 UAP whistleblower",
+        roles=["QROLE_WHISTLEBLOWER", "QROLE_INTELLIGENCE_OFFICER"],
+        employer_key="QID_NGA",
+        url="https://oversight.house.gov/wp-content/uploads/2023/07/Dave_G_HOC_Speech_FINAL_For_Trans.pdf",
+    )
+
+    create_person(
+        key="QID_HAROLD_PUTHOFF",
+        label="Harold E. Puthoff",
+        desc="Physicist; President of EarthTech/IASA; AAWSAP DIRD author (2009)",
+        roles=["QROLE_SCIENTIST", "QROLE_RESEARCHER"],
+        employer_key="QID_EARTHTECH",
+        url="https://earthtech.org/team/",
+    )
+
+    # Additional statements and references
+    # Elizondo affiliation with AATIP, with reference and qualifier
+    client.add_claims(
+        entities["QID_LUIS_ELIZONDO"],
+        [
+            ClaimSpec(
+                property=pid["P51_AFFILIATION"],
+                value=make_item_value(entities["QID_AATIP"]),
+                qualifiers=[
+                    SnakSpec(
+                        property=pid["P60_ACCORDING_TO"],
+                        value=make_item_value(entities["QID_DOC_NYT_2017"]),
+                    )
+                ],
+                references=[
+                    [
+                        SnakSpec(
+                            property=pid["P40_STATED_IN"],
+                            value=make_item_value(entities["QID_DOC_NYT_2017"]),
+                        ),
+                        SnakSpec(
+                            property=pid["P38_REFERENCE_URL"],
+                            value=make_url_value(
+                                "https://www.nytimes.com/2017/12/16/us/politics/pentagon-program-ufo-harry-reid.html"
+                            ),
+                        ),
+                        SnakSpec(
+                            property=pid["P39_RETRIEVED"],
+                            value=make_time_value("+2025-10-13T00:00:00Z", 11),
+                        ),
+                    ]
+                ],
+            )
+        ],
+    )
+
+    # Link hearing document about David Grusch
+    client.add_claims(
+        entities["QID_DOC_HOUSE_HEARING_2023"],
+        [
+            ClaimSpec(
+                property=pid["P42_ABOUT"],
+                value=make_item_value(entities["QID_DAVID_GRUSCH"]),
+            )
+        ],
+    )
+
+    # Authorship on AAWSAP DIRD
+    client.add_claims(
+        entities["QID_DOC_PUTHOFF_DIRD_2009"],
+        [
+            ClaimSpec(
+                property=pid["P36_AUTHOR"],
+                value=make_item_value(entities["QID_HAROLD_PUTHOFF"]),
+            )
+        ],
+    )
+
+    # Output summary
+    for key, value in entities.items():
+        print(f"{key}\t{value}")
+
+
+if __name__ == "__main__":
+    main()
+rakorski@MediaWiki-UFOs:~$ 

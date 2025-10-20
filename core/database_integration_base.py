@@ -21,6 +21,19 @@ class DatabaseCategory(Enum):
     MEDIA = "media"
     GENERAL = "general"
 
+    # Government document categories by agency
+    GOV_FBI = "government_fbi"
+    GOV_CONGRESS = "government_congress"
+    GOV_EXECUTIVE = "government_executive"
+    GOV_FEDERAL_REGISTER = "government_federal_register"
+    GOV_GENERAL = "government_general"
+
+    # Social media categories
+    SOCIAL_REDDIT = "social_reddit"
+    SOCIAL_TWITTER = "social_twitter"
+    SOCIAL_TELEGRAM = "social_telegram"
+    SOCIAL_GENERAL = "social_general"
+
 
 @dataclass
 class DatabaseMetadata:
