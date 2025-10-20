@@ -489,6 +489,27 @@ def render_ai_research_tab(openai_api_key_from_ui, dvids_api_key, sam_api_key):
 
     # Research question input
     st.markdown("#### 🔍 Your Research Question")
+
+    # Example queries
+    with st.expander("💡 Example Queries", expanded=False):
+        st.markdown("""
+        **Government Contracts:**
+        - "What contracts are available for cybersecurity threat intelligence?"
+        - "Find intelligence community contracting opportunities"
+
+        **Jobs:**
+        - "TS/SCI cleared positions in counterterrorism"
+        - "Cybersecurity jobs requiring polygraph"
+
+        **Military & Media:**
+        - "Recent DVIDS content about special operations in the Middle East"
+        - "Military exercises related to cyber warfare"
+
+        **Multi-Source:**
+        - "What are the latest developments in AI security across government contracts, jobs, and military media?"
+        - "Find information about SIGINT (signals intelligence) jobs, contracts, and recent operations"
+        """)
+
     research_question = st.text_area(
         "What would you like to research?",
         placeholder="Example: What cybersecurity job opportunities and government contracts are available for cleared professionals working on AI security?",
