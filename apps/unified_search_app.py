@@ -215,9 +215,10 @@ with st.sidebar:
             st.caption(f"Stats unavailable: {str(e)}")
 
 # Create main tabs - New UX with User Guide first, then primary features
-tab1, tab2, tab3, tab4 = st.tabs([
+tab1, tab2, tab3, tab4, tab5 = st.tabs([
     "📖 User Guide",
     "🤖 AI Research",
+    "🔬 Deep Research",
     "📊 Monitor Management",
     "⚙️ Advanced Search"
 ])
@@ -237,16 +238,23 @@ with tab2:
     render_ai_research_tab(openai_api_key, dvids_api_key, sam_api_key, usajobs_api_key, rapidapi_key)
 
 # ============================================================================
-# TAB 3: MONITOR MANAGEMENT
+# TAB 3: DEEP RESEARCH
 # ============================================================================
 with tab3:
+    from deep_research_tab import render_deep_research_tab
+    render_deep_research_tab(openai_api_key)
+
+# ============================================================================
+# TAB 4: MONITOR MANAGEMENT
+# ============================================================================
+with tab4:
     from monitor_management import render_monitor_management_tab
     render_monitor_management_tab()
 
 # ============================================================================
-# TAB 4: ADVANCED SEARCH (NESTED TABS FOR INDIVIDUAL SOURCES)
+# TAB 5: ADVANCED SEARCH (NESTED TABS FOR INDIVIDUAL SOURCES)
 # ============================================================================
-with tab4:
+with tab5:
     st.markdown("### ⚙️ Advanced Search - Individual Data Sources")
     st.caption("Search individual sources directly with custom filters (for advanced users)")
 

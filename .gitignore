@@ -1,6 +1,12 @@
 # Environment variables and secrets
 .env
+.env.local
+.env.*.local
 .streamlit/secrets.toml
+secrets.toml
+
+# Virtual environment
+.venv/
 
 # Python
 __pycache__/
