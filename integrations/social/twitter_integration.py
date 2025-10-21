@@ -64,29 +64,18 @@ class TwitterIntegration(DatabaseIntegration):
 
     async def is_relevant(self, research_question: str) -> bool:
         """
-        Quick relevance check - does question relate to social media / Twitter?
+        Quick relevance check - always return True, let generate_query() LLM decide.
 
-        We check for social media-related keywords to avoid wasting LLM calls
-        on questions that clearly aren't about social intelligence.
+        The LLM in generate_query() is smarter at determining relevance and avoids
+        false negatives from overly restrictive keyword matching.
 
         Args:
             research_question: The user's research question
 
         Returns:
-            True if question might be about social media, False otherwise
+            Always True - relevance determined by generate_query()
         """
-        social_keywords = [
-            "twitter", "tweet", "tweets", "social media", "social", "trending",
-            "conversation", "discussion", "public opinion", "sentiment",
-            "discourse", "community", "online", "viral", "hashtag",
-            # SIGINT-specific keywords
-            "jttf", "counterterrorism", "extremism", "radicalization",
-            "disinformation", "misinformation", "propaganda",
-            "influence operations", "social movements"
-        ]
-
-        question_lower = research_question.lower()
-        return any(keyword in question_lower for keyword in social_keywords)
+        return True
 
     async def generate_query(self, research_question: str) -> Optional[Dict]:
         """
@@ -122,72 +111,38 @@ class TwitterIntegration(DatabaseIntegration):
             }
 
         # Full research question - use LLM
-        prompt = f"""You are a search query generator for Twitter (via RapidAPI twitter-api45).
+        prompt = f"""Generate search parameters for Twitter.
+
+Twitter provides: Real-time social media posts and public discussions.
+
+API Parameters:
+- query (string, required):
+    Twitter search query. Supports boolean operators:
+    OR (alternatives), AND (required terms), NOT (exclusions), quotes for exact phrases
+    Example: "JTTF OR counterterrorism" or "FBI AND hiring"
+
+- search_type (enum, required):
+    Search filter type. Valid options:
+    "Latest" = Most recent tweets
+    "Top" = Most popular/engaging tweets
+    "Media" = Tweets with images/videos
+    "People" = User profiles (for finding accounts, not tweets)
+
+- max_pages (integer, required):
+    Number of result pages to fetch. Range: 1-5
+    Each page contains approximately 20 tweets.
 
 Research Question: {research_question}
 
-Generate search parameters for the Twitter API:
-- query: Search keywords (use Twitter Boolean operators: OR, AND, NOT, quotes for exact phrases)
-- search_type: Search filter type (MUST be one of: "Latest", "Top", "Media", "People")
-- max_pages: Number of pages to fetch (integer 1-5, each page ~20 results)
-- reasoning: Brief explanation of query strategy
+Decide whether Twitter is relevant for this question.
 
-Search Type Guidelines:
-- "Latest": Most recent tweets (best for time-sensitive research, breaking news)
-- "Top": Most popular/relevant tweets (best for high-engagement content)
-- "Media": Tweets with images/videos (best for visual content)
-- "People": User profiles (best for finding accounts, NOT for tweets)
-
-Query Syntax Tips:
-- Use OR for alternatives: "JTTF OR counterterrorism"
-- Use AND to require multiple terms: "cybersecurity AND federal"
-- Use quotes for exact phrases: "\\"joint terrorism task force\\""
-- Use NOT to exclude: "python NOT snake"
-- Keep queries focused (Twitter search has limitations)
-
-Guidelines:
-- query: Use Boolean operators for precision
-- search_type: "Latest" for time-sensitive, "Top" for popularity
-- max_pages: 1-2 for broad queries, 3-5 for focused queries
-- reasoning: Explain why these parameters were chosen
-
-IMPORTANT: search_type MUST be exactly one of: "Latest", "Top", "Media", "People"
-
-If this question is not about social media or Twitter, return relevant: false.
-
-Return JSON with these exact fields.
-
-Example 1:
-Question: "Recent Twitter discussions about JTTF and counterterrorism operations"
-Response:
+Return JSON:
 {{
-  "relevant": true,
-  "query": "JTTF OR \\"Joint Terrorism Task Force\\" OR counterterrorism",
-  "search_type": "Latest",
-  "max_pages": 3,
-  "reasoning": "Use Latest for recent discussions, OR operator to catch variations, 3 pages for good coverage"
-}}
-
-Example 2:
-Question: "What are people saying about FBI hiring?"
-Response:
-{{
-  "relevant": true,
-  "query": "FBI AND (hiring OR jobs OR careers OR recruitment)",
-  "search_type": "Top",
-  "max_pages": 2,
-  "reasoning": "Top tweets for high-engagement discussions, AND/OR for relevant combinations"
-}}
-
-Example 3:
-Question: "Federal contracting opportunities in Virginia"
-Response:
-{{
-  "relevant": false,
-  "query": "",
-  "search_type": "Latest",
-  "max_pages": 1,
-  "reasoning": "Question is about federal contracts, not social media"
+  "relevant": boolean,
+  "query": string,
+  "search_type": "Latest" | "Top" | "Media" | "People",
+  "max_pages": integer,
+  "reasoning": string
 }}
 """
 

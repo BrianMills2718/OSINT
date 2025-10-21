@@ -46,23 +46,18 @@ class ClearanceJobsIntegration(DatabaseIntegration):
 
     async def is_relevant(self, research_question: str) -> bool:
         """
-        Quick relevance check - does question relate to cleared jobs?
+        Quick relevance check - always return True, let generate_query() LLM decide.
+
+        The LLM in generate_query() is smarter at determining relevance and avoids
+        false negatives from overly restrictive keyword matching.
 
         Args:
             research_question: The user's research question
 
         Returns:
-            True if question might be about cleared jobs
+            Always True - relevance determined by generate_query()
         """
-        job_keywords = [
-            "job", "jobs", "position", "positions", "career", "careers",
-            "employment", "hire", "hiring", "clearance", "cleared",
-            "security clearance", "ts/sci", "ts", "sci", "secret",
-            "top secret", "polygraph", "ci poly", "fs poly"
-        ]
-
-        question_lower = research_question.lower()
-        return any(kw in question_lower for kw in job_keywords)
+        return True
 
     async def generate_query(self, research_question: str) -> Optional[Dict]:
         """
@@ -83,18 +78,28 @@ class ClearanceJobsIntegration(DatabaseIntegration):
             }
         """
 
-        prompt = f"""You are a search query generator for ClearanceJobs.com, a job board for security-cleared positions.
+        prompt = f"""Generate search parameters for ClearanceJobs.
+
+ClearanceJobs provides: Security clearance job postings requiring TS/SCI, Secret, Top Secret, and other government clearances.
+
+API Parameters:
+- keywords (string, required):
+    Search terms for job titles and descriptions.
+
+Technical note: The scraper only supports keyword search. Clearance levels and posting dates are shown in results but cannot be used as filters.
 
 Research Question: {research_question}
 
-Generate search parameters:
-- keywords: Search terms for job titles/descriptions (string, keep focused - 2-3 words max)
+Decide whether ClearanceJobs is relevant for this question.
+Clearance-required jobs reveal what classified programs and agencies are hiring for.
 
-NOTE: The search only supports keyword filtering. Clearance levels and recency are shown in results but cannot be filtered.
-
-If this question is not about security-cleared jobs or employment, return relevant: false.
-
-Return JSON with these exact fields."""
+Return JSON:
+{{
+  "relevant": boolean,
+  "keywords": string,
+  "reasoning": string
+}}
+"""
 
         schema = {
             "type": "object",

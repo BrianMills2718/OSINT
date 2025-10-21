@@ -491,6 +491,120 @@ archive/
     README.md  # "Archived Puppeteer implementation, replaced by Playwright"
 ```
 
+### Root Directory Discipline (CRITICAL - PREVENTS CLUTTER)
+
+**IRON RULE: NEVER DELETE, ALWAYS ARCHIVE**
+
+Files are NEVER deleted. Every file has value as historical context. Always archive with explanation.
+
+**Only These Files Belong in Root** (~15 files max):
+
+**Core Documentation** (9 files):
+- CLAUDE.md, CLAUDE_PERMANENT.md, CLAUDE_TEMP.md, REGENERATE_CLAUDE.md
+- STATUS.md, ROADMAP.md, PATTERNS.md
+- INVESTIGATIVE_PLATFORM_VISION.md, README.md
+
+**Configuration** (4-5 files):
+- .env (gitignored), .gitignore
+- requirements.txt
+- config_default.yaml
+- config.yaml (gitignored)
+
+**Core Utilities** (2 files - only if used by everything):
+- llm_utils.py (used by all integrations)
+- config_loader.py (used by all components)
+
+**NEVER in Root - Archive Immediately**:
+
+**Test Scripts** → `tests/`:
+- ANY file starting with `test_*.py`
+- Examples: test_twitter_integration.py, test_fbi_vault_*.py, test_3_monitors.py
+- Why: Tests belong in tests/ directory, not root
+
+**Session Completion Docs** → `archive/YYYY-MM-DD/docs/`:
+- Files ending in `_COMPLETE.md`, `_STATUS.md`, `_SUMMARY.md`, `_REPORT.md`
+- Examples: TWITTER_INTEGRATION_COMPLETE.md, CLEANUP_COMPLETE.md, REGISTRY_COMPLETE.md
+- Why: Session artifacts, historical record only
+
+**Planning/Design Docs** → `docs/` or `archive/YYYY-MM-DD/docs/`:
+- Files ending in `_PLAN.md`, `_IMPLEMENTATION.md`, `_DESIGN.md`, `_QUICKSTART.md`
+- Examples: DISCORD_INTEGRATION_PLAN.md, PHASE_1_IMPLEMENTATION_PLAN.md, KEYWORD_DATABASE_QUICKSTART.md
+- Why: Active plans → docs/, completed plans → archive/
+
+**Temporary/Log Files** → `data/logs/`:
+- Files: *.log, *.txt (temp), *.jsonl, *_output.txt, temp_*.txt
+- Examples: temp_boolean_log.txt, test_output.log, api_requests.jsonl
+- Why: Debug artifacts, move to logs or archive after debug complete
+
+**Backup Files** → `archive/backups/`:
+- Files: *_backup_*.md, *.bak, *_old.*
+- Examples: CLAUDE_md_backup_20251020.md
+- Why: Backups are for recovery, not active use
+
+**Reference Code/Libraries** → `archive/reference/`:
+- External repos/tools: ClearanceJobs/, api-code-samples/, twitterexplorer/, dce-cli/, usa_jobs_api_info/
+- Downloaded binaries: chromedriver-linux64/
+- Why: Reference material, not our code
+
+**Abandoned Features** → `archive/YYYY-MM-DD/abandoned/`:
+- Docs for features not built: PROPOSED_TAG_TAXONOMY.md, TAG_SYSTEM_FILES.md
+- Why: Historical decisions, may revisit later
+
+**End-of-Session Cleanup Protocol** (MANDATORY):
+
+At end of EVERY session, run this mental checklist:
+
+1. **Test scripts in root?** → Move ALL to `tests/`
+2. **Completion docs created?** → Archive to `archive/YYYY-MM-DD/docs/` with README
+3. **Temp/log files in root?** → Archive to `data/logs/` or `archive/YYYY-MM-DD/temp/`
+4. **Planning docs finished?** → Archive to `archive/YYYY-MM-DD/docs/`
+5. **Root has >20 files?** → STOP. Archive excess immediately.
+
+**Archive README Template**:
+
+Every `archive/YYYY-MM-DD/` MUST have README.md explaining what was archived:
+
+```markdown
+# Archive: YYYY-MM-DD
+
+## What Was Archived
+
+### Session Completion Docs
+- TWITTER_INTEGRATION_COMPLETE.md - Twitter integration finished, all tests passed
+- CLEANUP_COMPLETE.md - Directory cleanup session complete
+
+### Planning Docs (Completed)
+- PHASE_1_IMPLEMENTATION_PLAN.md - Phase 1 plan, now complete (see STATUS.md)
+
+### Test Scripts (Moved to tests/)
+- test_twitter_*.py (6 files) - Twitter integration tests, now in tests/
+
+### Temporary Files
+- temp_boolean_log.txt - Debug log from monitor testing session
+- test_output.log - Test output from Phase 1 completion
+
+## Why Archived
+
+Session cleanup on 2025-10-20 after completing Phase 1.5 Week 1 (Adaptive Search).
+
+## Preserved For
+
+- Historical record of implementation decisions
+- Reference if features need to be revisited
+- Understanding evolution of the codebase
+```
+
+**Consequences of Violating Root Discipline**:
+
+If root directory grows beyond 20 files:
+1. STOP all feature work
+2. Archive excess files following protocol above
+3. Create archive README explaining what/why
+4. Update CLAUDE.md TEMPORARY with "cleanup required" blocker
+5. Resume feature work only after cleanup complete
+
+**This rule exists because**: Claude Code systematically generates files in root and forgets to clean up. This creates archaeological layers of obsolete docs that obscure current work.
+
 ### File Finding Guide
 
 **When you need**:
@@ -592,11 +706,39 @@ USAJOBS_API_KEY=...
 - Use environment variables without python-dotenv
 - Access os.environ directly without load_dotenv()
 
-### Python Environment
+### Python Environment (CRITICAL - ALWAYS USE VENV)
+
+**MANDATORY**: ALL Python commands MUST use the virtual environment.
+
+**Correct Way** (ALWAYS):
+```bash
+source .venv/bin/activate        # Activate FIRST
+python3 test_script.py           # Now uses .venv Python
+pip install package              # Installs to .venv
+```
+
+**Wrong Way** (NEVER):
+```bash
+python3 test_script.py           # Uses system Python - missing dependencies!
+/usr/bin/python3 test_script.py  # Explicit system Python - WRONG
+```
+
+**Why This Matters**:
+- System Python DOES NOT have playwright, seleniumbase, or other dependencies
+- `.venv/` HAS all required packages installed
+- Running without activation causes "ModuleNotFoundError" for playwright/seleniumbase
+
+**Environment Details**:
 - Version: 3.12
-- Virtual env: `.venv/` (activate: `source .venv/bin/activate`)
-- Dependencies: `requirements.txt` (install: `pip install -r requirements.txt`)
-- Update requirements: `pip freeze > requirements.txt`
+- Virtual env: `.venv/` (NOT `venv/`)
+- Dependencies: `requirements.txt`
+- Update requirements: `pip freeze > requirements.txt` (after activating .venv)
+
+**Circuit Breaker**: If you see `ModuleNotFoundError: No module named 'playwright'` or `'seleniumbase'`:
+1. STOP immediately
+2. Check if virtual environment is activated: `which python3` should show `.venv/bin/python3`
+3. If not activated, activate with `source .venv/bin/activate`
+4. Rerun command
 
 ---
 
@@ -784,12 +926,18 @@ class NewIntegration(DatabaseIntegration):
 
 ## QUICK REFERENCE COMMANDS
 
+**CRITICAL**: ALL commands below assume `.venv` is activated. If not:
+```bash
+source .venv/bin/activate        # Run this FIRST, EVERY TIME
+```
+
 ```bash
 # Environment
-source .venv/bin/activate        # Activate virtual environment
+source .venv/bin/activate        # ALWAYS activate FIRST
 pip install -r requirements.txt  # Install dependencies
 
 # Testing (use these entry points - essential tests only)
+# NOTE: These will FAIL with ModuleNotFoundError if .venv not activated
 python3 apps/ai_research.py "query"           # E2E test via CLI
 python3 tests/test_verification.py            # Integration test (keep)
 python3 tests/test_all_four_databases.py      # 4-DB parallel test (keep)
@@ -798,6 +946,10 @@ streamlit run apps/unified_search_app.py      # Web UI
 # Development
 pip freeze > requirements.txt    # Update dependencies
 python3 -c "import X; print('OK')"  # Test import
+
+# Verify environment (troubleshooting)
+which python3                    # Should show: /home/brian/sam_gov/.venv/bin/python3
+pip list | grep playwright       # Should show: playwright, seleniumbase
 ```
 
 ---

@@ -12,7 +12,14 @@ from integrations.government.fbi_vault import FBIVaultIntegration
 
 # Import social integrations
 from integrations.social.discord_integration import DiscordIntegration
-from integrations.social.twitter_integration import TwitterIntegration
+from integrations.social.brave_search_integration import BraveSearchIntegration
+
+# Twitter integration requires twitterexplorer_sigint (not yet installed)
+try:
+    from integrations.social.twitter_integration import TwitterIntegration
+    TWITTER_AVAILABLE = True
+except ImportError:
+    TWITTER_AVAILABLE = False
 
 # Future social integrations
 # from integrations.social.reddit_integration import RedditIntegration
@@ -36,7 +43,11 @@ class IntegrationRegistry:
 
         # Social media sources
         self.register(DiscordIntegration)
-        self.register(TwitterIntegration)
+        if TWITTER_AVAILABLE:
+            self.register(TwitterIntegration)
+
+        # Web search
+        self.register(BraveSearchIntegration)
 
         # Future social media sources (Phase 3)
         # self.register(RedditIntegration)

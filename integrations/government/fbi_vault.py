@@ -61,24 +61,18 @@ class FBIVaultIntegration(DatabaseIntegration):
 
     async def is_relevant(self, research_question: str) -> bool:
         """
-        Quick relevance check - FBI Vault is relevant for government investigations,
-        FOIA requests, law enforcement topics, and domestic security issues.
+        Quick relevance check - always return True, let generate_query() LLM decide.
+
+        The LLM in generate_query() is smarter at determining relevance and avoids
+        false negatives from overly restrictive keyword matching.
 
         Args:
             research_question: The user's research question
 
         Returns:
-            True if question might relate to FBI investigations/documents
+            Always True - relevance determined by generate_query()
         """
-        fbi_keywords = [
-            "fbi", "investigation", "foia", "classified", "declassified",
-            "law enforcement", "domestic", "terrorism", "extremism",
-            "intelligence", "security clearance", "whistleblow",
-            "surveillance", "document", "report", "memo"
-        ]
-
-        question_lower = research_question.lower()
-        return any(keyword in question_lower for keyword in fbi_keywords)
+        return True
 
     async def generate_query(self, research_question: str) -> Optional[Dict]:
         """
@@ -97,49 +91,23 @@ class FBIVaultIntegration(DatabaseIntegration):
             }
         """
 
-        prompt = f"""You are a search query generator for FBI Vault, the FBI's FOIA document library.
+        prompt = f"""Generate search parameters for FBI Vault.
+
+FBI Vault provides: FBI FOIA document releases - investigation files, memos, reports, and declassified materials.
+
+API Parameters:
+- query (string, required):
+    Search terms for documents.
 
 Research Question: {research_question}
 
-Generate search parameters for FBI Vault:
-- query: Search terms for documents (string)
-- reasoning: Brief explanation of the search strategy
+Decide whether FBI Vault is relevant for this question.
 
-Guidelines:
-- Be SPECIFIC with multi-word phrases (e.g., "domestic terrorism threat assessment")
-- Focus on investigation names, document types, or specific topics
-- Use FBI terminology when applicable
-- Keep queries focused on topics likely to have FBI documentation
-
-If this question is not relevant to FBI investigations or documents, return relevant: false.
-
-Return JSON with these exact fields.
-
-Example 1:
-Question: "What documents exist about domestic terrorism threats?"
-Response:
+Return JSON:
 {{
-  "relevant": true,
-  "query": "domestic terrorism threat assessment",
-  "reasoning": "Searching for FBI threat assessments on domestic terrorism"
-}}
-
-Example 2:
-Question: "FBI investigation into January 6"
-Response:
-{{
-  "relevant": true,
-  "query": "January 6 Capitol investigation",
-  "reasoning": "Looking for FBI documents related to January 6th investigation"
-}}
-
-Example 3:
-Question: "How do I apply for a job?"
-Response:
-{{
-  "relevant": false,
-  "query": "",
-  "reasoning": "Question is about employment, not FBI documents"
+  "relevant": boolean,
+  "query": string,
+  "reasoning": string
 }}
 """
 

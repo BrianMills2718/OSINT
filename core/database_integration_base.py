@@ -34,6 +34,9 @@ class DatabaseCategory(Enum):
     SOCIAL_TELEGRAM = "social_telegram"
     SOCIAL_GENERAL = "social_general"
 
+    # Web search
+    WEB_SEARCH = "web_search"
+
 
 @dataclass
 class DatabaseMetadata:

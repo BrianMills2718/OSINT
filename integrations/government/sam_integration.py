@@ -95,78 +95,56 @@ class SAMIntegration(DatabaseIntegration):
             }
         """
 
-        prompt = f"""You are a search query generator for SAM.gov, the U.S. federal government contracting opportunities system.
+        prompt = f"""Generate search parameters for SAM.gov.
+
+SAM.gov provides: U.S. federal government contracting opportunities, solicitations, and awards.
+
+API Parameters:
+- keywords (string, optional):
+    Search terms for opportunity titles and descriptions.
+    Technical constraint: Maximum ~200 characters.
+
+- procurement_types (array, optional):
+    Filter by procurement type. Valid options:
+    "Solicitation", "Presolicitation", "Combined Synopsis/Solicitation", "Sources Sought"
+
+- set_aside (string or null, optional):
+    Small business set-aside type. Only ONE allowed per query.
+    Valid options: "SBA", "8A", "SDVOSBC", "WOSB", "HZC", or null
+
+- naics_codes (array, optional):
+    Industry classification codes. Common examples:
+    "541512" = Computer Systems Design Services
+    "541519" = Other Computer Related Services
+    "541611" = Administrative Management Consulting
+    "541990" = All Other Professional Services
+    "334111" = Electronic Computer Manufacturing
+    "518210" = Data Processing Services
+    Full NAICS directory: https://www.census.gov/naics/
+
+- organization (string or null, optional):
+    Agency or organization name (e.g., "Department of Defense", "Federal Bureau of Investigation")
+
+- date_range_days (integer, required):
+    How many days back from today to search. Range: 1-365 days.
+    This parameter is REQUIRED by the SAM.gov API.
 
 Research Question: {research_question}
 
-Generate search parameters for the SAM.gov API:
-- keywords: Search terms for opportunity titles/descriptions (string, keep focused)
-- procurement_types: Types of procurement (array from: "Solicitation", "Presolicitation", "Combined Synopsis/Solicitation", "Sources Sought")
-- set_aside: Small business set-aside type (string from: null, "SBA" (Total Small Business), "8A", "SDVOSBC" (Service-Disabled Veteran), "WOSB" (Women-Owned), "HZC" (HUBZone), or null for none)
-- naics_codes: Industry classification codes if relevant (array of strings like ["541512", "541519"], or empty array)
-- organization: Specific agency/organization if mentioned (string or null)
-- date_range_days: How many days back to search (integer 1-365, default 60)
+Decide whether SAM.gov is relevant for this question.
+If relevant, generate appropriate search parameters.
+If not relevant (e.g., question is about jobs, not contracts), return relevant: false.
 
-Guidelines:
-- keywords: Use industry/procurement-specific terms
-- procurement_types: Include all types unless specifically requested (e.g., "RFPs only" → ["Solicitation"])
-- set_aside: Only ONE allowed per query, use null if not specified
-- naics_codes: Common codes:
-  * 541512 - Computer Systems Design Services
-  * 541519 - Other Computer Related Services
-  * 541611 - Administrative Management Consulting
-  * 541990 - All Other Professional Services
-  * 334111 - Electronic Computer Manufacturing
-  * 518210 - Data Processing Services
-- organization: Only specify if question mentions specific agency (e.g., "DoD", "FBI", "VA")
-- date_range_days: Use 30 for "recent", 60 for default, 90 for "past few months"
-
-IMPORTANT: SAM.gov REQUIRES a date range and it cannot exceed 365 days.
-
-If this question is not about government contracts or procurement, return relevant: false.
-
-Return JSON with these exact fields. Use empty arrays for optional list fields and null for optional single fields.
-
-Example 1:
-Question: "What cybersecurity contracts are available from DoD?"
-Response:
+Return JSON:
 {{
-  "relevant": true,
-  "keywords": "cybersecurity",
-  "procurement_types": [],
-  "set_aside": null,
-  "naics_codes": ["541512", "541519"],
-  "organization": "Department of Defense",
-  "date_range_days": 60,
-  "reasoning": "DoD cybersecurity contracting opportunities"
-}}
-
-Example 2:
-Question: "Recent small business IT solicitations"
-Response:
-{{
-  "relevant": true,
-  "keywords": "IT information technology",
-  "procurement_types": ["Solicitation"],
-  "set_aside": "SBA",
-  "naics_codes": ["541512", "541519"],
-  "organization": null,
-  "date_range_days": 30,
-  "reasoning": "Recent IT solicitations for small businesses"
-}}
-
-Example 3:
-Question: "What military jobs require security clearances?"
-Response:
-{{
-  "relevant": false,
-  "keywords": "",
-  "procurement_types": [],
-  "set_aside": null,
-  "naics_codes": [],
-  "organization": null,
-  "date_range_days": 60,
-  "reasoning": "Question is about jobs, not contracts"
+  "relevant": boolean,
+  "keywords": string,
+  "procurement_types": array,
+  "set_aside": string | null,
+  "naics_codes": array,
+  "organization": string | null,
+  "date_range_days": integer,
+  "reasoning": string
 }}
 """
 

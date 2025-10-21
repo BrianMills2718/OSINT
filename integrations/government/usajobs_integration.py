@@ -92,82 +92,41 @@ class USAJobsIntegration(DatabaseIntegration):
             }
         """
 
-        prompt = f"""You are a search query generator for USAJOBS, the official U.S. federal government job site.
+        prompt = f"""Generate search parameters for USAJobs.
+
+USAJobs provides: Official U.S. federal government job listings across all agencies and departments.
+
+API Parameters:
+- keywords (string, required):
+    Search terms for job titles and descriptions.
+
+- location (string or null, optional):
+    Geographic location (e.g., "Washington, DC", "California", "Remote")
+
+- organization (string or null, optional):
+    Federal agency or organization name (e.g., "Department of Defense", "FBI", "NASA")
+
+- pay_grade_low (integer or null, optional):
+    Minimum GS (General Schedule) pay grade. Range: 1-15
+    Reference: GS-1 to GS-4 = Entry level, GS-5 to GS-9 = Junior, GS-10 to GS-12 = Mid-level, GS-13 to GS-15 = Senior
+
+- pay_grade_high (integer or null, optional):
+    Maximum GS pay grade. Range: 1-15
 
 Research Question: {research_question}
 
-Generate search parameters for the USAJOBS API:
-- keywords: Search terms for job titles/descriptions (string, keep focused)
-- location: Geographic location if specified (string like "Washington, DC" or "California" or null)
-- organization: Federal agency/organization (string like "Department of Defense", "FBI", or null)
-- pay_grade_low: Minimum GS pay grade if mentioned (integer 1-15, or null)
-- pay_grade_high: Maximum GS pay grade if mentioned (integer 1-15, or null)
+Decide whether USAJobs is relevant for this question.
+Job listings reveal what federal agencies are actively hiring for, which can provide insight into government programs and priorities.
 
-Guidelines:
-- keywords: Use job title or skill terms (e.g., "engineer", "analyst", "scientist")
-- location: Format as city-state or just state name, null if not mentioned
-- organization: Use full agency names, null if not specified
-- pay_grade: GS (General Schedule) grades range 1-15, where:
-  * GS-1 to GS-4: Entry-level positions
-  * GS-5 to GS-9: Junior professional positions
-  * GS-10 to GS-12: Mid-level professional positions
-  * GS-13 to GS-15: Senior professional/supervisory positions
-  Only specify if the question explicitly mentions pay grade or seniority level
-
-If this question is not about federal government jobs or employment, return relevant: false.
-
-Return JSON with these exact fields. Use null for optional fields.
-
-Example 1:
-Question: "What data science jobs are available in the DC area?"
-Response:
+Return JSON:
 {{
-  "relevant": true,
-  "keywords": "data science",
-  "location": "Washington, DC",
-  "organization": null,
-  "pay_grade_low": null,
-  "pay_grade_high": null,
-  "reasoning": "Federal data science positions in DC area"
-}}
-
-Example 2:
-Question: "Senior engineer positions at NASA"
-Response:
-{{
-  "relevant": true,
-  "keywords": "engineer",
-  "location": null,
-  "organization": "NASA",
-  "pay_grade_low": 13,
-  "pay_grade_high": 15,
-  "reasoning": "Senior engineering roles at NASA (GS-13 to 15)"
-}}
-
-Example 3:
-Question: "What cybersecurity jobs with clearances are available?"
-Response:
-{{
-  "relevant": true,
-  "keywords": "cybersecurity security clearance",
-  "location": null,
-  "organization": null,
-  "pay_grade_low": null,
-  "pay_grade_high": null,
-  "reasoning": "Federal cybersecurity positions requiring clearances"
-}}
-
-Example 4:
-Question: "What government contracts are available?"
-Response:
-{{
-  "relevant": false,
-  "keywords": "",
-  "location": null,
-  "organization": null,
-  "pay_grade_low": null,
-  "pay_grade_high": null,
-  "reasoning": "Question is about contracts, not jobs"
+  "relevant": boolean,
+  "keywords": string,
+  "location": string | null,
+  "organization": string | null,
+  "pay_grade_low": integer | null,
+  "pay_grade_high": integer | null,
+  "reasoning": string
 }}
 """
 

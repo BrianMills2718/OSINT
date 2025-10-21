@@ -31,6 +31,14 @@ logger = logging.getLogger('BooleanMonitor')
 
 
 @dataclass
+class AdvancedConfig:
+    """Advanced monitor configuration (optional)."""
+    relevance_filter: str = "llm_go_no_go"  # Options: "llm_go_no_go", "disabled"
+    adaptive_search: bool = False
+    adaptive_config: Optional[Dict] = None
+
+
+@dataclass
 class MonitorConfig:
     """Configuration for a single Boolean monitor."""
     name: str
@@ -39,6 +47,7 @@ class MonitorConfig:
     schedule: str
     alert_email: str
     enabled: bool = True
+    advanced: Optional[AdvancedConfig] = None
 
 
 class BooleanMonitor:
@@ -99,16 +108,29 @@ class BooleanMonitor:
             if field not in config_data:
                 raise ValueError(f"Missing required field in config: {field}")
 
+        # Parse advanced config if present
+        advanced = None
+        if 'advanced' in config_data:
+            adv_data = config_data['advanced']
+            advanced = AdvancedConfig(
+                relevance_filter=adv_data.get('relevance_filter', 'llm_go_no_go'),
+                adaptive_search=adv_data.get('adaptive_search', False),
+                adaptive_config=adv_data.get('adaptive_config')
+            )
+
         config = MonitorConfig(
             name=config_data['name'],
             keywords=config_data['keywords'],
             sources=config_data['sources'],
             schedule=config_data['schedule'],
             alert_email=config_data['alert_email'],
-            enabled=config_data.get('enabled', True)
+            enabled=config_data.get('enabled', True),
+            advanced=advanced
         )
 
         logger.info(f"Config loaded: {config.name}")
+        if advanced:
+            logger.info(f"  Advanced config: relevance_filter={advanced.relevance_filter}, adaptive_search={advanced.adaptive_search}")
         return config
 
     async def execute_search(self, keywords: List[str]) -> List[Dict]:
@@ -346,22 +368,36 @@ class BooleanMonitor:
 
     async def filter_by_relevance(self, results: List[Dict]) -> List[Dict]:
         """
-        Filter results by LLM relevance scoring.
+        Filter results by LLM go/no-go decision.
 
-        For each result, asks LLM:
-        1. Is this result relevant to the keyword that found it?
-        2. Why is it relevant (or not)?
-        3. Relevance score (0-10)
+        For each result, asks LLM: Should this be EXCLUDED from alerts?
+        Only excludes if result is clearly irrelevant (spam, wrong topic, etc.)
+        When in doubt, keeps the result.
 
-        Only keeps results with score >= 6
+        Respects advanced.relevance_filter config option:
+        - "llm_go_no_go": Use LLM filtering (default)
+        - "disabled": No filtering, keep all results
 
         Args:
             results: List of search results with keyword field
 
         Returns:
-            List of relevant results with added 'relevance_score' and 'relevance_reason' fields
+            List of relevant results with added 'exclude_decision' and 'reasoning' fields
         """
-        logger.info(f"Filtering {len(results)} results by LLM relevance")
+        # Check advanced config for relevance filter type
+        filter_type = "llm_go_no_go"  # default
+        if self.config.advanced and self.config.advanced.relevance_filter:
+            filter_type = self.config.advanced.relevance_filter
+
+        if filter_type == "disabled":
+            logger.info(f"Relevance filtering DISABLED (advanced config), keeping all {len(results)} results")
+            # Mark all results as not filtered
+            for result in results:
+                result['filtered'] = False
+                result['filter_reason'] = "Filtering disabled"
+            return results
+
+        logger.info(f"Filtering {len(results)} results by LLM relevance (go/no-go decision)")
 
         from llm_utils import acompletion
         import json
@@ -375,30 +411,35 @@ class BooleanMonitor:
             keyword = result.get('keyword', '')
             source = result.get('source', 'Unknown')
 
-            # Ask LLM to score relevance
-            prompt = f"""You are analyzing search results for relevance to a monitoring keyword.
+            # Ask LLM: Should we exclude this?
+            prompt = f"""You are filtering search results for an investigative journalism monitoring system.
 
-Keyword: "{keyword}"
+Keyword being monitored: "{keyword}"
 Source: {source}
-Title: {title}
-Description: {description[:300]}
+Result Title: {title}
+Result Description: {description[:300]}
 
-Task: Determine if this result is genuinely relevant to the keyword "{keyword}".
+Question: Should this result be EXCLUDED from alerts?
 
-Consider:
-- Is the title/description actually about {keyword}?
-- Is this a substantive result (not just keyword spam)?
-- Would a journalist researching {keyword} want to see this?
+ONLY exclude if clearly one of these:
+- Obvious spam or SEO junk
+- Keyword appears but result is about completely different topic (e.g., "NVE" in event name "Star Spangled Sailabration" is NOT about extremism)
+- Aggregator/listicle with no substantive content
+- Duplicate of press release already covered
 
-Provide:
-1. relevance_score (0-10, where 10 = highly relevant, 0 = not relevant)
-2. reasoning (1-2 sentences explaining why relevant or not)
+When in doubt, DO NOT EXCLUDE. The user prefers seeing marginal results over missing important leads.
 
-Return ONLY valid JSON with this exact structure:
+Return JSON:
 {{
-  "relevance_score": <number 0-10>,
-  "reasoning": "<your explanation>"
-}}"""
+  "exclude": true or false,
+  "reasoning": "brief explanation (1-2 sentences)"
+}}
+
+Examples:
+- Keyword "FISA Section 702", Title "Star Spangled Sailabration Event" → exclude: true (keyword in unrelated context)
+- Keyword "domestic extremism", Title "DHS updates domestic terrorism definitions" → exclude: false (relevant)
+- Keyword "surveillance", Title "Top 10 surveillance cameras to buy" → exclude: true (commercial spam)
+"""
 
             try:
                 response = await acompletion(
@@ -408,14 +449,14 @@ Return ONLY valid JSON with this exact structure:
                         "type": "json_schema",
                         "json_schema": {
                             "strict": True,
-                            "name": "relevance_analysis",
+                            "name": "exclusion_decision",
                             "schema": {
                                 "type": "object",
                                 "properties": {
-                                    "relevance_score": {"type": "number"},
+                                    "exclude": {"type": "boolean"},
                                     "reasoning": {"type": "string"}
                                 },
-                                "required": ["relevance_score", "reasoning"],
+                                "required": ["exclude", "reasoning"],
                                 "additionalProperties": False
                             }
                         }
@@ -423,27 +464,27 @@ Return ONLY valid JSON with this exact structure:
                 )
 
                 analysis = json.loads(response.choices[0].message.content)
-                score = analysis.get('relevance_score', 0)
+                exclude = analysis.get('exclude', False)
                 reasoning = analysis.get('reasoning', 'No reasoning provided')
 
-                # Keep results with score >= 6
-                if score >= 6:
-                    result['relevance_score'] = score
-                    result['relevance_reason'] = reasoning
+                # Keep if NOT excluded
+                if not exclude:
+                    result['filtered'] = False
+                    result['filter_reason'] = reasoning
                     relevant_results.append(result)
-                    logger.info(f"  ✓ RELEVANT ({score}/10): {title[:60]}...")
+                    logger.info(f"  ✓ KEEP: {title[:60]}... | Reason: {reasoning[:40]}")
                 else:
                     filtered_out += 1
-                    logger.info(f"  ✗ FILTERED ({score}/10): {title[:60]}...")
+                    logger.info(f"  ✗ EXCLUDE: {title[:60]}... | Reason: {reasoning[:40]}")
 
             except Exception as e:
-                logger.warning(f"Error scoring result relevance: {str(e)}")
+                logger.warning(f"Error evaluating result relevance: {str(e)}")
                 # On error, keep the result (don't filter out due to technical issues)
-                result['relevance_score'] = 5
-                result['relevance_reason'] = f"Could not score relevance due to error: {str(e)}"
+                result['filtered'] = False
+                result['filter_reason'] = f"Could not evaluate (error: {str(e)[:50]}), kept by default"
                 relevant_results.append(result)
 
-        logger.info(f"Relevance filtering complete: {len(relevant_results)} relevant, {filtered_out} filtered out")
+        logger.info(f"Relevance filtering complete: {len(relevant_results)} kept, {filtered_out} excluded")
         return relevant_results
 
     async def send_alert(self, new_results: List[Dict]):
@@ -501,10 +542,8 @@ Found {len(new_results)} new results:
                 text_body += f"   Date: {result.get('date', 'N/A')}\n"
                 if result.get('url'):
                     text_body += f"   URL: {result['url']}\n"
-                if result.get('relevance_score'):
-                    text_body += f"   Relevance: {result['relevance_score']}/10\n"
-                if result.get('relevance_reason'):
-                    text_body += f"   Why: {result['relevance_reason']}\n"
+                if result.get('filter_reason'):
+                    text_body += f"   Assessment: {result['filter_reason']}\n"
                 text_body += "\n"
 
             # Create HTML version
@@ -537,8 +576,7 @@ Found {len(new_results)} new results:
                 source = result.get('source', 'Unknown')
                 date = result.get('date', 'N/A')
                 keyword = result.get('keyword', 'N/A')
-                relevance_score = result.get('relevance_score')
-                relevance_reason = result.get('relevance_reason', '')
+                filter_reason = result.get('filter_reason', '')
                 description = result.get('description', '')
 
                 html_body += '<div class="result">\n'
@@ -551,8 +589,8 @@ Found {len(new_results)} new results:
                 html_body += f'<div class="result-meta">Source: {source} | Date: {date}</div>\n'
                 html_body += f'<div class="result-keyword">🔍 Matched keyword: "{keyword}"</div>\n'
 
-                if relevance_score is not None:
-                    html_body += f'<div class="result-relevance"><strong>Relevance: {relevance_score}/10</strong> — {relevance_reason}</div>\n'
+                if filter_reason:
+                    html_body += f'<div class="result-relevance"><strong>Assessment:</strong> {filter_reason}</div>\n'
 
                 if description:
                     # Truncate long descriptions

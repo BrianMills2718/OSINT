@@ -91,69 +91,45 @@ class DVIDSIntegration(DatabaseIntegration):
             }
         """
 
-        prompt = f"""You are a search query generator for DVIDS, the U.S. military's media distribution service.
+        prompt = f"""Generate search parameters for DVIDS.
+
+DVIDS provides: U.S. Department of Defense media distribution - photos, videos, and news from military operations and activities.
+
+API Parameters:
+- keywords (string, required):
+    Search terms for media titles and descriptions.
+
+- media_types (array, required):
+    Types of media to search. Valid options: "image", "video", "news"
+
+- branches (array, optional):
+    Military branches to filter by. Valid options:
+    "Army", "Navy", "Air Force", "Marines", "Coast Guard", "Joint"
+
+- country (string or null, optional):
+    Country name (e.g., "United States", "Germany", "Japan")
+
+- from_date (string or null, optional):
+    Start date for results in YYYY-MM-DD format.
+
+- to_date (string or null, optional):
+    End date for results in YYYY-MM-DD format.
 
 Research Question: {research_question}
 
-Generate search parameters for the DVIDS API:
-- keywords: Search terms for media titles/descriptions (string, keep concise)
-- media_types: Types of media to search (array from: "image", "video", "news")
-- branches: Military branches (array from: "Army", "Navy", "Air Force", "Marines", "Coast Guard", "Joint")
-- country: Country if specified (string, e.g., "United States", "Germany", "Japan")
-- from_date: Start date if recency mentioned (YYYY-MM-DD format, or null)
-- to_date: End date if specified (YYYY-MM-DD format, or null)
+Decide whether DVIDS is relevant for this question.
+If relevant, generate appropriate search parameters.
 
-Guidelines:
-- keywords: Use military-specific terms, avoid very long queries
-- media_types: Include all types unless specifically requested (e.g., "photos only" → ["image"])
-- branches: Only specify if the question mentions specific branches
-- dates: Only filter by date if recency is mentioned (e.g., "recent", "2024", "last month")
-- country: Only specify if the question mentions a specific country or location
-
-If this question is not about military media or content, return relevant: false.
-
-Return JSON with these exact fields. Use empty arrays for optional list fields and null for optional date fields.
-
-Example 1:
-Question: "Show me recent F-35 training photos from the Air Force"
-Response:
+Return JSON:
 {{
-  "relevant": true,
-  "keywords": "F-35 training",
-  "media_types": ["image"],
-  "branches": ["Air Force"],
-  "country": null,
-  "from_date": "2024-10-01",
-  "to_date": null,
-  "reasoning": "Recent Air Force F-35 training imagery"
-}}
-
-Example 2:
-Question: "What videos are available about humanitarian operations?"
-Response:
-{{
-  "relevant": true,
-  "keywords": "humanitarian operations",
-  "media_types": ["video"],
-  "branches": [],
-  "country": null,
-  "from_date": null,
-  "to_date": null,
-  "reasoning": "Video content about humanitarian missions"
-}}
-
-Example 3:
-Question: "What government contracts are available?"
-Response:
-{{
-  "relevant": false,
-  "keywords": "",
-  "media_types": [],
-  "branches": [],
-  "country": null,
-  "from_date": null,
-  "to_date": null,
-  "reasoning": "Question is about contracts, not military media"
+  "relevant": boolean,
+  "keywords": string,
+  "media_types": array,
+  "branches": array,
+  "country": string | null,
+  "from_date": string | null,
+  "to_date": string | null,
+  "reasoning": string
 }}
 """
 

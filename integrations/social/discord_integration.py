@@ -104,24 +104,25 @@ class DiscordIntegration(DatabaseIntegration):
         import json
 
         # Use LLM to extract key search terms/phrases
-        prompt = f"""Extract 2-5 key search terms or phrases from this research question for searching Discord messages.
+        prompt = f"""Generate search parameters for Discord.
+
+Discord provides: Community discussions from OSINT servers (Bellingcat, Project OWL, etc.) - local message archives.
+
+API Parameters:
+- keywords (array of strings, required):
+    Key search terms or phrases. Messages must contain ALL keywords (AND search).
+    Preserve multi-word concepts as single terms (e.g., "domestic terrorism", not separate words).
+    Range: 2-5 terms recommended.
 
 Research Question: {research_question}
 
-Guidelines:
-- Preserve multi-word concepts as single terms (e.g., "domestic terrorism" not ["domestic", "terrorism"])
-- Include acronyms if relevant (e.g., "JTTF")
-- Focus on the most specific, distinctive terms
-- Use quotes around multi-word phrases in the output
+Extract the most specific, distinctive terms or phrases for searching Discord messages.
 
-Examples:
-Question: "JTTF domestic terrorism activity"
-Terms: ["JTTF", "domestic terrorism"]
-
-Question: "Joint Terrorism Task Force operations"
-Terms: ["Joint Terrorism Task Force", "JTTF", "operations"]
-
-Return JSON with a "terms" array."""
+Return JSON:
+{{
+  "terms": array of strings
+}}
+"""
 
         try:
             schema = {

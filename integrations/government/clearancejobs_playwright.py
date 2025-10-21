@@ -63,8 +63,13 @@ async def search_clearancejobs(
                 }
             """)
 
-            # Step 4: Click search button
-            await page.click('button.search-cta')
+            # Give Vue.js a moment to process the events and update button state
+            await asyncio.sleep(0.5)
+
+            # Step 4: Submit search by pressing Enter key
+            # This bypasses the disabled button issue - the search form accepts Enter key
+            # even when the button hasn't been enabled by Vue.js yet
+            await page.press('input[placeholder*="Search by keywords"]', 'Enter')
 
             # Step 5: Wait for results to load
             try:
