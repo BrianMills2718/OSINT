@@ -171,13 +171,38 @@ class SimpleDeepResearch:
         self._emit_progress("research_started", f"Starting deep research: {question}")
 
         # Step 1: Decompose question into initial tasks
-        self._emit_progress("decomposition_started", "Breaking question into research tasks...")
-        self.task_queue = await self._decompose_question(question)
-        self._emit_progress(
-            "decomposition_complete",
-            f"Created {len(self.task_queue)} initial tasks",
-            data={"tasks": [{"id": t.id, "query": t.query} for t in self.task_queue]}
-        )
+        try:
+            self._emit_progress("decomposition_started", "Breaking question into research tasks...")
+            self.task_queue = await self._decompose_question(question)
+            self._emit_progress(
+                "decomposition_complete",
+                f"Created {len(self.task_queue)} initial tasks",
+                data={"tasks": [{"id": t.id, "query": t.query} for t in self.task_queue]}
+            )
+        except Exception as e:
+            import traceback
+            error_msg = f"Failed to decompose question: {type(e).__name__}: {str(e)}"
+            self._emit_progress(
+                "decomposition_failed",
+                error_msg,
+                data={
+                    "error_type": type(e).__name__,
+                    "error_message": str(e),
+                    "traceback": traceback.format_exc()
+                }
+            )
+            # Return empty result on decomposition failure
+            return {
+                "report": f"# Research Failed\n\nFailed to decompose question into tasks.\n\nError: {error_msg}",
+                "tasks_executed": 0,
+                "tasks_failed": 0,
+                "entities_discovered": [],
+                "entity_relationships": {},
+                "sources_searched": [],
+                "total_results": 0,
+                "elapsed_minutes": 0,
+                "error": error_msg
+            }
 
         # Step 2: Execute tasks
         task_counter = len(self.task_queue)
@@ -216,9 +241,23 @@ class SimpleDeepResearch:
                 self.failed_tasks.append(task)
 
         # Step 3: Synthesize report
-        self._emit_progress("synthesis_started", "Synthesizing final report...")
-        report = await self._synthesize_report(question)
-        self._emit_progress("synthesis_complete", "Report complete")
+        try:
+            self._emit_progress("synthesis_started", "Synthesizing final report...")
+            report = await self._synthesize_report(question)
+            self._emit_progress("synthesis_complete", "Report complete")
+        except Exception as e:
+            import traceback
+            error_msg = f"Failed to synthesize report: {type(e).__name__}: {str(e)}"
+            self._emit_progress(
+                "synthesis_failed",
+                error_msg,
+                data={
+                    "error_type": type(e).__name__,
+                    "error_message": str(e),
+                    "traceback": traceback.format_exc()
+                }
+            )
+            report = f"# Research Report\n\nFailed to synthesize final report.\n\nError: {error_msg}\n\n## Raw Statistics\n\n- Tasks Executed: {len(self.completed_tasks)}\n- Tasks Failed: {len(self.failed_tasks)}\n"
 
         # Compile results
         all_results = []
@@ -229,10 +268,21 @@ class SimpleDeepResearch:
         for task in self.completed_tasks:
             all_entities.update(task.entities_found)
 
+        # Compile failure details for debugging
+        failure_details = []
+        for task in self.failed_tasks:
+            failure_details.append({
+                "task_id": task.id,
+                "query": task.query,
+                "error": task.error,
+                "retry_count": task.retry_count
+            })
+
         return {
             "report": report,
             "tasks_executed": len(self.completed_tasks),
             "tasks_failed": len(self.failed_tasks),
+            "failure_details": failure_details,  # NEW: Detailed failure info
             "entities_discovered": list(all_entities),
             "entity_relationships": self.entity_graph,
             "sources_searched": list(set(r.get('source', 'Unknown') for r in all_results)),
@@ -367,19 +417,34 @@ Return tasks in priority order (most important first).
                         return False
 
             except Exception as e:
-                # Execution error
+                # Execution error - capture full traceback for debugging
+                import traceback
+                error_details = {
+                    "error_type": type(e).__name__,
+                    "error_message": str(e),
+                    "traceback": traceback.format_exc(),
+                    "query": task.query,
+                    "retry_count": task.retry_count
+                }
+
                 if task.retry_count < self.max_retries_per_task:
                     task.status = TaskStatus.RETRY
                     task.retry_count += 1
                     self._emit_progress(
                         "task_error",
-                        f"Error: {str(e)}, retrying...",
-                        task_id=task.id
+                        f"Error: {type(e).__name__}: {str(e)}, retrying...",
+                        task_id=task.id,
+                        data=error_details
                     )
                 else:
                     task.status = TaskStatus.FAILED
                     task.error = str(e)
-                    self._emit_progress("task_failed", f"Failed after {task.retry_count} retries: {str(e)}", task_id=task.id)
+                    self._emit_progress(
+                        "task_failed",
+                        f"Failed after {task.retry_count} retries: {type(e).__name__}: {str(e)}",
+                        task_id=task.id,
+                        data=error_details
+                    )
                     return False
 
         return False

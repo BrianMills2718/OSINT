@@ -277,6 +277,17 @@ def render_deep_research_tab(openai_api_key_from_ui):
                 if result['sources_searched']:
                     st.caption(", ".join(result['sources_searched']))
 
+                # Show failure details if any tasks failed
+                if result.get('failure_details') and len(result['failure_details']) > 0:
+                    st.markdown("---")
+                    st.markdown("### ⚠️ Failed Tasks (Debug Info)")
+                    with st.expander(f"Show {len(result['failure_details'])} failed tasks", expanded=False):
+                        for failure in result['failure_details']:
+                            st.error(f"**Task {failure['task_id']}: {failure['query']}**")
+                            st.caption(f"Error: {failure['error']}")
+                            st.caption(f"Retries attempted: {failure['retry_count']}")
+                            st.markdown("---")
+
                 # Export results
                 st.markdown("---")
                 st.markdown("### 📥 Export Results")
