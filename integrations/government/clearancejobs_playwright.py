@@ -14,7 +14,9 @@ This version uses Playwright instead of Puppeteer MCP, so it can:
 
 import asyncio
 from typing import Dict, Optional
-from playwright.async_api import async_playwright, TimeoutError as PlaywrightTimeout
+
+# Lazy import - only import playwright when function is actually called
+# This prevents ImportError when playwright is not available (e.g., Streamlit Cloud)
 
 
 async def search_clearancejobs(
@@ -39,6 +41,17 @@ async def search_clearancejobs(
     """
 
     try:
+        # Import playwright only when needed (lazy import)
+        try:
+            from playwright.async_api import async_playwright, TimeoutError as PlaywrightTimeout
+        except ImportError:
+            return {
+                "success": False,
+                "total": 0,
+                "jobs": [],
+                "error": "Playwright is not installed. Install with: pip install playwright && playwright install chromium"
+            }
+
         async with async_playwright() as p:
             # Launch browser
             browser = await p.chromium.launch(headless=headless)
