@@ -55,27 +55,18 @@ class DVIDSIntegration(DatabaseIntegration):
 
     async def is_relevant(self, research_question: str) -> bool:
         """
-        Quick relevance check - does question relate to military media?
+        Quick relevance check - always return True, let generate_query() LLM decide.
 
-        We check for military/media-related keywords to avoid wasting LLM calls
-        on questions that clearly aren't about military content or media.
+        The LLM in generate_query() is smarter at determining relevance and avoids
+        false negatives from overly restrictive keyword matching.
 
         Args:
             research_question: The user's research question
 
         Returns:
-            True if question might be about military media, False otherwise
+            Always True - relevance determined by generate_query()
         """
-        media_keywords = [
-            "photo", "photos", "image", "images", "video", "videos", "media",
-            "footage", "picture", "pictures", "visual", "news",
-            "military", "defense", "dod", "army", "navy", "air force", "marine",
-            "coast guard", "dvids", "combat", "training", "deployment",
-            "humanitarian", "exercise", "operation"
-        ]
-
-        question_lower = research_question.lower()
-        return any(keyword in question_lower for keyword in media_keywords)
+        return True
 
     async def generate_query(self, research_question: str) -> Optional[Dict]:
         """

@@ -1,685 +1,902 @@
-18:54:00 - LiteLLM:INFO: utils.py:1297 - Wrapper: Completed Call, calling success_handler
-[2025-10-20 18:54:00,346] [LiteLLM] INFO: Wrapper: Completed Call, calling success_handler
-[2025-10-20 18:54:00,347] [BooleanMonitor] INFO:   ✓ RELEVANT (9/10): 352d SOW integrates with NATO Allies during Ex Adamant Serpe...
-18:54:05 - LiteLLM:INFO: utils.py:1297 - Wrapper: Completed Call, calling success_handler
-[2025-10-20 18:54:05,260] [LiteLLM] INFO: Wrapper: Completed Call, calling success_handler
-[2025-10-20 18:54:05,260] [BooleanMonitor] INFO:   ✓ RELEVANT (9/10): Lt. Gen. Mohan and Maj. Gen. Donahue Visit 528th Sustainment...
-18:54:14 - LiteLLM:INFO: utils.py:1297 - Wrapper: Completed Call, calling success_handler
-[2025-10-20 18:54:14,188] [LiteLLM] INFO: Wrapper: Completed Call, calling success_handler
-[2025-10-20 18:54:14,189] [BooleanMonitor] INFO:   ✓ RELEVANT (9/10): Major General Lance G. Curtis Leads a Professional Developme...
-18:54:21 - LiteLLM:INFO: utils.py:1297 - Wrapper: Completed Call, calling success_handler
-[2025-10-20 18:54:21,543] [LiteLLM] INFO: Wrapper: Completed Call, calling success_handler
-[2025-10-20 18:54:21,544] [BooleanMonitor] INFO:   ✓ RELEVANT (8/10): Major General Lance G. Curtis Leads a Professional Developme...
-18:54:27 - LiteLLM:INFO: utils.py:1297 - Wrapper: Completed Call, calling success_handler
-[2025-10-20 18:54:27,602] [LiteLLM] INFO: Wrapper: Completed Call, calling success_handler
-[2025-10-20 18:54:27,603] [BooleanMonitor] INFO:   ✓ RELEVANT (9/10): Major General Lance G. Curtis Leads a Professional Developme...
-18:54:32 - LiteLLM:INFO: utils.py:1297 - Wrapper: Completed Call, calling success_handler
-[2025-10-20 18:54:32,649] [LiteLLM] INFO: Wrapper: Completed Call, calling success_handler
-[2025-10-20 18:54:32,650] [BooleanMonitor] INFO:   ✓ RELEVANT (9/10): Lt. Gen. Mohan and Maj. Gen. Donahue Visit 528th Sustainment...
-18:54:39 - LiteLLM:INFO: utils.py:1297 - Wrapper: Completed Call, calling success_handler
-[2025-10-20 18:54:39,204] [LiteLLM] INFO: Wrapper: Completed Call, calling success_handler
-[2025-10-20 18:54:39,205] [BooleanMonitor] INFO:   ✓ RELEVANT (9/10): Lt. Gen. Mohan and Maj. Gen. Donahue Visit 528th Sustainment...
-18:54:47 - LiteLLM:INFO: utils.py:1297 - Wrapper: Completed Call, calling success_handler
-[2025-10-20 18:54:47,446] [LiteLLM] INFO: Wrapper: Completed Call, calling success_handler
-[2025-10-20 18:54:47,446] [BooleanMonitor] INFO:   ✓ RELEVANT (8/10): Lt. Gen. Mohan and Maj. Gen. Donahue Visit 528th Sustainment...
-18:54:52 - LiteLLM:INFO: utils.py:1297 - Wrapper: Completed Call, calling success_handler
-[2025-10-20 18:54:52,552] [LiteLLM] INFO: Wrapper: Completed Call, calling success_handler
-[2025-10-20 18:54:52,553] [BooleanMonitor] INFO:   ✓ RELEVANT (9/10): 3rd SFG (A) Strengthens Ties with Tunisian Army...
-18:54:58 - LiteLLM:INFO: utils.py:1297 - Wrapper: Completed Call, calling success_handler
-[2025-10-20 18:54:58,484] [LiteLLM] INFO: Wrapper: Completed Call, calling success_handler
-[2025-10-20 18:54:58,485] [BooleanMonitor] INFO:   ✓ RELEVANT (8/10): 3rd SFG (A) Strengthens Ties with Tunisian Army...
-18:55:05 - LiteLLM:INFO: utils.py:1297 - Wrapper: Completed Call, calling success_handler
-[2025-10-20 18:55:05,500] [LiteLLM] INFO: Wrapper: Completed Call, calling success_handler
-[2025-10-20 18:55:05,501] [BooleanMonitor] INFO:   ✓ RELEVANT (9/10): 3rd SFG (A) Strengthens Ties with Tunisian Army...
-18:55:10 - LiteLLM:INFO: utils.py:1297 - Wrapper: Completed Call, calling success_handler
-[2025-10-20 18:55:10,120] [LiteLLM] INFO: Wrapper: Completed Call, calling success_handler
-[2025-10-20 18:55:10,121] [BooleanMonitor] INFO:   ✓ RELEVANT (9/10): 3rd SFG (A) Strengthens Ties with Tunisian Army...
-18:55:19 - LiteLLM:INFO: utils.py:1297 - Wrapper: Completed Call, calling success_handler
-[2025-10-20 18:55:19,380] [LiteLLM] INFO: Wrapper: Completed Call, calling success_handler
-[2025-10-20 18:55:19,381] [BooleanMonitor] INFO:   ✓ RELEVANT (9/10): 3rd SFG (A) Strengthens Ties with Tunisian Army...
-18:55:26 - LiteLLM:INFO: utils.py:1297 - Wrapper: Completed Call, calling success_handler
-[2025-10-20 18:55:26,333] [LiteLLM] INFO: Wrapper: Completed Call, calling success_handler
-[2025-10-20 18:55:26,334] [BooleanMonitor] INFO:   ✓ RELEVANT (9/10): 3rd SFG (A) Strengthens Ties with Tunisian Army...
-18:55:30 - LiteLLM:INFO: utils.py:1297 - Wrapper: Completed Call, calling success_handler
-[2025-10-20 18:55:30,568] [LiteLLM] INFO: Wrapper: Completed Call, calling success_handler
-[2025-10-20 18:55:30,569] [BooleanMonitor] INFO:   ✓ RELEVANT (8/10): 3rd SFG (A) Strengthens Ties with Tunisian Army...
-18:55:35 - LiteLLM:INFO: utils.py:1297 - Wrapper: Completed Call, calling success_handler
-[2025-10-20 18:55:35,061] [LiteLLM] INFO: Wrapper: Completed Call, calling success_handler
-[2025-10-20 18:55:35,062] [BooleanMonitor] INFO:   ✓ RELEVANT (9/10): 3rd SFG (A) Strengthens Ties with Tunisian Army...
-18:55:39 - LiteLLM:INFO: utils.py:1297 - Wrapper: Completed Call, calling success_handler
-[2025-10-20 18:55:39,932] [LiteLLM] INFO: Wrapper: Completed Call, calling success_handler
-[2025-10-20 18:55:39,934] [BooleanMonitor] INFO:   ✓ RELEVANT (8/10): 3rd SFG (A) Strengthens Ties with Tunisian Army...
-18:55:48 - LiteLLM:INFO: utils.py:1297 - Wrapper: Completed Call, calling success_handler
-[2025-10-20 18:55:48,242] [LiteLLM] INFO: Wrapper: Completed Call, calling success_handler
-[2025-10-20 18:55:48,243] [BooleanMonitor] INFO:   ✓ RELEVANT (9/10): 3rd SFG (A) Strengthens Ties with Tunisian Army...
-18:55:53 - LiteLLM:INFO: utils.py:1297 - Wrapper: Completed Call, calling success_handler
-[2025-10-20 18:55:53,263] [LiteLLM] INFO: Wrapper: Completed Call, calling success_handler
-[2025-10-20 18:55:53,264] [BooleanMonitor] INFO:   ✗ FILTERED (2/10): Drones – Lessons from Ukraine (IT)...
-18:55:57 - LiteLLM:INFO: utils.py:1297 - Wrapper: Completed Call, calling success_handler
-[2025-10-20 18:55:57,506] [LiteLLM] INFO: Wrapper: Completed Call, calling success_handler
-[2025-10-20 18:55:57,506] [BooleanMonitor] INFO:   ✗ FILTERED (2/10): Drones – Lessons from Ukraine (mastersubs)...
-18:56:02 - LiteLLM:INFO: utils.py:1297 - Wrapper: Completed Call, calling success_handler
-[2025-10-20 18:56:02,979] [LiteLLM] INFO: Wrapper: Completed Call, calling success_handler
-[2025-10-20 18:56:02,980] [BooleanMonitor] INFO:   ✗ FILTERED (0/10): Drones – Lessons from Ukraine (master)...
-18:56:11 - LiteLLM:INFO: utils.py:1297 - Wrapper: Completed Call, calling success_handler
-[2025-10-20 18:56:11,813] [LiteLLM] INFO: Wrapper: Completed Call, calling success_handler
-[2025-10-20 18:56:11,815] [BooleanMonitor] INFO:   ✗ FILTERED (3/10): Blackhawk soldiers trade blood and sweat for hearts and mind...
-18:56:20 - LiteLLM:INFO: utils.py:1297 - Wrapper: Completed Call, calling success_handler
-[2025-10-20 18:56:20,993] [LiteLLM] INFO: Wrapper: Completed Call, calling success_handler
-[2025-10-20 18:56:20,994] [BooleanMonitor] INFO:   ✗ FILTERED (0/10): JTF-Bravo conducts sling load ops...
-18:56:28 - LiteLLM:INFO: utils.py:1297 - Wrapper: Completed Call, calling success_handler
-[2025-10-20 18:56:28,667] [LiteLLM] INFO: Wrapper: Completed Call, calling success_handler
-[2025-10-20 18:56:28,668] [BooleanMonitor] INFO:   ✗ FILTERED (2/10): JTF-Bravo conducts sling load ops...
-18:56:34 - LiteLLM:INFO: utils.py:1297 - Wrapper: Completed Call, calling success_handler
-[2025-10-20 18:56:34,929] [LiteLLM] INFO: Wrapper: Completed Call, calling success_handler
-[2025-10-20 18:56:34,930] [BooleanMonitor] INFO:   ✗ FILTERED (1/10): JTF-Bravo conducts sling load ops...
-18:56:41 - LiteLLM:INFO: utils.py:1297 - Wrapper: Completed Call, calling success_handler
-[2025-10-20 18:56:41,479] [LiteLLM] INFO: Wrapper: Completed Call, calling success_handler
-[2025-10-20 18:56:41,480] [BooleanMonitor] INFO:   ✗ FILTERED (0/10): JTF-Bravo conducts sling load ops...
-18:56:45 - LiteLLM:INFO: utils.py:1297 - Wrapper: Completed Call, calling success_handler
-[2025-10-20 18:56:45,265] [LiteLLM] INFO: Wrapper: Completed Call, calling success_handler
-[2025-10-20 18:56:45,265] [BooleanMonitor] INFO:   ✗ FILTERED (1/10): JTF-Bravo conducts sling load ops...
-18:56:49 - LiteLLM:INFO: utils.py:1297 - Wrapper: Completed Call, calling success_handler
-[2025-10-20 18:56:49,956] [LiteLLM] INFO: Wrapper: Completed Call, calling success_handler
-[2025-10-20 18:56:49,957] [BooleanMonitor] INFO:   ✗ FILTERED (1/10): JTF-Bravo conducts sling load ops...
-18:56:57 - LiteLLM:INFO: utils.py:1297 - Wrapper: Completed Call, calling success_handler
-[2025-10-20 18:56:57,337] [LiteLLM] INFO: Wrapper: Completed Call, calling success_handler
-[2025-10-20 18:56:57,338] [BooleanMonitor] INFO:   ✗ FILTERED (0/10): JTF-Bravo conducts sling load ops...
-18:57:01 - LiteLLM:INFO: utils.py:1297 - Wrapper: Completed Call, calling success_handler
-[2025-10-20 18:57:01,884] [LiteLLM] INFO: Wrapper: Completed Call, calling success_handler
-[2025-10-20 18:57:01,885] [BooleanMonitor] INFO:   ✗ FILTERED (1/10): JTF-Bravo conducts sling load ops...
-18:57:07 - LiteLLM:INFO: utils.py:1297 - Wrapper: Completed Call, calling success_handler
-[2025-10-20 18:57:07,528] [LiteLLM] INFO: Wrapper: Completed Call, calling success_handler
-[2025-10-20 18:57:07,529] [BooleanMonitor] INFO:   ✗ FILTERED (2/10): JTF-Bravo conducts sling load ops...
-18:57:12 - LiteLLM:INFO: utils.py:1297 - Wrapper: Completed Call, calling success_handler
-[2025-10-20 18:57:12,357] [LiteLLM] INFO: Wrapper: Completed Call, calling success_handler
-[2025-10-20 18:57:12,358] [BooleanMonitor] INFO:   ✗ FILTERED (1/10): JTF-Bravo conducts sling load ops...
-18:57:18 - LiteLLM:INFO: utils.py:1297 - Wrapper: Completed Call, calling success_handler
-[2025-10-20 18:57:18,364] [LiteLLM] INFO: Wrapper: Completed Call, calling success_handler
-[2025-10-20 18:57:18,365] [BooleanMonitor] INFO:   ✗ FILTERED (1/10): 412th Civil Affairs Battalion Low-Cost Low-Altitude Training...
-18:57:26 - LiteLLM:INFO: utils.py:1297 - Wrapper: Completed Call, calling success_handler
-[2025-10-20 18:57:26,381] [LiteLLM] INFO: Wrapper: Completed Call, calling success_handler
-[2025-10-20 18:57:26,382] [BooleanMonitor] INFO:   ✗ FILTERED (0/10): USACAPOC(A) Holiday Edition...
-18:57:31 - LiteLLM:INFO: utils.py:1297 - Wrapper: Completed Call, calling success_handler
-[2025-10-20 18:57:31,350] [LiteLLM] INFO: Wrapper: Completed Call, calling success_handler
-[2025-10-20 18:57:31,351] [BooleanMonitor] INFO:   ✗ FILTERED (2/10): USACAPOC(A) Holiday Edition...
-18:57:36 - LiteLLM:INFO: utils.py:1297 - Wrapper: Completed Call, calling success_handler
-[2025-10-20 18:57:36,334] [LiteLLM] INFO: Wrapper: Completed Call, calling success_handler
-[2025-10-20 18:57:36,335] [BooleanMonitor] INFO:   ✗ FILTERED (2/10): USACAPOC(A) paratroopers team with Chilean jumpmaster for ju...
-18:57:42 - LiteLLM:INFO: utils.py:1297 - Wrapper: Completed Call, calling success_handler
-[2025-10-20 18:57:42,981] [LiteLLM] INFO: Wrapper: Completed Call, calling success_handler
-[2025-10-20 18:57:42,982] [BooleanMonitor] INFO:   ✗ FILTERED (0/10): USACAPOC(A) paratroopers team with Chilean jumpmaster for ju...
-18:57:47 - LiteLLM:INFO: utils.py:1297 - Wrapper: Completed Call, calling success_handler
-[2025-10-20 18:57:47,928] [LiteLLM] INFO: Wrapper: Completed Call, calling success_handler
-[2025-10-20 18:57:47,929] [BooleanMonitor] INFO:   ✗ FILTERED (1/10): USACAPOC(A) paratroopers team with Chilean jumpmaster for ju...
-18:57:55 - LiteLLM:INFO: utils.py:1297 - Wrapper: Completed Call, calling success_handler
-[2025-10-20 18:57:55,624] [LiteLLM] INFO: Wrapper: Completed Call, calling success_handler
-[2025-10-20 18:57:55,625] [BooleanMonitor] INFO:   ✗ FILTERED (0/10): USACAPOC(A) paratroopers team with Chilean jumpmaster for ju...
-18:58:03 - LiteLLM:INFO: utils.py:1297 - Wrapper: Completed Call, calling success_handler
-[2025-10-20 18:58:03,712] [LiteLLM] INFO: Wrapper: Completed Call, calling success_handler
-[2025-10-20 18:58:03,713] [BooleanMonitor] INFO:   ✗ FILTERED (0/10): USACAPOC(A) paratroopers team with Chilean jumpmaster for ju...
-18:58:10 - LiteLLM:INFO: utils.py:1297 - Wrapper: Completed Call, calling success_handler
-[2025-10-20 18:58:10,870] [LiteLLM] INFO: Wrapper: Completed Call, calling success_handler
-[2025-10-20 18:58:10,871] [BooleanMonitor] INFO:   ✗ FILTERED (1/10): USACAPOC(A) paratroopers team with Chilean jumpmaster for ju...
-18:58:16 - LiteLLM:INFO: utils.py:1297 - Wrapper: Completed Call, calling success_handler
-[2025-10-20 18:58:16,382] [LiteLLM] INFO: Wrapper: Completed Call, calling success_handler
-[2025-10-20 18:58:16,383] [BooleanMonitor] INFO:   ✗ FILTERED (0/10): USACAPOC(A) paratroopers team with Chilean jumpmaster for ju...
-18:58:20 - LiteLLM:INFO: utils.py:1297 - Wrapper: Completed Call, calling success_handler
-[2025-10-20 18:58:20,641] [LiteLLM] INFO: Wrapper: Completed Call, calling success_handler
-[2025-10-20 18:58:20,642] [BooleanMonitor] INFO:   ✗ FILTERED (0/10): BJACH hosts Army Combat Fitness Test, Pose running training...
-18:58:24 - LiteLLM:INFO: utils.py:1297 - Wrapper: Completed Call, calling success_handler
-[2025-10-20 18:58:24,508] [LiteLLM] INFO: Wrapper: Completed Call, calling success_handler
-[2025-10-20 18:58:24,509] [BooleanMonitor] INFO:   ✗ FILTERED (1/10): Helicopter hoist training...
-18:58:30 - LiteLLM:INFO: utils.py:1297 - Wrapper: Completed Call, calling success_handler
-[2025-10-20 18:58:30,437] [LiteLLM] INFO: Wrapper: Completed Call, calling success_handler
-[2025-10-20 18:58:30,439] [BooleanMonitor] INFO:   ✗ FILTERED (2/10): Route clearance...
-18:58:35 - LiteLLM:INFO: utils.py:1297 - Wrapper: Completed Call, calling success_handler
-[2025-10-20 18:58:35,083] [LiteLLM] INFO: Wrapper: Completed Call, calling success_handler
-[2025-10-20 18:58:35,084] [BooleanMonitor] INFO:   ✗ FILTERED (2/10): Route clearance...
-18:58:38 - LiteLLM:INFO: utils.py:1297 - Wrapper: Completed Call, calling success_handler
-[2025-10-20 18:58:38,307] [LiteLLM] INFO: Wrapper: Completed Call, calling success_handler
-[2025-10-20 18:58:38,308] [BooleanMonitor] INFO:   ✗ FILTERED (0/10): Eating dust...
-18:58:42 - LiteLLM:INFO: utils.py:1297 - Wrapper: Completed Call, calling success_handler
-[2025-10-20 18:58:42,303] [LiteLLM] INFO: Wrapper: Completed Call, calling success_handler
-[2025-10-20 18:58:42,304] [BooleanMonitor] INFO:   ✗ FILTERED (0/10): US ambassador to Afghanistan visits FOB Smart...
-18:58:48 - LiteLLM:INFO: utils.py:1297 - Wrapper: Completed Call, calling success_handler
-[2025-10-20 18:58:48,717] [LiteLLM] INFO: Wrapper: Completed Call, calling success_handler
-[2025-10-20 18:58:48,718] [BooleanMonitor] INFO:   ✗ FILTERED (0/10): US ambassador to Afghanistan visits FOB Smart...
-18:58:52 - LiteLLM:INFO: utils.py:1297 - Wrapper: Completed Call, calling success_handler
-[2025-10-20 18:58:52,001] [LiteLLM] INFO: Wrapper: Completed Call, calling success_handler
-[2025-10-20 18:58:52,002] [BooleanMonitor] INFO:   ✗ FILTERED (0/10): Range time for PRT bonds teammates...
-18:58:56 - LiteLLM:INFO: utils.py:1297 - Wrapper: Completed Call, calling success_handler
-[2025-10-20 18:58:56,280] [LiteLLM] INFO: Wrapper: Completed Call, calling success_handler
-[2025-10-20 18:58:56,281] [BooleanMonitor] INFO:   ✗ FILTERED (0/10): Drop complete...
-18:58:59 - LiteLLM:INFO: utils.py:1297 - Wrapper: Completed Call, calling success_handler
-[2025-10-20 18:58:59,802] [LiteLLM] INFO: Wrapper: Completed Call, calling success_handler
-[2025-10-20 18:58:59,803] [BooleanMonitor] INFO:   ✗ FILTERED (1/10): Special delivery...
-[2025-10-20 18:58:59,804] [BooleanMonitor] INFO: Relevance filtering complete: 52 relevant, 51 filtered out
-[2025-10-20 18:58:59,804] [BooleanMonitor] INFO: Sending alert for 52 new results to brianmills2718@gmail.com
-[2025-10-20 18:58:59,804] [BooleanMonitor] INFO: ALERT: 52 new results found
-[2025-10-20 18:58:59,804] [BooleanMonitor] INFO:   1. Vice Adm. Frank Bradley, Joint Special Operations Command commanding officer, attends a key leader engagement in the Philippines (Unknown)
-[2025-10-20 18:58:59,804] [BooleanMonitor] INFO:   2. Vice Adm. Frank Bradley, Joint Special Operations Command commanding officer, attends a key leader engagement in the Philippines (Unknown)
-[2025-10-20 18:58:59,804] [BooleanMonitor] INFO:   3. Dive Students Practice Covert Infiltration (Unknown)
-[2025-10-20 18:58:59,804] [BooleanMonitor] INFO:   4. Dive Students Practice Covert Infiltration (Unknown)
-[2025-10-20 18:58:59,804] [BooleanMonitor] INFO:   5. Dive Students Practice Covert Infiltration (Unknown)
-[2025-10-20 18:58:59,804] [BooleanMonitor] INFO:   ... and 47 more
-[2025-10-20 18:59:05,057] [BooleanMonitor] INFO: Email sent successfully to brianmills2718@gmail.com (authenticated)
-[2025-10-20 18:59:05,057] [BooleanMonitor] INFO: Saving 103 results to data/monitors/Special_Operations_&_Covert_Programs_results.json
-[2025-10-20 18:59:05,058] [BooleanMonitor] INFO: Results saved successfully
-[2025-10-20 18:59:05,058] [BooleanMonitor] INFO: Monitor run complete: 103 total results, 103 new
-[2025-10-20 18:59:05,058] [BooleanMonitor] INFO: Initializing BooleanMonitor from: data/monitors/configs/test_monitor.yaml
-[2025-10-20 18:59:05,058] [BooleanMonitor] INFO: Loading config from: data/monitors/configs/test_monitor.yaml
-[2025-10-20 18:59:05,058] [BooleanMonitor] INFO: Config loaded: Test Monitor
-[2025-10-20 18:59:05,058] [BooleanMonitor] INFO: Loading previous results from data/monitors/Test_Monitor_results.json
-[2025-10-20 18:59:05,058] [BooleanMonitor] INFO: Loaded 10 previous result hashes
-[2025-10-20 18:59:05,059] [BooleanMonitor] INFO: Monitor 'Test Monitor' initialized
-[2025-10-20 18:59:05,059] [BooleanMonitor] INFO:   Keywords: 1
-[2025-10-20 18:59:05,059] [BooleanMonitor] INFO:   Sources: ['dvids']
-[2025-10-20 18:59:05,059] [BooleanMonitor] INFO:   Previous results: 10
-[2025-10-20 18:59:05,059] [AdaptiveBooleanMonitor] INFO: Adaptive search DISABLED for 'Test Monitor' (using standard search)
-[2025-10-20 18:59:05,059] [MonitorScheduler] INFO: Running monitor: Test Monitor
-[2025-10-20 18:59:05,059] [BooleanMonitor] INFO: Starting monitor run: Test Monitor
-[2025-10-20 18:59:05,059] [AdaptiveBooleanMonitor] INFO: Using standard search (adaptive disabled)
-[2025-10-20 18:59:05,059] [BooleanMonitor] INFO: Executing PARALLEL search for 1 keywords across 1 sources
-[2025-10-20 18:59:05,060] [BooleanMonitor] INFO: Launching 1 parallel searches (1 keywords × 1 sources)
-18:59:10 - LiteLLM:INFO: utils.py:1297 - Wrapper: Completed Call, calling success_handler
-[2025-10-20 18:59:10,077] [LiteLLM] INFO: Wrapper: Completed Call, calling success_handler
-[2025-10-20 18:59:11,755] [BooleanMonitor] INFO:   DVIDS: Found 10 results for 'cybersecurity'
-[2025-10-20 18:59:11,755] [BooleanMonitor] INFO: Parallel search complete: 10 total results from 1 searches (0 errors)
-[2025-10-20 18:59:11,755] [BooleanMonitor] INFO: Deduplicating 10 results
-[2025-10-20 18:59:11,755] [BooleanMonitor] INFO: Deduplication complete: 10 unique results (removed 0 duplicates)
-[2025-10-20 18:59:11,755] [BooleanMonitor] INFO: Checking for new results (previous: 10, current: 10)
-[2025-10-20 18:59:11,755] [BooleanMonitor] INFO: Found 0 new results
-[2025-10-20 18:59:11,755] [BooleanMonitor] INFO: No new results found, skipping alert
-[2025-10-20 18:59:11,755] [BooleanMonitor] INFO: Saving 10 results to data/monitors/Test_Monitor_results.json
-[2025-10-20 18:59:11,755] [BooleanMonitor] INFO: Results saved successfully
-[2025-10-20 18:59:11,755] [BooleanMonitor] INFO: Monitor run complete: 10 total results, 0 new
-[2025-10-20 18:59:11,755] [BooleanMonitor] INFO: Initializing BooleanMonitor from: data/monitors/configs/oversight_whistleblower_monitor.yaml
-[2025-10-20 18:59:11,755] [BooleanMonitor] INFO: Loading config from: data/monitors/configs/oversight_whistleblower_monitor.yaml
-[2025-10-20 18:59:11,756] [BooleanMonitor] INFO: Config loaded: Inspector General & Oversight Reports
-[2025-10-20 18:59:11,757] [BooleanMonitor] INFO: No previous results found (first run)
-[2025-10-20 18:59:11,757] [BooleanMonitor] INFO: Monitor 'Inspector General & Oversight Reports' initialized
-[2025-10-20 18:59:11,757] [BooleanMonitor] INFO:   Keywords: 9
-[2025-10-20 18:59:11,757] [BooleanMonitor] INFO:   Sources: ['sam', 'dvids', 'usajobs']
-[2025-10-20 18:59:11,757] [BooleanMonitor] INFO:   Previous results: 0
-[2025-10-20 18:59:11,758] [AdaptiveBooleanMonitor] INFO: Adaptive search ENABLED for 'Inspector General & Oversight Reports'
-[2025-10-20 18:59:11,758] [AdaptiveBooleanMonitor] INFO:   Phase 1 results: 15
-[2025-10-20 18:59:11,758] [AdaptiveBooleanMonitor] INFO:   Max iterations: 2
-[2025-10-20 18:59:11,758] [AdaptiveBooleanMonitor] INFO:   Quality threshold: 0.6
-[2025-10-20 18:59:11,758] [MonitorScheduler] INFO: Running monitor: Inspector General & Oversight Reports
-[2025-10-20 18:59:11,758] [BooleanMonitor] INFO: Starting monitor run: Inspector General & Oversight Reports
-[2025-10-20 18:59:11,758] [AdaptiveBooleanMonitor] INFO: Using ADAPTIVE search for 9 keywords
-[2025-10-20 18:59:11,759] [AdaptiveBooleanMonitor] INFO: Loaded 3 database integrations
-[2025-10-20 18:59:11,759] [AdaptiveBooleanMonitor] INFO: 
-============================================================
-[2025-10-20 18:59:11,759] [AdaptiveBooleanMonitor] INFO: ADAPTIVE SEARCH: 'inspector general report'
-[2025-10-20 18:59:11,759] [AdaptiveBooleanMonitor] INFO: ============================================================
-[2025-10-20 18:59:11,759] [core.adaptive_search_engine] INFO: Starting adaptive search: 'inspector general report'
-[2025-10-20 18:59:11,759] [core.adaptive_search_engine] INFO: Phase 1: Broad search (15 results per database)
-🔍 Researching across 3 databases...
   Phase 1: Checking relevance...
     ⊘ SAM.gov: Not relevant, skipping
-    ⊘ DVIDS: Not relevant, skipping
     ⊘ USAJobs: Not relevant, skipping
-  ✓ 0/3 databases are relevant
-  No relevant databases found
-[2025-10-20 18:59:11,759] [core.adaptive_search_engine] INFO: Phase 1 complete: 0 results, extracted 0 entities
-[2025-10-20 18:59:11,759] [core.adaptive_search_engine] INFO: Iteration 1: Targeted searches for 0 entities
-[2025-10-20 18:59:11,759] [core.adaptive_search_engine] INFO: Iteration 1 complete: 0 new results, quality: 0.00
-[2025-10-20 18:59:11,759] [core.adaptive_search_engine] INFO: No new entities discovered, stopping
-[2025-10-20 18:59:11,759] [core.adaptive_search_engine] INFO: Adaptive search complete: 0 results, 2 phases, quality: 0.00
-[2025-10-20 18:59:11,759] [AdaptiveBooleanMonitor] INFO: 
-Adaptive search complete for 'inspector general report':
-[2025-10-20 18:59:11,759] [AdaptiveBooleanMonitor] INFO:   Total results: 0
-[2025-10-20 18:59:11,759] [AdaptiveBooleanMonitor] INFO:   Unique results: 0
-[2025-10-20 18:59:11,759] [AdaptiveBooleanMonitor] INFO:   Phases: 2
-[2025-10-20 18:59:11,759] [AdaptiveBooleanMonitor] INFO:   Entities discovered: 0
-[2025-10-20 18:59:11,760] [AdaptiveBooleanMonitor] INFO:   Quality: 0.00
-[2025-10-20 18:59:11,760] [AdaptiveBooleanMonitor] INFO:   Warnings: ['No results found']
-[2025-10-20 18:59:11,760] [AdaptiveBooleanMonitor] INFO: Collected 0 results for 'inspector general report'
-[2025-10-20 18:59:11,760] [AdaptiveBooleanMonitor] INFO: 
-============================================================
-[2025-10-20 18:59:11,760] [AdaptiveBooleanMonitor] INFO: ADAPTIVE SEARCH: 'OIG report'
-[2025-10-20 18:59:11,760] [AdaptiveBooleanMonitor] INFO: ============================================================
-[2025-10-20 18:59:11,760] [core.adaptive_search_engine] INFO: Starting adaptive search: 'OIG report'
-[2025-10-20 18:59:11,760] [core.adaptive_search_engine] INFO: Phase 1: Broad search (15 results per database)
-🔍 Researching across 3 databases...
-  Phase 1: Checking relevance...
-    ⊘ SAM.gov: Not relevant, skipping
-    ⊘ DVIDS: Not relevant, skipping
-    ⊘ USAJobs: Not relevant, skipping
-  ✓ 0/3 databases are relevant
-  No relevant databases found
-[2025-10-20 18:59:11,760] [core.adaptive_search_engine] INFO: Phase 1 complete: 0 results, extracted 0 entities
-[2025-10-20 18:59:11,760] [core.adaptive_search_engine] INFO: Iteration 1: Targeted searches for 0 entities
-[2025-10-20 18:59:11,760] [core.adaptive_search_engine] INFO: Iteration 1 complete: 0 new results, quality: 0.00
-[2025-10-20 18:59:11,760] [core.adaptive_search_engine] INFO: No new entities discovered, stopping
-[2025-10-20 18:59:11,760] [core.adaptive_search_engine] INFO: Adaptive search complete: 0 results, 2 phases, quality: 0.00
-[2025-10-20 18:59:11,760] [AdaptiveBooleanMonitor] INFO: 
-Adaptive search complete for 'OIG report':
-[2025-10-20 18:59:11,760] [AdaptiveBooleanMonitor] INFO:   Total results: 0
-[2025-10-20 18:59:11,760] [AdaptiveBooleanMonitor] INFO:   Unique results: 0
-[2025-10-20 18:59:11,760] [AdaptiveBooleanMonitor] INFO:   Phases: 2
-[2025-10-20 18:59:11,760] [AdaptiveBooleanMonitor] INFO:   Entities discovered: 0
-[2025-10-20 18:59:11,760] [AdaptiveBooleanMonitor] INFO:   Quality: 0.00
-[2025-10-20 18:59:11,760] [AdaptiveBooleanMonitor] INFO:   Warnings: ['No results found']
-[2025-10-20 18:59:11,760] [AdaptiveBooleanMonitor] INFO: Collected 0 results for 'OIG report'
-[2025-10-20 18:59:11,760] [AdaptiveBooleanMonitor] INFO: 
-============================================================
-[2025-10-20 18:59:11,760] [AdaptiveBooleanMonitor] INFO: ADAPTIVE SEARCH: 'congressional oversight'
-[2025-10-20 18:59:11,760] [AdaptiveBooleanMonitor] INFO: ============================================================
-[2025-10-20 18:59:11,761] [core.adaptive_search_engine] INFO: Starting adaptive search: 'congressional oversight'
-[2025-10-20 18:59:11,761] [core.adaptive_search_engine] INFO: Phase 1: Broad search (15 results per database)
-🔍 Researching across 3 databases...
-  Phase 1: Checking relevance...
-    ⊘ SAM.gov: Not relevant, skipping
-    ⊘ DVIDS: Not relevant, skipping
-    ⊘ USAJobs: Not relevant, skipping
-  ✓ 0/3 databases are relevant
-  No relevant databases found
-[2025-10-20 18:59:11,761] [core.adaptive_search_engine] INFO: Phase 1 complete: 0 results, extracted 0 entities
-[2025-10-20 18:59:11,761] [core.adaptive_search_engine] INFO: Iteration 1: Targeted searches for 0 entities
-[2025-10-20 18:59:11,761] [core.adaptive_search_engine] INFO: Iteration 1 complete: 0 new results, quality: 0.00
-[2025-10-20 18:59:11,761] [core.adaptive_search_engine] INFO: No new entities discovered, stopping
-[2025-10-20 18:59:11,761] [core.adaptive_search_engine] INFO: Adaptive search complete: 0 results, 2 phases, quality: 0.00
-[2025-10-20 18:59:11,761] [AdaptiveBooleanMonitor] INFO: 
-Adaptive search complete for 'congressional oversight':
-[2025-10-20 18:59:11,761] [AdaptiveBooleanMonitor] INFO:   Total results: 0
-[2025-10-20 18:59:11,761] [AdaptiveBooleanMonitor] INFO:   Unique results: 0
-[2025-10-20 18:59:11,761] [AdaptiveBooleanMonitor] INFO:   Phases: 2
-[2025-10-20 18:59:11,761] [AdaptiveBooleanMonitor] INFO:   Entities discovered: 0
-[2025-10-20 18:59:11,761] [AdaptiveBooleanMonitor] INFO:   Quality: 0.00
-[2025-10-20 18:59:11,761] [AdaptiveBooleanMonitor] INFO:   Warnings: ['No results found']
-[2025-10-20 18:59:11,761] [AdaptiveBooleanMonitor] INFO: Collected 0 results for 'congressional oversight'
-[2025-10-20 18:59:11,761] [AdaptiveBooleanMonitor] INFO: 
-============================================================
-[2025-10-20 18:59:11,761] [AdaptiveBooleanMonitor] INFO: ADAPTIVE SEARCH: 'whistleblower complaint'
-[2025-10-20 18:59:11,761] [AdaptiveBooleanMonitor] INFO: ============================================================
-[2025-10-20 18:59:11,761] [core.adaptive_search_engine] INFO: Starting adaptive search: 'whistleblower complaint'
-[2025-10-20 18:59:11,761] [core.adaptive_search_engine] INFO: Phase 1: Broad search (15 results per database)
-🔍 Researching across 3 databases...
-  Phase 1: Checking relevance...
-    ⊘ SAM.gov: Not relevant, skipping
-    ⊘ DVIDS: Not relevant, skipping
-    ⊘ USAJobs: Not relevant, skipping
-  ✓ 0/3 databases are relevant
-  No relevant databases found
-[2025-10-20 18:59:11,761] [core.adaptive_search_engine] INFO: Phase 1 complete: 0 results, extracted 0 entities
-[2025-10-20 18:59:11,761] [core.adaptive_search_engine] INFO: Iteration 1: Targeted searches for 0 entities
-[2025-10-20 18:59:11,762] [core.adaptive_search_engine] INFO: Iteration 1 complete: 0 new results, quality: 0.00
-[2025-10-20 18:59:11,762] [core.adaptive_search_engine] INFO: No new entities discovered, stopping
-[2025-10-20 18:59:11,762] [core.adaptive_search_engine] INFO: Adaptive search complete: 0 results, 2 phases, quality: 0.00
-[2025-10-20 18:59:11,762] [AdaptiveBooleanMonitor] INFO: 
-Adaptive search complete for 'whistleblower complaint':
-[2025-10-20 18:59:11,762] [AdaptiveBooleanMonitor] INFO:   Total results: 0
-[2025-10-20 18:59:11,762] [AdaptiveBooleanMonitor] INFO:   Unique results: 0
-[2025-10-20 18:59:11,762] [AdaptiveBooleanMonitor] INFO:   Phases: 2
-[2025-10-20 18:59:11,762] [AdaptiveBooleanMonitor] INFO:   Entities discovered: 0
-[2025-10-20 18:59:11,762] [AdaptiveBooleanMonitor] INFO:   Quality: 0.00
-[2025-10-20 18:59:11,762] [AdaptiveBooleanMonitor] INFO:   Warnings: ['No results found']
-[2025-10-20 18:59:11,762] [AdaptiveBooleanMonitor] INFO: Collected 0 results for 'whistleblower complaint'
-[2025-10-20 18:59:11,762] [AdaptiveBooleanMonitor] INFO: 
-============================================================
-[2025-10-20 18:59:11,762] [AdaptiveBooleanMonitor] INFO: ADAPTIVE SEARCH: 'government accountability'
-[2025-10-20 18:59:11,762] [AdaptiveBooleanMonitor] INFO: ============================================================
-[2025-10-20 18:59:11,762] [core.adaptive_search_engine] INFO: Starting adaptive search: 'government accountability'
-[2025-10-20 18:59:11,762] [core.adaptive_search_engine] INFO: Phase 1: Broad search (15 results per database)
-🔍 Researching across 3 databases...
-  Phase 1: Checking relevance...
-    ⊘ DVIDS: Not relevant, skipping
-  ✓ 2/3 databases are relevant
+  ✓ 1/3 databases are relevant
   Phase 2: Generating queries...
-18:59:16 - LiteLLM:INFO: utils.py:1297 - Wrapper: Completed Call, calling success_handler
-[2025-10-20 18:59:16,320] [LiteLLM] INFO: Wrapper: Completed Call, calling success_handler
-18:59:16 - LiteLLM:INFO: utils.py:1297 - Wrapper: Completed Call, calling success_handler
-[2025-10-20 18:59:16,977] [LiteLLM] INFO: Wrapper: Completed Call, calling success_handler
-    ⊘ SAM.gov: Not relevant after analysis, skipping
-    ⊘ USAJobs: Not relevant after analysis, skipping
+19:59:26 - LiteLLM:INFO: utils.py:1297 - Wrapper: Completed Call, calling success_handler
+[2025-10-20 19:59:26,101] [LiteLLM] INFO: Wrapper: Completed Call, calling success_handler
+    ✓ DVIDS: Query generated
+  ✓ Generated 1 queries
+  Phase 3: Executing searches...
+    ✓ DVIDS: 6 results (1053ms)
+✓ Completed in 13.1s
+19:59:38 - LiteLLM:INFO: utils.py:1297 - Wrapper: Completed Call, calling success_handler
+[2025-10-20 19:59:38,342] [LiteLLM] INFO: Wrapper: Completed Call, calling success_handler
+[2025-10-20 19:59:38,342] [core.adaptive_search_engine] INFO: Extracted 5 entities: ['Vice Adm. Frank Bradley', 'Joint Special Operations Command (JSOC)', 'U.S. Special Operations Command (USSOCOM)', 'Armed Forces of the Philippines (AFP)', 'Key Leader Engagement (KLE)']
+[2025-10-20 19:59:38,343] [core.adaptive_search_engine] INFO: Phase 1 complete: 6 results, extracted 5 entities
+[2025-10-20 19:59:38,343] [core.adaptive_search_engine] INFO: Iteration 1: Targeted searches for 3 entities
+[2025-10-20 19:59:38,343] [core.adaptive_search_engine] INFO:   Searching: Joint Special Operations Command AND Vice Adm. Frank Bradley
+🔍 Researching across 3 databases...
+  Phase 1: Checking relevance...
+    ⊘ SAM.gov: Not relevant, skipping
+    ⊘ USAJobs: Not relevant, skipping
+  ✓ 1/3 databases are relevant
+  Phase 2: Generating queries...
+19:59:45 - LiteLLM:INFO: utils.py:1297 - Wrapper: Completed Call, calling success_handler
+[2025-10-20 19:59:45,976] [LiteLLM] INFO: Wrapper: Completed Call, calling success_handler
+    ✓ DVIDS: Query generated
+  ✓ Generated 1 queries
+  Phase 3: Executing searches...
+    ✓ DVIDS: 2 results (419ms)
+✓ Completed in 8.1s
+[2025-10-20 19:59:46,397] [core.adaptive_search_engine] INFO:   Searching: Joint Special Operations Command AND Joint Special Operations Command (JSOC)
+🔍 Researching across 3 databases...
+  Phase 1: Checking relevance...
+    ⊘ SAM.gov: Not relevant, skipping
+    ⊘ USAJobs: Not relevant, skipping
+  ✓ 1/3 databases are relevant
+  Phase 2: Generating queries...
+19:59:50 - LiteLLM:INFO: utils.py:1297 - Wrapper: Completed Call, calling success_handler
+[2025-10-20 19:59:50,187] [LiteLLM] INFO: Wrapper: Completed Call, calling success_handler
+    ✓ DVIDS: Query generated
+  ✓ Generated 1 queries
+  Phase 3: Executing searches...
+    ✓ DVIDS: 6 results (1545ms)
+✓ Completed in 5.3s
+[2025-10-20 19:59:51,734] [core.adaptive_search_engine] INFO:   Searching: Joint Special Operations Command AND U.S. Special Operations Command (USSOCOM)
+🔍 Researching across 3 databases...
+  Phase 1: Checking relevance...
+    ⊘ SAM.gov: Not relevant, skipping
+    ⊘ USAJobs: Not relevant, skipping
+  ✓ 1/3 databases are relevant
+  Phase 2: Generating queries...
+19:59:59 - LiteLLM:INFO: utils.py:1297 - Wrapper: Completed Call, calling success_handler
+[2025-10-20 19:59:59,991] [LiteLLM] INFO: Wrapper: Completed Call, calling success_handler
+    ✓ DVIDS: Query generated
+  ✓ Generated 1 queries
+  Phase 3: Executing searches...
+    ✓ DVIDS: 2 results (670ms)
+✓ Completed in 8.9s
+[2025-10-20 20:00:00,663] [core.adaptive_search_engine] INFO: Iteration 1 complete: 0 new results, quality: 0.31
+[2025-10-20 20:00:00,663] [core.adaptive_search_engine] INFO: No new entities discovered, stopping
+[2025-10-20 20:00:00,663] [core.adaptive_search_engine] INFO: Adaptive search complete: 6 results, 2 phases, quality: 0.31
+[2025-10-20 20:00:00,663] [AdaptiveBooleanMonitor] INFO: 
+Adaptive search complete for 'Joint Special Operations Command':
+[2025-10-20 20:00:00,663] [AdaptiveBooleanMonitor] INFO:   Total results: 6
+[2025-10-20 20:00:00,664] [AdaptiveBooleanMonitor] INFO:   Unique results: 6
+[2025-10-20 20:00:00,664] [AdaptiveBooleanMonitor] INFO:   Phases: 2
+[2025-10-20 20:00:00,664] [AdaptiveBooleanMonitor] INFO:   Entities discovered: 5
+[2025-10-20 20:00:00,664] [AdaptiveBooleanMonitor] INFO:   Quality: 0.31
+[2025-10-20 20:00:00,664] [AdaptiveBooleanMonitor] INFO:   Warnings: ['None dominates results (100%)', 'Low source diversity (17%)']
+[2025-10-20 20:00:00,664] [AdaptiveBooleanMonitor] INFO:   Entities: ['Armed Forces of the Philippines (AFP)', 'Joint Special Operations Command (JSOC)', 'Vice Adm. Frank Bradley', 'Key Leader Engagement (KLE)', 'U.S. Special Operations Command (USSOCOM)']...
+[2025-10-20 20:00:00,664] [AdaptiveBooleanMonitor] INFO: Collected 6 results for 'Joint Special Operations Command'
+[2025-10-20 20:00:00,664] [AdaptiveBooleanMonitor] INFO: 
+============================================================
+[2025-10-20 20:00:00,664] [AdaptiveBooleanMonitor] INFO: ADAPTIVE SEARCH: 'JSOC'
+[2025-10-20 20:00:00,664] [AdaptiveBooleanMonitor] INFO: ============================================================
+[2025-10-20 20:00:00,664] [core.adaptive_search_engine] INFO: Starting adaptive search: 'JSOC'
+[2025-10-20 20:00:00,664] [core.adaptive_search_engine] INFO: Phase 1: Broad search (15 results per database)
+🔍 Researching across 3 databases...
+  Phase 1: Checking relevance...
+    ⊘ DVIDS: Not relevant, skipping
+    ⊘ SAM.gov: Not relevant, skipping
+    ⊘ USAJobs: Not relevant, skipping
+  ✓ 0/3 databases are relevant
+  No relevant databases found
+[2025-10-20 20:00:00,664] [core.adaptive_search_engine] INFO: Phase 1 complete: 0 results, extracted 0 entities
+[2025-10-20 20:00:00,664] [core.adaptive_search_engine] INFO: Iteration 1: Targeted searches for 0 entities
+[2025-10-20 20:00:00,664] [core.adaptive_search_engine] INFO: Iteration 1 complete: 0 new results, quality: 0.00
+[2025-10-20 20:00:00,664] [core.adaptive_search_engine] INFO: No new entities discovered, stopping
+[2025-10-20 20:00:00,664] [core.adaptive_search_engine] INFO: Adaptive search complete: 0 results, 2 phases, quality: 0.00
+[2025-10-20 20:00:00,664] [AdaptiveBooleanMonitor] INFO: 
+Adaptive search complete for 'JSOC':
+[2025-10-20 20:00:00,664] [AdaptiveBooleanMonitor] INFO:   Total results: 0
+[2025-10-20 20:00:00,664] [AdaptiveBooleanMonitor] INFO:   Unique results: 0
+[2025-10-20 20:00:00,664] [AdaptiveBooleanMonitor] INFO:   Phases: 2
+[2025-10-20 20:00:00,664] [AdaptiveBooleanMonitor] INFO:   Entities discovered: 0
+[2025-10-20 20:00:00,664] [AdaptiveBooleanMonitor] INFO:   Quality: 0.00
+[2025-10-20 20:00:00,664] [AdaptiveBooleanMonitor] INFO:   Warnings: ['No results found']
+[2025-10-20 20:00:00,665] [AdaptiveBooleanMonitor] INFO: Collected 0 results for 'JSOC'
+[2025-10-20 20:00:00,665] [AdaptiveBooleanMonitor] INFO: 
+============================================================
+[2025-10-20 20:00:00,665] [AdaptiveBooleanMonitor] INFO: ADAPTIVE SEARCH: 'covert operation'
+[2025-10-20 20:00:00,665] [AdaptiveBooleanMonitor] INFO: ============================================================
+[2025-10-20 20:00:00,665] [core.adaptive_search_engine] INFO: Starting adaptive search: 'covert operation'
+[2025-10-20 20:00:00,665] [core.adaptive_search_engine] INFO: Phase 1: Broad search (15 results per database)
+🔍 Researching across 3 databases...
+  Phase 1: Checking relevance...
+    ⊘ SAM.gov: Not relevant, skipping
+    ⊘ USAJobs: Not relevant, skipping
+  ✓ 1/3 databases are relevant
+  Phase 2: Generating queries...
+20:00:06 - LiteLLM:INFO: utils.py:1297 - Wrapper: Completed Call, calling success_handler
+[2025-10-20 20:00:06,262] [LiteLLM] INFO: Wrapper: Completed Call, calling success_handler
+    ✓ DVIDS: Query generated
+  ✓ Generated 1 queries
+  Phase 3: Executing searches...
+    ✓ DVIDS: 474 results (4115ms)
+✓ Completed in 9.7s
+20:00:32 - LiteLLM:INFO: utils.py:1297 - Wrapper: Completed Call, calling success_handler
+[2025-10-20 20:00:32,621] [LiteLLM] INFO: Wrapper: Completed Call, calling success_handler
+[2025-10-20 20:00:32,622] [core.adaptive_search_engine] INFO: Extracted 5 entities: ['10th Special Forces Group (Airborne)', 'U.S. Army Special Operations Command (USASOC)', '75th Ranger Regiment', 'AeroVironment Switchblade (loitering munition)', 'Title 50 covert action authority']
+[2025-10-20 20:00:32,623] [core.adaptive_search_engine] INFO: Phase 1 complete: 15 results, extracted 5 entities
+[2025-10-20 20:00:32,623] [core.adaptive_search_engine] INFO: Iteration 1: Targeted searches for 3 entities
+[2025-10-20 20:00:32,623] [core.adaptive_search_engine] INFO:   Searching: covert operation AND 10th Special Forces Group (Airborne)
+🔍 Researching across 3 databases...
+  Phase 1: Checking relevance...
+    ⊘ SAM.gov: Not relevant, skipping
+    ⊘ USAJobs: Not relevant, skipping
+  ✓ 1/3 databases are relevant
+  Phase 2: Generating queries...
+20:00:41 - LiteLLM:INFO: utils.py:1297 - Wrapper: Completed Call, calling success_handler
+[2025-10-20 20:00:41,007] [LiteLLM] INFO: Wrapper: Completed Call, calling success_handler
+    ✓ DVIDS: Query generated
+  ✓ Generated 1 queries
+  Phase 3: Executing searches...
+    ✓ DVIDS: 3 results (621ms)
+✓ Completed in 9.0s
+[2025-10-20 20:00:41,629] [core.adaptive_search_engine] INFO:   Searching: covert operation AND U.S. Army Special Operations Command (USASOC)
+🔍 Researching across 3 databases...
+  Phase 1: Checking relevance...
+    ⊘ SAM.gov: Not relevant, skipping
+    ⊘ USAJobs: Not relevant, skipping
+  ✓ 1/3 databases are relevant
+  Phase 2: Generating queries...
+20:00:45 - LiteLLM:INFO: utils.py:1297 - Wrapper: Completed Call, calling success_handler
+[2025-10-20 20:00:45,650] [LiteLLM] INFO: Wrapper: Completed Call, calling success_handler
+    ✓ DVIDS: Query generated
+  ✓ Generated 1 queries
+  Phase 3: Executing searches...
+    ✓ DVIDS: 0 results (990ms)
+✓ Completed in 5.0s
+[2025-10-20 20:00:46,643] [core.adaptive_search_engine] INFO:   Searching: covert operation AND 75th Ranger Regiment
+🔍 Researching across 3 databases...
+  Phase 1: Checking relevance...
+    ⊘ SAM.gov: Not relevant, skipping
+    ⊘ USAJobs: Not relevant, skipping
+  ✓ 1/3 databases are relevant
+  Phase 2: Generating queries...
+20:00:50 - LiteLLM:INFO: utils.py:1297 - Wrapper: Completed Call, calling success_handler
+[2025-10-20 20:00:50,866] [LiteLLM] INFO: Wrapper: Completed Call, calling success_handler
+    ✓ DVIDS: Query generated
+  ✓ Generated 1 queries
+  Phase 3: Executing searches...
+    ✓ DVIDS: 0 results (956ms)
+✓ Completed in 5.2s
+[2025-10-20 20:00:51,824] [core.adaptive_search_engine] INFO: Iteration 1 complete: 0 new results, quality: 0.40
+[2025-10-20 20:00:51,824] [core.adaptive_search_engine] INFO: No new entities discovered, stopping
+[2025-10-20 20:00:51,824] [core.adaptive_search_engine] INFO: Adaptive search complete: 15 results, 2 phases, quality: 0.40
+[2025-10-20 20:00:51,824] [AdaptiveBooleanMonitor] INFO: 
+Adaptive search complete for 'covert operation':
+[2025-10-20 20:00:51,825] [AdaptiveBooleanMonitor] INFO:   Total results: 15
+[2025-10-20 20:00:51,825] [AdaptiveBooleanMonitor] INFO:   Unique results: 15
+[2025-10-20 20:00:51,825] [AdaptiveBooleanMonitor] INFO:   Phases: 2
+[2025-10-20 20:00:51,825] [AdaptiveBooleanMonitor] INFO:   Entities discovered: 5
+[2025-10-20 20:00:51,825] [AdaptiveBooleanMonitor] INFO:   Quality: 0.40
+[2025-10-20 20:00:51,825] [AdaptiveBooleanMonitor] INFO:   Warnings: ['None dominates results (100%)', 'Low source diversity (7%)']
+[2025-10-20 20:00:51,825] [AdaptiveBooleanMonitor] INFO:   Entities: ['Title 50 covert action authority', '75th Ranger Regiment', 'U.S. Army Special Operations Command (USASOC)', '10th Special Forces Group (Airborne)', 'AeroVironment Switchblade (loitering munition)']...
+[2025-10-20 20:00:51,825] [AdaptiveBooleanMonitor] INFO: Collected 15 results for 'covert operation'
+[2025-10-20 20:00:51,825] [AdaptiveBooleanMonitor] INFO: 
+============================================================
+[2025-10-20 20:00:51,825] [AdaptiveBooleanMonitor] INFO: ADAPTIVE SEARCH: 'classified program'
+[2025-10-20 20:00:51,825] [AdaptiveBooleanMonitor] INFO: ============================================================
+[2025-10-20 20:00:51,825] [core.adaptive_search_engine] INFO: Starting adaptive search: 'classified program'
+[2025-10-20 20:00:51,825] [core.adaptive_search_engine] INFO: Phase 1: Broad search (15 results per database)
+🔍 Researching across 3 databases...
+  Phase 1: Checking relevance...
+    ⊘ DVIDS: Not relevant, skipping
+    ⊘ SAM.gov: Not relevant, skipping
+    ⊘ USAJobs: Not relevant, skipping
+  ✓ 0/3 databases are relevant
+  No relevant databases found
+[2025-10-20 20:00:51,825] [core.adaptive_search_engine] INFO: Phase 1 complete: 0 results, extracted 0 entities
+[2025-10-20 20:00:51,825] [core.adaptive_search_engine] INFO: Iteration 1: Targeted searches for 0 entities
+[2025-10-20 20:00:51,825] [core.adaptive_search_engine] INFO: Iteration 1 complete: 0 new results, quality: 0.00
+[2025-10-20 20:00:51,825] [core.adaptive_search_engine] INFO: No new entities discovered, stopping
+[2025-10-20 20:00:51,825] [core.adaptive_search_engine] INFO: Adaptive search complete: 0 results, 2 phases, quality: 0.00
+[2025-10-20 20:00:51,825] [AdaptiveBooleanMonitor] INFO: 
+Adaptive search complete for 'classified program':
+[2025-10-20 20:00:51,825] [AdaptiveBooleanMonitor] INFO:   Total results: 0
+[2025-10-20 20:00:51,825] [AdaptiveBooleanMonitor] INFO:   Unique results: 0
+[2025-10-20 20:00:51,825] [AdaptiveBooleanMonitor] INFO:   Phases: 2
+[2025-10-20 20:00:51,825] [AdaptiveBooleanMonitor] INFO:   Entities discovered: 0
+[2025-10-20 20:00:51,826] [AdaptiveBooleanMonitor] INFO:   Quality: 0.00
+[2025-10-20 20:00:51,826] [AdaptiveBooleanMonitor] INFO:   Warnings: ['No results found']
+[2025-10-20 20:00:51,826] [AdaptiveBooleanMonitor] INFO: Collected 0 results for 'classified program'
+[2025-10-20 20:00:51,826] [AdaptiveBooleanMonitor] INFO: 
+============================================================
+[2025-10-20 20:00:51,826] [AdaptiveBooleanMonitor] INFO: ADAPTIVE SEARCH: 'special operations forces'
+[2025-10-20 20:00:51,826] [AdaptiveBooleanMonitor] INFO: ============================================================
+[2025-10-20 20:00:51,826] [core.adaptive_search_engine] INFO: Starting adaptive search: 'special operations forces'
+[2025-10-20 20:00:51,826] [core.adaptive_search_engine] INFO: Phase 1: Broad search (15 results per database)
+🔍 Researching across 3 databases...
+  Phase 1: Checking relevance...
+    ⊘ SAM.gov: Not relevant, skipping
+    ⊘ USAJobs: Not relevant, skipping
+  ✓ 1/3 databases are relevant
+  Phase 2: Generating queries...
+20:00:58 - LiteLLM:INFO: utils.py:1297 - Wrapper: Completed Call, calling success_handler
+[2025-10-20 20:00:58,464] [LiteLLM] INFO: Wrapper: Completed Call, calling success_handler
+    ✓ DVIDS: Query generated
+  ✓ Generated 1 queries
+  Phase 3: Executing searches...
+    ✓ DVIDS: 1000 results (5635ms)
+✓ Completed in 12.3s
+20:01:12 - LiteLLM:INFO: utils.py:1297 - Wrapper: Completed Call, calling success_handler
+[2025-10-20 20:01:12,924] [LiteLLM] INFO: Wrapper: Completed Call, calling success_handler
+[2025-10-20 20:01:12,925] [core.adaptive_search_engine] INFO: Extracted 5 entities: ['United States Special Operations Command (USSOCOM)', 'Exercise Adamant Serpent 26', 'NATO Special Operations Headquarters (NSHQ)', 'USSOCOM change of command ceremony', 'Department of Defense Arctic Strategy']
+[2025-10-20 20:01:12,925] [core.adaptive_search_engine] INFO: Phase 1 complete: 15 results, extracted 5 entities
+[2025-10-20 20:01:12,925] [core.adaptive_search_engine] INFO: Iteration 1: Targeted searches for 3 entities
+[2025-10-20 20:01:12,925] [core.adaptive_search_engine] INFO:   Searching: special operations forces AND United States Special Operations Command (USSOCOM)
+🔍 Researching across 3 databases...
+  Phase 1: Checking relevance...
+    ⊘ SAM.gov: Not relevant, skipping
+    ⊘ USAJobs: Not relevant, skipping
+  ✓ 1/3 databases are relevant
+  Phase 2: Generating queries...
+20:01:16 - LiteLLM:INFO: utils.py:1297 - Wrapper: Completed Call, calling success_handler
+[2025-10-20 20:01:16,647] [LiteLLM] INFO: Wrapper: Completed Call, calling success_handler
+    ✓ DVIDS: Query generated
+  ✓ Generated 1 queries
+  Phase 3: Executing searches...
+    ✓ DVIDS: 1000 results (1075ms)
+✓ Completed in 4.8s
+[2025-10-20 20:01:17,725] [core.adaptive_search_engine] INFO:   Searching: special operations forces AND Exercise Adamant Serpent 26
+🔍 Researching across 3 databases...
+  Phase 1: Checking relevance...
+    ⊘ SAM.gov: Not relevant, skipping
+    ⊘ USAJobs: Not relevant, skipping
+  ✓ 1/3 databases are relevant
+  Phase 2: Generating queries...
+20:01:22 - LiteLLM:INFO: utils.py:1297 - Wrapper: Completed Call, calling success_handler
+[2025-10-20 20:01:22,059] [LiteLLM] INFO: Wrapper: Completed Call, calling success_handler
+    ✓ DVIDS: Query generated
+  ✓ Generated 1 queries
+  Phase 3: Executing searches...
+    ✓ DVIDS: 27 results (1572ms)
+✓ Completed in 5.9s
+[2025-10-20 20:01:23,633] [core.adaptive_search_engine] INFO:   Searching: special operations forces AND NATO Special Operations Headquarters (NSHQ)
+🔍 Researching across 3 databases...
+  Phase 1: Checking relevance...
+    ⊘ SAM.gov: Not relevant, skipping
+    ⊘ USAJobs: Not relevant, skipping
+  ✓ 1/3 databases are relevant
+  Phase 2: Generating queries...
+20:01:28 - LiteLLM:INFO: utils.py:1297 - Wrapper: Completed Call, calling success_handler
+[2025-10-20 20:01:28,565] [LiteLLM] INFO: Wrapper: Completed Call, calling success_handler
+    ✓ DVIDS: Query generated
+  ✓ Generated 1 queries
+  Phase 3: Executing searches...
+    ✓ DVIDS: 112 results (2516ms)
+✓ Completed in 7.4s
+20:01:43 - LiteLLM:INFO: utils.py:1297 - Wrapper: Completed Call, calling success_handler
+[2025-10-20 20:01:43,360] [LiteLLM] INFO: Wrapper: Completed Call, calling success_handler
+[2025-10-20 20:01:43,361] [core.adaptive_search_engine] INFO: Extracted 5 entities: ['U.S. Special Operations Command (USSOCOM)', 'Joint Special Operations Command (JSOC)', 'Special Operations Command Headquarters — MacDill Air Force Base', 'Commander, U.S. Special Operations Command (SOCOM Commander)', 'Title 10 U.S. Code — Combatant commands (authorities for SOCOM)']
+[2025-10-20 20:01:43,362] [core.adaptive_search_engine] INFO: Iteration 1 complete: 26 new results, quality: 0.55
+[2025-10-20 20:01:43,362] [core.adaptive_search_engine] INFO: Iteration 2: Targeted searches for 3 entities
+[2025-10-20 20:01:43,362] [core.adaptive_search_engine] INFO:   Searching: special operations forces AND U.S. Special Operations Command (USSOCOM)
+🔍 Researching across 3 databases...
+  Phase 1: Checking relevance...
+    ⊘ SAM.gov: Not relevant, skipping
+    ⊘ USAJobs: Not relevant, skipping
+  ✓ 1/3 databases are relevant
+  Phase 2: Generating queries...
+20:01:47 - LiteLLM:INFO: utils.py:1297 - Wrapper: Completed Call, calling success_handler
+[2025-10-20 20:01:47,596] [LiteLLM] INFO: Wrapper: Completed Call, calling success_handler
+    ✓ DVIDS: Query generated
+  ✓ Generated 1 queries
+  Phase 3: Executing searches...
+    ✓ DVIDS: 1000 results (1752ms)
+✓ Completed in 6.0s
+[2025-10-20 20:01:49,349] [core.adaptive_search_engine] INFO:   Searching: special operations forces AND Joint Special Operations Command (JSOC)
+🔍 Researching across 3 databases...
+  Phase 1: Checking relevance...
+    ⊘ SAM.gov: Not relevant, skipping
+    ⊘ USAJobs: Not relevant, skipping
+  ✓ 1/3 databases are relevant
+  Phase 2: Generating queries...
+20:01:54 - LiteLLM:INFO: utils.py:1297 - Wrapper: Completed Call, calling success_handler
+[2025-10-20 20:01:54,048] [LiteLLM] INFO: Wrapper: Completed Call, calling success_handler
+    ✓ DVIDS: Query generated
+  ✓ Generated 1 queries
+  Phase 3: Executing searches...
+    ✓ DVIDS: 5 results (928ms)
+✓ Completed in 5.6s
+[2025-10-20 20:01:54,981] [core.adaptive_search_engine] INFO:   Searching: special operations forces AND Special Operations Command Headquarters — MacDill Air Force Base
+🔍 Researching across 3 databases...
+  Phase 1: Checking relevance...
+    ⊘ SAM.gov: Not relevant, skipping
+    ⊘ USAJobs: Not relevant, skipping
+  ✓ 1/3 databases are relevant
+  Phase 2: Generating queries...
+20:02:03 - LiteLLM:INFO: utils.py:1297 - Wrapper: Completed Call, calling success_handler
+[2025-10-20 20:02:03,600] [LiteLLM] INFO: Wrapper: Completed Call, calling success_handler
+    ✓ DVIDS: Query generated
+  ✓ Generated 1 queries
+  Phase 3: Executing searches...
+    ✓ DVIDS: 1000 results (336ms)
+✓ Completed in 9.0s
+20:02:16 - LiteLLM:INFO: utils.py:1297 - Wrapper: Completed Call, calling success_handler
+[2025-10-20 20:02:16,243] [LiteLLM] INFO: Wrapper: Completed Call, calling success_handler
+[2025-10-20 20:02:16,244] [core.adaptive_search_engine] INFO: Extracted 4 entities: ['Vice Adm. Frank Bradley', 'Joint Special Operations Command (JSOC)', 'Operation Toy Drop', 'Philippines key leader engagement']
+[2025-10-20 20:02:16,244] [core.adaptive_search_engine] INFO: Iteration 2 complete: 9 new results, quality: 0.55
+[2025-10-20 20:02:16,244] [core.adaptive_search_engine] INFO: Max iterations reached (2)
+[2025-10-20 20:02:16,244] [core.adaptive_search_engine] INFO: Adaptive search complete: 50 results, 3 phases, quality: 0.55
+[2025-10-20 20:02:16,244] [AdaptiveBooleanMonitor] INFO: 
+Adaptive search complete for 'special operations forces':
+[2025-10-20 20:02:16,244] [AdaptiveBooleanMonitor] INFO:   Total results: 50
+[2025-10-20 20:02:16,244] [AdaptiveBooleanMonitor] INFO:   Unique results: 50
+[2025-10-20 20:02:16,244] [AdaptiveBooleanMonitor] INFO:   Phases: 3
+[2025-10-20 20:02:16,244] [AdaptiveBooleanMonitor] INFO:   Entities discovered: 13
+[2025-10-20 20:02:16,244] [AdaptiveBooleanMonitor] INFO:   Quality: 0.55
+[2025-10-20 20:02:16,244] [AdaptiveBooleanMonitor] INFO:   Warnings: ['None dominates results (100%)', 'Low source diversity (2%)']
+[2025-10-20 20:02:16,244] [AdaptiveBooleanMonitor] INFO:   Entities: ['Special Operations Command Headquarters — MacDill Air Force Base', 'Philippines key leader engagement', 'Joint Special Operations Command (JSOC)', 'Exercise Adamant Serpent 26', 'Operation Toy Drop']...
+[2025-10-20 20:02:16,245] [AdaptiveBooleanMonitor] INFO: Collected 50 results for 'special operations forces'
+[2025-10-20 20:02:16,245] [AdaptiveBooleanMonitor] INFO: 
+============================================================
+[2025-10-20 20:02:16,245] [AdaptiveBooleanMonitor] INFO: ADAPTIVE SEARCH: 'clandestine operation'
+[2025-10-20 20:02:16,245] [AdaptiveBooleanMonitor] INFO: ============================================================
+[2025-10-20 20:02:16,245] [core.adaptive_search_engine] INFO: Starting adaptive search: 'clandestine operation'
+[2025-10-20 20:02:16,245] [core.adaptive_search_engine] INFO: Phase 1: Broad search (15 results per database)
+🔍 Researching across 3 databases...
+  Phase 1: Checking relevance...
+    ⊘ SAM.gov: Not relevant, skipping
+    ⊘ USAJobs: Not relevant, skipping
+  ✓ 1/3 databases are relevant
+  Phase 2: Generating queries...
+20:02:22 - LiteLLM:INFO: utils.py:1297 - Wrapper: Completed Call, calling success_handler
+[2025-10-20 20:02:22,826] [LiteLLM] INFO: Wrapper: Completed Call, calling success_handler
+    ✓ DVIDS: Query generated
+  ✓ Generated 1 queries
+  Phase 3: Executing searches...
+    ✓ DVIDS: 0 results (844ms)
+✓ Completed in 7.4s
+[2025-10-20 20:02:23,673] [core.adaptive_search_engine] INFO: Phase 1 complete: 0 results, extracted 0 entities
+[2025-10-20 20:02:23,673] [core.adaptive_search_engine] INFO: Iteration 1: Targeted searches for 0 entities
+[2025-10-20 20:02:23,673] [core.adaptive_search_engine] INFO: Iteration 1 complete: 0 new results, quality: 0.00
+[2025-10-20 20:02:23,673] [core.adaptive_search_engine] INFO: No new entities discovered, stopping
+[2025-10-20 20:02:23,673] [core.adaptive_search_engine] INFO: Adaptive search complete: 0 results, 2 phases, quality: 0.00
+[2025-10-20 20:02:23,673] [AdaptiveBooleanMonitor] INFO: 
+Adaptive search complete for 'clandestine operation':
+[2025-10-20 20:02:23,673] [AdaptiveBooleanMonitor] INFO:   Total results: 0
+[2025-10-20 20:02:23,673] [AdaptiveBooleanMonitor] INFO:   Unique results: 0
+[2025-10-20 20:02:23,673] [AdaptiveBooleanMonitor] INFO:   Phases: 2
+[2025-10-20 20:02:23,673] [AdaptiveBooleanMonitor] INFO:   Entities discovered: 0
+[2025-10-20 20:02:23,673] [AdaptiveBooleanMonitor] INFO:   Quality: 0.00
+[2025-10-20 20:02:23,673] [AdaptiveBooleanMonitor] INFO:   Warnings: ['No results found']
+[2025-10-20 20:02:23,673] [AdaptiveBooleanMonitor] INFO: Collected 0 results for 'clandestine operation'
+[2025-10-20 20:02:23,673] [AdaptiveBooleanMonitor] INFO: 
+============================================================
+[2025-10-20 20:02:23,673] [AdaptiveBooleanMonitor] INFO: ADAPTIVE SEARCH: 'black operation'
+[2025-10-20 20:02:23,673] [AdaptiveBooleanMonitor] INFO: ============================================================
+[2025-10-20 20:02:23,673] [core.adaptive_search_engine] INFO: Starting adaptive search: 'black operation'
+[2025-10-20 20:02:23,673] [core.adaptive_search_engine] INFO: Phase 1: Broad search (15 results per database)
+🔍 Researching across 3 databases...
+  Phase 1: Checking relevance...
+    ⊘ SAM.gov: Not relevant, skipping
+    ⊘ USAJobs: Not relevant, skipping
+  ✓ 1/3 databases are relevant
+  Phase 2: Generating queries...
+20:02:29 - LiteLLM:INFO: utils.py:1297 - Wrapper: Completed Call, calling success_handler
+[2025-10-20 20:02:29,363] [LiteLLM] INFO: Wrapper: Completed Call, calling success_handler
+    ✓ DVIDS: Query generated
+  ✓ Generated 1 queries
+  Phase 3: Executing searches...
+    ✓ DVIDS: 1000 results (1277ms)
+✓ Completed in 7.0s
+20:02:50 - LiteLLM:INFO: utils.py:1297 - Wrapper: Completed Call, calling success_handler
+[2025-10-20 20:02:50,249] [LiteLLM] INFO: Wrapper: Completed Call, calling success_handler
+[2025-10-20 20:02:50,250] [core.adaptive_search_engine] INFO: Extracted 3 entities: ['AKOM', 'Operation Halong Response', 'recovery operations']
+[2025-10-20 20:02:50,250] [core.adaptive_search_engine] INFO: Phase 1 complete: 15 results, extracted 3 entities
+[2025-10-20 20:02:50,250] [core.adaptive_search_engine] INFO: Iteration 1: Targeted searches for 3 entities
+[2025-10-20 20:02:50,250] [core.adaptive_search_engine] INFO:   Searching: black operation AND AKOM
+🔍 Researching across 3 databases...
+  Phase 1: Checking relevance...
+    ⊘ SAM.gov: Not relevant, skipping
+    ⊘ USAJobs: Not relevant, skipping
+  ✓ 1/3 databases are relevant
+  Phase 2: Generating queries...
+20:02:57 - LiteLLM:INFO: utils.py:1297 - Wrapper: Completed Call, calling success_handler
+[2025-10-20 20:02:57,338] [LiteLLM] INFO: Wrapper: Completed Call, calling success_handler
+    ✓ DVIDS: Query generated
+  ✓ Generated 1 queries
+  Phase 3: Executing searches...
+    ✓ DVIDS: 10 results (1611ms)
+✓ Completed in 8.7s
+[2025-10-20 20:02:58,954] [core.adaptive_search_engine] INFO:   Searching: black operation AND Operation Halong Response
+🔍 Researching across 3 databases...
+  Phase 1: Checking relevance...
+    ⊘ SAM.gov: Not relevant, skipping
+    ⊘ USAJobs: Not relevant, skipping
+  ✓ 1/3 databases are relevant
+  Phase 2: Generating queries...
+20:03:02 - LiteLLM:INFO: utils.py:1297 - Wrapper: Completed Call, calling success_handler
+[2025-10-20 20:03:02,898] [LiteLLM] INFO: Wrapper: Completed Call, calling success_handler
+    ✓ DVIDS: Query generated
+  ✓ Generated 1 queries
+  Phase 3: Executing searches...
+    ✓ DVIDS: 10 results (1233ms)
+✓ Completed in 5.2s
+[2025-10-20 20:03:04,132] [core.adaptive_search_engine] INFO:   Searching: black operation AND recovery operations
+🔍 Researching across 3 databases...
+  Phase 1: Checking relevance...
+    ⊘ SAM.gov: Not relevant, skipping
+    ⊘ USAJobs: Not relevant, skipping
+  ✓ 1/3 databases are relevant
+  Phase 2: Generating queries...
+20:03:14 - LiteLLM:INFO: utils.py:1297 - Wrapper: Completed Call, calling success_handler
+[2025-10-20 20:03:14,328] [LiteLLM] INFO: Wrapper: Completed Call, calling success_handler
+    ✓ DVIDS: Query generated
+  ✓ Generated 1 queries
+  Phase 3: Executing searches...
+    ✓ DVIDS: 88 results (1236ms)
+✓ Completed in 11.4s
+20:03:24 - LiteLLM:INFO: utils.py:1297 - Wrapper: Completed Call, calling success_handler
+[2025-10-20 20:03:24,652] [LiteLLM] INFO: Wrapper: Completed Call, calling success_handler
+[2025-10-20 20:03:24,653] [core.adaptive_search_engine] INFO: Extracted 5 entities: ['Naval Special Warfare Command (NSWC)', 'United States Navy SEALs', 'Naval Diving and Salvage Training Center (NDSTC)', 'SEAL Delivery Vehicle (SDV) Teams (SDVT-1/SDVT-2)', 'United States Special Operations Command (USSOCOM)']
+[2025-10-20 20:03:24,653] [core.adaptive_search_engine] INFO: Iteration 1 complete: 10 new results, quality: 0.50
+[2025-10-20 20:03:24,653] [core.adaptive_search_engine] INFO: Iteration 2: Targeted searches for 3 entities
+[2025-10-20 20:03:24,653] [core.adaptive_search_engine] INFO:   Searching: black operation AND Naval Special Warfare Command (NSWC)
+🔍 Researching across 3 databases...
+  Phase 1: Checking relevance...
+    ⊘ SAM.gov: Not relevant, skipping
+    ⊘ USAJobs: Not relevant, skipping
+  ✓ 1/3 databases are relevant
+  Phase 2: Generating queries...
+20:03:31 - LiteLLM:INFO: utils.py:1297 - Wrapper: Completed Call, calling success_handler
+[2025-10-20 20:03:31,873] [LiteLLM] INFO: Wrapper: Completed Call, calling success_handler
+    ✓ DVIDS: Query generated
+  ✓ Generated 1 queries
+  Phase 3: Executing searches...
+    ✓ DVIDS: 2 results (810ms)
+✓ Completed in 8.0s
+[2025-10-20 20:03:32,685] [core.adaptive_search_engine] INFO:   Searching: black operation AND United States Navy SEALs
+🔍 Researching across 3 databases...
+  Phase 1: Checking relevance...
+    ⊘ SAM.gov: Not relevant, skipping
+    ⊘ USAJobs: Not relevant, skipping
+  ✓ 1/3 databases are relevant
+  Phase 2: Generating queries...
+20:03:39 - LiteLLM:INFO: utils.py:1297 - Wrapper: Completed Call, calling success_handler
+[2025-10-20 20:03:39,689] [LiteLLM] INFO: Wrapper: Completed Call, calling success_handler
+    ✓ DVIDS: Query generated
+  ✓ Generated 1 queries
+  Phase 3: Executing searches...
+    ✓ DVIDS: 0 results (1384ms)
+✓ Completed in 8.4s
+[2025-10-20 20:03:41,075] [core.adaptive_search_engine] INFO:   Searching: black operation AND Naval Diving and Salvage Training Center (NDSTC)
+🔍 Researching across 3 databases...
+  Phase 1: Checking relevance...
+    ⊘ SAM.gov: Not relevant, skipping
+    ⊘ USAJobs: Not relevant, skipping
+  ✓ 1/3 databases are relevant
+  Phase 2: Generating queries...
+20:03:53 - LiteLLM:INFO: utils.py:1297 - Wrapper: Completed Call, calling success_handler
+[2025-10-20 20:03:53,456] [LiteLLM] INFO: Wrapper: Completed Call, calling success_handler
+    ✓ DVIDS: Query generated
+  ✓ Generated 1 queries
+  Phase 3: Executing searches...
+    ✓ DVIDS: 0 results (616ms)
+✓ Completed in 13.0s
+20:04:06 - LiteLLM:INFO: utils.py:1297 - Wrapper: Completed Call, calling success_handler
+[2025-10-20 20:04:06,812] [LiteLLM] INFO: Wrapper: Completed Call, calling success_handler
+[2025-10-20 20:04:06,820] [core.adaptive_search_engine] INFO: Extracted 5 entities: ['Naval Surface Warfare Center Panama City Division (NSWC PCD)', 'UxV controllers (Unmanned X-Vehicle controllers)', 'Unmanned Surface Vehicles (USV) programs', 'Removal of Debris Fouling Propeller and Rudder Demonstration', 'Naval Sea Systems Command (NAVSEA)']
+[2025-10-20 20:04:06,820] [core.adaptive_search_engine] INFO: Iteration 2 complete: 2 new results, quality: 0.52
+[2025-10-20 20:04:06,820] [core.adaptive_search_engine] INFO: Max iterations reached (2)
+[2025-10-20 20:04:06,820] [core.adaptive_search_engine] INFO: Adaptive search complete: 27 results, 3 phases, quality: 0.52
+[2025-10-20 20:04:06,820] [AdaptiveBooleanMonitor] INFO: 
+Adaptive search complete for 'black operation':
+[2025-10-20 20:04:06,820] [AdaptiveBooleanMonitor] INFO:   Total results: 27
+[2025-10-20 20:04:06,820] [AdaptiveBooleanMonitor] INFO:   Unique results: 27
+[2025-10-20 20:04:06,820] [AdaptiveBooleanMonitor] INFO:   Phases: 3
+[2025-10-20 20:04:06,820] [AdaptiveBooleanMonitor] INFO:   Entities discovered: 13
+[2025-10-20 20:04:06,820] [AdaptiveBooleanMonitor] INFO:   Quality: 0.52
+[2025-10-20 20:04:06,820] [AdaptiveBooleanMonitor] INFO:   Warnings: ['None dominates results (100%)', 'Low source diversity (4%)']
+[2025-10-20 20:04:06,820] [AdaptiveBooleanMonitor] INFO:   Entities: ['Naval Surface Warfare Center Panama City Division (NSWC PCD)', 'Naval Diving and Salvage Training Center (NDSTC)', 'Unmanned Surface Vehicles (USV) programs', 'AKOM', 'UxV controllers (Unmanned X-Vehicle controllers)']...
+[2025-10-20 20:04:06,820] [AdaptiveBooleanMonitor] INFO: Collected 27 results for 'black operation'
+[2025-10-20 20:04:06,821] [AdaptiveBooleanMonitor] INFO: 
+============================================================
+[2025-10-20 20:04:06,821] [AdaptiveBooleanMonitor] INFO: ADAPTIVE SEARCH: 'compartmented program'
+[2025-10-20 20:04:06,821] [AdaptiveBooleanMonitor] INFO: ============================================================
+[2025-10-20 20:04:06,821] [core.adaptive_search_engine] INFO: Starting adaptive search: 'compartmented program'
+[2025-10-20 20:04:06,821] [core.adaptive_search_engine] INFO: Phase 1: Broad search (15 results per database)
+🔍 Researching across 3 databases...
+  Phase 1: Checking relevance...
+    ⊘ DVIDS: Not relevant, skipping
+    ⊘ SAM.gov: Not relevant, skipping
+    ⊘ USAJobs: Not relevant, skipping
+  ✓ 0/3 databases are relevant
+  No relevant databases found
+[2025-10-20 20:04:06,822] [core.adaptive_search_engine] INFO: Phase 1 complete: 0 results, extracted 0 entities
+[2025-10-20 20:04:06,822] [core.adaptive_search_engine] INFO: Iteration 1: Targeted searches for 0 entities
+[2025-10-20 20:04:06,822] [core.adaptive_search_engine] INFO: Iteration 1 complete: 0 new results, quality: 0.00
+[2025-10-20 20:04:06,822] [core.adaptive_search_engine] INFO: No new entities discovered, stopping
+[2025-10-20 20:04:06,822] [core.adaptive_search_engine] INFO: Adaptive search complete: 0 results, 2 phases, quality: 0.00
+[2025-10-20 20:04:06,822] [AdaptiveBooleanMonitor] INFO: 
+Adaptive search complete for 'compartmented program':
+[2025-10-20 20:04:06,822] [AdaptiveBooleanMonitor] INFO:   Total results: 0
+[2025-10-20 20:04:06,822] [AdaptiveBooleanMonitor] INFO:   Unique results: 0
+[2025-10-20 20:04:06,822] [AdaptiveBooleanMonitor] INFO:   Phases: 2
+[2025-10-20 20:04:06,822] [AdaptiveBooleanMonitor] INFO:   Entities discovered: 0
+[2025-10-20 20:04:06,822] [AdaptiveBooleanMonitor] INFO:   Quality: 0.00
+[2025-10-20 20:04:06,822] [AdaptiveBooleanMonitor] INFO:   Warnings: ['No results found']
+[2025-10-20 20:04:06,822] [AdaptiveBooleanMonitor] INFO: Collected 0 results for 'compartmented program'
+[2025-10-20 20:04:06,822] [AdaptiveBooleanMonitor] INFO: 
+============================================================
+[2025-10-20 20:04:06,822] [AdaptiveBooleanMonitor] INFO: ADAPTIVE SEARCH: 'special access program'
+[2025-10-20 20:04:06,822] [AdaptiveBooleanMonitor] INFO: ============================================================
+[2025-10-20 20:04:06,822] [core.adaptive_search_engine] INFO: Starting adaptive search: 'special access program'
+[2025-10-20 20:04:06,823] [core.adaptive_search_engine] INFO: Phase 1: Broad search (15 results per database)
+🔍 Researching across 3 databases...
+  Phase 1: Checking relevance...
+    ⊘ DVIDS: Not relevant, skipping
+    ⊘ SAM.gov: Not relevant, skipping
+    ⊘ USAJobs: Not relevant, skipping
+  ✓ 0/3 databases are relevant
+  No relevant databases found
+[2025-10-20 20:04:06,823] [core.adaptive_search_engine] INFO: Phase 1 complete: 0 results, extracted 0 entities
+[2025-10-20 20:04:06,823] [core.adaptive_search_engine] INFO: Iteration 1: Targeted searches for 0 entities
+[2025-10-20 20:04:06,823] [core.adaptive_search_engine] INFO: Iteration 1 complete: 0 new results, quality: 0.00
+[2025-10-20 20:04:06,823] [core.adaptive_search_engine] INFO: No new entities discovered, stopping
+[2025-10-20 20:04:06,823] [core.adaptive_search_engine] INFO: Adaptive search complete: 0 results, 2 phases, quality: 0.00
+[2025-10-20 20:04:06,823] [AdaptiveBooleanMonitor] INFO: 
+Adaptive search complete for 'special access program':
+[2025-10-20 20:04:06,823] [AdaptiveBooleanMonitor] INFO:   Total results: 0
+[2025-10-20 20:04:06,823] [AdaptiveBooleanMonitor] INFO:   Unique results: 0
+[2025-10-20 20:04:06,823] [AdaptiveBooleanMonitor] INFO:   Phases: 2
+[2025-10-20 20:04:06,823] [AdaptiveBooleanMonitor] INFO:   Entities discovered: 0
+[2025-10-20 20:04:06,823] [AdaptiveBooleanMonitor] INFO:   Quality: 0.00
+[2025-10-20 20:04:06,823] [AdaptiveBooleanMonitor] INFO:   Warnings: ['No results found']
+[2025-10-20 20:04:06,823] [AdaptiveBooleanMonitor] INFO: Collected 0 results for 'special access program'
+[2025-10-20 20:04:06,823] [AdaptiveBooleanMonitor] INFO: 
+============================================================
+[2025-10-20 20:04:06,823] [AdaptiveBooleanMonitor] INFO: ADAPTIVE SEARCH SUMMARY
+[2025-10-20 20:04:06,823] [AdaptiveBooleanMonitor] INFO: ============================================================
+[2025-10-20 20:04:06,823] [AdaptiveBooleanMonitor] INFO: Keywords searched: 9
+[2025-10-20 20:04:06,823] [AdaptiveBooleanMonitor] INFO: Total results: 98
+[2025-10-20 20:04:06,824] [AdaptiveBooleanMonitor] INFO: Unique entities discovered: 32
+[2025-10-20 20:04:06,824] [BooleanMonitor] INFO: Deduplicating 98 results
+[2025-10-20 20:04:06,829] [BooleanMonitor] INFO: Deduplication complete: 95 unique results (removed 3 duplicates)
+[2025-10-20 20:04:06,829] [BooleanMonitor] INFO: Checking for new results (previous: 103, current: 95)
+[2025-10-20 20:04:06,830] [BooleanMonitor] INFO: Found 53 new results
+[2025-10-20 20:04:06,830] [BooleanMonitor] INFO: Filtering 53 results by LLM relevance
+20:04:12 - LiteLLM:INFO: utils.py:1297 - Wrapper: Completed Call, calling success_handler
+[2025-10-20 20:04:12,092] [LiteLLM] INFO: Wrapper: Completed Call, calling success_handler
+[2025-10-20 20:04:12,350] [BooleanMonitor] INFO:   ✗ FILTERED (0/10): Coalition Forces Set Up Communications For Howitzer Sling Lo...
+20:04:17 - LiteLLM:INFO: utils.py:1297 - Wrapper: Completed Call, calling success_handler
+[2025-10-20 20:04:17,795] [LiteLLM] INFO: Wrapper: Completed Call, calling success_handler
+[2025-10-20 20:04:26,655] [BooleanMonitor] INFO:   ✗ FILTERED (0/10): Coalition Forces Set Up Communications For Howitzer Sling Lo...
+20:04:39 - LiteLLM:INFO: utils.py:1297 - Wrapper: Completed Call, calling success_handler
+[2025-10-20 20:04:39,960] [LiteLLM] INFO: Wrapper: Completed Call, calling success_handler
+[2025-10-20 20:04:39,971] [BooleanMonitor] INFO:   ✗ FILTERED (1/10): 116th ASOS refines communications for future fights...
+20:04:46 - LiteLLM:INFO: utils.py:1297 - Wrapper: Completed Call, calling success_handler
+[2025-10-20 20:04:46,735] [LiteLLM] INFO: Wrapper: Completed Call, calling success_handler
+[2025-10-20 20:04:46,874] [BooleanMonitor] INFO:   ✗ FILTERED (0/10): Secretary Austin hosts Hall of Heroes Induction Ceremony...
+20:05:01 - LiteLLM:INFO: utils.py:1297 - Wrapper: Completed Call, calling success_handler
+[2025-10-20 20:05:01,976] [LiteLLM] INFO: Wrapper: Completed Call, calling success_handler
+[2025-10-20 20:05:02,233] [BooleanMonitor] INFO:   ✗ FILTERED (0/10): Secretary Austin hosts Hall of Heroes Induction Ceremony...
+20:05:11 - LiteLLM:INFO: utils.py:1297 - Wrapper: Completed Call, calling success_handler
+[2025-10-20 20:05:11,504] [LiteLLM] INFO: Wrapper: Completed Call, calling success_handler
+[2025-10-20 20:05:12,019] [BooleanMonitor] INFO:   ✗ FILTERED (0/10): Secretary Austin hosts Hall of Heroes Induction Ceremony...
+20:05:57 - LiteLLM:INFO: utils.py:1297 - Wrapper: Completed Call, calling success_handler
+[2025-10-20 20:05:57,750] [LiteLLM] INFO: Wrapper: Completed Call, calling success_handler
+[2025-10-20 20:06:18,469] [BooleanMonitor] INFO:   ✗ FILTERED (0/10): Secretary Austin hosts Hall of Heroes Induction Ceremony...
+20:07:13 - LiteLLM:INFO: utils.py:1297 - Wrapper: Completed Call, calling success_handler
+[2025-10-20 20:07:13,539] [LiteLLM] INFO: Wrapper: Completed Call, calling success_handler
+[2025-10-20 20:07:29,524] [BooleanMonitor] INFO:   ✓ RELEVANT (10/10): U.S. Special Operations Forces and NATO Allies Prepare for A...
+20:08:05 - LiteLLM:INFO: utils.py:1297 - Wrapper: Completed Call, calling success_handler
+[2025-10-20 20:08:05,809] [LiteLLM] INFO: Wrapper: Completed Call, calling success_handler
+[2025-10-20 20:08:11,782] [BooleanMonitor] INFO:   ✓ RELEVANT (8/10): USSOCOM Change of Command Ceremony...
+20:08:19 - LiteLLM:INFO: utils.py:1297 - Wrapper: Completed Call, calling success_handler
+[2025-10-20 20:08:19,745] [LiteLLM] INFO: Wrapper: Completed Call, calling success_handler
+[2025-10-20 20:08:19,748] [BooleanMonitor] INFO:   ✓ RELEVANT (9/10): USSOCOM Change of Command Ceremony...
+20:08:23 - LiteLLM:INFO: utils.py:1297 - Wrapper: Completed Call, calling success_handler
+[2025-10-20 20:08:23,526] [LiteLLM] INFO: Wrapper: Completed Call, calling success_handler
+[2025-10-20 20:08:23,528] [BooleanMonitor] INFO:   ✓ RELEVANT (9/10): USSOCOM Change of Command Ceremony...
+20:08:28 - LiteLLM:INFO: utils.py:1297 - Wrapper: Completed Call, calling success_handler
+[2025-10-20 20:08:28,560] [LiteLLM] INFO: Wrapper: Completed Call, calling success_handler
+[2025-10-20 20:08:28,561] [BooleanMonitor] INFO:   ✓ RELEVANT (9/10): USSOCOM Change of Command Ceremony...
+20:08:33 - LiteLLM:INFO: utils.py:1297 - Wrapper: Completed Call, calling success_handler
+[2025-10-20 20:08:33,005] [LiteLLM] INFO: Wrapper: Completed Call, calling success_handler
+[2025-10-20 20:08:33,006] [BooleanMonitor] INFO:   ✓ RELEVANT (9/10): Tunisian SOF Delegation Visits Fort Bragg, Strengthens U.S.-...
+20:08:37 - LiteLLM:INFO: utils.py:1297 - Wrapper: Completed Call, calling success_handler
+[2025-10-20 20:08:37,305] [LiteLLM] INFO: Wrapper: Completed Call, calling success_handler
+[2025-10-20 20:08:37,307] [BooleanMonitor] INFO:   ✓ RELEVANT (10/10): German Navy Special Operations Forces LFX...
+20:08:43 - LiteLLM:INFO: utils.py:1297 - Wrapper: Completed Call, calling success_handler
+[2025-10-20 20:08:43,003] [LiteLLM] INFO: Wrapper: Completed Call, calling success_handler
+[2025-10-20 20:08:43,004] [BooleanMonitor] INFO:   ✓ RELEVANT (7/10): Title: Special Operations Command Headquarters Command Run...
+20:08:52 - LiteLLM:INFO: utils.py:1297 - Wrapper: Completed Call, calling success_handler
+[2025-10-20 20:08:52,659] [LiteLLM] INFO: Wrapper: Completed Call, calling success_handler
+[2025-10-20 20:08:52,660] [BooleanMonitor] INFO:   ✓ RELEVANT (7/10): Special Operations Command Headquarters Command Run...
+20:08:59 - LiteLLM:INFO: utils.py:1297 - Wrapper: Completed Call, calling success_handler
+[2025-10-20 20:08:59,981] [LiteLLM] INFO: Wrapper: Completed Call, calling success_handler
+[2025-10-20 20:08:59,982] [BooleanMonitor] INFO:   ✓ RELEVANT (6/10): Special Operations Command Headquarters Command Run...
+20:09:05 - LiteLLM:INFO: utils.py:1297 - Wrapper: Completed Call, calling success_handler
+[2025-10-20 20:09:05,153] [LiteLLM] INFO: Wrapper: Completed Call, calling success_handler
+[2025-10-20 20:09:05,154] [BooleanMonitor] INFO:   ✓ RELEVANT (7/10): Title: Special Operations Command Headquarters Command Run...
+20:09:09 - LiteLLM:INFO: utils.py:1297 - Wrapper: Completed Call, calling success_handler
+[2025-10-20 20:09:09,870] [LiteLLM] INFO: Wrapper: Completed Call, calling success_handler
+[2025-10-20 20:09:09,871] [BooleanMonitor] INFO:   ✓ RELEVANT (8/10): SOCOM commemorates 9/11 with remembrance ceremony...
+20:09:14 - LiteLLM:INFO: utils.py:1297 - Wrapper: Completed Call, calling success_handler
+[2025-10-20 20:09:14,745] [LiteLLM] INFO: Wrapper: Completed Call, calling success_handler
+[2025-10-20 20:09:14,746] [BooleanMonitor] INFO:   ✓ RELEVANT (9/10): SOCOM commemorates 9/11 with remembrance ceremony...
+20:09:18 - LiteLLM:INFO: utils.py:1297 - Wrapper: Completed Call, calling success_handler
+[2025-10-20 20:09:18,941] [LiteLLM] INFO: Wrapper: Completed Call, calling success_handler
+[2025-10-20 20:09:18,942] [BooleanMonitor] INFO:   ✓ RELEVANT (8/10): Special Operations Forces Training...
+20:09:26 - LiteLLM:INFO: utils.py:1297 - Wrapper: Completed Call, calling success_handler
+[2025-10-20 20:09:26,437] [LiteLLM] INFO: Wrapper: Completed Call, calling success_handler
+[2025-10-20 20:09:26,438] [BooleanMonitor] INFO:   ✓ RELEVANT (9/10): US Airmen role-play in a Special Operations Forces Training...
+20:09:32 - LiteLLM:INFO: utils.py:1297 - Wrapper: Completed Call, calling success_handler
+[2025-10-20 20:09:32,434] [LiteLLM] INFO: Wrapper: Completed Call, calling success_handler
+[2025-10-20 20:09:32,435] [BooleanMonitor] INFO:   ✓ RELEVANT (9/10): Technical exploitation operation NATO SOF campus...
+20:09:35 - LiteLLM:INFO: utils.py:1297 - Wrapper: Completed Call, calling success_handler
+[2025-10-20 20:09:35,806] [LiteLLM] INFO: Wrapper: Completed Call, calling success_handler
+[2025-10-20 20:09:35,807] [BooleanMonitor] INFO:   ✓ RELEVANT (7/10): Technical exploitation operation NATO SOF campus...
+20:09:43 - LiteLLM:INFO: utils.py:1297 - Wrapper: Completed Call, calling success_handler
+[2025-10-20 20:09:43,135] [LiteLLM] INFO: Wrapper: Completed Call, calling success_handler
+[2025-10-20 20:09:43,136] [BooleanMonitor] INFO:   ✓ RELEVANT (8/10): Technical exploitation operation NATO SOF campus...
+20:09:49 - LiteLLM:INFO: utils.py:1297 - Wrapper: Completed Call, calling success_handler
+[2025-10-20 20:09:49,892] [LiteLLM] INFO: Wrapper: Completed Call, calling success_handler
+[2025-10-20 20:09:49,893] [BooleanMonitor] INFO:   ✓ RELEVANT (8/10): Technical exploitation operation NATO SOF campus...
+20:10:00 - LiteLLM:INFO: utils.py:1297 - Wrapper: Completed Call, calling success_handler
+[2025-10-20 20:10:00,115] [LiteLLM] INFO: Wrapper: Completed Call, calling success_handler
+[2025-10-20 20:10:00,117] [BooleanMonitor] INFO:   ✓ RELEVANT (7/10): Technical exploitation operation NATO SOF campus...
+20:10:04 - LiteLLM:INFO: utils.py:1297 - Wrapper: Completed Call, calling success_handler
+[2025-10-20 20:10:04,335] [LiteLLM] INFO: Wrapper: Completed Call, calling success_handler
+[2025-10-20 20:10:04,337] [BooleanMonitor] INFO:   ✓ RELEVANT (9/10): US Airmen role-play in a Special Operations Forces Training...
+20:10:13 - LiteLLM:INFO: utils.py:1297 - Wrapper: Completed Call, calling success_handler
+[2025-10-20 20:10:13,192] [LiteLLM] INFO: Wrapper: Completed Call, calling success_handler
+[2025-10-20 20:10:13,193] [BooleanMonitor] INFO:   ✓ RELEVANT (9/10): US Airmen role-play in a Special Operations Forces Training...
+20:10:17 - LiteLLM:INFO: utils.py:1297 - Wrapper: Completed Call, calling success_handler
+[2025-10-20 20:10:17,873] [LiteLLM] INFO: Wrapper: Completed Call, calling success_handler
+[2025-10-20 20:10:17,875] [BooleanMonitor] INFO:   ✓ RELEVANT (8/10): US Airmen role-play in a Special Operations Forces Training...
+20:10:25 - LiteLLM:INFO: utils.py:1297 - Wrapper: Completed Call, calling success_handler
+[2025-10-20 20:10:25,620] [LiteLLM] INFO: Wrapper: Completed Call, calling success_handler
+[2025-10-20 20:10:25,621] [BooleanMonitor] INFO:   ✗ FILTERED (1/10): Operation Toy Drop Begins...
+20:10:35 - LiteLLM:INFO: utils.py:1297 - Wrapper: Completed Call, calling success_handler
+[2025-10-20 20:10:35,671] [LiteLLM] INFO: Wrapper: Completed Call, calling success_handler
+[2025-10-20 20:10:35,672] [BooleanMonitor] INFO:   ✗ FILTERED (2/10): Operation Toy Drop begins...
+20:10:39 - LiteLLM:INFO: utils.py:1297 - Wrapper: Completed Call, calling success_handler
+[2025-10-20 20:10:39,835] [LiteLLM] INFO: Wrapper: Completed Call, calling success_handler
+[2025-10-20 20:10:39,837] [BooleanMonitor] INFO:   ✓ RELEVANT (8/10): SOCOM commemorates 9/11 with remembrance ceremony...
+20:10:44 - LiteLLM:INFO: utils.py:1297 - Wrapper: Completed Call, calling success_handler
+[2025-10-20 20:10:44,114] [LiteLLM] INFO: Wrapper: Completed Call, calling success_handler
+[2025-10-20 20:10:44,115] [BooleanMonitor] INFO:   ✓ RELEVANT (8/10): SOCOM commemorates 9/11 with remembrance ceremony...
+20:10:48 - LiteLLM:INFO: utils.py:1297 - Wrapper: Completed Call, calling success_handler
+[2025-10-20 20:10:48,421] [LiteLLM] INFO: Wrapper: Completed Call, calling success_handler
+[2025-10-20 20:10:48,422] [BooleanMonitor] INFO:   ✓ RELEVANT (9/10): USSOCOM hosts Change of Responsibility...
+20:10:53 - LiteLLM:INFO: utils.py:1297 - Wrapper: Completed Call, calling success_handler
+[2025-10-20 20:10:53,766] [LiteLLM] INFO: Wrapper: Completed Call, calling success_handler
+[2025-10-20 20:10:53,767] [BooleanMonitor] INFO:   ✓ RELEVANT (10/10): USSOCOM hosts Change of Responsibility...
+20:10:58 - LiteLLM:INFO: utils.py:1297 - Wrapper: Completed Call, calling success_handler
+[2025-10-20 20:10:58,470] [LiteLLM] INFO: Wrapper: Completed Call, calling success_handler
+[2025-10-20 20:10:58,471] [BooleanMonitor] INFO:   ✗ FILTERED (2/10): AKOM continues recovery operations during Operation Halong R...
+20:11:06 - LiteLLM:INFO: utils.py:1297 - Wrapper: Completed Call, calling success_handler
+[2025-10-20 20:11:06,534] [LiteLLM] INFO: Wrapper: Completed Call, calling success_handler
+[2025-10-20 20:11:06,535] [BooleanMonitor] INFO:   ✗ FILTERED (1/10): AKOM continues recovery operations during Operation Halong R...
+20:11:11 - LiteLLM:INFO: utils.py:1297 - Wrapper: Completed Call, calling success_handler
+[2025-10-20 20:11:11,239] [LiteLLM] INFO: Wrapper: Completed Call, calling success_handler
+[2025-10-20 20:11:11,240] [BooleanMonitor] INFO:   ✗ FILTERED (0/10): AKOM continues recovery operations during Operation Halong R...
+20:11:17 - LiteLLM:INFO: utils.py:1297 - Wrapper: Completed Call, calling success_handler
+[2025-10-20 20:11:17,295] [LiteLLM] INFO: Wrapper: Completed Call, calling success_handler
+[2025-10-20 20:11:17,296] [BooleanMonitor] INFO:   ✗ FILTERED (2/10): AKOM continues recovery operations during Operation Halong R...
+20:11:21 - LiteLLM:INFO: utils.py:1297 - Wrapper: Completed Call, calling success_handler
+[2025-10-20 20:11:21,939] [LiteLLM] INFO: Wrapper: Completed Call, calling success_handler
+[2025-10-20 20:11:21,940] [BooleanMonitor] INFO:   ✗ FILTERED (2/10): AKOM continues recovery operations during Operation Halong R...
+20:11:25 - LiteLLM:INFO: utils.py:1297 - Wrapper: Completed Call, calling success_handler
+[2025-10-20 20:11:25,805] [LiteLLM] INFO: Wrapper: Completed Call, calling success_handler
+[2025-10-20 20:11:25,806] [BooleanMonitor] INFO:   ✗ FILTERED (1/10): AKOM continues recovery operations during Operation Halong R...
+20:11:31 - LiteLLM:INFO: utils.py:1297 - Wrapper: Completed Call, calling success_handler
+[2025-10-20 20:11:31,603] [LiteLLM] INFO: Wrapper: Completed Call, calling success_handler
+[2025-10-20 20:11:31,604] [BooleanMonitor] INFO:   ✗ FILTERED (1/10): AKOM continues recovery operations during Operation Halong R...
+20:11:39 - LiteLLM:INFO: utils.py:1297 - Wrapper: Completed Call, calling success_handler
+[2025-10-20 20:11:39,015] [LiteLLM] INFO: Wrapper: Completed Call, calling success_handler
+[2025-10-20 20:11:39,016] [BooleanMonitor] INFO:   ✗ FILTERED (2/10): AKOM conducts recovery mission during Operation Halong Respo...
+20:11:43 - LiteLLM:INFO: utils.py:1297 - Wrapper: Completed Call, calling success_handler
+[2025-10-20 20:11:43,363] [LiteLLM] INFO: Wrapper: Completed Call, calling success_handler
+[2025-10-20 20:11:43,364] [BooleanMonitor] INFO:   ✗ FILTERED (1/10): AKOM conducts recovery mission during Operation Halong Respo...
+20:11:48 - LiteLLM:INFO: utils.py:1297 - Wrapper: Completed Call, calling success_handler
+[2025-10-20 20:11:48,272] [LiteLLM] INFO: Wrapper: Completed Call, calling success_handler
+[2025-10-20 20:11:48,273] [BooleanMonitor] INFO:   ✗ FILTERED (2/10): AKOM conducts recovery mission during Operation Halong Respo...
+20:11:52 - LiteLLM:INFO: utils.py:1297 - Wrapper: Completed Call, calling success_handler
+[2025-10-20 20:11:52,540] [LiteLLM] INFO: Wrapper: Completed Call, calling success_handler
+[2025-10-20 20:11:52,541] [BooleanMonitor] INFO:   ✗ FILTERED (2/10): Combined Jungle Operations Training Course Medical Training...
+20:11:57 - LiteLLM:INFO: utils.py:1297 - Wrapper: Completed Call, calling success_handler
+[2025-10-20 20:11:57,253] [LiteLLM] INFO: Wrapper: Completed Call, calling success_handler
+[2025-10-20 20:11:57,256] [BooleanMonitor] INFO:   ✗ FILTERED (2/10): Combined Jungle Operations Training Course Medical Training...
+20:12:02 - LiteLLM:INFO: utils.py:1297 - Wrapper: Completed Call, calling success_handler
+[2025-10-20 20:12:02,593] [LiteLLM] INFO: Wrapper: Completed Call, calling success_handler
+[2025-10-20 20:12:02,594] [BooleanMonitor] INFO:   ✗ FILTERED (3/10): Combined Jungle Operations Training Course Medical Training...
+20:12:10 - LiteLLM:INFO: utils.py:1297 - Wrapper: Completed Call, calling success_handler
+[2025-10-20 20:12:10,609] [LiteLLM] INFO: Wrapper: Completed Call, calling success_handler
+[2025-10-20 20:12:10,610] [BooleanMonitor] INFO:   ✗ FILTERED (2/10): Combined Jungle Operations Training Course Medical Training...
+20:12:16 - LiteLLM:INFO: utils.py:1297 - Wrapper: Completed Call, calling success_handler
+[2025-10-20 20:12:16,321] [LiteLLM] INFO: Wrapper: Completed Call, calling success_handler
+[2025-10-20 20:12:16,322] [BooleanMonitor] INFO:   ✗ FILTERED (2/10): Combined Jungle Operations Training Course Medical Training...
+20:12:21 - LiteLLM:INFO: utils.py:1297 - Wrapper: Completed Call, calling success_handler
+[2025-10-20 20:12:21,484] [LiteLLM] INFO: Wrapper: Completed Call, calling success_handler
+[2025-10-20 20:12:21,485] [BooleanMonitor] INFO:   ✗ FILTERED (0/10): Removal of Debris Fouling Propeller and Rudder Demonstration...
+20:12:25 - LiteLLM:INFO: utils.py:1297 - Wrapper: Completed Call, calling success_handler
+[2025-10-20 20:12:25,768] [LiteLLM] INFO: Wrapper: Completed Call, calling success_handler
+[2025-10-20 20:12:25,769] [BooleanMonitor] INFO:   ✗ FILTERED (0/10): NSWC PCD designs UxV controllers with users in mind...
+[2025-10-20 20:12:25,769] [BooleanMonitor] INFO: Relevance filtering complete: 27 relevant, 26 filtered out
+[2025-10-20 20:12:25,769] [BooleanMonitor] INFO: Sending alert for 27 new results to brianmills2718@gmail.com
+[2025-10-20 20:12:25,770] [BooleanMonitor] INFO: ALERT: 27 new results found
+[2025-10-20 20:12:25,770] [BooleanMonitor] INFO:   1. U.S. Special Operations Forces and NATO Allies Prepare for Arctic Exercise  Adamant Serpent 26 (Unknown)
+[2025-10-20 20:12:25,770] [BooleanMonitor] INFO:   2. USSOCOM Change of Command Ceremony (Unknown)
+[2025-10-20 20:12:25,770] [BooleanMonitor] INFO:   3. USSOCOM Change of Command Ceremony (Unknown)
+[2025-10-20 20:12:25,770] [BooleanMonitor] INFO:   4. USSOCOM Change of Command Ceremony (Unknown)
+[2025-10-20 20:12:25,770] [BooleanMonitor] INFO:   5. USSOCOM Change of Command Ceremony (Unknown)
+[2025-10-20 20:12:25,770] [BooleanMonitor] INFO:   ... and 22 more
+[2025-10-20 20:12:28,824] [BooleanMonitor] INFO: Email sent successfully to brianmills2718@gmail.com (authenticated)
+[2025-10-20 20:12:28,824] [BooleanMonitor] INFO: Saving 95 results to data/monitors/Special_Operations_&_Covert_Programs_results.json
+[2025-10-20 20:12:28,825] [BooleanMonitor] INFO: Results saved successfully
+[2025-10-20 20:12:28,825] [BooleanMonitor] INFO: Monitor run complete: 95 total results, 53 new
+
+============================================================
+Testing: data/monitors/configs/immigration_enforcement_monitor.yaml
+============================================================
+[2025-10-20 20:12:28,825] [BooleanMonitor] INFO: Initializing BooleanMonitor from: data/monitors/configs/immigration_enforcement_monitor.yaml
+[2025-10-20 20:12:28,825] [BooleanMonitor] INFO: Loading config from: data/monitors/configs/immigration_enforcement_monitor.yaml
+[2025-10-20 20:12:28,826] [BooleanMonitor] INFO: Config loaded: Immigration Enforcement Operations
+[2025-10-20 20:12:28,827] [BooleanMonitor] INFO: Loading previous results from data/monitors/Immigration_Enforcement_Operations_results.json
+[2025-10-20 20:12:28,827] [BooleanMonitor] INFO: Loaded 0 previous result hashes
+[2025-10-20 20:12:28,827] [BooleanMonitor] INFO: Monitor 'Immigration Enforcement Operations' initialized
+[2025-10-20 20:12:28,827] [BooleanMonitor] INFO:   Keywords: 9
+[2025-10-20 20:12:28,827] [BooleanMonitor] INFO:   Sources: ['dvids', 'sam', 'usajobs']
+[2025-10-20 20:12:28,827] [BooleanMonitor] INFO:   Previous results: 0
+[2025-10-20 20:12:28,828] [AdaptiveBooleanMonitor] INFO: Adaptive search ENABLED for 'Immigration Enforcement Operations'
+[2025-10-20 20:12:28,828] [AdaptiveBooleanMonitor] INFO:   Phase 1 results: 15
+[2025-10-20 20:12:28,828] [AdaptiveBooleanMonitor] INFO:   Max iterations: 2
+[2025-10-20 20:12:28,828] [AdaptiveBooleanMonitor] INFO:   Quality threshold: 0.6
+[2025-10-20 20:12:28,828] [BooleanMonitor] INFO: Starting monitor run: Immigration Enforcement Operations
+[2025-10-20 20:12:28,828] [AdaptiveBooleanMonitor] INFO: Using ADAPTIVE search for 9 keywords
+[2025-10-20 20:12:28,829] [AdaptiveBooleanMonitor] INFO: Loaded 3 database integrations
+[2025-10-20 20:12:28,829] [AdaptiveBooleanMonitor] INFO: 
+============================================================
+[2025-10-20 20:12:28,829] [AdaptiveBooleanMonitor] INFO: ADAPTIVE SEARCH: 'ICE detention'
+[2025-10-20 20:12:28,829] [AdaptiveBooleanMonitor] INFO: ============================================================
+[2025-10-20 20:12:28,829] [core.adaptive_search_engine] INFO: Starting adaptive search: 'ICE detention'
+[2025-10-20 20:12:28,829] [core.adaptive_search_engine] INFO: Phase 1: Broad search (15 results per database)
+🔍 Researching across 3 databases...
+  Phase 1: Checking relevance...
+    ⊘ DVIDS: Not relevant, skipping
+    ⊘ SAM.gov: Not relevant, skipping
+    ⊘ USAJobs: Not relevant, skipping
+  ✓ 0/3 databases are relevant
+  No relevant databases found
+[2025-10-20 20:12:28,829] [core.adaptive_search_engine] INFO: Phase 1 complete: 0 results, extracted 0 entities
+[2025-10-20 20:12:28,829] [core.adaptive_search_engine] INFO: Iteration 1: Targeted searches for 0 entities
+[2025-10-20 20:12:28,830] [core.adaptive_search_engine] INFO: Iteration 1 complete: 0 new results, quality: 0.00
+[2025-10-20 20:12:28,830] [core.adaptive_search_engine] INFO: No new entities discovered, stopping
+[2025-10-20 20:12:28,830] [core.adaptive_search_engine] INFO: Adaptive search complete: 0 results, 2 phases, quality: 0.00
+[2025-10-20 20:12:28,830] [AdaptiveBooleanMonitor] INFO: 
+Adaptive search complete for 'ICE detention':
+[2025-10-20 20:12:28,830] [AdaptiveBooleanMonitor] INFO:   Total results: 0
+[2025-10-20 20:12:28,830] [AdaptiveBooleanMonitor] INFO:   Unique results: 0
+[2025-10-20 20:12:28,830] [AdaptiveBooleanMonitor] INFO:   Phases: 2
+[2025-10-20 20:12:28,830] [AdaptiveBooleanMonitor] INFO:   Entities discovered: 0
+[2025-10-20 20:12:28,830] [AdaptiveBooleanMonitor] INFO:   Quality: 0.00
+[2025-10-20 20:12:28,830] [AdaptiveBooleanMonitor] INFO:   Warnings: ['No results found']
+[2025-10-20 20:12:28,830] [AdaptiveBooleanMonitor] INFO: Collected 0 results for 'ICE detention'
+[2025-10-20 20:12:28,830] [AdaptiveBooleanMonitor] INFO: 
+============================================================
+[2025-10-20 20:12:28,830] [AdaptiveBooleanMonitor] INFO: ADAPTIVE SEARCH: 'CBP misconduct'
+[2025-10-20 20:12:28,830] [AdaptiveBooleanMonitor] INFO: ============================================================
+[2025-10-20 20:12:28,830] [core.adaptive_search_engine] INFO: Starting adaptive search: 'CBP misconduct'
+[2025-10-20 20:12:28,830] [core.adaptive_search_engine] INFO: Phase 1: Broad search (15 results per database)
+🔍 Researching across 3 databases...
+  Phase 1: Checking relevance...
+    ⊘ DVIDS: Not relevant, skipping
+    ⊘ SAM.gov: Not relevant, skipping
+    ⊘ USAJobs: Not relevant, skipping
+  ✓ 0/3 databases are relevant
+  No relevant databases found
+[2025-10-20 20:12:28,830] [core.adaptive_search_engine] INFO: Phase 1 complete: 0 results, extracted 0 entities
+[2025-10-20 20:12:28,830] [core.adaptive_search_engine] INFO: Iteration 1: Targeted searches for 0 entities
+[2025-10-20 20:12:28,830] [core.adaptive_search_engine] INFO: Iteration 1 complete: 0 new results, quality: 0.00
+[2025-10-20 20:12:28,830] [core.adaptive_search_engine] INFO: No new entities discovered, stopping
+[2025-10-20 20:12:28,830] [core.adaptive_search_engine] INFO: Adaptive search complete: 0 results, 2 phases, quality: 0.00
+[2025-10-20 20:12:28,830] [AdaptiveBooleanMonitor] INFO: 
+Adaptive search complete for 'CBP misconduct':
+[2025-10-20 20:12:28,830] [AdaptiveBooleanMonitor] INFO:   Total results: 0
+[2025-10-20 20:12:28,830] [AdaptiveBooleanMonitor] INFO:   Unique results: 0
+[2025-10-20 20:12:28,830] [AdaptiveBooleanMonitor] INFO:   Phases: 2
+[2025-10-20 20:12:28,831] [AdaptiveBooleanMonitor] INFO:   Entities discovered: 0
+[2025-10-20 20:12:28,831] [AdaptiveBooleanMonitor] INFO:   Quality: 0.00
+[2025-10-20 20:12:28,831] [AdaptiveBooleanMonitor] INFO:   Warnings: ['No results found']
+[2025-10-20 20:12:28,831] [AdaptiveBooleanMonitor] INFO: Collected 0 results for 'CBP misconduct'
+[2025-10-20 20:12:28,831] [AdaptiveBooleanMonitor] INFO: 
+============================================================
+[2025-10-20 20:12:28,831] [AdaptiveBooleanMonitor] INFO: ADAPTIVE SEARCH: 'immigration enforcement'
+[2025-10-20 20:12:28,831] [AdaptiveBooleanMonitor] INFO: ============================================================
+[2025-10-20 20:12:28,831] [core.adaptive_search_engine] INFO: Starting adaptive search: 'immigration enforcement'
+[2025-10-20 20:12:28,831] [core.adaptive_search_engine] INFO: Phase 1: Broad search (15 results per database)
+🔍 Researching across 3 databases...
+  Phase 1: Checking relevance...
+    ⊘ DVIDS: Not relevant, skipping
+    ⊘ SAM.gov: Not relevant, skipping
+    ⊘ USAJobs: Not relevant, skipping
+  ✓ 0/3 databases are relevant
+  No relevant databases found
+[2025-10-20 20:12:28,831] [core.adaptive_search_engine] INFO: Phase 1 complete: 0 results, extracted 0 entities
+[2025-10-20 20:12:28,831] [core.adaptive_search_engine] INFO: Iteration 1: Targeted searches for 0 entities
+[2025-10-20 20:12:28,831] [core.adaptive_search_engine] INFO: Iteration 1 complete: 0 new results, quality: 0.00
+[2025-10-20 20:12:28,831] [core.adaptive_search_engine] INFO: No new entities discovered, stopping
+[2025-10-20 20:12:28,831] [core.adaptive_search_engine] INFO: Adaptive search complete: 0 results, 2 phases, quality: 0.00
+[2025-10-20 20:12:28,831] [AdaptiveBooleanMonitor] INFO: 
+Adaptive search complete for 'immigration enforcement':
+[2025-10-20 20:12:28,831] [AdaptiveBooleanMonitor] INFO:   Total results: 0
+[2025-10-20 20:12:28,831] [AdaptiveBooleanMonitor] INFO:   Unique results: 0
+[2025-10-20 20:12:28,831] [AdaptiveBooleanMonitor] INFO:   Phases: 2
+[2025-10-20 20:12:28,831] [AdaptiveBooleanMonitor] INFO:   Entities discovered: 0
+[2025-10-20 20:12:28,831] [AdaptiveBooleanMonitor] INFO:   Quality: 0.00
+[2025-10-20 20:12:28,831] [AdaptiveBooleanMonitor] INFO:   Warnings: ['No results found']
+[2025-10-20 20:12:28,832] [AdaptiveBooleanMonitor] INFO: Collected 0 results for 'immigration enforcement'
+[2025-10-20 20:12:28,832] [AdaptiveBooleanMonitor] INFO: 
+============================================================
+[2025-10-20 20:12:28,832] [AdaptiveBooleanMonitor] INFO: ADAPTIVE SEARCH: 'detention facility'
+[2025-10-20 20:12:28,832] [AdaptiveBooleanMonitor] INFO: ============================================================
+[2025-10-20 20:12:28,832] [core.adaptive_search_engine] INFO: Starting adaptive search: 'detention facility'
+[2025-10-20 20:12:28,832] [core.adaptive_search_engine] INFO: Phase 1: Broad search (15 results per database)
+🔍 Researching across 3 databases...
+  Phase 1: Checking relevance...
+    ⊘ DVIDS: Not relevant, skipping
+    ⊘ SAM.gov: Not relevant, skipping
+    ⊘ USAJobs: Not relevant, skipping
+  ✓ 0/3 databases are relevant
+  No relevant databases found
+[2025-10-20 20:12:28,832] [core.adaptive_search_engine] INFO: Phase 1 complete: 0 results, extracted 0 entities
+[2025-10-20 20:12:28,832] [core.adaptive_search_engine] INFO: Iteration 1: Targeted searches for 0 entities
+[2025-10-20 20:12:28,832] [core.adaptive_search_engine] INFO: Iteration 1 complete: 0 new results, quality: 0.00
+[2025-10-20 20:12:28,832] [core.adaptive_search_engine] INFO: No new entities discovered, stopping
+[2025-10-20 20:12:28,832] [core.adaptive_search_engine] INFO: Adaptive search complete: 0 results, 2 phases, quality: 0.00
+[2025-10-20 20:12:28,832] [AdaptiveBooleanMonitor] INFO: 
+Adaptive search complete for 'detention facility':
+[2025-10-20 20:12:28,832] [AdaptiveBooleanMonitor] INFO:   Total results: 0
+[2025-10-20 20:12:28,832] [AdaptiveBooleanMonitor] INFO:   Unique results: 0
+[2025-10-20 20:12:28,832] [AdaptiveBooleanMonitor] INFO:   Phases: 2
+[2025-10-20 20:12:28,832] [AdaptiveBooleanMonitor] INFO:   Entities discovered: 0
+[2025-10-20 20:12:28,832] [AdaptiveBooleanMonitor] INFO:   Quality: 0.00
+[2025-10-20 20:12:28,832] [AdaptiveBooleanMonitor] INFO:   Warnings: ['No results found']
+[2025-10-20 20:12:28,832] [AdaptiveBooleanMonitor] INFO: Collected 0 results for 'detention facility'
+[2025-10-20 20:12:28,832] [AdaptiveBooleanMonitor] INFO: 
+============================================================
+[2025-10-20 20:12:28,832] [AdaptiveBooleanMonitor] INFO: ADAPTIVE SEARCH: 'deportation operation'
+[2025-10-20 20:12:28,832] [AdaptiveBooleanMonitor] INFO: ============================================================
+[2025-10-20 20:12:28,832] [core.adaptive_search_engine] INFO: Starting adaptive search: 'deportation operation'
+[2025-10-20 20:12:28,832] [core.adaptive_search_engine] INFO: Phase 1: Broad search (15 results per database)
+🔍 Researching across 3 databases...
+  Phase 1: Checking relevance...
+    ⊘ SAM.gov: Not relevant, skipping
+    ⊘ USAJobs: Not relevant, skipping
+  ✓ 1/3 databases are relevant
+  Phase 2: Generating queries...
+20:12:33 - LiteLLM:INFO: utils.py:1297 - Wrapper: Completed Call, calling success_handler
+[2025-10-20 20:12:33,228] [LiteLLM] INFO: Wrapper: Completed Call, calling success_handler
+    ⊘ DVIDS: Not relevant after analysis, skipping
   ✓ Generated 0 queries
   No queries generated
-[2025-10-20 18:59:16,978] [core.adaptive_search_engine] INFO: Phase 1 complete: 0 results, extracted 0 entities
-[2025-10-20 18:59:16,978] [core.adaptive_search_engine] INFO: Iteration 1: Targeted searches for 0 entities
-[2025-10-20 18:59:16,978] [core.adaptive_search_engine] INFO: Iteration 1 complete: 0 new results, quality: 0.00
-[2025-10-20 18:59:16,978] [core.adaptive_search_engine] INFO: No new entities discovered, stopping
-[2025-10-20 18:59:16,979] [core.adaptive_search_engine] INFO: Adaptive search complete: 0 results, 2 phases, quality: 0.00
-[2025-10-20 18:59:16,979] [AdaptiveBooleanMonitor] INFO: 
-Adaptive search complete for 'government accountability':
-[2025-10-20 18:59:16,979] [AdaptiveBooleanMonitor] INFO:   Total results: 0
-[2025-10-20 18:59:16,979] [AdaptiveBooleanMonitor] INFO:   Unique results: 0
-[2025-10-20 18:59:16,979] [AdaptiveBooleanMonitor] INFO:   Phases: 2
-[2025-10-20 18:59:16,979] [AdaptiveBooleanMonitor] INFO:   Entities discovered: 0
-[2025-10-20 18:59:16,979] [AdaptiveBooleanMonitor] INFO:   Quality: 0.00
-[2025-10-20 18:59:16,979] [AdaptiveBooleanMonitor] INFO:   Warnings: ['No results found']
-[2025-10-20 18:59:16,979] [AdaptiveBooleanMonitor] INFO: Collected 0 results for 'government accountability'
-[2025-10-20 18:59:16,979] [AdaptiveBooleanMonitor] INFO: 
+[2025-10-20 20:12:33,240] [core.adaptive_search_engine] INFO: Phase 1 complete: 0 results, extracted 0 entities
+[2025-10-20 20:12:33,240] [core.adaptive_search_engine] INFO: Iteration 1: Targeted searches for 0 entities
+[2025-10-20 20:12:33,240] [core.adaptive_search_engine] INFO: Iteration 1 complete: 0 new results, quality: 0.00
+[2025-10-20 20:12:33,240] [core.adaptive_search_engine] INFO: No new entities discovered, stopping
+[2025-10-20 20:12:33,240] [core.adaptive_search_engine] INFO: Adaptive search complete: 0 results, 2 phases, quality: 0.00
+[2025-10-20 20:12:33,240] [AdaptiveBooleanMonitor] INFO: 
+Adaptive search complete for 'deportation operation':
+[2025-10-20 20:12:33,240] [AdaptiveBooleanMonitor] INFO:   Total results: 0
+[2025-10-20 20:12:33,240] [AdaptiveBooleanMonitor] INFO:   Unique results: 0
+[2025-10-20 20:12:33,240] [AdaptiveBooleanMonitor] INFO:   Phases: 2
+[2025-10-20 20:12:33,240] [AdaptiveBooleanMonitor] INFO:   Entities discovered: 0
+[2025-10-20 20:12:33,241] [AdaptiveBooleanMonitor] INFO:   Quality: 0.00
+[2025-10-20 20:12:33,241] [AdaptiveBooleanMonitor] INFO:   Warnings: ['No results found']
+[2025-10-20 20:12:33,241] [AdaptiveBooleanMonitor] INFO: Collected 0 results for 'deportation operation'
+[2025-10-20 20:12:33,241] [AdaptiveBooleanMonitor] INFO: 
 ============================================================
-[2025-10-20 18:59:16,979] [AdaptiveBooleanMonitor] INFO: ADAPTIVE SEARCH: 'inspector general investigation'
-[2025-10-20 18:59:16,979] [AdaptiveBooleanMonitor] INFO: ============================================================
-[2025-10-20 18:59:16,979] [core.adaptive_search_engine] INFO: Starting adaptive search: 'inspector general investigation'
-[2025-10-20 18:59:16,979] [core.adaptive_search_engine] INFO: Phase 1: Broad search (15 results per database)
-🔍 Researching across 3 databases...
-  Phase 1: Checking relevance...
-    ⊘ SAM.gov: Not relevant, skipping
-    ⊘ DVIDS: Not relevant, skipping
-    ⊘ USAJobs: Not relevant, skipping
-  ✓ 0/3 databases are relevant
-  No relevant databases found
-[2025-10-20 18:59:16,979] [core.adaptive_search_engine] INFO: Phase 1 complete: 0 results, extracted 0 entities
-[2025-10-20 18:59:16,979] [core.adaptive_search_engine] INFO: Iteration 1: Targeted searches for 0 entities
-[2025-10-20 18:59:16,979] [core.adaptive_search_engine] INFO: Iteration 1 complete: 0 new results, quality: 0.00
-[2025-10-20 18:59:16,979] [core.adaptive_search_engine] INFO: No new entities discovered, stopping
-[2025-10-20 18:59:16,979] [core.adaptive_search_engine] INFO: Adaptive search complete: 0 results, 2 phases, quality: 0.00
-[2025-10-20 18:59:16,979] [AdaptiveBooleanMonitor] INFO: 
-Adaptive search complete for 'inspector general investigation':
-[2025-10-20 18:59:16,979] [AdaptiveBooleanMonitor] INFO:   Total results: 0
-[2025-10-20 18:59:16,979] [AdaptiveBooleanMonitor] INFO:   Unique results: 0
-[2025-10-20 18:59:16,979] [AdaptiveBooleanMonitor] INFO:   Phases: 2
-[2025-10-20 18:59:16,979] [AdaptiveBooleanMonitor] INFO:   Entities discovered: 0
-[2025-10-20 18:59:16,979] [AdaptiveBooleanMonitor] INFO:   Quality: 0.00
-[2025-10-20 18:59:16,980] [AdaptiveBooleanMonitor] INFO:   Warnings: ['No results found']
-[2025-10-20 18:59:16,980] [AdaptiveBooleanMonitor] INFO: Collected 0 results for 'inspector general investigation'
-[2025-10-20 18:59:16,980] [AdaptiveBooleanMonitor] INFO: 
-============================================================
-[2025-10-20 18:59:16,980] [AdaptiveBooleanMonitor] INFO: ADAPTIVE SEARCH: 'oversight hearing'
-[2025-10-20 18:59:16,980] [AdaptiveBooleanMonitor] INFO: ============================================================
-[2025-10-20 18:59:16,980] [core.adaptive_search_engine] INFO: Starting adaptive search: 'oversight hearing'
-[2025-10-20 18:59:16,980] [core.adaptive_search_engine] INFO: Phase 1: Broad search (15 results per database)
-🔍 Researching across 3 databases...
-  Phase 1: Checking relevance...
-    ⊘ SAM.gov: Not relevant, skipping
-    ⊘ DVIDS: Not relevant, skipping
-    ⊘ USAJobs: Not relevant, skipping
-  ✓ 0/3 databases are relevant
-  No relevant databases found
-[2025-10-20 18:59:16,980] [core.adaptive_search_engine] INFO: Phase 1 complete: 0 results, extracted 0 entities
-[2025-10-20 18:59:16,980] [core.adaptive_search_engine] INFO: Iteration 1: Targeted searches for 0 entities
-[2025-10-20 18:59:16,980] [core.adaptive_search_engine] INFO: Iteration 1 complete: 0 new results, quality: 0.00
-[2025-10-20 18:59:16,980] [core.adaptive_search_engine] INFO: No new entities discovered, stopping
-[2025-10-20 18:59:16,980] [core.adaptive_search_engine] INFO: Adaptive search complete: 0 results, 2 phases, quality: 0.00
-[2025-10-20 18:59:16,980] [AdaptiveBooleanMonitor] INFO: 
-Adaptive search complete for 'oversight hearing':
-[2025-10-20 18:59:16,980] [AdaptiveBooleanMonitor] INFO:   Total results: 0
-[2025-10-20 18:59:16,980] [AdaptiveBooleanMonitor] INFO:   Unique results: 0
-[2025-10-20 18:59:16,980] [AdaptiveBooleanMonitor] INFO:   Phases: 2
-[2025-10-20 18:59:16,980] [AdaptiveBooleanMonitor] INFO:   Entities discovered: 0
-[2025-10-20 18:59:16,980] [AdaptiveBooleanMonitor] INFO:   Quality: 0.00
-[2025-10-20 18:59:16,980] [AdaptiveBooleanMonitor] INFO:   Warnings: ['No results found']
-[2025-10-20 18:59:16,980] [AdaptiveBooleanMonitor] INFO: Collected 0 results for 'oversight hearing'
-[2025-10-20 18:59:16,980] [AdaptiveBooleanMonitor] INFO: 
-============================================================
-[2025-10-20 18:59:16,980] [AdaptiveBooleanMonitor] INFO: ADAPTIVE SEARCH: 'GAO report'
-[2025-10-20 18:59:16,980] [AdaptiveBooleanMonitor] INFO: ============================================================
-[2025-10-20 18:59:16,980] [core.adaptive_search_engine] INFO: Starting adaptive search: 'GAO report'
-[2025-10-20 18:59:16,981] [core.adaptive_search_engine] INFO: Phase 1: Broad search (15 results per database)
-🔍 Researching across 3 databases...
-  Phase 1: Checking relevance...
-    ⊘ SAM.gov: Not relevant, skipping
-    ⊘ DVIDS: Not relevant, skipping
-    ⊘ USAJobs: Not relevant, skipping
-  ✓ 0/3 databases are relevant
-  No relevant databases found
-[2025-10-20 18:59:16,981] [core.adaptive_search_engine] INFO: Phase 1 complete: 0 results, extracted 0 entities
-[2025-10-20 18:59:16,981] [core.adaptive_search_engine] INFO: Iteration 1: Targeted searches for 0 entities
-[2025-10-20 18:59:16,981] [core.adaptive_search_engine] INFO: Iteration 1 complete: 0 new results, quality: 0.00
-[2025-10-20 18:59:16,981] [core.adaptive_search_engine] INFO: No new entities discovered, stopping
-[2025-10-20 18:59:16,981] [core.adaptive_search_engine] INFO: Adaptive search complete: 0 results, 2 phases, quality: 0.00
-[2025-10-20 18:59:16,981] [AdaptiveBooleanMonitor] INFO: 
-Adaptive search complete for 'GAO report':
-[2025-10-20 18:59:16,981] [AdaptiveBooleanMonitor] INFO:   Total results: 0
-[2025-10-20 18:59:16,981] [AdaptiveBooleanMonitor] INFO:   Unique results: 0
-[2025-10-20 18:59:16,981] [AdaptiveBooleanMonitor] INFO:   Phases: 2
-[2025-10-20 18:59:16,981] [AdaptiveBooleanMonitor] INFO:   Entities discovered: 0
-[2025-10-20 18:59:16,981] [AdaptiveBooleanMonitor] INFO:   Quality: 0.00
-[2025-10-20 18:59:16,981] [AdaptiveBooleanMonitor] INFO:   Warnings: ['No results found']
-[2025-10-20 18:59:16,981] [AdaptiveBooleanMonitor] INFO: Collected 0 results for 'GAO report'
-[2025-10-20 18:59:16,981] [AdaptiveBooleanMonitor] INFO: 
-============================================================
-[2025-10-20 18:59:16,981] [AdaptiveBooleanMonitor] INFO: ADAPTIVE SEARCH: 'misconduct investigation'
-[2025-10-20 18:59:16,981] [AdaptiveBooleanMonitor] INFO: ============================================================
-[2025-10-20 18:59:16,981] [core.adaptive_search_engine] INFO: Starting adaptive search: 'misconduct investigation'
-[2025-10-20 18:59:16,981] [core.adaptive_search_engine] INFO: Phase 1: Broad search (15 results per database)
-🔍 Researching across 3 databases...
-  Phase 1: Checking relevance...
-    ⊘ SAM.gov: Not relevant, skipping
-    ⊘ DVIDS: Not relevant, skipping
-    ⊘ USAJobs: Not relevant, skipping
-  ✓ 0/3 databases are relevant
-  No relevant databases found
-[2025-10-20 18:59:16,981] [core.adaptive_search_engine] INFO: Phase 1 complete: 0 results, extracted 0 entities
-[2025-10-20 18:59:16,981] [core.adaptive_search_engine] INFO: Iteration 1: Targeted searches for 0 entities
-[2025-10-20 18:59:16,981] [core.adaptive_search_engine] INFO: Iteration 1 complete: 0 new results, quality: 0.00
-[2025-10-20 18:59:16,981] [core.adaptive_search_engine] INFO: No new entities discovered, stopping
-[2025-10-20 18:59:16,982] [core.adaptive_search_engine] INFO: Adaptive search complete: 0 results, 2 phases, quality: 0.00
-[2025-10-20 18:59:16,982] [AdaptiveBooleanMonitor] INFO: 
-Adaptive search complete for 'misconduct investigation':
-[2025-10-20 18:59:16,982] [AdaptiveBooleanMonitor] INFO:   Total results: 0
-[2025-10-20 18:59:16,982] [AdaptiveBooleanMonitor] INFO:   Unique results: 0
-[2025-10-20 18:59:16,982] [AdaptiveBooleanMonitor] INFO:   Phases: 2
-[2025-10-20 18:59:16,982] [AdaptiveBooleanMonitor] INFO:   Entities discovered: 0
-[2025-10-20 18:59:16,982] [AdaptiveBooleanMonitor] INFO:   Quality: 0.00
-[2025-10-20 18:59:16,982] [AdaptiveBooleanMonitor] INFO:   Warnings: ['No results found']
-[2025-10-20 18:59:16,982] [AdaptiveBooleanMonitor] INFO: Collected 0 results for 'misconduct investigation'
-[2025-10-20 18:59:16,982] [AdaptiveBooleanMonitor] INFO: 
-============================================================
-[2025-10-20 18:59:16,982] [AdaptiveBooleanMonitor] INFO: ADAPTIVE SEARCH SUMMARY
-[2025-10-20 18:59:16,982] [AdaptiveBooleanMonitor] INFO: ============================================================
-[2025-10-20 18:59:16,982] [AdaptiveBooleanMonitor] INFO: Keywords searched: 9
-[2025-10-20 18:59:16,982] [AdaptiveBooleanMonitor] INFO: Total results: 0
-[2025-10-20 18:59:16,982] [AdaptiveBooleanMonitor] INFO: Unique entities discovered: 0
-[2025-10-20 18:59:16,982] [BooleanMonitor] INFO: Deduplicating 0 results
-[2025-10-20 18:59:16,982] [BooleanMonitor] INFO: Deduplication complete: 0 unique results (removed 0 duplicates)
-[2025-10-20 18:59:16,982] [BooleanMonitor] INFO: Checking for new results (previous: 0, current: 0)
-[2025-10-20 18:59:16,982] [BooleanMonitor] INFO: Found 0 new results
-[2025-10-20 18:59:16,982] [BooleanMonitor] INFO: No new results found, skipping alert
-[2025-10-20 18:59:16,982] [BooleanMonitor] INFO: Saving 0 results to data/monitors/Inspector_General_&_Oversight_Reports_results.json
-[2025-10-20 18:59:16,982] [BooleanMonitor] INFO: Results saved successfully
-[2025-10-20 18:59:16,982] [BooleanMonitor] INFO: Monitor run complete: 0 total results, 0 new
-[2025-10-20 18:59:16,982] [BooleanMonitor] INFO: Initializing BooleanMonitor from: data/monitors/configs/nve_monitor.yaml
-[2025-10-20 18:59:16,982] [BooleanMonitor] INFO: Loading config from: data/monitors/configs/nve_monitor.yaml
-[2025-10-20 18:59:16,984] [BooleanMonitor] INFO: Config loaded: NVE Monitoring
-[2025-10-20 18:59:16,984] [BooleanMonitor] INFO: No previous results found (first run)
-[2025-10-20 18:59:16,984] [BooleanMonitor] INFO: Monitor 'NVE Monitoring' initialized
-[2025-10-20 18:59:16,984] [BooleanMonitor] INFO:   Keywords: 5
-[2025-10-20 18:59:16,984] [BooleanMonitor] INFO:   Sources: ['dvids', 'sam', 'usajobs', 'twitter']
-[2025-10-20 18:59:16,984] [BooleanMonitor] INFO:   Previous results: 0
-[2025-10-20 18:59:16,985] [AdaptiveBooleanMonitor] INFO: Adaptive search ENABLED for 'NVE Monitoring'
-[2025-10-20 18:59:16,985] [AdaptiveBooleanMonitor] INFO:   Phase 1 results: 15
-[2025-10-20 18:59:16,985] [AdaptiveBooleanMonitor] INFO:   Max iterations: 2
-[2025-10-20 18:59:16,985] [AdaptiveBooleanMonitor] INFO:   Quality threshold: 0.6
-[2025-10-20 18:59:16,985] [MonitorScheduler] INFO: Running monitor: NVE Monitoring
-[2025-10-20 18:59:16,985] [BooleanMonitor] INFO: Starting monitor run: NVE Monitoring
-[2025-10-20 18:59:16,985] [AdaptiveBooleanMonitor] INFO: Using ADAPTIVE search for 5 keywords
-[2025-10-20 18:59:16,986] [AdaptiveBooleanMonitor] INFO: Loaded 4 database integrations
-[2025-10-20 18:59:16,986] [AdaptiveBooleanMonitor] INFO: 
-============================================================
-[2025-10-20 18:59:16,986] [AdaptiveBooleanMonitor] INFO: ADAPTIVE SEARCH: 'nihilistic violent extremism'
-[2025-10-20 18:59:16,986] [AdaptiveBooleanMonitor] INFO: ============================================================
-[2025-10-20 18:59:16,986] [core.adaptive_search_engine] INFO: Starting adaptive search: 'nihilistic violent extremism'
-[2025-10-20 18:59:16,986] [core.adaptive_search_engine] INFO: Phase 1: Broad search (15 results per database)
-🔍 Researching across 4 databases...
-  Phase 1: Checking relevance...
-    ⊘ DVIDS: Not relevant, skipping
-    ⊘ SAM.gov: Not relevant, skipping
-    ⊘ USAJobs: Not relevant, skipping
-  ✓ 1/4 databases are relevant
-  Phase 2: Generating queries...
-    ✓ Twitter: Query generated
-  ✓ Generated 1 queries
-  Phase 3: Executing searches...
-    ✗ Twitter: 0 results (0ms)
-✓ Completed in 0.0s
-[2025-10-20 18:59:16,987] [core.adaptive_search_engine] INFO: Phase 1 complete: 0 results, extracted 0 entities
-[2025-10-20 18:59:16,987] [core.adaptive_search_engine] INFO: Iteration 1: Targeted searches for 0 entities
-[2025-10-20 18:59:16,987] [core.adaptive_search_engine] INFO: Iteration 1 complete: 0 new results, quality: 0.00
-[2025-10-20 18:59:16,987] [core.adaptive_search_engine] INFO: No new entities discovered, stopping
-[2025-10-20 18:59:16,987] [core.adaptive_search_engine] INFO: Adaptive search complete: 0 results, 2 phases, quality: 0.00
-[2025-10-20 18:59:16,987] [AdaptiveBooleanMonitor] INFO: 
-Adaptive search complete for 'nihilistic violent extremism':
-[2025-10-20 18:59:16,987] [AdaptiveBooleanMonitor] INFO:   Total results: 0
-[2025-10-20 18:59:16,987] [AdaptiveBooleanMonitor] INFO:   Unique results: 0
-[2025-10-20 18:59:16,987] [AdaptiveBooleanMonitor] INFO:   Phases: 2
-[2025-10-20 18:59:16,987] [AdaptiveBooleanMonitor] INFO:   Entities discovered: 0
-[2025-10-20 18:59:16,987] [AdaptiveBooleanMonitor] INFO:   Quality: 0.00
-[2025-10-20 18:59:16,987] [AdaptiveBooleanMonitor] INFO:   Warnings: ['No results found']
-[2025-10-20 18:59:16,987] [AdaptiveBooleanMonitor] INFO: Collected 0 results for 'nihilistic violent extremism'
-[2025-10-20 18:59:16,987] [AdaptiveBooleanMonitor] INFO: 
-============================================================
-[2025-10-20 18:59:16,987] [AdaptiveBooleanMonitor] INFO: ADAPTIVE SEARCH: 'NVE'
-[2025-10-20 18:59:16,987] [AdaptiveBooleanMonitor] INFO: ============================================================
-[2025-10-20 18:59:16,987] [core.adaptive_search_engine] INFO: Starting adaptive search: 'NVE'
-[2025-10-20 18:59:16,987] [core.adaptive_search_engine] INFO: Phase 1: Broad search (15 results per database)
-🔍 Researching across 4 databases...
-  Phase 1: Checking relevance...
-    ⊘ DVIDS: Not relevant, skipping
-    ⊘ SAM.gov: Not relevant, skipping
-    ⊘ USAJobs: Not relevant, skipping
-    ⊘ Twitter: Not relevant, skipping
-  ✓ 0/4 databases are relevant
-  No relevant databases found
-[2025-10-20 18:59:16,987] [core.adaptive_search_engine] INFO: Phase 1 complete: 0 results, extracted 0 entities
-[2025-10-20 18:59:16,988] [core.adaptive_search_engine] INFO: Iteration 1: Targeted searches for 0 entities
-[2025-10-20 18:59:16,988] [core.adaptive_search_engine] INFO: Iteration 1 complete: 0 new results, quality: 0.00
-[2025-10-20 18:59:16,988] [core.adaptive_search_engine] INFO: No new entities discovered, stopping
-[2025-10-20 18:59:16,988] [core.adaptive_search_engine] INFO: Adaptive search complete: 0 results, 2 phases, quality: 0.00
-[2025-10-20 18:59:16,988] [AdaptiveBooleanMonitor] INFO: 
-Adaptive search complete for 'NVE':
-[2025-10-20 18:59:16,988] [AdaptiveBooleanMonitor] INFO:   Total results: 0
-[2025-10-20 18:59:16,988] [AdaptiveBooleanMonitor] INFO:   Unique results: 0
-[2025-10-20 18:59:16,988] [AdaptiveBooleanMonitor] INFO:   Phases: 2
-[2025-10-20 18:59:16,988] [AdaptiveBooleanMonitor] INFO:   Entities discovered: 0
-[2025-10-20 18:59:16,988] [AdaptiveBooleanMonitor] INFO:   Quality: 0.00
-[2025-10-20 18:59:16,988] [AdaptiveBooleanMonitor] INFO:   Warnings: ['No results found']
-[2025-10-20 18:59:16,988] [AdaptiveBooleanMonitor] INFO: Collected 0 results for 'NVE'
-[2025-10-20 18:59:16,988] [AdaptiveBooleanMonitor] INFO: 
-============================================================
-[2025-10-20 18:59:16,988] [AdaptiveBooleanMonitor] INFO: ADAPTIVE SEARCH: 'domestic extremism'
-[2025-10-20 18:59:16,988] [AdaptiveBooleanMonitor] INFO: ============================================================
-[2025-10-20 18:59:16,988] [core.adaptive_search_engine] INFO: Starting adaptive search: 'domestic extremism'
-[2025-10-20 18:59:16,988] [core.adaptive_search_engine] INFO: Phase 1: Broad search (15 results per database)
-🔍 Researching across 4 databases...
-  Phase 1: Checking relevance...
-    ⊘ DVIDS: Not relevant, skipping
-    ⊘ SAM.gov: Not relevant, skipping
-    ⊘ USAJobs: Not relevant, skipping
-  ✓ 1/4 databases are relevant
-  Phase 2: Generating queries...
-    ✓ Twitter: Query generated
-  ✓ Generated 1 queries
-  Phase 3: Executing searches...
-    ✗ Twitter: 0 results (0ms)
-✓ Completed in 0.0s
-[2025-10-20 18:59:16,988] [core.adaptive_search_engine] INFO: Phase 1 complete: 0 results, extracted 0 entities
-[2025-10-20 18:59:16,989] [core.adaptive_search_engine] INFO: Iteration 1: Targeted searches for 0 entities
-[2025-10-20 18:59:16,989] [core.adaptive_search_engine] INFO: Iteration 1 complete: 0 new results, quality: 0.00
-[2025-10-20 18:59:16,989] [core.adaptive_search_engine] INFO: No new entities discovered, stopping
-[2025-10-20 18:59:16,989] [core.adaptive_search_engine] INFO: Adaptive search complete: 0 results, 2 phases, quality: 0.00
-[2025-10-20 18:59:16,989] [AdaptiveBooleanMonitor] INFO: 
-Adaptive search complete for 'domestic extremism':
-[2025-10-20 18:59:16,989] [AdaptiveBooleanMonitor] INFO:   Total results: 0
-[2025-10-20 18:59:16,989] [AdaptiveBooleanMonitor] INFO:   Unique results: 0
-[2025-10-20 18:59:16,989] [AdaptiveBooleanMonitor] INFO:   Phases: 2
-[2025-10-20 18:59:16,989] [AdaptiveBooleanMonitor] INFO:   Entities discovered: 0
-[2025-10-20 18:59:16,989] [AdaptiveBooleanMonitor] INFO:   Quality: 0.00
-[2025-10-20 18:59:16,989] [AdaptiveBooleanMonitor] INFO:   Warnings: ['No results found']
-[2025-10-20 18:59:16,989] [AdaptiveBooleanMonitor] INFO: Collected 0 results for 'domestic extremism'
-[2025-10-20 18:59:16,989] [AdaptiveBooleanMonitor] INFO: 
-============================================================
-[2025-10-20 18:59:16,989] [AdaptiveBooleanMonitor] INFO: ADAPTIVE SEARCH: 'domestic violent extremism'
-[2025-10-20 18:59:16,989] [AdaptiveBooleanMonitor] INFO: ============================================================
-[2025-10-20 18:59:16,989] [core.adaptive_search_engine] INFO: Starting adaptive search: 'domestic violent extremism'
-[2025-10-20 18:59:16,989] [core.adaptive_search_engine] INFO: Phase 1: Broad search (15 results per database)
-🔍 Researching across 4 databases...
-  Phase 1: Checking relevance...
-    ⊘ DVIDS: Not relevant, skipping
-    ⊘ SAM.gov: Not relevant, skipping
-    ⊘ USAJobs: Not relevant, skipping
-  ✓ 1/4 databases are relevant
-  Phase 2: Generating queries...
-    ✓ Twitter: Query generated
-  ✓ Generated 1 queries
-  Phase 3: Executing searches...
-    ✗ Twitter: 0 results (0ms)
-✓ Completed in 0.0s
-[2025-10-20 18:59:16,989] [core.adaptive_search_engine] INFO: Phase 1 complete: 0 results, extracted 0 entities
-[2025-10-20 18:59:16,990] [core.adaptive_search_engine] INFO: Iteration 1: Targeted searches for 0 entities
-[2025-10-20 18:59:16,990] [core.adaptive_search_engine] INFO: Iteration 1 complete: 0 new results, quality: 0.00
-[2025-10-20 18:59:16,990] [core.adaptive_search_engine] INFO: No new entities discovered, stopping
-[2025-10-20 18:59:16,990] [core.adaptive_search_engine] INFO: Adaptive search complete: 0 results, 2 phases, quality: 0.00
-[2025-10-20 18:59:16,990] [AdaptiveBooleanMonitor] INFO: 
-Adaptive search complete for 'domestic violent extremism':
-[2025-10-20 18:59:16,990] [AdaptiveBooleanMonitor] INFO:   Total results: 0
-[2025-10-20 18:59:16,990] [AdaptiveBooleanMonitor] INFO:   Unique results: 0
-[2025-10-20 18:59:16,990] [AdaptiveBooleanMonitor] INFO:   Phases: 2
-[2025-10-20 18:59:16,990] [AdaptiveBooleanMonitor] INFO:   Entities discovered: 0
-[2025-10-20 18:59:16,990] [AdaptiveBooleanMonitor] INFO:   Quality: 0.00
-[2025-10-20 18:59:16,990] [AdaptiveBooleanMonitor] INFO:   Warnings: ['No results found']
-[2025-10-20 18:59:16,990] [AdaptiveBooleanMonitor] INFO: Collected 0 results for 'domestic violent extremism'
-[2025-10-20 18:59:16,990] [AdaptiveBooleanMonitor] INFO: 
-============================================================
-[2025-10-20 18:59:16,990] [AdaptiveBooleanMonitor] INFO: ADAPTIVE SEARCH: 'DVE'
-[2025-10-20 18:59:16,990] [AdaptiveBooleanMonitor] INFO: ============================================================
-[2025-10-20 18:59:16,990] [core.adaptive_search_engine] INFO: Starting adaptive search: 'DVE'
-[2025-10-20 18:59:16,990] [core.adaptive_search_engine] INFO: Phase 1: Broad search (15 results per database)
-🔍 Researching across 4 databases...
-  Phase 1: Checking relevance...
-    ⊘ DVIDS: Not relevant, skipping
-    ⊘ SAM.gov: Not relevant, skipping
-    ⊘ USAJobs: Not relevant, skipping
-    ⊘ Twitter: Not relevant, skipping
-  ✓ 0/4 databases are relevant
-  No relevant databases found
-[2025-10-20 18:59:16,990] [core.adaptive_search_engine] INFO: Phase 1 complete: 0 results, extracted 0 entities
-[2025-10-20 18:59:16,990] [core.adaptive_search_engine] INFO: Iteration 1: Targeted searches for 0 entities
-[2025-10-20 18:59:16,990] [core.adaptive_search_engine] INFO: Iteration 1 complete: 0 new results, quality: 0.00
-[2025-10-20 18:59:16,990] [core.adaptive_search_engine] INFO: No new entities discovered, stopping
-[2025-10-20 18:59:16,990] [core.adaptive_search_engine] INFO: Adaptive search complete: 0 results, 2 phases, quality: 0.00
-[2025-10-20 18:59:16,990] [AdaptiveBooleanMonitor] INFO: 
-Adaptive search complete for 'DVE':
-[2025-10-20 18:59:16,991] [AdaptiveBooleanMonitor] INFO:   Total results: 0
-[2025-10-20 18:59:16,991] [AdaptiveBooleanMonitor] INFO:   Unique results: 0
-[2025-10-20 18:59:16,991] [AdaptiveBooleanMonitor] INFO:   Phases: 2
-[2025-10-20 18:59:16,991] [AdaptiveBooleanMonitor] INFO:   Entities discovered: 0
-[2025-10-20 18:59:16,991] [AdaptiveBooleanMonitor] INFO:   Quality: 0.00
-[2025-10-20 18:59:16,991] [AdaptiveBooleanMonitor] INFO:   Warnings: ['No results found']
-[2025-10-20 18:59:16,991] [AdaptiveBooleanMonitor] INFO: Collected 0 results for 'DVE'
-[2025-10-20 18:59:16,991] [AdaptiveBooleanMonitor] INFO: 
-============================================================
-[2025-10-20 18:59:16,991] [AdaptiveBooleanMonitor] INFO: ADAPTIVE SEARCH SUMMARY
-[2025-10-20 18:59:16,991] [AdaptiveBooleanMonitor] INFO: ============================================================
-[2025-10-20 18:59:16,991] [AdaptiveBooleanMonitor] INFO: Keywords searched: 5
-[2025-10-20 18:59:16,991] [AdaptiveBooleanMonitor] INFO: Total results: 0
-[2025-10-20 18:59:16,991] [AdaptiveBooleanMonitor] INFO: Unique entities discovered: 0
-[2025-10-20 18:59:16,991] [BooleanMonitor] INFO: Deduplicating 0 results
-[2025-10-20 18:59:16,991] [BooleanMonitor] INFO: Deduplication complete: 0 unique results (removed 0 duplicates)
-[2025-10-20 18:59:16,991] [BooleanMonitor] INFO: Checking for new results (previous: 0, current: 0)
-[2025-10-20 18:59:16,991] [BooleanMonitor] INFO: Found 0 new results
-[2025-10-20 18:59:16,991] [BooleanMonitor] INFO: No new results found, skipping alert
-[2025-10-20 18:59:16,991] [BooleanMonitor] INFO: Saving 0 results to data/monitors/NVE_Monitoring_results.json
-[2025-10-20 18:59:16,991] [BooleanMonitor] INFO: Results saved successfully
-[2025-10-20 18:59:16,991] [BooleanMonitor] INFO: Monitor run complete: 0 total results, 0 new
-[2025-10-20 18:59:16,991] [BooleanMonitor] INFO: Initializing BooleanMonitor from: data/monitors/configs/domestic_extremism_monitor.yaml
-[2025-10-20 18:59:16,991] [BooleanMonitor] INFO: Loading config from: data/monitors/configs/domestic_extremism_monitor.yaml
-[2025-10-20 18:59:16,993] [BooleanMonitor] INFO: Config loaded: Domestic Extremism Classifications
-[2025-10-20 18:59:16,993] [BooleanMonitor] INFO: Loading previous results from data/monitors/Domestic_Extremism_Classifications_results.json
-[2025-10-20 18:59:16,993] [BooleanMonitor] INFO: Loaded 0 previous result hashes
-[2025-10-20 18:59:16,993] [BooleanMonitor] INFO: Monitor 'Domestic Extremism Classifications' initialized
-[2025-10-20 18:59:16,993] [BooleanMonitor] INFO:   Keywords: 8
-[2025-10-20 18:59:16,993] [BooleanMonitor] INFO:   Sources: ['dvids', 'sam', 'usajobs']
-[2025-10-20 18:59:16,993] [BooleanMonitor] INFO:   Previous results: 0
-[2025-10-20 18:59:16,994] [AdaptiveBooleanMonitor] INFO: Adaptive search ENABLED for 'Domestic Extremism Classifications'
-[2025-10-20 18:59:16,994] [AdaptiveBooleanMonitor] INFO:   Phase 1 results: 15
-[2025-10-20 18:59:16,994] [AdaptiveBooleanMonitor] INFO:   Max iterations: 2
-[2025-10-20 18:59:16,994] [AdaptiveBooleanMonitor] INFO:   Quality threshold: 0.6
-[2025-10-20 18:59:16,994] [MonitorScheduler] INFO: Running monitor: Domestic Extremism Classifications
-[2025-10-20 18:59:16,994] [BooleanMonitor] INFO: Starting monitor run: Domestic Extremism Classifications
-[2025-10-20 18:59:16,994] [AdaptiveBooleanMonitor] INFO: Using ADAPTIVE search for 8 keywords
-[2025-10-20 18:59:16,995] [AdaptiveBooleanMonitor] INFO: Loaded 3 database integrations
-[2025-10-20 18:59:16,995] [AdaptiveBooleanMonitor] INFO: 
-============================================================
-[2025-10-20 18:59:16,995] [AdaptiveBooleanMonitor] INFO: ADAPTIVE SEARCH: 'Nihilistic Violent Extremism'
-[2025-10-20 18:59:16,995] [AdaptiveBooleanMonitor] INFO: ============================================================
-[2025-10-20 18:59:16,995] [core.adaptive_search_engine] INFO: Starting adaptive search: 'Nihilistic Violent Extremism'
-[2025-10-20 18:59:16,995] [core.adaptive_search_engine] INFO: Phase 1: Broad search (15 results per database)
+[2025-10-20 20:12:33,241] [AdaptiveBooleanMonitor] INFO: ADAPTIVE SEARCH: 'immigration raid'
+[2025-10-20 20:12:33,241] [AdaptiveBooleanMonitor] INFO: ============================================================
+[2025-10-20 20:12:33,241] [core.adaptive_search_engine] INFO: Starting adaptive search: 'immigration raid'
+[2025-10-20 20:12:33,241] [core.adaptive_search_engine] INFO: Phase 1: Broad search (15 results per database)
 🔍 Researching across 3 databases...
   Phase 1: Checking relevance...
     ⊘ DVIDS: Not relevant, skipping
@@ -687,26 +904,26 @@ Adaptive search complete for 'DVE':
     ⊘ USAJobs: Not relevant, skipping
   ✓ 0/3 databases are relevant
   No relevant databases found
-[2025-10-20 18:59:16,995] [core.adaptive_search_engine] INFO: Phase 1 complete: 0 results, extracted 0 entities
-[2025-10-20 18:59:16,995] [core.adaptive_search_engine] INFO: Iteration 1: Targeted searches for 0 entities
-[2025-10-20 18:59:16,995] [core.adaptive_search_engine] INFO: Iteration 1 complete: 0 new results, quality: 0.00
-[2025-10-20 18:59:16,996] [core.adaptive_search_engine] INFO: No new entities discovered, stopping
-[2025-10-20 18:59:16,996] [core.adaptive_search_engine] INFO: Adaptive search complete: 0 results, 2 phases, quality: 0.00
-[2025-10-20 18:59:16,996] [AdaptiveBooleanMonitor] INFO: 
-Adaptive search complete for 'Nihilistic Violent Extremism':
-[2025-10-20 18:59:16,996] [AdaptiveBooleanMonitor] INFO:   Total results: 0
-[2025-10-20 18:59:16,996] [AdaptiveBooleanMonitor] INFO:   Unique results: 0
-[2025-10-20 18:59:16,996] [AdaptiveBooleanMonitor] INFO:   Phases: 2
-[2025-10-20 18:59:16,996] [AdaptiveBooleanMonitor] INFO:   Entities discovered: 0
-[2025-10-20 18:59:16,996] [AdaptiveBooleanMonitor] INFO:   Quality: 0.00
-[2025-10-20 18:59:16,996] [AdaptiveBooleanMonitor] INFO:   Warnings: ['No results found']
-[2025-10-20 18:59:16,996] [AdaptiveBooleanMonitor] INFO: Collected 0 results for 'Nihilistic Violent Extremism'
-[2025-10-20 18:59:16,996] [AdaptiveBooleanMonitor] INFO: 
+[2025-10-20 20:12:33,241] [core.adaptive_search_engine] INFO: Phase 1 complete: 0 results, extracted 0 entities
+[2025-10-20 20:12:33,241] [core.adaptive_search_engine] INFO: Iteration 1: Targeted searches for 0 entities
+[2025-10-20 20:12:33,241] [core.adaptive_search_engine] INFO: Iteration 1 complete: 0 new results, quality: 0.00
+[2025-10-20 20:12:33,241] [core.adaptive_search_engine] INFO: No new entities discovered, stopping
+[2025-10-20 20:12:33,241] [core.adaptive_search_engine] INFO: Adaptive search complete: 0 results, 2 phases, quality: 0.00
+[2025-10-20 20:12:33,241] [AdaptiveBooleanMonitor] INFO: 
+Adaptive search complete for 'immigration raid':
+[2025-10-20 20:12:33,241] [AdaptiveBooleanMonitor] INFO:   Total results: 0
+[2025-10-20 20:12:33,241] [AdaptiveBooleanMonitor] INFO:   Unique results: 0
+[2025-10-20 20:12:33,241] [AdaptiveBooleanMonitor] INFO:   Phases: 2
+[2025-10-20 20:12:33,241] [AdaptiveBooleanMonitor] INFO:   Entities discovered: 0
+[2025-10-20 20:12:33,241] [AdaptiveBooleanMonitor] INFO:   Quality: 0.00
+[2025-10-20 20:12:33,241] [AdaptiveBooleanMonitor] INFO:   Warnings: ['No results found']
+[2025-10-20 20:12:33,241] [AdaptiveBooleanMonitor] INFO: Collected 0 results for 'immigration raid'
+[2025-10-20 20:12:33,241] [AdaptiveBooleanMonitor] INFO: 
 ============================================================
-[2025-10-20 18:59:16,996] [AdaptiveBooleanMonitor] INFO: ADAPTIVE SEARCH: 'Black Identity Extremists'
-[2025-10-20 18:59:16,996] [AdaptiveBooleanMonitor] INFO: ============================================================
-[2025-10-20 18:59:16,996] [core.adaptive_search_engine] INFO: Starting adaptive search: 'Black Identity Extremists'
-[2025-10-20 18:59:16,996] [core.adaptive_search_engine] INFO: Phase 1: Broad search (15 results per database)
+[2025-10-20 20:12:33,241] [AdaptiveBooleanMonitor] INFO: ADAPTIVE SEARCH: 'family separation'
+[2025-10-20 20:12:33,241] [AdaptiveBooleanMonitor] INFO: ============================================================
+[2025-10-20 20:12:33,242] [core.adaptive_search_engine] INFO: Starting adaptive search: 'family separation'
+[2025-10-20 20:12:33,242] [core.adaptive_search_engine] INFO: Phase 1: Broad search (15 results per database)
 🔍 Researching across 3 databases...
   Phase 1: Checking relevance...
     ⊘ DVIDS: Not relevant, skipping
@@ -714,26 +931,26 @@ Adaptive search complete for 'Nihilistic Violent Extremism':
     ⊘ USAJobs: Not relevant, skipping
   ✓ 0/3 databases are relevant
   No relevant databases found
-[2025-10-20 18:59:16,996] [core.adaptive_search_engine] INFO: Phase 1 complete: 0 results, extracted 0 entities
-[2025-10-20 18:59:16,996] [core.adaptive_search_engine] INFO: Iteration 1: Targeted searches for 0 entities
-[2025-10-20 18:59:16,996] [core.adaptive_search_engine] INFO: Iteration 1 complete: 0 new results, quality: 0.00
-[2025-10-20 18:59:16,996] [core.adaptive_search_engine] INFO: No new entities discovered, stopping
-[2025-10-20 18:59:16,996] [core.adaptive_search_engine] INFO: Adaptive search complete: 0 results, 2 phases, quality: 0.00
-[2025-10-20 18:59:16,996] [AdaptiveBooleanMonitor] INFO: 
-Adaptive search complete for 'Black Identity Extremists':
-[2025-10-20 18:59:16,996] [AdaptiveBooleanMonitor] INFO:   Total results: 0
-[2025-10-20 18:59:16,996] [AdaptiveBooleanMonitor] INFO:   Unique results: 0
-[2025-10-20 18:59:16,997] [AdaptiveBooleanMonitor] INFO:   Phases: 2
-[2025-10-20 18:59:16,997] [AdaptiveBooleanMonitor] INFO:   Entities discovered: 0
-[2025-10-20 18:59:16,997] [AdaptiveBooleanMonitor] INFO:   Quality: 0.00
-[2025-10-20 18:59:16,997] [AdaptiveBooleanMonitor] INFO:   Warnings: ['No results found']
-[2025-10-20 18:59:16,997] [AdaptiveBooleanMonitor] INFO: Collected 0 results for 'Black Identity Extremists'
-[2025-10-20 18:59:16,997] [AdaptiveBooleanMonitor] INFO: 
+[2025-10-20 20:12:33,242] [core.adaptive_search_engine] INFO: Phase 1 complete: 0 results, extracted 0 entities
+[2025-10-20 20:12:33,242] [core.adaptive_search_engine] INFO: Iteration 1: Targeted searches for 0 entities
+[2025-10-20 20:12:33,242] [core.adaptive_search_engine] INFO: Iteration 1 complete: 0 new results, quality: 0.00
+[2025-10-20 20:12:33,242] [core.adaptive_search_engine] INFO: No new entities discovered, stopping
+[2025-10-20 20:12:33,242] [core.adaptive_search_engine] INFO: Adaptive search complete: 0 results, 2 phases, quality: 0.00
+[2025-10-20 20:12:33,242] [AdaptiveBooleanMonitor] INFO: 
+Adaptive search complete for 'family separation':
+[2025-10-20 20:12:33,242] [AdaptiveBooleanMonitor] INFO:   Total results: 0
+[2025-10-20 20:12:33,242] [AdaptiveBooleanMonitor] INFO:   Unique results: 0
+[2025-10-20 20:12:33,242] [AdaptiveBooleanMonitor] INFO:   Phases: 2
+[2025-10-20 20:12:33,242] [AdaptiveBooleanMonitor] INFO:   Entities discovered: 0
+[2025-10-20 20:12:33,242] [AdaptiveBooleanMonitor] INFO:   Quality: 0.00
+[2025-10-20 20:12:33,242] [AdaptiveBooleanMonitor] INFO:   Warnings: ['No results found']
+[2025-10-20 20:12:33,242] [AdaptiveBooleanMonitor] INFO: Collected 0 results for 'family separation'
+[2025-10-20 20:12:33,242] [AdaptiveBooleanMonitor] INFO: 
 ============================================================
-[2025-10-20 18:59:16,997] [AdaptiveBooleanMonitor] INFO: ADAPTIVE SEARCH: 'Domestic Violent Extremism'
-[2025-10-20 18:59:16,997] [AdaptiveBooleanMonitor] INFO: ============================================================
-[2025-10-20 18:59:16,997] [core.adaptive_search_engine] INFO: Starting adaptive search: 'Domestic Violent Extremism'
-[2025-10-20 18:59:16,997] [core.adaptive_search_engine] INFO: Phase 1: Broad search (15 results per database)
+[2025-10-20 20:12:33,242] [AdaptiveBooleanMonitor] INFO: ADAPTIVE SEARCH: 'border patrol abuse'
+[2025-10-20 20:12:33,242] [AdaptiveBooleanMonitor] INFO: ============================================================
+[2025-10-20 20:12:33,242] [core.adaptive_search_engine] INFO: Starting adaptive search: 'border patrol abuse'
+[2025-10-20 20:12:33,242] [core.adaptive_search_engine] INFO: Phase 1: Broad search (15 results per database)
 🔍 Researching across 3 databases...
   Phase 1: Checking relevance...
     ⊘ DVIDS: Not relevant, skipping
@@ -741,26 +958,26 @@ Adaptive search complete for 'Black Identity Extremists':
     ⊘ USAJobs: Not relevant, skipping
   ✓ 0/3 databases are relevant
   No relevant databases found
-[2025-10-20 18:59:16,997] [core.adaptive_search_engine] INFO: Phase 1 complete: 0 results, extracted 0 entities
-[2025-10-20 18:59:16,997] [core.adaptive_search_engine] INFO: Iteration 1: Targeted searches for 0 entities
-[2025-10-20 18:59:16,997] [core.adaptive_search_engine] INFO: Iteration 1 complete: 0 new results, quality: 0.00
-[2025-10-20 18:59:16,997] [core.adaptive_search_engine] INFO: No new entities discovered, stopping
-[2025-10-20 18:59:16,997] [core.adaptive_search_engine] INFO: Adaptive search complete: 0 results, 2 phases, quality: 0.00
-[2025-10-20 18:59:16,997] [AdaptiveBooleanMonitor] INFO: 
-Adaptive search complete for 'Domestic Violent Extremism':
-[2025-10-20 18:59:16,997] [AdaptiveBooleanMonitor] INFO:   Total results: 0
-[2025-10-20 18:59:16,997] [AdaptiveBooleanMonitor] INFO:   Unique results: 0
-[2025-10-20 18:59:16,997] [AdaptiveBooleanMonitor] INFO:   Phases: 2
-[2025-10-20 18:59:16,997] [AdaptiveBooleanMonitor] INFO:   Entities discovered: 0
-[2025-10-20 18:59:16,997] [AdaptiveBooleanMonitor] INFO:   Quality: 0.00
-[2025-10-20 18:59:16,997] [AdaptiveBooleanMonitor] INFO:   Warnings: ['No results found']
-[2025-10-20 18:59:16,997] [AdaptiveBooleanMonitor] INFO: Collected 0 results for 'Domestic Violent Extremism'
-[2025-10-20 18:59:16,997] [AdaptiveBooleanMonitor] INFO: 
+[2025-10-20 20:12:33,242] [core.adaptive_search_engine] INFO: Phase 1 complete: 0 results, extracted 0 entities
+[2025-10-20 20:12:33,243] [core.adaptive_search_engine] INFO: Iteration 1: Targeted searches for 0 entities
+[2025-10-20 20:12:33,243] [core.adaptive_search_engine] INFO: Iteration 1 complete: 0 new results, quality: 0.00
+[2025-10-20 20:12:33,243] [core.adaptive_search_engine] INFO: No new entities discovered, stopping
+[2025-10-20 20:12:33,243] [core.adaptive_search_engine] INFO: Adaptive search complete: 0 results, 2 phases, quality: 0.00
+[2025-10-20 20:12:33,243] [AdaptiveBooleanMonitor] INFO: 
+Adaptive search complete for 'border patrol abuse':
+[2025-10-20 20:12:33,243] [AdaptiveBooleanMonitor] INFO:   Total results: 0
+[2025-10-20 20:12:33,243] [AdaptiveBooleanMonitor] INFO:   Unique results: 0
+[2025-10-20 20:12:33,243] [AdaptiveBooleanMonitor] INFO:   Phases: 2
+[2025-10-20 20:12:33,243] [AdaptiveBooleanMonitor] INFO:   Entities discovered: 0
+[2025-10-20 20:12:33,243] [AdaptiveBooleanMonitor] INFO:   Quality: 0.00
+[2025-10-20 20:12:33,243] [AdaptiveBooleanMonitor] INFO:   Warnings: ['No results found']
+[2025-10-20 20:12:33,243] [AdaptiveBooleanMonitor] INFO: Collected 0 results for 'border patrol abuse'
+[2025-10-20 20:12:33,243] [AdaptiveBooleanMonitor] INFO: 
 ============================================================
-[2025-10-20 18:59:16,998] [AdaptiveBooleanMonitor] INFO: ADAPTIVE SEARCH: 'NVE'
-[2025-10-20 18:59:16,998] [AdaptiveBooleanMonitor] INFO: ============================================================
-[2025-10-20 18:59:16,998] [core.adaptive_search_engine] INFO: Starting adaptive search: 'NVE'
-[2025-10-20 18:59:16,998] [core.adaptive_search_engine] INFO: Phase 1: Broad search (15 results per database)
+[2025-10-20 20:12:33,243] [AdaptiveBooleanMonitor] INFO: ADAPTIVE SEARCH: 'detention center'
+[2025-10-20 20:12:33,243] [AdaptiveBooleanMonitor] INFO: ============================================================
+[2025-10-20 20:12:33,243] [core.adaptive_search_engine] INFO: Starting adaptive search: 'detention center'
+[2025-10-20 20:12:33,243] [core.adaptive_search_engine] INFO: Phase 1: Broad search (15 results per database)
 🔍 Researching across 3 databases...
   Phase 1: Checking relevance...
     ⊘ DVIDS: Not relevant, skipping
@@ -768,261 +985,33 @@ Adaptive search complete for 'Domestic Violent Extremism':
     ⊘ USAJobs: Not relevant, skipping
   ✓ 0/3 databases are relevant
   No relevant databases found
-[2025-10-20 18:59:16,998] [core.adaptive_search_engine] INFO: Phase 1 complete: 0 results, extracted 0 entities
-[2025-10-20 18:59:16,998] [core.adaptive_search_engine] INFO: Iteration 1: Targeted searches for 0 entities
-[2025-10-20 18:59:16,998] [core.adaptive_search_engine] INFO: Iteration 1 complete: 0 new results, quality: 0.00
-[2025-10-20 18:59:16,998] [core.adaptive_search_engine] INFO: No new entities discovered, stopping
-[2025-10-20 18:59:16,998] [core.adaptive_search_engine] INFO: Adaptive search complete: 0 results, 2 phases, quality: 0.00
-[2025-10-20 18:59:16,998] [AdaptiveBooleanMonitor] INFO: 
-Adaptive search complete for 'NVE':
-[2025-10-20 18:59:16,998] [AdaptiveBooleanMonitor] INFO:   Total results: 0
-[2025-10-20 18:59:16,998] [AdaptiveBooleanMonitor] INFO:   Unique results: 0
-[2025-10-20 18:59:16,998] [AdaptiveBooleanMonitor] INFO:   Phases: 2
-[2025-10-20 18:59:16,998] [AdaptiveBooleanMonitor] INFO:   Entities discovered: 0
-[2025-10-20 18:59:16,998] [AdaptiveBooleanMonitor] INFO:   Quality: 0.00
-[2025-10-20 18:59:16,998] [AdaptiveBooleanMonitor] INFO:   Warnings: ['No results found']
-[2025-10-20 18:59:16,998] [AdaptiveBooleanMonitor] INFO: Collected 0 results for 'NVE'
-[2025-10-20 18:59:16,998] [AdaptiveBooleanMonitor] INFO: 
+[2025-10-20 20:12:33,243] [core.adaptive_search_engine] INFO: Phase 1 complete: 0 results, extracted 0 entities
+[2025-10-20 20:12:33,243] [core.adaptive_search_engine] INFO: Iteration 1: Targeted searches for 0 entities
+[2025-10-20 20:12:33,243] [core.adaptive_search_engine] INFO: Iteration 1 complete: 0 new results, quality: 0.00
+[2025-10-20 20:12:33,243] [core.adaptive_search_engine] INFO: No new entities discovered, stopping
+[2025-10-20 20:12:33,243] [core.adaptive_search_engine] INFO: Adaptive search complete: 0 results, 2 phases, quality: 0.00
+[2025-10-20 20:12:33,243] [AdaptiveBooleanMonitor] INFO: 
+Adaptive search complete for 'detention center':
+[2025-10-20 20:12:33,243] [AdaptiveBooleanMonitor] INFO:   Total results: 0
+[2025-10-20 20:12:33,244] [AdaptiveBooleanMonitor] INFO:   Unique results: 0
+[2025-10-20 20:12:33,244] [AdaptiveBooleanMonitor] INFO:   Phases: 2
+[2025-10-20 20:12:33,244] [AdaptiveBooleanMonitor] INFO:   Entities discovered: 0
+[2025-10-20 20:12:33,244] [AdaptiveBooleanMonitor] INFO:   Quality: 0.00
+[2025-10-20 20:12:33,244] [AdaptiveBooleanMonitor] INFO:   Warnings: ['No results found']
+[2025-10-20 20:12:33,244] [AdaptiveBooleanMonitor] INFO: Collected 0 results for 'detention center'
+[2025-10-20 20:12:33,244] [AdaptiveBooleanMonitor] INFO: 
 ============================================================
-[2025-10-20 18:59:16,998] [AdaptiveBooleanMonitor] INFO: ADAPTIVE SEARCH: 'DVE'
-[2025-10-20 18:59:16,998] [AdaptiveBooleanMonitor] INFO: ============================================================
-[2025-10-20 18:59:16,998] [core.adaptive_search_engine] INFO: Starting adaptive search: 'DVE'
-[2025-10-20 18:59:16,999] [core.adaptive_search_engine] INFO: Phase 1: Broad search (15 results per database)
-🔍 Researching across 3 databases...
-  Phase 1: Checking relevance...
-    ⊘ DVIDS: Not relevant, skipping
-    ⊘ SAM.gov: Not relevant, skipping
-    ⊘ USAJobs: Not relevant, skipping
-  ✓ 0/3 databases are relevant
-  No relevant databases found
-[2025-10-20 18:59:16,999] [core.adaptive_search_engine] INFO: Phase 1 complete: 0 results, extracted 0 entities
-[2025-10-20 18:59:16,999] [core.adaptive_search_engine] INFO: Iteration 1: Targeted searches for 0 entities
-[2025-10-20 18:59:16,999] [core.adaptive_search_engine] INFO: Iteration 1 complete: 0 new results, quality: 0.00
-[2025-10-20 18:59:16,999] [core.adaptive_search_engine] INFO: No new entities discovered, stopping
-[2025-10-20 18:59:16,999] [core.adaptive_search_engine] INFO: Adaptive search complete: 0 results, 2 phases, quality: 0.00
-[2025-10-20 18:59:16,999] [AdaptiveBooleanMonitor] INFO: 
-Adaptive search complete for 'DVE':
-[2025-10-20 18:59:16,999] [AdaptiveBooleanMonitor] INFO:   Total results: 0
-[2025-10-20 18:59:16,999] [AdaptiveBooleanMonitor] INFO:   Unique results: 0
-[2025-10-20 18:59:16,999] [AdaptiveBooleanMonitor] INFO:   Phases: 2
-[2025-10-20 18:59:16,999] [AdaptiveBooleanMonitor] INFO:   Entities discovered: 0
-[2025-10-20 18:59:16,999] [AdaptiveBooleanMonitor] INFO:   Quality: 0.00
-[2025-10-20 18:59:16,999] [AdaptiveBooleanMonitor] INFO:   Warnings: ['No results found']
-[2025-10-20 18:59:16,999] [AdaptiveBooleanMonitor] INFO: Collected 0 results for 'DVE'
-[2025-10-20 18:59:16,999] [AdaptiveBooleanMonitor] INFO: 
-============================================================
-[2025-10-20 18:59:16,999] [AdaptiveBooleanMonitor] INFO: ADAPTIVE SEARCH: 'BIE'
-[2025-10-20 18:59:16,999] [AdaptiveBooleanMonitor] INFO: ============================================================
-[2025-10-20 18:59:16,999] [core.adaptive_search_engine] INFO: Starting adaptive search: 'BIE'
-[2025-10-20 18:59:16,999] [core.adaptive_search_engine] INFO: Phase 1: Broad search (15 results per database)
-🔍 Researching across 3 databases...
-  Phase 1: Checking relevance...
-    ⊘ DVIDS: Not relevant, skipping
-    ⊘ SAM.gov: Not relevant, skipping
-    ⊘ USAJobs: Not relevant, skipping
-  ✓ 0/3 databases are relevant
-  No relevant databases found
-[2025-10-20 18:59:17,000] [core.adaptive_search_engine] INFO: Phase 1 complete: 0 results, extracted 0 entities
-[2025-10-20 18:59:17,000] [core.adaptive_search_engine] INFO: Iteration 1: Targeted searches for 0 entities
-[2025-10-20 18:59:17,000] [core.adaptive_search_engine] INFO: Iteration 1 complete: 0 new results, quality: 0.00
-[2025-10-20 18:59:17,000] [core.adaptive_search_engine] INFO: No new entities discovered, stopping
-[2025-10-20 18:59:17,000] [core.adaptive_search_engine] INFO: Adaptive search complete: 0 results, 2 phases, quality: 0.00
-[2025-10-20 18:59:17,000] [AdaptiveBooleanMonitor] INFO: 
-Adaptive search complete for 'BIE':
-[2025-10-20 18:59:17,000] [AdaptiveBooleanMonitor] INFO:   Total results: 0
-[2025-10-20 18:59:17,000] [AdaptiveBooleanMonitor] INFO:   Unique results: 0
-[2025-10-20 18:59:17,000] [AdaptiveBooleanMonitor] INFO:   Phases: 2
-[2025-10-20 18:59:17,000] [AdaptiveBooleanMonitor] INFO:   Entities discovered: 0
-[2025-10-20 18:59:17,000] [AdaptiveBooleanMonitor] INFO:   Quality: 0.00
-[2025-10-20 18:59:17,000] [AdaptiveBooleanMonitor] INFO:   Warnings: ['No results found']
-[2025-10-20 18:59:17,000] [AdaptiveBooleanMonitor] INFO: Collected 0 results for 'BIE'
-[2025-10-20 18:59:17,000] [AdaptiveBooleanMonitor] INFO: 
-============================================================
-[2025-10-20 18:59:17,000] [AdaptiveBooleanMonitor] INFO: ADAPTIVE SEARCH: 'extremism threat assessment'
-[2025-10-20 18:59:17,000] [AdaptiveBooleanMonitor] INFO: ============================================================
-[2025-10-20 18:59:17,000] [core.adaptive_search_engine] INFO: Starting adaptive search: 'extremism threat assessment'
-[2025-10-20 18:59:17,000] [core.adaptive_search_engine] INFO: Phase 1: Broad search (15 results per database)
-🔍 Researching across 3 databases...
-  Phase 1: Checking relevance...
-    ⊘ DVIDS: Not relevant, skipping
-    ⊘ SAM.gov: Not relevant, skipping
-    ⊘ USAJobs: Not relevant, skipping
-  ✓ 0/3 databases are relevant
-  No relevant databases found
-[2025-10-20 18:59:17,000] [core.adaptive_search_engine] INFO: Phase 1 complete: 0 results, extracted 0 entities
-[2025-10-20 18:59:17,000] [core.adaptive_search_engine] INFO: Iteration 1: Targeted searches for 0 entities
-[2025-10-20 18:59:17,000] [core.adaptive_search_engine] INFO: Iteration 1 complete: 0 new results, quality: 0.00
-[2025-10-20 18:59:17,001] [core.adaptive_search_engine] INFO: No new entities discovered, stopping
-[2025-10-20 18:59:17,001] [core.adaptive_search_engine] INFO: Adaptive search complete: 0 results, 2 phases, quality: 0.00
-[2025-10-20 18:59:17,001] [AdaptiveBooleanMonitor] INFO: 
-Adaptive search complete for 'extremism threat assessment':
-[2025-10-20 18:59:17,001] [AdaptiveBooleanMonitor] INFO:   Total results: 0
-[2025-10-20 18:59:17,001] [AdaptiveBooleanMonitor] INFO:   Unique results: 0
-[2025-10-20 18:59:17,001] [AdaptiveBooleanMonitor] INFO:   Phases: 2
-[2025-10-20 18:59:17,001] [AdaptiveBooleanMonitor] INFO:   Entities discovered: 0
-[2025-10-20 18:59:17,001] [AdaptiveBooleanMonitor] INFO:   Quality: 0.00
-[2025-10-20 18:59:17,001] [AdaptiveBooleanMonitor] INFO:   Warnings: ['No results found']
-[2025-10-20 18:59:17,001] [AdaptiveBooleanMonitor] INFO: Collected 0 results for 'extremism threat assessment'
-[2025-10-20 18:59:17,001] [AdaptiveBooleanMonitor] INFO: 
-============================================================
-[2025-10-20 18:59:17,001] [AdaptiveBooleanMonitor] INFO: ADAPTIVE SEARCH: 'domestic terrorism threat assessment'
-[2025-10-20 18:59:17,001] [AdaptiveBooleanMonitor] INFO: ============================================================
-[2025-10-20 18:59:17,001] [core.adaptive_search_engine] INFO: Starting adaptive search: 'domestic terrorism threat assessment'
-[2025-10-20 18:59:17,001] [core.adaptive_search_engine] INFO: Phase 1: Broad search (15 results per database)
-🔍 Researching across 3 databases...
-  Phase 1: Checking relevance...
-    ⊘ DVIDS: Not relevant, skipping
-    ⊘ SAM.gov: Not relevant, skipping
-    ⊘ USAJobs: Not relevant, skipping
-  ✓ 0/3 databases are relevant
-  No relevant databases found
-[2025-10-20 18:59:17,001] [core.adaptive_search_engine] INFO: Phase 1 complete: 0 results, extracted 0 entities
-[2025-10-20 18:59:17,001] [core.adaptive_search_engine] INFO: Iteration 1: Targeted searches for 0 entities
-[2025-10-20 18:59:17,001] [core.adaptive_search_engine] INFO: Iteration 1 complete: 0 new results, quality: 0.00
-[2025-10-20 18:59:17,001] [core.adaptive_search_engine] INFO: No new entities discovered, stopping
-[2025-10-20 18:59:17,001] [core.adaptive_search_engine] INFO: Adaptive search complete: 0 results, 2 phases, quality: 0.00
-[2025-10-20 18:59:17,001] [AdaptiveBooleanMonitor] INFO: 
-Adaptive search complete for 'domestic terrorism threat assessment':
-[2025-10-20 18:59:17,001] [AdaptiveBooleanMonitor] INFO:   Total results: 0
-[2025-10-20 18:59:17,001] [AdaptiveBooleanMonitor] INFO:   Unique results: 0
-[2025-10-20 18:59:17,001] [AdaptiveBooleanMonitor] INFO:   Phases: 2
-[2025-10-20 18:59:17,002] [AdaptiveBooleanMonitor] INFO:   Entities discovered: 0
-[2025-10-20 18:59:17,002] [AdaptiveBooleanMonitor] INFO:   Quality: 0.00
-[2025-10-20 18:59:17,002] [AdaptiveBooleanMonitor] INFO:   Warnings: ['No results found']
-[2025-10-20 18:59:17,002] [AdaptiveBooleanMonitor] INFO: Collected 0 results for 'domestic terrorism threat assessment'
-[2025-10-20 18:59:17,002] [AdaptiveBooleanMonitor] INFO: 
-============================================================
-[2025-10-20 18:59:17,002] [AdaptiveBooleanMonitor] INFO: ADAPTIVE SEARCH SUMMARY
-[2025-10-20 18:59:17,002] [AdaptiveBooleanMonitor] INFO: ============================================================
-[2025-10-20 18:59:17,002] [AdaptiveBooleanMonitor] INFO: Keywords searched: 8
-[2025-10-20 18:59:17,002] [AdaptiveBooleanMonitor] INFO: Total results: 0
-[2025-10-20 18:59:17,002] [AdaptiveBooleanMonitor] INFO: Unique entities discovered: 0
-[2025-10-20 18:59:17,002] [BooleanMonitor] INFO: Deduplicating 0 results
-[2025-10-20 18:59:17,002] [BooleanMonitor] INFO: Deduplication complete: 0 unique results (removed 0 duplicates)
-[2025-10-20 18:59:17,002] [BooleanMonitor] INFO: Checking for new results (previous: 0, current: 0)
-[2025-10-20 18:59:17,002] [BooleanMonitor] INFO: Found 0 new results
-[2025-10-20 18:59:17,002] [BooleanMonitor] INFO: No new results found, skipping alert
-[2025-10-20 18:59:17,002] [BooleanMonitor] INFO: Saving 0 results to data/monitors/Domestic_Extremism_Classifications_results.json
-[2025-10-20 18:59:17,002] [BooleanMonitor] INFO: Results saved successfully
-[2025-10-20 18:59:17,002] [BooleanMonitor] INFO: Monitor run complete: 0 total results, 0 new
-[2025-10-20 18:59:17,002] [BooleanMonitor] INFO: Initializing BooleanMonitor from: data/monitors/configs/multi_source_test.yaml
-[2025-10-20 18:59:17,002] [BooleanMonitor] INFO: Loading config from: data/monitors/configs/multi_source_test.yaml
-[2025-10-20 18:59:17,003] [BooleanMonitor] INFO: Config loaded: Multi-Source Test
-[2025-10-20 18:59:17,003] [BooleanMonitor] INFO: Loading previous results from data/monitors/Multi-Source_Test_results.json
-[2025-10-20 18:59:17,003] [BooleanMonitor] INFO: Loaded 20 previous result hashes
-[2025-10-20 18:59:17,003] [BooleanMonitor] INFO: Monitor 'Multi-Source Test' initialized
-[2025-10-20 18:59:17,003] [BooleanMonitor] INFO:   Keywords: 1
-[2025-10-20 18:59:17,003] [BooleanMonitor] INFO:   Sources: ['dvids', 'federal_register']
-[2025-10-20 18:59:17,003] [BooleanMonitor] INFO:   Previous results: 20
-[2025-10-20 18:59:17,004] [AdaptiveBooleanMonitor] INFO: Adaptive search DISABLED for 'Multi-Source Test' (using standard search)
-[2025-10-20 18:59:17,004] [MonitorScheduler] INFO: Running monitor: Multi-Source Test
-[2025-10-20 18:59:17,004] [BooleanMonitor] INFO: Starting monitor run: Multi-Source Test
-[2025-10-20 18:59:17,004] [AdaptiveBooleanMonitor] INFO: Using standard search (adaptive disabled)
-[2025-10-20 18:59:17,004] [BooleanMonitor] INFO: Executing PARALLEL search for 1 keywords across 2 sources
-[2025-10-20 18:59:17,005] [BooleanMonitor] INFO: Launching 2 parallel searches (1 keywords × 2 sources)
-[2025-10-20 18:59:17,005] [BooleanMonitor] ERROR: Error searching federal_register for 'cybersecurity': Unknown integration: federal_register
-18:59:21 - LiteLLM:INFO: utils.py:1297 - Wrapper: Completed Call, calling success_handler
-[2025-10-20 18:59:21,215] [LiteLLM] INFO: Wrapper: Completed Call, calling success_handler
-[2025-10-20 18:59:22,301] [BooleanMonitor] INFO:   DVIDS: Found 10 results for 'cybersecurity'
-[2025-10-20 18:59:22,301] [BooleanMonitor] INFO: Parallel search complete: 10 total results from 2 searches (0 errors)
-[2025-10-20 18:59:22,301] [BooleanMonitor] INFO: Deduplicating 10 results
-[2025-10-20 18:59:22,301] [BooleanMonitor] INFO: Deduplication complete: 10 unique results (removed 0 duplicates)
-[2025-10-20 18:59:22,301] [BooleanMonitor] INFO: Checking for new results (previous: 20, current: 10)
-[2025-10-20 18:59:22,301] [BooleanMonitor] INFO: Found 0 new results
-[2025-10-20 18:59:22,301] [BooleanMonitor] INFO: No new results found, skipping alert
-[2025-10-20 18:59:22,301] [BooleanMonitor] INFO: Saving 10 results to data/monitors/Multi-Source_Test_results.json
-[2025-10-20 18:59:22,301] [BooleanMonitor] INFO: Results saved successfully
-[2025-10-20 18:59:22,301] [BooleanMonitor] INFO: Monitor run complete: 10 total results, 0 new
-[2025-10-20 18:59:22,301] [BooleanMonitor] INFO: Initializing BooleanMonitor from: data/monitors/configs/boolean_test_monitor.yaml
-[2025-10-20 18:59:22,301] [BooleanMonitor] INFO: Loading config from: data/monitors/configs/boolean_test_monitor.yaml
-[2025-10-20 18:59:22,302] [BooleanMonitor] INFO: Config loaded: Boolean Test Monitor
-[2025-10-20 18:59:22,302] [BooleanMonitor] INFO: Loading previous results from data/monitors/Boolean_Test_Monitor_results.json
-[2025-10-20 18:59:22,302] [BooleanMonitor] INFO: Loaded 39 previous result hashes
-[2025-10-20 18:59:22,302] [BooleanMonitor] INFO: Monitor 'Boolean Test Monitor' initialized
-[2025-10-20 18:59:22,302] [BooleanMonitor] INFO:   Keywords: 6
-[2025-10-20 18:59:22,302] [BooleanMonitor] INFO:   Sources: ['dvids', 'federal_register']
-[2025-10-20 18:59:22,302] [BooleanMonitor] INFO:   Previous results: 39
-[2025-10-20 18:59:22,303] [AdaptiveBooleanMonitor] INFO: Adaptive search DISABLED for 'Boolean Test Monitor' (using standard search)
-[2025-10-20 18:59:22,303] [MonitorScheduler] INFO: Running monitor: Boolean Test Monitor
-[2025-10-20 18:59:22,303] [BooleanMonitor] INFO: Starting monitor run: Boolean Test Monitor
-[2025-10-20 18:59:22,303] [AdaptiveBooleanMonitor] INFO: Using standard search (adaptive disabled)
-[2025-10-20 18:59:22,303] [BooleanMonitor] INFO: Executing PARALLEL search for 6 keywords across 2 sources
-[2025-10-20 18:59:22,304] [BooleanMonitor] INFO: Launching 12 parallel searches (6 keywords × 2 sources)
-[2025-10-20 18:59:22,310] [BooleanMonitor] ERROR: Error searching federal_register for 'cybersecurity': Unknown integration: federal_register
-[2025-10-20 18:59:22,310] [BooleanMonitor] ERROR: Error searching federal_register for 'FISA': Unknown integration: federal_register
-[2025-10-20 18:59:22,310] [BooleanMonitor] ERROR: Error searching federal_register for '"Joint Special Operations Command"': Unknown integration: federal_register
-[2025-10-20 18:59:22,310] [BooleanMonitor] ERROR: Error searching federal_register for '"Section 702"': Unknown integration: federal_register
-[2025-10-20 18:59:22,310] [BooleanMonitor] ERROR: Error searching federal_register for 'FISA AND surveillance': Unknown integration: federal_register
-[2025-10-20 18:59:22,310] [BooleanMonitor] ERROR: Error searching federal_register for 'extremism OR terrorism': Unknown integration: federal_register
-18:59:27 - LiteLLM:INFO: utils.py:1297 - Wrapper: Completed Call, calling success_handler
-[2025-10-20 18:59:27,057] [LiteLLM] INFO: Wrapper: Completed Call, calling success_handler
-18:59:27 - LiteLLM:INFO: utils.py:1297 - Wrapper: Completed Call, calling success_handler
-[2025-10-20 18:59:27,514] [LiteLLM] INFO: Wrapper: Completed Call, calling success_handler
-[2025-10-20 18:59:27,604] [BooleanMonitor] INFO:   DVIDS: Found 6 results for '"Joint Special Operations Command"'
-[2025-10-20 18:59:28,491] [BooleanMonitor] INFO:   DVIDS: Found 10 results for 'cybersecurity'
-18:59:31 - LiteLLM:INFO: utils.py:1297 - Wrapper: Completed Call, calling success_handler
-[2025-10-20 18:59:31,337] [LiteLLM] INFO: Wrapper: Completed Call, calling success_handler
-18:59:31 - LiteLLM:INFO: utils.py:1297 - Wrapper: Completed Call, calling success_handler
-[2025-10-20 18:59:31,378] [LiteLLM] INFO: Wrapper: Completed Call, calling success_handler
-[2025-10-20 18:59:32,501] [BooleanMonitor] INFO:   DVIDS: Found 1 results for 'FISA'
-[2025-10-20 18:59:32,502] [BooleanMonitor] INFO:   DVIDS: Skipped (not relevant for '"Section 702"')
-18:59:33 - LiteLLM:INFO: utils.py:1297 - Wrapper: Completed Call, calling success_handler
-[2025-10-20 18:59:33,417] [LiteLLM] INFO: Wrapper: Completed Call, calling success_handler
-18:59:38 - LiteLLM:INFO: utils.py:1297 - Wrapper: Completed Call, calling success_handler
-[2025-10-20 18:59:38,094] [LiteLLM] INFO: Wrapper: Completed Call, calling success_handler
-[2025-10-20 18:59:38,974] [BooleanMonitor] INFO:   DVIDS: Found 10 results for 'extremism OR terrorism'
-[2025-10-20 18:59:39,600] [BooleanMonitor] INFO:   DVIDS: Found 0 results for 'FISA AND surveillance'
-[2025-10-20 18:59:39,600] [BooleanMonitor] INFO: Parallel search complete: 27 total results from 12 searches (0 errors)
-[2025-10-20 18:59:39,600] [BooleanMonitor] INFO: Deduplicating 27 results
-[2025-10-20 18:59:39,600] [BooleanMonitor] INFO: Deduplication complete: 27 unique results (removed 0 duplicates)
-[2025-10-20 18:59:39,600] [BooleanMonitor] INFO: Checking for new results (previous: 39, current: 27)
-[2025-10-20 18:59:39,600] [BooleanMonitor] INFO: Found 11 new results
-[2025-10-20 18:59:39,600] [BooleanMonitor] INFO: Filtering 11 results by LLM relevance
-18:59:43 - LiteLLM:INFO: utils.py:1297 - Wrapper: Completed Call, calling success_handler
-[2025-10-20 18:59:43,920] [LiteLLM] INFO: Wrapper: Completed Call, calling success_handler
-[2025-10-20 18:59:43,922] [BooleanMonitor] INFO:   ✓ RELEVANT (9/10): Representatives meet with General Nakasone to discuss FISA S...
-18:59:48 - LiteLLM:INFO: utils.py:1297 - Wrapper: Completed Call, calling success_handler
-[2025-10-20 18:59:48,969] [LiteLLM] INFO: Wrapper: Completed Call, calling success_handler
-[2025-10-20 18:59:48,970] [BooleanMonitor] INFO:   ✓ RELEVANT (9/10): Counter-terrorism training on ’battlefield evidence’ collect...
-18:59:52 - LiteLLM:INFO: utils.py:1297 - Wrapper: Completed Call, calling success_handler
-[2025-10-20 18:59:52,958] [LiteLLM] INFO: Wrapper: Completed Call, calling success_handler
-[2025-10-20 18:59:52,960] [BooleanMonitor] INFO:   ✓ RELEVANT (8/10): Counter-terrorism training on ’battlefield evidence’ collect...
-18:59:58 - LiteLLM:INFO: utils.py:1297 - Wrapper: Completed Call, calling success_handler
-[2025-10-20 18:59:58,665] [LiteLLM] INFO: Wrapper: Completed Call, calling success_handler
-[2025-10-20 18:59:58,666] [BooleanMonitor] INFO:   ✓ RELEVANT (10/10): Counter-terrorism training on ’battlefield evidence’ collect...
-19:00:04 - LiteLLM:INFO: utils.py:1297 - Wrapper: Completed Call, calling success_handler
-[2025-10-20 19:00:04,144] [LiteLLM] INFO: Wrapper: Completed Call, calling success_handler
-[2025-10-20 19:00:04,146] [BooleanMonitor] INFO:   ✓ RELEVANT (9/10): Global Counterterrorism Workshop Builds the Team, Explores I...
-19:00:11 - LiteLLM:INFO: utils.py:1297 - Wrapper: Completed Call, calling success_handler
-[2025-10-20 19:00:11,582] [LiteLLM] INFO: Wrapper: Completed Call, calling success_handler
-[2025-10-20 19:00:11,583] [BooleanMonitor] INFO:   ✓ RELEVANT (8/10): Global Counterterrorism Workshop Builds the Team, Explores I...
-19:00:15 - LiteLLM:INFO: utils.py:1297 - Wrapper: Completed Call, calling success_handler
-[2025-10-20 19:00:15,858] [LiteLLM] INFO: Wrapper: Completed Call, calling success_handler
-[2025-10-20 19:00:15,859] [BooleanMonitor] INFO:   ✓ RELEVANT (8/10): Alumnus Finds Missing Piece of Counterterrorism Puzzle at Ma...
-19:00:20 - LiteLLM:INFO: utils.py:1297 - Wrapper: Completed Call, calling success_handler
-[2025-10-20 19:00:20,417] [LiteLLM] INFO: Wrapper: Completed Call, calling success_handler
-[2025-10-20 19:00:20,418] [BooleanMonitor] INFO:   ✓ RELEVANT (9/10): Global Counterterrorism Workshop Builds the Team, Explores I...
-19:00:23 - LiteLLM:INFO: utils.py:1297 - Wrapper: Completed Call, calling success_handler
-[2025-10-20 19:00:23,902] [LiteLLM] INFO: Wrapper: Completed Call, calling success_handler
-[2025-10-20 19:00:23,903] [BooleanMonitor] INFO:   ✓ RELEVANT (9/10): Global Counterterrorism Workshop Builds the Team, Explores I...
-19:00:29 - LiteLLM:INFO: utils.py:1297 - Wrapper: Completed Call, calling success_handler
-[2025-10-20 19:00:29,705] [LiteLLM] INFO: Wrapper: Completed Call, calling success_handler
-[2025-10-20 19:00:29,707] [BooleanMonitor] INFO:   ✓ RELEVANT (8/10): Global Counterterrorism Workshop Builds the Team, Explores I...
-19:00:34 - LiteLLM:INFO: utils.py:1297 - Wrapper: Completed Call, calling success_handler
-[2025-10-20 19:00:34,551] [LiteLLM] INFO: Wrapper: Completed Call, calling success_handler
-[2025-10-20 19:00:34,552] [BooleanMonitor] INFO:   ✓ RELEVANT (9/10): Global Counterterrorism Workshop Builds the Team, Explores I...
-[2025-10-20 19:00:34,553] [BooleanMonitor] INFO: Relevance filtering complete: 11 relevant, 0 filtered out
-[2025-10-20 19:00:34,553] [BooleanMonitor] INFO: Sending alert for 11 new results to brianmills2718@gmail.com
-[2025-10-20 19:00:34,553] [BooleanMonitor] INFO: ALERT: 11 new results found
-[2025-10-20 19:00:34,553] [BooleanMonitor] INFO:   1. Representatives meet with General Nakasone to discuss FISA Section 702 at NSAH (DVIDS)
-[2025-10-20 19:00:34,553] [BooleanMonitor] INFO:   2. Counter-terrorism training on ’battlefield evidence’ collection (master subs) (DVIDS)
-[2025-10-20 19:00:34,553] [BooleanMonitor] INFO:   3. Counter-terrorism training on ’battlefield evidence’ collection (master) (DVIDS)
-[2025-10-20 19:00:34,553] [BooleanMonitor] INFO:   4. Counter-terrorism training on ’battlefield evidence’ collection (it) (DVIDS)
-[2025-10-20 19:00:34,553] [BooleanMonitor] INFO:   5. Global Counterterrorism Workshop Builds the Team, Explores Increasing Role of Women (DVIDS)
-[2025-10-20 19:00:34,553] [BooleanMonitor] INFO:   ... and 6 more
-[2025-10-20 19:00:37,794] [BooleanMonitor] INFO: Email sent successfully to brianmills2718@gmail.com (authenticated)
-[2025-10-20 19:00:37,794] [BooleanMonitor] INFO: Saving 27 results to data/monitors/Boolean_Test_Monitor_results.json
-[2025-10-20 19:00:37,795] [BooleanMonitor] INFO: Results saved successfully
-[2025-10-20 19:00:37,795] [BooleanMonitor] INFO: Monitor run complete: 27 total results, 11 new
-[2025-10-20 19:00:37,795] [MonitorScheduler] INFO: All monitors completed
+[2025-10-20 20:12:33,244] [AdaptiveBooleanMonitor] INFO: ADAPTIVE SEARCH SUMMARY
+[2025-10-20 20:12:33,244] [AdaptiveBooleanMonitor] INFO: ============================================================
+[2025-10-20 20:12:33,244] [AdaptiveBooleanMonitor] INFO: Keywords searched: 9
+[2025-10-20 20:12:33,244] [AdaptiveBooleanMonitor] INFO: Total results: 0
+[2025-10-20 20:12:33,244] [AdaptiveBooleanMonitor] INFO: Unique entities discovered: 0
+[2025-10-20 20:12:33,244] [BooleanMonitor] INFO: Deduplicating 0 results
+[2025-10-20 20:12:33,244] [BooleanMonitor] INFO: Deduplication complete: 0 unique results (removed 0 duplicates)
+[2025-10-20 20:12:33,244] [BooleanMonitor] INFO: Checking for new results (previous: 0, current: 0)
+[2025-10-20 20:12:33,244] [BooleanMonitor] INFO: Found 0 new results
+[2025-10-20 20:12:33,244] [BooleanMonitor] INFO: No new results found, skipping alert
+[2025-10-20 20:12:33,244] [BooleanMonitor] INFO: Saving 0 results to data/monitors/Immigration_Enforcement_Operations_results.json
+[2025-10-20 20:12:33,244] [BooleanMonitor] INFO: Results saved successfully
+[2025-10-20 20:12:33,245] [BooleanMonitor] INFO: Monitor run complete: 0 total results, 0 new
 (.venv) brian@DESKTOP-79G7E9D:~/sam_gov$ 

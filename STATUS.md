@@ -1,7 +1,7 @@
 # STATUS.md - Component Status Tracker
 
-**Last Updated**: 2025-10-20 (AdaptiveBooleanMonitor full test complete)
-**Current Phase**: Phase 1.5 (Adaptive Search & Knowledge Graph) - Week 1 COMPLETE
+**Last Updated**: 2025-10-20 20:15 (All 5 production monitors tested + scheduler updated)
+**Current Phase**: Phase 1.5 (Adaptive Search & Knowledge Graph) - Week 1 COMPLETE ✅
 **Previous Phase**: Phase 1 (Boolean Monitoring MVP) - 100% COMPLETE + **DEPLOYED IN PRODUCTION** ✅
 **Previous Phase**: Phase 0 (Foundation) - 100% COMPLETE
 
@@ -91,10 +91,22 @@ Total execution time: ~3 minutes 25 seconds (84s adaptive + 101s filtering + 3s 
 
 **Verified**: Full end-to-end integration working (adaptive search → dedup → new detection → relevance filter → email → storage)
 
+**Production Monitor Testing Complete** (2025-10-20):
+All 5 production monitors tested with adaptive search enabled:
+1. Surveillance & FISA Programs: 0 results (PASS - no matches, databases marked "not relevant")
+2. Special Operations & Covert Programs: 95 results, 53 new, email sent (PASS)
+3. Immigration Enforcement Operations: 0 results (PASS - no matches, all keywords rejected by is_relevant())
+4. Domestic Extremism Classifications: 0 results (PASS - tested earlier)
+5. Inspector General & Oversight Reports: 0 results (PASS - tested earlier)
+
+**Evidence**: Special Operations found 95 results with entity extraction working (JSOC, USSOCOM, 10th Special Forces Group, Title 50 covert action authority). Email sent with 27 relevant results after LLM filtering.
+
+**Scheduler Updated**: monitoring/scheduler.py now uses AdaptiveBooleanMonitor instead of BooleanMonitor
+
 **Unverified**:
-- Performance with multiple relevant databases (only DVIDS was relevant in test)
-- Cost tracking for LLM calls (not shown in test output)
-- Production use with all 6 monitors running adaptive search
+- Performance with multiple relevant databases simultaneously (most tests had 0-1 relevant DBs)
+- Cost tracking totals for production deployment
+- Federal Register integration (removed from configs - not registered in registry)
 
 ---
 

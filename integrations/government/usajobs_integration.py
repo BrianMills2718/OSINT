@@ -56,26 +56,18 @@ class USAJobsIntegration(DatabaseIntegration):
 
     async def is_relevant(self, research_question: str) -> bool:
         """
-        Quick relevance check - does question relate to federal jobs?
+        Quick relevance check - always return True, let generate_query() LLM decide.
 
-        We check for job-related keywords to avoid wasting LLM calls
-        on questions that clearly aren't about employment.
+        The LLM in generate_query() is smarter at determining relevance and avoids
+        false negatives from overly restrictive keyword matching.
 
         Args:
             research_question: The user's research question
 
         Returns:
-            True if question might be about federal jobs, False otherwise
+            Always True - relevance determined by generate_query()
         """
-        job_keywords = [
-            "job", "jobs", "career", "careers", "employment", "hiring",
-            "position", "positions", "vacancy", "vacancies", "work",
-            "federal", "government", "usajobs", "civil service",
-            "gs", "grade", "agency"
-        ]
-
-        question_lower = research_question.lower()
-        return any(keyword in question_lower for keyword in job_keywords)
+        return True
 
     async def generate_query(self, research_question: str) -> Optional[Dict]:
         """

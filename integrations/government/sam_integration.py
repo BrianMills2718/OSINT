@@ -59,26 +59,18 @@ class SAMIntegration(DatabaseIntegration):
 
     async def is_relevant(self, research_question: str) -> bool:
         """
-        Quick relevance check - does question relate to government contracts?
+        Quick relevance check - always return True, let generate_query() LLM decide.
 
-        We check for contract/procurement-related keywords to avoid wasting LLM calls
-        on questions that clearly aren't about federal contracting.
+        The LLM in generate_query() is smarter at determining relevance and avoids
+        false negatives from overly restrictive keyword matching.
 
         Args:
             research_question: The user's research question
 
         Returns:
-            True if question might be about contracts, False otherwise
+            Always True - relevance determined by generate_query()
         """
-        contract_keywords = [
-            "contract", "contracts", "contracting", "procurement", "solicitation",
-            "rfp", "rfq", "rfi", "sources sought", "opportunity", "opportunities",
-            "bid", "bids", "bidding", "proposal", "proposals", "federal",
-            "government", "agency", "sam.gov", "sam", "award", "awards"
-        ]
-
-        question_lower = research_question.lower()
-        return any(keyword in question_lower for keyword in contract_keywords)
+        return True
 
     async def generate_query(self, research_question: str) -> Optional[Dict]:
         """
