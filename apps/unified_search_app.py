@@ -271,8 +271,29 @@ with tab5:
     ])
 
     with subtab1:
-        from clearancejobs_search import render_clearancejobs_tab
-        render_clearancejobs_tab(results_per_page, enable_rate_limiting)
+        try:
+            from clearancejobs_search import render_clearancejobs_tab
+            render_clearancejobs_tab(results_per_page, enable_rate_limiting)
+        except ImportError as e:
+            st.warning("⚠️ **ClearanceJobs Integration Unavailable**")
+            st.info("""
+            The ClearanceJobs integration requires Playwright, which is not available in this environment.
+
+            **Why this happens:**
+            - Playwright requires browser binaries (Chromium) which may not be supported on this platform
+            - This is common on Streamlit Cloud's free tier due to resource constraints
+
+            **What still works:**
+            - ✅ All other integrations (DVIDS, SAM.gov, USAJobs, Twitter, Discord, Federal Register, etc.)
+            - ✅ AI Research tab (multi-source search)
+            - ✅ Deep Research tab
+            - ✅ Monitor Management
+
+            **For local deployment:**
+            - ClearanceJobs works perfectly on local machines or dedicated servers
+            - See `STREAMLIT_DEPLOYMENT.md` for deployment options
+            """)
+            st.caption(f"Technical details: {str(e)}")
 
     with subtab2:
         from dvids_search import render_dvids_tab

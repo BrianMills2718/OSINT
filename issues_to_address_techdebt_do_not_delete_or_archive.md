@@ -63,6 +63,52 @@ Phase 3: Executing searches...
 
 ## Medium Priority
 
+### ClearanceJobs Integration - Playwright Not Available on Streamlit Cloud
+**Discovered**: 2025-10-21
+**Severity**: Medium (integration non-functional on Streamlit Cloud)
+**Status**: In Progress
+
+**Symptoms**:
+- `ModuleNotFoundError` when importing `playwright.async_api` on Streamlit Cloud
+- ClearanceJobs integration requires Playwright for web scraping
+- Playwright browser binaries too large/resource-intensive for Streamlit Cloud free tier
+
+**Evidence**:
+```
+ModuleNotFoundError: This app has encountered an error.
+File "/mount/src/osint/apps/unified_search_app.py", line 274, in <module>
+    from clearancejobs_search import render_clearancejobs_tab
+File "/mount/src/osint/apps/clearancejobs_search.py", line 15, in <module>
+    from integrations.government.clearancejobs_playwright import search_clearancejobs
+File "/mount/src/osint/integrations/government/clearancejobs_playwright.py", line 17, in <module>
+    from playwright.async_api import async_playwright, TimeoutError as PlaywrightTimeout
+```
+
+**Impact**:
+- ClearanceJobs integration breaks entire Streamlit Cloud app
+- App cannot load due to hard import dependency
+- Security-cleared job data unavailable on cloud deployment
+
+**Solution**:
+Make ClearanceJobs integration optional:
+1. Wrap imports in try/except blocks
+2. Gracefully handle missing Playwright dependency
+3. Show warning in UI when ClearanceJobs unavailable
+4. App continues functioning with other 7 integrations
+
+**Files**:
+- `apps/unified_search_app.py` (line 274: hard import)
+- `apps/clearancejobs_search.py` (line 15: hard import)
+- `integrations/government/clearancejobs_integration.py`
+- `integrations/government/clearancejobs_playwright.py`
+
+**Investigation Needed**:
+- Test if Playwright works on Streamlit Cloud with custom `packages.txt`
+- If not viable, make integration optional for cloud deployment
+- Consider alternative: ClearanceJobs API (if available) instead of scraping
+
+---
+
 ### FBI Vault Integration - SeleniumBase Chrome Detection
 **Discovered**: 2025-10-20
 **Severity**: Medium (integration blocked but not critical for MVP)

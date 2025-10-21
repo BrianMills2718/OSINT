@@ -7,8 +7,14 @@ from core.database_integration_base import DatabaseIntegration
 from integrations.government.sam_integration import SAMIntegration
 from integrations.government.dvids_integration import DVIDSIntegration
 from integrations.government.usajobs_integration import USAJobsIntegration
-from integrations.government.clearancejobs_integration import ClearanceJobsIntegration
 from integrations.government.fbi_vault import FBIVaultIntegration
+
+# ClearanceJobs integration requires Playwright (optional dependency)
+try:
+    from integrations.government.clearancejobs_integration import ClearanceJobsIntegration
+    CLEARANCEJOBS_AVAILABLE = True
+except ImportError:
+    CLEARANCEJOBS_AVAILABLE = False
 
 # Import social integrations
 from integrations.social.discord_integration import DiscordIntegration
@@ -38,7 +44,8 @@ class IntegrationRegistry:
         self.register(SAMIntegration)
         self.register(DVIDSIntegration)
         self.register(USAJobsIntegration)
-        self.register(ClearanceJobsIntegration)
+        if CLEARANCEJOBS_AVAILABLE:
+            self.register(ClearanceJobsIntegration)
         self.register(FBIVaultIntegration)
 
         # Social media sources
