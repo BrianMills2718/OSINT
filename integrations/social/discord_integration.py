@@ -86,8 +86,8 @@ class DiscordIntegration(DatabaseIntegration):
         """
         Generate search parameters for Discord message search.
 
-        Uses simple keyword extraction for MVP. In the future, could use LLM
-        to generate more sophisticated queries.
+        Uses LLM to extract key phrases and terms that should be searched together.
+        Preserves multi-word concepts like "domestic terrorism" as single search terms.
 
         Args:
             research_question: The user's research question
@@ -95,14 +95,72 @@ class DiscordIntegration(DatabaseIntegration):
         Returns:
             Dict with:
             {
-                "keywords": ["keyword1", "keyword2", ...],
+                "keywords": ["keyword or phrase 1", "keyword or phrase 2", ...],
                 "servers": None,  # Optional server filter (future)
                 "date_range": None  # Optional date filter (future)
             }
         """
-        # Simple keyword extraction for MVP
-        # Remove common words and punctuation
-        keywords = self._extract_keywords(research_question)
+        from llm_utils import acompletion
+        import json
+
+        # Use LLM to extract key search terms/phrases
+        prompt = f"""Extract 2-5 key search terms or phrases from this research question for searching Discord messages.
+
+Research Question: {research_question}
+
+Guidelines:
+- Preserve multi-word concepts as single terms (e.g., "domestic terrorism" not ["domestic", "terrorism"])
+- Include acronyms if relevant (e.g., "JTTF")
+- Focus on the most specific, distinctive terms
+- Use quotes around multi-word phrases in the output
+
+Examples:
+Question: "JTTF domestic terrorism activity"
+Terms: ["JTTF", "domestic terrorism"]
+
+Question: "Joint Terrorism Task Force operations"
+Terms: ["Joint Terrorism Task Force", "JTTF", "operations"]
+
+Return JSON with a "terms" array."""
+
+        try:
+            schema = {
+                "type": "object",
+                "properties": {
+                    "terms": {
+                        "type": "array",
+                        "items": {"type": "string"},
+                        "description": "Key search terms or phrases"
+                    }
+                },
+                "required": ["terms"],
+                "additionalProperties": False
+            }
+
+            response = await acompletion(
+                model="gpt-4o-mini",
+                messages=[{"role": "user", "content": prompt}],
+                response_format={
+                    "type": "json_schema",
+                    "json_schema": {
+                        "strict": True,
+                        "name": "discord_search_terms",
+                        "schema": schema
+                    }
+                }
+            )
+
+            result = json.loads(response.choices[0].message.content)
+            keywords = [term.lower() for term in result.get("terms", [])]
+
+            if not keywords:
+                # Fallback to simple extraction
+                keywords = self._extract_keywords(research_question)
+
+        except Exception as e:
+            # Fallback to simple extraction on error
+            print(f"Warning: LLM keyword extraction failed ({e}), using simple extraction")
+            keywords = self._extract_keywords(research_question)
 
         if not keywords:
             return None
@@ -238,8 +296,9 @@ class DiscordIntegration(DatabaseIntegration):
                 for msg in messages:
                     content = msg.get("content", "").lower()
 
-                    # Check if any keyword matches
-                    if any(kw in content for kw in keywords):
+                    # Check if ALL keywords match (AND search)
+                    # This ensures we only get messages containing every keyword
+                    if all(kw in content for kw in keywords):
                         # Calculate match score (how many keywords matched)
                         matched_keywords = [kw for kw in keywords if kw in content]
                         score = len(matched_keywords) / len(keywords)
