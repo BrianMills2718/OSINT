@@ -1,0 +1,88 @@
+{
+  "session_metadata": {
+    "session_id": "6cb6d705-ce5f-461f-bb66-5ebd26bd31a3",
+    "start_time": "2025-09-02T21:30:18.408671+00:00",
+    "end_time": "2025-09-02T21:31:48.019592+00:00",
+    "duration_seconds": 89.60892,
+    "user_query": "Elon Musk Twitter latest news"
+  },
+  "configuration": {
+    "max_searches": 3,
+    "max_time_minutes": 60,
+    "satisfaction_enabled": true,
+    "satisfaction_threshold": 0.8,
+    "min_searches_before_satisfaction": 10,
+    "show_search_details": true,
+    "show_strategy_reasoning": true,
+    "show_effectiveness_scores": true,
+    "enable_strategy_adaptation": true,
+    "enable_alternative_approaches": true,
+    "enable_name_variation_search": true,
+    "pages_per_search": 1,
+    "search_timeout_seconds": 30,
+    "retry_failed_searches": true,
+    "enforce_endpoint_diversity": false,
+    "max_endpoint_repeats": 5,
+    "diversity_threshold": 0.3
+  },
+  "performance_metrics": {
+    "total_searches": 3,
+    "total_rounds": 1,
+    "total_results_found": 156,
+    "satisfaction_score": 0.0,
+    "satisfaction_breakdown": {
+      "information_coverage": 0.0,
+      "source_diversity": 0.0,
+      "evidence_quality": 0.0,
+      "claim_specificity": 0.0,
+      "contradiction_resolution": 0.0
+    },
+    "completion_reason": "Investigation failed: 'InvestigationLogger' object has no attribute 'info'"
+  },
+  "search_summary": {
+    "searches_by_effectiveness": {
+      "highly_effective": [],
+      "moderately_effective": [
+        {
+          "search_id": 2,
+          "query": "",
+          "results": 59,
+          "effectiveness": 5.9
+        },
+        {
+          "search_id": 3,
+          "query": "",
+          "results": 50,
+          "effectiveness": 5.0
+        }
+      ],
+      "low_effectiveness": [
+        {
+          "search_id": 1,
+          "query": "Elon Musk Twitter latest news",
+          "results": 47,
+          "effectiveness": 4.7
+        }
+      ],
+      "ineffective": []
+    },
+    "most_effective_strategies": [
+      {
+        "strategy": "Graph Strategy: To build a comprehensive understanding of 'Elon Musk Twitter latest news', the initial strategy involves a multi-pronged approach to gather diverse information. This includes broad searches for general news, direct observation of Elon Musk's own Twitter activity, and a scan of trending topics for wider context. This ensures a foundational understanding by covering various angles and fulfilling the diversity requirement for endpoints.",
+        "avg_effectiveness": 5.2
+      }
+    ],
+    "dead_ends": [],
+    "promising_leads": []
+  },
+  "rounds_summary": [
+    {
+      "round_number": 1,
+      "strategy": "Graph Strategy: To build a comprehensive understanding of 'Elon Musk Twitter latest news', the initial strategy involves a multi-pronged approach to gather diverse information. This includes broad searches for general news, direct observation of Elon Musk's own Twitter activity, and a scan of trending topics for wider context. This ensures a foundational understanding by covering various angles and fulfilling the diversity requirement for endpoints.",
+      "searches_count": 3,
+      "total_results": 156,
+      "effectiveness": 0.0,
+      "insights": []
+    }
+  ]
+}

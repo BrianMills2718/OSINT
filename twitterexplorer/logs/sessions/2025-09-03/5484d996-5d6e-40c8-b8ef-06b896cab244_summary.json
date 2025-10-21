@@ -1,0 +1,81 @@
+{
+  "session_metadata": {
+    "session_id": "5484d996-5d6e-40c8-b8ef-06b896cab244",
+    "start_time": "2025-09-03T17:45:47.176431+00:00",
+    "end_time": "2025-09-03T17:46:36.411742+00:00",
+    "duration_seconds": 49.234801,
+    "user_query": "Trump health investigation"
+  },
+  "configuration": {
+    "max_searches": 2,
+    "max_time_minutes": 60,
+    "satisfaction_enabled": true,
+    "satisfaction_threshold": 0.8,
+    "min_searches_before_satisfaction": 10,
+    "show_search_details": true,
+    "show_strategy_reasoning": true,
+    "show_effectiveness_scores": true,
+    "enable_strategy_adaptation": true,
+    "enable_alternative_approaches": true,
+    "enable_name_variation_search": true,
+    "pages_per_search": 3,
+    "search_timeout_seconds": 30,
+    "retry_failed_searches": true,
+    "enforce_endpoint_diversity": false,
+    "max_endpoint_repeats": 5,
+    "diversity_threshold": 0.3
+  },
+  "performance_metrics": {
+    "total_searches": 2,
+    "total_rounds": 1,
+    "total_results_found": 115,
+    "satisfaction_score": 0.0,
+    "satisfaction_breakdown": {
+      "information_coverage": 0.0,
+      "source_diversity": 0.0,
+      "evidence_quality": 0.0,
+      "claim_specificity": 0.0,
+      "contradiction_resolution": 0.0
+    },
+    "completion_reason": "Reached maximum search limit (2)"
+  },
+  "search_summary": {
+    "searches_by_effectiveness": {
+      "highly_effective": [],
+      "moderately_effective": [
+        {
+          "search_id": 1,
+          "query": "Donald Trump health reports OR 'medical records' OR 'health updates'",
+          "results": 55,
+          "effectiveness": 5.5
+        },
+        {
+          "search_id": 2,
+          "query": "",
+          "results": 60,
+          "effectiveness": 6.0
+        }
+      ],
+      "low_effectiveness": [],
+      "ineffective": []
+    },
+    "most_effective_strategies": [
+      {
+        "strategy": "Graph Strategy: To establish a foundational understanding of public discourse, official statements, and potential medical affiliations related to Donald Trump's health, addressing the initial comprehensive information gap. This multi-faceted approach ensures diverse data collection from general news, primary source statements, and network connections, providing a robust starting point for deeper investigation.",
+        "avg_effectiveness": 5.75
+      }
+    ],
+    "dead_ends": [],
+    "promising_leads": []
+  },
+  "rounds_summary": [
+    {
+      "round_number": 1,
+      "strategy": "Graph Strategy: To establish a foundational understanding of public discourse, official statements, and potential medical affiliations related to Donald Trump's health, addressing the initial comprehensive information gap. This multi-faceted approach ensures diverse data collection from general news, primary source statements, and network connections, providing a robust starting point for deeper investigation.",
+      "searches_count": 2,
+      "total_results": 115,
+      "effectiveness": 0.0,
+      "insights": []
+    }
+  ]
+}

@@ -1,0 +1,1021 @@
+{
+  "nodes": {
+    "517b0216-e6c5-4f2e-863d-39e8fcfd17f1": {
+      "id": "517b0216-e6c5-4f2e-863d-39e8fcfd17f1",
+      "node_type": "AnalyticQuestion",
+      "properties": {
+        "text": "Trump sent military to Venezuela test analysis",
+        "is_root": true,
+        "investigation_goal": "Trump sent military to Venezuela test analysis"
+      },
+      "created_at": "2025-09-08T03:00:31.322632"
+    },
+    "a2f6e608-4f22-48a7-9aaf-4c5a36aac3f5": {
+      "id": "a2f6e608-4f22-48a7-9aaf-4c5a36aac3f5",
+      "node_type": "InvestigationQuestion",
+      "properties": {
+        "text": "Strategic question: Locate exact-phrase uses of the claim to find origin tweets, prominent examples, or fact-checks. 'Top' will surface the most influential posts and media linking to the claim.",
+        "parent_analytic_question": "517b0216-e6c5-4f2e-863d-39e8fcfd17f1"
+      },
+      "created_at": "2025-09-08T03:00:55.491640"
+    },
+    "25f08381-c631-444a-a45f-e484d05f515a": {
+      "id": "25f08381-c631-444a-a45f-e484d05f515a",
+      "node_type": "SearchQuery",
+      "properties": {
+        "endpoint": "search.php",
+        "parameters": {
+          "query": "\"Trump sent military to Venezuela\"",
+          "search_type": "Top"
+        }
+      },
+      "created_at": "2025-09-08T03:00:55.491640"
+    },
+    "993c0d06-ff7e-4016-b1a9-73b13baea914": {
+      "id": "993c0d06-ff7e-4016-b1a9-73b13baea914",
+      "node_type": "InvestigationQuestion",
+      "properties": {
+        "text": "Strategic question: A broader, time-ordered search to capture recent mentions, variations in wording, and evolving threads. Excluding 'satire' helps reduce noise from known parody accounts.",
+        "parent_analytic_question": "517b0216-e6c5-4f2e-863d-39e8fcfd17f1"
+      },
+      "created_at": "2025-09-08T03:00:55.491640"
+    },
+    "fcbc8fb1-e369-44bd-80e1-0fd3688cb661": {
+      "id": "fcbc8fb1-e369-44bd-80e1-0fd3688cb661",
+      "node_type": "SearchQuery",
+      "properties": {
+        "endpoint": "search.php",
+        "parameters": {
+          "query": "Trump Venezuela (sent OR sent troops OR sent military OR deployed troops OR deployed military) -satire",
+          "search_type": "Latest"
+        }
+      },
+      "created_at": "2025-09-08T03:00:55.491640"
+    },
+    "6b35fd5b-6b07-4ee2-ada0-7e3aa2ebd253": {
+      "id": "6b35fd5b-6b07-4ee2-ada0-7e3aa2ebd253",
+      "node_type": "InvestigationQuestion",
+      "properties": {
+        "text": "Strategic question: Check whether Trump's own account (historical) posted anything about Venezuela military action. 'from:' narrows to claims directly attributable to him.",
+        "parent_analytic_question": "517b0216-e6c5-4f2e-863d-39e8fcfd17f1"
+      },
+      "created_at": "2025-09-08T03:00:55.491640"
+    },
+    "f797bfbf-3404-4bff-bdec-5f86a5a29ba5": {
+      "id": "f797bfbf-3404-4bff-bdec-5f86a5a29ba5",
+      "node_type": "SearchQuery",
+      "properties": {
+        "endpoint": "search.php",
+        "parameters": {
+          "query": "from:realDonaldTrump Venezuela OR troops OR military",
+          "search_type": "Top"
+        }
+      },
+      "created_at": "2025-09-08T03:00:55.491640"
+    },
+    "c0611f4d-69a3-48a6-822a-bdc045c79c08": {
+      "id": "c0611f4d-69a3-48a6-822a-bdc045c79c08",
+      "node_type": "InvestigationQuestion",
+      "properties": {
+        "text": "Strategic question: Pull Trump's recent/historical timeline to verify whether he tweeted about sending military to Venezuela and to capture exact language and timestamps for attribution analysis.",
+        "parent_analytic_question": "517b0216-e6c5-4f2e-863d-39e8fcfd17f1"
+      },
+      "created_at": "2025-09-08T03:00:55.491640"
+    },
+    "cffdba1c-1ea3-4c51-aa69-38860cb847f2": {
+      "id": "cffdba1c-1ea3-4c51-aa69-38860cb847f2",
+      "node_type": "SearchQuery",
+      "properties": {
+        "endpoint": "timeline.php",
+        "parameters": {
+          "screenname": "realDonaldTrump"
+        }
+      },
+      "created_at": "2025-09-08T03:00:55.491640"
+    },
+    "65744b32-5931-4d77-897a-797d867b7db9": {
+      "id": "65744b32-5931-4d77-897a-797d867b7db9",
+      "node_type": "InvestigationQuestion",
+      "properties": {
+        "text": "Strategic question: Review a major global news organization's timeline for any reporting on US military movements or official statements about Venezuela; useful as a corroborating source and to find linked articles shared on Twitter.",
+        "parent_analytic_question": "517b0216-e6c5-4f2e-863d-39e8fcfd17f1"
+      },
+      "created_at": "2025-09-08T03:00:55.491640"
+    },
+    "068edd19-989e-4338-862a-bf277e667199": {
+      "id": "068edd19-989e-4338-862a-bf277e667199",
+      "node_type": "SearchQuery",
+      "properties": {
+        "endpoint": "timeline.php",
+        "parameters": {
+          "screenname": "reuters"
+        }
+      },
+      "created_at": "2025-09-08T03:00:55.491640"
+    },
+    "5aa5cc86-dca8-4c1d-8b12-c1d2e55bd069": {
+      "id": "5aa5cc86-dca8-4c1d-8b12-c1d2e55bd069",
+      "node_type": "InvestigationQuestion",
+      "properties": {
+        "text": "Strategic question: Check whether the topic (Venezuela / Trump / troops) is trending in the U.S.; trending context will help prioritize which tweets to examine for high spread and public attention.",
+        "parent_analytic_question": "517b0216-e6c5-4f2e-863d-39e8fcfd17f1"
+      },
+      "created_at": "2025-09-08T03:00:55.491640"
+    },
+    "d827684c-28dd-47d2-945e-276239e38595": {
+      "id": "d827684c-28dd-47d2-945e-276239e38595",
+      "node_type": "SearchQuery",
+      "properties": {
+        "endpoint": "trends.php",
+        "parameters": {
+          "country": "UnitedStates"
+        }
+      },
+      "created_at": "2025-09-08T03:00:55.491640"
+    },
+    "7ee2ff2c-3100-400d-b6fe-14e8bcb5438d": {
+      "id": "7ee2ff2c-3100-400d-b6fe-14e8bcb5438d",
+      "node_type": "DataPoint",
+      "properties": {
+        "content": "This Washington Post op-ed politely states what everyone knows: Trump's claim Maduro is a drug cartel kingpin has no merit. The 1000s of troops sent to Venezuelan waters augur a military intervention, one that will enrage much of Latin America!  https://t.co/zqwo3cllCM",
+        "source_info": {
+          "source": "search.php",
+          "timestamp": "2025-09-08T03:01:37.313341",
+          "entities": {},
+          "follow_up_needed": null,
+          "relevance_score": 0.7,
+          "goal_relevance_score": 0.8
+        },
+        "source": "search.php",
+        "timestamp": "2025-09-08T03:01:37.313341"
+      },
+      "created_at": "2025-09-08T03:01:37.313341"
+    },
+    "5a557133-2975-4e29-9ece-94aab0d5e8b5": {
+      "id": "5a557133-2975-4e29-9ece-94aab0d5e8b5",
+      "node_type": "DataPoint",
+      "properties": {
+        "content": "@Lets_Play_MEOW Trump sent 4500 troops  to  Venezuela \nhttps://t.co/7pmSenlINV",
+        "source_info": {
+          "source": "search.php",
+          "timestamp": "2025-09-08T03:01:37.313341",
+          "entities": {},
+          "follow_up_needed": null,
+          "relevance_score": 0.9,
+          "goal_relevance_score": 0.6
+        },
+        "source": "search.php",
+        "timestamp": "2025-09-08T03:01:37.313341"
+      },
+      "created_at": "2025-09-08T03:01:37.313341"
+    },
+    "d0b706a5-d442-41a5-9f7a-2fc74b1abbba": {
+      "id": "d0b706a5-d442-41a5-9f7a-2fc74b1abbba",
+      "node_type": "DataPoint",
+      "properties": {
+        "content": "In last week\u2019s move toward a military confrontation with oil-rich Venezuela. Trump sent two warships and 4,000 US troops to the waters near Venezuela under the highly suspect accusation that the country\u2019s president is actually head of an international drug cartel.",
+        "source_info": {
+          "source": "search.php",
+          "timestamp": "2025-09-08T03:01:37.313341",
+          "entities": {},
+          "follow_up_needed": null,
+          "relevance_score": 0.9,
+          "goal_relevance_score": 0.8
+        },
+        "source": "search.php",
+        "timestamp": "2025-09-08T03:01:37.313341"
+      },
+      "created_at": "2025-09-08T03:01:37.313341"
+    },
+    "0e032f2d-c05e-4b48-91f7-a69063a25f69": {
+      "id": "0e032f2d-c05e-4b48-91f7-a69063a25f69",
+      "node_type": "DataPoint",
+      "properties": {
+        "content": "#FPWorld: Trump has deployed five warships and thousands of soldiers towards Venezuela to deal with the \u2018Cartel de los Soles\u2019. But such a drug cartel may not even exist. \n\nRead how Trump may have deployed military against a non-existent group.\nhttps://t.co/2pwaTiYlee",
+        "source_info": {
+          "source": "search.php",
+          "timestamp": "2025-09-08T03:01:37.313341",
+          "entities": {},
+          "follow_up_needed": null,
+          "relevance_score": 0.85,
+          "goal_relevance_score": 0.6
+        },
+        "source": "search.php",
+        "timestamp": "2025-09-08T03:01:37.313341"
+      },
+      "created_at": "2025-09-08T03:01:37.313341"
+    },
+    "1d1b9366-7718-4c1f-ad63-ea96b2cad89f": {
+      "id": "1d1b9366-7718-4c1f-ad63-ea96b2cad89f",
+      "node_type": "DataPoint",
+      "properties": {
+        "content": "\ud83d\udea8 1/5 \u2014 U.S. Military Deploys Warships to Venezuela\nPresident Trump has sent 3 Navy destroyers and over 4,000 troops to waters near Venezuela to target drug cartels. The Pentagon says the operation may last months and include targeted strikes.\nData: Deployment includes guided-missile destroyers, submarines, and spy planes \n@DeptofDefense @USNavy @Southcom\n\n---\n\n2/5 \u2014 Secret U.S. Military Shuttle Launches from Florida\nThe X-37B space plane launched Thursday night for classified experiments. It will test laser communications and GPS-free navigation.\nData: 8th mission since 2010; previous flight lasted over a year \n: @SpaceForceDoD @BoeingDefense @SpaceX\n\n---\n\n3/5 \u2014 Trump Pushes U.S. Ownership of South Korea Bases\nTrump suggests the U.S. should own land housing 28,500 troops in South Korea, not lease it. The proposal has sparked diplomatic tension.\nData: $10B+ invested in infrastructure across 73 bases \n@USForcesKorea @DeptofDefense @WhiteHouse\n\n---\n\n4/5 \u2014 Pentagon Blocks Ukraine from Using U.S. Missiles\nThe Pentagon has reportedly restricted Ukraine from deploying long-range U.S.-made missiles against Russian targets, citing escalation risks.\nData: Decision affects ATACMS and Storm Shadow systems \n@SecDef @PentagonPresSec @NATO\n\n---\n\n5/5 \u2014 U.S. Military Expands Border Role in Mexico\nUnder Trump\u2019s directive, U.S. forces are now assisting DHS in raids and surveillance along the southern border.\nData: 1,200 troops deployed; 300 remain active in California \n: @DHSgov @USArmy @CBP\n\n---",
+        "source_info": {
+          "source": "search.php",
+          "timestamp": "2025-09-08T03:01:37.313341",
+          "entities": {},
+          "follow_up_needed": null,
+          "relevance_score": 0.9,
+          "goal_relevance_score": 1.0
+        },
+        "source": "search.php",
+        "timestamp": "2025-09-08T03:01:37.313341"
+      },
+      "created_at": "2025-09-08T03:01:37.313341"
+    },
+    "b9258b84-8560-41f0-af20-235d6b72e2a8": {
+      "id": "b9258b84-8560-41f0-af20-235d6b72e2a8",
+      "node_type": "DataPoint",
+      "properties": {
+        "content": "Now the military muscle is in place. In August, Trump sent 6 U.S. warships &amp; 4,500 troops to the Caribbean, right off Venezuela\u2019s coast. Officially \u201ccounternarcotics.\u201d In reality, it\u2019s backing Chevron\u2019s monopoly... Chevron is the only one w/ US license to export oil from there rn",
+        "source_info": {
+          "source": "search.php",
+          "timestamp": "2025-09-08T03:01:37.313341",
+          "entities": {},
+          "follow_up_needed": null,
+          "relevance_score": 0.88,
+          "goal_relevance_score": 0.8
+        },
+        "source": "search.php",
+        "timestamp": "2025-09-08T03:01:37.313341"
+      },
+      "created_at": "2025-09-08T03:01:37.313341"
+    },
+    "34942869-3f30-452d-82e4-c7e81c40e4a4": {
+      "id": "34942869-3f30-452d-82e4-c7e81c40e4a4",
+      "node_type": "DataPoint",
+      "properties": {
+        "content": "Trump just sent a shocking warning to Cartels:\n\n\"We will use every tool\u2014legal, financial, and military, to completely destroy you.\"\n\nTrump deployed 3 warships to Venezuela to hunt them down.\n\nBut Venezuela struck back.\n\nNow the Cartel war just became something much, much bigger: https://t.co/VEGqlWIkXt",
+        "source_info": {
+          "source": "search.php",
+          "timestamp": "2025-09-08T03:01:37.313341",
+          "entities": {},
+          "follow_up_needed": null,
+          "relevance_score": 0.85,
+          "goal_relevance_score": 0.8
+        },
+        "source": "search.php",
+        "timestamp": "2025-09-08T03:01:37.313341"
+      },
+      "created_at": "2025-09-08T03:01:37.313341"
+    },
+    "ca3f0445-65a8-415f-beb7-079e0a8a5866": {
+      "id": "ca3f0445-65a8-415f-beb7-079e0a8a5866",
+      "node_type": "DataPoint",
+      "properties": {
+        "content": "@LePapillonBlu2 That same pedo criminal in the white house just sent troops to Venezuela.  Venezuela just activated millions of militia members to prepare to fight.\n\nhttps://t.co/QWw66va4dh",
+        "source_info": {
+          "source": "search.php",
+          "timestamp": "2025-09-08T03:01:37.313341",
+          "entities": {},
+          "follow_up_needed": null,
+          "relevance_score": 0.35,
+          "goal_relevance_score": 0.4
+        },
+        "source": "search.php",
+        "timestamp": "2025-09-08T03:01:37.313341"
+      },
+      "created_at": "2025-09-08T03:01:37.313341"
+    },
+    "3ca308ca-96cd-4935-baf3-e45c75c92471": {
+      "id": "3ca308ca-96cd-4935-baf3-e45c75c92471",
+      "node_type": "DataPoint",
+      "properties": {
+        "content": "@ryangrim The pedo of peace also just sent troops to Venezuela to prepare to invade.\n\n3 US destroyers and 4000 troops.  Venezuela is on high alert and activated their militias to prepare to fight.\n\ntrump is out of control.\nhttps://t.co/QWw66va4dh",
+        "source_info": {
+          "source": "search.php",
+          "timestamp": "2025-09-08T03:01:37.313341",
+          "entities": {},
+          "follow_up_needed": null,
+          "relevance_score": 0.9,
+          "goal_relevance_score": 0.6
+        },
+        "source": "search.php",
+        "timestamp": "2025-09-08T03:01:37.313341"
+      },
+      "created_at": "2025-09-08T03:01:37.313341"
+    },
+    "8305257e-53f9-47d2-90b4-9acf3a009431": {
+      "id": "8305257e-53f9-47d2-90b4-9acf3a009431",
+      "node_type": "Insight",
+      "properties": {
+        "content": "The disparate reports converge on a clear pattern: the Trump administration has deployed thousands of service members and naval assets near Venezuela while relying on a contested narrative\u2014that Nicol\u00e1s Maduro is a \u2018drug cartel kingpin\u2019\u2014to justify the presence. Sources disagree on exact force levels (tweets cite 4,000\u20134,500 troops and two warships), but the Washington Post op-ed explicitly finds the cartel claim lacks merit and warns that large deployments \u2018\u2018augur a military intervention.\u2019\u2019 Together this indicates a deliberate coupling of ambiguous or unsubstantiated allegations with visible force projection, creating both a political rationale and a pretext for potential escalation. For the investigation, the critical implications are to (1) verify actual force posture and orders, (2) assess the evidentiary basis offered publicly and in classified briefings for the \u2018\u2018drug kingpin\u2019\u2019 claim, and (3) evaluate legal and strategic justifications being used to normalize interventionist options.",
+        "insight_type": "implication",
+        "confidence": 0.8,
+        "title": "Military escalation justified by weak accusations signals risk of intervention"
+      },
+      "created_at": "2025-09-08T03:02:07.782497"
+    },
+    "a866ffd3-23de-4919-9a6d-89c37a418c56": {
+      "id": "a866ffd3-23de-4919-9a6d-89c37a418c56",
+      "node_type": "Insight",
+      "properties": {
+        "content": "Both sources show a clear disconnection between the administration\u2019s public justification (labeling Maduro a drug-cartel kingpin) and the evidence underlying that claim. Despite the Washington Post op-ed concluding the accusation \u201chas no merit,\u201d the administration nonetheless dispatched two warships and roughly 4,000 troops into Venezuelan waters\u2014moves that materially increase the risk of a kinetic confrontation and resemble preparation for intervention. The pattern suggests the allegation may have been used instrumentally as a casus belli or coercive justification rather than as an evidence-based trigger for deployment. For the investigation this implies urgent lines of inquiry: trace the intelligence and legal basis for the accusation, map the decision chain authorizing troop/ship movements, review communications about objectives and rules of engagement, and assess whether public messaging diverged from classified assessments or legal advice.",
+        "insight_type": "implication",
+        "confidence": 0.7,
+        "title": "Unsubstantiated criminal accusation used as pretext to justify substantial military mobilization"
+      },
+      "created_at": "2025-09-08T03:02:17.628389"
+    },
+    "1071bd1d-c033-42af-929f-6012a3cb70b8": {
+      "id": "1071bd1d-c033-42af-929f-6012a3cb70b8",
+      "node_type": "Insight",
+      "properties": {
+        "content": "Multiple reports about the U.S. military deployment off Venezuela show clear inconsistencies in scale and stated purpose: reported warship and troop counts vary (3, 5, 6 warships; ~4,000\u20134,500 troops), the official rationale is counternarcotics, but other accounts frame the move as political support (e.g., backing opponents of Maduro/Che), and the primary target invoked\u2014'Cartel de los Soles'\u2014may not even exist. These contradictions point to operational opacity and possible use of a counternarcotics pretext to justify a politically motivated military posture. For the investigation this implies the need to (1) validate the factual details of the deployment (forces, orders, timeline), (2) assess the intelligence basis for the counternarcotics claim (existence and threat of the named cartel), and (3) examine decision-making and political intent (signals to Venezuela and domestic audiences). The inconsistencies also raise legal and reputational concerns about whether force was deployed on accurate grounds or as strategic signaling, increasing the importance of sourcing primary Pentagon orders, intelligence assessments, and communications between civilian leadership and military commanders.",
+        "insight_type": "contradiction",
+        "confidence": 0.75,
+        "title": "Deployment rationale and scale are inconsistent\u2014suggesting political cover and operational opacity"
+      },
+      "created_at": "2025-09-08T03:02:57.130202"
+    },
+    "b4359947-c342-46bd-8165-6fb2b3dae20a": {
+      "id": "b4359947-c342-46bd-8165-6fb2b3dae20a",
+      "node_type": "Insight",
+      "properties": {
+        "content": "The aggregated reports show a recurring pattern: large U.S. naval and troop deployments near Venezuela are publicly framed as counternarcotics operations targeting the so\u2011called \u201cCartel de los Soles,\u201d yet independent reporting questions whether that cartel even exists. This contradiction suggests the counternarcotics justification may be a pretext for a broader geopolitical or regime\u2011targeting objective (e.g., signaling, deterrence, backing opposition forces). For the investigation, the key implication is that mission intent, intelligence basis, and decision\u2011making must be scrutinized\u2014particularly: what specific evidence tied the deployments to cartel activity; who authored and reviewed that intelligence; whether alternative political objectives were discussed alongside or instead of counternarcotics; and how public messaging diverged from internal rationales. Emerging themes: use of counternarcotics as a justification for power projection, opaque or weak intelligence underpinning kinetic deployments, and inconsistent public details (ship and troop counts) that complicate accountability and fact\u2011checking. These points raise risks of misrepresentation, escalation with Venezuela, and diminished credibility of U.S. actions if the cartel premise is unfounded.",
+        "insight_type": "contradiction",
+        "confidence": 0.7,
+        "title": "Official counternarcotics rationale conflicts with weak evidence for 'Cartel de los Soles'\u2014possible political/military pretext"
+      },
+      "created_at": "2025-09-08T03:03:13.220989"
+    },
+    "f23728f8-64e7-4fd1-aaae-1beb86b90130": {
+      "id": "f23728f8-64e7-4fd1-aaae-1beb86b90130",
+      "node_type": "Insight",
+      "properties": {
+        "content": "Multiple social-media posts assert that the Trump administration dispatched warships and troops to Venezuela (claims include \"3 destroyers,\" \"4000 troops,\" and a mission to \"hunt\" cartels) and that Venezuela has activated militias in response. The accounts are emotionally charged, inconsistent about purpose (anti\u2011cartel operations vs. invasion) and scale, and lack sourcing from official military or diplomatic channels. Whether accurate or false, these narratives can themselves accelerate tensions, trigger defensive mobilization, and complicate verification \u2014 making it essential for the investigation to prioritize authoritative confirmation (DoD/State releases, ship/aircraft tracking, embassy advisories) and to trace how the claims spread and which actors amplified them. Investigative focus should therefore be: 1) verify or refute the alleged deployment with primary open\u2011source/military records, and 2) assess whether the social-media narrative prompted any observable Venezuelan mobilization or diplomatic escalation.",
+        "insight_type": "implication",
+        "confidence": 0.5,
+        "title": "Social-media claims of a US military deployment to Venezuela are unverified but pose a real escalation risk by driving mobilization and confusion"
+      },
+      "created_at": "2025-09-08T03:03:56.380726"
+    },
+    "04649b28-9bb0-4651-a504-e4aea84a2e90": {
+      "id": "04649b28-9bb0-4651-a504-e4aea84a2e90",
+      "node_type": "DataPoint",
+      "properties": {
+        "content": "Kelly Cooper is a fantastic America First Candidate running to represent the Great People of Arizona\u2019s 4th Congressional District!\n\u00a0\nKelly will be an INCREDIBLE Fighter in Congress. A U.S. Marine Corps Veteran, Kelly knows how to Strengthen our Military, Care for our Veterans, Secure our Border, Stand with our Brave Law Enforcement, and Support our always under siege Second Amendment. As a very successful Small Businessman, Kelly will work hard to Stop Inflation, Grow the Economy, Lower Taxes, and Eliminate Government Waste.\n\u00a0\nKelly Cooper has my Complete and Total Endorsement - HE WILL NEVER LET YOU DOWN!",
+        "source_info": {
+          "source": "search.php",
+          "timestamp": "2025-09-08T03:04:32.253435",
+          "entities": {},
+          "follow_up_needed": null,
+          "relevance_score": 0.9,
+          "goal_relevance_score": 0.4
+        },
+        "source": "search.php",
+        "timestamp": "2025-09-08T03:04:32.253435"
+      },
+      "created_at": "2025-09-08T03:04:32.253435"
+    },
+    "0da0b772-d98b-4f1b-8471-958ae1cfe79c": {
+      "id": "0da0b772-d98b-4f1b-8471-958ae1cfe79c",
+      "node_type": "DataPoint",
+      "properties": {
+        "content": "Derrick Anderson is running to represent the wonderful people of Virginia\u2019s 7th Congressional District. He bravely fought for our Great Country as a Green Beret, and was deployed to Afghanistan, Bahrain, Jordan, Israel, and Lebanon. Unlike the current administration, he never left anyone behind!\n\u00a0\nDerrick is America First all the way, and he is running against a weak and pathetic Democrat named Yevgeny \u201cEugene\u201d Vindman who, along with Adam \u201cShifty\u201d Schiff and others, lied to push the Ukraine Impeachment Hoax, a continuation of the greatest and most dangerous Political WITCH HUNT in the History of our Country!\n\u00a0\nDerrick Anderson has my Complete and Total Endorsement - HE WILL NOT LET YOU DOWN!",
+        "source_info": {
+          "source": "search.php",
+          "timestamp": "2025-09-08T03:04:32.253435",
+          "entities": {},
+          "follow_up_needed": null,
+          "relevance_score": 0.85,
+          "goal_relevance_score": 0.4
+        },
+        "source": "search.php",
+        "timestamp": "2025-09-08T03:04:32.253435"
+      },
+      "created_at": "2025-09-08T03:04:32.253435"
+    },
+    "e4ed9c98-217a-41fa-ad42-e4249cc72341": {
+      "id": "e4ed9c98-217a-41fa-ad42-e4249cc72341",
+      "node_type": "DataPoint",
+      "properties": {
+        "content": "If Cuban Troops and Militia do not immediately CEASE military and other operations for the purpose of causing death and destruction to the Constitution of Venezuela, a full and complete....",
+        "source_info": {
+          "source": "search.php",
+          "timestamp": "2025-09-08T03:04:32.253435",
+          "entities": {},
+          "follow_up_needed": null,
+          "relevance_score": 0.7,
+          "goal_relevance_score": 0.4
+        },
+        "source": "search.php",
+        "timestamp": "2025-09-08T03:04:32.253435"
+      },
+      "created_at": "2025-09-08T03:04:32.253435"
+    },
+    "d5962784-c183-4f81-a46a-b7b8453a38d7": {
+      "id": "d5962784-c183-4f81-a46a-b7b8453a38d7",
+      "node_type": "Insight",
+      "properties": {
+        "content": "The three sources together show a clear pattern of rapid military escalation\u2014deployment of multiple warships and several thousand U.S. troops to waters near Venezuela\u2014being presented as a response to alleged criminality by Maduro. However, there are two important conflicts: (1) reported troop counts are inconsistent (1,000s vs ~4,000\u20134,500), indicating either confusion in reporting or fluid operational deployments; and (2) the principal public justification (Maduro as a drug-cartel kingpin) is explicitly challenged by a Washington Post op-ed as lacking merit. The combined pattern implies a high risk of politically driven or pretextual military pressure that could lead toward intervention without a solid, publicly verifiable legal/intelligence basis. For the investigation this highlights two priorities: verify precise force levels and movements, and probe the evidentiary basis and decision-making trail used to justify the deployment, since inconsistencies and weak justification materially affect legal, strategic, and reputational consequences.",
+        "insight_type": "implication",
+        "confidence": 0.82,
+        "title": "Escalatory military posture backed by disputed justification and inconsistent reporting"
+      },
+      "created_at": "2025-09-08T03:05:05.142188"
+    },
+    "4a8107b3-a999-4fe8-aeb7-698ed7432dbd": {
+      "id": "4a8107b3-a999-4fe8-aeb7-698ed7432dbd",
+      "node_type": "Insight",
+      "properties": {
+        "content": "Both items show a clear contradiction between the publicly stated justification (Maduro as a \"drug cartel kingpin\")\u2014which multiple observers call meritless\u2014and the scale of U.S. military action (thousands of troops and warships off Venezuela). The pattern implies the deployment is less about credible counter\u2011narcotics operations and more about coercive signaling or preparation for intervention (political pressure, regime change push, or securing oil interests). For the investigation, this raises questions about the factual intelligence used to justify the move, decision\u2011making drivers (strategic vs. legal vs. domestic political), escalation risks, and whether statutory authorizations or oversight were bypassed.",
+        "insight_type": "implication",
+        "confidence": 0.8,
+        "title": "Disproportionate military deployment signals motives beyond weak narcotics claims"
+      },
+      "created_at": "2025-09-08T03:05:17.641634"
+    },
+    "1f9ab979-d855-4496-980b-bf6f05e91909": {
+      "id": "1f9ab979-d855-4496-980b-bf6f05e91909",
+      "node_type": "Insight",
+      "properties": {
+        "content": "Multiple sources consistently report that the Trump administration deployed significant naval and troop assets off Venezuela, but they conflict sharply on scale and motive\u2014and the stated target (the \u201cCartel de los Soles\u201d) may be unverified. Reported force sizes vary (3 destroyers + ~4,000 troops; 5 warships + \u201cthousands\u201d; 6 warships + 4,500 troops), while narratives range from an explicit counternarcotics operation to an action that effectively backs a political/paramilitary aim. The combination of inconsistent force figures and questions about the cartel\u2019s existence suggests either spotty reporting, deliberate framing of the operation, or both. For the investigation this implies the official justification is weakly substantiated and should be treated as a potential pretext; priority next steps are independent verification of deployments (DoD statements, AIS/satellite tracking, logs), documentation of the intelligence basis for targeting the \u201cCartel de los Soles,\u201d and examination of political timing and orders to assess whether counternarcotics was the primary objective or a cover for other policy goals.",
+        "insight_type": "contradiction",
+        "confidence": 0.8,
+        "title": "Conflicting reports on scale and rationale undermine the official 'counternarcotics' narrative"
+      },
+      "created_at": "2025-09-08T03:06:04.837991"
+    },
+    "a7b4c412-e6d1-4d7f-b117-b8c458447c2d": {
+      "id": "a7b4c412-e6d1-4d7f-b117-b8c458447c2d",
+      "node_type": "Insight",
+      "properties": {
+        "content": "The reporting shows a consistent pattern: sizable U.S. naval and troop deployments (multiple warships and ~4,500 personnel) positioned off Venezuela are officially justified as \u201ccounternarcotics\u201d operations targeting the so\u2011called \u201cCartel de los Soles.\u201d At the same time, independent scrutiny questions whether that cartel even exists or is a credible trafficker, and alternative accounts frame the mission as support for political/military pressure on Venezuela (\u201cbacking Che\u201d). This produces a direct contradiction between the stated operational rationale (drug interdiction) and the apparent evidentiary and political context. \n\nSignificant implications for the investigation: if the counternarcotics claim lacks substantiation, the deployment may represent the use of military force under a possibly misleading pretext \u2014 raising questions about the decision-making chain, the intelligence basis presented to the public and Congress, legal authority for the deployment, and potential strategic aims (regime pressure, coercive diplomacy, or domestic political signaling). Emerging themes to probe further include: the provenance and credibility of the intelligence linking Venezuelan actors to large-scale narcotics networks; contemporaneous political communications linking the operation to anti\u2011government objectives; and operational indicators (tasking, ROE, mission orders) that reveal whether counternarcotics enforcement or regime\u2011pressure was the primary aim.",
+        "insight_type": "contradiction",
+        "confidence": 0.67,
+        "title": "Military deployment framed as counternarcotics appears at odds with weak evidence for its stated target, suggesting a pretextual or political motive"
+      },
+      "created_at": "2025-09-08T03:06:16.202376"
+    },
+    "796ef057-d3a9-4956-b33e-8eee16223efa": {
+      "id": "796ef057-d3a9-4956-b33e-8eee16223efa",
+      "node_type": "Insight",
+      "properties": {
+        "content": "The two findings together show a single, coherent pattern: public rhetoric promising to \u201cuse every tool\u2014legal, financial, and military\u201d against cartels is being paired with an actual forward military posture (three warships deployed near Venezuela) and language targeting foreign military actors (warnings about Cuban troops/militia). This suggests the deployment is less a narrow law-enforcement action and more a deliberate coercive signal combining military presence, financial/legal measures, and political messaging to: 1) deter or interdict transnational criminal groups; 2) pressure the Maduro government and its Cuban backers; and 3) normalize use of conventional forces in what are framed as counter\u2011cartel/sovereignty operations. Critical implications for the investigation: the operation may blur lines between counter\u2011narcotics and geopolitical pressure, raising legal/ROE questions, increasing escalation risk with Venezuela/Cuba, and creating multiple, overlapping target sets (cartels, regime elements, foreign troops). Investigative leads should prioritize clarifying mission mandate, chains of authority, rules of engagement, intelligence linking naval assets to cartel targets, and any parallel financial or legal actions that accompany the deployment.",
+        "insight_type": "implication",
+        "confidence": 0.78,
+        "title": "Military deployment used as a coercive, multi-domain strategy against cartels and foreign influence in Venezuela"
+      },
+      "created_at": "2025-09-08T03:07:49.862837"
+    },
+    "70d16b57-f01d-4602-94cb-abf0bb5743ab": {
+      "id": "70d16b57-f01d-4602-94cb-abf0bb5743ab",
+      "node_type": "Insight",
+      "properties": {
+        "content": "Multiple partisan social-media posts assert that Trump \"sent troops\" (cited: \"3 US destroyers and 4000 troops\") to Venezuela and that Venezuela \"activated their militias.\" The posts share the same core allegation and emotionally charged language, indicating a rapid, coordinated narrative rather than independent sourcing. No authoritative sources are cited in the findings; if true this would indicate an overt U.S. military deployment and a Venezuelan mobilization with high escalation risk, but the current evidence is user-generated and unverified. For the investigation, primary-source verification (DoD/White House statements, Venezuelan government communications, AIS/ship-tracking, credible media reporting) is required before treating the claim as factual. The social-media pattern itself is significant: it amplifies a potentially destabilizing narrative that can drive perceptions of imminent conflict and prompt reciprocal mobilization or misinformation spread.",
+        "insight_type": "trend",
+        "confidence": 0.45,
+        "title": "Social-media amplification of unverified claims of U.S. military deployment to Venezuela"
+      },
+      "created_at": "2025-09-08T03:08:08.824078"
+    }
+  },
+  "edges": [
+    {
+      "id": "a7895941-69f6-4c04-912a-3874e5478e5a",
+      "source_id": "517b0216-e6c5-4f2e-863d-39e8fcfd17f1",
+      "target_id": "a2f6e608-4f22-48a7-9aaf-4c5a36aac3f5",
+      "edge_type": "MOTIVATES",
+      "properties": {
+        "decision_type": "gap_filling"
+      },
+      "created_at": "2025-09-08T03:00:55.491640"
+    },
+    {
+      "id": "7f4e7ce5-fb5f-4206-82f7-9ec38056d134",
+      "source_id": "a2f6e608-4f22-48a7-9aaf-4c5a36aac3f5",
+      "target_id": "25f08381-c631-444a-a45f-e484d05f515a",
+      "edge_type": "OPERATIONALIZES",
+      "properties": {
+        "decision_type": "gap_filling",
+        "coherence_score": 0.8
+      },
+      "created_at": "2025-09-08T03:00:55.491640"
+    },
+    {
+      "id": "fd7803af-d882-4cdd-b3a0-cc982251abdd",
+      "source_id": "517b0216-e6c5-4f2e-863d-39e8fcfd17f1",
+      "target_id": "993c0d06-ff7e-4016-b1a9-73b13baea914",
+      "edge_type": "MOTIVATES",
+      "properties": {
+        "decision_type": "gap_filling"
+      },
+      "created_at": "2025-09-08T03:00:55.491640"
+    },
+    {
+      "id": "952bc9c8-7152-43e9-9865-9a1fb9b30455",
+      "source_id": "993c0d06-ff7e-4016-b1a9-73b13baea914",
+      "target_id": "fcbc8fb1-e369-44bd-80e1-0fd3688cb661",
+      "edge_type": "OPERATIONALIZES",
+      "properties": {
+        "decision_type": "gap_filling",
+        "coherence_score": 0.8
+      },
+      "created_at": "2025-09-08T03:00:55.491640"
+    },
+    {
+      "id": "309c5bda-08a3-4014-ab60-0ae468c888c2",
+      "source_id": "517b0216-e6c5-4f2e-863d-39e8fcfd17f1",
+      "target_id": "6b35fd5b-6b07-4ee2-ada0-7e3aa2ebd253",
+      "edge_type": "MOTIVATES",
+      "properties": {
+        "decision_type": "gap_filling"
+      },
+      "created_at": "2025-09-08T03:00:55.491640"
+    },
+    {
+      "id": "a9eae732-cdb3-49cc-8f75-85edb4900dbe",
+      "source_id": "6b35fd5b-6b07-4ee2-ada0-7e3aa2ebd253",
+      "target_id": "f797bfbf-3404-4bff-bdec-5f86a5a29ba5",
+      "edge_type": "OPERATIONALIZES",
+      "properties": {
+        "decision_type": "gap_filling",
+        "coherence_score": 0.8
+      },
+      "created_at": "2025-09-08T03:00:55.491640"
+    },
+    {
+      "id": "f48517aa-0bb1-4875-97a2-e3b5ed1f4042",
+      "source_id": "517b0216-e6c5-4f2e-863d-39e8fcfd17f1",
+      "target_id": "c0611f4d-69a3-48a6-822a-bdc045c79c08",
+      "edge_type": "MOTIVATES",
+      "properties": {
+        "decision_type": "gap_filling"
+      },
+      "created_at": "2025-09-08T03:00:55.491640"
+    },
+    {
+      "id": "a0fb6257-f2ec-4e0f-bc9b-c96f34a57a70",
+      "source_id": "c0611f4d-69a3-48a6-822a-bdc045c79c08",
+      "target_id": "cffdba1c-1ea3-4c51-aa69-38860cb847f2",
+      "edge_type": "OPERATIONALIZES",
+      "properties": {
+        "decision_type": "gap_filling",
+        "coherence_score": 0.8
+      },
+      "created_at": "2025-09-08T03:00:55.491640"
+    },
+    {
+      "id": "4ed1a803-9d85-4af3-85ef-609eae5d48e7",
+      "source_id": "517b0216-e6c5-4f2e-863d-39e8fcfd17f1",
+      "target_id": "65744b32-5931-4d77-897a-797d867b7db9",
+      "edge_type": "MOTIVATES",
+      "properties": {
+        "decision_type": "gap_filling"
+      },
+      "created_at": "2025-09-08T03:00:55.491640"
+    },
+    {
+      "id": "ae81a297-137d-4c74-975f-df2cd2444b26",
+      "source_id": "65744b32-5931-4d77-897a-797d867b7db9",
+      "target_id": "068edd19-989e-4338-862a-bf277e667199",
+      "edge_type": "OPERATIONALIZES",
+      "properties": {
+        "decision_type": "gap_filling",
+        "coherence_score": 0.8
+      },
+      "created_at": "2025-09-08T03:00:55.491640"
+    },
+    {
+      "id": "724bb6ef-412d-41d7-95af-5d22285d5914",
+      "source_id": "517b0216-e6c5-4f2e-863d-39e8fcfd17f1",
+      "target_id": "5aa5cc86-dca8-4c1d-8b12-c1d2e55bd069",
+      "edge_type": "MOTIVATES",
+      "properties": {
+        "decision_type": "gap_filling"
+      },
+      "created_at": "2025-09-08T03:00:55.491640"
+    },
+    {
+      "id": "71d28ce2-728c-46fe-8161-7a4592fdfaf4",
+      "source_id": "5aa5cc86-dca8-4c1d-8b12-c1d2e55bd069",
+      "target_id": "d827684c-28dd-47d2-945e-276239e38595",
+      "edge_type": "OPERATIONALIZES",
+      "properties": {
+        "decision_type": "gap_filling",
+        "coherence_score": 0.8
+      },
+      "created_at": "2025-09-08T03:00:55.491640"
+    },
+    {
+      "id": "0016c7c8-f562-4385-a210-0a8cc616b390",
+      "source_id": "fcbc8fb1-e369-44bd-80e1-0fd3688cb661",
+      "target_id": "7ee2ff2c-3100-400d-b6fe-14e8bcb5438d",
+      "edge_type": "DISCOVERED",
+      "properties": {
+        "relevance": 0.7
+      },
+      "created_at": "2025-09-08T03:01:37.313341"
+    },
+    {
+      "id": "a6c814d1-ec10-4a71-955c-f6ba8dbe060c",
+      "source_id": "fcbc8fb1-e369-44bd-80e1-0fd3688cb661",
+      "target_id": "5a557133-2975-4e29-9ece-94aab0d5e8b5",
+      "edge_type": "DISCOVERED",
+      "properties": {
+        "relevance": 0.9
+      },
+      "created_at": "2025-09-08T03:01:37.313341"
+    },
+    {
+      "id": "119e0be7-8a32-47ac-9d5a-abf978104939",
+      "source_id": "fcbc8fb1-e369-44bd-80e1-0fd3688cb661",
+      "target_id": "d0b706a5-d442-41a5-9f7a-2fc74b1abbba",
+      "edge_type": "DISCOVERED",
+      "properties": {
+        "relevance": 0.9
+      },
+      "created_at": "2025-09-08T03:01:37.313341"
+    },
+    {
+      "id": "16cd622c-fa86-4bc1-abb1-8750d85ab787",
+      "source_id": "fcbc8fb1-e369-44bd-80e1-0fd3688cb661",
+      "target_id": "0e032f2d-c05e-4b48-91f7-a69063a25f69",
+      "edge_type": "DISCOVERED",
+      "properties": {
+        "relevance": 0.85
+      },
+      "created_at": "2025-09-08T03:01:37.313341"
+    },
+    {
+      "id": "795a1b44-174c-4796-8860-78bd472299f8",
+      "source_id": "fcbc8fb1-e369-44bd-80e1-0fd3688cb661",
+      "target_id": "1d1b9366-7718-4c1f-ad63-ea96b2cad89f",
+      "edge_type": "DISCOVERED",
+      "properties": {
+        "relevance": 0.9
+      },
+      "created_at": "2025-09-08T03:01:37.313341"
+    },
+    {
+      "id": "355bf927-eaf9-402e-810e-f4c80a223a08",
+      "source_id": "fcbc8fb1-e369-44bd-80e1-0fd3688cb661",
+      "target_id": "b9258b84-8560-41f0-af20-235d6b72e2a8",
+      "edge_type": "DISCOVERED",
+      "properties": {
+        "relevance": 0.88
+      },
+      "created_at": "2025-09-08T03:01:37.313341"
+    },
+    {
+      "id": "ff149257-e113-44cd-b2ee-968093283c07",
+      "source_id": "fcbc8fb1-e369-44bd-80e1-0fd3688cb661",
+      "target_id": "34942869-3f30-452d-82e4-c7e81c40e4a4",
+      "edge_type": "DISCOVERED",
+      "properties": {
+        "relevance": 0.85
+      },
+      "created_at": "2025-09-08T03:01:37.313341"
+    },
+    {
+      "id": "c9c86785-0e89-405f-9960-77f1beb5274b",
+      "source_id": "fcbc8fb1-e369-44bd-80e1-0fd3688cb661",
+      "target_id": "ca3f0445-65a8-415f-beb7-079e0a8a5866",
+      "edge_type": "DISCOVERED",
+      "properties": {
+        "relevance": 0.35
+      },
+      "created_at": "2025-09-08T03:01:37.313341"
+    },
+    {
+      "id": "fd4cd444-bc62-452c-8e6d-1dfdb8f4dc58",
+      "source_id": "fcbc8fb1-e369-44bd-80e1-0fd3688cb661",
+      "target_id": "3ca308ca-96cd-4935-baf3-e45c75c92471",
+      "edge_type": "DISCOVERED",
+      "properties": {
+        "relevance": 0.9
+      },
+      "created_at": "2025-09-08T03:01:37.313341"
+    },
+    {
+      "id": "65bb5021-9e12-43e4-9f56-0bd207276aca",
+      "source_id": "7ee2ff2c-3100-400d-b6fe-14e8bcb5438d",
+      "target_id": "8305257e-53f9-47d2-90b4-9acf3a009431",
+      "edge_type": "SUPPORTS",
+      "properties": {
+        "evidence_strength": 0.5,
+        "synthesis_timestamp": "2025-09-08T03:02:07.782497"
+      },
+      "created_at": "2025-09-08T03:02:07.783005"
+    },
+    {
+      "id": "580318ff-8fcb-42b6-bc14-1d257eb1ce11",
+      "source_id": "5a557133-2975-4e29-9ece-94aab0d5e8b5",
+      "target_id": "8305257e-53f9-47d2-90b4-9acf3a009431",
+      "edge_type": "SUPPORTS",
+      "properties": {
+        "evidence_strength": 0.5,
+        "synthesis_timestamp": "2025-09-08T03:02:07.783005"
+      },
+      "created_at": "2025-09-08T03:02:07.783005"
+    },
+    {
+      "id": "501808d9-2166-4e9b-8ba3-989776e95e2c",
+      "source_id": "d0b706a5-d442-41a5-9f7a-2fc74b1abbba",
+      "target_id": "8305257e-53f9-47d2-90b4-9acf3a009431",
+      "edge_type": "SUPPORTS",
+      "properties": {
+        "evidence_strength": 0.5,
+        "synthesis_timestamp": "2025-09-08T03:02:07.783005"
+      },
+      "created_at": "2025-09-08T03:02:07.783005"
+    },
+    {
+      "id": "69c8fb96-7f28-414f-abc0-871c767450ae",
+      "source_id": "7ee2ff2c-3100-400d-b6fe-14e8bcb5438d",
+      "target_id": "a866ffd3-23de-4919-9a6d-89c37a418c56",
+      "edge_type": "SUPPORTS",
+      "properties": {
+        "evidence_strength": 0.5,
+        "synthesis_timestamp": "2025-09-08T03:02:17.628389"
+      },
+      "created_at": "2025-09-08T03:02:17.628389"
+    },
+    {
+      "id": "d3472dd4-a43c-4b57-a669-ad39e22ee24b",
+      "source_id": "d0b706a5-d442-41a5-9f7a-2fc74b1abbba",
+      "target_id": "a866ffd3-23de-4919-9a6d-89c37a418c56",
+      "edge_type": "SUPPORTS",
+      "properties": {
+        "evidence_strength": 0.5,
+        "synthesis_timestamp": "2025-09-08T03:02:17.628389"
+      },
+      "created_at": "2025-09-08T03:02:17.628389"
+    },
+    {
+      "id": "61ba9ffe-2bb6-44c1-a6c3-fa9faa21f646",
+      "source_id": "1d1b9366-7718-4c1f-ad63-ea96b2cad89f",
+      "target_id": "1071bd1d-c033-42af-929f-6012a3cb70b8",
+      "edge_type": "SUPPORTS",
+      "properties": {
+        "evidence_strength": 0.5,
+        "synthesis_timestamp": "2025-09-08T03:02:57.130202"
+      },
+      "created_at": "2025-09-08T03:02:57.130202"
+    },
+    {
+      "id": "28d81e25-dd7a-4b84-abc7-e8df5677a989",
+      "source_id": "b9258b84-8560-41f0-af20-235d6b72e2a8",
+      "target_id": "1071bd1d-c033-42af-929f-6012a3cb70b8",
+      "edge_type": "SUPPORTS",
+      "properties": {
+        "evidence_strength": 0.5,
+        "synthesis_timestamp": "2025-09-08T03:02:57.130202"
+      },
+      "created_at": "2025-09-08T03:02:57.130202"
+    },
+    {
+      "id": "73747133-fc1e-4ec7-8fb1-25917f09e956",
+      "source_id": "0e032f2d-c05e-4b48-91f7-a69063a25f69",
+      "target_id": "1071bd1d-c033-42af-929f-6012a3cb70b8",
+      "edge_type": "SUPPORTS",
+      "properties": {
+        "evidence_strength": 0.5,
+        "synthesis_timestamp": "2025-09-08T03:02:57.130202"
+      },
+      "created_at": "2025-09-08T03:02:57.130202"
+    },
+    {
+      "id": "ff3337cd-e5e2-4e2f-b210-89ea480c86d3",
+      "source_id": "0e032f2d-c05e-4b48-91f7-a69063a25f69",
+      "target_id": "b4359947-c342-46bd-8165-6fb2b3dae20a",
+      "edge_type": "SUPPORTS",
+      "properties": {
+        "evidence_strength": 0.5,
+        "synthesis_timestamp": "2025-09-08T03:03:13.220989"
+      },
+      "created_at": "2025-09-08T03:03:13.220989"
+    },
+    {
+      "id": "74b0b61b-9859-4cfa-8620-8d9286ae7b7f",
+      "source_id": "b9258b84-8560-41f0-af20-235d6b72e2a8",
+      "target_id": "b4359947-c342-46bd-8165-6fb2b3dae20a",
+      "edge_type": "SUPPORTS",
+      "properties": {
+        "evidence_strength": 0.5,
+        "synthesis_timestamp": "2025-09-08T03:03:13.220989"
+      },
+      "created_at": "2025-09-08T03:03:13.220989"
+    },
+    {
+      "id": "4038ed92-7048-495e-8c12-81922c4e4d80",
+      "source_id": "34942869-3f30-452d-82e4-c7e81c40e4a4",
+      "target_id": "f23728f8-64e7-4fd1-aaae-1beb86b90130",
+      "edge_type": "SUPPORTS",
+      "properties": {
+        "evidence_strength": 0.5,
+        "synthesis_timestamp": "2025-09-08T03:03:56.380726"
+      },
+      "created_at": "2025-09-08T03:03:56.380726"
+    },
+    {
+      "id": "0edd731b-8886-417b-a136-ba3c34d4e7e3",
+      "source_id": "ca3f0445-65a8-415f-beb7-079e0a8a5866",
+      "target_id": "f23728f8-64e7-4fd1-aaae-1beb86b90130",
+      "edge_type": "SUPPORTS",
+      "properties": {
+        "evidence_strength": 0.5,
+        "synthesis_timestamp": "2025-09-08T03:03:56.380726"
+      },
+      "created_at": "2025-09-08T03:03:56.380726"
+    },
+    {
+      "id": "1fa9ee78-6f88-4cc1-a817-c64efd9276d7",
+      "source_id": "3ca308ca-96cd-4935-baf3-e45c75c92471",
+      "target_id": "f23728f8-64e7-4fd1-aaae-1beb86b90130",
+      "edge_type": "SUPPORTS",
+      "properties": {
+        "evidence_strength": 0.5,
+        "synthesis_timestamp": "2025-09-08T03:03:56.380726"
+      },
+      "created_at": "2025-09-08T03:03:56.380726"
+    },
+    {
+      "id": "a454040e-3735-46c9-a4a0-c143d14f3eb3",
+      "source_id": "f797bfbf-3404-4bff-bdec-5f86a5a29ba5",
+      "target_id": "04649b28-9bb0-4651-a504-e4aea84a2e90",
+      "edge_type": "DISCOVERED",
+      "properties": {
+        "relevance": 0.9
+      },
+      "created_at": "2025-09-08T03:04:32.253435"
+    },
+    {
+      "id": "4d93df26-3ac6-41be-b0d0-74897b550b66",
+      "source_id": "f797bfbf-3404-4bff-bdec-5f86a5a29ba5",
+      "target_id": "0da0b772-d98b-4f1b-8471-958ae1cfe79c",
+      "edge_type": "DISCOVERED",
+      "properties": {
+        "relevance": 0.85
+      },
+      "created_at": "2025-09-08T03:04:32.253435"
+    },
+    {
+      "id": "861cbd88-a871-489a-8095-81f1c6246982",
+      "source_id": "f797bfbf-3404-4bff-bdec-5f86a5a29ba5",
+      "target_id": "e4ed9c98-217a-41fa-ad42-e4249cc72341",
+      "edge_type": "DISCOVERED",
+      "properties": {
+        "relevance": 0.7
+      },
+      "created_at": "2025-09-08T03:04:32.253435"
+    },
+    {
+      "id": "9cb3e50b-4211-437a-a1b6-50586cf2e789",
+      "source_id": "5a557133-2975-4e29-9ece-94aab0d5e8b5",
+      "target_id": "d5962784-c183-4f81-a46a-b7b8453a38d7",
+      "edge_type": "SUPPORTS",
+      "properties": {
+        "evidence_strength": 0.5,
+        "synthesis_timestamp": "2025-09-08T03:05:05.142188"
+      },
+      "created_at": "2025-09-08T03:05:05.142188"
+    },
+    {
+      "id": "29797d8c-e9a6-40d4-bbd6-72310f24d578",
+      "source_id": "d0b706a5-d442-41a5-9f7a-2fc74b1abbba",
+      "target_id": "d5962784-c183-4f81-a46a-b7b8453a38d7",
+      "edge_type": "SUPPORTS",
+      "properties": {
+        "evidence_strength": 0.5,
+        "synthesis_timestamp": "2025-09-08T03:05:05.142188"
+      },
+      "created_at": "2025-09-08T03:05:05.142188"
+    },
+    {
+      "id": "7eefe971-3c13-47c4-b56d-b216632a8060",
+      "source_id": "7ee2ff2c-3100-400d-b6fe-14e8bcb5438d",
+      "target_id": "d5962784-c183-4f81-a46a-b7b8453a38d7",
+      "edge_type": "SUPPORTS",
+      "properties": {
+        "evidence_strength": 0.5,
+        "synthesis_timestamp": "2025-09-08T03:05:05.142188"
+      },
+      "created_at": "2025-09-08T03:05:05.142188"
+    },
+    {
+      "id": "250b9910-0e2c-4c61-ba04-b7d5d5fa88b6",
+      "source_id": "7ee2ff2c-3100-400d-b6fe-14e8bcb5438d",
+      "target_id": "4a8107b3-a999-4fe8-aeb7-698ed7432dbd",
+      "edge_type": "SUPPORTS",
+      "properties": {
+        "evidence_strength": 0.5,
+        "synthesis_timestamp": "2025-09-08T03:05:17.641634"
+      },
+      "created_at": "2025-09-08T03:05:17.641634"
+    },
+    {
+      "id": "607e03de-6283-44d3-a74c-d514bb8b4995",
+      "source_id": "d0b706a5-d442-41a5-9f7a-2fc74b1abbba",
+      "target_id": "4a8107b3-a999-4fe8-aeb7-698ed7432dbd",
+      "edge_type": "SUPPORTS",
+      "properties": {
+        "evidence_strength": 0.5,
+        "synthesis_timestamp": "2025-09-08T03:05:17.641634"
+      },
+      "created_at": "2025-09-08T03:05:17.641634"
+    },
+    {
+      "id": "6ba9fe72-0f7a-4850-a89b-df5b8b1cba34",
+      "source_id": "0e032f2d-c05e-4b48-91f7-a69063a25f69",
+      "target_id": "1f9ab979-d855-4496-980b-bf6f05e91909",
+      "edge_type": "SUPPORTS",
+      "properties": {
+        "evidence_strength": 0.5,
+        "synthesis_timestamp": "2025-09-08T03:06:04.837991"
+      },
+      "created_at": "2025-09-08T03:06:04.837991"
+    },
+    {
+      "id": "17810ece-5c91-44b8-8621-0ead6b40b9a2",
+      "source_id": "1d1b9366-7718-4c1f-ad63-ea96b2cad89f",
+      "target_id": "1f9ab979-d855-4496-980b-bf6f05e91909",
+      "edge_type": "SUPPORTS",
+      "properties": {
+        "evidence_strength": 0.5,
+        "synthesis_timestamp": "2025-09-08T03:06:04.837991"
+      },
+      "created_at": "2025-09-08T03:06:04.837991"
+    },
+    {
+      "id": "8f5e9dd2-e0cc-4cb7-bb11-9496d7800d09",
+      "source_id": "b9258b84-8560-41f0-af20-235d6b72e2a8",
+      "target_id": "1f9ab979-d855-4496-980b-bf6f05e91909",
+      "edge_type": "SUPPORTS",
+      "properties": {
+        "evidence_strength": 0.5,
+        "synthesis_timestamp": "2025-09-08T03:06:04.837991"
+      },
+      "created_at": "2025-09-08T03:06:04.837991"
+    },
+    {
+      "id": "a5a7cb36-4333-479e-a60f-218f1c6da018",
+      "source_id": "0e032f2d-c05e-4b48-91f7-a69063a25f69",
+      "target_id": "a7b4c412-e6d1-4d7f-b117-b8c458447c2d",
+      "edge_type": "SUPPORTS",
+      "properties": {
+        "evidence_strength": 0.5,
+        "synthesis_timestamp": "2025-09-08T03:06:16.202376"
+      },
+      "created_at": "2025-09-08T03:06:16.202376"
+    },
+    {
+      "id": "9596bb11-f8ef-41d1-ab3c-1c90d8fb49ae",
+      "source_id": "b9258b84-8560-41f0-af20-235d6b72e2a8",
+      "target_id": "a7b4c412-e6d1-4d7f-b117-b8c458447c2d",
+      "edge_type": "SUPPORTS",
+      "properties": {
+        "evidence_strength": 0.5,
+        "synthesis_timestamp": "2025-09-08T03:06:16.202376"
+      },
+      "created_at": "2025-09-08T03:06:16.202376"
+    },
+    {
+      "id": "656f2375-0f02-4b07-8af8-1da05607883a",
+      "source_id": "34942869-3f30-452d-82e4-c7e81c40e4a4",
+      "target_id": "796ef057-d3a9-4956-b33e-8eee16223efa",
+      "edge_type": "SUPPORTS",
+      "properties": {
+        "evidence_strength": 0.5,
+        "synthesis_timestamp": "2025-09-08T03:07:49.862837"
+      },
+      "created_at": "2025-09-08T03:07:49.862837"
+    },
+    {
+      "id": "e0dad7cc-a885-48a0-bf1a-276b243063e8",
+      "source_id": "e4ed9c98-217a-41fa-ad42-e4249cc72341",
+      "target_id": "796ef057-d3a9-4956-b33e-8eee16223efa",
+      "edge_type": "SUPPORTS",
+      "properties": {
+        "evidence_strength": 0.5,
+        "synthesis_timestamp": "2025-09-08T03:07:49.862837"
+      },
+      "created_at": "2025-09-08T03:07:49.862837"
+    },
+    {
+      "id": "49470b99-dde4-48bf-b1c9-32aa330b6449",
+      "source_id": "ca3f0445-65a8-415f-beb7-079e0a8a5866",
+      "target_id": "70d16b57-f01d-4602-94cb-abf0bb5743ab",
+      "edge_type": "SUPPORTS",
+      "properties": {
+        "evidence_strength": 0.5,
+        "synthesis_timestamp": "2025-09-08T03:08:08.824078"
+      },
+      "created_at": "2025-09-08T03:08:08.824078"
+    },
+    {
+      "id": "1243a294-7b37-432b-ab02-f5b4512db04f",
+      "source_id": "3ca308ca-96cd-4935-baf3-e45c75c92471",
+      "target_id": "70d16b57-f01d-4602-94cb-abf0bb5743ab",
+      "edge_type": "SUPPORTS",
+      "properties": {
+        "evidence_strength": 0.5,
+        "synthesis_timestamp": "2025-09-08T03:08:08.824078"
+      },
+      "created_at": "2025-09-08T03:08:08.824078"
+    }
+  ],
+  "analytic_question": "517b0216-e6c5-4f2e-863d-39e8fcfd17f1",
+  "created_at": "2025-09-08T03:08:09.364158"
+}

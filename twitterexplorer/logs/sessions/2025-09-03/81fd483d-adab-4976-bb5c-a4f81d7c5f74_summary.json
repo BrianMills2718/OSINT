@@ -1,0 +1,97 @@
+{
+  "session_metadata": {
+    "session_id": "81fd483d-adab-4976-bb5c-a4f81d7c5f74",
+    "start_time": "2025-09-03T17:58:35.303806+00:00",
+    "end_time": "2025-09-03T18:00:36.842152+00:00",
+    "duration_seconds": 121.536427,
+    "user_query": "Trump health investigation"
+  },
+  "configuration": {
+    "max_searches": 3,
+    "max_time_minutes": 60,
+    "satisfaction_enabled": true,
+    "satisfaction_threshold": 0.8,
+    "min_searches_before_satisfaction": 10,
+    "show_search_details": true,
+    "show_strategy_reasoning": true,
+    "show_effectiveness_scores": true,
+    "enable_strategy_adaptation": true,
+    "enable_alternative_approaches": true,
+    "enable_name_variation_search": true,
+    "pages_per_search": 3,
+    "search_timeout_seconds": 30,
+    "retry_failed_searches": true,
+    "enforce_endpoint_diversity": false,
+    "max_endpoint_repeats": 5,
+    "diversity_threshold": 0.3
+  },
+  "performance_metrics": {
+    "total_searches": 3,
+    "total_rounds": 1,
+    "total_results_found": 115,
+    "satisfaction_score": 0.4484677419354838,
+    "satisfaction_breakdown": {
+      "information_coverage": 0.4,
+      "source_diversity": 0.2,
+      "evidence_quality": 0.8467741935483868,
+      "claim_specificity": 0.6451612903225806,
+      "contradiction_resolution": 0.0
+    },
+    "completion_reason": "Reached maximum search limit (3)"
+  },
+  "search_summary": {
+    "searches_by_effectiveness": {
+      "highly_effective": [
+        {
+          "search_id": 1,
+          "query": "Donald Trump health OR Trump medical records OR Trump physical exam",
+          "results": 52,
+          "effectiveness": 9.0
+        },
+        {
+          "search_id": 2,
+          "query": "",
+          "results": 60,
+          "effectiveness": 9.0
+        }
+      ],
+      "moderately_effective": [],
+      "low_effectiveness": [],
+      "ineffective": [
+        {
+          "search_id": 3,
+          "query": "Dr. Sean Conley Trump health OR Walter Reed Trump medical",
+          "results": 3,
+          "effectiveness": 1.3499999999999999
+        }
+      ]
+    },
+    "most_effective_strategies": [
+      {
+        "strategy": "Graph Strategy: The investigation's current state has no information collected. The most strategically coherent next action is to initiate broad data gathering to establish a foundational understanding of public and official information regarding Donald Trump's health. This involves utilizing diverse endpoints to cover general media discourse, official statements, and personal public activity, ensuring a comprehensive initial scan to identify key events, statements, and potential leads.",
+        "avg_effectiveness": 6.45
+      }
+    ],
+    "dead_ends": [
+      "Dr. Sean Conley Trump health OR Walter Reed Trump medical"
+    ],
+    "promising_leads": [
+      "Donald Trump health OR Trump medical records OR Trump physical exam",
+      ""
+    ]
+  },
+  "rounds_summary": [
+    {
+      "round_number": 1,
+      "strategy": "Graph Strategy: The investigation's current state has no information collected. The most strategically coherent next action is to initiate broad data gathering to establish a foundational understanding of public and official information regarding Donald Trump's health. This involves utilizing diverse endpoints to cover general media discourse, official statements, and personal public activity, ensuring a comprehensive initial scan to identify key events, statements, and potential leads.",
+      "searches_count": 3,
+      "total_results": 115,
+      "effectiveness": 6.45,
+      "insights": [
+        "Donald Trump's April 2025 physical exam at Walter Reed National Military Medical Center reported him in \"excellent cognitive and physical health.\"",
+        "He achieved a perfect score (30/30) on the Montreal Cognitive Assessment (MoCA).",
+        "As of April 2025, his height was 6'3\" (75 inches) and weight was 224 pounds, giving him a BMI of 28.1 (no longer considered obese, down from 243-244 pounds previously)."
+      ]
+    }
+  ]
+}

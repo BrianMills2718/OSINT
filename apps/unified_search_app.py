@@ -117,6 +117,23 @@ with st.sidebar:
             help="Get your key at sam.gov → Account Details"
         )
 
+        # RapidAPI Key (for Twitter) - check secrets first, then env
+        rapidapi_default = ""
+        try:
+            if hasattr(st, 'secrets') and "RAPIDAPI_KEY" in st.secrets:
+                rapidapi_default = st.secrets["RAPIDAPI_KEY"]
+        except:
+            pass
+        if not rapidapi_default:
+            rapidapi_default = os.getenv("RAPIDAPI_KEY", "")
+
+        rapidapi_key = st.text_input(
+            "RapidAPI Key (for Twitter)",
+            value=rapidapi_default if rapidapi_default else "",
+            type="password",
+            help="Get your key at rapidapi.com (used for Twitter search)"
+        )
+
     with st.expander("⚙️ Search Settings", expanded=False):
         results_per_page = st.slider("Results per page", 10, 100, 25, 5)
         enable_rate_limiting = st.checkbox("Rate limiting", value=True,
@@ -145,6 +162,7 @@ with st.sidebar:
     st.markdown(f"{'✅' if dvids_api_key else '⚠️'} **DVIDS** - API key {'configured' if dvids_api_key else 'needed'}")
     st.markdown(f"{'✅' if sam_api_key else '⚠️'} **SAM.gov** - API key {'configured' if sam_api_key else 'needed'}")
     st.markdown(f"{'✅' if usajobs_api_key else '⚠️'} **USAJobs** - API key {'configured' if usajobs_api_key else 'needed'}")
+    st.markdown(f"{'✅' if rapidapi_key else '⚠️'} **Twitter** - API key {'configured' if rapidapi_key else 'needed'}")
 
     # Rate limit tracking stats
     with st.expander("📈 API Usage Stats", expanded=False):
@@ -216,7 +234,7 @@ with tab1:
 # ============================================================================
 with tab2:
     from ai_research import render_ai_research_tab
-    render_ai_research_tab(openai_api_key, dvids_api_key, sam_api_key, usajobs_api_key)
+    render_ai_research_tab(openai_api_key, dvids_api_key, sam_api_key, usajobs_api_key, rapidapi_key)
 
 # ============================================================================
 # TAB 3: MONITOR MANAGEMENT

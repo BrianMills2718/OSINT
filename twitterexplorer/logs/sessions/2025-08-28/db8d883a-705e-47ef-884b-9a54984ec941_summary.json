@@ -1,0 +1,88 @@
+{
+  "session_metadata": {
+    "session_id": "db8d883a-705e-47ef-884b-9a54984ec941",
+    "start_time": "2025-08-28T19:48:35.502118+00:00",
+    "end_time": "2025-08-28T19:49:14.627515+00:00",
+    "duration_seconds": 39.124399,
+    "user_query": "Trump Epstein connection investigation latest developments"
+  },
+  "configuration": {
+    "max_searches": 3,
+    "max_time_minutes": 60,
+    "satisfaction_enabled": true,
+    "satisfaction_threshold": 0.8,
+    "min_searches_before_satisfaction": 10,
+    "show_search_details": true,
+    "show_strategy_reasoning": true,
+    "show_effectiveness_scores": true,
+    "enable_strategy_adaptation": true,
+    "enable_alternative_approaches": true,
+    "enable_name_variation_search": true,
+    "pages_per_search": 1,
+    "search_timeout_seconds": 30,
+    "retry_failed_searches": true,
+    "enforce_endpoint_diversity": false,
+    "max_endpoint_repeats": 5,
+    "diversity_threshold": 0.3
+  },
+  "performance_metrics": {
+    "total_searches": 3,
+    "total_rounds": 1,
+    "total_results_found": 62,
+    "satisfaction_score": 0.0,
+    "satisfaction_breakdown": {
+      "information_coverage": 0.0,
+      "source_diversity": 0.0,
+      "evidence_quality": 0.0,
+      "claim_specificity": 0.0,
+      "contradiction_resolution": 0.0
+    },
+    "completion_reason": "Investigation failed: 'InvestigationEngine' object has no attribute 'logger'"
+  },
+  "search_summary": {
+    "searches_by_effectiveness": {
+      "highly_effective": [],
+      "moderately_effective": [
+        {
+          "search_id": 2,
+          "query": "",
+          "results": 60,
+          "effectiveness": 6.0
+        }
+      ],
+      "low_effectiveness": [],
+      "ineffective": [
+        {
+          "search_id": 1,
+          "query": "Trump Epstein connection latest developments",
+          "results": 1,
+          "effectiveness": 0.1
+        },
+        {
+          "search_id": 3,
+          "query": "",
+          "results": 1,
+          "effectiveness": 0.1
+        }
+      ]
+    },
+    "most_effective_strategies": [
+      {
+        "strategy": "Graph Strategy: The investigation is at its nascent stage, with no prior searches or data collected. The primary goal is to establish a comprehensive understanding of the 'Trump Epstein connection latest developments'. This initial round focuses on broad discovery, gathering recent public discourse, and identifying key individuals and their direct online presence. By utilizing diverse endpoints, we aim to cast a wide net while strategically verifying information directly from primary subjects or central figures. This approach prioritizes addressing the current information vacuum and laying a foundational context for subsequent, more targeted investigation rounds.",
+        "avg_effectiveness": 2.0666666666666664
+      }
+    ],
+    "dead_ends": [],
+    "promising_leads": []
+  },
+  "rounds_summary": [
+    {
+      "round_number": 1,
+      "strategy": "Graph Strategy: The investigation is at its nascent stage, with no prior searches or data collected. The primary goal is to establish a comprehensive understanding of the 'Trump Epstein connection latest developments'. This initial round focuses on broad discovery, gathering recent public discourse, and identifying key individuals and their direct online presence. By utilizing diverse endpoints, we aim to cast a wide net while strategically verifying information directly from primary subjects or central figures. This approach prioritizes addressing the current information vacuum and laying a foundational context for subsequent, more targeted investigation rounds.",
+      "searches_count": 3,
+      "total_results": 62,
+      "effectiveness": 0.0,
+      "insights": []
+    }
+  ]
+}

@@ -1,0 +1,75 @@
+{
+  "session_metadata": {
+    "session_id": "919a3bf9-f4f4-4051-b6aa-a2948fe364ce",
+    "start_time": "2025-09-03T15:17:41.396079+00:00",
+    "end_time": "2025-09-03T15:19:06.907793+00:00",
+    "duration_seconds": 85.511714,
+    "user_query": "OpenAI GPT"
+  },
+  "configuration": {
+    "max_searches": 1,
+    "max_time_minutes": 60,
+    "satisfaction_enabled": true,
+    "satisfaction_threshold": 0.8,
+    "min_searches_before_satisfaction": 10,
+    "show_search_details": true,
+    "show_strategy_reasoning": true,
+    "show_effectiveness_scores": true,
+    "enable_strategy_adaptation": true,
+    "enable_alternative_approaches": true,
+    "enable_name_variation_search": true,
+    "pages_per_search": 1,
+    "search_timeout_seconds": 30,
+    "retry_failed_searches": true,
+    "enforce_endpoint_diversity": false,
+    "max_endpoint_repeats": 5,
+    "diversity_threshold": 0.3
+  },
+  "performance_metrics": {
+    "total_searches": 1,
+    "total_rounds": 1,
+    "total_results_found": 59,
+    "satisfaction_score": 0.0,
+    "satisfaction_breakdown": {
+      "information_coverage": 0.0,
+      "source_diversity": 0.0,
+      "evidence_quality": 0.0,
+      "claim_specificity": 0.0,
+      "contradiction_resolution": 0.0
+    },
+    "completion_reason": "Reached maximum search limit (1)"
+  },
+  "search_summary": {
+    "searches_by_effectiveness": {
+      "highly_effective": [],
+      "moderately_effective": [
+        {
+          "search_id": 1,
+          "query": "OpenAI GPT",
+          "results": 59,
+          "effectiveness": 5.9
+        }
+      ],
+      "low_effectiveness": [],
+      "ineffective": []
+    },
+    "most_effective_strategies": [
+      {
+        "strategy": "Graph Strategy: The original goal 'OpenAI GPT' is currently undefined, necessitating a foundational information gathering phase. This strategy aims to build a comprehensive understanding by systematically exploring key areas: general public discourse, official organizational communications, and prominent individual profiles. By starting with a broad search, we identify key entities and popular narratives. Subsequently, we focus on the official OpenAI account for first-party information and a key individual's profile to understand leadership context. This multi-pronged approach ensures diverse data collection and establishes a robust baseline for future investigation rounds, directly addressing the 'comprehensive understanding' gap.",
+        "avg_effectiveness": 5.9
+      }
+    ],
+    "dead_ends": [],
+    "promising_leads": []
+  },
+  "rounds_summary": [
+    {
+      "round_number": 1,
+      "strategy": "Graph Strategy: The original goal 'OpenAI GPT' is currently undefined, necessitating a foundational information gathering phase. This strategy aims to build a comprehensive understanding by systematically exploring key areas: general public discourse, official organizational communications, and prominent individual profiles. By starting with a broad search, we identify key entities and popular narratives. Subsequently, we focus on the official OpenAI account for first-party information and a key individual's profile to understand leadership context. This multi-pronged approach ensures diverse data collection and establishes a robust baseline for future investigation rounds, directly addressing the 'comprehensive understanding' gap.",
+      "searches_count": 1,
+      "total_results": 59,
+      "effectiveness": 0.0,
+      "insights": []
+    }
+  ]
+}

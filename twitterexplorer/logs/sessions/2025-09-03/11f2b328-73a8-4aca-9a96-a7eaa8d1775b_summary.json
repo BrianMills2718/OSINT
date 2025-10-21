@@ -1,0 +1,88 @@
+{
+  "session_metadata": {
+    "session_id": "11f2b328-73a8-4aca-9a96-a7eaa8d1775b",
+    "start_time": "2025-09-03T17:38:12.109239+00:00",
+    "end_time": "2025-09-03T17:40:02.719235+00:00",
+    "duration_seconds": 110.609933,
+    "user_query": "Trump health investigation"
+  },
+  "configuration": {
+    "max_searches": 2,
+    "max_time_minutes": 60,
+    "satisfaction_enabled": true,
+    "satisfaction_threshold": 0.8,
+    "min_searches_before_satisfaction": 10,
+    "show_search_details": true,
+    "show_strategy_reasoning": true,
+    "show_effectiveness_scores": true,
+    "enable_strategy_adaptation": true,
+    "enable_alternative_approaches": true,
+    "enable_name_variation_search": true,
+    "pages_per_search": 3,
+    "search_timeout_seconds": 30,
+    "retry_failed_searches": true,
+    "enforce_endpoint_diversity": false,
+    "max_endpoint_repeats": 5,
+    "diversity_threshold": 0.3
+  },
+  "performance_metrics": {
+    "total_searches": 2,
+    "total_rounds": 1,
+    "total_results_found": 119,
+    "satisfaction_score": 0.4296551724137931,
+    "satisfaction_breakdown": {
+      "information_coverage": 0.4,
+      "source_diversity": 0.2,
+      "evidence_quality": 0.8068965517241378,
+      "claim_specificity": 0.5862068965517241,
+      "contradiction_resolution": 0.0
+    },
+    "completion_reason": "Reached maximum search limit (2)"
+  },
+  "search_summary": {
+    "searches_by_effectiveness": {
+      "highly_effective": [],
+      "moderately_effective": [
+        {
+          "search_id": 1,
+          "query": "Donald Trump health OR illness OR medical",
+          "results": 59,
+          "effectiveness": 7.5
+        },
+        {
+          "search_id": 2,
+          "query": "",
+          "results": 60,
+          "effectiveness": 7.5
+        }
+      ],
+      "low_effectiveness": [],
+      "ineffective": []
+    },
+    "most_effective_strategies": [
+      {
+        "strategy": "Graph Strategy: The current investigation is at a nascent stage, with no prior searches or data collected. The most strategically coherent next action is to initiate a broad information gathering phase to establish a foundational understanding of 'Trump health.' This approach involves leveraging diverse endpoints to cover general public discourse, official statements, and key profile information, which will help identify initial leads, critical timelines, and potential areas for deeper investigation. This phase is crucial for addressing the primary information gap of building comprehensive understanding.",
+        "avg_effectiveness": 7.5
+      }
+    ],
+    "dead_ends": [],
+    "promising_leads": [
+      "Donald Trump health OR illness OR medical",
+      ""
+    ]
+  },
+  "rounds_summary": [
+    {
+      "round_number": 1,
+      "strategy": "Graph Strategy: The current investigation is at a nascent stage, with no prior searches or data collected. The most strategically coherent next action is to initiate a broad information gathering phase to establish a foundational understanding of 'Trump health.' This approach involves leveraging diverse endpoints to cover general public discourse, official statements, and key profile information, which will help identify initial leads, critical timelines, and potential areas for deeper investigation. This phase is crucial for addressing the primary information gap of building comprehensive understanding.",
+      "searches_count": 2,
+      "total_results": 119,
+      "effectiveness": 7.5,
+      "insights": [
+        "Widespread, unverified speculation and rumors exist on social media regarding Donald Trump's health, including claims of serious conditions like congestive heart failure and chronic kidney disease, as well as a noticeable hand discoloration.",
+        "Periods when Donald Trump was out of the public eye often fueled intense rumors about his health, including speculation of his death.",
+        "Numerous social media posts and reports emerged to counter these rumors, often citing public appearances (e.g., playing golf) as proof of his good health and stable condition."
+      ]
+    }
+  ]
+}

@@ -1,0 +1,81 @@
+{
+  "session_metadata": {
+    "session_id": "aae845e4-d69b-4259-b58f-e9310ddd2d80",
+    "start_time": "2025-09-04T07:49:51.791653+00:00",
+    "end_time": "2025-09-04T07:51:31.666158+00:00",
+    "duration_seconds": 99.874505,
+    "user_query": "AI developments 2024"
+  },
+  "configuration": {
+    "max_searches": 2,
+    "max_time_minutes": 60,
+    "satisfaction_enabled": true,
+    "satisfaction_threshold": 0.8,
+    "min_searches_before_satisfaction": 10,
+    "show_search_details": true,
+    "show_strategy_reasoning": true,
+    "show_effectiveness_scores": true,
+    "enable_strategy_adaptation": true,
+    "enable_alternative_approaches": true,
+    "enable_name_variation_search": true,
+    "pages_per_search": 3,
+    "search_timeout_seconds": 30,
+    "retry_failed_searches": true,
+    "enforce_endpoint_diversity": false,
+    "max_endpoint_repeats": 5,
+    "diversity_threshold": 0.3
+  },
+  "performance_metrics": {
+    "total_searches": 2,
+    "total_rounds": 1,
+    "total_results_found": 110,
+    "satisfaction_score": 0.0,
+    "satisfaction_breakdown": {
+      "information_coverage": 0.0,
+      "source_diversity": 0.0,
+      "evidence_quality": 0.0,
+      "claim_specificity": 0.0,
+      "contradiction_resolution": 0.0
+    },
+    "completion_reason": "Reached maximum search limit (2)"
+  },
+  "search_summary": {
+    "searches_by_effectiveness": {
+      "highly_effective": [],
+      "moderately_effective": [
+        {
+          "search_id": 1,
+          "query": "AI developments 2024",
+          "results": 60,
+          "effectiveness": 6.0
+        },
+        {
+          "search_id": 2,
+          "query": "",
+          "results": 50,
+          "effectiveness": 5.0
+        }
+      ],
+      "low_effectiveness": [],
+      "ineffective": []
+    },
+    "most_effective_strategies": [
+      {
+        "strategy": "Graph Strategy: To establish a foundational understanding of AI developments in 2024, the initial strategy focuses on broad discovery, identifying key trends, and pinpointing influential entities. This approach addresses the current lack of information by casting a wide net to gather an overview before deep-diving into specifics. It combines general search with trend analysis and a strategic look at a leading organization's profile to create a well-rounded initial data collection.",
+        "avg_effectiveness": 5.5
+      }
+    ],
+    "dead_ends": [],
+    "promising_leads": []
+  },
+  "rounds_summary": [
+    {
+      "round_number": 1,
+      "strategy": "Graph Strategy: To establish a foundational understanding of AI developments in 2024, the initial strategy focuses on broad discovery, identifying key trends, and pinpointing influential entities. This approach addresses the current lack of information by casting a wide net to gather an overview before deep-diving into specifics. It combines general search with trend analysis and a strategic look at a leading organization's profile to create a well-rounded initial data collection.",
+      "searches_count": 2,
+      "total_results": 110,
+      "effectiveness": 0.0,
+      "insights": []
+    }
+  ]
+}

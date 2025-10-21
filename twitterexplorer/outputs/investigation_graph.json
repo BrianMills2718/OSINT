@@ -1,0 +1,1421 @@
+{
+  "nodes": [
+    {
+      "id": "5bbdbae8-b242-4788-b0c8-c46c5bee571b",
+      "type": "InvestigationQuestion",
+      "properties": {
+        "text": "Strategic question: This broad search will provide a foundational overview of the most recent discussions, news, and key concepts related to AI technology trends. Using 'Latest' ensures the information is current, and the OR operators cast a wider net for relevant content.",
+        "parent_analytic_question": null
+      },
+      "created_at": "2025-09-03T09:30:06.976911"
+    },
+    {
+      "id": "f46193a1-7fc8-4150-9f6e-6e7da15b0bb3",
+      "type": "SearchQuery",
+      "properties": {
+        "endpoint": "search.php",
+        "parameters": {
+          "query": "AI technology trends OR artificial intelligence advancements OR machine learning innovations",
+          "search_type": "Latest"
+        }
+      },
+      "created_at": "2025-09-03T09:30:06.976911"
+    },
+    {
+      "id": "ed746b73-aca4-4ba9-87a2-809cc30aec20",
+      "type": "InvestigationQuestion",
+      "properties": {
+        "text": "Strategic question: Checking trending topics in a major technology hub like the United States will help identify if specific AI-related terms or events are currently gaining significant public attention, providing real-time context to the investigation.",
+        "parent_analytic_question": null
+      },
+      "created_at": "2025-09-03T09:30:06.976911"
+    },
+    {
+      "id": "f7d02117-1474-470d-b972-6a141fae0f8e",
+      "type": "SearchQuery",
+      "properties": {
+        "endpoint": "trends.php",
+        "parameters": {
+          "country": "UnitedStates"
+        }
+      },
+      "created_at": "2025-09-03T09:30:06.976911"
+    },
+    {
+      "id": "a5c06efb-3315-4d55-805e-9689730a4e87",
+      "type": "InvestigationQuestion",
+      "properties": {
+        "text": "Strategic question: By examining the timeline of a leading AI research organization like GoogleAI, we can gain direct insight into their latest research, announcements, and perspectives on AI technology trends, complementing the broader searches with expert-level information.",
+        "parent_analytic_question": null
+      },
+      "created_at": "2025-09-03T09:30:06.976911"
+    },
+    {
+      "id": "6d4dff70-9159-4ddd-8b10-b05fe3888d47",
+      "type": "SearchQuery",
+      "properties": {
+        "endpoint": "timeline.php",
+        "parameters": {
+          "screenname": "GoogleAI"
+        }
+      },
+      "created_at": "2025-09-03T09:30:06.976911"
+    },
+    {
+      "id": "5c6ab5b8-4c9c-4ecc-bc4d-2fb4f31daeef",
+      "type": "SearchQuery",
+      "properties": {
+        "endpoint": "search.php",
+        "parameters": {
+          "query": "AI technology trends OR artificial intelligence advancements OR machine learning innovations",
+          "search_type": "Latest"
+        }
+      },
+      "created_at": "2025-09-03T09:30:21.551937"
+    },
+    {
+      "id": "e5c3b019-c2af-4b0e-96ab-785bfa406f70",
+      "type": "DataPoint",
+      "properties": {
+        "content": "https://t.co/Fj6MSLm2RX\n\nAI in healthcare, health tech innovations, artificial intelligence in IT, machine learning health science, AI impact on hospitals, digital health transformation, AI diagnostics tools, healthcare data analytics, AI technology trends",
+        "source_info": {
+          "source": "search.php",
+          "timestamp": "2025-09-03T09:31:16.905186",
+          "entities": {
+            "Technology": [
+              "AI",
+              "Machine Learning"
+            ],
+            "Industry": [
+              "Healthcare",
+              "Health Tech",
+              "IT"
+            ],
+            "Concept": [
+              "AI diagnostics tools",
+              "Healthcare data analytics",
+              "Digital health transformation"
+            ]
+          },
+          "follow_up_needed": "Investigate specific AI diagnostic tools or health tech innovations mentioned."
+        },
+        "source": "search.php",
+        "timestamp": "2025-09-03T09:31:16.905186"
+      },
+      "created_at": "2025-09-03T09:31:16.905186"
+    },
+    {
+      "id": "b2632da0-aa3c-4c86-bf3c-ed50ee1cf924",
+      "type": "DataPoint",
+      "properties": {
+        "content": "AI and ML in Logistics and Supply Chain: Revolutionising Efficiency \nArtificial intelligence and machine learning are transforming logistics. They\u2019re changing how goods get from Point A to Point B. This isn't the https://t.co/jQxArbwBv9",
+        "source_info": {
+          "source": "search.php",
+          "timestamp": "2025-09-03T09:31:16.905186",
+          "entities": {
+            "Technology": [
+              "AI",
+              "Machine Learning"
+            ],
+            "Industry": [
+              "Logistics",
+              "Supply Chain"
+            ]
+          },
+          "follow_up_needed": "Research specific AI/ML technologies or applications being used in logistics and supply chain."
+        },
+        "source": "search.php",
+        "timestamp": "2025-09-03T09:31:16.905186"
+      },
+      "created_at": "2025-09-03T09:31:16.905186"
+    },
+    {
+      "id": "b2832411-9b1c-4dee-8984-c6b1a3fa3648",
+      "type": "DataPoint",
+      "properties": {
+        "content": "India is rapidly emerging as a leader in artificial intelligence (AI) and machine learning (ML), with innovations in technology, research, and applications transforming global industries. #artificialintelligence #India",
+        "source_info": {
+          "source": "search.php",
+          "timestamp": "2025-09-03T09:31:16.905186",
+          "entities": {
+            "Technology": [
+              "Artificial Intelligence",
+              "Machine Learning"
+            ],
+            "Country": [
+              "India"
+            ]
+          },
+          "follow_up_needed": "Research specific AI/ML innovations or leading companies/research institutions in India."
+        },
+        "source": "search.php",
+        "timestamp": "2025-09-03T09:31:16.905186"
+      },
+      "created_at": "2025-09-03T09:31:16.905186"
+    },
+    {
+      "id": "de713c2c-16a0-4643-af37-1f48ab89a17f",
+      "type": "DataPoint",
+      "properties": {
+        "content": "@DrGW0 @KensingtonRoyal @GiveUsAShout @prof_standards AI isn't reliable. It makes things up.\n\n'Mental Health Innovations uses groundbreaking data science, machine learning and artificial intelligence to analyse Shout\u2019s text-based, anonymised conversations, understand the data and use it for social impact.'\nhttps://t.co/YhBEJrNYvn",
+        "source_info": {
+          "source": "search.php",
+          "timestamp": "2025-09-03T09:31:16.905186",
+          "entities": {
+            "Technology": [
+              "AI",
+              "Machine Learning",
+              "Data Science"
+            ],
+            "Industry": [
+              "Mental Health"
+            ],
+            "Organization": [
+              "Mental Health Innovations"
+            ]
+          },
+          "follow_up_needed": "Investigate specific applications of AI in mental health support and the challenges related to AI reliability in sensitive domains."
+        },
+        "source": "search.php",
+        "timestamp": "2025-09-03T09:31:16.905186"
+      },
+      "created_at": "2025-09-03T09:31:16.905186"
+    },
+    {
+      "id": "df1f76c3-6e0c-4649-9ab6-8574fbdb86b3",
+      "type": "DataPoint",
+      "properties": {
+        "content": "AI and ML in Logistics and Supply Chain: Revolutionising Efficiency \nArtificial intelligence and machine learning are transforming logistics. They\u2019re changing how goods get from Point A to Point B. This isn't the https://t.co/jQxArbwBv9",
+        "source_info": {
+          "source": "search.php",
+          "timestamp": "2025-09-03T09:31:16.905186",
+          "entities": {
+            "Technology": [
+              "AI",
+              "Machine Learning"
+            ],
+            "Industry": [
+              "Logistics",
+              "Supply Chain"
+            ]
+          },
+          "follow_up_needed": "Research specific AI/ML technologies or applications being used in logistics and supply chain."
+        },
+        "source": "search.php",
+        "timestamp": "2025-09-03T09:31:16.905186"
+      },
+      "created_at": "2025-09-03T09:31:16.905186"
+    },
+    {
+      "id": "28708e62-0029-484a-b12b-13b60eb5a268",
+      "type": "DataPoint",
+      "properties": {
+        "content": "Artificial intelligence, ChatGPT and other machine learning innovations are primed to transform retail store development operations \u2014 and retailers need to be ready.\n\nhttps://t.co/PImTiI1EBD #retail #technology #SPECS2025",
+        "source_info": {
+          "source": "search.php",
+          "timestamp": "2025-09-03T09:31:16.905186",
+          "entities": {
+            "Technology": [
+              "Artificial Intelligence",
+              "ChatGPT",
+              "Machine Learning"
+            ],
+            "Industry": [
+              "Retail Store Development"
+            ],
+            "Event": [
+              "SPECS2025"
+            ]
+          },
+          "follow_up_needed": "Investigate how ChatGPT and similar AI tools are specifically being applied or planned for retail store development."
+        },
+        "source": "search.php",
+        "timestamp": "2025-09-03T09:31:16.905186"
+      },
+      "created_at": "2025-09-03T09:31:16.905186"
+    },
+    {
+      "id": "748d24e0-9c5d-4540-a707-7cabd124388a",
+      "type": "DataPoint",
+      "properties": {
+        "content": "Nvidia\u2019s GTC Sparks AI Frenzy: How New Chip Launches Are Propelling Samsung, SK Hynix, and TSMC \nNvidia\u2019s annual GPU Technology Conference (GTC) has a reputation for unveiling cutting-edge innovations in artificial intelligence (AI), machine learning, and...\n https://t.co/0c8Md7xrKC",
+        "source_info": {
+          "source": "search.php",
+          "timestamp": "2025-09-03T09:31:16.905186",
+          "entities": {
+            "Company": [
+              "Nvidia",
+              "Samsung",
+              "SK Hynix",
+              "TSMC"
+            ],
+            "Technology": [
+              "Artificial Intelligence (AI)",
+              "Machine Learning",
+              "GPU",
+              "Chips"
+            ],
+            "Event": [
+              "Nvidia GTC"
+            ]
+          },
+          "follow_up_needed": "Research specific chip innovations from Nvidia and their detailed impact on AI development and the semiconductor industry."
+        },
+        "source": "search.php",
+        "timestamp": "2025-09-03T09:31:16.905186"
+      },
+      "created_at": "2025-09-03T09:31:16.905186"
+    },
+    {
+      "id": "64a4ccc4-852c-4ab4-a5eb-8cc8172453de",
+      "type": "DataPoint",
+      "properties": {
+        "content": "\ud83c\udf1f Tech buzz! FSU's AI &amp; ML Expo is showcasing cutting-edge innovations in education! \ud83e\udd16\ud83d\udcda Plus, Apple just pulled a major cloud encryption feature in the UK! \ud83d\ude32 Dive in: https://t.co/1Ymz9v1kI5",
+        "source_info": {
+          "source": "search.php",
+          "timestamp": "2025-09-03T09:31:16.905186",
+          "entities": {
+            "Technology": [
+              "AI",
+              "Machine Learning"
+            ],
+            "Industry": [
+              "Education"
+            ],
+            "Event": [
+              "FSU's AI & ML Expo"
+            ]
+          },
+          "follow_up_needed": "Investigate specific AI/ML innovations in education that were showcased at the FSU expo."
+        },
+        "source": "search.php",
+        "timestamp": "2025-09-03T09:31:16.905186"
+      },
+      "created_at": "2025-09-03T09:31:16.905186"
+    },
+    {
+      "id": "f28833f6-e00b-403b-8aea-a58563f7c04a",
+      "type": "DataPoint",
+      "properties": {
+        "content": "AI and ML in Logistics and Supply Chain: Revolutionising Efficiency \nArtificial intelligence and machine learning are transforming logistics. They\u2019re changing how goods get from Point A to Point B. This isn't the https://t.co/jQxArbwBv9",
+        "source_info": {
+          "source": "search.php",
+          "timestamp": "2025-09-03T09:31:16.905186",
+          "entities": {
+            "Technology": [
+              "AI",
+              "Machine Learning"
+            ],
+            "Industry": [
+              "Logistics",
+              "Supply Chain"
+            ]
+          },
+          "follow_up_needed": "Research specific AI/ML technologies or applications being used in logistics and supply chain."
+        },
+        "source": "search.php",
+        "timestamp": "2025-09-03T09:31:16.905186"
+      },
+      "created_at": "2025-09-03T09:31:16.905186"
+    },
+    {
+      "id": "f5db636d-f347-44fe-bd0f-05ed4d451acb",
+      "type": "DataPoint",
+      "properties": {
+        "content": "The Cutting Edge of AI: Exploring the Latest Innovations\n\nIn the ever-evolving landscape of technology, artificial intelligence (AI) has become a pivotal force driving change across numerous sectors. From machine learning to natural language processing (NLP), the year 2024 has seen groundbreaking developments that promise to reshape our interaction with technology. Here's a glimpse into the latest innovations in AI, highlighted with key hashtags for easy tracking and engagement.\n\nAI in Content Creation\n\nAI is transforming content creation like never before. Tools like AI Blog Writers are now capable of generating SEO-optimized articles based on specific keywords and outlines. These innovations allow for the rapid production of high-quality content, reducing the time and effort traditionally required for research and writing. Hashtags such as #AIContentCreation and #SEOAI highlight the intersection of AI with digital marketing, enabling content creators to reach wider audiences more efficiently.\n\nAdvancements in Visual AI\n\nVisual AI continues to push boundaries in image and video generation. Recent breakthroughs include AI that can generate entirely new videos from text inputs or enhance existing visuals with dynamic elements. Companies like OpenAI are at the forefront, introducing models that not only create but also understand and manipulate visual content through interfaces designed for ease of use and creativity. #VisualAI and #AIImageGeneration are trending as these technologies become more accessible to both professionals and hobbyists.\n\nInteractive Learning and Gaming\n\nThe realm of interactive learning has seen AI models that can self-teach through conversation, creating their own challenges and evolving without human intervention. This concept, known as Boundless Socratic Learning, signifies a leap in how AI can autonomously improve and adapt. On the gaming front, AI like Google DeepMind's Genie 2 can now transform static images or textual descriptions into interactive 3D gaming worlds, revolutionizing game development with #AIGaming and #AIWorldCreation\n\nAI in Specialized Fields\n\nAI's specificity has deepened in areas like coding, scientific research, and finance. New techniques such as Reinforcement Fine-Tuning allow organizations to tailor AI models for complex, domain-specific tasks, enhancing efficiency and accuracy. This innovation is tagged under #AIRFT and #AISpecialization, emphasizing AI's role in professional fields where precision and expertise are paramount.\n\nAI and Real-Time Processing\n\nReal-time processing in AI has seen significant enhancements, particularly in weather forecasting and conversational AI. Advanced models now offer more accurate predictions and more natural, human-like interactions, enabling applications that were previously unthinkable. #AIWeatherForecasting and #ConversationalAI capture the essence of these developments, showcasing AI's integration into daily life.\n\nAccessibility and Democratization of AI\n\nThe democratization of AI tools is another major innovation, with platforms like xAI providing free access to powerful AI models like Grok. This move towards greater accessibility is fueling a surge in AI experimentation and application across various sectors, exemplified by hashtags like #AIAccessibility and #FreeAI.\n\nConclusion\n\nThe AI landscape in 2024 is vibrant and dynamic, with innovations that span from content generation to specialized professional applications. As we continue to explore these advancements, the hashtags #ArtificialIntelligence, #InnovationAI, and #AI2024 will be key to staying updated with the latest in this transformative field. The potential for AI to influence and enhance our lives is vast, and we're only beginning to see its full impact.",
+        "source_info": {
+          "source": "search.php",
+          "timestamp": "2025-09-03T09:31:16.905186",
+          "entities": {
+            "Technology": [
+              "AI",
+              "Machine Learning",
+              "Natural Language Processing (NLP)",
+              "Visual AI",
+              "AI Blog Writers",
+              "AI Image Generation",
+              "Boundless Socratic Learning",
+              "Google DeepMind's Genie 2",
+              "Reinforcement Fine-Tuning (AIRFT)",
+              "Conversational AI",
+              "xAI",
+              "Grok"
+            ],
+            "Industry": [
+              "Content Creation",
+              "Digital Marketing",
+              "Gaming",
+              "Coding",
+              "Scientific Research",
+              "Finance",
+              "Weather Forecasting",
+              "Education"
+            ],
+            "Company": [
+              "OpenAI",
+              "Google DeepMind",
+              "xAI"
+            ],
+            "Year": [
+              "2024"
+            ]
+          },
+          "follow_up_needed": "Research specific examples or case studies for each mentioned trend, such as AI-generated gaming worlds or specific content creation tools."
+        },
+        "source": "search.php",
+        "timestamp": "2025-09-03T09:31:16.905186"
+      },
+      "created_at": "2025-09-03T09:31:16.905186"
+    },
+    {
+      "id": "89ad79d0-8cb7-4415-9c01-a17773693fcb",
+      "type": "DataPoint",
+      "properties": {
+        "content": "Top Viral Technology of 2024!!\n\n1. \ud83e\udd16 Artificial Intelligence (AI) &amp; Machine Learning (ML)\n2. \ud83d\udcf6 5G Technology\n3. \ud83e\uddee Quantum Computing\n4. \ud83c\udf10 Metaverse\n5. \ud83c\udf0a Edge Computing\n6. \ud83d\udd17 Blockchain\n7. \ud83d\udd76\ufe0f Extended Reality (XR) \u2013 AR/VR\n8. \ud83e\udde0 Generative AI\n9. \ud83e\uddec Biotech Innovations",
+        "source_info": {
+          "source": "search.php",
+          "timestamp": "2025-09-03T09:31:16.905186",
+          "entities": {
+            "Technology": [
+              "Artificial Intelligence (AI)",
+              "Machine Learning (ML)",
+              "Generative AI",
+              "5G Technology",
+              "Quantum Computing",
+              "Metaverse",
+              "Edge Computing",
+              "Blockchain",
+              "Extended Reality (XR)",
+              "AR/VR",
+              "Biotech Innovations"
+            ],
+            "Year": [
+              "2024"
+            ]
+          },
+          "follow_up_needed": "Investigate the specific 'viral' aspects or detailed trends within AI/ML and Generative AI for 2024."
+        },
+        "source": "search.php",
+        "timestamp": "2025-09-03T09:31:16.905186"
+      },
+      "created_at": "2025-09-03T09:31:16.905186"
+    },
+    {
+      "id": "2a37474c-2170-41dd-87de-92c2840cdf00",
+      "type": "DataPoint",
+      "properties": {
+        "content": "Top Viral Technology of 2024!!\n\n1. \ud83e\udd16 Artificial Intelligence (AI) &amp; Machine Learning (ML)\n2. \ud83d\udcf6 5G Technology\n3. \ud83e\uddee Quantum Computing\n4. \ud83c\udf10 Metaverse\n5. \ud83c\udf0a Edge Computing\n6. \ud83d\udd17 Blockchain\n7. \ud83d\udd76\ufe0f Extended Reality (XR) \u2013 AR/VR\n8. \ud83e\udde0 Generative AI\n9. \ud83e\uddec Biotech Innovations",
+        "source_info": {
+          "source": "search.php",
+          "timestamp": "2025-09-03T09:31:16.905186",
+          "entities": {
+            "Technology": [
+              "Artificial Intelligence (AI)",
+              "Machine Learning (ML)",
+              "Generative AI",
+              "5G Technology",
+              "Quantum Computing",
+              "Metaverse",
+              "Edge Computing",
+              "Blockchain",
+              "Extended Reality (XR)",
+              "AR/VR",
+              "Biotech Innovations"
+            ],
+            "Year": [
+              "2024"
+            ]
+          },
+          "follow_up_needed": "Investigate the specific 'viral' aspects or detailed trends within AI/ML and Generative AI for 2024."
+        },
+        "source": "search.php",
+        "timestamp": "2025-09-03T09:31:16.905186"
+      },
+      "created_at": "2025-09-03T09:31:16.905186"
+    },
+    {
+      "id": "264f5b05-f7df-4f4a-806a-ae67e946a2f5",
+      "type": "DataPoint",
+      "properties": {
+        "content": "The future of technology is expected to be shaped by several cutting-edge innovations that could redefine how we live, work, and interact. Here are a few key areas that could dominate the technological landscape:\n\n1. Artificial Intelligence (AI) and Machine Learning (ML): AI is likely to become even more integrated into daily life, transforming industries such as healthcare, finance, and education. More advanced AI could lead to fully autonomous systems, predictive healthcare, and intelligent personal assistants that understand human emotions and preferences at a deeper level.\n\n2. Quantum Computing: Quantum computers, which use the principles of quantum mechanics, promise to perform calculations at speeds unimaginable with classical computers. This could revolutionize cryptography, materials science, and drug discovery by solving complex problems in seconds that would take classical computers years.\n\n3. 5G and Beyond: As 5G networks become widespread, they will enable faster, more reliable connectivity, opening the door for the Internet of Things (IoT), autonomous vehicles, smart cities, and real-time remote healthcare. Future generations of wireless technology (6G) could provide even greater data transfer rates and more seamless global connectivity.\n\n4. Biotechnology and Genetic Engineering: Advances in CRISPR and gene-editing technologies will allow for precise modifications to DNA, leading to breakthroughs in curing genetic disorders, improving crop resilience, and even potentially extending human life.\n\n5. Augmented Reality (AR) and Virtual Reality (VR): AR and VR technologies will likely move beyond entertainment and gaming, becoming integral to education, remote work, and social interaction. These technologies may merge with AI to create immersive, intelligent environments.\n\n6. Sustainable Technologies: The future will see a greater focus on green tech, including innovations in renewable energy (solar, wind, fusion power), electric vehicles, and carbon capture technologies aimed at combating climate change.\n\n7. Brain-Computer Interfaces (BCI): BCIs could enable direct communication between the brain and external devices, potentially allowing people to control machines with their thoughts. This could revolutionize healthcare for people with disabilities and open up new ways of interacting with technology.\n\n8. Nanotechnology: Nanomaterials and nanoscale devices will likely become critical in medicine (targeted drug delivery), electronics (smaller, more powerful devices), and energy (more efficient solar panels).\n\nThese emerging technologies have the potential to drastically change human society, offering both incredible benefits and ethical challenges.",
+        "source_info": {
+          "source": "search.php",
+          "timestamp": "2025-09-03T09:31:16.905186",
+          "entities": {
+            "Technology": [
+              "Artificial Intelligence (AI)",
+              "Machine Learning (ML)",
+              "Quantum Computing",
+              "5G",
+              "Biotechnology",
+              "Genetic Engineering",
+              "CRISPR",
+              "Augmented Reality (AR)",
+              "Virtual Reality (VR)",
+              "Sustainable Technologies",
+              "Brain-Computer Interfaces (BCI)",
+              "Nanotechnology"
+            ],
+            "Industry": [
+              "Healthcare",
+              "Finance",
+              "Education"
+            ],
+            "Concept": [
+              "Autonomous Systems",
+              "Predictive Healthcare",
+              "Intelligent Personal Assistants"
+            ]
+          },
+          "follow_up_needed": "Investigate current progress towards fully autonomous AI systems and AI's capabilities in understanding human emotions."
+        },
+        "source": "search.php",
+        "timestamp": "2025-09-03T09:31:16.905186"
+      },
+      "created_at": "2025-09-03T09:31:16.905186"
+    },
+    {
+      "id": "0b1f66dc-2dc3-4709-8658-2716d1542275",
+      "type": "DataPoint",
+      "properties": {
+        "content": "Modern technology covers a wide range of innovations across various fields. Here are some of the key trends and developments:\n\n1. Artificial Intelligence (AI) and Machine Learning\n\n\u2022 AI is now integrated into many sectors, including healthcare, finance, and customer service. Machine learning, a subset of AI, allows systems to learn from data, making everything from chatbots to autonomous vehicles possible.\n\n2. 5G Technology\n\n\u2022 5G networks are transforming communication, with much faster data speeds and low latency. This allows for advancements in areas like smart cities, autonomous cars, and IoT (Internet of Things) devices.\n\n3. Internet of Things (IoT)\n\n\u2022 IoT refers to the interconnection of everyday objects via the internet, allowing them to send and receive data. This technology powers smart homes, wearables, and even industrial applications like smart factories.",
+        "source_info": {
+          "source": "search.php",
+          "timestamp": "2025-09-03T09:31:16.905186",
+          "entities": {
+            "Technology": [
+              "Artificial Intelligence (AI)",
+              "Machine Learning",
+              "5G Technology",
+              "Internet of Things (IoT)",
+              "Chatbots",
+              "Autonomous Vehicles"
+            ],
+            "Industry": [
+              "Healthcare",
+              "Finance",
+              "Customer Service"
+            ]
+          },
+          "follow_up_needed": "Investigate the current penetration of AI in customer service and specific examples of autonomous vehicles powered by ML."
+        },
+        "source": "search.php",
+        "timestamp": "2025-09-03T09:31:16.905186"
+      },
+      "created_at": "2025-09-03T09:31:16.905186"
+    },
+    {
+      "id": "78caacdf-fdb6-43c2-b0a7-9277bb33dbaf",
+      "type": "DataPoint",
+      "properties": {
+        "content": "A Rapidly Evolving Tech Landscape\nThe technology world is in a constant state of flux. New breakthroughs, innovations, and challenges emerge daily. Here's a snapshot of some of the most significant trends and developments:\nArtificial Intelligence (#AI) and Machine Learning (#ML)\n * Generative AI: Tools like ChatGPT and Midjourney are revolutionizing content creation and design.\n * AI in Healthcare: From drug discovery to personalized medicine, AI is transforming healthcare.\n * Ethical AI: Concerns about bias, privacy, and job displacement are driving discussions.\nCybersecurity\n * AI-Powered Threats: Cybercriminals are leveraging AI for more sophisticated attacks.\n * Supply Chain Attacks: Targeting vulnerabilities in the supply chain is a growing concern.\n * Zero-Trust Architecture: This security model is gaining traction to protect against breaches.\nMetaverse and Virtual Reality (VR)\n * Immersive Experiences: Companies are investing in creating virtual worlds for gaming, social interaction, and work.\n * Hardware Advancements: Improved VR headsets and devices are enhancing user experiences.\n * Economic Opportunities: The metaverse is seen as a potential trillion-dollar industry.\nBlockchain and Cryptocurrency\n * Beyond Bitcoin: Blockchain technology is finding applications in various sectors, from finance to supply chain.\n * Regulatory Landscape: Governments are grappling with how to regulate cryptocurrencies.\n * Decentralized Finance (DeFi): This emerging field is transforming financial services.\n#QuantumComputing\n * Potential Breakthroughs: Quantum computers could revolutionize fields like drug discovery, materials science, and cryptography.\n * Challenges: Building and maintaining stable quantum computers remains a significant hurdle.\nSustainability and Green Tech\n * Clean Energy: Investments in renewable energy sources are accelerating.\n * Sustainable Technology: Companies are focusing on developing eco-friendly products and processes.\n * Circular Economy: Reducing waste and maximizing resource efficiency is a growing trend.\n\n\u2714\ufe0fOther Notable Trends\n * Edge Computing: Bringing computation and data storage closer to the source.\n * 5G and Beyond: Faster network speeds are enabling new applications and services.\n #Biotechnology: Advances in genetic engineering and synthetic biology are promising breakthroughs.\nWould you like to delve deeper into a specific area? Or perhaps you have a particular technology or application in mind?\nI can provide more detailed information or examples based on your interests.",
+        "source_info": {
+          "source": "search.php",
+          "timestamp": "2025-09-03T09:31:16.905186",
+          "entities": {
+            "Technology": [
+              "Artificial Intelligence (AI)",
+              "Machine Learning (ML)",
+              "Generative AI",
+              "ChatGPT",
+              "Midjourney",
+              "Cybersecurity",
+              "Metaverse",
+              "Virtual Reality (VR)",
+              "Blockchain",
+              "Cryptocurrency",
+              "Quantum Computing",
+              "Edge Computing",
+              "5G",
+              "Biotechnology"
+            ],
+            "Industry": [
+              "Content Creation",
+              "Design",
+              "Healthcare"
+            ],
+            "Concept": [
+              "Ethical AI",
+              "Bias",
+              "Privacy",
+              "Job Displacement",
+              "Drug Discovery",
+              "Personalized Medicine"
+            ]
+          },
+          "follow_up_needed": "Research specific examples of AI's role in drug discovery or personalized medicine. Investigate current frameworks or regulations for Ethical AI."
+        },
+        "source": "search.php",
+        "timestamp": "2025-09-03T09:31:16.905186"
+      },
+      "created_at": "2025-09-03T09:31:16.905186"
+    },
+    {
+      "id": "53fa4cdb-437f-4e0b-8a19-ac90fa78b351",
+      "type": "DataPoint",
+      "properties": {
+        "content": "Is it the start of a new era for Siri? What does Apple\u2019s AI bring to the table? Let\u2019s discuss about AI\u2013 Artificial Intelligence or Apple Intelligence?  https://t.co/VhXfa8v8U4   #artificialintelligence #ai #machinelearning #technology #digitaltransformation #RhythmX #generativeai",
+        "source_info": {
+          "source": "search.php",
+          "timestamp": "2025-09-03T09:31:16.905186",
+          "entities": {
+            "Company": [
+              "Apple"
+            ],
+            "Technology": [
+              "AI",
+              "Artificial Intelligence",
+              "Apple Intelligence",
+              "Machine Learning",
+              "Generative AI"
+            ],
+            "Product": [
+              "Siri"
+            ]
+          },
+          "follow_up_needed": "Investigate the specifics of Apple's 'Apple Intelligence' and its implications for Siri and other Apple products."
+        },
+        "source": "search.php",
+        "timestamp": "2025-09-03T09:31:16.905186"
+      },
+      "created_at": "2025-09-03T09:31:16.905186"
+    },
+    {
+      "id": "bd7611ba-a966-4824-8de8-bd6a897b8b7b",
+      "type": "SearchQuery",
+      "properties": {
+        "endpoint": "trends.php",
+        "parameters": {
+          "country": "UnitedStates"
+        }
+      },
+      "created_at": "2025-09-03T09:31:16.905186"
+    },
+    {
+      "id": "8a86cf1a-93a5-40c8-8d37-047668097e28",
+      "type": "DataPoint",
+      "properties": {
+        "content": "https://t.co/Fj6MSLm2RX\n\nAI in healthcare, health tech innovations, artificial intelligence in IT, machine learning health science, AI impact on hospitals, digital health transformation, AI diagnostics tools, healthcare data analytics, AI technology trends",
+        "source_info": {
+          "source": "twitter_api_timeline",
+          "relevance_score": 9.0,
+          "timestamp": "2025-09-03T09:31:43.385681"
+        }
+      },
+      "created_at": "2025-09-03T09:31:43.385681"
+    },
+    {
+      "id": "e0897268-cfd5-490f-adbd-4ad9b05eff15",
+      "type": "DataPoint",
+      "properties": {
+        "content": "AI and ML in Logistics and Supply Chain: Revolutionising Efficiency \nArtificial intelligence and machine learning are transforming logistics. They\u2019re changing how goods get from Point A to Point B. This isn't the https://t.co/jQxArbwBv9",
+        "source_info": {
+          "source": "twitter_api_timeline",
+          "relevance_score": 9.0,
+          "timestamp": "2025-09-03T09:31:43.385681"
+        }
+      },
+      "created_at": "2025-09-03T09:31:43.385681"
+    },
+    {
+      "id": "c3669eaa-801f-45a7-b3e0-3d7ae93de0d2",
+      "type": "DataPoint",
+      "properties": {
+        "content": "India is rapidly emerging as a leader in artificial intelligence (AI) and machine learning (ML), with innovations in technology, research, and applications transforming global industries. #artificialintelligence #India",
+        "source_info": {
+          "source": "twitter_api_timeline",
+          "relevance_score": 9.0,
+          "timestamp": "2025-09-03T09:31:43.385681"
+        }
+      },
+      "created_at": "2025-09-03T09:31:43.385681"
+    },
+    {
+      "id": "71928a8c-60cb-4215-a237-030a6b2a17f7",
+      "type": "DataPoint",
+      "properties": {
+        "content": "Exciting times in innovations as the Zimpapers Artificial Intelligence and Machine Learning Conference begins, aligning technology growth with national goals! Stay tuned for updates!   https://t.co/OoniM5zZ5m https://t.co/cRyiGfQ97z",
+        "source_info": {
+          "source": "twitter_api_timeline",
+          "relevance_score": 9.0,
+          "timestamp": "2025-09-03T09:31:43.385681"
+        }
+      },
+      "created_at": "2025-09-03T09:31:43.385681"
+    },
+    {
+      "id": "f4d5c6f4-a392-4385-9352-f8c65d2ad5d8",
+      "type": "DataPoint",
+      "properties": {
+        "content": "@DrGW0 @KensingtonRoyal @GiveUsAShout @prof_standards AI isn't reliable. It makes things up.\n\n'Mental Health Innovations uses groundbreaking data science, machine learning and artificial intelligence to analyse Shout\u2019s text-based, anonymised conversations, understand the data and use it for social impact.'\nhttps://t.co/YhBEJrNYvn",
+        "source_info": {
+          "source": "twitter_api_timeline",
+          "relevance_score": 9.0,
+          "timestamp": "2025-09-03T09:31:43.385681"
+        }
+      },
+      "created_at": "2025-09-03T09:31:43.385681"
+    },
+    {
+      "id": "29ee076c-bcf7-41bf-b9ce-3cc7ccd1f0c6",
+      "type": "Insight",
+      "properties": {
+        "content": "AI and Machine Learning are consistently identified as top technology trends for 2024 and beyond.",
+        "insight_type": "evaluation_derived"
+      },
+      "created_at": "2025-09-03T09:31:43.385681"
+    },
+    {
+      "id": "42c5f089-81d7-4080-84fd-ff7a166067b9",
+      "type": "Insight",
+      "properties": {
+        "content": "Key application areas for AI/ML include healthcare, logistics/supply chain, and retail.",
+        "insight_type": "evaluation_derived"
+      },
+      "created_at": "2025-09-03T09:31:43.385681"
+    },
+    {
+      "id": "4a39ef2c-0d42-4e47-8c89-1307a11c43d7",
+      "type": "Insight",
+      "properties": {
+        "content": "Hardware innovation, particularly in chips (e.g., Nvidia's GTC), is a major driver of AI advancement.",
+        "insight_type": "evaluation_derived"
+      },
+      "created_at": "2025-09-03T09:31:43.385681"
+    },
+    {
+      "id": "d75a441e-fb62-4f23-b15a-ab2fd4002a4d",
+      "type": "Insight",
+      "properties": {
+        "content": "India is emerging as a significant global player in AI/ML innovation.",
+        "insight_type": "evaluation_derived"
+      },
+      "created_at": "2025-09-03T09:31:43.385681"
+    },
+    {
+      "id": "29263d1e-9bc5-41dc-93b3-61c1c7364af8",
+      "type": "Insight",
+      "properties": {
+        "content": "Conferences and expos signal widespread activity and development in AI.",
+        "insight_type": "evaluation_derived"
+      },
+      "created_at": "2025-09-03T09:31:43.386681"
+    },
+    {
+      "id": "6dfe137e-9a71-47d9-8366-c06613f93e87",
+      "type": "Insight",
+      "properties": {
+        "content": "Specific AI tools like ChatGPT are transforming various sectors, including retail.",
+        "insight_type": "evaluation_derived"
+      },
+      "created_at": "2025-09-03T09:31:43.386681"
+    },
+    {
+      "id": "ed23cc19-2b52-4f03-bdbb-1743871d57af",
+      "type": "Insight",
+      "properties": {
+        "content": "AI ethics is a growing consideration alongside technological advancements.",
+        "insight_type": "evaluation_derived"
+      },
+      "created_at": "2025-09-03T09:31:43.386681"
+    },
+    {
+      "id": "6c365bba-9877-4bdf-93e5-d08ac5f7a582",
+      "type": "Insight",
+      "properties": {
+        "content": "AI reliability is a debated point, with some concerns about its accuracy.",
+        "insight_type": "evaluation_derived"
+      },
+      "created_at": "2025-09-03T09:31:43.386681"
+    },
+    {
+      "id": "7affda3c-2712-42ca-a720-960a0b27d416",
+      "type": "Insight",
+      "properties": {
+        "content": "Major tech companies like Apple are actively integrating more AI into their products (e.g., Siri).",
+        "insight_type": "evaluation_derived"
+      },
+      "created_at": "2025-09-03T09:31:43.386770"
+    },
+    {
+      "id": "3ae30c4d-4403-426e-ad84-72092990c9a1",
+      "type": "Insight",
+      "properties": {
+        "content": "AI is often discussed in the broader context of other emerging technologies such as 5G, Quantum Computing, Metaverse, Edge Computing, and Blockchain.",
+        "insight_type": "evaluation_derived"
+      },
+      "created_at": "2025-09-03T09:31:43.386770"
+    }
+  ],
+  "edges": [
+    {
+      "id": "0",
+      "source": "5bbdbae8-b242-4788-b0c8-c46c5bee571b",
+      "target": "f46193a1-7fc8-4150-9f6e-6e7da15b0bb3",
+      "type": "OPERATIONALIZES",
+      "properties": {
+        "decision_type": "gap_filling",
+        "coherence_score": 0.7999999999999999
+      }
+    },
+    {
+      "id": "1",
+      "source": "ed746b73-aca4-4ba9-87a2-809cc30aec20",
+      "target": "f7d02117-1474-470d-b972-6a141fae0f8e",
+      "type": "OPERATIONALIZES",
+      "properties": {
+        "decision_type": "gap_filling",
+        "coherence_score": 0.7999999999999999
+      }
+    },
+    {
+      "id": "2",
+      "source": "a5c06efb-3315-4d55-805e-9689730a4e87",
+      "target": "6d4dff70-9159-4ddd-8b10-b05fe3888d47",
+      "type": "OPERATIONALIZES",
+      "properties": {
+        "decision_type": "gap_filling",
+        "coherence_score": 0.7999999999999999
+      }
+    },
+    {
+      "id": "3",
+      "source": "5c6ab5b8-4c9c-4ecc-bc4d-2fb4f31daeef",
+      "target": "e5c3b019-c2af-4b0e-96ab-785bfa406f70",
+      "type": "DISCOVERED",
+      "properties": {
+        "relevance": 1.0
+      }
+    },
+    {
+      "id": "4",
+      "source": "5c6ab5b8-4c9c-4ecc-bc4d-2fb4f31daeef",
+      "target": "b2632da0-aa3c-4c86-bf3c-ed50ee1cf924",
+      "type": "DISCOVERED",
+      "properties": {
+        "relevance": 0.9
+      }
+    },
+    {
+      "id": "5",
+      "source": "5c6ab5b8-4c9c-4ecc-bc4d-2fb4f31daeef",
+      "target": "b2832411-9b1c-4dee-8984-c6b1a3fa3648",
+      "type": "DISCOVERED",
+      "properties": {
+        "relevance": 0.8
+      }
+    },
+    {
+      "id": "6",
+      "source": "5c6ab5b8-4c9c-4ecc-bc4d-2fb4f31daeef",
+      "target": "de713c2c-16a0-4643-af37-1f48ab89a17f",
+      "type": "DISCOVERED",
+      "properties": {
+        "relevance": 0.8
+      }
+    },
+    {
+      "id": "7",
+      "source": "5c6ab5b8-4c9c-4ecc-bc4d-2fb4f31daeef",
+      "target": "df1f76c3-6e0c-4649-9ab6-8574fbdb86b3",
+      "type": "DISCOVERED",
+      "properties": {
+        "relevance": 0.9
+      }
+    },
+    {
+      "id": "8",
+      "source": "5c6ab5b8-4c9c-4ecc-bc4d-2fb4f31daeef",
+      "target": "28708e62-0029-484a-b12b-13b60eb5a268",
+      "type": "DISCOVERED",
+      "properties": {
+        "relevance": 0.9
+      }
+    },
+    {
+      "id": "9",
+      "source": "5c6ab5b8-4c9c-4ecc-bc4d-2fb4f31daeef",
+      "target": "748d24e0-9c5d-4540-a707-7cabd124388a",
+      "type": "DISCOVERED",
+      "properties": {
+        "relevance": 0.9
+      }
+    },
+    {
+      "id": "10",
+      "source": "5c6ab5b8-4c9c-4ecc-bc4d-2fb4f31daeef",
+      "target": "64a4ccc4-852c-4ab4-a5eb-8cc8172453de",
+      "type": "DISCOVERED",
+      "properties": {
+        "relevance": 0.7
+      }
+    },
+    {
+      "id": "11",
+      "source": "5c6ab5b8-4c9c-4ecc-bc4d-2fb4f31daeef",
+      "target": "f28833f6-e00b-403b-8aea-a58563f7c04a",
+      "type": "DISCOVERED",
+      "properties": {
+        "relevance": 0.9
+      }
+    },
+    {
+      "id": "12",
+      "source": "5c6ab5b8-4c9c-4ecc-bc4d-2fb4f31daeef",
+      "target": "f5db636d-f347-44fe-bd0f-05ed4d451acb",
+      "type": "DISCOVERED",
+      "properties": {
+        "relevance": 1.0
+      }
+    },
+    {
+      "id": "13",
+      "source": "5c6ab5b8-4c9c-4ecc-bc4d-2fb4f31daeef",
+      "target": "89ad79d0-8cb7-4415-9c01-a17773693fcb",
+      "type": "DISCOVERED",
+      "properties": {
+        "relevance": 0.9
+      }
+    },
+    {
+      "id": "14",
+      "source": "5c6ab5b8-4c9c-4ecc-bc4d-2fb4f31daeef",
+      "target": "2a37474c-2170-41dd-87de-92c2840cdf00",
+      "type": "DISCOVERED",
+      "properties": {
+        "relevance": 0.9
+      }
+    },
+    {
+      "id": "15",
+      "source": "5c6ab5b8-4c9c-4ecc-bc4d-2fb4f31daeef",
+      "target": "264f5b05-f7df-4f4a-806a-ae67e946a2f5",
+      "type": "DISCOVERED",
+      "properties": {
+        "relevance": 1.0
+      }
+    },
+    {
+      "id": "16",
+      "source": "5c6ab5b8-4c9c-4ecc-bc4d-2fb4f31daeef",
+      "target": "0b1f66dc-2dc3-4709-8658-2716d1542275",
+      "type": "DISCOVERED",
+      "properties": {
+        "relevance": 1.0
+      }
+    },
+    {
+      "id": "17",
+      "source": "5c6ab5b8-4c9c-4ecc-bc4d-2fb4f31daeef",
+      "target": "78caacdf-fdb6-43c2-b0a7-9277bb33dbaf",
+      "type": "DISCOVERED",
+      "properties": {
+        "relevance": 1.0
+      }
+    },
+    {
+      "id": "18",
+      "source": "5c6ab5b8-4c9c-4ecc-bc4d-2fb4f31daeef",
+      "target": "53fa4cdb-437f-4e0b-8a19-ac90fa78b351",
+      "type": "DISCOVERED",
+      "properties": {
+        "relevance": 0.8
+      }
+    },
+    {
+      "id": "19",
+      "source": "bd7611ba-a966-4824-8de8-bd6a897b8b7b",
+      "target": "8a86cf1a-93a5-40c8-8d37-047668097e28",
+      "type": "GENERATES",
+      "properties": {
+        "relevance_score": 9.0
+      }
+    },
+    {
+      "id": "20",
+      "source": "bd7611ba-a966-4824-8de8-bd6a897b8b7b",
+      "target": "e0897268-cfd5-490f-adbd-4ad9b05eff15",
+      "type": "GENERATES",
+      "properties": {
+        "relevance_score": 9.0
+      }
+    },
+    {
+      "id": "21",
+      "source": "bd7611ba-a966-4824-8de8-bd6a897b8b7b",
+      "target": "c3669eaa-801f-45a7-b3e0-3d7ae93de0d2",
+      "type": "GENERATES",
+      "properties": {
+        "relevance_score": 9.0
+      }
+    },
+    {
+      "id": "22",
+      "source": "bd7611ba-a966-4824-8de8-bd6a897b8b7b",
+      "target": "71928a8c-60cb-4215-a237-030a6b2a17f7",
+      "type": "GENERATES",
+      "properties": {
+        "relevance_score": 9.0
+      }
+    },
+    {
+      "id": "23",
+      "source": "bd7611ba-a966-4824-8de8-bd6a897b8b7b",
+      "target": "f4d5c6f4-a392-4385-9352-f8c65d2ad5d8",
+      "type": "GENERATES",
+      "properties": {
+        "relevance_score": 9.0
+      }
+    },
+    {
+      "id": "24",
+      "source": "8a86cf1a-93a5-40c8-8d37-047668097e28",
+      "target": "29ee076c-bcf7-41bf-b9ce-3cc7ccd1f0c6",
+      "type": "SUPPORTS",
+      "properties": {
+        "confidence": 0.8
+      }
+    },
+    {
+      "id": "25",
+      "source": "e0897268-cfd5-490f-adbd-4ad9b05eff15",
+      "target": "29ee076c-bcf7-41bf-b9ce-3cc7ccd1f0c6",
+      "type": "SUPPORTS",
+      "properties": {
+        "confidence": 0.8
+      }
+    },
+    {
+      "id": "26",
+      "source": "c3669eaa-801f-45a7-b3e0-3d7ae93de0d2",
+      "target": "29ee076c-bcf7-41bf-b9ce-3cc7ccd1f0c6",
+      "type": "SUPPORTS",
+      "properties": {
+        "confidence": 0.8
+      }
+    },
+    {
+      "id": "27",
+      "source": "71928a8c-60cb-4215-a237-030a6b2a17f7",
+      "target": "29ee076c-bcf7-41bf-b9ce-3cc7ccd1f0c6",
+      "type": "SUPPORTS",
+      "properties": {
+        "confidence": 0.8
+      }
+    },
+    {
+      "id": "28",
+      "source": "f4d5c6f4-a392-4385-9352-f8c65d2ad5d8",
+      "target": "29ee076c-bcf7-41bf-b9ce-3cc7ccd1f0c6",
+      "type": "SUPPORTS",
+      "properties": {
+        "confidence": 0.8
+      }
+    },
+    {
+      "id": "29",
+      "source": "8a86cf1a-93a5-40c8-8d37-047668097e28",
+      "target": "42c5f089-81d7-4080-84fd-ff7a166067b9",
+      "type": "SUPPORTS",
+      "properties": {
+        "confidence": 0.8
+      }
+    },
+    {
+      "id": "30",
+      "source": "e0897268-cfd5-490f-adbd-4ad9b05eff15",
+      "target": "42c5f089-81d7-4080-84fd-ff7a166067b9",
+      "type": "SUPPORTS",
+      "properties": {
+        "confidence": 0.8
+      }
+    },
+    {
+      "id": "31",
+      "source": "c3669eaa-801f-45a7-b3e0-3d7ae93de0d2",
+      "target": "42c5f089-81d7-4080-84fd-ff7a166067b9",
+      "type": "SUPPORTS",
+      "properties": {
+        "confidence": 0.8
+      }
+    },
+    {
+      "id": "32",
+      "source": "71928a8c-60cb-4215-a237-030a6b2a17f7",
+      "target": "42c5f089-81d7-4080-84fd-ff7a166067b9",
+      "type": "SUPPORTS",
+      "properties": {
+        "confidence": 0.8
+      }
+    },
+    {
+      "id": "33",
+      "source": "f4d5c6f4-a392-4385-9352-f8c65d2ad5d8",
+      "target": "42c5f089-81d7-4080-84fd-ff7a166067b9",
+      "type": "SUPPORTS",
+      "properties": {
+        "confidence": 0.8
+      }
+    },
+    {
+      "id": "34",
+      "source": "8a86cf1a-93a5-40c8-8d37-047668097e28",
+      "target": "4a39ef2c-0d42-4e47-8c89-1307a11c43d7",
+      "type": "SUPPORTS",
+      "properties": {
+        "confidence": 0.8
+      }
+    },
+    {
+      "id": "35",
+      "source": "e0897268-cfd5-490f-adbd-4ad9b05eff15",
+      "target": "4a39ef2c-0d42-4e47-8c89-1307a11c43d7",
+      "type": "SUPPORTS",
+      "properties": {
+        "confidence": 0.8
+      }
+    },
+    {
+      "id": "36",
+      "source": "c3669eaa-801f-45a7-b3e0-3d7ae93de0d2",
+      "target": "4a39ef2c-0d42-4e47-8c89-1307a11c43d7",
+      "type": "SUPPORTS",
+      "properties": {
+        "confidence": 0.8
+      }
+    },
+    {
+      "id": "37",
+      "source": "71928a8c-60cb-4215-a237-030a6b2a17f7",
+      "target": "4a39ef2c-0d42-4e47-8c89-1307a11c43d7",
+      "type": "SUPPORTS",
+      "properties": {
+        "confidence": 0.8
+      }
+    },
+    {
+      "id": "38",
+      "source": "f4d5c6f4-a392-4385-9352-f8c65d2ad5d8",
+      "target": "4a39ef2c-0d42-4e47-8c89-1307a11c43d7",
+      "type": "SUPPORTS",
+      "properties": {
+        "confidence": 0.8
+      }
+    },
+    {
+      "id": "39",
+      "source": "8a86cf1a-93a5-40c8-8d37-047668097e28",
+      "target": "d75a441e-fb62-4f23-b15a-ab2fd4002a4d",
+      "type": "SUPPORTS",
+      "properties": {
+        "confidence": 0.8
+      }
+    },
+    {
+      "id": "40",
+      "source": "e0897268-cfd5-490f-adbd-4ad9b05eff15",
+      "target": "d75a441e-fb62-4f23-b15a-ab2fd4002a4d",
+      "type": "SUPPORTS",
+      "properties": {
+        "confidence": 0.8
+      }
+    },
+    {
+      "id": "41",
+      "source": "c3669eaa-801f-45a7-b3e0-3d7ae93de0d2",
+      "target": "d75a441e-fb62-4f23-b15a-ab2fd4002a4d",
+      "type": "SUPPORTS",
+      "properties": {
+        "confidence": 0.8
+      }
+    },
+    {
+      "id": "42",
+      "source": "71928a8c-60cb-4215-a237-030a6b2a17f7",
+      "target": "d75a441e-fb62-4f23-b15a-ab2fd4002a4d",
+      "type": "SUPPORTS",
+      "properties": {
+        "confidence": 0.8
+      }
+    },
+    {
+      "id": "43",
+      "source": "f4d5c6f4-a392-4385-9352-f8c65d2ad5d8",
+      "target": "d75a441e-fb62-4f23-b15a-ab2fd4002a4d",
+      "type": "SUPPORTS",
+      "properties": {
+        "confidence": 0.8
+      }
+    },
+    {
+      "id": "44",
+      "source": "8a86cf1a-93a5-40c8-8d37-047668097e28",
+      "target": "29263d1e-9bc5-41dc-93b3-61c1c7364af8",
+      "type": "SUPPORTS",
+      "properties": {
+        "confidence": 0.8
+      }
+    },
+    {
+      "id": "45",
+      "source": "e0897268-cfd5-490f-adbd-4ad9b05eff15",
+      "target": "29263d1e-9bc5-41dc-93b3-61c1c7364af8",
+      "type": "SUPPORTS",
+      "properties": {
+        "confidence": 0.8
+      }
+    },
+    {
+      "id": "46",
+      "source": "c3669eaa-801f-45a7-b3e0-3d7ae93de0d2",
+      "target": "29263d1e-9bc5-41dc-93b3-61c1c7364af8",
+      "type": "SUPPORTS",
+      "properties": {
+        "confidence": 0.8
+      }
+    },
+    {
+      "id": "47",
+      "source": "71928a8c-60cb-4215-a237-030a6b2a17f7",
+      "target": "29263d1e-9bc5-41dc-93b3-61c1c7364af8",
+      "type": "SUPPORTS",
+      "properties": {
+        "confidence": 0.8
+      }
+    },
+    {
+      "id": "48",
+      "source": "f4d5c6f4-a392-4385-9352-f8c65d2ad5d8",
+      "target": "29263d1e-9bc5-41dc-93b3-61c1c7364af8",
+      "type": "SUPPORTS",
+      "properties": {
+        "confidence": 0.8
+      }
+    },
+    {
+      "id": "49",
+      "source": "8a86cf1a-93a5-40c8-8d37-047668097e28",
+      "target": "6dfe137e-9a71-47d9-8366-c06613f93e87",
+      "type": "SUPPORTS",
+      "properties": {
+        "confidence": 0.8
+      }
+    },
+    {
+      "id": "50",
+      "source": "e0897268-cfd5-490f-adbd-4ad9b05eff15",
+      "target": "6dfe137e-9a71-47d9-8366-c06613f93e87",
+      "type": "SUPPORTS",
+      "properties": {
+        "confidence": 0.8
+      }
+    },
+    {
+      "id": "51",
+      "source": "c3669eaa-801f-45a7-b3e0-3d7ae93de0d2",
+      "target": "6dfe137e-9a71-47d9-8366-c06613f93e87",
+      "type": "SUPPORTS",
+      "properties": {
+        "confidence": 0.8
+      }
+    },
+    {
+      "id": "52",
+      "source": "71928a8c-60cb-4215-a237-030a6b2a17f7",
+      "target": "6dfe137e-9a71-47d9-8366-c06613f93e87",
+      "type": "SUPPORTS",
+      "properties": {
+        "confidence": 0.8
+      }
+    },
+    {
+      "id": "53",
+      "source": "f4d5c6f4-a392-4385-9352-f8c65d2ad5d8",
+      "target": "6dfe137e-9a71-47d9-8366-c06613f93e87",
+      "type": "SUPPORTS",
+      "properties": {
+        "confidence": 0.8
+      }
+    },
+    {
+      "id": "54",
+      "source": "8a86cf1a-93a5-40c8-8d37-047668097e28",
+      "target": "ed23cc19-2b52-4f03-bdbb-1743871d57af",
+      "type": "SUPPORTS",
+      "properties": {
+        "confidence": 0.8
+      }
+    },
+    {
+      "id": "55",
+      "source": "e0897268-cfd5-490f-adbd-4ad9b05eff15",
+      "target": "ed23cc19-2b52-4f03-bdbb-1743871d57af",
+      "type": "SUPPORTS",
+      "properties": {
+        "confidence": 0.8
+      }
+    },
+    {
+      "id": "56",
+      "source": "c3669eaa-801f-45a7-b3e0-3d7ae93de0d2",
+      "target": "ed23cc19-2b52-4f03-bdbb-1743871d57af",
+      "type": "SUPPORTS",
+      "properties": {
+        "confidence": 0.8
+      }
+    },
+    {
+      "id": "57",
+      "source": "71928a8c-60cb-4215-a237-030a6b2a17f7",
+      "target": "ed23cc19-2b52-4f03-bdbb-1743871d57af",
+      "type": "SUPPORTS",
+      "properties": {
+        "confidence": 0.8
+      }
+    },
+    {
+      "id": "58",
+      "source": "f4d5c6f4-a392-4385-9352-f8c65d2ad5d8",
+      "target": "ed23cc19-2b52-4f03-bdbb-1743871d57af",
+      "type": "SUPPORTS",
+      "properties": {
+        "confidence": 0.8
+      }
+    },
+    {
+      "id": "59",
+      "source": "8a86cf1a-93a5-40c8-8d37-047668097e28",
+      "target": "6c365bba-9877-4bdf-93e5-d08ac5f7a582",
+      "type": "SUPPORTS",
+      "properties": {
+        "confidence": 0.8
+      }
+    },
+    {
+      "id": "60",
+      "source": "e0897268-cfd5-490f-adbd-4ad9b05eff15",
+      "target": "6c365bba-9877-4bdf-93e5-d08ac5f7a582",
+      "type": "SUPPORTS",
+      "properties": {
+        "confidence": 0.8
+      }
+    },
+    {
+      "id": "61",
+      "source": "c3669eaa-801f-45a7-b3e0-3d7ae93de0d2",
+      "target": "6c365bba-9877-4bdf-93e5-d08ac5f7a582",
+      "type": "SUPPORTS",
+      "properties": {
+        "confidence": 0.8
+      }
+    },
+    {
+      "id": "62",
+      "source": "71928a8c-60cb-4215-a237-030a6b2a17f7",
+      "target": "6c365bba-9877-4bdf-93e5-d08ac5f7a582",
+      "type": "SUPPORTS",
+      "properties": {
+        "confidence": 0.8
+      }
+    },
+    {
+      "id": "63",
+      "source": "f4d5c6f4-a392-4385-9352-f8c65d2ad5d8",
+      "target": "6c365bba-9877-4bdf-93e5-d08ac5f7a582",
+      "type": "SUPPORTS",
+      "properties": {
+        "confidence": 0.8
+      }
+    },
+    {
+      "id": "64",
+      "source": "8a86cf1a-93a5-40c8-8d37-047668097e28",
+      "target": "7affda3c-2712-42ca-a720-960a0b27d416",
+      "type": "SUPPORTS",
+      "properties": {
+        "confidence": 0.8
+      }
+    },
+    {
+      "id": "65",
+      "source": "e0897268-cfd5-490f-adbd-4ad9b05eff15",
+      "target": "7affda3c-2712-42ca-a720-960a0b27d416",
+      "type": "SUPPORTS",
+      "properties": {
+        "confidence": 0.8
+      }
+    },
+    {
+      "id": "66",
+      "source": "c3669eaa-801f-45a7-b3e0-3d7ae93de0d2",
+      "target": "7affda3c-2712-42ca-a720-960a0b27d416",
+      "type": "SUPPORTS",
+      "properties": {
+        "confidence": 0.8
+      }
+    },
+    {
+      "id": "67",
+      "source": "71928a8c-60cb-4215-a237-030a6b2a17f7",
+      "target": "7affda3c-2712-42ca-a720-960a0b27d416",
+      "type": "SUPPORTS",
+      "properties": {
+        "confidence": 0.8
+      }
+    },
+    {
+      "id": "68",
+      "source": "f4d5c6f4-a392-4385-9352-f8c65d2ad5d8",
+      "target": "7affda3c-2712-42ca-a720-960a0b27d416",
+      "type": "SUPPORTS",
+      "properties": {
+        "confidence": 0.8
+      }
+    },
+    {
+      "id": "69",
+      "source": "8a86cf1a-93a5-40c8-8d37-047668097e28",
+      "target": "3ae30c4d-4403-426e-ad84-72092990c9a1",
+      "type": "SUPPORTS",
+      "properties": {
+        "confidence": 0.8
+      }
+    },
+    {
+      "id": "70",
+      "source": "e0897268-cfd5-490f-adbd-4ad9b05eff15",
+      "target": "3ae30c4d-4403-426e-ad84-72092990c9a1",
+      "type": "SUPPORTS",
+      "properties": {
+        "confidence": 0.8
+      }
+    },
+    {
+      "id": "71",
+      "source": "c3669eaa-801f-45a7-b3e0-3d7ae93de0d2",
+      "target": "3ae30c4d-4403-426e-ad84-72092990c9a1",
+      "type": "SUPPORTS",
+      "properties": {
+        "confidence": 0.8
+      }
+    },
+    {
+      "id": "72",
+      "source": "71928a8c-60cb-4215-a237-030a6b2a17f7",
+      "target": "3ae30c4d-4403-426e-ad84-72092990c9a1",
+      "type": "SUPPORTS",
+      "properties": {
+        "confidence": 0.8
+      }
+    },
+    {
+      "id": "73",
+      "source": "f4d5c6f4-a392-4385-9352-f8c65d2ad5d8",
+      "target": "3ae30c4d-4403-426e-ad84-72092990c9a1",
+      "type": "SUPPORTS",
+      "properties": {
+        "confidence": 0.8
+      }
+    }
+  ]
+}

@@ -1,0 +1,17 @@
+{
+  "simple_factual": {
+    "query": "What happened with Trump today?",
+    "error": "InvestigationContext.__init__() missing 2 required positional arguments: 'analytic_question' and 'investigation_scope'",
+    "status": "baseline_failed"
+  },
+  "complex_analytical": {
+    "query": "Analyze the different perspectives on Trump Epstein controversy",
+    "error": "InvestigationContext.__init__() missing 2 required positional arguments: 'analytic_question' and 'investigation_scope'",
+    "status": "baseline_failed"
+  },
+  "contradictory_claims": {
+    "query": "Find contradictions in recent political statements",
+    "error": "InvestigationContext.__init__() missing 2 required positional arguments: 'analytic_question' and 'investigation_scope'",
+    "status": "baseline_failed"
+  }
+}

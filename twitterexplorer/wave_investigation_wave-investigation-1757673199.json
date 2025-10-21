@@ -1,0 +1,68 @@
+{
+  "investigation_id": "wave-investigation-1757673199",
+  "investigation_goal": "analyze Twitter discussions about AI safety concerns and regulatory proposals",
+  "wave_architecture": {
+    "total_waves": 1,
+    "wave_transition_logic": "emergent_questions_become_search_queries",
+    "completion_criteria": "emergent_questions_converging"
+  },
+  "waves": [
+    {
+      "wave_number": 1,
+      "wave_type": "initial_exploration",
+      "driving_questions": [
+        "analyze Twitter discussions about AI safety concerns and regulatory proposals"
+      ],
+      "wave_duration": "2025-09-12T03:33:19.416703 - 2025-09-12T03:33:29.277541",
+      "searches_executed": [
+        {
+          "query": "analyze Twitter discussions about AI safety concerns and regulatory proposals",
+          "endpoint": "search.php",
+          "results_count": 0
+        },
+        {
+          "query": "analyze Twitter discussions about AI safety concer recent",
+          "endpoint": "search.php",
+          "results_count": 0
+        },
+        {
+          "query": "analyze Twitter discussions about AI safety concer analysis",
+          "endpoint": "search.php",
+          "results_count": 0
+        }
+      ],
+      "data_collected": [],
+      "insights_generated": [],
+      "emergent_questions": [],
+      "satisfaction_achieved": 0.6,
+      "wave_summary": "Initial exploration revealed 0 key insights and identified 0 emergent questions for deeper investigation.",
+      "key_discoveries": []
+    }
+  ],
+  "investigation_flow_demonstration": {},
+  "true_dependency_chain": {
+    "Wave_1": {
+      "input": "Original investigation question",
+      "process": "Broad exploration searches",
+      "output": "General insights + specific emergent questions"
+    }
+  },
+  "wave_convergence_evidence": {
+    "diminishing_questions": {
+      "wave_1": "0 emergent questions generated"
+    },
+    "increasing_specificity": {
+      "wave_1_question": "analyze Twitter discussions about AI safety concerns and regulatory proposals"
+    }
+  },
+  "wave_metrics": {
+    "total_searches": 3,
+    "total_insights": 0,
+    "total_emergent_questions": 0,
+    "investigation_depth_score": 0.6,
+    "final_satisfaction": 0.6
+  },
+  "execution_time_seconds": 9.88240647315979,
+  "engine_type": "wave_architecture",
+  "timestamp": "2025-09-12T03:33:29.277541"
+}

@@ -1,0 +1,75 @@
+{
+  "session_metadata": {
+    "session_id": "beee1688-ae53-432a-8cd6-4bf7f73e0223",
+    "start_time": "2025-09-03T15:14:20.920778+00:00",
+    "end_time": "2025-09-03T15:15:10.098174+00:00",
+    "duration_seconds": 49.176257,
+    "user_query": "AI technology news"
+  },
+  "configuration": {
+    "max_searches": 1,
+    "max_time_minutes": 60,
+    "satisfaction_enabled": true,
+    "satisfaction_threshold": 0.8,
+    "min_searches_before_satisfaction": 10,
+    "show_search_details": true,
+    "show_strategy_reasoning": true,
+    "show_effectiveness_scores": true,
+    "enable_strategy_adaptation": true,
+    "enable_alternative_approaches": true,
+    "enable_name_variation_search": true,
+    "pages_per_search": 1,
+    "search_timeout_seconds": 30,
+    "retry_failed_searches": true,
+    "enforce_endpoint_diversity": false,
+    "max_endpoint_repeats": 5,
+    "diversity_threshold": 0.3
+  },
+  "performance_metrics": {
+    "total_searches": 1,
+    "total_rounds": 1,
+    "total_results_found": 50,
+    "satisfaction_score": 0.0,
+    "satisfaction_breakdown": {
+      "information_coverage": 0.0,
+      "source_diversity": 0.0,
+      "evidence_quality": 0.0,
+      "claim_specificity": 0.0,
+      "contradiction_resolution": 0.0
+    },
+    "completion_reason": "Investigation failed: LLM batch evaluation failed - investigation cannot continue: LiteLLM completion failed: litellm.InternalServerError: litellm.InternalServerError: VertexAIException - {\n  \"error\": {\n    \"code\": 503,\n    \"message\": \"The model is overloaded. Please try again later.\",\n    \"status\": \"UNAVAILABLE\"\n  }\n}\n"
+  },
+  "search_summary": {
+    "searches_by_effectiveness": {
+      "highly_effective": [],
+      "moderately_effective": [
+        {
+          "search_id": 1,
+          "query": "AI technology news OR \"artificial intelligence breakthroughs\"",
+          "results": 50,
+          "effectiveness": 5.0
+        }
+      ],
+      "low_effectiveness": [],
+      "ineffective": []
+    },
+    "most_effective_strategies": [
+      {
+        "strategy": "Graph Strategy: To establish a broad initial understanding of current AI technology news, identify key trends, influential entities, and specific topics for deeper investigation. This multi-pronged approach ensures diversity in information sources and types, systematically addressing the comprehensive understanding gap.",
+        "avg_effectiveness": 5.0
+      }
+    ],
+    "dead_ends": [],
+    "promising_leads": []
+  },
+  "rounds_summary": [
+    {
+      "round_number": 1,
+      "strategy": "Graph Strategy: To establish a broad initial understanding of current AI technology news, identify key trends, influential entities, and specific topics for deeper investigation. This multi-pronged approach ensures diversity in information sources and types, systematically addressing the comprehensive understanding gap.",
+      "searches_count": 1,
+      "total_results": 50,
+      "effectiveness": 0.0,
+      "insights": []
+    }
+  ]
+}

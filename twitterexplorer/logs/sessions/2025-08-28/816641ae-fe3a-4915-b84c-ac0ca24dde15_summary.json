@@ -1,0 +1,88 @@
+{
+  "session_metadata": {
+    "session_id": "816641ae-fe3a-4915-b84c-ac0ca24dde15",
+    "start_time": "2025-08-28T18:38:51.249864+00:00",
+    "end_time": "2025-08-28T18:41:00.365565+00:00",
+    "duration_seconds": 129.1147,
+    "user_query": "Recent developments in Tesla AI and autopilot"
+  },
+  "configuration": {
+    "max_searches": 2,
+    "max_time_minutes": 60,
+    "satisfaction_enabled": true,
+    "satisfaction_threshold": 0.8,
+    "min_searches_before_satisfaction": 10,
+    "show_search_details": true,
+    "show_strategy_reasoning": true,
+    "show_effectiveness_scores": true,
+    "enable_strategy_adaptation": true,
+    "enable_alternative_approaches": true,
+    "enable_name_variation_search": true,
+    "pages_per_search": 2,
+    "search_timeout_seconds": 30,
+    "retry_failed_searches": true,
+    "enforce_endpoint_diversity": false,
+    "max_endpoint_repeats": 5,
+    "diversity_threshold": 0.3
+  },
+  "performance_metrics": {
+    "total_searches": 2,
+    "total_rounds": 1,
+    "total_results_found": 119,
+    "satisfaction_score": 0.35810344827586205,
+    "satisfaction_breakdown": {
+      "information_coverage": 0.4,
+      "source_diversity": 0.2,
+      "evidence_quality": 0.872413793103448,
+      "claim_specificity": 0.0,
+      "contradiction_resolution": 0.0
+    },
+    "completion_reason": "Reached maximum search limit (2)"
+  },
+  "search_summary": {
+    "searches_by_effectiveness": {
+      "highly_effective": [
+        {
+          "search_id": 1,
+          "query": "Tesla AI autopilot developments OR updates",
+          "results": 60,
+          "effectiveness": 9.0
+        },
+        {
+          "search_id": 2,
+          "query": "",
+          "results": 59,
+          "effectiveness": 9.0
+        }
+      ],
+      "moderately_effective": [],
+      "low_effectiveness": [],
+      "ineffective": []
+    },
+    "most_effective_strategies": [
+      {
+        "strategy": "Graph Strategy: To build a comprehensive understanding of recent developments in Tesla AI and autopilot, the initial strategy is to gather broad information from diverse sources. This involves a general search for recent news, direct insights from key figures, and an assessment of overall public interest. This approach aims to establish a foundational knowledge base, identify key announcements, and gauge public sentiment before deep-diving into specific threads or details.",
+        "avg_effectiveness": 9.0
+      }
+    ],
+    "dead_ends": [],
+    "promising_leads": [
+      "Tesla AI autopilot developments OR updates",
+      ""
+    ]
+  },
+  "rounds_summary": [
+    {
+      "round_number": 1,
+      "strategy": "Graph Strategy: To build a comprehensive understanding of recent developments in Tesla AI and autopilot, the initial strategy is to gather broad information from diverse sources. This involves a general search for recent news, direct insights from key figures, and an assessment of overall public interest. This approach aims to establish a foundational knowledge base, identify key announcements, and gauge public sentiment before deep-diving into specific threads or details.",
+      "searches_count": 2,
+      "total_results": 119,
+      "effectiveness": 9.0,
+      "insights": [
+        "Tesla is actively developing and deploying multiple FSD versions (V13, V13.3, v12.5.2, v12.5.6.1).",
+        "A significantly enhanced FSD model, featuring up to ~10X parameters and improved video compression, is currently in testing with a public release anticipated soon.",
+        "Autopilot's driving visualization has been substantially improved in recent updates (e.g., 2024.14 Spring Update) to provide a more comprehensive view, even for older hardware."
+      ]
+    }
+  ]
+}

@@ -1,0 +1,81 @@
+{
+  "session_metadata": {
+    "session_id": "951b3226-7055-419d-b3f7-c4e906461cf3",
+    "start_time": "2025-08-27T21:27:37.045005+00:00",
+    "end_time": "2025-08-27T21:28:03.756590+00:00",
+    "duration_seconds": 26.710584,
+    "user_query": "Elon Musk X platform news"
+  },
+  "configuration": {
+    "max_searches": 1,
+    "max_time_minutes": 60,
+    "satisfaction_enabled": true,
+    "satisfaction_threshold": 0.8,
+    "min_searches_before_satisfaction": 10,
+    "show_search_details": true,
+    "show_strategy_reasoning": true,
+    "show_effectiveness_scores": true,
+    "enable_strategy_adaptation": true,
+    "enable_alternative_approaches": true,
+    "enable_name_variation_search": true,
+    "pages_per_search": 1,
+    "search_timeout_seconds": 30,
+    "retry_failed_searches": true,
+    "enforce_endpoint_diversity": false,
+    "max_endpoint_repeats": 5,
+    "diversity_threshold": 0.3
+  },
+  "performance_metrics": {
+    "total_searches": 1,
+    "total_rounds": 1,
+    "total_results_found": 58,
+    "satisfaction_score": 0.245,
+    "satisfaction_breakdown": {
+      "information_coverage": 0.2,
+      "source_diversity": 0.1,
+      "evidence_quality": 0.7,
+      "claim_specificity": 0.0,
+      "contradiction_resolution": 0.0
+    },
+    "completion_reason": "Investigation failed: InvestigationSession.update_satisfaction_metrics() missing 1 required positional argument: 'findings'"
+  },
+  "search_summary": {
+    "searches_by_effectiveness": {
+      "highly_effective": [
+        {
+          "search_id": 1,
+          "query": "Elon Musk X platform news recent",
+          "results": 58,
+          "effectiveness": 9.0
+        }
+      ],
+      "moderately_effective": [],
+      "low_effectiveness": [],
+      "ineffective": []
+    },
+    "most_effective_strategies": [
+      {
+        "strategy": "Graph Strategy: To establish a comprehensive understanding of 'Elon Musk X platform news', the initial strategic decision is to conduct diverse searches. This approach will capture general news, direct communications from Elon Musk, and identify trending topics surrounding the platform. This multi-faceted reconnaissance will provide a strong foundation for subsequent, more targeted investigations.",
+        "avg_effectiveness": 9.0
+      }
+    ],
+    "dead_ends": [],
+    "promising_leads": [
+      "Elon Musk X platform news recent"
+    ]
+  },
+  "rounds_summary": [
+    {
+      "round_number": 1,
+      "strategy": "Graph Strategy: To establish a comprehensive understanding of 'Elon Musk X platform news', the initial strategic decision is to conduct diverse searches. This approach will capture general news, direct communications from Elon Musk, and identify trending topics surrounding the platform. This multi-faceted reconnaissance will provide a strong foundation for subsequent, more targeted investigations.",
+      "searches_count": 1,
+      "total_results": 58,
+      "effectiveness": 9.0,
+      "insights": [
+        "X is being transformed into a \"super app\" with a significant focus on financial services, including a decentralized exchange (DEX), in-app investing and trading, a potential \"$X token\" or \"X coins,\" and Bitcoin payments, with the ambitious goal of replacing the global banking system.",
+        "The platform is heavily investing in multimedia and communication features, such as advanced picture/video editing tools, an XVideos platform to rival TikTok, SmartTV apps to compete with YouTube, enhanced streaming capabilities to rival Twitch, encrypted XChat built on Rust, and \"X Conferences\" to compete with Zoom/Google Meet.",
+        "Elon Musk aims for X to be the \"best source of truth\" and emphasizes free speech, while also facing accusations of political bias and some users reportedly turning away from the platform for news."
+      ]
+    }
+  ]
+}

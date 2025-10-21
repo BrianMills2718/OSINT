@@ -12,6 +12,7 @@ from integrations.government.fbi_vault import FBIVaultIntegration
 
 # Import social integrations
 from integrations.social.discord_integration import DiscordIntegration
+from integrations.social.twitter_integration import TwitterIntegration
 
 # Future social integrations
 # from integrations.social.reddit_integration import RedditIntegration
@@ -35,10 +36,10 @@ class IntegrationRegistry:
 
         # Social media sources
         self.register(DiscordIntegration)
+        self.register(TwitterIntegration)
 
         # Future social media sources (Phase 3)
         # self.register(RedditIntegration)
-        # self.register(TwitterIntegration)
         # self.register(TelegramIntegration)
 
     def register(self, integration_class: Type[DatabaseIntegration]):

@@ -10,6 +10,18 @@ from dotenv import load_dotenv
 import litellm
 import requests
 from datetime import datetime, timedelta
+import logging
+
+# Configure file logging for query debugging
+logging.basicConfig(
+    level=logging.DEBUG,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    handlers=[
+        logging.FileHandler('ai_research_queries.log'),
+        logging.StreamHandler()  # Also log to console
+    ]
+)
+logger = logging.getLogger('AIResearch')
 
 # Add parent directory to path for imports
 sys.path.insert(0, str(Path(__file__).parent.parent))
@@ -155,7 +167,7 @@ Return JSON array of selected sources."""
                     "additionalProperties": False
                 },
                 "minItems": 1,
-                "maxItems": 4
+                "maxItems": 10  # Allow up to 10 sources (covers all current + future sources)
             },
             "research_strategy": {
                 "type": "string",
@@ -202,6 +214,11 @@ async def execute_search_via_registry(source_id: str, research_question: str, ap
 
     start_time = datetime.now()
 
+    logger.info(f"=" * 80)
+    logger.info(f"Starting search for source: {source_id}")
+    logger.info(f"Research question: {research_question}")
+    logger.info(f"Result limit: {limit}")
+
     try:
         # Get integration class from registry
         integration_class = registry.get(source_id)
@@ -231,21 +248,36 @@ async def execute_search_via_registry(source_id: str, research_question: str, ap
                 }
 
         # Generate source-specific query params via integration's LLM
+        logger.info(f"Generating query parameters for {integration.metadata.name}...")
         query_params = await integration.generate_query(research_question=research_question)
 
         if not query_params:
+            logger.warning(f"{integration.metadata.name}: Query generation returned None (source deemed not relevant)")
             return {
                 "success": False,
                 "total": 0,
                 "results": [],
                 "source": integration.metadata.name,
-                "error": "Query generation returned no parameters (source deemed not relevant)"
+                "error": "Query generation returned no parameters (source deemed not relevant)",
+                "query_params": None
             }
 
+        logger.info(f"{integration.metadata.name}: Generated query parameters:")
+        logger.info(f"  {json.dumps(query_params, indent=2)}")
+
         # Execute search
+        logger.info(f"Executing search for {integration.metadata.name}...")
         result = await integration.execute_search(query_params, api_key, limit)
 
         response_time_ms = (datetime.now() - start_time).total_seconds() * 1000
+
+        logger.info(f"{integration.metadata.name}: Search completed")
+        logger.info(f"  Success: {result.success}")
+        logger.info(f"  Total results: {result.total}")
+        logger.info(f"  Returned results: {len(result.results)}")
+        logger.info(f"  Response time: {response_time_ms:.0f}ms")
+        if result.error:
+            logger.error(f"  Error: {result.error}")
 
         # Convert QueryResult to dict format
         return {
@@ -260,13 +292,15 @@ async def execute_search_via_registry(source_id: str, research_question: str, ap
 
     except Exception as e:
         response_time_ms = (datetime.now() - start_time).total_seconds() * 1000
+        logger.exception(f"Exception during search for {source_id}:")
         return {
             "success": False,
             "total": 0,
             "results": [],
             "source": source_id,
             "error": str(e),
-            "response_time_ms": response_time_ms
+            "response_time_ms": response_time_ms,
+            "query_params": None  # Include even when None for consistency
         }
 
 
@@ -319,7 +353,7 @@ Be concise but thorough. Focus on insights that directly relate to the research 
     return get_text(response)
 
 
-def render_ai_research_tab(openai_api_key_from_ui, dvids_api_key, sam_api_key, usajobs_api_key=None):
+def render_ai_research_tab(openai_api_key_from_ui, dvids_api_key, sam_api_key, usajobs_api_key=None, rapidapi_key=None):
     """Render the AI Research tab in the Streamlit app."""
 
     st.markdown("### 🤖 AI-Powered Research Assistant")
@@ -461,6 +495,7 @@ def render_ai_research_tab(openai_api_key_from_ui, dvids_api_key, sam_api_key, u
                 "dvids": dvids_api_key,
                 "sam": sam_api_key,
                 "usajobs": usajobs_api_key,
+                "twitter": rapidapi_key,  # Twitter uses RAPIDAPI_KEY
                 # Add others as needed - registry will handle any source
             }
 
@@ -486,7 +521,7 @@ def render_ai_research_tab(openai_api_key_from_ui, dvids_api_key, sam_api_key, u
                 source_name = result.get('source', 'Unknown')
                 all_results[source_name] = result
 
-                # Show status
+                # Show status (query params logged to file)
                 if result['success']:
                     st.success(f"✅ {source_name}: Found {result['total']} results")
                 else:

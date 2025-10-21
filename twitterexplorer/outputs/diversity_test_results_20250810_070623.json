@@ -1,0 +1,16 @@
+{
+  "timestamp": "20250810_070623",
+  "query": "debunk michael herrera UFO claims",
+  "searches_conducted": 10,
+  "unique_endpoints": 5,
+  "endpoint_distribution": {
+    "search.php": 3,
+    "screenname.php": 1,
+    "timeline.php": 4,
+    "trends.php": 1,
+    "following.php": 1
+  },
+  "diversity_score": 0.5035750766087844,
+  "graph_nodes": 22,
+  "graph_edges": 11
+}

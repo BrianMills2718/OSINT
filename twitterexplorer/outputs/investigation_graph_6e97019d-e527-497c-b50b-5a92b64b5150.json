@@ -1,0 +1,307 @@
+{
+  "nodes": {
+    "a1cfaee8-14a4-4920-9037-bea4249591dd": {
+      "id": "a1cfaee8-14a4-4920-9037-bea4249591dd",
+      "node_type": "AnalyticQuestion",
+      "properties": {
+        "text": "What are different perspectives on climate change policies",
+        "is_root": true,
+        "investigation_goal": "What are different perspectives on climate change policies"
+      },
+      "created_at": "2025-09-08T00:33:06.891654"
+    },
+    "082d25c0-920e-4fa6-8509-6c71466a689c": {
+      "id": "082d25c0-920e-4fa6-8509-6c71466a689c",
+      "node_type": "InvestigationQuestion",
+      "properties": {
+        "text": "Strategic question: Capture the top-engaged tweets and influencers framing climate policy issues (frames like economic cost, justice, science, national security). This reveals dominant narratives and leading accounts to follow next.",
+        "parent_analytic_question": "a1cfaee8-14a4-4920-9037-bea4249591dd"
+      },
+      "created_at": "2025-09-08T00:33:58.136964"
+    },
+    "143e257a-433a-440d-8077-3193f0286a16": {
+      "id": "143e257a-433a-440d-8077-3193f0286a16",
+      "node_type": "SearchQuery",
+      "properties": {
+        "endpoint": "search.php",
+        "parameters": {
+          "query": "climate change (policy OR policies OR \"carbon tax\" OR \"carbon pricing\" OR \"net zero\" OR \"Green New Deal\" OR adaptation OR mitigation OR \"climate justice\")",
+          "search_type": "Top"
+        }
+      },
+      "created_at": "2025-09-08T00:33:58.136964"
+    },
+    "9eca616b-8673-422b-9c85-c9e9df2faa05": {
+      "id": "9eca616b-8673-422b-9c85-c9e9df2faa05",
+      "node_type": "InvestigationQuestion",
+      "properties": {
+        "text": "Strategic question: Capture recent/real-time discussion to identify emerging debates, spikes tied to news/policy events, and trending policy proposals that may not yet be in the Top results.",
+        "parent_analytic_question": "a1cfaee8-14a4-4920-9037-bea4249591dd"
+      },
+      "created_at": "2025-09-08T00:33:58.136964"
+    },
+    "192b38a0-e124-466b-8bd6-7f4d4f1007bc": {
+      "id": "192b38a0-e124-466b-8bd6-7f4d4f1007bc",
+      "node_type": "SearchQuery",
+      "properties": {
+        "endpoint": "search.php",
+        "parameters": {
+          "query": "climate change (policy OR policies OR \"carbon tax\" OR \"carbon pricing\" OR \"net zero\" OR \"Green New Deal\" OR adaptation OR mitigation OR \"climate justice\")",
+          "search_type": "Latest"
+        }
+      },
+      "created_at": "2025-09-08T00:33:58.136964"
+    },
+    "2a06c19d-1910-4921-a8c1-ea88164ca735": {
+      "id": "2a06c19d-1910-4921-a8c1-ea88164ca735",
+      "node_type": "InvestigationQuestion",
+      "properties": {
+        "text": "Strategic question: Identify whether and how climate policy topics are trending regionally; this helps link Twitter discussion to mainstream salience and may highlight regional policy frames (e.g., jobs, economy, wildfires, energy).",
+        "parent_analytic_question": "a1cfaee8-14a4-4920-9037-bea4249591dd"
+      },
+      "created_at": "2025-09-08T00:33:58.136964"
+    },
+    "13215610-c297-46cf-afaf-39797a66faf1": {
+      "id": "13215610-c297-46cf-afaf-39797a66faf1",
+      "node_type": "SearchQuery",
+      "properties": {
+        "endpoint": "trends.php",
+        "parameters": {
+          "country": "UnitedStates"
+        }
+      },
+      "created_at": "2025-09-08T00:33:58.136964"
+    },
+    "dc645bd1-507c-4ec7-8021-fb6575dfce8f": {
+      "id": "dc645bd1-507c-4ec7-8021-fb6575dfce8f",
+      "node_type": "InvestigationQuestion",
+      "properties": {
+        "text": "Strategic question: Collect official UNFCCC messaging on climate policy (international agreements, mitigation/adaptation priorities). Comparing this to public tweets reveals gaps between institutional framing and public perception.",
+        "parent_analytic_question": "a1cfaee8-14a4-4920-9037-bea4249591dd"
+      },
+      "created_at": "2025-09-08T00:33:58.136964"
+    },
+    "c72a3af4-ed7d-4feb-99c3-f8e0d2a00821": {
+      "id": "c72a3af4-ed7d-4feb-99c3-f8e0d2a00821",
+      "node_type": "SearchQuery",
+      "properties": {
+        "endpoint": "timeline.php",
+        "parameters": {
+          "screenname": "UNFCCC"
+        }
+      },
+      "created_at": "2025-09-08T00:33:58.136964"
+    },
+    "1e242240-8b78-4dea-9b58-ff301e27322a": {
+      "id": "1e242240-8b78-4dea-9b58-ff301e27322a",
+      "node_type": "InvestigationQuestion",
+      "properties": {
+        "text": "Strategic question: Capture activist framing and calls to action around climate policy (e.g., urgency, justice). This provides a grassroots/activist perspective to contrast with official and industry voices.",
+        "parent_analytic_question": "a1cfaee8-14a4-4920-9037-bea4249591dd"
+      },
+      "created_at": "2025-09-08T00:33:58.136964"
+    },
+    "d8b82512-38b0-451c-a63b-22e6a4d3b39d": {
+      "id": "d8b82512-38b0-451c-a63b-22e6a4d3b39d",
+      "node_type": "SearchQuery",
+      "properties": {
+        "endpoint": "timeline.php",
+        "parameters": {
+          "screenname": "GretaThunberg"
+        }
+      },
+      "created_at": "2025-09-08T00:33:58.136964"
+    },
+    "40d4f0a4-98f2-4e8e-a45b-f8214ee359e2": {
+      "id": "40d4f0a4-98f2-4e8e-a45b-f8214ee359e2",
+      "node_type": "InvestigationQuestion",
+      "properties": {
+        "text": "Strategic question: Analyze the composition of followers (types of organizations, journalists, activists, policymakers) to infer who engages with official policy messaging and potential channels of influence.",
+        "parent_analytic_question": "a1cfaee8-14a4-4920-9037-bea4249591dd"
+      },
+      "created_at": "2025-09-08T00:33:58.136964"
+    },
+    "de2c02b2-9adc-4cca-b51b-1dc0c66f498a": {
+      "id": "de2c02b2-9adc-4cca-b51b-1dc0c66f498a",
+      "node_type": "SearchQuery",
+      "properties": {
+        "endpoint": "followers.php",
+        "parameters": {
+          "screenname": "UNFCCC"
+        }
+      },
+      "created_at": "2025-09-08T00:33:58.136964"
+    },
+    "685998ef-9e7d-4299-b098-a2d3b83e5ef4": {
+      "id": "685998ef-9e7d-4299-b098-a2d3b83e5ef4",
+      "node_type": "InvestigationQuestion",
+      "properties": {
+        "text": "Strategic question: Identify organizational affiliations and networks associated with a leading activist to map coalitions and recurring policy positions (e.g., climate justice, fossil fuel phase-out).",
+        "parent_analytic_question": "a1cfaee8-14a4-4920-9037-bea4249591dd"
+      },
+      "created_at": "2025-09-08T00:33:58.136964"
+    },
+    "d22db2b0-fb69-4990-a0ad-193c2dce5abf": {
+      "id": "d22db2b0-fb69-4990-a0ad-193c2dce5abf",
+      "node_type": "SearchQuery",
+      "properties": {
+        "endpoint": "affilates.php",
+        "parameters": {
+          "screenname": "GretaThunberg"
+        }
+      },
+      "created_at": "2025-09-08T00:33:58.136964"
+    }
+  },
+  "edges": [
+    {
+      "id": "8a3079ac-610e-43ed-ac1e-0a71c9c819a1",
+      "source_id": "a1cfaee8-14a4-4920-9037-bea4249591dd",
+      "target_id": "082d25c0-920e-4fa6-8509-6c71466a689c",
+      "edge_type": "MOTIVATES",
+      "properties": {
+        "decision_type": "gap_filling"
+      },
+      "created_at": "2025-09-08T00:33:58.136964"
+    },
+    {
+      "id": "3210e393-f5c0-4936-9df0-04dbaa89f569",
+      "source_id": "082d25c0-920e-4fa6-8509-6c71466a689c",
+      "target_id": "143e257a-433a-440d-8077-3193f0286a16",
+      "edge_type": "OPERATIONALIZES",
+      "properties": {
+        "decision_type": "gap_filling",
+        "coherence_score": 0.8
+      },
+      "created_at": "2025-09-08T00:33:58.136964"
+    },
+    {
+      "id": "a3c5a8a7-9e3f-49ec-9c8d-2e12b163824f",
+      "source_id": "a1cfaee8-14a4-4920-9037-bea4249591dd",
+      "target_id": "9eca616b-8673-422b-9c85-c9e9df2faa05",
+      "edge_type": "MOTIVATES",
+      "properties": {
+        "decision_type": "gap_filling"
+      },
+      "created_at": "2025-09-08T00:33:58.136964"
+    },
+    {
+      "id": "00d1cc2b-d7ae-45c7-8a73-be204a94c83b",
+      "source_id": "9eca616b-8673-422b-9c85-c9e9df2faa05",
+      "target_id": "192b38a0-e124-466b-8bd6-7f4d4f1007bc",
+      "edge_type": "OPERATIONALIZES",
+      "properties": {
+        "decision_type": "gap_filling",
+        "coherence_score": 0.8
+      },
+      "created_at": "2025-09-08T00:33:58.136964"
+    },
+    {
+      "id": "3444f718-fd24-4d77-9b48-09d56286114e",
+      "source_id": "a1cfaee8-14a4-4920-9037-bea4249591dd",
+      "target_id": "2a06c19d-1910-4921-a8c1-ea88164ca735",
+      "edge_type": "MOTIVATES",
+      "properties": {
+        "decision_type": "gap_filling"
+      },
+      "created_at": "2025-09-08T00:33:58.136964"
+    },
+    {
+      "id": "52bd5ee6-017d-4b2b-8498-bf79ba911cdc",
+      "source_id": "2a06c19d-1910-4921-a8c1-ea88164ca735",
+      "target_id": "13215610-c297-46cf-afaf-39797a66faf1",
+      "edge_type": "OPERATIONALIZES",
+      "properties": {
+        "decision_type": "gap_filling",
+        "coherence_score": 0.8
+      },
+      "created_at": "2025-09-08T00:33:58.136964"
+    },
+    {
+      "id": "86aeeb72-a9c7-45d9-a6b3-ff154b0f6bae",
+      "source_id": "a1cfaee8-14a4-4920-9037-bea4249591dd",
+      "target_id": "dc645bd1-507c-4ec7-8021-fb6575dfce8f",
+      "edge_type": "MOTIVATES",
+      "properties": {
+        "decision_type": "gap_filling"
+      },
+      "created_at": "2025-09-08T00:33:58.136964"
+    },
+    {
+      "id": "896577cb-5723-4a6e-9057-71b13720c262",
+      "source_id": "dc645bd1-507c-4ec7-8021-fb6575dfce8f",
+      "target_id": "c72a3af4-ed7d-4feb-99c3-f8e0d2a00821",
+      "edge_type": "OPERATIONALIZES",
+      "properties": {
+        "decision_type": "gap_filling",
+        "coherence_score": 0.8
+      },
+      "created_at": "2025-09-08T00:33:58.136964"
+    },
+    {
+      "id": "634cfdb1-6be1-44f5-8e66-0cce22a8f5af",
+      "source_id": "a1cfaee8-14a4-4920-9037-bea4249591dd",
+      "target_id": "1e242240-8b78-4dea-9b58-ff301e27322a",
+      "edge_type": "MOTIVATES",
+      "properties": {
+        "decision_type": "gap_filling"
+      },
+      "created_at": "2025-09-08T00:33:58.136964"
+    },
+    {
+      "id": "1e2d758b-ed7f-42e9-8017-21f2d53eaae9",
+      "source_id": "1e242240-8b78-4dea-9b58-ff301e27322a",
+      "target_id": "d8b82512-38b0-451c-a63b-22e6a4d3b39d",
+      "edge_type": "OPERATIONALIZES",
+      "properties": {
+        "decision_type": "gap_filling",
+        "coherence_score": 0.8
+      },
+      "created_at": "2025-09-08T00:33:58.136964"
+    },
+    {
+      "id": "a0a982ba-db87-425e-b15d-1a2b3d29ac0c",
+      "source_id": "a1cfaee8-14a4-4920-9037-bea4249591dd",
+      "target_id": "40d4f0a4-98f2-4e8e-a45b-f8214ee359e2",
+      "edge_type": "MOTIVATES",
+      "properties": {
+        "decision_type": "gap_filling"
+      },
+      "created_at": "2025-09-08T00:33:58.136964"
+    },
+    {
+      "id": "0c812053-97a6-4482-8284-cb2255d18149",
+      "source_id": "40d4f0a4-98f2-4e8e-a45b-f8214ee359e2",
+      "target_id": "de2c02b2-9adc-4cca-b51b-1dc0c66f498a",
+      "edge_type": "OPERATIONALIZES",
+      "properties": {
+        "decision_type": "gap_filling",
+        "coherence_score": 0.8
+      },
+      "created_at": "2025-09-08T00:33:58.136964"
+    },
+    {
+      "id": "7ff3f019-273a-465a-a46a-b5055d196107",
+      "source_id": "a1cfaee8-14a4-4920-9037-bea4249591dd",
+      "target_id": "685998ef-9e7d-4299-b098-a2d3b83e5ef4",
+      "edge_type": "MOTIVATES",
+      "properties": {
+        "decision_type": "gap_filling"
+      },
+      "created_at": "2025-09-08T00:33:58.136964"
+    },
+    {
+      "id": "437b1b34-003d-4d82-a43f-16cdb2cdc3ef",
+      "source_id": "685998ef-9e7d-4299-b098-a2d3b83e5ef4",
+      "target_id": "d22db2b0-fb69-4990-a0ad-193c2dce5abf",
+      "edge_type": "OPERATIONALIZES",
+      "properties": {
+        "decision_type": "gap_filling",
+        "coherence_score": 0.8
+      },
+      "created_at": "2025-09-08T00:33:58.136964"
+    }
+  ],
+  "analytic_question": "a1cfaee8-14a4-4920-9037-bea4249591dd",
+  "created_at": "2025-09-08T00:33:58.763136"
+}

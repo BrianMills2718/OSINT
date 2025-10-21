@@ -1,0 +1,161 @@
+{
+  "nodes": [
+    {
+      "id": "4a5b45bb",
+      "label": "Search: Trump Epstein 2002",
+      "group": "search"
+    },
+    {
+      "id": "ffc08636",
+      "label": "Search: realDonaldTrump",
+      "group": "search"
+    },
+    {
+      "id": "bc57524c",
+      "label": "Search: Mar-a-Lago March 200",
+      "group": "search"
+    },
+    {
+      "id": "141adf54",
+      "label": "Finding: Court documents from Marc...",
+      "group": "datapoint"
+    },
+    {
+      "id": "11a6c407",
+      "label": "Finding: Financial records show $3...",
+      "group": "datapoint"
+    },
+    {
+      "id": "63e09e82",
+      "label": "Finding: Click here to read more...",
+      "group": "datapoint"
+    },
+    {
+      "id": "8373e7cb",
+      "label": "Finding: Flight logs confirm Trump...",
+      "group": "datapoint"
+    },
+    {
+      "id": "868a8ffc",
+      "label": "Finding: I barely knew Jeffrey Eps...",
+      "group": "datapoint"
+    },
+    {
+      "id": "2d1f4234",
+      "label": "Pattern",
+      "group": "insight"
+    },
+    {
+      "id": "fba5c4ca",
+      "label": "Pattern",
+      "group": "insight"
+    },
+    {
+      "id": "483b309f",
+      "label": "Pattern",
+      "group": "insight"
+    }
+  ],
+  "edges": [
+    {
+      "from": "bc57524c",
+      "to": "141adf54",
+      "label": ""
+    },
+    {
+      "from": "bc57524c",
+      "to": "11a6c407",
+      "label": ""
+    },
+    {
+      "from": "bc57524c",
+      "to": "63e09e82",
+      "label": ""
+    },
+    {
+      "from": "bc57524c",
+      "to": "8373e7cb",
+      "label": ""
+    },
+    {
+      "from": "bc57524c",
+      "to": "868a8ffc",
+      "label": ""
+    },
+    {
+      "from": "141adf54",
+      "to": "2d1f4234",
+      "label": "SUPPORTS"
+    },
+    {
+      "from": "11a6c407",
+      "to": "2d1f4234",
+      "label": "SUPPORTS"
+    },
+    {
+      "from": "63e09e82",
+      "to": "2d1f4234",
+      "label": "SUPPORTS"
+    },
+    {
+      "from": "8373e7cb",
+      "to": "2d1f4234",
+      "label": "SUPPORTS"
+    },
+    {
+      "from": "868a8ffc",
+      "to": "2d1f4234",
+      "label": "SUPPORTS"
+    },
+    {
+      "from": "141adf54",
+      "to": "fba5c4ca",
+      "label": "SUPPORTS"
+    },
+    {
+      "from": "11a6c407",
+      "to": "fba5c4ca",
+      "label": "SUPPORTS"
+    },
+    {
+      "from": "63e09e82",
+      "to": "fba5c4ca",
+      "label": "SUPPORTS"
+    },
+    {
+      "from": "8373e7cb",
+      "to": "fba5c4ca",
+      "label": "SUPPORTS"
+    },
+    {
+      "from": "868a8ffc",
+      "to": "fba5c4ca",
+      "label": "SUPPORTS"
+    },
+    {
+      "from": "141adf54",
+      "to": "483b309f",
+      "label": "SUPPORTS"
+    },
+    {
+      "from": "11a6c407",
+      "to": "483b309f",
+      "label": "SUPPORTS"
+    },
+    {
+      "from": "63e09e82",
+      "to": "483b309f",
+      "label": "SUPPORTS"
+    },
+    {
+      "from": "8373e7cb",
+      "to": "483b309f",
+      "label": "SUPPORTS"
+    },
+    {
+      "from": "868a8ffc",
+      "to": "483b309f",
+      "label": "SUPPORTS"
+    }
+  ]
+}

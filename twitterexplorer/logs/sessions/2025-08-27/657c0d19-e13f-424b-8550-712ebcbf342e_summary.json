@@ -1,0 +1,82 @@
+{
+  "session_metadata": {
+    "session_id": "657c0d19-e13f-424b-8550-712ebcbf342e",
+    "start_time": "2025-08-27T21:57:56.122913+00:00",
+    "end_time": "2025-08-27T21:58:22.685789+00:00",
+    "duration_seconds": 26.562876,
+    "user_query": "Elon Musk latest X platform news"
+  },
+  "configuration": {
+    "max_searches": 2,
+    "max_time_minutes": 60,
+    "satisfaction_enabled": true,
+    "satisfaction_threshold": 0.8,
+    "min_searches_before_satisfaction": 10,
+    "show_search_details": false,
+    "show_strategy_reasoning": true,
+    "show_effectiveness_scores": true,
+    "enable_strategy_adaptation": true,
+    "enable_alternative_approaches": true,
+    "enable_name_variation_search": true,
+    "pages_per_search": 1,
+    "search_timeout_seconds": 30,
+    "retry_failed_searches": true,
+    "enforce_endpoint_diversity": false,
+    "max_endpoint_repeats": 5,
+    "diversity_threshold": 0.3
+  },
+  "performance_metrics": {
+    "total_searches": 2,
+    "total_rounds": 1,
+    "total_results_found": 93,
+    "satisfaction_score": 0.0,
+    "satisfaction_breakdown": {
+      "information_coverage": 0.0,
+      "source_diversity": 0.0,
+      "evidence_quality": 0.0,
+      "claim_specificity": 0.0,
+      "contradiction_resolution": 0.0
+    },
+    "completion_reason": "Investigation failed: cannot access local variable 'Finding' where it is not associated with a value"
+  },
+  "search_summary": {
+    "searches_by_effectiveness": {
+      "highly_effective": [],
+      "moderately_effective": [
+        {
+          "search_id": 2,
+          "query": "Elon Musk X platform news OR update OR announcement",
+          "results": 54,
+          "effectiveness": 5.4
+        }
+      ],
+      "low_effectiveness": [
+        {
+          "search_id": 1,
+          "query": "",
+          "results": 39,
+          "effectiveness": 3.9
+        }
+      ],
+      "ineffective": []
+    },
+    "most_effective_strategies": [
+      {
+        "strategy": "Graph Strategy: The investigation's original goal is to discover 'Elon Musk latest X platform news'. With no prior information collected, the most strategically coherent next step is to initiate a comprehensive gap-filling strategy. This involves directly accessing Elon Musk's own posts, broadly searching for news from other sources, and identifying key tech news outlets that regularly cover X platform and related developments. This multi-pronged approach ensures diverse data collection, establishes foundational understanding, and leverages different endpoint functionalities to maximize initial information gathering.",
+        "avg_effectiveness": 4.65
+      }
+    ],
+    "dead_ends": [],
+    "promising_leads": []
+  },
+  "rounds_summary": [
+    {
+      "round_number": 1,
+      "strategy": "Graph Strategy: The investigation's original goal is to discover 'Elon Musk latest X platform news'. With no prior information collected, the most strategically coherent next step is to initiate a comprehensive gap-filling strategy. This involves directly accessing Elon Musk's own posts, broadly searching for news from other sources, and identifying key tech news outlets that regularly cover X platform and related developments. This multi-pronged approach ensures diverse data collection, establishes foundational understanding, and leverages different endpoint functionalities to maximize initial information gathering.",
+      "searches_count": 2,
+      "total_results": 93,
+      "effectiveness": 0.0,
+      "insights": []
+    }
+  ]
+}

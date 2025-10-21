@@ -1,0 +1,94 @@
+{
+  "session_metadata": {
+    "session_id": "e5c98c3c-5393-44c2-ac13-7557261f15e9",
+    "start_time": "2025-09-03T17:53:55.339553+00:00",
+    "end_time": "2025-09-03T17:56:17.285580+00:00",
+    "duration_seconds": 141.946027,
+    "user_query": "Trump health investigation"
+  },
+  "configuration": {
+    "max_searches": 3,
+    "max_time_minutes": 60,
+    "satisfaction_enabled": true,
+    "satisfaction_threshold": 0.8,
+    "min_searches_before_satisfaction": 10,
+    "show_search_details": true,
+    "show_strategy_reasoning": true,
+    "show_effectiveness_scores": true,
+    "enable_strategy_adaptation": true,
+    "enable_alternative_approaches": true,
+    "enable_name_variation_search": true,
+    "pages_per_search": 3,
+    "search_timeout_seconds": 30,
+    "retry_failed_searches": true,
+    "enforce_endpoint_diversity": false,
+    "max_endpoint_repeats": 5,
+    "diversity_threshold": 0.3
+  },
+  "performance_metrics": {
+    "total_searches": 3,
+    "total_rounds": 1,
+    "total_results_found": 141,
+    "satisfaction_score": 0.43705882352941167,
+    "satisfaction_breakdown": {
+      "information_coverage": 0.4,
+      "source_diversity": 0.2,
+      "evidence_quality": 0.8529411764705879,
+      "claim_specificity": 0.5588235294117647,
+      "contradiction_resolution": 0.0
+    },
+    "completion_reason": "Reached maximum search limit (3)"
+  },
+  "search_summary": {
+    "searches_by_effectiveness": {
+      "highly_effective": [
+        {
+          "search_id": 1,
+          "query": "Donald Trump health status OR medical reports OR doctor statements",
+          "results": 54,
+          "effectiveness": 8.0
+        },
+        {
+          "search_id": 2,
+          "query": "",
+          "results": 60,
+          "effectiveness": 8.0
+        },
+        {
+          "search_id": 3,
+          "query": "",
+          "results": 27,
+          "effectiveness": 8.0
+        }
+      ],
+      "moderately_effective": [],
+      "low_effectiveness": [],
+      "ineffective": []
+    },
+    "most_effective_strategies": [
+      {
+        "strategy": "Graph Strategy: To establish a foundational understanding of public information, official statements, and media coverage regarding Donald Trump's health. This initial phase aims to identify key events, dates, and individuals associated with his health status, systematically addressing the comprehensive understanding gap by leveraging diverse information sources.",
+        "avg_effectiveness": 8.0
+      }
+    ],
+    "dead_ends": [],
+    "promising_leads": [
+      "Donald Trump health status OR medical reports OR doctor statements",
+      ""
+    ]
+  },
+  "rounds_summary": [
+    {
+      "round_number": 1,
+      "strategy": "Graph Strategy: To establish a foundational understanding of public information, official statements, and media coverage regarding Donald Trump's health. This initial phase aims to identify key events, dates, and individuals associated with his health status, systematically addressing the comprehensive understanding gap by leveraging diverse information sources.",
+      "searches_count": 3,
+      "total_results": 141,
+      "effectiveness": 8.0,
+      "insights": [
+        "Official medical reports (April & July 2025) consistently claim Donald Trump is in \"excellent health,\" \"fully fit,\" and has \"aced his physical\" including cognitive tests.",
+        "Specific reported conditions include managed cholesterol, diverticulosis, and Chronic Venous Insufficiency (CVI) diagnosed in July 2025 by Dr. Sean P. Conley. CVI is stated as the cause of mild leg swelling and hand bruising, with clarification that there are no DVT or heart issues.",
+        "Reports mention a 20-lb weight loss and abstinence from alcohol, cigarettes, and drugs. No official records indicate mental health disorders or addictions."
+      ]
+    }
+  ]
+}

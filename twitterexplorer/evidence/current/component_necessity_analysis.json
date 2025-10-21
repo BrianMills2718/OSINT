@@ -1,0 +1,53 @@
+{
+  "cross_reference_analyzer": {
+    "llm_calls_per_search": 1,
+    "purpose": "contradiction_detection",
+    "value_assessment": "questionable",
+    "optimization_recommendation": "remove_or_batch",
+    "cost_per_investigation": "low",
+    "quality_impact_if_removed": "minimal"
+  },
+  "temporal_timeline_analyzer": {
+    "llm_calls_per_search": 0,
+    "purpose": "timeline_construction",
+    "value_assessment": "rule_based",
+    "optimization_recommendation": "keep_as_rule_based",
+    "cost_per_investigation": "none",
+    "quality_impact_if_removed": "low"
+  },
+  "realtime_insight_synthesizer": {
+    "llm_calls_per_search": 3,
+    "purpose": "insight_generation",
+    "value_assessment": "high",
+    "optimization_recommendation": "optimize_batching",
+    "cost_per_investigation": "high",
+    "quality_impact_if_removed": "severe"
+  },
+  "graph_aware_llm_coordinator": {
+    "llm_calls_per_search": 6.5,
+    "purpose": "emergent_question_detection",
+    "value_assessment": "high_but_inefficient",
+    "optimization_recommendation": "batch_processing",
+    "cost_per_investigation": "highest",
+    "quality_impact_if_removed": "severe"
+  },
+  "optimization_summary": {
+    "current_total": 10.5,
+    "optimization_targets": [
+      {
+        "component": "graph_aware_llm_coordinator",
+        "current_calls": 6.5,
+        "optimized_calls": 1.0,
+        "savings": 5.5
+      },
+      {
+        "component": "cross_reference_analyzer",
+        "current_calls": 1.0,
+        "optimized_calls": 0.0,
+        "savings": 1.0
+      }
+    ],
+    "potential_optimized_total": 4.5,
+    "optimization_percentage": 57.1
+  }
+}

@@ -1,0 +1,94 @@
+{
+  "session_metadata": {
+    "session_id": "0440ddc3-22ba-42df-9991-c1c4f6b7a785",
+    "start_time": "2025-08-27T22:28:40.363338+00:00",
+    "end_time": "2025-08-27T22:29:20.716174+00:00",
+    "duration_seconds": 40.351836,
+    "user_query": "find me different takes on the current trump epstein drama"
+  },
+  "configuration": {
+    "max_searches": 10,
+    "max_time_minutes": 60,
+    "satisfaction_enabled": true,
+    "satisfaction_threshold": 0.8,
+    "min_searches_before_satisfaction": 10,
+    "show_search_details": true,
+    "show_strategy_reasoning": true,
+    "show_effectiveness_scores": true,
+    "enable_strategy_adaptation": true,
+    "enable_alternative_approaches": true,
+    "enable_name_variation_search": true,
+    "pages_per_search": 2,
+    "search_timeout_seconds": 30,
+    "retry_failed_searches": true,
+    "enforce_endpoint_diversity": false,
+    "max_endpoint_repeats": 5,
+    "diversity_threshold": 0.3
+  },
+  "performance_metrics": {
+    "total_searches": 4,
+    "total_rounds": 1,
+    "total_results_found": 195,
+    "satisfaction_score": 0.0,
+    "satisfaction_breakdown": {
+      "information_coverage": 0.0,
+      "source_diversity": 0.0,
+      "evidence_quality": 0.0,
+      "claim_specificity": 0.0,
+      "contradiction_resolution": 0.0
+    },
+    "completion_reason": "Investigation failed: cannot access local variable 'Finding' where it is not associated with a value"
+  },
+  "search_summary": {
+    "searches_by_effectiveness": {
+      "highly_effective": [],
+      "moderately_effective": [
+        {
+          "search_id": 2,
+          "query": "",
+          "results": 50,
+          "effectiveness": 5.0
+        },
+        {
+          "search_id": 3,
+          "query": "",
+          "results": 60,
+          "effectiveness": 6.0
+        }
+      ],
+      "low_effectiveness": [
+        {
+          "search_id": 1,
+          "query": "Trump Epstein drama OR connection OR scandal",
+          "results": 39,
+          "effectiveness": 3.9
+        },
+        {
+          "search_id": 4,
+          "query": "Trump Epstein (defend OR deny OR 'conspiracy theory')",
+          "results": 46,
+          "effectiveness": 4.6
+        }
+      ],
+      "ineffective": []
+    },
+    "most_effective_strategies": [
+      {
+        "strategy": "Graph Strategy: To understand the 'different takes' on the Trump-Epstein drama, the initial step must be to cast a wide net to identify the major narratives, key voices, and the overall discourse. This involves a broad search for mentions of the topic, followed by targeted searches for specific angles or controversies that may emerge. Concurrently, examining trends provides insight into public salience, and analyzing a prominent news source's timeline will provide a specific, structured 'take'. This multi-endpoint approach ensures a foundational understanding before diving into deeper analysis.",
+        "avg_effectiveness": 4.875
+      }
+    ],
+    "dead_ends": [],
+    "promising_leads": []
+  },
+  "rounds_summary": [
+    {
+      "round_number": 1,
+      "strategy": "Graph Strategy: To understand the 'different takes' on the Trump-Epstein drama, the initial step must be to cast a wide net to identify the major narratives, key voices, and the overall discourse. This involves a broad search for mentions of the topic, followed by targeted searches for specific angles or controversies that may emerge. Concurrently, examining trends provides insight into public salience, and analyzing a prominent news source's timeline will provide a specific, structured 'take'. This multi-endpoint approach ensures a foundational understanding before diving into deeper analysis.",
+      "searches_count": 4,
+      "total_results": 195,
+      "effectiveness": 0.0,
+      "insights": []
+    }
+  ]
+}

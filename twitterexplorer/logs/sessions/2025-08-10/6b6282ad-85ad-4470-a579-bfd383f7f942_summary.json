@@ -1,0 +1,213 @@
+{
+  "session_metadata": {
+    "session_id": "6b6282ad-85ad-4470-a579-bfd383f7f942",
+    "start_time": "2025-08-10T17:29:59.988499+00:00",
+    "end_time": "2025-08-10T17:31:52.568774+00:00",
+    "duration_seconds": 112.580275,
+    "user_query": "find information about obscure topic XYZ123 that probably doesn't exist"
+  },
+  "configuration": {
+    "max_searches": 15,
+    "max_time_minutes": 60,
+    "satisfaction_enabled": false,
+    "satisfaction_threshold": 0.8,
+    "min_searches_before_satisfaction": 10,
+    "show_search_details": true,
+    "show_strategy_reasoning": true,
+    "show_effectiveness_scores": true,
+    "enable_strategy_adaptation": true,
+    "enable_alternative_approaches": true,
+    "enable_name_variation_search": true,
+    "pages_per_search": 2,
+    "search_timeout_seconds": 30,
+    "retry_failed_searches": true,
+    "enforce_endpoint_diversity": true,
+    "max_endpoint_repeats": 3,
+    "diversity_threshold": 0.5
+  },
+  "performance_metrics": {
+    "total_searches": 15,
+    "total_rounds": 5,
+    "total_results_found": 0,
+    "satisfaction_score": 0.0,
+    "satisfaction_breakdown": {
+      "information_coverage": 0.0,
+      "source_diversity": 0.0,
+      "evidence_quality": 0.0,
+      "claim_specificity": 0.0,
+      "contradiction_resolution": 0.0
+    },
+    "completion_reason": "Reached maximum search limit (15)"
+  },
+  "search_summary": {
+    "searches_by_effectiveness": {
+      "highly_effective": [],
+      "moderately_effective": [],
+      "low_effectiveness": [],
+      "ineffective": [
+        {
+          "search_id": 1,
+          "query": "XYZ123",
+          "results": 0,
+          "effectiveness": 0.0
+        },
+        {
+          "search_id": 2,
+          "query": "(\"obscure topics\" OR \"niche research\" OR \"unexplained phenomena\")",
+          "results": 0,
+          "effectiveness": 0.0
+        },
+        {
+          "search_id": 3,
+          "query": "",
+          "results": 0,
+          "effectiveness": 0.0
+        },
+        {
+          "search_id": 4,
+          "query": "unexplained OR fringe OR esoteric OR paranormal OR mysteries OR cryptid OR secret history",
+          "results": 0,
+          "effectiveness": 0.0
+        },
+        {
+          "search_id": 5,
+          "query": "",
+          "results": 0,
+          "effectiveness": 0.0
+        },
+        {
+          "search_id": 6,
+          "query": "",
+          "results": 0,
+          "effectiveness": 0.0
+        },
+        {
+          "search_id": 7,
+          "query": "",
+          "results": 0,
+          "effectiveness": 0.0
+        },
+        {
+          "search_id": 8,
+          "query": "",
+          "results": 0,
+          "effectiveness": 0.0
+        },
+        {
+          "search_id": 9,
+          "query": "",
+          "results": 0,
+          "effectiveness": 0.0
+        },
+        {
+          "search_id": 10,
+          "query": "",
+          "results": 0,
+          "effectiveness": 0.0
+        },
+        {
+          "search_id": 11,
+          "query": "",
+          "results": 0,
+          "effectiveness": 0.0
+        },
+        {
+          "search_id": 12,
+          "query": "",
+          "results": 0,
+          "effectiveness": 0.0
+        },
+        {
+          "search_id": 13,
+          "query": "",
+          "results": 0,
+          "effectiveness": 0.0
+        },
+        {
+          "search_id": 14,
+          "query": "",
+          "results": 0,
+          "effectiveness": 0.0
+        },
+        {
+          "search_id": 15,
+          "query": "unexplained phenomena lists OR fringe science lists OR anomalous research lists",
+          "results": 0,
+          "effectiveness": 0.0
+        }
+      ]
+    },
+    "most_effective_strategies": [
+      {
+        "strategy": "Graph Strategy: The topic 'XYZ123' is described as obscure and possibly non-existent. Therefore, the most strategically coherent next action is a comprehensive initial information gathering phase. This involves direct searches for the topic, broad searches for communities or individuals interested in obscure subjects, and a general contextual scan to fulfill diversity requirements and prevent tunnel vision. This multi-pronged approach aims to establish any initial leads or confirm the topic's complete absence, laying the groundwork for subsequent investigation.",
+        "avg_effectiveness": 0.0
+      },
+      {
+        "strategy": "Graph Strategy: Direct searches for 'XYZ123' have yielded no results, indicating its extreme obscurity or non-existence on the platform. The current strategy pivots from direct keyword matching to an indirect approach. We will identify users or communities that routinely engage with obscure, niche, or unexplained topics. By analyzing their content and networks, we aim to uncover tangential discussions, discover where such topics are discussed, or confirm the absence of 'XYZ123' even within these communities. This approach also prioritizes endpoint diversity as mandated.",
+        "avg_effectiveness": 0.0
+      },
+      {
+        "strategy": "Graph Strategy: Previous direct searches for 'XYZ123' and general 'obscurity hunters' yielded no data, indicating a need for a more indirect, network-based approach. The 'Strategic question' regarding 'Secureteam10' as a hypothetical 'obscurity hunter' account did not yield timeline data. This new strategy prioritizes validating this specific lead and then systematically exploring its network using diverse, unused endpoints. By identifying and analyzing the connections of a known (or assumed) niche content aggregator, we aim to uncover other individuals or communities who consistently discuss obscure or unexplained phenomena. This approach directly addresses the critical information gap of finding a reliable starting point for investigating an extremely obscure topic by leveraging social network analysis instead of direct content search.",
+        "avg_effectiveness": 0.0
+      },
+      {
+        "strategy": "Graph Strategy: Direct searches for 'XYZ123' and general 'obscurity hunter' profiles have yielded no data, and initial timeline analysis of a hypothetical 'obscurity hunter' (Secureteam10) also failed to provide direct leads. This strategy pivots to a network-based 'deep dive' into Secureteam10's connections to identify other users or content types related to obscure topics. This approach leverages diverse network and content endpoints to discover new potential leads and understand the ecosystem of obscure topic discussions, avoiding the overused search.php endpoint.",
+        "avg_effectiveness": 0.0
+      },
+      {
+        "strategy": "Graph Strategy: Previous direct searches for 'XYZ123' and attempts to identify relevant communities via user followers yielded no data. The current strategy pivots from direct content search to a more indirect network and source-identification approach. By examining who known 'obscurity hunter' accounts follow, and by seeking out curated lists and organizational affiliations related to broader 'unexplained phenomena' categories, we aim to uncover tangential leads or individuals/groups who might eventually provide context for 'XYZ123'. This approach utilizes diverse endpoints to break the cycle of ineffective direct searches and failed network attempts, focusing on expanding the search perimeter for obscure topics.",
+        "avg_effectiveness": 0.0
+      }
+    ],
+    "dead_ends": [
+      "XYZ123",
+      "(\"obscure topics\" OR \"niche research\" OR \"unexplained phenomena\")",
+      "",
+      "unexplained OR fringe OR esoteric OR paranormal OR mysteries OR cryptid OR secret history",
+      "unexplained phenomena lists OR fringe science lists OR anomalous research lists"
+    ],
+    "promising_leads": []
+  },
+  "rounds_summary": [
+    {
+      "round_number": 1,
+      "strategy": "Graph Strategy: The topic 'XYZ123' is described as obscure and possibly non-existent. Therefore, the most strategically coherent next action is a comprehensive initial information gathering phase. This involves direct searches for the topic, broad searches for communities or individuals interested in obscure subjects, and a general contextual scan to fulfill diversity requirements and prevent tunnel vision. This multi-pronged approach aims to establish any initial leads or confirm the topic's complete absence, laying the groundwork for subsequent investigation.",
+      "searches_count": 3,
+      "total_results": 0,
+      "effectiveness": 0.0,
+      "insights": []
+    },
+    {
+      "round_number": 2,
+      "strategy": "Graph Strategy: Direct searches for 'XYZ123' have yielded no results, indicating its extreme obscurity or non-existence on the platform. The current strategy pivots from direct keyword matching to an indirect approach. We will identify users or communities that routinely engage with obscure, niche, or unexplained topics. By analyzing their content and networks, we aim to uncover tangential discussions, discover where such topics are discussed, or confirm the absence of 'XYZ123' even within these communities. This approach also prioritizes endpoint diversity as mandated.",
+      "searches_count": 3,
+      "total_results": 0,
+      "effectiveness": 0.0,
+      "insights": []
+    },
+    {
+      "round_number": 3,
+      "strategy": "Graph Strategy: Previous direct searches for 'XYZ123' and general 'obscurity hunters' yielded no data, indicating a need for a more indirect, network-based approach. The 'Strategic question' regarding 'Secureteam10' as a hypothetical 'obscurity hunter' account did not yield timeline data. This new strategy prioritizes validating this specific lead and then systematically exploring its network using diverse, unused endpoints. By identifying and analyzing the connections of a known (or assumed) niche content aggregator, we aim to uncover other individuals or communities who consistently discuss obscure or unexplained phenomena. This approach directly addresses the critical information gap of finding a reliable starting point for investigating an extremely obscure topic by leveraging social network analysis instead of direct content search.",
+      "searches_count": 3,
+      "total_results": 0,
+      "effectiveness": 0.0,
+      "insights": []
+    },
+    {
+      "round_number": 4,
+      "strategy": "Graph Strategy: Direct searches for 'XYZ123' and general 'obscurity hunter' profiles have yielded no data, and initial timeline analysis of a hypothetical 'obscurity hunter' (Secureteam10) also failed to provide direct leads. This strategy pivots to a network-based 'deep dive' into Secureteam10's connections to identify other users or content types related to obscure topics. This approach leverages diverse network and content endpoints to discover new potential leads and understand the ecosystem of obscure topic discussions, avoiding the overused search.php endpoint.",
+      "searches_count": 3,
+      "total_results": 0,
+      "effectiveness": 0.0,
+      "insights": []
+    },
+    {
+      "round_number": 5,
+      "strategy": "Graph Strategy: Previous direct searches for 'XYZ123' and attempts to identify relevant communities via user followers yielded no data. The current strategy pivots from direct content search to a more indirect network and source-identification approach. By examining who known 'obscurity hunter' accounts follow, and by seeking out curated lists and organizational affiliations related to broader 'unexplained phenomena' categories, we aim to uncover tangential leads or individuals/groups who might eventually provide context for 'XYZ123'. This approach utilizes diverse endpoints to break the cycle of ineffective direct searches and failed network attempts, focusing on expanding the search perimeter for obscure topics.",
+      "searches_count": 3,
+      "total_results": 0,
+      "effectiveness": 0.0,
+      "insights": []
+    }
+  ]
+}

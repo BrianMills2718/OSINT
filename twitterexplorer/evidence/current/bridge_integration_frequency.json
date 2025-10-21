@@ -1,0 +1,8 @@
+{
+  "bridge_triggers": 8,
+  "emergent_question_calls": 36,
+  "expected_quadratic_calls": 36,
+  "quadratic_growth_confirmed": true,
+  "optimization_potential": 28,
+  "cost_multiplier": 4.5
+}

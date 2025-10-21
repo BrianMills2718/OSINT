@@ -1,0 +1,47 @@
+#!/usr/bin/env python3
+
+import sys
+import os
+sys.path.insert(0, '.')
+from create_detailed_real_visualization import create_visualization_from_output
+
+# Real investigation output
+output_text = """LiteLLM completion() model= gpt-5-mini; provider = openai
+2025-09-11 06:21:09,754 - INFO -
+LiteLLM completion() model= gpt-5-mini; provider = openai
+2025-09-11 06:21:37,564 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+06:21:37 - LiteLLM:INFO: utils.py:1239 - Wrapper: Completed Call, calling success_handler
+2025-09-11 06:21:37,568 - INFO - Wrapper: Completed Call, calling success_handler
+2025-09-11 06:21:37,575 - INFO - Loaded configuration from C:\\Users\\Brian\\projects\\twitterexplorer\\twitterexplorer\\config\\models.yaml
+2025-09-11 06:21:37,576 - INFO - Configuration validation passed
+2025-09-11 06:21:37,576 - INFO - Model manager initialized with config: C:\\Users\\Brian\\projects\\twitterexplorer\\twitterexplorer\\config\\models.yaml
+2025-09-11 06:21:37,589 - INFO - Completed investigation session 6b5a3152-e0c9-4371-b6f2-85eb2b23c5e7 - 15 searches, 624 results
+Graph exported: investigation_graph_6b5a3152-e0c9-4371-b6f2-85eb2b23c5e7.json and investigation_graph_6b5a3152-e0c9-4371-b6f2-85eb2b23c5e7.html
+
+Investigation Complete!
+Searches performed: 15
+Findings discovered: 55
+Final satisfaction: 0.34
+
+Graph State:
+  DataPoints: 20
+  Insights: 51
+  Emergent Questions: 431
+
+Generated Insights:
+  1. Claim: Orb survives direct Hellfire hit (confidence: 0.4)
+  2. Strengthen: Orb-survives-hellfire claim (confidence: 0.55)
+  3. Strengthen existing 'Orb survives Hellfire' insight (confidence: 0.65)
+
+Emergent Questions (Sample):
+  1. Is the posted video authentic and free from post-production manipulation (editin...
+  2. Can we obtain the original/raw sensor footage and full metadata (platform ID, se...
+  3. What platform and sensor recorded the engagement (MQ-9 pod model and turret, IR ...
+  4. Is there independent corroboration of the engagement from other sensors or sourc...
+  5. Do weapon firing logs/telemetry indicate a successful Hellfire hit, proximity de...
+
+CLI investigation completed - Bridge integration and emergent questions working!"""
+
+result = create_visualization_from_output(output_text, 'real_investigation_flow.html')
+full_path = os.path.abspath(result.split('/')[-1])
+print(f'Full path: {full_path}')

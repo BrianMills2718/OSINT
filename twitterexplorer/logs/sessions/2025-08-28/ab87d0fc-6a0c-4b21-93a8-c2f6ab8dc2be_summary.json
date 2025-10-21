@@ -1,0 +1,97 @@
+{
+  "session_metadata": {
+    "session_id": "ab87d0fc-6a0c-4b21-93a8-c2f6ab8dc2be",
+    "start_time": "2025-08-28T18:13:03.358747+00:00",
+    "end_time": "2025-08-28T18:15:06.962623+00:00",
+    "duration_seconds": 123.601234,
+    "user_query": "What are different perspectives on climate change policies"
+  },
+  "configuration": {
+    "max_searches": 3,
+    "max_time_minutes": 60,
+    "satisfaction_enabled": true,
+    "satisfaction_threshold": 0.8,
+    "min_searches_before_satisfaction": 10,
+    "show_search_details": true,
+    "show_strategy_reasoning": true,
+    "show_effectiveness_scores": true,
+    "enable_strategy_adaptation": true,
+    "enable_alternative_approaches": true,
+    "enable_name_variation_search": true,
+    "pages_per_search": 2,
+    "search_timeout_seconds": 30,
+    "retry_failed_searches": true,
+    "enforce_endpoint_diversity": false,
+    "max_endpoint_repeats": 5,
+    "diversity_threshold": 0.3
+  },
+  "performance_metrics": {
+    "total_searches": 3,
+    "total_rounds": 1,
+    "total_results_found": 67,
+    "satisfaction_score": 0.3550862068965517,
+    "satisfaction_breakdown": {
+      "information_coverage": 0.4,
+      "source_diversity": 0.2,
+      "evidence_quality": 0.8603448275862068,
+      "claim_specificity": 0.0,
+      "contradiction_resolution": 0.0
+    },
+    "completion_reason": "Reached maximum search limit (3)"
+  },
+  "search_summary": {
+    "searches_by_effectiveness": {
+      "highly_effective": [
+        {
+          "search_id": 1,
+          "query": "climate change policy debates",
+          "results": 59,
+          "effectiveness": 9.0
+        }
+      ],
+      "moderately_effective": [],
+      "low_effectiveness": [
+        {
+          "search_id": 2,
+          "query": "carbon pricing OR renewable energy incentives OR climate adaptation funding",
+          "results": 8,
+          "effectiveness": 3.6
+        }
+      ],
+      "ineffective": [
+        {
+          "search_id": 3,
+          "query": "",
+          "results": 0,
+          "effectiveness": 0.0
+        }
+      ]
+    },
+    "most_effective_strategies": [
+      {
+        "strategy": "Graph Strategy: The investigation requires a foundational understanding of the diverse perspectives on climate change policies. This initial round focuses on broad discovery by identifying general debates, specific policy types, real-time national discussions, and the direct viewpoint of a key international organization. This multi-faceted approach ensures a comprehensive initial scan, covering various angles from global to specific policy mechanisms and their public discourse. Using diverse endpoints (search, trends, timeline) is crucial to avoid a narrow data collection strategy and to start identifying influential voices and active discussions.",
+        "avg_effectiveness": 4.2
+      }
+    ],
+    "dead_ends": [
+      ""
+    ],
+    "promising_leads": [
+      "climate change policy debates"
+    ]
+  },
+  "rounds_summary": [
+    {
+      "round_number": 1,
+      "strategy": "Graph Strategy: The investigation requires a foundational understanding of the diverse perspectives on climate change policies. This initial round focuses on broad discovery by identifying general debates, specific policy types, real-time national discussions, and the direct viewpoint of a key international organization. This multi-faceted approach ensures a comprehensive initial scan, covering various angles from global to specific policy mechanisms and their public discourse. Using diverse endpoints (search, trends, timeline) is crucial to avoid a narrow data collection strategy and to start identifying influential voices and active discussions.",
+      "searches_count": 3,
+      "total_results": 67,
+      "effectiveness": 4.2,
+      "insights": [
+        "There is a perspective that climate change is a major problem and current policies or lack thereof are distressing to climate scientists.",
+        "A strong skeptical perspective argues that the scientific basis for climate policy is weak, suggesting warming precedes CO2 and science is unsettled.",
+        "Denialism and short-term economic priorities are seen as hindering effective policy responses."
+      ]
+    }
+  ]
+}

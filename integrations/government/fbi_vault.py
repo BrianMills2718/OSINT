@@ -4,14 +4,19 @@ FBI Vault database integration.
 
 Provides access to FBI's FOIA Vault - document releases and investigation files.
 Note: FBI Vault doesn't have a public search API, so this uses web scraping
-of their search interface.
+with SeleniumBase UC Mode to bypass Cloudflare protection.
 """
 
 import json
-import httpx
+import asyncio
 from typing import Dict, Optional
 from datetime import datetime
-from bs4 import BeautifulSoup
+from urllib.parse import quote_plus
+from functools import partial
+
+# Lazy imports to avoid dependency issues at module load time
+# from seleniumbase import SB  # Imported only when needed
+# from bs4 import BeautifulSoup  # Imported only when needed
 
 from llm_utils import acompletion
 
@@ -180,12 +185,110 @@ Response:
             "query": result["query"]
         }
 
+    def _scrape_fbi_vault_sync(self, search_url: str, query: str, limit: int) -> tuple:
+        """
+        Synchronous function to scrape FBI Vault with SeleniumBase.
+        This runs in a thread pool to avoid blocking the async event loop.
+
+        Returns:
+            tuple: (results_list, page_source) or raises Exception
+        """
+        # Import here to avoid dependency issues at module load time
+        from seleniumbase import SB
+        from bs4 import BeautifulSoup
+        import os
+        from pathlib import Path
+
+        # Find Chrome binary (Puppeteer/Playwright version in WSL/Linux)
+        chrome_binary = None
+        puppeteer_chrome = Path.home() / ".cache/puppeteer/chrome"
+        if puppeteer_chrome.exists():
+            # Find the latest Chrome version
+            chrome_dirs = sorted(puppeteer_chrome.glob("*/chrome-linux64/chrome"), reverse=True)
+            if chrome_dirs:
+                chrome_binary = str(chrome_dirs[0])
+
+        # Use SeleniumBase UC Mode to bypass Cloudflare
+        # NOTE: This uses xvfb (virtual display) on Linux to avoid headless detection
+        sb_kwargs = {
+            "uc": True,
+            "xvfb": True,
+            "test": True,
+            "headless2": False
+        }
+        if chrome_binary:
+            sb_kwargs["binary_location"] = chrome_binary
+
+        with SB(**sb_kwargs) as sb:
+            # Navigate using uc_open_with_reconnect for Cloudflare bypass
+            sb.driver.uc_open_with_reconnect(search_url, reconnect_time=4)
+
+            # Wait a moment for page to fully load
+            sb.sleep(2)
+
+            # Get page source
+            page_source = sb.get_page_source()
+
+        # Parse HTML with BeautifulSoup
+        soup = BeautifulSoup(page_source, 'html.parser')
+
+        # Find search results - FBI Vault uses <dt> elements with contenttype classes
+        results = []
+        result_items = soup.select('dt.contenttype-folder, dt.contenttype-file')
+
+        for item in result_items[:limit]:
+            try:
+                # Extract title and URL
+                title_elem = item.select_one('a')
+                if not title_elem:
+                    continue
+
+                title = title_elem.get_text(strip=True)
+                url = title_elem.get('href', '')
+
+                # Make URL absolute if relative
+                if url and not url.startswith('http'):
+                    url = f"https://vault.fbi.gov{url}"
+
+                # Extract description/snippet from next <dd> sibling
+                snippet = ""
+                dd_elem = item.find_next_sibling('dd')
+                if dd_elem:
+                    desc_text = dd_elem.get_text(strip=True)
+                    snippet = desc_text[:500] if desc_text else ""
+
+                # Extract date if available
+                date_elem = item.select_one('.documentPublished') or item.select_one('time')
+                date = date_elem.get_text(strip=True) if date_elem else None
+
+                # Determine document type from class
+                doc_type = "Folder" if "contenttype-folder" in item.get('class', []) else "File"
+
+                results.append({
+                    "title": title,
+                    "url": url,
+                    "snippet": snippet,
+                    "date": date,
+                    "source": "FBI Vault",
+                    "metadata": {
+                        "document_type": doc_type,
+                        "query": query
+                    }
+                })
+
+            except Exception as e:
+                # Skip malformed results
+                print(f"    Warning: Skipping malformed result: {e}")
+                continue
+
+        return (results, page_source)
+
     async def execute_search(self,
                            query_params: Dict,
                            api_key: Optional[str] = None,
                            limit: int = 10) -> QueryResult:
         """
-        Execute FBI Vault search by scraping their search interface.
+        Execute FBI Vault search using SeleniumBase UC Mode to bypass Cloudflare.
 
         Args:
             query_params: Parameters from generate_query()
@@ -212,89 +315,39 @@ Response:
                 )
 
             # FBI Vault search URL
-            search_url = f"https://vault.fbi.gov/search?SearchableText={query}"
+            search_url = f"https://vault.fbi.gov/search?SearchableText={quote_plus(query)}"
 
-            async with httpx.AsyncClient(follow_redirects=True) as client:
-                response = await client.get(
-                    search_url,
-                    timeout=30.0,
-                    headers={
-                        "User-Agent": "SigInt Research Platform/1.0 (Educational/Research)"
-                    }
-                )
+            # Run synchronous SeleniumBase scraping in thread pool
+            loop = asyncio.get_event_loop()
+            results, page_source = await loop.run_in_executor(
+                None,  # Uses default ThreadPoolExecutor
+                partial(self._scrape_fbi_vault_sync, search_url, query, limit)
+            )
 
-                response.raise_for_status()
+            response_time_ms = (datetime.now() - start_time).total_seconds() * 1000
 
-                # Parse HTML with BeautifulSoup
-                soup = BeautifulSoup(response.text, 'html.parser')
+            # Log the request
+            log_request(
+                api_name="FBI Vault",
+                endpoint=endpoint,
+                status_code=200,  # SeleniumBase succeeded
+                response_time_ms=response_time_ms,
+                error_message=None,
+                request_params={"query": query, "limit": limit}
+            )
 
-                # Find search results
-                # FBI Vault uses a specific structure - adjust selectors as needed
-                results = []
-
-                # Look for search result items
-                result_items = soup.select('.searchResult') or soup.select('.documentFirstHeading')
-
-                for item in result_items[:limit]:
-                    try:
-                        # Extract title
-                        title_elem = item.select_one('a') or item.select_one('.documentFirstHeading a')
-                        title = title_elem.get_text(strip=True) if title_elem else "Untitled Document"
-                        url = title_elem.get('href', '') if title_elem else ""
-
-                        # Make URL absolute if relative
-                        if url and not url.startswith('http'):
-                            url = f"https://vault.fbi.gov{url}"
-
-                        # Extract description/snippet
-                        desc_elem = item.select_one('.description') or item.select_one('p')
-                        snippet = desc_elem.get_text(strip=True) if desc_elem else ""
-
-                        # Extract date if available
-                        date_elem = item.select_one('.documentPublished') or item.select_one('time')
-                        date = date_elem.get_text(strip=True) if date_elem else None
-
-                        results.append({
-                            "title": title,
-                            "url": url,
-                            "snippet": snippet[:500],
-                            "date": date,
-                            "source": "FBI Vault",
-                            "metadata": {
-                                "document_type": "FOIA Release",
-                                "query": query
-                            }
-                        })
-
-                    except Exception as e:
-                        # Skip malformed results
-                        print(f"    Warning: Skipping malformed result: {e}")
-                        continue
-
-                response_time_ms = (datetime.now() - start_time).total_seconds() * 1000
-
-                # Log the request
-                log_request(
-                    api_name="FBI Vault",
-                    endpoint=endpoint,
-                    status_code=response.status_code,
-                    response_time_ms=response_time_ms,
-                    error_message=None,
-                    request_params={"query": query, "limit": limit}
-                )
-
-                return QueryResult(
-                    success=True,
-                    source="FBI Vault",
-                    total=len(results),
-                    results=results,
-                    query_params=query_params,
-                    response_time_ms=response_time_ms,
-                    metadata={
-                        "scraping_method": "BeautifulSoup",
-                        "search_url": search_url
-                    }
-                )
+            return QueryResult(
+                success=True,
+                source="FBI Vault",
+                total=len(results),
+                results=results,
+                query_params=query_params,
+                response_time_ms=response_time_ms,
+                metadata={
+                    "scraping_method": "SeleniumBase UC Mode (Cloudflare bypass)",
+                    "search_url": search_url
+                }
+            )
 
         except Exception as e:
             response_time_ms = (datetime.now() - start_time).total_seconds() * 1000
@@ -315,6 +368,6 @@ Response:
                 total=0,
                 results=[],
                 query_params=query_params,
-                error=str(e),
+                error=f"Cloudflare bypass failed: {str(e)}",
                 response_time_ms=response_time_ms
             )

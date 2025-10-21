@@ -1,0 +1,48 @@
+{
+  "test_type": "isolated_diagnostic",
+  "timestamp": "2025-08-27T14:31:32.913118",
+  "checkpoints": [
+    {
+      "checkpoint": "analyze_entry",
+      "timestamp": "2025-08-27T14:31:53.841632",
+      "data": {
+        "session_id": "unknown",
+        "results_count": 2,
+        "graph_mode": true,
+        "llm_coordinator_exists": true,
+        "accumulated_findings_before": 0
+      }
+    },
+    {
+      "checkpoint": "raw_results_0",
+      "timestamp": "2025-08-27T14:31:53.841632",
+      "data": {
+        "raw_count": 6,
+        "endpoint": "search.php",
+        "search_id": 1,
+        "sample_text": "For such a short name, X carries so much brand baggage. \n\nhttps://t.co/ehHXzq6TIj\n\nX CEO Linda Yacca"
+      }
+    },
+    {
+      "checkpoint": "raw_results_1",
+      "timestamp": "2025-08-27T14:31:53.841632",
+      "data": {
+        "raw_count": 20,
+        "endpoint": "timeline.php",
+        "search_id": 2,
+        "sample_text": "This slide needs an update, but gives a rough idea of what we\u2019re aiming for with V3 and V4.\n\nV3 shou"
+      }
+    },
+    {
+      "checkpoint": "investigation_complete",
+      "timestamp": "2025-08-27T14:31:53.842633",
+      "data": {
+        "final_datapoints": 1,
+        "final_findings": 0,
+        "final_summary_exists": true,
+        "search_count": 2,
+        "total_results": 65
+      }
+    }
+  ]
+}

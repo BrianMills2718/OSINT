@@ -157,7 +157,31 @@ Traceback (most recent call last):
 - "I implemented the pattern..." (implementation is not proof)
 - "Tests passed" without showing output (claim is not proof)
 
-**TIMEOUTS ARE FAILURES**: Any timeout counts as failure, not success. Fix performance or increase limits, never ignore.
+**TIMEOUTS - Provide User Command**: If a command times out:
+1. **DO NOT** treat timeout as success
+2. **DO NOT** retry with same timeout
+3. **DO** report what completed before timeout
+4. **DO** provide exact bash command for user to run themselves
+5. **DO** explain expected output and estimated duration
+
+Example response to timeout:
+```
+Command timed out after 3 minutes during LLM relevance filtering.
+
+What completed:
+- Adaptive search: 26 results across 3 phases ✓
+- Deduplication: 26 unique results ✓
+- Started relevance filtering: 8 of 26 results scored
+
+To complete the test yourself:
+bash
+cd /home/brian/sam_gov
+source .venv/bin/activate
+python3 monitoring/adaptive_boolean_monitor.py data/monitors/configs/test_adaptive_monitor.yaml
+
+Expected: ~5 minutes total (90s adaptive search + 3min relevance filtering for 26 results)
+Expected output: Email alert sent with relevant results (score >= 6/10)
+```
 
 ### 3. FORBIDDEN CLAIMS & REQUIRED LANGUAGE
 

@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Trump Health Investigation Knowledge Graph</title>
+    <script type="text/javascript" src="https://unpkg.com/vis-network/standalone/umd/vis-network.min.js"></script>
+    <style>
+        body { margin: 0; padding: 0; font-family: Arial, sans-serif; background: #1a1a1a; color: white; }
+        #network { width: 100%; height: 80vh; border: 1px solid #333; background: #0a0a0a; }
+        h1 { margin: 0; padding: 20px; background: linear-gradient(90deg, #dc3545, #ffc107); color: white; }
+        .legend { display: flex; gap: 30px; padding: 10px 20px; background: #2a2a2a; }
+        .legend-item { display: flex; align-items: center; gap: 10px; }
+        .legend-box { width: 20px; height: 20px; border: 2px solid; }
+        #details { padding: 20px; background: #2a2a2a; margin: 10px; border-radius: 5px; min-height: 100px; max-height: 200px; overflow-y: auto; }
+    </style>
+</head>
+<body>
+    <h1>🔍 Trump Health Investigation Knowledge Graph</h1>
+    
+    <div class="legend">
+        <div class="legend-item">
+            <div class="legend-box" style="background:#dc3545; border-color:#c82333;"></div>
+            <span>Investigation Questions</span>
+        </div>
+        <div class="legend-item">
+            <div class="legend-box" style="background:#28a745; border-color:#1e7e34;"></div>
+            <span>Search Queries</span>
+        </div>
+        <div class="legend-item">
+            <div class="legend-box" style="background:#007bff; border-color:#0056b3;"></div>
+            <span>Findings about Trump</span>
+        </div>
+        <div class="legend-item">
+            <div class="legend-box" style="background:#ffc107; border-color:#e0a800;"></div>
+            <span>Insights & Analysis</span>
+        </div>
+    </div>
+    
+    <div id="details">
+        <strong>Trump Health Investigation Results</strong><br>
+        Click on nodes to explore the investigation flow and findings about health rumors.
+    </div>
+    
+    <div id="network"></div>
+
+    <script type="text/javascript">
+        var trumpGraph = {"nodes": [{"id": "60526510-747d-4537-bd74-542dc2e0d515", "type": "InvestigationQuestion", "properties": {"text": "Strategic question: This broad search is crucial to identify the most recent and relevant discussions, keywords, and initial claims regarding Donald Trump's health, sickness, hospitalization, or death rumors in 2024. Focusing on 'Latest' ensures we capture current virality and emerging narratives, establishing the current state of the rumors.", "parent_analytic_question": null}, "created_at": "2025-09-03T09:40:03.688983"}, {"id": "0849f21a-db24-422b-a2c5-df5632629600", "type": "SearchQuery", "properties": {"endpoint": "search.php", "parameters": {"query": "Donald Trump health sick hospital dead rumors 2024 OR 'Donald Trump hospitalized' OR 'Trump health crisis'", "search_type": "Latest"}}, "created_at": "2025-09-03T09:40:03.688983"}, {"id": "a6f20779-bd10-4dfd-88ae-09c815fd7862", "type": "InvestigationQuestion", "properties": {"text": "Strategic question: To ascertain the credibility and prevalence of these rumors, it's vital to check if reputable news organizations have reported on or debunked any claims. This search will help distinguish between speculative social media chatter and any officially acknowledged events or statements, using 'Top' to find the most significant posts from these sources.", "parent_analytic_question": null}, "created_at": "2025-09-03T09:40:03.688983"}, {"id": "6b578b19-5852-4a19-9088-42a793eac33c", "type": "SearchQuery", "properties": {"endpoint": "search.php", "parameters": {"query": "from:AP from:Reuters from:CNN from:nytimes from:WSJ 'Donald Trump health' OR 'Trump hospital'", "search_type": "Top"}}, "created_at": "2025-09-03T09:40:03.688983"}, {"id": "4caf591d-2beb-4dc5-88a9-3dae801a8bcb", "type": "InvestigationQuestion", "properties": {"text": "Strategic question: Monitoring trends in the United States will provide insight into whether these rumors have gained significant public attention or are widely discussed. This helps to gauge the overall impact and virality of the health-related rumors surrounding Donald Trump, indicating if it's a niche topic or a widespread concern.", "parent_analytic_question": null}, "created_at": "2025-09-03T09:40:03.688983"}, {"id": "98d378d3-6cf5-47a7-a6c9-c2f897f4a684", "type": "SearchQuery", "properties": {"endpoint": "trends.php", "parameters": {"country": "UnitedStates"}}, "created_at": "2025-09-03T09:40:03.688983"}, {"id": "0450e261-d7d0-4289-a1c4-e0dca2607e4e", "type": "SearchQuery", "properties": {"endpoint": "search.php", "parameters": {"query": "Donald Trump health sick hospital dead rumors 2024 OR 'Donald Trump hospitalized' OR 'Trump health crisis'", "search_type": "Latest"}}, "created_at": "2025-09-03T09:40:19.183399"}, {"id": "b8c8bc4e-9d7d-4a1a-a3aa-c002aeaeda84", "type": "SearchQuery", "properties": {"endpoint": "search.php", "parameters": {"query": "from:AP from:Reuters from:CNN from:nytimes from:WSJ 'Donald Trump health' OR 'Trump hospital'", "search_type": "Top"}}, "created_at": "2025-09-03T09:40:19.183399"}, {"id": "5509da3f-5da6-46ee-9c24-cfb9dbf6866f", "type": "SearchQuery", "properties": {"endpoint": "trends.php", "parameters": {"country": "UnitedStates"}}, "created_at": "2025-09-03T09:40:19.183399"}], "edges": [{"id": "0", "source": "60526510-747d-4537-bd74-542dc2e0d515", "target": "0849f21a-db24-422b-a2c5-df5632629600", "type": "OPERATIONALIZES", "properties": {"decision_type": "gap_filling", "coherence_score": 0.6}}, {"id": "1", "source": "a6f20779-bd10-4dfd-88ae-09c815fd7862", "target": "6b578b19-5852-4a19-9088-42a793eac33c", "type": "OPERATIONALIZES", "properties": {"decision_type": "gap_filling", "coherence_score": 0.6}}, {"id": "2", "source": "4caf591d-2beb-4dc5-88a9-3dae801a8bcb", "target": "98d378d3-6cf5-47a7-a6c9-c2f897f4a684", "type": "OPERATIONALIZES", "properties": {"decision_type": "gap_filling", "coherence_score": 0.6}}], "investigation_topic": "Donald Trump Health Rumors", "timestamp": "Trump Investigation 2025-09-03"};
+        
+        var nodes = new vis.DataSet();
+        var nodeColors = {
+            'InvestigationQuestion': {background: '#dc3545', border: '#c82333'},
+            'SearchQuery': {background: '#28a745', border: '#1e7e34'},
+            'DataPoint': {background: '#007bff', border: '#0056b3'},
+            'Insight': {background: '#ffc107', border: '#e0a800'}
+        };
+        
+        trumpGraph.nodes.forEach(function(node) {
+            var label = '';
+            if (node.type === 'InvestigationQuestion') {
+                label = 'Q: Trump Health Investigation';
+            } else if (node.type === 'SearchQuery') {
+                var params = node.properties.parameters || {};
+                label = node.properties.endpoint + '\n' + 
+                    (params.query || params.screenname || 'Trump search').substring(0, 30);
+            } else if (node.type === 'DataPoint') {
+                var content = node.properties.content || '';
+                label = 'Finding: ' + content.substring(0, 40) + '...';
+            } else if (node.type === 'Insight') {
+                label = 'Insight: Trump Analysis';
+            }
+            
+            nodes.add({
+                id: node.id,
+                label: label,
+                title: JSON.stringify(node.properties, null, 2).substring(0, 1000),
+                color: nodeColors[node.type] || nodeColors['DataPoint'],
+                shape: node.type === 'InvestigationQuestion' ? 'star' : 
+                      node.type === 'SearchQuery' ? 'box' :
+                      node.type === 'Insight' ? 'diamond' : 'ellipse',
+                size: node.type === 'InvestigationQuestion' ? 30 : 20,
+                font: {color: 'white', size: 12},
+                originalNode: node
+            });
+        });
+        
+        var edges = new vis.DataSet();
+        trumpGraph.edges.forEach(function(edge) {
+            edges.add({
+                from: edge.source,
+                to: edge.target,
+                label: edge.type,
+                arrows: 'to',
+                color: {color: '#666'},
+                width: 1.5,
+                font: {color: '#aaa', size: 10}
+            });
+        });
+        
+        var container = document.getElementById('network');
+        var data = {nodes: nodes, edges: edges};
+        var options = {
+            physics: {enabled: true},
+            nodes: {borderWidth: 2},
+            edges: {smooth: {enabled: true}}
+        };
+        
+        var network = new vis.Network(container, data, options);
+        
+        network.on("click", function(params) {
+            if (params.nodes.length > 0) {
+                var nodeId = params.nodes[0];
+                var node = nodes.get(nodeId);
+                var details = document.getElementById('details');
+                
+                var content = '<h3>' + node.originalNode.type + '</h3>';
+                content += '<p><strong>ID:</strong> ' + nodeId.substring(0, 20) + '...</p>';
+                
+                if (node.originalNode.properties) {
+                    var props = node.originalNode.properties;
+                    if (props.text) {
+                        content += '<p><strong>Text:</strong> ' + props.text + '</p>';
+                    }
+                    if (props.content) {
+                        content += '<p><strong>Content:</strong> ' + props.content.substring(0, 400) + '...</p>';
+                    }
+                    if (props.parameters) {
+                        content += '<p><strong>Search Parameters:</strong> ' + JSON.stringify(props.parameters) + '</p>';
+                    }
+                }
+                
+                details.innerHTML = content;
+            }
+        });
+    </script>
+</body>
+</html>

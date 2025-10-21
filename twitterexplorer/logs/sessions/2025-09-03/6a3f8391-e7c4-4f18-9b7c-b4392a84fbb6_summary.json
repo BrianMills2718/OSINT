@@ -1,0 +1,94 @@
+{
+  "session_metadata": {
+    "session_id": "6a3f8391-e7c4-4f18-9b7c-b4392a84fbb6",
+    "start_time": "2025-09-03T17:40:22.345194+00:00",
+    "end_time": "2025-09-03T17:42:21.208290+00:00",
+    "duration_seconds": 118.862095,
+    "user_query": "Trump health investigation"
+  },
+  "configuration": {
+    "max_searches": 3,
+    "max_time_minutes": 60,
+    "satisfaction_enabled": true,
+    "satisfaction_threshold": 0.8,
+    "min_searches_before_satisfaction": 10,
+    "show_search_details": true,
+    "show_strategy_reasoning": true,
+    "show_effectiveness_scores": true,
+    "enable_strategy_adaptation": true,
+    "enable_alternative_approaches": true,
+    "enable_name_variation_search": true,
+    "pages_per_search": 3,
+    "search_timeout_seconds": 30,
+    "retry_failed_searches": true,
+    "enforce_endpoint_diversity": false,
+    "max_endpoint_repeats": 5,
+    "diversity_threshold": 0.3
+  },
+  "performance_metrics": {
+    "total_searches": 3,
+    "total_rounds": 1,
+    "total_results_found": 146,
+    "satisfaction_score": 0.3391071428571428,
+    "satisfaction_breakdown": {
+      "information_coverage": 0.4,
+      "source_diversity": 0.2,
+      "evidence_quality": 0.7107142857142853,
+      "claim_specificity": 0.14285714285714285,
+      "contradiction_resolution": 0.0
+    },
+    "completion_reason": "Reached maximum search limit (3)"
+  },
+  "search_summary": {
+    "searches_by_effectiveness": {
+      "highly_effective": [
+        {
+          "search_id": 1,
+          "query": "Donald Trump health OR 'Trump medical' OR 'Trump physician' OR 'Trump health status'",
+          "results": 59,
+          "effectiveness": 8.0
+        },
+        {
+          "search_id": 2,
+          "query": "",
+          "results": 60,
+          "effectiveness": 8.0
+        },
+        {
+          "search_id": 3,
+          "query": "",
+          "results": 27,
+          "effectiveness": 8.0
+        }
+      ],
+      "moderately_effective": [],
+      "low_effectiveness": [],
+      "ineffective": []
+    },
+    "most_effective_strategies": [
+      {
+        "strategy": "Graph Strategy: To initiate the 'Trump health investigation' from a state of no information, the most strategically coherent next action is to establish a comprehensive baseline understanding. This involves casting a broad net to capture general public discourse and news, while also focusing on primary sources (Donald Trump's own statements) and visual evidence from his public appearances. By leveraging diverse endpoints, this approach ensures a multi-faceted initial data collection to identify key events, discussions, and official communications related to his health.",
+        "avg_effectiveness": 8.0
+      }
+    ],
+    "dead_ends": [],
+    "promising_leads": [
+      "Donald Trump health OR 'Trump medical' OR 'Trump physician' OR 'Trump health status'",
+      ""
+    ]
+  },
+  "rounds_summary": [
+    {
+      "round_number": 1,
+      "strategy": "Graph Strategy: To initiate the 'Trump health investigation' from a state of no information, the most strategically coherent next action is to establish a comprehensive baseline understanding. This involves casting a broad net to capture general public discourse and news, while also focusing on primary sources (Donald Trump's own statements) and visual evidence from his public appearances. By leveraging diverse endpoints, this approach ensures a multi-faceted initial data collection to identify key events, discussions, and official communications related to his health.",
+      "searches_count": 3,
+      "total_results": 146,
+      "effectiveness": 8.0,
+      "insights": [
+        "There is widespread public speculation and rumors regarding Donald Trump's health, including claims of serious health issues (e.g., congestive heart failure, chronic kidney disease) and even death.",
+        "Conversely, there are also numerous statements and reports, often from supporters, asserting that Trump is in good health and active (e.g., playing golf).",
+        "Some individuals perceive a media bias or cover-up regarding information about Trump's health."
+      ]
+    }
+  ]
+}

@@ -21,7 +21,7 @@ project_root = Path(__file__).parent.parent
 if str(project_root) not in sys.path:
     sys.path.insert(0, str(project_root))
 
-from monitoring.boolean_monitor import BooleanMonitor
+from monitoring.adaptive_boolean_monitor import AdaptiveBooleanMonitor
 
 # Configure logging
 logging.basicConfig(
@@ -45,7 +45,7 @@ class MonitorScheduler:
     def __init__(self):
         """Initialize the scheduler."""
         self.scheduler = AsyncIOScheduler()
-        self.monitors: List[BooleanMonitor] = []
+        self.monitors: List[AdaptiveBooleanMonitor] = []
         logger.info("MonitorScheduler initialized")
 
     def add_monitor(self, config_path: str):
@@ -56,7 +56,7 @@ class MonitorScheduler:
             config_path: Path to monitor configuration file
         """
         try:
-            monitor = BooleanMonitor(config_path)
+            monitor = AdaptiveBooleanMonitor(config_path)
 
             if not monitor.config.enabled:
                 logger.info(f"Monitor '{monitor.config.name}' is disabled, skipping")
@@ -137,12 +137,12 @@ class MonitorScheduler:
         except Exception as e:
             logger.error(f"Failed to add monitor from {config_path}: {str(e)}")
 
-    async def _run_monitor(self, monitor: BooleanMonitor):
+    async def _run_monitor(self, monitor: AdaptiveBooleanMonitor):
         """
         Run a monitor (called by scheduler).
 
         Args:
-            monitor: BooleanMonitor instance to run
+            monitor: AdaptiveBooleanMonitor instance to run
         """
         try:
             logger.info(f"Executing scheduled monitor: {monitor.config.name}")
@@ -216,7 +216,7 @@ async def main():
         logger.info("Running all monitors once (no scheduling)")
         for config_file in config_files:
             try:
-                monitor = BooleanMonitor(str(config_file))
+                monitor = AdaptiveBooleanMonitor(str(config_file))
                 if monitor.config.enabled:
                     logger.info(f"Running monitor: {monitor.config.name}")
                     await monitor.run()

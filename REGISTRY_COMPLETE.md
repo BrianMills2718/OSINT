@@ -144,17 +144,17 @@ query_params = await integration.generate_query(research_question)
 
 ## Current Registry Contents
 
-**6 Sources Registered**:
+**7 Sources Registered**:
 1. `sam` - SAM.gov (federal contracts) - Requires API key
 2. `dvids` - DVIDS (military media) - Requires API key
 3. `usajobs` - USAJobs (federal jobs) - Requires API key
 4. `clearancejobs` - ClearanceJobs (security clearance jobs) - No API key (Playwright)
 5. `fbi_vault` - FBI Vault (declassified documents) - No API key
 6. `discord` - Discord (community intelligence) - No API key
+7. `twitter` - Twitter (social media intelligence) - Requires API key (RapidAPI)
 
 **Coming Soon** (from INVESTIGATIVE_PLATFORM_VISION.md):
 - Reddit
-- Twitter
 - Telegram
 - 4chan
 - Federal Register (already has integration, needs registry registration)

@@ -157,7 +157,31 @@ Traceback (most recent call last):
 - "I implemented the pattern..." (implementation is not proof)
 - "Tests passed" without showing output (claim is not proof)
 
-**TIMEOUTS ARE FAILURES**: Any timeout counts as failure, not success. Fix performance or increase limits, never ignore.
+**TIMEOUTS - Provide User Command**: If a command times out:
+1. **DO NOT** treat timeout as success
+2. **DO NOT** retry with same timeout
+3. **DO** report what completed before timeout
+4. **DO** provide exact bash command for user to run themselves
+5. **DO** explain expected output and estimated duration
+
+Example response to timeout:
+```
+Command timed out after 3 minutes during LLM relevance filtering.
+
+What completed:
+- Adaptive search: 26 results across 3 phases ✓
+- Deduplication: 26 unique results ✓
+- Started relevance filtering: 8 of 26 results scored
+
+To complete the test yourself:
+bash
+cd /home/brian/sam_gov
+source .venv/bin/activate
+python3 monitoring/adaptive_boolean_monitor.py data/monitors/configs/test_adaptive_monitor.yaml
+
+Expected: ~5 minutes total (90s adaptive search + 3min relevance filtering for 26 results)
+Expected output: Email alert sent with relevant results (score >= 6/10)
+```
 
 ### 3. FORBIDDEN CLAIMS & REQUIRED LANGUAGE
 
@@ -785,53 +809,61 @@ python3 -c "import X; print('OK')"  # Test import
 ---
 # CLAUDE.md - Temporary Section (Updated as Tasks Complete)
 
-**Last Updated**: 2025-10-19 20:30
-**Current Phase**: Phase 1 (Boolean Monitoring MVP) - 100% COMPLETE + OPTIMIZED
-**Next Phase**: DECISION POINT - See "Recommendations" section below
+**Last Updated**: 2025-10-20
+**Current Phase**: Phase 1.5 (Adaptive Search & Knowledge Graph) - Week 1 COMPLETE
+**Recent Completion**: AdaptiveBooleanMonitor integration (full E2E test complete)
+**Timeline**: Weeks 1-10
 
 ---
 
-## PHASE 1 COMPLETE - SUMMARY
+## CURRENT PHASE: ADAPTIVE SEARCH & KNOWLEDGE GRAPH
 
-**Phase 1 Status**: 100% COMPLETE - All deliverables finished + production-ready enhancements
+**Decision**: User approved **Option B** - Start with PostgreSQL + Graph Layer, Wikibase-compatible for future migration
 
-**Core System** ([PASS]):
-- ✅ BooleanMonitor class (monitoring/boolean_monitor.py - 680+ lines)
-- ✅ YAML-based monitoring config system
-- ✅ Hash-based deduplication (SHA256 of URLs)
-- ✅ New result detection (compares vs previous run)
-- ✅ JSON file storage for result tracking
-- ✅ Email alert system (HTML + plain text, Gmail SMTP working)
-- ✅ Scheduler (APScheduler for automated daily execution)
-- ✅ Federal Register integration added (1 new government source)
+**What we're building**:
+1. **Weeks 1-4**: Mozart-style adaptive search (iterative refinement)
+2. **Weeks 5-8**: PostgreSQL knowledge graph (Wikibase-compatible schema)
+3. **Weeks 9-10**: BabyAGI on-demand investigations + visualization
 
-**Production-Ready Enhancements** ([PASS]):
-- ✅ **Parallel Search Execution**: asyncio.gather() for 32 concurrent searches (30-60s vs 5-6 min)
-- ✅ **LLM Relevance Filtering**: Scores results 0-10, only alerts if >= 6 (prevents false positives)
-- ✅ **Keyword Tracking**: Each result shows which keyword found it
-- ✅ **Boolean Query Support**: Quoted phrases ("Section 702"), operators (AND/OR/NOT)
-- ✅ **5 Production Monitors**: Configured with curated investigative keywords
-  - Domestic Extremism Classifications (8 keywords)
-  - Surveillance & FISA Programs (9 keywords)
-  - Special Operations & Covert Programs (9 keywords)
-  - Inspector General & Oversight Reports (8 keywords)
-  - Immigration Enforcement Operations (9 keywords)
-- ✅ **Keyword Curation**: Manual review of 1,216 automated keywords + 3,300 article tags → ~100 high-value investigative keywords
+**Team size**: 3 people (makes knowledge graph valuable for collaboration)
 
-**Evidence**: See STATUS.md and MONITORING_SYSTEM_READY.md for detailed testing results
+**Integration strategy**: Hybrid approach
+- **Daily monitoring**: Mozart iterative search (fast, predictable)
+- **On-demand**: BabyAGI deep investigations (thorough, autonomous)
+
+**Documentation**: See `docs/active/` for implementation guides
+
+---
+
+## PHASE 1 BACKGROUND (Already Complete)
+
+**Phase 1 Status**: COMPLETE (100%)
+
+**What's working** ([PASS]):
+- Boolean monitoring system (5 production monitors)
+- Email alerts with LLM relevance filtering
+- Daily scheduler (ready to deploy)
+- 5 government data sources integrated
+
+**Evidence**: See `docs/archived/2025-10-19-phase1-boolean-monitoring/` for completion documentation
 
 ---
 
 ## RELATED STATUS & PLANNING
 
+**Implementation Guides** (Active):
+- `docs/active/ADAPTIVE_SEARCH_INTEGRATION.md` - Mozart adaptive search (Weeks 1-4)
+- `docs/active/AGENTIC_VS_ITERATIVE_ANALYSIS.md` - BabyAGI vs Mozart comparison
+- `docs/active/KNOWLEDGE_BASE_OPTIONS.md` - PostgreSQL knowledge graph (Weeks 5-8)
+- `docs/active/DOCUMENTATION_STRATEGY.md` - This reorganization plan
+
 **Status & Evidence** (Reality Check):
-- See STATUS.md for component-by-component status with evidence
+- See STATUS.md for component-by-component status
 - What's [PASS], what's [FAIL], what's [BLOCKED]
-- Evidence: command outputs, limitations, unverified claims
 
 **Phase Plans** (Where This Fits):
 - See ROADMAP.md for phase objectives and success criteria
-- Current phase goals and deliverables
+- Phase 1.5 objectives and deliverables
 - Next phase preview
 
 **Long-Term Vision** (Why We're Doing This):
@@ -840,219 +872,278 @@ python3 -c "import X; print('OK')"  # Test import
 
 ---
 
-## WHAT COMES NEXT - DECISION POINT
+## NEXT 3 ACTIONS (Week 1: Start Adaptive Search)
 
-Phase 1 is complete and production-ready. Choose next direction:
+### Action 1: Build AdaptiveSearchEngine Core
 
-### Option A: Deploy Scheduler (Start Production Monitoring)
-**Description**: Run scheduler continuously for automated daily monitoring
-**Command**: `python3 monitoring/scheduler.py --config-dir data/monitors/configs`
-**Pros**:
-- Starts collecting investigative intelligence immediately
-- Validates system in production
-- Low effort (already built)
-**Cons**:
-- Requires continuous process (use systemd service for production)
-- No UI for monitor management (manual YAML editing)
-**Time**: 30 minutes (setup systemd service + verify first run)
+**Prerequisites**: Phase 1 complete (monitors working)
 
-### Option B: Begin Phase 2 (Simple Web UI)
-**Description**: Build Streamlit interface for monitor management
-**Deliverables**:
-- Monitor dashboard (view status, recent results)
-- Monitor creation/editing form
-- Alert history viewer
-- Manual trigger for monitors
-**Pros**:
-- Easier monitor management (no YAML editing)
-- Better visibility into system operation
-- User-friendly for team
-**Cons**:
-- Delays production deployment
-- Requires UI development time
-**Time**: 1-2 weeks
+**Goal**: Implement Mozart-style iterative search that refines itself
 
-### Option C: Test All 5 Monitors Manually First
-**Description**: Run each monitor once to verify quality before automation
-**Command**: `python3 -c "import asyncio; from monitoring.boolean_monitor import BooleanMonitor; asyncio.run(BooleanMonitor('path/to/monitor.yaml').run())"`
-**Pros**:
-- Validates keyword quality across all monitors
-- Catches false positives before automation
-- Tunes relevance threshold if needed
-**Cons**:
-- Manual work (5 monitors × ~2 minutes each)
-- Delays production deployment
-**Time**: 15-30 minutes
+**Implementation guide**: See `docs/active/ADAPTIVE_SEARCH_INTEGRATION.md` (lines 78-353)
 
-**Recommendation**: Option C → Option A (test all monitors, then deploy scheduler)
+**File to create**: `core/adaptive_search_engine.py`
 
----
+**Key components**:
+```python
+class AdaptiveSearchEngine:
+    """
+    Autonomous search that iterates and refines itself.
 
-## NEXT 3 ACTIONS (If Option A: Deploy Scheduler)
+    Pattern:
+    1. Broad initial search (phase1_count: 15 results)
+    2. Analyze top results, extract entities
+    3. Targeted follow-up searches for each entity
+    4. Quality check, iterate if needed
+    5. Stop when quality >= threshold or max iterations
+    """
 
-### Action 1: Test All 5 Production Monitors Manually
-
-**Prerequisites**: Phase 1 complete (all monitors configured)
-
-**Steps**:
-```bash
-# Test each monitor once
-cd /home/brian/sam_gov
-
-# 1. Domestic Extremism Monitor
-python3 -c "import asyncio; from monitoring.boolean_monitor import BooleanMonitor; asyncio.run(BooleanMonitor('data/monitors/configs/domestic_extremism_monitor.yaml').run())"
-
-# 2. Surveillance & FISA Monitor
-python3 -c "import asyncio; from monitoring.boolean_monitor import BooleanMonitor; asyncio.run(BooleanMonitor('data/monitors/configs/surveillance_fisa_monitor.yaml').run())"
-
-# 3. Special Operations Monitor
-python3 -c "import asyncio; from monitoring.boolean_monitor import BooleanMonitor; asyncio.run(BooleanMonitor('data/monitors/configs/special_operations_monitor.yaml').run())"
-
-# 4. Oversight & Whistleblower Monitor
-python3 -c "import asyncio; from monitoring.boolean_monitor import BooleanMonitor; asyncio.run(BooleanMonitor('data/monitors/configs/oversight_whistleblower_monitor.yaml').run())"
-
-# 5. Immigration Enforcement Monitor
-python3 -c "import asyncio; from monitoring.boolean_monitor import BooleanMonitor; asyncio.run(BooleanMonitor('data/monitors/configs/immigration_enforcement_monitor.yaml').run())"
+    async def adaptive_search(self, initial_query: str):
+        # Phase 1: Broad search
+        # Phase 2: Extract entities from top results
+        # Phase 3: Targeted searches
+        # Phase 4: Quality check & iterate
+        pass
 ```
 
 **Success Criteria**:
-- All 5 monitors execute without errors
-- Each monitor finds >= 0 results (some may find nothing on first run)
-- LLM relevance filtering activates (scores shown)
-- Email alerts sent if relevant results found (check brianmills2718@gmail.com)
-- Result files created in data/monitors/
+- [x] AdaptiveSearchEngine class created ✅
+- [x] Core iteration logic implemented (phases 1-4) ✅
+- [x] Entity extraction using gpt-5-mini ✅
+- [x] Quality scoring working ✅
+- [x] Test with single keyword produces multi-phase results ✅
+
+**Testing**:
+```python
+python3 -c "
+import asyncio
+from core.adaptive_search_engine import AdaptiveSearchEngine
+from core.parallel_executor import ParallelExecutor
+
+async def test():
+    engine = AdaptiveSearchEngine(
+        parallel_executor=ParallelExecutor(),
+        phase1_count=10,
+        phase2_queries=3,
+        max_iterations=2
+    )
+
+    result = await engine.adaptive_search('FISA Section 702')
+
+    print(f'Total results: {result.total_results}')
+    print(f'Phases: {result.iterations}')
+    print(f'Entities discovered: {result.entities_discovered}')
+
+asyncio.run(test())
+"
+```
+
+**Expected output**:
+```
+Phase 1: Broad search (10 results)
+Extracted 5 entities: ['NSA', 'Prism program', 'FISA court']
+Phase 1 complete: 10 results
+Iteration 1: Targeted searches for 3 entities
+  Searching: FISA Section 702 AND NSA
+  Searching: FISA Section 702 AND Prism program
+  Searching: FISA Section 702 AND FISA court
+Iteration 1 complete: 24 new results
+Quality threshold reached (0.75 >= 0.60)
+
+Total results: 34
+Phases: 2
+Entities discovered: ['NSA', 'Prism program', 'FISA court', ...]
+```
 
 **Evidence Required**:
-- Command output showing monitor execution
-- Relevance scores for any results found
-- Email delivery confirmation (if alerts sent)
-- Result JSON files created
+- Command output showing iteration working
+- Multiple phases executed
+- Entities extracted between phases
+- Quality scores calculated
 
 **On Failure**:
-- Import errors: Check all integrations still working
-- API errors: Verify API keys in .env
-- LLM errors: Check OPENAI_API_KEY set
-- SMTP errors: Verify Gmail app password
+- Import errors: Check ParallelExecutor still works
+- LLM errors: Verify OPENAI_API_KEY in .env
+- No entities extracted: Check prompt formatting
+- Infinite loop: Verify max_iterations enforced
 
-**Current Status**: RECOMMENDED - Test before deploying scheduler
+**Current Status**: [PASS] - COMPLETE
+
+**Evidence** (2025-10-20):
+```
+Test query: "military training exercises"
+Results: 27 unique results across 3 phases
+Entities discovered: 14 entities (e.g., "165th Airlift Wing", "Exercise Steadfast Noon 2025")
+Quality progression: 0.35 → 0.44 → 0.52
+Execution time: ~45 seconds (includes LLM entity extraction)
+```
+
+**File created**: core/adaptive_search_engine.py (456 lines)
+**Status updated**: STATUS.md with Phase 1.5 Week 1 section
 
 ---
 
-### Action 2: Create systemd Service for Scheduler
+### Action 2: Integrate Adaptive Search with BooleanMonitor
 
-**Prerequisites**: Action 1 complete (all monitors tested)
+**Prerequisites**: Action 1 complete (AdaptiveSearchEngine working)
 
-**Steps**:
-```bash
-# Create systemd service file
-sudo nano /etc/systemd/system/osint-monitor.service
+**Goal**: Replace static keyword search with adaptive search in monitors
 
-# Add the following (adjust paths):
-[Unit]
-Description=OSINT Boolean Monitoring Scheduler
-After=network.target
+**Implementation guide**: See `docs/active/ADAPTIVE_SEARCH_INTEGRATION.md` (lines 354-433)
 
-[Service]
-Type=simple
-User=brian
-WorkingDirectory=/home/brian/sam_gov
-Environment="PATH=/home/brian/sam_gov/.venv/bin"
-ExecStart=/home/brian/sam_gov/.venv/bin/python3 monitoring/scheduler.py --config-dir data/monitors/configs
-Restart=always
-RestartSec=60
+**File to create**: `monitoring/adaptive_boolean_monitor.py`
 
-[Install]
-WantedBy=multi-user.target
+**Key changes**:
+```python
+class AdaptiveBooleanMonitor(BooleanMonitor):
+    """Boolean monitor using adaptive search."""
 
-# Enable and start service
-sudo systemctl daemon-reload
-sudo systemctl enable osint-monitor.service
-sudo systemctl start osint-monitor.service
+    def __init__(self, config_path: str):
+        super().__init__(config_path)
+        self.adaptive_engine = AdaptiveSearchEngine(...)
 
-# Check status
-sudo systemctl status osint-monitor.service
+    async def execute_search(self, keywords: List[str]):
+        """Use adaptive search instead of simple parallel search."""
+        for keyword in keywords:
+            adaptive_result = await self.adaptive_engine.adaptive_search(keyword)
+            # Collect all results from all phases
+            all_results.extend(...)
+        return all_results
 ```
 
 **Success Criteria**:
-- Service starts without errors
-- Service shows "active (running)" status
-- Logs show scheduler loaded all 5 monitors
-- Scheduler shows next run times (daily at 6am)
+- [ ] AdaptiveBooleanMonitor class created
+- [ ] Replaces simple search with adaptive search
+- [ ] Preserves existing features (email alerts, dedup, etc.)
+- [ ] Configurable (can enable/disable adaptive mode)
+- [ ] Test with one monitor shows multi-phase search
+
+**Testing**:
+```python
+python3 -c "
+import asyncio
+from monitoring.adaptive_boolean_monitor import AdaptiveBooleanMonitor
+
+async def test():
+    monitor = AdaptiveBooleanMonitor(
+        'data/monitors/configs/surveillance_fisa_monitor.yaml'
+    )
+    results = await monitor.execute_search(['FISA Section 702'])
+    print(f'Found {len(results)} results via adaptive search')
+
+asyncio.run(test())
+"
+```
 
 **Evidence Required**:
-- `systemctl status` showing active
-- Log output showing "Loaded 5 monitors"
-- Next run times displayed
+- Monitor executes multiple search phases
+- Entities discovered and searched
+- All results collected
+- Email alert includes adaptive insights
 
 **On Failure**:
-- Permission errors: Check service User matches file owner
-- Path errors: Verify WorkingDirectory and ExecStart paths
-- Python errors: Check .venv activation in service file
+- Config errors: Check YAML format matches BooleanMonitor
+- Integration errors: Verify BooleanMonitor base class unchanged
+- No multi-phase: Check adaptive_engine initialization
 
-**Current Status**: OPTIONAL - Can run manually instead of systemd
+**Current Status**: [PASS] - COMPLETE
+
+**Evidence** (2025-10-20 - Full E2E test):
+```
+Test: AdaptiveBooleanMonitor with test_adaptive_monitor.yaml
+Keyword: "military training exercises"
+
+Adaptive search: 19 results (3 phases: 10 → 7 → 2), 13 entities discovered, 84s
+Deduplication: 19 unique, 0 duplicates
+New detection: 15 new (vs 21 previous)
+Relevance filtering: 14 relevant (93% pass rate), 1 filtered out, 101s
+Email alert: Sent successfully to brianmills2718@gmail.com
+Result storage: Saved to Test_Adaptive_Monitor_results.json
+
+Total: 3 minutes 25 seconds end-to-end
+```
+
+**File created**: monitoring/adaptive_boolean_monitor.py (269 lines)
+**Config created**: data/monitors/configs/test_adaptive_monitor.yaml
+**Status updated**: STATUS.md with full E2E test evidence
 
 ---
 
-### Action 3: Monitor First Scheduled Run
+### Action 3: Update Monitor Configs for Adaptive Search
 
-**Prerequisites**: Action 2 complete (service running)
+**Prerequisites**: Action 2 complete (AdaptiveBooleanMonitor working)
 
-**Steps**:
-```bash
-# View logs in real-time
-sudo journalctl -u osint-monitor.service -f
+**Goal**: Enable adaptive search on production monitors with tuned parameters
 
-# Or check scheduler manually
-python3 monitoring/scheduler.py --config-dir data/monitors/configs
+**Files to update**: `data/monitors/configs/*.yaml`
 
-# Wait for 6am next day, or manually trigger all monitors:
-python3 monitoring/scheduler.py --config-dir data/monitors/configs --run-once
+**Changes**:
+```yaml
+# Before (static keywords)
+name: "Surveillance & FISA Programs"
+keywords:
+  - "FISA Section 702"
+  - "NSA surveillance programs"
+
+# After (adaptive search)
+name: "Surveillance & FISA Programs"
+keywords:
+  - "FISA Section 702"
+  - "NSA surveillance programs"
+adaptive_search: true  # NEW
+adaptive_config:
+  phase1_count: 15
+  analyze_top_n: 5
+  phase2_queries: 4
+  max_iterations: 3
+  min_quality: 0.6
 ```
 
 **Success Criteria**:
-- Scheduler executes all 5 monitors
-- Monitors complete without errors
-- Relevant results trigger email alerts
-- Result files updated in data/monitors/
-- No crashes or exceptions
+- [ ] All 5 monitor configs updated with adaptive settings
+- [ ] Parameters tuned for each monitor type
+- [ ] Backward compatible (can disable adaptive if needed)
+- [ ] Test one monitor end-to-end with adaptive search
+
+**Testing**:
+```bash
+# Test one monitor with adaptive search enabled
+python3 monitoring/adaptive_boolean_monitor.py \
+  data/monitors/configs/surveillance_fisa_monitor.yaml
+```
 
 **Evidence Required**:
-- Log output showing all monitors executed
-- Email alerts received (if relevant results found)
-- Result JSON files updated with new timestamps
-- No error traces in logs
+- Monitor runs with adaptive search
+- Multiple phases logged
+- Entities discovered
+- Results found via refinement (not in Phase 1)
 
 **On Failure**:
-- Monitor crashes: Check logs for stack trace
-- No alerts: Verify SMTP credentials, check relevance filtering threshold
-- Scheduler stops: Check systemd service status, restart if needed
+- Config parse errors: Check YAML syntax
+- Adaptive not activating: Verify adaptive_search: true
+- Poor quality: Tune thresholds (min_quality, phase1_count, etc.)
 
-**Current Status**: PENDING - Awaits Action 1 & 2 completion
+**Current Status**: NEXT - Ready to start (Action 2 complete)
 
 ---
 
-## AFTER COMPLETING THESE 3 ACTIONS (Option A)
+## AFTER WEEK 1 (Actions 1-3 Complete)
 
-**System Status**: PRODUCTION MONITORING ACTIVE
+**What you'll have**:
+- Adaptive search engine working (iterative refinement)
+- Integration with boolean monitors
+- Configurable per monitor
+- Evidence of multi-phase discovery
 
-**What's Running**:
-- 5 monitors executing daily at 6am
-- Email alerts sent for relevant results (score >= 6)
-- Results stored in data/monitors/ (JSON files)
-- Scheduler running as systemd service (persistent)
+**Next (Week 2-4)**:
+- Add BabyAGI for on-demand deep investigations
+- Add web search integration (Brave Search API)
+- Tune adaptive parameters based on production use
 
-**What to Monitor**:
-- Check brianmills2718@gmail.com for alerts
-- Review `sudo journalctl -u osint-monitor.service` for errors
-- Tune relevance threshold if too many/few alerts
-- Add/remove keywords based on result quality
-
-**If Choosing Option B Instead** (Phase 2: Simple Web UI):
-See ROADMAP.md for Phase 2 objectives and deliverables. Phase 2 focuses on:
-- Monitor management UI (create/edit/delete monitors)
-- Dashboard (view status, recent results)
-- Alert history viewer
-- Manual trigger for monitors
+**Then (Week 5-8)**:
+- PostgreSQL knowledge graph (Wikibase-compatible schema)
+- Auto-populate from adaptive search results
+- Entity relationship tracking
 
 ---
 
@@ -1060,47 +1151,72 @@ See ROADMAP.md for Phase 2 objectives and deliverables. Phase 2 focuses on:
 
 | Blocker | Impact | Status | Next Action |
 |---------|--------|--------|-------------|
-| None | N/A | **CLEAR** | Choose Option A, B, or C (see "What Comes Next") |
+| None | N/A | **CLEAR** | Start Action 1 (build AdaptiveSearchEngine) |
 
-**No current blockers** - Phase 1 complete, system production-ready
-
-**Recently completed**:
-- ✅ Phase 1 Boolean Monitoring MVP (100% complete)
-- ✅ LLM relevance filtering (prevents false positives)
-- ✅ 5 production monitors configured (investigative keywords)
-- ✅ Keyword curation (manual review of 1,216 automated keywords)
+**No current blockers** - Ready to start Phase 1.5
 
 ---
 
 ## CHECKPOINT QUESTIONS (Answer Every 15 Min)
 
-**Last Checkpoint**: 2025-10-19 18:50
+**Last Checkpoint**: 2025-10-20 (Week 1 complete - AdaptiveBooleanMonitor full E2E test)
 
 **Questions**:
 1. What have I **proven** with command output?
-   - Answer: Phase 1 complete, LLM filtering working, email alerts delivered, 5 monitors configured
+   - Answer: Full adaptive monitoring working E2E - 19 results across 3 phases, 13 entities discovered, 14/15 relevant results (93% pass rate), email sent successfully
 
 2. What am I **assuming** without evidence?
-   - Answer: All 5 monitors will perform well in production (only tested 1 so far: domestic extremism)
+   - Answer: Production monitors will benefit from adaptive search, cost increase is acceptable, entity quality is good across all keyword types
 
 3. What would break if I'm wrong?
-   - Answer: False positives could spam email, poor keywords waste API/LLM costs, scheduler could crash
+   - Answer: Production monitors could run too long (3.5min vs current ~1min), daily costs could spike, false positives from bad entity extraction
 
 4. What **haven't I tested** yet?
-   - Answer: 4 of 5 production monitors (surveillance, special ops, oversight, immigration)
+   - Answer: Multiple relevant databases simultaneously, production deployment with all 6 monitors, cost tracking totals, performance with broader queries
 
-**Next checkpoint**: After testing all 5 monitors manually (Action 1)
+**Next checkpoint**: After deciding whether to enable adaptive search on production monitors (Action 3) or move to Week 2-4 features
 
 ---
 
 ## CODE PATTERNS FOR CURRENT PHASE
 
-**For current phase, see PATTERNS.md**
+**Adaptive Search Pattern**:
+- See `docs/active/ADAPTIVE_SEARCH_INTEGRATION.md` for complete code examples
+- AdaptiveSearchEngine class (lines 78-353)
+- AdaptiveBooleanMonitor integration (lines 354-433)
 
-Key patterns needed for Actions 1-3:
-- [Pattern 1 name] (see [location])
-- [Pattern 2 name] (see [location])
-- [Pattern 3 name] (see [location])
+**Entity Extraction Pattern**:
+```python
+from llm_utils import acompletion
+
+async def extract_entities(results: List[Dict], query: str) -> List[str]:
+    """Extract entities using gpt-5-mini."""
+    prompt = f"Analyze results, extract 3-5 related entities: {results}"
+
+    response = await acompletion(
+        model="gpt-5-mini",
+        messages=[{"role": "user", "content": prompt}],
+        response_format={"type": "json_schema", ...}
+    )
+
+    entities = json.loads(response.choices[0].message.content)["entities"]
+    return entities
+```
+
+**Quality Scoring Pattern**:
+```python
+def calculate_quality(results: List[Dict]) -> float:
+    """Calculate quality score 0-1."""
+    # Source diversity
+    sources = set(r['source'] for r in results)
+    diversity = len(sources) / 4.0  # 4+ sources = max
+
+    # Result count
+    count_score = len(results) / 30.0  # 30+ results = max
+
+    # Weighted average
+    return (diversity * 0.5) + (count_score * 0.5)
+```
 
 ---
 
@@ -1111,17 +1227,15 @@ Key patterns needed for Actions 1-3:
 ## UPDATING THIS FILE
 
 **When tasks complete** (normal workflow):
-1. Update "CURRENT STATUS SUMMARY" with latest progress
-2. Update "NEXT 3 ACTIONS" with new actions
-3. Update "CHECKPOINT QUESTIONS" with your latest answers
-4. Update "IMMEDIATE BLOCKERS" as blockers resolve
-5. Cross-reference with STATUS.md and ROADMAP.md for consistency
+1. Update "NEXT 3 ACTIONS" with new actions
+2. Update "CHECKPOINT QUESTIONS" with your latest answers
+3. Update "IMMEDIATE BLOCKERS" as blockers resolve
+4. Update STATUS.md with component status
 
 **When phase changes**:
-1. Archive old CLAUDE.md: `archive/YYYY-MM-DD/CLAUDE_phase[N].md`
+1. Archive old TEMPORARY section to docs/
 2. Read ROADMAP.md for new phase objectives
 3. Rewrite TEMPORARY section with new phase scope
-4. Update "RELATED STATUS & PLANNING" section
 
 **PERMANENT section updates** (rare):
 - Follow REGENERATE_CLAUDE.md instructions

@@ -1,0 +1,207 @@
+{
+  "session_metadata": {
+    "session_id": "6b5a3152-e0c9-4371-b6f2-85eb2b23c5e7",
+    "start_time": "2025-09-11T12:32:30.601049+00:00",
+    "end_time": "2025-09-11T13:21:37.588391+00:00",
+    "duration_seconds": 2946.987342,
+    "user_query": "what are perspectives on the hellfire missile ufo video"
+  },
+  "configuration": {
+    "max_searches": 15,
+    "max_time_minutes": 60,
+    "satisfaction_enabled": true,
+    "satisfaction_threshold": 0.6,
+    "min_searches_before_satisfaction": 10,
+    "show_search_details": true,
+    "show_strategy_reasoning": true,
+    "show_effectiveness_scores": true,
+    "enable_strategy_adaptation": true,
+    "enable_alternative_approaches": true,
+    "enable_name_variation_search": true,
+    "model_provider": "openai",
+    "pages_per_search": 3,
+    "search_timeout_seconds": 30,
+    "retry_failed_searches": true,
+    "enforce_endpoint_diversity": false,
+    "max_endpoint_repeats": 5,
+    "diversity_threshold": 0.3
+  },
+  "performance_metrics": {
+    "total_searches": 15,
+    "total_rounds": 3,
+    "total_results_found": 624,
+    "satisfaction_score": 0.34272727272727277,
+    "satisfaction_breakdown": {
+      "information_coverage": 0.4,
+      "source_diversity": 0.2,
+      "evidence_quality": 0.7236363636363639,
+      "claim_specificity": 0.14545454545454545,
+      "contradiction_resolution": 0.0
+    },
+    "completion_reason": "Reached maximum search limit (15)"
+  },
+  "search_summary": {
+    "searches_by_effectiveness": {
+      "highly_effective": [
+        {
+          "search_id": 1,
+          "query": "Hellfire missile UFO video",
+          "results": 60,
+          "effectiveness": 8.0
+        },
+        {
+          "search_id": 4,
+          "query": "",
+          "results": 60,
+          "effectiveness": 8.0
+        },
+        {
+          "search_id": 5,
+          "query": "",
+          "results": 34,
+          "effectiveness": 8.0
+        },
+        {
+          "search_id": 7,
+          "query": "",
+          "results": 50,
+          "effectiveness": 8.0
+        },
+        {
+          "search_id": 8,
+          "query": "Hellfire missile UFO video MQ-9 Congress",
+          "results": 60,
+          "effectiveness": 8.0
+        },
+        {
+          "search_id": 9,
+          "query": "",
+          "results": 61,
+          "effectiveness": 8.0
+        },
+        {
+          "search_id": 10,
+          "query": "",
+          "results": 30,
+          "effectiveness": 8.0
+        },
+        {
+          "search_id": 11,
+          "query": "",
+          "results": 39,
+          "effectiveness": 8.0
+        },
+        {
+          "search_id": 12,
+          "query": "",
+          "results": 168,
+          "effectiveness": 8.0
+        }
+      ],
+      "moderately_effective": [],
+      "low_effectiveness": [
+        {
+          "search_id": 15,
+          "query": "",
+          "results": 60,
+          "effectiveness": 2.0
+        }
+      ],
+      "ineffective": [
+        {
+          "search_id": 2,
+          "query": "Hellfire missile ufo video",
+          "results": 0,
+          "effectiveness": 0.0
+        },
+        {
+          "search_id": 3,
+          "query": "Hellfire missile UFO (analysis OR debunk OR explanation OR 'sensor artifact' OR 'misidentified')",
+          "results": 0,
+          "effectiveness": 0.0
+        },
+        {
+          "search_id": 6,
+          "query": "",
+          "results": 1,
+          "effectiveness": 0.4
+        },
+        {
+          "search_id": 13,
+          "query": "",
+          "results": 1,
+          "effectiveness": 0.4
+        },
+        {
+          "search_id": 14,
+          "query": "hellfire missile MQ-9 UAP UFO video Congress \"hellfire\" \"MQ-9\"",
+          "results": 0,
+          "effectiveness": 0.0
+        }
+      ]
+    },
+    "most_effective_strategies": [
+      {
+        "strategy": "Graph Strategy: Primary information gaps are top-engagement Twitter posts about the MQ-9/Hellfire 'UFO' video and direct links/embed provenance (media posts). Prior rounds failed to surface newsroom posts or the original clip. To close those gaps I will (1) run a targeted top-search to capture high-engagement tweets and prominent voices summarizing or linking the clip; (2) inspect timelines and media libraries of high-credibility investigative/news accounts for original embeds or commentary; and (3) map a known amplifier (EricBurlison) network to see if he directly reposted or follows outlets/accounts that posted the clip. This plan follows the Diversity Rule by using multiple endpoints (search.php, timeline.php, usermedia.php, following.php, checkfollow.php), avoids further overuse of search.php (only one search call), and focuses on provenance + perspectives (journalists, analysts, influencers).",
+        "avg_effectiveness": 6.733333333333333
+      },
+      {
+        "strategy": "Graph Strategy: We currently lack a mapped set of perspectives (news, expert analysis, social reaction, debunks, and video-origin metadata) about the 'Hellfire missile UFO' video. The next coherent step is to fill those gaps by: (1) finding top and media-rich tweets referencing the clip to capture immediate reactions and embedded video, (2) harvesting latest discussion and analytic threads to surface competing explanations (weapons test, drone, sensor artifact, CGI, misidentified missile), (3) checking credible news and institutional timelines for authoritative coverage or denial, and (4) checking national trends to see if it reached mainstream attention. This plan uses diverse endpoints (search, timeline, usermedia, screenname, trends) to satisfy the DIVERSITY RULE and to produce complementary data types (tweets, media, profiles, trending status).",
+        "avg_effectiveness": 4.628571428571428
+      },
+      {
+        "strategy": "Graph Strategy: Primary information gaps are provenance (original/raw video and chain-of-custody) and high-engagement perspectives from journalists, influencers, and military/forensic analysts. Prior rounds failed to surface media-hosting tweets and authoritative reporting. This round will (1) target tweets that embed or link the clip (Media search), (2) examine the timelines and media libraries of likely originators/amplifiers (a Member of Congress already mentioned in context and investigative/journalist accounts), (3) check mainstream wire/profile info for any published coverage or official release notes, and (4) surface trending signals. To satisfy the DIVERSITY RULE and avoid overuse of search.php (previously overused), I use multiple endpoints (search.php, timeline.php, usermedia.php, screenname.php, trends.php, followers.php). Each search is focused, concrete, and designed to connect threads (provenance → original clip → expert commentary) and fill the top-priority gaps first.",
+        "avg_effectiveness": 1.0
+      }
+    ],
+    "dead_ends": [
+      "Hellfire missile ufo video",
+      "Hellfire missile UFO (analysis OR debunk OR explanation OR 'sensor artifact' OR 'misidentified')",
+      "",
+      "hellfire missile MQ-9 UAP UFO video Congress \"hellfire\" \"MQ-9\""
+    ],
+    "promising_leads": [
+      "Hellfire missile UFO video",
+      "",
+      "Hellfire missile UFO video MQ-9 Congress"
+    ]
+  },
+  "rounds_summary": [
+    {
+      "round_number": 1,
+      "strategy": "Graph Strategy: We currently lack a mapped set of perspectives (news, expert analysis, social reaction, debunks, and video-origin metadata) about the 'Hellfire missile UFO' video. The next coherent step is to fill those gaps by: (1) finding top and media-rich tweets referencing the clip to capture immediate reactions and embedded video, (2) harvesting latest discussion and analytic threads to surface competing explanations (weapons test, drone, sensor artifact, CGI, misidentified missile), (3) checking credible news and institutional timelines for authoritative coverage or denial, and (4) checking national trends to see if it reached mainstream attention. This plan uses diverse endpoints (search, timeline, usermedia, screenname, trends) to satisfy the DIVERSITY RULE and to produce complementary data types (tweets, media, profiles, trending status).",
+      "searches_count": 7,
+      "total_results": 205,
+      "effectiveness": 4.628571428571428,
+      "insights": [
+        "The set of results consistently frames the same incident: an MQ‑9 Reaper fired an AGM‑114 Hellfire at an ‘orb’ (reported date Oct 30, 2024) and video shown in a Congressional UAP hearing purportedly shows the missile impacting the object while the object continues unscathed.",
+        "Most items are social media/tweet-style reactions and newsy headlines emphasizing sensational angles: \"missile bounces off\", \"UFO survives direct hit\", \"splits missile in half\", etc.",
+        "Multiple actors are present in the discourse: UAP advocates (e.g., Lue Elizondo), members of Congress (e.g., Rep. Eric Burlison), journalists (mainstream and tabloid), and cited whistleblowers — indicating politicized and advocacy-driven framing."
+      ]
+    },
+    {
+      "round_number": 2,
+      "strategy": "Graph Strategy: Primary information gaps are top-engagement Twitter posts about the MQ-9/Hellfire 'UFO' video and direct links/embed provenance (media posts). Prior rounds failed to surface newsroom posts or the original clip. To close those gaps I will (1) run a targeted top-search to capture high-engagement tweets and prominent voices summarizing or linking the clip; (2) inspect timelines and media libraries of high-credibility investigative/news accounts for original embeds or commentary; and (3) map a known amplifier (EricBurlison) network to see if he directly reposted or follows outlets/accounts that posted the clip. This plan follows the Diversity Rule by using multiple endpoints (search.php, timeline.php, usermedia.php, following.php, checkfollow.php), avoids further overuse of search.php (only one search call), and focuses on provenance + perspectives (journalists, analysts, influencers).",
+      "searches_count": 6,
+      "total_results": 359,
+      "effectiveness": 6.733333333333333,
+      "insights": [
+        "Search results overwhelmingly repeat the same sensational claim: an MQ‑9 Reaper fired an AGM‑114 Hellfire at an orb on Oct 30, 2024 and the missile appeared to 'bounce off' or be deflected; the clip was shown in a recent Congressional hearing.",
+        "Several items identify basic contextual facts that recur across posts: platform (MQ‑9), weapon (Hellfire), alleged date (Oct 30, 2024), and that a Congress member (Rep. Eric Burlison) released/shown the footage.",
+        "Tone of results is mostly viral/social-media — hype, alarm, and meme framing dominate. Multiple posts are near-duplicates/retweets rather than independent reporting or technical analysis."
+      ]
+    },
+    {
+      "round_number": 3,
+      "strategy": "Graph Strategy: Primary information gaps are provenance (original/raw video and chain-of-custody) and high-engagement perspectives from journalists, influencers, and military/forensic analysts. Prior rounds failed to surface media-hosting tweets and authoritative reporting. This round will (1) target tweets that embed or link the clip (Media search), (2) examine the timelines and media libraries of likely originators/amplifiers (a Member of Congress already mentioned in context and investigative/journalist accounts), (3) check mainstream wire/profile info for any published coverage or official release notes, and (4) surface trending signals. To satisfy the DIVERSITY RULE and avoid overuse of search.php (previously overused), I use multiple endpoints (search.php, timeline.php, usermedia.php, screenname.php, trends.php, followers.php). Each search is focused, concrete, and designed to connect threads (provenance → original clip → expert commentary) and fill the top-priority gaps first.",
+      "searches_count": 2,
+      "total_results": 60,
+      "effectiveness": 1.0,
+      "insights": [
+        "Nearly all 20 results are political tweets about Charlie Kirk, budget/reconciliation, or law-and-order — not about the Hellfire-missile UFO video.",
+        "Two items (16 and 18) briefly reference UAP transparency/whistleblowers and call for declassification, indicating some political interest in UAP disclosures but not the specific video.",
+        "No result provides eyewitness accounts, technical analysis, provenance, or commentary about the Hellfire missile/UFO video’s content or authenticity."
+      ]
+    }
+  ]
+}

@@ -1,0 +1,79 @@
+{
+  "session_metadata": {
+    "session_id": "64c32928-99ec-40ce-948c-26fe82a58227",
+    "start_time": "2025-09-08T08:00:02.046713+00:00",
+    "end_time": "2025-09-08T08:02:42.834337+00:00",
+    "duration_seconds": 160.786624,
+    "user_query": "What are different perspectives on climate change policies"
+  },
+  "configuration": {
+    "max_searches": 1,
+    "max_time_minutes": 60,
+    "satisfaction_enabled": true,
+    "satisfaction_threshold": 0.8,
+    "min_searches_before_satisfaction": 10,
+    "show_search_details": true,
+    "show_strategy_reasoning": true,
+    "show_effectiveness_scores": true,
+    "enable_strategy_adaptation": true,
+    "enable_alternative_approaches": true,
+    "enable_name_variation_search": true,
+    "pages_per_search": 3,
+    "search_timeout_seconds": 30,
+    "retry_failed_searches": true,
+    "enforce_endpoint_diversity": false,
+    "max_endpoint_repeats": 5,
+    "diversity_threshold": 0.3
+  },
+  "performance_metrics": {
+    "total_searches": 1,
+    "total_rounds": 1,
+    "total_results_found": 121,
+    "satisfaction_score": 0.44500000000000006,
+    "satisfaction_breakdown": {
+      "information_coverage": 0.2,
+      "source_diversity": 0.1,
+      "evidence_quality": 0.9000000000000001,
+      "claim_specificity": 1.0,
+      "contradiction_resolution": 0.0
+    },
+    "completion_reason": "Reached maximum search limit (1)"
+  },
+  "search_summary": {
+    "searches_by_effectiveness": {
+      "highly_effective": [],
+      "moderately_effective": [
+        {
+          "search_id": 1,
+          "query": "climate policy (\"carbon tax\" OR \"cap and trade\" OR \"Green New Deal\" OR \"net zero\" OR adaptation OR \"climate finance\" OR \"climate action\")",
+          "results": 121,
+          "effectiveness": 5.0
+        }
+      ],
+      "low_effectiveness": [],
+      "ineffective": []
+    },
+    "most_effective_strategies": [
+      {
+        "strategy": "Graph Strategy: We currently have no collected data on how different groups on Twitter frame climate change policies. The highest-priority gap is mapping the range of perspectives (activists, scientists, industry, conservative and progressive politicians, journalists, and general public) and the specific policy flashpoints (carbon tax, cap-and-trade, Green New Deal, net-zero, adaptation, climate finance). The next coherent step is to collect representative tweets and timelines from key actors, surface trending climate-policy topics by region, and map at least one influencer's network to see recurring sources and allied organizations. This will produce a foundation for systematic qualitative and quantitative analysis in later rounds. To satisfy the requirement for diverse endpoints and complementary searches, the plan combines broad topical search, trending-topic discovery, targeted timelines for different stakeholder types, and a small network query.",
+        "avg_effectiveness": 5.0
+      }
+    ],
+    "dead_ends": [],
+    "promising_leads": []
+  },
+  "rounds_summary": [
+    {
+      "round_number": 1,
+      "strategy": "Graph Strategy: We currently have no collected data on how different groups on Twitter frame climate change policies. The highest-priority gap is mapping the range of perspectives (activists, scientists, industry, conservative and progressive politicians, journalists, and general public) and the specific policy flashpoints (carbon tax, cap-and-trade, Green New Deal, net-zero, adaptation, climate finance). The next coherent step is to collect representative tweets and timelines from key actors, surface trending climate-policy topics by region, and map at least one influencer's network to see recurring sources and allied organizations. This will produce a foundation for systematic qualitative and quantitative analysis in later rounds. To satisfy the requirement for diverse endpoints and complementary searches, the plan combines broad topical search, trending-topic discovery, targeted timelines for different stakeholder types, and a small network query.",
+      "searches_count": 1,
+      "total_results": 121,
+      "effectiveness": 5.0,
+      "insights": [
+        "There is a widespread and ongoing debate regarding climate change policies, particularly focusing on environmental regulations and their economic implications.",
+        "Multiple sources (at least 20 identified discussions) explicitly aim to present 'various perspectives' on these policy aspects.",
+        "The core of the policy debate appears to involve the interplay and potential trade-offs between environmental protection measures and their economic impacts."
+      ]
+    }
+  ]
+}

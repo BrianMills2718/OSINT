@@ -1,0 +1,94 @@
+{
+  "session_metadata": {
+    "session_id": "5430d23e-9eb4-4e32-82ad-6c9c2893a623",
+    "start_time": "2025-09-03T17:28:48.712506+00:00",
+    "end_time": "2025-09-03T17:31:16.335349+00:00",
+    "duration_seconds": 147.621843,
+    "user_query": "Trump health investigation"
+  },
+  "configuration": {
+    "max_searches": 3,
+    "max_time_minutes": 60,
+    "satisfaction_enabled": true,
+    "satisfaction_threshold": 0.8,
+    "min_searches_before_satisfaction": 10,
+    "show_search_details": true,
+    "show_strategy_reasoning": true,
+    "show_effectiveness_scores": true,
+    "enable_strategy_adaptation": true,
+    "enable_alternative_approaches": true,
+    "enable_name_variation_search": true,
+    "pages_per_search": 3,
+    "search_timeout_seconds": 30,
+    "retry_failed_searches": true,
+    "enforce_endpoint_diversity": false,
+    "max_endpoint_repeats": 5,
+    "diversity_threshold": 0.3
+  },
+  "performance_metrics": {
+    "total_searches": 3,
+    "total_rounds": 1,
+    "total_results_found": 169,
+    "satisfaction_score": 0.40868421052631576,
+    "satisfaction_breakdown": {
+      "information_coverage": 0.4,
+      "source_diversity": 0.3,
+      "evidence_quality": 0.757894736842105,
+      "claim_specificity": 0.39473684210526316,
+      "contradiction_resolution": 0.0
+    },
+    "completion_reason": "Reached maximum search limit (3)"
+  },
+  "search_summary": {
+    "searches_by_effectiveness": {
+      "highly_effective": [
+        {
+          "search_id": 1,
+          "query": "Donald Trump health updates OR medical records OR health condition",
+          "results": 56,
+          "effectiveness": 9.0
+        },
+        {
+          "search_id": 2,
+          "query": "",
+          "results": 60,
+          "effectiveness": 9.0
+        },
+        {
+          "search_id": 3,
+          "query": "",
+          "results": 53,
+          "effectiveness": 9.0
+        }
+      ],
+      "moderately_effective": [],
+      "low_effectiveness": [],
+      "ineffective": []
+    },
+    "most_effective_strategies": [
+      {
+        "strategy": "Graph Strategy: The investigation's goal is a comprehensive understanding of Trump's health, but currently, there's no information. This initial phase focuses on gap-filling by establishing a foundational understanding of the topic. It involves broad content discovery, review of primary source statements, and initial network mapping to identify key individuals or organizations connected to the subject. This systematic approach ensures a robust starting point for subsequent deep dives.",
+        "avg_effectiveness": 9.0
+      }
+    ],
+    "dead_ends": [],
+    "promising_leads": [
+      "Donald Trump health updates OR medical records OR health condition",
+      ""
+    ]
+  },
+  "rounds_summary": [
+    {
+      "round_number": 1,
+      "strategy": "Graph Strategy: The investigation's goal is a comprehensive understanding of Trump's health, but currently, there's no information. This initial phase focuses on gap-filling by establishing a foundational understanding of the topic. It involves broad content discovery, review of primary source statements, and initial network mapping to identify key individuals or organizations connected to the subject. This systematic approach ensures a robust starting point for subsequent deep dives.",
+      "searches_count": 3,
+      "total_results": 169,
+      "effectiveness": 9.0,
+      "insights": [
+        "Donald Trump has been officially diagnosed with Chronic Venous Insufficiency (CVI), confirmed by the White House and multiple medical reports, primarily around July/August 2025.",
+        "CVI is described as a common, non-life-threatening circulatory condition.",
+        "Symptoms associated with CVI include hand bruising, leg swelling, and potentially contributed to a changed walk or "
+      ]
+    }
+  ]
+}

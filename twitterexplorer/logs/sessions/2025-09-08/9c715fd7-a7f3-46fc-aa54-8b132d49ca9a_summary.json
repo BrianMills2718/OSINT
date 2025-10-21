@@ -1,0 +1,75 @@
+{
+  "session_metadata": {
+    "session_id": "9c715fd7-a7f3-46fc-aa54-8b132d49ca9a",
+    "start_time": "2025-09-08T07:34:25.362373+00:00",
+    "end_time": "2025-09-08T07:35:03.177442+00:00",
+    "duration_seconds": 37.815069,
+    "user_query": "What are different perspectives on climate change policies"
+  },
+  "configuration": {
+    "max_searches": 1,
+    "max_time_minutes": 60,
+    "satisfaction_enabled": true,
+    "satisfaction_threshold": 0.8,
+    "min_searches_before_satisfaction": 10,
+    "show_search_details": true,
+    "show_strategy_reasoning": true,
+    "show_effectiveness_scores": true,
+    "enable_strategy_adaptation": true,
+    "enable_alternative_approaches": true,
+    "enable_name_variation_search": true,
+    "pages_per_search": 3,
+    "search_timeout_seconds": 30,
+    "retry_failed_searches": true,
+    "enforce_endpoint_diversity": false,
+    "max_endpoint_repeats": 5,
+    "diversity_threshold": 0.3
+  },
+  "performance_metrics": {
+    "total_searches": 1,
+    "total_rounds": 1,
+    "total_results_found": 121,
+    "satisfaction_score": 0.0,
+    "satisfaction_breakdown": {
+      "information_coverage": 0.0,
+      "source_diversity": 0.0,
+      "evidence_quality": 0.0,
+      "claim_specificity": 0.0,
+      "contradiction_resolution": 0.0
+    },
+    "completion_reason": "Reached maximum search limit (1)"
+  },
+  "search_summary": {
+    "searches_by_effectiveness": {
+      "highly_effective": [],
+      "moderately_effective": [
+        {
+          "search_id": 1,
+          "query": "climate change policy (\"carbon tax\" OR \"Green New Deal\" OR \"net zero\" OR \"climate justice\" OR \"fossil fuel\" OR \"emissions trading\")",
+          "results": 121,
+          "effectiveness": 7.0
+        }
+      ],
+      "low_effectiveness": [],
+      "ineffective": []
+    },
+    "most_effective_strategies": [
+      {
+        "strategy": "Graph Strategy: We are at the data-collection start of a Twitter-focused investigation into \"different perspectives on climate change policies.\" The most important gaps are: (1) capturing the range of frames (economic, justice, scientific, national security, market-based) used by different actors; (2) identifying current/trending policy topics driving conversation; (3) mapping influential voices and networks that propagate each perspective; and (4) collecting representative tweets/conversations to illustrate each viewpoint. To fill these gaps efficiently and coherently, the next round should combine broad topical search queries, trend monitoring, timelines of representative accounts (activist, technocrat, business/philanthropy), and simple network endpoints to reveal affiliations/followers. Using multiple endpoints (search.php, trends.php, timeline.php, followers.php, affilates.php) satisfies the diversity requirement and produces complementary data: topical breadth (search), real-time salience (trends), direct voice samples (timelines), and network context (followers/affiliates).",
+        "avg_effectiveness": 7.0
+      }
+    ],
+    "dead_ends": [],
+    "promising_leads": []
+  },
+  "rounds_summary": [
+    {
+      "round_number": 1,
+      "strategy": "Graph Strategy: We are at the data-collection start of a Twitter-focused investigation into \"different perspectives on climate change policies.\" The most important gaps are: (1) capturing the range of frames (economic, justice, scientific, national security, market-based) used by different actors; (2) identifying current/trending policy topics driving conversation; (3) mapping influential voices and networks that propagate each perspective; and (4) collecting representative tweets/conversations to illustrate each viewpoint. To fill these gaps efficiently and coherently, the next round should combine broad topical search queries, trend monitoring, timelines of representative accounts (activist, technocrat, business/philanthropy), and simple network endpoints to reveal affiliations/followers. Using multiple endpoints (search.php, trends.php, timeline.php, followers.php, affilates.php) satisfies the diversity requirement and produces complementary data: topical breadth (search), real-time salience (trends), direct voice samples (timelines), and network context (followers/affiliates).",
+      "searches_count": 1,
+      "total_results": 121,
+      "effectiveness": 0.0,
+      "insights": []
+    }
+  ]
+}

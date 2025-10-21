@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Test Visualization</title>
+    <script src="https://d3js.org/d3.v7.min.js"></script>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 1800px;
+            margin: 0 auto;
+        }
+        h1 {
+            color: white;
+            text-align: center;
+            margin-bottom: 30px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+        }
+        .investigation-info {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+            margin-bottom: 20px;
+            text-align: center;
+        }
+        .graph-container {
+            background: white;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+            margin-bottom: 20px;
+        }
+        #hierarchy-chart {
+            width: 100%;
+            height: 1000px;
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            background: #fafafa;
+        }
+        
+        .node {
+            cursor: pointer;
+        }
+        
+        .node circle {
+            stroke: #fff;
+            stroke-width: 3px;
+        }
+        
+        .node text {
+            font: 11px sans-serif;
+            pointer-events: none;
+            text-anchor: middle;
+            font-weight: 500;
+        }
+        
+        .link {
+            fill: none;
+            stroke: #ccc;
+            stroke-width: 2px;
+            stroke-opacity: 0.8;
+        }
+        
+        .convergence-edge {
+            fill: none;
+            stroke-width: 3px;
+            stroke-dasharray: 8,4;
+            opacity: 0.8;
+            pointer-events: none;
+        }
+        
+        .tooltip {
+            position: absolute;
+            padding: 12px;
+            background: rgba(0, 0, 0, 0.9);
+            color: white;
+            border-radius: 6px;
+            font-size: 12px;
+            max-width: 400px;
+            pointer-events: none;
+            z-index: 1000;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.3);
+            line-height: 1.4;
+        }
+        
+        .legend {
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            background: #f8f9fa;
+            border-radius: 20px;
+            border: 2px solid #e9ecef;
+            font-weight: 500;
+            font-size: 12px;
+        }
+        
+        .color-circle {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            border: 2px solid rgba(0,0,0,0.2);
+        }
+        
+        .controls {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin: 15px 0;
+        }
+        
+        .control-btn {
+            padding: 8px 16px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 12px;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+        
+        .control-btn:hover {
+            background: #5a67d8;
+            transform: translateY(-1px);
+        }
+        
+        .stats-info {
+            text-align: center;
+            color: #666;
+            font-size: 14px;
+            margin: 10px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Test Visualization</h1>
+        
+        <div class="investigation-info">
+            <h3>Hierarchical Investigation Flow: Test convergence visualization</h3>
+            <p class="stats-info">
+                <strong>4 nodes</strong> across <strong>1 computational waves</strong> in tree structure
+            </p>
+        </div>
+        
+        <div class="graph-container">
+            <div class="legend">
+                <div class="legend-item">
+                    <span class="color-circle" style="background: #9C27B0;"></span>
+                    <span>Analytic Goal</span>
+                </div>
+                <div class="legend-item">
+                    <span class="color-circle" style="background: #E91E63;"></span>
+                    <span>Investigation Questions</span>
+                </div>
+                <div class="legend-item">
+                    <span class="color-circle" style="background: #4CAF50;"></span>
+                    <span>Searches</span>
+                </div>
+                <div class="legend-item">
+                    <span class="color-circle" style="background: #2196F3;"></span>
+                    <span>Data Points</span>
+                </div>
+                <div class="legend-item">
+                    <span class="color-circle" style="background: #FF9800;"></span>
+                    <span>Insights</span>
+                </div>
+                <div class="legend-item">
+                    <span class="color-circle" style="background: #F44336;"></span>
+                    <span>Emergent Questions</span>
+                </div>
+            </div>
+            
+            <div class="controls">
+                <button class="control-btn" onclick="expandAll()">Expand All</button>
+                <button class="control-btn" onclick="collapseAll()">Collapse All</button>
+                <button class="control-btn" onclick="centerView()">Center View</button>
+            </div>
+            
+            <svg id="hierarchy-chart"></svg>
+        </div>
+    </div>
+
+    <script>
+        // Investigation hierarchy data from Python
+        const hierarchyData = {
+  "name": "Test convergence visualization",
+  "type": "AnalyticGoal",
+  "id": "root",
+  "wave": 0,
+  "full_text": "Test convergence visualization"
+};
+        
+        // Set up SVG dimensions
+        const margin = {top: 40, right: 120, bottom: 40, left: 120};
+        const width = 1600 - margin.left - margin.right;
+        const height = 1000 - margin.top - margin.bottom;
+        
+        // Create SVG
+        const svg = d3.select("#hierarchy-chart")
+            .attr("width", width + margin.left + margin.right)
+            .attr("height", height + margin.top + margin.bottom);
+            
+        const g = svg.append("g")
+            .attr("transform", `translate(${margin.left},${margin.top})`);
+        
+        // Colors and sizes
+        const colors = {"AnalyticGoal": "#9C27B0", "InvestigationQuestion": "#E91E63", "Search": "#4CAF50", "DataPoint": "#2196F3", "Insight": "#FF9800", "EmergentQuestion": "#F44336"};
+        const sizes = {"AnalyticGoal": 18, "InvestigationQuestion": 14, "Search": 12, "DataPoint": 10, "Insight": 15, "EmergentQuestion": 13};
+        
+        // Create tree layout
+        const treemap = d3.tree()
+            .size([height, width])
+            .separation((a, b) => {
+                return a.parent == b.parent ? 1.2 : 1.5;
+            });
+        
+        // Create hierarchy
+        const root = d3.hierarchy(hierarchyData);
+        
+        // Apply tree layout
+        treemap(root);
+        
+        // Tooltip
+        const tooltip = d3.select("body").append("div")
+            .attr("class", "tooltip")
+            .style("opacity", 0);
+        
+        // Add links (connections between nodes)
+        const links = g.selectAll(".link")
+            .data(root.descendants().slice(1))
+            .enter().append("path")
+            .attr("class", "link")
+            .attr("d", function(d) {
+                return `M${d.y},${d.x}C${(d.y + d.parent.y) / 2},${d.x} ${(d.y + d.parent.y) / 2},${d.parent.x} ${d.parent.y},${d.parent.x}`;
+            });
+        
+        // Add nodes
+        const nodes = g.selectAll(".node")
+            .data(root.descendants())
+            .enter().append("g")
+            .attr("class", "node")
+            .attr("transform", function(d) { 
+                return `translate(${d.y},${d.x})`; 
+            })
+            .on("mouseover", function(event, d) {
+                tooltip.transition().duration(200).style("opacity", .9);
+                
+                let content = `<strong>${d.data.name}</strong><br/>`;
+                content += `<strong>Type:</strong> ${d.data.type}<br/>`;
+                
+                if (d.data.wave && d.data.wave > 0) {
+                    content += `<strong>Wave:</strong> ${d.data.wave}<br/>`;
+                }
+                
+                // Show convergence information for Insights and EmergentQuestions
+                if (d.data.supported_by && d.data.supported_by.length > 0) {
+                    const supporters = d.data.supported_by;
+                    if (d.data.type === 'Insight') {
+                        content += `<br/><strong>Synthesized from ${supporters.length} DataPoints:</strong><br/>`;
+                    } else if (d.data.type === 'EmergentQuestion') {
+                        content += `<br/><strong>Emerged from ${supporters.length} Insights:</strong><br/>`;
+                    }
+                    supporters.forEach(sup => {
+                        content += `• ${sup.name}<br/>`;
+                    });
+                }
+                
+                if (d.data.full_text) {
+                    content += `<br/>${d.data.full_text.substring(0, 200)}${d.data.full_text.length > 200 ? '...' : ''}`;
+                }
+                
+                if (d.data.details) {
+                    content += '<br/><br/><strong>Details:</strong><br/>';
+                    Object.entries(d.data.details).forEach(([key, value]) => {
+                        content += `${key}: ${value}<br/>`;
+                    });
+                }
+                
+                tooltip.html(content)
+                    .style("left", (event.pageX + 10) + "px")
+                    .style("top", (event.pageY - 28) + "px");
+            })
+            .on("mouseout", function(d) {
+                tooltip.transition().duration(300).style("opacity", 0);
+            })
+            .on("click", function(event, d) {
+                console.log("Hierarchy node clicked:", d.data);
+                
+                // Toggle children visibility (collapse/expand)
+                if (d.children) {
+                    d._children = d.children;
+                    d.children = null;
+                } else {
+                    d.children = d._children;
+                    d._children = null;
+                }
+                
+                update(d);
+            });
+            
+        // Add circles for nodes
+        nodes.append("circle")
+            .attr("r", function(d) {
+                return sizes[d.data.type] || sizes['Search'];
+            })
+            .style("fill", function(d) {
+                return colors[d.data.type] || colors['Search'];
+            });
+            
+        // Add labels
+        nodes.append("text")
+            .attr("dy", function(d) {
+                return d.children || d._children ? -20 : 25;
+            })
+            .attr("dx", function(d) {
+                return d.children || d._children ? 0 : 0;
+            })
+            .style("font-size", function(d) {
+                if (d.data.type === 'AnalyticGoal') return "13px";
+                if (d.data.type === 'Insight' || d.data.type === 'EmergentQuestion') return "11px";
+                return "10px";
+            })
+            .style("font-weight", function(d) {
+                return d.data.type === 'AnalyticGoal' ? "bold" : "normal";
+            })
+            .text(function(d) { 
+                const name = d.data.name || d.data.id || "Unknown";
+                if (d.data.type === 'AnalyticGoal') {
+                    return name.length > 50 ? name.substring(0, 50) + "..." : name;
+                }
+                return name.length > 30 ? name.substring(0, 30) + "..." : name;
+            });
+        
+        // Update function for expand/collapse
+        function update(source) {
+            const treeData = treemap(root);
+            const nodes = treeData.descendants();
+            const links = treeData.descendants().slice(1);
+            
+            // Update nodes
+            const node = g.selectAll(".node")
+                .data(nodes, function(d) { return d.id || (d.id = ++i); });
+                
+            const nodeEnter = node.enter().append("g")
+                .attr("class", "node")
+                .attr("transform", function(d) { return `translate(${source.y0 || source.y},${source.x0 || source.x})`; });
+                
+            nodeEnter.append("circle")
+                .attr("r", 1e-6)
+                .style("fill", function(d) { return colors[d.data.type] || colors['Search']; });
+                
+            nodeEnter.append("text")
+                .attr("dy", ".35em")
+                .text(function(d) { return d.data.name; })
+                .style("fill-opacity", 1e-6);
+                
+            const nodeUpdate = nodeEnter.merge(node);
+            
+            nodeUpdate.transition()
+                .duration(750)
+                .attr("transform", function(d) { return `translate(${d.y},${d.x})`; });
+                
+            nodeUpdate.select("circle")
+                .transition()
+                .duration(750)
+                .attr("r", function(d) { return sizes[d.data.type] || sizes['Search']; });
+                
+            const nodeExit = node.exit().transition()
+                .duration(750)
+                .attr("transform", function(d) { return `translate(${source.y},${source.x})`; })
+                .remove();
+                
+            // Update links
+            const link = g.selectAll(".link")
+                .data(links, function(d) { return d.id; });
+                
+            const linkEnter = link.enter().insert("path", "g")
+                .attr("class", "link")
+                .attr("d", function(d) {
+                    const o = {x: source.x0 || source.x, y: source.y0 || source.y};
+                    return `M${o.y},${o.x}C${o.y},${o.x} ${o.y},${o.x} ${o.y},${o.x}`;
+                });
+                
+            linkEnter.merge(link).transition()
+                .duration(750)
+                .attr("d", function(d) {
+                    return `M${d.y},${d.x}C${(d.y + d.parent.y) / 2},${d.x} ${(d.y + d.parent.y) / 2},${d.parent.x} ${d.parent.y},${d.parent.x}`;
+                });
+                
+            link.exit().transition()
+                .duration(750)
+                .attr("d", function(d) {
+                    const o = {x: source.x, y: source.y};
+                    return `M${o.y},${o.x}C${o.y},${o.x} ${o.y},${o.x} ${o.y},${o.x}`;
+                })
+                .remove();
+                
+            nodes.forEach(function(d) {
+                d.x0 = d.x;
+                d.y0 = d.y;
+            });
+        }
+        
+        // Add zoom functionality
+        const zoom = d3.zoom()
+            .scaleExtent([0.2, 3])
+            .on("zoom", function(event) {
+                g.attr("transform", event.transform);
+            });
+            
+        svg.call(zoom);
+        
+        // Control functions
+        let i = 0;
+        
+        window.expandAll = function() {
+            function expand(d) {
+                if (d._children) {
+                    d.children = d._children;
+                    d._children = null;
+                }
+                if (d.children) {
+                    d.children.forEach(expand);
+                }
+            }
+            expand(root);
+            update(root);
+        };
+        
+        window.collapseAll = function() {
+            function collapse(d) {
+                if (d.children) {
+                    d._children = d.children;
+                    d.children = null;
+                    d._children.forEach(collapse);
+                }
+            }
+            root.children.forEach(collapse);
+            update(root);
+        };
+        
+        window.centerView = function() {
+            const bounds = g.node().getBBox();
+            const fullWidth = width;
+            const fullHeight = height;
+            const widthScale = fullWidth / bounds.width;
+            const heightScale = fullHeight / bounds.height;
+            const scale = 0.7 * Math.min(widthScale, heightScale);
+            const translate = [
+                fullWidth / 2 - scale * bounds.x - scale * bounds.width / 2,
+                fullHeight / 2 - scale * bounds.y - scale * bounds.height / 2
+            ];
+            
+            svg.transition()
+                .duration(750)
+                .call(zoom.transform, d3.zoomIdentity.translate(translate[0], translate[1]).scale(scale));
+        };
+        
+        // Draw convergence edges showing many-to-one relationships
+        function drawConvergenceEdges() {
+            // Create a flat list of all nodes with their positions
+            const allNodes = [];
+            function collectNodes(node) {
+                allNodes.push(node);
+                if (node.children) {
+                    node.children.forEach(collectNodes);
+                }
+                if (node._children) {
+                    node._children.forEach(collectNodes);
+                }
+            }
+            collectNodes(root);
+            
+            // Create node lookup by ID
+            const nodeById = {};
+            allNodes.forEach(d => {
+                nodeById[d.data.id] = d;
+            });
+            
+            // Filter convergence edges to only those with visible nodes
+            const visibleConvergenceEdges = convergenceEdges.filter(edge => 
+                nodeById[edge.source] && nodeById[edge.target]
+            );
+            
+            // Draw convergence edges
+            const convergenceLinks = g.selectAll(".convergence-edge")
+                .data(visibleConvergenceEdges);
+                
+            convergenceLinks.enter()
+                .insert("path", ".node")
+                .attr("class", "convergence-edge")
+                .attr("stroke", function(d) {
+                    if (d.type === 'SUPPORTS') return '#4CAF50';
+                    if (d.type === 'SPAWNS') return '#F44336'; 
+                    return '#FF9800';
+                })
+                .attr("stroke-width", 3)
+                .attr("stroke-dasharray", "8,4")
+                .attr("fill", "none")
+                .attr("opacity", 0.8)
+                .attr("marker-end", "url(#convergence-arrow)")
+                .attr("d", function(d) {
+                    const source = nodeById[d.source];
+                    const target = nodeById[d.target];
+                    if (source && target) {
+                        const dx = target.y - source.y;
+                        const dy = target.x - source.x;
+                        const dr = Math.sqrt(dx * dx + dy * dy);
+                        return `M${source.y},${source.x}A${dr},${dr} 0 0,1 ${target.y},${target.x}`;
+                    }
+                    return "";
+                });
+        }
+        
+        // Define arrow marker for convergence edges
+        const defs = svg.select("defs").empty() ? svg.append("defs") : svg.select("defs");
+        defs.append("marker")
+            .attr("id", "convergence-arrow")
+            .attr("viewBox", "0 -5 10 10")
+            .attr("refX", 15)
+            .attr("refY", 0)
+            .attr("markerWidth", 8)
+            .attr("markerHeight", 8)
+            .attr("orient", "auto")
+            .append("path")
+            .attr("d", "M0,-5L10,0L0,5")
+            .attr("fill", "#333");
+            
+        // Draw convergence edges initially and update when tree changes
+        drawConvergenceEdges();
+        
+        // Override the update function to redraw convergence edges
+        const originalUpdate = update;
+        update = function(source) {
+            originalUpdate(source);
+            setTimeout(() => drawConvergenceEdges(), 800); // Redraw after tree animation
+        };
+        
+        console.log("Hierarchical tree visualization loaded with convergence edges");
+        console.log("Tree structure: AnalyticGoal -> Questions -> Searches -> Data -> Insights -> EmergentQuestions");
+        console.log("Convergence edges show many-to-one relationships (green=SUPPORTS, red=SPAWNS)");
+        console.log("Click nodes to expand/collapse, use controls for full expand/collapse");
+    </script>
+</body>
+</html>

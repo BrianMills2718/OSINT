@@ -1,0 +1,82 @@
+{
+  "session_metadata": {
+    "session_id": "60d09fc4-8db6-4f98-9852-a8c89f860f9c",
+    "start_time": "2025-09-03T15:07:03.243112+00:00",
+    "end_time": "2025-09-03T15:08:07.154969+00:00",
+    "duration_seconds": 63.910824,
+    "user_query": "AI technology news"
+  },
+  "configuration": {
+    "max_searches": 2,
+    "max_time_minutes": 60,
+    "satisfaction_enabled": true,
+    "satisfaction_threshold": 0.8,
+    "min_searches_before_satisfaction": 10,
+    "show_search_details": true,
+    "show_strategy_reasoning": true,
+    "show_effectiveness_scores": true,
+    "enable_strategy_adaptation": true,
+    "enable_alternative_approaches": true,
+    "enable_name_variation_search": true,
+    "pages_per_search": 1,
+    "search_timeout_seconds": 30,
+    "retry_failed_searches": true,
+    "enforce_endpoint_diversity": false,
+    "max_endpoint_repeats": 5,
+    "diversity_threshold": 0.3
+  },
+  "performance_metrics": {
+    "total_searches": 2,
+    "total_rounds": 1,
+    "total_results_found": 90,
+    "satisfaction_score": 0.0,
+    "satisfaction_breakdown": {
+      "information_coverage": 0.0,
+      "source_diversity": 0.0,
+      "evidence_quality": 0.0,
+      "claim_specificity": 0.0,
+      "contradiction_resolution": 0.0
+    },
+    "completion_reason": "Investigation failed: 'InvestigationLogger' object has no attribute 'info'"
+  },
+  "search_summary": {
+    "searches_by_effectiveness": {
+      "highly_effective": [],
+      "moderately_effective": [
+        {
+          "search_id": 2,
+          "query": "",
+          "results": 50,
+          "effectiveness": 5.0
+        }
+      ],
+      "low_effectiveness": [
+        {
+          "search_id": 1,
+          "query": "AI technology news OR \"artificial intelligence\" latest developments",
+          "results": 40,
+          "effectiveness": 4.0
+        }
+      ],
+      "ineffective": []
+    },
+    "most_effective_strategies": [
+      {
+        "strategy": "Graph Strategy: To establish a comprehensive initial understanding of \"AI technology news,\" the strategy involves a multi-pronged approach. First, a broad search will identify key topics, influential entities, and prominent discussions. Second, checking general trends will reveal real-time public interest and emerging narratives. Finally, examining the timeline of a reputable technology news source will provide curated and in-depth reporting on the latest AI developments. This combination ensures diverse data collection to address the initial information gaps systematically.",
+        "avg_effectiveness": 4.5
+      }
+    ],
+    "dead_ends": [],
+    "promising_leads": []
+  },
+  "rounds_summary": [
+    {
+      "round_number": 1,
+      "strategy": "Graph Strategy: To establish a comprehensive initial understanding of \"AI technology news,\" the strategy involves a multi-pronged approach. First, a broad search will identify key topics, influential entities, and prominent discussions. Second, checking general trends will reveal real-time public interest and emerging narratives. Finally, examining the timeline of a reputable technology news source will provide curated and in-depth reporting on the latest AI developments. This combination ensures diverse data collection to address the initial information gaps systematically.",
+      "searches_count": 2,
+      "total_results": 90,
+      "effectiveness": 0.0,
+      "insights": []
+    }
+  ]
+}

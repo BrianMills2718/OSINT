@@ -1,0 +1,88 @@
+{
+  "session_metadata": {
+    "session_id": "77569774-82e5-4631-a8ea-f2eda1b53e55",
+    "start_time": "2025-08-28T18:49:56.116833+00:00",
+    "end_time": "2025-08-28T18:52:10.997703+00:00",
+    "duration_seconds": 134.879869,
+    "user_query": "Recent SpaceX and Tesla developments"
+  },
+  "configuration": {
+    "max_searches": 2,
+    "max_time_minutes": 60,
+    "satisfaction_enabled": true,
+    "satisfaction_threshold": 0.8,
+    "min_searches_before_satisfaction": 10,
+    "show_search_details": true,
+    "show_strategy_reasoning": true,
+    "show_effectiveness_scores": true,
+    "enable_strategy_adaptation": true,
+    "enable_alternative_approaches": true,
+    "enable_name_variation_search": true,
+    "pages_per_search": 2,
+    "search_timeout_seconds": 30,
+    "retry_failed_searches": true,
+    "enforce_endpoint_diversity": false,
+    "max_endpoint_repeats": 5,
+    "diversity_threshold": 0.3
+  },
+  "performance_metrics": {
+    "total_searches": 2,
+    "total_rounds": 1,
+    "total_results_found": 111,
+    "satisfaction_score": 0.343525641025641,
+    "satisfaction_breakdown": {
+      "information_coverage": 0.4,
+      "source_diversity": 0.2,
+      "evidence_quality": 0.814102564102564,
+      "claim_specificity": 0.0,
+      "contradiction_resolution": 0.0
+    },
+    "completion_reason": "Reached maximum search limit (2)"
+  },
+  "search_summary": {
+    "searches_by_effectiveness": {
+      "highly_effective": [],
+      "moderately_effective": [
+        {
+          "search_id": 1,
+          "query": "SpaceX recent developments OR Starship OR Falcon9 OR Starlink",
+          "results": 54,
+          "effectiveness": 7.0
+        },
+        {
+          "search_id": 2,
+          "query": "Tesla recent developments OR Cybertruck OR FSD OR Gigafactory",
+          "results": 57,
+          "effectiveness": 7.0
+        }
+      ],
+      "low_effectiveness": [],
+      "ineffective": []
+    },
+    "most_effective_strategies": [
+      {
+        "strategy": "Graph Strategy: To build a comprehensive understanding of recent SpaceX and Tesla developments, the initial step requires a multi-faceted approach. Broad searches for general news will provide a baseline. Directly checking Elon Musk's timeline will capture primary announcements. Investigating trends will reveal any widely discussed events related to these companies. This combination ensures diverse information gathering from different angles.",
+        "avg_effectiveness": 7.0
+      }
+    ],
+    "dead_ends": [],
+    "promising_leads": [
+      "SpaceX recent developments OR Starship OR Falcon9 OR Starlink",
+      "Tesla recent developments OR Cybertruck OR FSD OR Gigafactory"
+    ]
+  },
+  "rounds_summary": [
+    {
+      "round_number": 1,
+      "strategy": "Graph Strategy: To build a comprehensive understanding of recent SpaceX and Tesla developments, the initial step requires a multi-faceted approach. Broad searches for general news will provide a baseline. Directly checking Elon Musk's timeline will capture primary announcements. Investigating trends will reveal any widely discussed events related to these companies. This combination ensures diverse information gathering from different angles.",
+      "searches_count": 2,
+      "total_results": 111,
+      "effectiveness": 7.0,
+      "insights": [
+        "SpaceX's Starship program achieved a major success with Flight 10, advancing plans for uncrewed Mars missions by 2026 and human missions potentially by 2028+.",
+        "SpaceX plans the first Starship launch from Florida's LC-39A for late 2025, following recent public meetings on Aug 26 for FAA environmental review.",
+        "Starlink's network has expanded significantly, with over 9,500 satellites launched and ~8,250 currently in orbit, serving more than 7 million subscribers worldwide as of August 28, 2025."
+      ]
+    }
+  ]
+}

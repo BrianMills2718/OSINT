@@ -1,0 +1,505 @@
+PS C:\Users\Brian\projects\twitterexplorer\twitterexplorer> python cli_test.py "does joe rogan propagate disinformation"
+2025-09-09 06:36:18,989 - INFO - HTTP Request: GET https://raw.githubusercontent.com/BerriAI/litellm/main/model_prices_and_context_window.json "HTTP/1.1 200 OK"
+Initializing TwitterExplorer Investigation Engine...
+2025-09-09 06:36:20,519 - INFO - Loaded configuration from C:\Users\Brian\projects\twitterexplorer\twitterexplorer\config\models.yaml
+2025-09-09 06:36:20,519 - INFO - Configuration validation passed
+2025-09-09 06:36:20,519 - INFO - Model manager initialized with config: C:\Users\Brian\projects\twitterexplorer\twitterexplorer\config\models.yaml
+LiteLLM: Loaded 2 API keys: ['OPENAI_API_KEY', 'GEMINI_API_KEY']
+Starting CLI investigation: does joe rogan propagate disinformation
+============================================================
+2025-09-09 06:36:20,530 - INFO - ConcreteInvestigationBridge initialized - architectural integration active
+2025-09-09 06:36:20,531 - INFO - Started investigation session 0c9d81d7-65cb-4848-a72c-5ec5c841c20e for query: does joe rogan propagate disinformation...
+2025-09-09 06:36:20,531 - INFO - DIAGNOSTIC: Prompt size: 7194 chars, 837 words
+2025-09-09 06:36:20,532 - INFO - DIAGNOSTIC: Prompt lines: 190 lines
+06:36:20 - LiteLLM:INFO: utils.py:3230 - 
+LiteLLM completion() model= gpt-5-mini; provider = openai
+2025-09-09 06:36:20,540 - INFO -
+LiteLLM completion() model= gpt-5-mini; provider = openai
+2025-09-09 06:37:04,739 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+06:37:04 - LiteLLM:INFO: utils.py:1239 - Wrapper: Completed Call, calling success_handler
+2025-09-09 06:37:04,859 - INFO - Wrapper: Completed Call, calling success_handler
+2025-09-09 06:37:04,861 - INFO - DIAGNOSTIC: Raw LLM response captured
+2025-09-09 06:37:04,861 - INFO - DIAGNOSTIC: Decision type: gap_filling
+2025-09-09 06:37:04,861 - INFO - DIAGNOSTIC: Searches count: 5
+2025-09-09 06:37:04,861 - INFO - DIAGNOSTIC: Reasoning length: 902 chars
+2025-09-09 06:37:04,862 - INFO - DIAGNOSTIC: Search 1 - Endpoint: search.php
+2025-09-09 06:37:04,862 - INFO - DIAGNOSTIC: Search 1 - Parameters: {'query': 'from:joerogan (vaccine OR vaccination OR COVID OR coronavirus OR ivermectin OR "plandemic" OR microchip OR mask OR lockdown OR "5G" OR election OR "false" OR misinformation)', 'screenname': None, 'country': None, 'rest_id': None, 'rest_ids': None, 'cursor': None, 'search_type': 'Latest', 'id': None, 'tweet_id': None, 'user': None, 'follows': None, 'list_id': None}
+2025-09-09 06:37:04,862 - INFO - DIAGNOSTIC: Search 1 - Reasoning: Directly capture Joe Rogan's own recent tweets on topics most associated with misinformation. Using ...
+2025-09-09 06:37:04,862 - INFO - DIAGNOSTIC: Search 2 - Endpoint: timeline.php
+2025-09-09 06:37:04,862 - INFO - DIAGNOSTIC: Search 2 - Parameters: {'query': None, 'screenname': 'joerogan', 'country': None, 'rest_id': None, 'rest_ids': None, 'cursor': None, 'search_type': None, 'id': None, 'tweet_id': None, 'user': None, 'follows': None, 'list_id': None}
+2025-09-09 06:37:04,862 - INFO - DIAGNOSTIC: Search 2 - Reasoning: Pull Joe Rogan's chronological recent posts to understand context, cadence, and whether misinformati...
+2025-09-09 06:37:04,863 - INFO - DIAGNOSTIC: Search 3 - Endpoint: search.php
+2025-09-09 06:37:04,863 - INFO - DIAGNOSTIC: Search 3 - Parameters: {'query': "joerogan (misinformation OR disinformation OR debunked OR fact-check OR false OR 'was false' OR 'debunk') -from:joerogan", 'screenname': None, 'country': None, 'rest_id': None, 'rest_ids': None, 'cursor': None, 'search_type': 'Top', 'id': None, 'tweet_id': None, 'user': None, 'follows': None, 'list_id': None}
+2025-09-09 06:37:04,863 - INFO - DIAGNOSTIC: Search 3 - Reasoning: Capture how other users, journalists, and fact-checkers are discussing or labeling Rogan's tweets—th...
+2025-09-09 06:37:04,863 - INFO - DIAGNOSTIC: Search 4 - Endpoint: followers.php
+2025-09-09 06:37:04,863 - INFO - DIAGNOSTIC: Search 4 - Parameters: {'query': None, 'screenname': 'joerogan', 'country': None, 'rest_id': None, 'rest_ids': None, 'cursor': None, 'search_type': None, 'id': None, 'tweet_id': None, 'user': None, 'follows': None, 'list_id': None}
+2025-09-09 06:37:04,863 - INFO - DIAGNOSTIC: Search 4 - Reasoning: Estimate audience size and composition to assess amplification potential. A large or highly connecte...
+2025-09-09 06:37:04,863 - INFO - DIAGNOSTIC: Search 5 - Endpoint: affilates.php
+2025-09-09 06:37:04,863 - INFO - DIAGNOSTIC: Search 5 - Parameters: {'query': None, 'screenname': 'joerogan', 'country': None, 'rest_id': None, 'rest_ids': None, 'cursor': None, 'search_type': None, 'id': None, 'tweet_id': None, 'user': None, 'follows': None, 'list_id': None}
+2025-09-09 06:37:04,864 - INFO - DIAGNOSTIC: Search 5 - Reasoning: Identify official affiliations, sponsors, or institutional ties that might shape or amplify messagin...
+2025-09-09 06:37:04,864 - INFO - DIAGNOSTIC: Endpoint diversity score: 0.82
+2025-09-09 06:37:04,864 - INFO - DIAGNOSTIC: Endpoints used: ['search.php', 'timeline.php', 'followers.php', 'affilates.php']
+2025-09-09 06:37:05.450 
+  Warning: to view this Streamlit app on a browser, run it with the following
+  command:
+
+    streamlit run cli_test.py [ARGUMENTS]
+
+Executing Step: Call search.php (Reason: Directly capture Joe Rogan's own recent tweets on topics most associated with misinformation. Using from:joerogan plus a focused keyword set reveals candidate tweets that may contain false or misleading claims and provides tweet IDs and timestamps for follow-up forensic checks.)
+  Requesting URL: https://twitter-api45.p.rapidapi.com/search.php
+  With Params: {'query': 'from:joerogan (vaccine OR vaccination OR COVID OR coronavirus OR ivermectin OR "plandemic" OR microchip OR mask OR lockdown OR "5G" OR election OR "false" OR misinformation)', 'search_type': 'Latest'}
+  Fetching page 1...
+  Extracted list data from key: 'timeline'
+  Fetching page 2 with cursor DAADDAABCg...
+  Extracted list data from key: 'timeline'
+  Finished fetching for search.php. Total pages: 2. Has next cursor: False
+  Successfully processed request for search.php.
+
+Executing Step: Call timeline.php (Reason: Pull Joe Rogan's chronological recent posts to understand context, cadence, and whether misinformation-like claims are isolated or recurring. The timeline will also surface replies/threads and media that search queries might miss.)
+  Requesting URL: https://twitter-api45.p.rapidapi.com/timeline.php
+  With Params: {'screenname': 'joerogan'}
+  Fetching page 1...
+  Extracted list data from key: 'timeline'
+  Fetching page 2 with cursor DAAHCgABG0...
+  Extracted list data from key: 'timeline'
+  Fetching page 3 with cursor DAAHCgABG0...
+  Extracted list data from key: 'timeline'
+  Finished fetching for timeline.php. Total pages: 3. Has next cursor: True
+  Successfully processed request for timeline.php.
+
+Executing Step: Call search.php (Reason: Capture how other users, journalists, and fact-checkers are discussing or labeling Rogan's tweets—this identifies external assessments, major criticisms, and specific claims already flagged as false or disputed.)
+  Requesting URL: https://twitter-api45.p.rapidapi.com/search.php
+  With Params: {'query': "joerogan (misinformation OR disinformation OR debunked OR fact-check OR false OR 'was false' OR 'debunk') -from:joerogan", 'search_type': 'Top'}
+  Fetching page 1...
+  Extracted list data from key: 'timeline'
+  Fetching page 2 with cursor DAACCgACG0...
+  Extracted list data from key: 'timeline'
+  Fetching page 3 with cursor DAACCgACG0...
+  Extracted list data from key: 'timeline'
+  Finished fetching for search.php. Total pages: 3. Has next cursor: False
+  Successfully processed request for search.php.
+
+Executing Step: Call followers.php (Reason: Estimate audience size and composition to assess amplification potential. A large or highly connected follower base increases the chance that any misinformation is widely propagated; follower metadata will guide sampling for network analysis.)
+  Requesting URL: https://twitter-api45.p.rapidapi.com/followers.php
+  With Params: {'screenname': 'joerogan'}
+  Fetching page 1...
+  Extracted list data from key: 'followers'
+  Fetching page 2 with cursor 1842791696...
+  Extracted list data from key: 'followers'
+  Fetching page 3 with cursor 1842789886...
+  Extracted list data from key: 'followers'
+  Finished fetching for followers.php. Total pages: 3. Has next cursor: True
+  Successfully processed request for followers.php.
+
+Executing Step: Call affilates.php (Reason: Identify official affiliations, sponsors, or institutional ties that might shape or amplify messaging (e.g., podcast partners, media outlets). Affiliations help explain reach, incentives, and potential echo chambers.)
+  Requesting URL: https://twitter-api45.p.rapidapi.com/affilates.php
+  With Params: {'screenname': 'joerogan'}
+  Fetching page 1...
+  Extracted list data from key: 'followers'
+  Finished fetching for affilates.php. Total pages: 1. Has next cursor: False
+  Successfully processed request for affilates.php.
+06:37:41 - LiteLLM:INFO: utils.py:3230 -
+LiteLLM completion() model= gpt-5-mini; provider = openai
+2025-09-09 06:37:41,907 - INFO -
+LiteLLM completion() model= gpt-5-mini; provider = openai
+2025-09-09 06:37:57,230 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+06:37:57 - LiteLLM:INFO: utils.py:1239 - Wrapper: Completed Call, calling success_handler
+2025-09-09 06:37:57,232 - INFO - Wrapper: Completed Call, calling success_handler
+06:37:57 - LiteLLM:INFO: utils.py:3230 -
+LiteLLM completion() model= gpt-5-mini; provider = openai
+2025-09-09 06:37:57,233 - INFO -
+LiteLLM completion() model= gpt-5-mini; provider = openai
+2025-09-09 06:38:18,761 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+06:38:18 - LiteLLM:INFO: utils.py:1239 - Wrapper: Completed Call, calling success_handler
+2025-09-09 06:38:18,766 - INFO - Wrapper: Completed Call, calling success_handler
+06:38:18 - LiteLLM:INFO: utils.py:3230 -
+LiteLLM completion() model= gpt-5-mini; provider = openai
+2025-09-09 06:38:18,767 - INFO -
+LiteLLM completion() model= gpt-5-mini; provider = openai
+2025-09-09 06:38:38,947 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+06:38:38 - LiteLLM:INFO: utils.py:1239 - Wrapper: Completed Call, calling success_handler
+2025-09-09 06:38:38,949 - INFO - Wrapper: Completed Call, calling success_handler
+2025-09-09 06:38:38,949 - INFO - {"event": "datapoint_added", "datapoint_id": "ab8b787c-a6e6-4844-80ac-8c51a1d24295", "pending_count": 1, "timestamp": "2025-09-09T06:38:38.949306"}
+06:38:38 - LiteLLM:INFO: utils.py:3230 -
+LiteLLM completion() model= gpt-5-mini; provider = openai
+2025-09-09 06:38:38,951 - INFO -
+LiteLLM completion() model= gpt-5-mini; provider = openai
+2025-09-09 06:38:49,691 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+06:38:49 - LiteLLM:INFO: utils.py:1239 - Wrapper: Completed Call, calling success_handler
+2025-09-09 06:38:49,692 - INFO - Wrapper: Completed Call, calling success_handler
+2025-09-09 06:38:49,692 - INFO - {"event": "datapoint_added", "datapoint_id": "ab8b787c-a6e6-4844-80ac-8c51a1d24295", "pending_count": 2, "timestamp": "2025-09-09T06:38:49.692256"}
+2025-09-09 06:38:49,693 - INFO - {"event": "datapoint_added", "datapoint_id": "ab8b787c-a6e6-4844-80ac-8c51a1d24295", "pending_count": 3, "timestamp": "2025-09-09T06:38:49.693256"}
+06:38:49 - LiteLLM:INFO: utils.py:3230 -
+LiteLLM completion() model= gpt-5-mini; provider = openai
+2025-09-09 06:38:49,694 - INFO -
+LiteLLM completion() model= gpt-5-mini; provider = openai
+2025-09-09 06:38:59,041 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+06:38:59 - LiteLLM:INFO: utils.py:1239 - Wrapper: Completed Call, calling success_handler
+2025-09-09 06:38:59,049 - INFO - Wrapper: Completed Call, calling success_handler
+2025-09-09 06:38:59,049 - INFO - {"event": "llm_call", "operation": "synthesis_decision", "success": true, "result_type": "SynthesisDecision", "error": null, "timestamp": "2025-09-09T06:38:59.049170"} 
+2025-09-09 06:38:59,050 - INFO - {"event": "synthesis_triggered", "pending_count": 3, "timestamp": "2025-09-09T06:38:59.050217"}
+06:38:59 - LiteLLM:INFO: utils.py:3230 -
+LiteLLM completion() model= gpt-5-mini; provider = openai
+2025-09-09 06:38:59,051 - INFO -
+LiteLLM completion() model= gpt-5-mini; provider = openai
+2025-09-09 06:39:15,856 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+06:39:15 - LiteLLM:INFO: utils.py:1239 - Wrapper: Completed Call, calling success_handler
+2025-09-09 06:39:15,860 - INFO - Wrapper: Completed Call, calling success_handler
+2025-09-09 06:39:15,861 - INFO - {"event": "llm_call", "operation": "semantic_grouping", "success": true, "result_type": "SemanticGrouping", "error": null, "timestamp": "2025-09-09T06:39:15.861066"}   
+2025-09-09 06:39:15,862 - INFO - {"event": "semantic_grouping", "input_datapoint_count": 3, "output_groups": 1, "groups": [{"theme": "Automated fact-check summary indicating a substantial share of false or unverifiable claims attributed to Joe Rogan's content", "datapoint_count": 3, "synthesis_worthy": true}], "timestamp": "2025-09-09T06:39:15.862069"}
+06:39:15 - LiteLLM:INFO: utils.py:3230 -
+LiteLLM completion() model= gpt-5-mini; provider = openai
+2025-09-09 06:39:15,863 - INFO -
+LiteLLM completion() model= gpt-5-mini; provider = openai
+2025-09-09 06:39:32,423 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+06:39:32 - LiteLLM:INFO: utils.py:1239 - Wrapper: Completed Call, calling success_handler
+2025-09-09 06:39:32,426 - INFO - Wrapper: Completed Call, calling success_handler
+2025-09-09 06:39:32,427 - INFO - {"event": "llm_call", "operation": "insight_synthesis", "success": true, "result_type": "InsightSynthesis", "error": null, "timestamp": "2025-09-09T06:39:32.427083"}   
+2025-09-09 06:39:32,428 - INFO - Bridge notification: Insight created - Majority of claims are false or unverifiable, indicating a pattern of disseminating potentially misleading information
+2025-09-09 06:39:32,428 - INFO - Bridge calling detect_emergent_questions with 1 insights
+06:39:32 - LiteLLM:INFO: utils.py:3230 -
+LiteLLM completion() model= gpt-5-mini; provider = openai
+2025-09-09 06:39:32,429 - INFO -
+LiteLLM completion() model= gpt-5-mini; provider = openai
+2025-09-09 06:39:55,537 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+06:39:55 - LiteLLM:INFO: utils.py:1239 - Wrapper: Completed Call, calling success_handler
+2025-09-09 06:39:55,558 - INFO - Wrapper: Completed Call, calling success_handler
+2025-09-09 06:39:55,559 - INFO - Bridge integration: Created 12 emergent questions, 12 SPAWNS edges
+2025-09-09 06:39:55,561 - INFO - Bridge integration: 12 emergent questions created from insight
+2025-09-09 06:39:55,561 - INFO - {"event": "insight_creation", "success": true, "insight_title": "Majority of claims are false or unverifiable, indicating a pattern of disseminating potentially misleading information", "insight_confidence": 0.7, "timestamp": "2025-09-09T06:39:55.561646"}
+2025-09-09 06:39:55,561 - INFO - {"event": "synthesis_completed", "insights_created": 1, "timestamp": "2025-09-09T06:39:55.561646"}
+06:39:55 - LiteLLM:INFO: utils.py:3230 -
+LiteLLM completion() model= gpt-5-mini; provider = openai
+2025-09-09 06:39:55,562 - INFO -
+LiteLLM completion() model= gpt-5-mini; provider = openai
+2025-09-09 06:40:13,197 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+06:40:13 - LiteLLM:INFO: utils.py:1239 - Wrapper: Completed Call, calling success_handler
+2025-09-09 06:40:13,201 - INFO - Wrapper: Completed Call, calling success_handler
+2025-09-09 06:40:13,203 - INFO - Rejection context set: 617 chars
+2025-09-09 06:40:13,204 - INFO - Emergent questions set: 12 questions
+2025-09-09 06:40:13,204 - INFO - DIAGNOSTIC: Prompt size: 11779 chars, 1465 words
+2025-09-09 06:40:13,204 - INFO - DIAGNOSTIC: Prompt lines: 229 lines
+06:40:13 - LiteLLM:INFO: utils.py:3230 -
+LiteLLM completion() model= gpt-5-mini; provider = openai
+2025-09-09 06:40:13,206 - INFO -
+LiteLLM completion() model= gpt-5-mini; provider = openai
+2025-09-09 06:40:58,261 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+06:40:58 - LiteLLM:INFO: utils.py:1239 - Wrapper: Completed Call, calling success_handler
+2025-09-09 06:40:58,283 - INFO - Wrapper: Completed Call, calling success_handler
+2025-09-09 06:40:58,284 - INFO - DIAGNOSTIC: Raw LLM response captured
+2025-09-09 06:40:58,285 - INFO - DIAGNOSTIC: Decision type: gap_filling
+2025-09-09 06:40:58,286 - INFO - DIAGNOSTIC: Searches count: 8
+2025-09-09 06:40:58,286 - INFO - DIAGNOSTIC: Reasoning length: 799 chars
+2025-09-09 06:40:58,286 - INFO - DIAGNOSTIC: Search 1 - Endpoint: search.php
+2025-09-09 06:40:58,286 - INFO - DIAGNOSTIC: Search 1 - Parameters: {'query': "from:joerogan (vaccine OR vaccines OR COVID OR covid OR ivermectin OR 'vaccine injury' OR mask OR '5G' OR microchip OR plandemic OR mandate)", 'screenname': None, 'country': None, 'rest_id': None, 'rest_ids': None, 'cursor': None, 'search_type': 'Latest', 'id': None, 'tweet_id': None, 'user': None, 'follows': None, 'list_id': None}
+2025-09-09 06:40:58,286 - INFO - DIAGNOSTIC: Search 1 - Reasoning: Targeted pull of Joe Rogan's own tweets that mention topics most associated with misinformation. Thi...
+2025-09-09 06:40:58,286 - INFO - DIAGNOSTIC: Search 2 - Endpoint: timeline.php
+2025-09-09 06:40:58,286 - INFO - DIAGNOSTIC: Search 2 - Parameters: {'query': None, 'screenname': 'joerogan', 'country': None, 'rest_id': None, 'rest_ids': None, 'cursor': None, 'search_type': None, 'id': None, 'tweet_id': None, 'user': None, 'follows': None, 'list_id': None}
+2025-09-09 06:40:58,287 - INFO - DIAGNOSTIC: Search 2 - Reasoning: Complete chronological recent posts from Rogan to capture context, embedded media, replies, and any ...
+2025-09-09 06:40:58,287 - INFO - DIAGNOSTIC: Search 3 - Endpoint: search.php
+2025-09-09 06:40:58,287 - INFO - DIAGNOSTIC: Search 3 - Parameters: {'query': "(joerogan OR @joerogan) (factcheck OR 'fact check' OR 'fact-check' OR misinformation OR false OR debunk OR Snopes OR PolitiFact OR 'fact checkers' OR 'false claim')", 'screenname': None, 'country': None, 'rest_id': None, 'rest_ids': None, 'cursor': None, 'search_type': 'Latest', 'id': None, 'tweet_id': None, 'user': None, 'follows': None, 'list_id': None}
+2025-09-09 06:40:58,287 - INFO - DIAGNOSTIC: Search 3 - Reasoning: Find tweets by journalists, fact-check organizations, and the public labeling or assessing Rogan's s...
+2025-09-09 06:40:58,287 - INFO - DIAGNOSTIC: Search 4 - Endpoint: screenname.php
+2025-09-09 06:40:58,287 - INFO - DIAGNOSTIC: Search 4 - Parameters: {'query': None, 'screenname': 'joerogan', 'country': None, 'rest_id': None, 'rest_ids': None, 'cursor': None, 'search_type': None, 'id': None, 'tweet_id': None, 'user': None, 'follows': None, 'list_id': None}
+2025-09-09 06:40:58,287 - INFO - DIAGNOSTIC: Search 4 - Reasoning: Retrieve Rogan's profile metadata (bio, verified status, follower count snapshot) to quickly estimat...
+2025-09-09 06:40:58,287 - INFO - DIAGNOSTIC: Search 5 - Endpoint: followers.php
+2025-09-09 06:40:58,288 - INFO - DIAGNOSTIC: Search 5 - Parameters: {'query': None, 'screenname': 'joerogan', 'country': None, 'rest_id': None, 'rest_ids': None, 'cursor': None, 'search_type': None, 'id': None, 'tweet_id': None, 'user': None, 'follows': None, 'list_id': None}
+2025-09-09 06:40:58,288 - INFO - DIAGNOSTIC: Search 5 - Reasoning: Collect follower list (or at least counts and first-page sample) to assess amplification potential a...
+2025-09-09 06:40:58,288 - INFO - DIAGNOSTIC: Search 6 - Endpoint: affilates.php
+2025-09-09 06:40:58,288 - INFO - DIAGNOSTIC: Search 6 - Parameters: {'query': None, 'screenname': 'joerogan', 'country': None, 'rest_id': None, 'rest_ids': None, 'cursor': None, 'search_type': None, 'id': None, 'tweet_id': None, 'user': None, 'follows': None, 'list_id': None}
+2025-09-09 06:40:58,288 - INFO - DIAGNOSTIC: Search 6 - Reasoning: Identify official affiliations, sponsors, and institutional ties (Spotify, podcast partners, adverti...
+2025-09-09 06:40:58,288 - INFO - DIAGNOSTIC: Search 7 - Endpoint: tweet_thread.php
+2025-09-09 06:40:58,288 - INFO - DIAGNOSTIC: Search 7 - Parameters: {'query': None, 'screenname': None, 'country': None, 'rest_id': None, 'rest_ids': None, 'cursor': None, 'search_type': None, 'id': 'REPLACE_WITH_TWEET_ID_FROM_TIMELINE', 'tweet_id': None, 'user': None, 'follows': None, 'list_id': None}
+2025-09-09 06:40:58,289 - INFO - DIAGNOSTIC: Search 7 - Reasoning: For each candidate tweet identified in the timeline/search, retrieve the full conversation thread to...
+2025-09-09 06:40:58,289 - INFO - DIAGNOSTIC: Search 8 - Endpoint: latest_replies.php
+2025-09-09 06:40:58,289 - INFO - DIAGNOSTIC: Search 8 - Parameters: {'query': None, 'screenname': None, 'country': None, 'rest_id': None, 'rest_ids': None, 'cursor': None, 'search_type': None, 'id': 'REPLACE_WITH_TWEET_ID_FROM_TIMELINE', 'tweet_id': None, 'user': None, 'follows': None, 'list_id': None}
+2025-09-09 06:40:58,289 - INFO - DIAGNOSTIC: Search 8 - Reasoning: Pull replies to high-priority candidate tweets to surface immediate fact-checks, corrections, and en...
+2025-09-09 06:40:58,289 - INFO - DIAGNOSTIC: Endpoint diversity score: 0.57
+2025-09-09 06:40:58,289 - INFO - DIAGNOSTIC: Endpoints used: ['search.php', 'timeline.php', 'followers.php', 'affilates.php', 'screenname.php', 'tweet_thread.php', 'latest_replies.php']
+
+Executing Step: Call search.php (Reason: Targeted pull of Joe Rogan's own tweets that mention topics most associated with misinformation. This will produce candidate tweets (text, IDs, timestamps) to evaluate for factual accuracy and to seed deeper conversation and thread queries.)
+  Requesting URL: https://twitter-api45.p.rapidapi.com/search.php
+  With Params: {'query': "from:joerogan (vaccine OR vaccines OR COVID OR covid OR ivermectin OR 'vaccine injury' OR mask OR '5G' OR microchip OR plandemic OR mandate)", 'search_type': 'Latest'}        
+  Fetching page 1...
+  Extracted list data from key: 'timeline'
+  Fetching page 2 with cursor DAADDAABAA...
+  Extracted list data from key: 'timeline'
+  Finished fetching for search.php. Total pages: 2. Has next cursor: False
+  Successfully processed request for search.php.
+
+Executing Step: Call timeline.php (Reason: Complete chronological recent posts from Rogan to capture context, embedded media, replies, and any claims that might not include keywords. Timeline output will provide canonical tweet IDs and timestamps needed for forensic checks and conversation retrieval.)
+  Requesting URL: https://twitter-api45.p.rapidapi.com/timeline.php
+  With Params: {'screenname': 'joerogan'}
+  Fetching page 1...
+  Extracted list data from key: 'timeline'
+  Fetching page 2 with cursor DAAHCgABG0...
+  Extracted list data from key: 'timeline'
+  Fetching page 3 with cursor DAAHCgABG0...
+  Extracted list data from key: 'timeline'
+  Finished fetching for timeline.php. Total pages: 3. Has next cursor: True
+  Successfully processed request for timeline.php.
+
+Executing Step: Call search.php (Reason: Find tweets by journalists, fact-check organizations, and the public labeling or assessing Rogan's statements. This identifies which specific claims have already been flagged, and points to external evidence and debunks for each candidate claim.)
+  Requesting URL: https://twitter-api45.p.rapidapi.com/search.php
+  With Params: {'query': "(joerogan OR @joerogan) (factcheck OR 'fact check' OR 'fact-check' OR misinformation OR false OR debunk OR Snopes OR PolitiFact OR 'fact checkers' OR 'false claim')", 'search_type': 'Latest'}
+  Fetching page 1...
+  Extracted list data from key: 'timeline'
+  Fetching page 2 with cursor DAADDAABCg...
+  Extracted list data from key: 'timeline'
+  Fetching page 3 with cursor DAADDAABCg...
+  Extracted list data from key: 'timeline'
+  Finished fetching for search.php. Total pages: 3. Has next cursor: True
+  Successfully processed request for search.php.
+
+Executing Step: Call screenname.php (Reason: Retrieve Rogan's profile metadata (bio, verified status, follower count snapshot) to quickly estimate audience size and credibility signals that affect amplification. This complements followers.php sampling.)
+  Requesting URL: https://twitter-api45.p.rapidapi.com/screenname.php
+  With Params: {'screenname': 'joerogan'}
+  Fetching page 1...
+  Treating full dictionary response as single item list.
+  Finished fetching for screenname.php. Total pages: 1. Has next cursor: False
+  Successfully processed request for screenname.php.
+
+Executing Step: Call followers.php (Reason: Collect follower list (or at least counts and first-page sample) to assess amplification potential and to select a representative sample for network analysis and sentiment/engagement sampling on suspect tweets.)
+  Requesting URL: https://twitter-api45.p.rapidapi.com/followers.php
+  With Params: {'screenname': 'joerogan'}
+  Fetching page 1...
+  Extracted list data from key: 'followers'
+  Fetching page 2 with cursor 1842791826...
+  Extracted list data from key: 'followers'
+  Fetching page 3 with cursor 1842790068...
+  Extracted list data from key: 'followers'
+  Finished fetching for followers.php. Total pages: 3. Has next cursor: True
+  Successfully processed request for followers.php.
+
+Executing Step: Call affilates.php (Reason: Identify official affiliations, sponsors, and institutional ties (Spotify, podcast partners, advertisers) that could explain reach or repeated amplification 
+of particular claims.)
+  Requesting URL: https://twitter-api45.p.rapidapi.com/affilates.php
+  With Params: {'screenname': 'joerogan'}
+  Fetching page 1...
+  Extracted list data from key: 'affilates'
+  Finished fetching for affilates.php. Total pages: 1. Has next cursor: False
+  Successfully processed request for affilates.php.
+
+Executing Step: Call tweet_thread.php (Reason: For each candidate tweet identified in the timeline/search, retrieve the full conversation thread to capture replies, clarifications, deletions, and whether Rogan or others corrected or amplified the claim.)
+  Requesting URL: https://twitter-api45.p.rapidapi.com/tweet_thread.php
+  With Params: {'id': 'REPLACE_WITH_TWEET_ID_FROM_TIMELINE'}
+  Fetching page 1...
+  Treating full dictionary response as single item list.
+  Finished fetching for tweet_thread.php. Total pages: 1. Has next cursor: False
+  Successfully processed request for tweet_thread.php.
+
+Executing Step: Call latest_replies.php (Reason: Pull replies to high-priority candidate tweets to surface immediate fact-checks, corrections, and engagement patterns; replies often include links to external debunks or supporting evidence.)
+  Requesting URL: https://twitter-api45.p.rapidapi.com/latest_replies.php
+  With Params: {'id': 'REPLACE_WITH_TWEET_ID_FROM_TIMELINE'}
+  Fetching page 1...
+  Extracted list data from key: 'timeline'
+  Fetching page 2 with cursor DAADDAABAA...
+  Extracted list data from key: 'timeline'
+  Finished fetching for latest_replies.php. Total pages: 2. Has next cursor: False
+  Successfully processed request for latest_replies.php.
+06:41:41 - LiteLLM:INFO: utils.py:3230 -
+LiteLLM completion() model= gpt-5-mini; provider = openai
+2025-09-09 06:41:41,677 - INFO -
+LiteLLM completion() model= gpt-5-mini; provider = openai
+2025-09-09 06:42:06,205 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+06:42:06 - LiteLLM:INFO: utils.py:1239 - Wrapper: Completed Call, calling success_handler
+2025-09-09 06:42:06,211 - INFO - Wrapper: Completed Call, calling success_handler
+06:42:06 - LiteLLM:INFO: utils.py:3230 -
+LiteLLM completion() model= gpt-5-mini; provider = openai
+2025-09-09 06:42:06,212 - INFO -
+LiteLLM completion() model= gpt-5-mini; provider = openai
+2025-09-09 06:42:31,808 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+06:42:31 - LiteLLM:INFO: utils.py:1239 - Wrapper: Completed Call, calling success_handler
+2025-09-09 06:42:31,809 - INFO - Wrapper: Completed Call, calling success_handler
+2025-09-09 06:42:31,810 - INFO - {"event": "datapoint_added", "datapoint_id": "16eda1d7-95e6-47e0-9c83-f3911301a081", "pending_count": 1, "timestamp": "2025-09-09T06:42:31.810167"}
+06:42:31 - LiteLLM:INFO: utils.py:3230 -
+LiteLLM completion() model= gpt-5-mini; provider = openai
+2025-09-09 06:42:31,811 - INFO -
+LiteLLM completion() model= gpt-5-mini; provider = openai
+2025-09-09 06:42:39,675 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+06:42:39 - LiteLLM:INFO: utils.py:1239 - Wrapper: Completed Call, calling success_handler
+2025-09-09 06:42:39,677 - INFO - Wrapper: Completed Call, calling success_handler
+2025-09-09 06:42:39,677 - INFO - {"event": "datapoint_added", "datapoint_id": "16eda1d7-95e6-47e0-9c83-f3911301a081", "pending_count": 2, "timestamp": "2025-09-09T06:42:39.677741"}
+06:42:39 - LiteLLM:INFO: utils.py:3230 -
+LiteLLM completion() model= gpt-5-mini; provider = openai
+2025-09-09 06:42:39,678 - INFO -
+LiteLLM completion() model= gpt-5-mini; provider = openai
+2025-09-09 06:42:49,215 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+06:42:49 - LiteLLM:INFO: utils.py:1239 - Wrapper: Completed Call, calling success_handler
+2025-09-09 06:42:49,216 - INFO - Wrapper: Completed Call, calling success_handler
+2025-09-09 06:42:49,218 - INFO - {"event": "datapoint_added", "datapoint_id": "16eda1d7-95e6-47e0-9c83-f3911301a081", "pending_count": 3, "timestamp": "2025-09-09T06:42:49.218523"}
+06:42:49 - LiteLLM:INFO: utils.py:3230 -
+LiteLLM completion() model= gpt-5-mini; provider = openai
+2025-09-09 06:42:49,220 - INFO -
+LiteLLM completion() model= gpt-5-mini; provider = openai
+2025-09-09 06:43:01,673 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+06:43:01 - LiteLLM:INFO: utils.py:1239 - Wrapper: Completed Call, calling success_handler
+2025-09-09 06:43:01,679 - INFO - Wrapper: Completed Call, calling success_handler
+2025-09-09 06:43:01,680 - INFO - {"event": "llm_call", "operation": "synthesis_decision", "success": true, "result_type": "SynthesisDecision", "error": null, "timestamp": "2025-09-09T06:43:01.679340"} 
+2025-09-09 06:43:01,681 - INFO - {"event": "synthesis_triggered", "pending_count": 3, "timestamp": "2025-09-09T06:43:01.681340"}
+06:43:01 - LiteLLM:INFO: utils.py:3230 -
+LiteLLM completion() model= gpt-5-mini; provider = openai
+2025-09-09 06:43:01,682 - INFO -
+LiteLLM completion() model= gpt-5-mini; provider = openai
+2025-09-09 06:43:17,389 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+06:43:17 - LiteLLM:INFO: utils.py:1239 - Wrapper: Completed Call, calling success_handler
+2025-09-09 06:43:17,393 - INFO - Wrapper: Completed Call, calling success_handler
+2025-09-09 06:43:17,394 - INFO - {"event": "llm_call", "operation": "semantic_grouping", "success": true, "result_type": "SemanticGrouping", "error": null, "timestamp": "2025-09-09T06:43:17.394150"}   
+2025-09-09 06:43:17,395 - INFO - {"event": "semantic_grouping", "input_datapoint_count": 3, "output_groups": 1, "groups": [{"theme": "Claims about Joe Rogan's interview (with @finkd) and alleged regret over censorship under Biden; pushback that the 'regret' claim is false and discussion of censorship in Europe", "datapoint_count": 3, "synthesis_worthy": true}], "timestamp": "2025-09-09T06:43:17.395149"}
+06:43:17 - LiteLLM:INFO: utils.py:3230 -
+LiteLLM completion() model= gpt-5-mini; provider = openai
+2025-09-09 06:43:17,396 - INFO -
+LiteLLM completion() model= gpt-5-mini; provider = openai
+2025-09-09 06:43:35,050 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+06:43:35 - LiteLLM:INFO: utils.py:1239 - Wrapper: Completed Call, calling success_handler
+2025-09-09 06:43:35,058 - INFO - Wrapper: Completed Call, calling success_handler
+2025-09-09 06:43:35,059 - INFO - {"event": "llm_call", "operation": "insight_synthesis", "success": true, "result_type": "InsightSynthesis", "error": null, "timestamp": "2025-09-09T06:43:35.059104"}   
+2025-09-09 06:43:35,060 - INFO - Bridge notification: Insight created - Repeated, unsourced claims suggest coordinated amplification rather than clear evidence Rogan spread disinformation
+2025-09-09 06:43:35,060 - INFO - Bridge calling detect_emergent_questions with 6 insights
+06:43:35 - LiteLLM:INFO: utils.py:3230 - 
+LiteLLM completion() model= gpt-5-mini; provider = openai
+2025-09-09 06:43:35,062 - INFO -
+LiteLLM completion() model= gpt-5-mini; provider = openai
+2025-09-09 06:44:01,661 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+06:44:01 - LiteLLM:INFO: utils.py:1239 - Wrapper: Completed Call, calling success_handler
+2025-09-09 06:44:01,666 - INFO - Wrapper: Completed Call, calling success_handler
+2025-09-09 06:44:01,667 - INFO - Bridge integration: Created 12 emergent questions, 12 SPAWNS edges
+2025-09-09 06:44:01,669 - INFO - Bridge integration: 12 emergent questions created from insight
+2025-09-09 06:44:01,669 - INFO - {"event": "insight_creation", "success": true, "insight_title": "Repeated, unsourced claims suggest coordinated amplification rather than clear evidence Rogan spread disinformation", "insight_confidence": 0.6, "timestamp": "2025-09-09T06:44:01.669283"}
+2025-09-09 06:44:01,670 - INFO - {"event": "synthesis_completed", "insights_created": 1, "timestamp": "2025-09-09T06:44:01.670286"}
+2025-09-09 06:44:01,670 - INFO - {"event": "datapoint_added", "datapoint_id": "16eda1d7-95e6-47e0-9c83-f3911301a081", "pending_count": 1, "timestamp": "2025-09-09T06:44:01.670286"}
+06:44:01 - LiteLLM:INFO: utils.py:3230 -
+LiteLLM completion() model= gpt-5-mini; provider = openai
+2025-09-09 06:44:01,671 - INFO -
+LiteLLM completion() model= gpt-5-mini; provider = openai
+2025-09-09 06:44:08,213 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+06:44:08 - LiteLLM:INFO: utils.py:1239 - Wrapper: Completed Call, calling success_handler
+2025-09-09 06:44:08,215 - INFO - Wrapper: Completed Call, calling success_handler
+2025-09-09 06:44:08,215 - INFO - {"event": "datapoint_added", "datapoint_id": "16eda1d7-95e6-47e0-9c83-f3911301a081", "pending_count": 2, "timestamp": "2025-09-09T06:44:08.215734"}
+2025-09-09 06:44:08,217 - INFO - {"event": "datapoint_added", "datapoint_id": "16eda1d7-95e6-47e0-9c83-f3911301a081", "pending_count": 3, "timestamp": "2025-09-09T06:44:08.217067"}
+06:44:08 - LiteLLM:INFO: utils.py:3230 -
+LiteLLM completion() model= gpt-5-mini; provider = openai
+2025-09-09 06:44:08,218 - INFO -
+LiteLLM completion() model= gpt-5-mini; provider = openai
+2025-09-09 06:44:16,760 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+06:44:16 - LiteLLM:INFO: utils.py:1239 - Wrapper: Completed Call, calling success_handler
+2025-09-09 06:44:16,763 - INFO - Wrapper: Completed Call, calling success_handler
+2025-09-09 06:44:16,764 - INFO - {"event": "llm_call", "operation": "synthesis_decision", "success": true, "result_type": "SynthesisDecision", "error": null, "timestamp": "2025-09-09T06:44:16.764789"} 
+06:44:16 - LiteLLM:INFO: utils.py:3230 -
+LiteLLM completion() model= gpt-5-mini; provider = openai
+2025-09-09 06:44:16,766 - INFO -
+LiteLLM completion() model= gpt-5-mini; provider = openai
+2025-09-09 06:44:34,298 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+06:44:34 - LiteLLM:INFO: utils.py:1239 - Wrapper: Completed Call, calling success_handler
+2025-09-09 06:44:34,302 - INFO - Wrapper: Completed Call, calling success_handler
+2025-09-09 06:44:34,304 - INFO - Rejection context set: 334 chars
+2025-09-09 06:44:34,305 - INFO - Emergent questions set: 24 questions
+2025-09-09 06:44:34,305 - INFO - DIAGNOSTIC: Prompt size: 13706 chars, 1719 words
+2025-09-09 06:44:34,305 - INFO - DIAGNOSTIC: Prompt lines: 241 lines
+06:44:34 - LiteLLM:INFO: utils.py:3230 -
+LiteLLM completion() model= gpt-5-mini; provider = openai
+2025-09-09 06:44:34,307 - INFO -
+LiteLLM completion() model= gpt-5-mini; provider = openai
+2025-09-09 06:45:03,347 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+06:45:03 - LiteLLM:INFO: utils.py:1239 - Wrapper: Completed Call, calling success_handler
+2025-09-09 06:45:03,368 - INFO - Wrapper: Completed Call, calling success_handler
+2025-09-09 06:45:03,370 - INFO - DIAGNOSTIC: Raw LLM response captured
+2025-09-09 06:45:03,371 - INFO - DIAGNOSTIC: Decision type: gap_filling
+2025-09-09 06:45:03,371 - INFO - DIAGNOSTIC: Searches count: 5
+2025-09-09 06:45:03,371 - INFO - DIAGNOSTIC: Reasoning length: 781 chars
+2025-09-09 06:45:03,371 - INFO - DIAGNOSTIC: Search 1 - Endpoint: timeline.php
+2025-09-09 06:45:03,371 - INFO - DIAGNOSTIC: Search 1 - Parameters: {'query': None, 'screenname': 'joerogan', 'country': None, 'rest_id': None, 'rest_ids': None, 'cursor': None, 'search_type': None, 'id': None, 'tweet_id': None, 'user': None, 'follows': None, 'list_id': None}
+2025-09-09 06:45:03,371 - INFO - DIAGNOSTIC: Search 1 - Reasoning: Retrieve Joe Rogan's chronological recent posts to identify exact candidate claims, timestamps, twee...
+2025-09-09 06:45:03,371 - INFO - DIAGNOSTIC: Search 2 - Endpoint: screenname.php
+2025-09-09 06:45:03,372 - INFO - DIAGNOSTIC: Search 2 - Parameters: {'query': None, 'screenname': 'joerogan', 'country': None, 'rest_id': None, 'rest_ids': None, 'cursor': None, 'search_type': None, 'id': None, 'tweet_id': None, 'user': None, 'follows': None, 'list_id': None}
+2025-09-09 06:45:03,372 - INFO - DIAGNOSTIC: Search 2 - Reasoning: Collect profile metadata (bio, follower/following counts, account creation, verified status) to esti...
+2025-09-09 06:45:03,372 - INFO - DIAGNOSTIC: Search 3 - Endpoint: followers.php
+2025-09-09 06:45:03,372 - INFO - DIAGNOSTIC: Search 3 - Parameters: {'query': None, 'screenname': 'joerogan', 'country': None, 'rest_id': None, 'rest_ids': None, 'cursor': None, 'search_type': None, 'id': None, 'tweet_id': None, 'user': None, 'follows': None, 'list_id': None}
+2025-09-09 06:45:03,372 - INFO - DIAGNOSTIC: Search 3 - Reasoning: Pull a sample/page of followers to characterize audience composition and to identify high-amplifier ...
+2025-09-09 06:45:03,372 - INFO - DIAGNOSTIC: Search 4 - Endpoint: affilates.php
+2025-09-09 06:45:03,372 - INFO - DIAGNOSTIC: Search 4 - Parameters: {'query': None, 'screenname': 'joerogan', 'country': None, 'rest_id': None, 'rest_ids': None, 'cursor': None, 'search_type': None, 'id': None, 'tweet_id': None, 'user': None, 'follows': None, 'list_id': None}
+2025-09-09 06:45:03,372 - INFO - DIAGNOSTIC: Search 4 - Reasoning: Identify declared affiliations (podcast platforms, sponsors, media partners) that can amplify or fra...
+2025-09-09 06:45:03,373 - INFO - DIAGNOSTIC: Search 5 - Endpoint: usermedia.php
+2025-09-09 06:45:03,373 - INFO - DIAGNOSTIC: Search 5 - Parameters: {'query': None, 'screenname': 'joerogan', 'country': None, 'rest_id': None, 'rest_ids': None, 'cursor': None, 'search_type': None, 'id': None, 'tweet_id': None, 'user': None, 'follows': None, 'list_id': None}
+2025-09-09 06:45:03,373 - INFO - DIAGNOSTIC: Search 5 - Reasoning: Retrieve Rogan's posted photos/videos and clips that frequently carry distilled claims or misleading...
+2025-09-09 06:45:03,373 - INFO - DIAGNOSTIC: Endpoint diversity score: 0.55
+2025-09-09 06:45:03,373 - INFO - DIAGNOSTIC: Endpoints used: ['search.php', 'timeline.php', 'followers.php', 'affilates.php', 'screenname.php', 'tweet_thread.php', 'latest_replies.php', 'usermedia.php']
+
+Executing Step: Call timeline.php (Reason: Retrieve Joe Rogan's chronological recent posts to identify exact candidate claims, timestamps, tweet IDs and context (threads, replies, embedded media). This directly addresses the primary gap: no captured Rogan-origin tweets for forensic checking.)
+  Requesting URL: https://twitter-api45.p.rapidapi.com/timeline.php
+  With Params: {'screenname': 'joerogan'}
+  Fetching page 1...
+  Extracted list data from key: 'timeline'
+  Fetching page 2 with cursor DAAHCgABG0...
+  Extracted list data from key: 'timeline'
+  Fetching page 3 with cursor DAAHCgABG0...
+  Extracted list data from key: 'timeline'
+  Finished fetching for timeline.php. Total pages: 3. Has next cursor: True
+  Successfully processed request for timeline.php.
+
+Executing Step: Call screenname.php (Reason: Collect profile metadata (bio, follower/following counts, account creation, verified status) to estimate audience size and baseline credibility; this helps 
+assess amplification potential and sampling strategy for network analysis.)
+  Requesting URL: https://twitter-api45.p.rapidapi.com/screenname.php
+  With Params: {'screenname': 'joerogan'}
+  Fetching page 1...
+  Treating full dictionary response as single item list.
+  Finished fetching for screenname.php. Total pages: 1. Has next cursor: False
+  Successfully processed request for screenname.php.
+06:45:15 - LiteLLM:INFO: utils.py:3230 -
+LiteLLM completion() model= gpt-5-mini; provider = openai
+2025-09-09 06:45:15,148 - INFO -
+LiteLLM completion() model= gpt-5-mini; provider = openai
+2025-09-09 06:45:37,537 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+06:45:37 - LiteLLM:INFO: utils.py:1239 - Wrapper: Completed Call, calling success_handler
+2025-09-09 06:45:37,538 - INFO - Wrapper: Completed Call, calling success_handler
+06:45:37 - LiteLLM:INFO: utils.py:3230 -
+LiteLLM completion() model= gpt-5-mini; provider = openai
+2025-09-09 06:45:37,539 - INFO -
+LiteLLM completion() model= gpt-5-mini; provider = openai
+2025-09-09 06:45:45,705 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+06:45:45 - LiteLLM:INFO: utils.py:1239 - Wrapper: Completed Call, calling success_handler
+2025-09-09 06:45:45,706 - INFO - Wrapper: Completed Call, calling success_handler
+06:45:45 - LiteLLM:INFO: utils.py:3230 -
+LiteLLM completion() model= gpt-5-mini; provider = openai
+2025-09-09 06:45:45,707 - INFO -
+LiteLLM completion() model= gpt-5-mini; provider = openai
+2025-09-09 06:46:03,689 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+06:46:03 - LiteLLM:INFO: utils.py:1239 - Wrapper: Completed Call, calling success_handler
+2025-09-09 06:46:03,694 - INFO - Wrapper: Completed Call, calling success_handler
+2025-09-09 06:46:03,699 - INFO - Loaded configuration from C:\Users\Brian\projects\twitterexplorer\twitterexplorer\config\models.yaml
+2025-09-09 06:46:03,700 - INFO - Configuration validation passed
+2025-09-09 06:46:03,700 - INFO - Model manager initialized with config: C:\Users\Brian\projects\twitterexplorer\twitterexplorer\config\models.yaml
+06:46:03 - LiteLLM:INFO: utils.py:3230 -
+LiteLLM completion() model= gpt-5-mini; provider = openai
+2025-09-09 06:46:03,701 - INFO -
+LiteLLM completion() model= gpt-5-mini; provider = openai
+2025-09-09 06:46:09,703 - INFO - HTTP Request: POST https://api.openai.com/v1/chat/completions "HTTP/1.1 200 OK"
+06:46:09 - LiteLLM:INFO: utils.py:1239 - Wrapper: Completed Call, calling success_handler
+2025-09-09 06:46:09,704 - INFO - Wrapper: Completed Call, calling success_handler
+2025-09-09 06:46:09,709 - INFO - Completed investigation session 0c9d81d7-65cb-4848-a72c-5ec5c841c20e - 15 searches, 574 results
+Graph exported: investigation_graph_0c9d81d7-65cb-4848-a72c-5ec5c841c20e.json and investigation_graph_0c9d81d7-65cb-4848-a72c-5ec5c841c20e.html
+
+Investigation Complete!
+Searches performed: 15
+Findings discovered: 2
+Final satisfaction: 0.35
+
+Graph State:
+  DataPoints: 2
+  Insights: 12
+  Emergent Questions: 24
+
+Generated Insights:
+  1. Majority of claims are false or unverifiable, indicating a pattern of disseminating potentially misleading information (confidence: 0.7)
+  2. Untitled (confidence: N/A)
+  3. Untitled (confidence: N/A)
+
+Emergent Questions (Sample):
+  1. How were claims identified and sampled from Joe Rogan's output (inclusion/exclus...
+  2. What exact labeling criteria distinguished 'true', 'false', and 'unverifiable', ...
+  3. What was the inter-rater reliability (e.g., Cohen's kappa) or review process use...
+  4. How is 'unverifiable' operationalized — are these claims inherently impossible t...
+  5. How do claims cluster by topic (health, politics, science, personal anecdotes), ...
+
+CLI investigation completed - Bridge integration and emergent questions working!
+PS C:\Users\Brian\projects\twitterexplorer\twitterexplorer> 

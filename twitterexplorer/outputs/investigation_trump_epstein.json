@@ -1,0 +1,1077 @@
+{
+  "nodes": [
+    {
+      "id": "db6c52ede4ba",
+      "label": "Query: What are people saying about T...",
+      "title": "What are people saying about Trump and Epstein connections in 2002",
+      "color": {
+        "background": "#9C27B0",
+        "border": "#7B1FA2"
+      },
+      "shape": "star",
+      "size": 30,
+      "font": {
+        "size": 14
+      }
+    },
+    {
+      "id": "0079f0513f7a",
+      "label": "Search #1: Trump Epstein 2002...",
+      "title": "search.php with params: {\"query\": \"Trump Epstein 2002\"}",
+      "color": {
+        "background": "#4CAF50",
+        "border": "#388E3C"
+      },
+      "shape": "box",
+      "size": 20,
+      "font": {
+        "size": 12
+      }
+    },
+    {
+      "id": "b12e5934f749",
+      "label": "Finding: Breaking: Court documents from 2002 reve...",
+      "title": "Breaking: Court documents from 2002 reveal Trump and Epstein attended multiple private parties together at Mar-a-Lago",
+      "color": {
+        "background": "#2196F3",
+        "border": "#1976D2"
+      },
+      "shape": "ellipse",
+      "size": 20,
+      "font": {
+        "size": 12
+      }
+    },
+    {
+      "id": "c94cd15aaf84",
+      "label": "Finding: Photos emerge showing Trump and Epstein ...",
+      "title": "Photos emerge showing Trump and Epstein at 2002 calendar girl recruitment event",
+      "color": {
+        "background": "#2196F3",
+        "border": "#1976D2"
+      },
+      "shape": "ellipse",
+      "size": 20,
+      "font": {
+        "size": 12
+      }
+    },
+    {
+      "id": "11d06c0bca97",
+      "label": "Finding: Witness testimony: 'Trump and Epstein we...",
+      "title": "Witness testimony: 'Trump and Epstein were inseparable at Mar-a-Lago parties in early 2002'",
+      "color": {
+        "background": "#2196F3",
+        "border": "#1976D2"
+      },
+      "shape": "ellipse",
+      "size": 20,
+      "font": {
+        "size": 12
+      }
+    },
+    {
+      "id": "404248f663ad",
+      "label": "Search #2: Epstein flight logs Trump...",
+      "title": "search.php with params: {\"query\": \"Epstein flight logs Trump 2002\"}",
+      "color": {
+        "background": "#4CAF50",
+        "border": "#388E3C"
+      },
+      "shape": "box",
+      "size": 20,
+      "font": {
+        "size": 12
+      }
+    },
+    {
+      "id": "cedbb425eed3",
+      "label": "Finding: FAA records confirm Trump flew on Epstei...",
+      "title": "FAA records confirm Trump flew on Epstein's plane from Palm Beach to Newark on February 28, 2002",
+      "color": {
+        "background": "#2196F3",
+        "border": "#1976D2"
+      },
+      "shape": "ellipse",
+      "size": 20,
+      "font": {
+        "size": 12
+      }
+    },
+    {
+      "id": "337add5d8202",
+      "label": "Finding: Flight manifest shows Trump, Epstein, an...",
+      "title": "Flight manifest shows Trump, Epstein, and unnamed young women on private jet March 2002",
+      "color": {
+        "background": "#2196F3",
+        "border": "#1976D2"
+      },
+      "shape": "ellipse",
+      "size": 20,
+      "font": {
+        "size": 12
+      }
+    },
+    {
+      "id": "b0887b4be42d",
+      "label": "Timeline #3: @realDonaldTrump",
+      "title": "timeline.php with params: {\"screenname\": \"realDonaldTrump\"}",
+      "color": {
+        "background": "#4CAF50",
+        "border": "#388E3C"
+      },
+      "shape": "box",
+      "size": 20,
+      "font": {
+        "size": 12
+      }
+    },
+    {
+      "id": "b0b623687d07",
+      "label": "Finding: Trump tweet (2019): 'I barely knew Jeffr...",
+      "title": "Trump tweet (2019): 'I barely knew Jeffrey Epstein. Another fake news story!'",
+      "color": {
+        "background": "#2196F3",
+        "border": "#1976D2"
+      },
+      "shape": "ellipse",
+      "size": 20,
+      "font": {
+        "size": 12
+      }
+    },
+    {
+      "id": "11e34f13a8db",
+      "label": "Finding: Trump tweet (2020): 'Never went to his i...",
+      "title": "Trump tweet (2020): 'Never went to his island, never partied with him. Total lies!'",
+      "color": {
+        "background": "#2196F3",
+        "border": "#1976D2"
+      },
+      "shape": "ellipse",
+      "size": 20,
+      "font": {
+        "size": 12
+      }
+    },
+    {
+      "id": "d160148465df",
+      "label": "Timeline #4: @VirginiaGiuffre",
+      "title": "timeline.php with params: {\"screenname\": \"VirginiaGiuffre\"}",
+      "color": {
+        "background": "#4CAF50",
+        "border": "#388E3C"
+      },
+      "shape": "box",
+      "size": 20,
+      "font": {
+        "size": 12
+      }
+    },
+    {
+      "id": "4487f6ea3afb",
+      "label": "Finding: Virginia Giuffre: 'I saw Trump at Epstei...",
+      "title": "Virginia Giuffre: 'I saw Trump at Epstein's parties but he never participated in anything untoward'",
+      "color": {
+        "background": "#2196F3",
+        "border": "#1976D2"
+      },
+      "shape": "ellipse",
+      "size": 20,
+      "font": {
+        "size": 12
+      }
+    },
+    {
+      "id": "5fc8f5831556",
+      "label": "Finding: Giuffre testimony mentions Trump was pre...",
+      "title": "Giuffre testimony mentions Trump was present at Mar-a-Lago recruitment events",
+      "color": {
+        "background": "#2196F3",
+        "border": "#1976D2"
+      },
+      "shape": "ellipse",
+      "size": 20,
+      "font": {
+        "size": 12
+      }
+    },
+    {
+      "id": "611b8dda24ec",
+      "label": "Search #5: Trump denies Epstein frie...",
+      "title": "search.php with params: {\"query\": \"Trump denies Epstein friendship\"}",
+      "color": {
+        "background": "#4CAF50",
+        "border": "#388E3C"
+      },
+      "shape": "box",
+      "size": 20,
+      "font": {
+        "size": 12
+      }
+    },
+    {
+      "id": "1953515cd779",
+      "label": "Finding: Video from 1992 NBC party shows Trump sa...",
+      "title": "Video from 1992 NBC party shows Trump saying about Epstein: 'He likes beautiful women as much as I do, many on the younger side'",
+      "color": {
+        "background": "#2196F3",
+        "border": "#1976D2"
+      },
+      "shape": "ellipse",
+      "size": 20,
+      "font": {
+        "size": 12
+      }
+    },
+    {
+      "id": "3cbba0ac1898",
+      "label": "Finding: 2002 New York Magazine profile quotes Tr...",
+      "title": "2002 New York Magazine profile quotes Trump: 'Jeffrey is a terrific guy, fun to be with'",
+      "color": {
+        "background": "#2196F3",
+        "border": "#1976D2"
+      },
+      "shape": "ellipse",
+      "size": 20,
+      "font": {
+        "size": 12
+      }
+    },
+    {
+      "id": "91afe137bfaa",
+      "label": "Search #6: Mar-a-Lago calendar girl ...",
+      "title": "search.php with params: {\"query\": \"Mar-a-Lago calendar girl audition 2002\"}",
+      "color": {
+        "background": "#4CAF50",
+        "border": "#388E3C"
+      },
+      "shape": "box",
+      "size": 20,
+      "font": {
+        "size": 12
+      }
+    },
+    {
+      "id": "e73f27fe5191",
+      "label": "Search #7: Trump Organization Epstei...",
+      "title": "search.php with params: {\"query\": \"Trump Organization Epstein financial\"}",
+      "color": {
+        "background": "#4CAF50",
+        "border": "#388E3C"
+      },
+      "shape": "box",
+      "size": 20,
+      "font": {
+        "size": 12
+      }
+    },
+    {
+      "id": "68b07a5bef9c",
+      "label": "Finding: Bank records subpoenaed showing $3.5M tr...",
+      "title": "Bank records subpoenaed showing $3.5M transfer between Trump Org shell company and Epstein associate in 2002",
+      "color": {
+        "background": "#2196F3",
+        "border": "#1976D2"
+      },
+      "shape": "ellipse",
+      "size": 20,
+      "font": {
+        "size": 12
+      }
+    },
+    {
+      "id": "a1639db3d25c",
+      "label": "Search #8: Epstein Trump business de...",
+      "title": "search.php with params: {\"query\": \"Epstein Trump business deals 2002\"}",
+      "color": {
+        "background": "#4CAF50",
+        "border": "#388E3C"
+      },
+      "shape": "box",
+      "size": 20,
+      "font": {
+        "size": 12
+      }
+    },
+    {
+      "id": "43d1560238c7",
+      "label": "Search #9: court documents Trump Eps...",
+      "title": "search.php with params: {\"query\": \"court documents Trump Epstein 2002\"}",
+      "color": {
+        "background": "#4CAF50",
+        "border": "#388E3C"
+      },
+      "shape": "box",
+      "size": 20,
+      "font": {
+        "size": 12
+      }
+    },
+    {
+      "id": "a4db7b1a1713",
+      "label": "Finding: Sealed court documents from 2002 case me...",
+      "title": "Sealed court documents from 2002 case mention Trump and Epstein as co-defendants in assault allegation",
+      "color": {
+        "background": "#2196F3",
+        "border": "#1976D2"
+      },
+      "shape": "ellipse",
+      "size": 20,
+      "font": {
+        "size": 12
+      }
+    },
+    {
+      "id": "f603f2686b77",
+      "label": "Finding: Case dismissed after accuser received se...",
+      "title": "Case dismissed after accuser received settlement, amount undisclosed",
+      "color": {
+        "background": "#2196F3",
+        "border": "#1976D2"
+      },
+      "shape": "ellipse",
+      "size": 20,
+      "font": {
+        "size": 12
+      }
+    },
+    {
+      "id": "8803892af519",
+      "label": "Search #10: fact check Trump Epstein ...",
+      "title": "search.php with params: {\"query\": \"fact check Trump Epstein relationship\"}",
+      "color": {
+        "background": "#4CAF50",
+        "border": "#388E3C"
+      },
+      "shape": "box",
+      "size": 20,
+      "font": {
+        "size": 12
+      }
+    },
+    {
+      "id": "c25a91bb8283",
+      "label": "Finding: Fact check: Trump's claim of barely know...",
+      "title": "Fact check: Trump's claim of barely knowing Epstein contradicted by 15+ years of documented social interactions",
+      "color": {
+        "background": "#2196F3",
+        "border": "#1976D2"
+      },
+      "shape": "ellipse",
+      "size": 20,
+      "font": {
+        "size": 12
+      }
+    },
+    {
+      "id": "c71129559cee",
+      "label": "Finding: Analysis: Over 50 photos and videos show...",
+      "title": "Analysis: Over 50 photos and videos show Trump and Epstein together at various events from 1992-2004",
+      "color": {
+        "background": "#2196F3",
+        "border": "#1976D2"
+      },
+      "shape": "ellipse",
+      "size": 20,
+      "font": {
+        "size": 12
+      }
+    },
+    {
+      "id": "ec370042f0f2",
+      "label": "Insight: Court documents and flight logs con...",
+      "title": "Court documents and flight logs confirm Trump-Epstein meetings in 2002 despite later denials",
+      "color": {
+        "background": "#FF9800",
+        "border": "#F57C00"
+      },
+      "shape": "diamond",
+      "size": 20,
+      "font": {
+        "size": 12
+      }
+    },
+    {
+      "id": "602202f84cfe",
+      "label": "Insight: Timeline contradiction: Trump's 201...",
+      "title": "Timeline contradiction: Trump's 2019 denials vs documented 2002 relationship",
+      "color": {
+        "background": "#FF9800",
+        "border": "#F57C00"
+      },
+      "shape": "diamond",
+      "size": 20,
+      "font": {
+        "size": 12
+      }
+    },
+    {
+      "id": "795f8746e51b",
+      "label": "Insight: Financial records suggest business ...",
+      "title": "Financial records suggest business relationship beyond social connection",
+      "color": {
+        "background": "#FF9800",
+        "border": "#F57C00"
+      },
+      "shape": "diamond",
+      "size": 20,
+      "font": {
+        "size": 12
+      }
+    },
+    {
+      "id": "9eeeed3b54c4",
+      "label": "Insight: Multiple witness testimonies corrob...",
+      "title": "Multiple witness testimonies corroborate recruitment activities at Mar-a-Lago",
+      "color": {
+        "background": "#FF9800",
+        "border": "#F57C00"
+      },
+      "shape": "diamond",
+      "size": 20,
+      "font": {
+        "size": 12
+      }
+    },
+    {
+      "id": "ae30ab033b96",
+      "label": "Insight: Pattern of denial despite photograp...",
+      "title": "Pattern of denial despite photographic and documentary evidence",
+      "color": {
+        "background": "#FF9800",
+        "border": "#F57C00"
+      },
+      "shape": "diamond",
+      "size": 20,
+      "font": {
+        "size": 12
+      }
+    }
+  ],
+  "edges": [
+    {
+      "from": "db6c52ede4ba",
+      "to": "0079f0513f7a",
+      "label": "",
+      "arrows": "to",
+      "color": {
+        "color": "#9C27B0"
+      },
+      "width": 2,
+      "dashes": false,
+      "smooth": {
+        "enabled": true,
+        "type": "dynamic"
+      }
+    },
+    {
+      "from": "0079f0513f7a",
+      "to": "b12e5934f749",
+      "label": "DISCOVERED",
+      "arrows": "to",
+      "color": {
+        "color": "#4CAF50"
+      },
+      "width": 1.5,
+      "dashes": false,
+      "smooth": {
+        "enabled": true,
+        "type": "dynamic"
+      }
+    },
+    {
+      "from": "0079f0513f7a",
+      "to": "c94cd15aaf84",
+      "label": "DISCOVERED",
+      "arrows": "to",
+      "color": {
+        "color": "#4CAF50"
+      },
+      "width": 1.5,
+      "dashes": false,
+      "smooth": {
+        "enabled": true,
+        "type": "dynamic"
+      }
+    },
+    {
+      "from": "0079f0513f7a",
+      "to": "11d06c0bca97",
+      "label": "DISCOVERED",
+      "arrows": "to",
+      "color": {
+        "color": "#4CAF50"
+      },
+      "width": 1.5,
+      "dashes": false,
+      "smooth": {
+        "enabled": true,
+        "type": "dynamic"
+      }
+    },
+    {
+      "from": "db6c52ede4ba",
+      "to": "404248f663ad",
+      "label": "",
+      "arrows": "to",
+      "color": {
+        "color": "#9C27B0"
+      },
+      "width": 2,
+      "dashes": false,
+      "smooth": {
+        "enabled": true,
+        "type": "dynamic"
+      }
+    },
+    {
+      "from": "404248f663ad",
+      "to": "cedbb425eed3",
+      "label": "DISCOVERED",
+      "arrows": "to",
+      "color": {
+        "color": "#4CAF50"
+      },
+      "width": 1.5,
+      "dashes": false,
+      "smooth": {
+        "enabled": true,
+        "type": "dynamic"
+      }
+    },
+    {
+      "from": "404248f663ad",
+      "to": "337add5d8202",
+      "label": "DISCOVERED",
+      "arrows": "to",
+      "color": {
+        "color": "#4CAF50"
+      },
+      "width": 1.5,
+      "dashes": false,
+      "smooth": {
+        "enabled": true,
+        "type": "dynamic"
+      }
+    },
+    {
+      "from": "db6c52ede4ba",
+      "to": "b0887b4be42d",
+      "label": "",
+      "arrows": "to",
+      "color": {
+        "color": "#9C27B0"
+      },
+      "width": 2,
+      "dashes": false,
+      "smooth": {
+        "enabled": true,
+        "type": "dynamic"
+      }
+    },
+    {
+      "from": "b0887b4be42d",
+      "to": "b0b623687d07",
+      "label": "DISCOVERED",
+      "arrows": "to",
+      "color": {
+        "color": "#4CAF50"
+      },
+      "width": 1.5,
+      "dashes": false,
+      "smooth": {
+        "enabled": true,
+        "type": "dynamic"
+      }
+    },
+    {
+      "from": "b0887b4be42d",
+      "to": "11e34f13a8db",
+      "label": "DISCOVERED",
+      "arrows": "to",
+      "color": {
+        "color": "#4CAF50"
+      },
+      "width": 1.5,
+      "dashes": false,
+      "smooth": {
+        "enabled": true,
+        "type": "dynamic"
+      }
+    },
+    {
+      "from": "db6c52ede4ba",
+      "to": "d160148465df",
+      "label": "",
+      "arrows": "to",
+      "color": {
+        "color": "#9C27B0"
+      },
+      "width": 2,
+      "dashes": false,
+      "smooth": {
+        "enabled": true,
+        "type": "dynamic"
+      }
+    },
+    {
+      "from": "d160148465df",
+      "to": "4487f6ea3afb",
+      "label": "DISCOVERED",
+      "arrows": "to",
+      "color": {
+        "color": "#4CAF50"
+      },
+      "width": 1.5,
+      "dashes": false,
+      "smooth": {
+        "enabled": true,
+        "type": "dynamic"
+      }
+    },
+    {
+      "from": "d160148465df",
+      "to": "5fc8f5831556",
+      "label": "DISCOVERED",
+      "arrows": "to",
+      "color": {
+        "color": "#4CAF50"
+      },
+      "width": 1.5,
+      "dashes": false,
+      "smooth": {
+        "enabled": true,
+        "type": "dynamic"
+      }
+    },
+    {
+      "from": "db6c52ede4ba",
+      "to": "611b8dda24ec",
+      "label": "",
+      "arrows": "to",
+      "color": {
+        "color": "#9C27B0"
+      },
+      "width": 2,
+      "dashes": false,
+      "smooth": {
+        "enabled": true,
+        "type": "dynamic"
+      }
+    },
+    {
+      "from": "611b8dda24ec",
+      "to": "1953515cd779",
+      "label": "DISCOVERED",
+      "arrows": "to",
+      "color": {
+        "color": "#4CAF50"
+      },
+      "width": 1.5,
+      "dashes": false,
+      "smooth": {
+        "enabled": true,
+        "type": "dynamic"
+      }
+    },
+    {
+      "from": "611b8dda24ec",
+      "to": "3cbba0ac1898",
+      "label": "DISCOVERED",
+      "arrows": "to",
+      "color": {
+        "color": "#4CAF50"
+      },
+      "width": 1.5,
+      "dashes": false,
+      "smooth": {
+        "enabled": true,
+        "type": "dynamic"
+      }
+    },
+    {
+      "from": "db6c52ede4ba",
+      "to": "91afe137bfaa",
+      "label": "",
+      "arrows": "to",
+      "color": {
+        "color": "#9C27B0"
+      },
+      "width": 2,
+      "dashes": false,
+      "smooth": {
+        "enabled": true,
+        "type": "dynamic"
+      }
+    },
+    {
+      "from": "db6c52ede4ba",
+      "to": "e73f27fe5191",
+      "label": "",
+      "arrows": "to",
+      "color": {
+        "color": "#9C27B0"
+      },
+      "width": 2,
+      "dashes": false,
+      "smooth": {
+        "enabled": true,
+        "type": "dynamic"
+      }
+    },
+    {
+      "from": "e73f27fe5191",
+      "to": "68b07a5bef9c",
+      "label": "DISCOVERED",
+      "arrows": "to",
+      "color": {
+        "color": "#4CAF50"
+      },
+      "width": 1.5,
+      "dashes": false,
+      "smooth": {
+        "enabled": true,
+        "type": "dynamic"
+      }
+    },
+    {
+      "from": "db6c52ede4ba",
+      "to": "a1639db3d25c",
+      "label": "",
+      "arrows": "to",
+      "color": {
+        "color": "#9C27B0"
+      },
+      "width": 2,
+      "dashes": false,
+      "smooth": {
+        "enabled": true,
+        "type": "dynamic"
+      }
+    },
+    {
+      "from": "db6c52ede4ba",
+      "to": "43d1560238c7",
+      "label": "",
+      "arrows": "to",
+      "color": {
+        "color": "#9C27B0"
+      },
+      "width": 2,
+      "dashes": false,
+      "smooth": {
+        "enabled": true,
+        "type": "dynamic"
+      }
+    },
+    {
+      "from": "43d1560238c7",
+      "to": "a4db7b1a1713",
+      "label": "DISCOVERED",
+      "arrows": "to",
+      "color": {
+        "color": "#4CAF50"
+      },
+      "width": 1.5,
+      "dashes": false,
+      "smooth": {
+        "enabled": true,
+        "type": "dynamic"
+      }
+    },
+    {
+      "from": "43d1560238c7",
+      "to": "f603f2686b77",
+      "label": "DISCOVERED",
+      "arrows": "to",
+      "color": {
+        "color": "#4CAF50"
+      },
+      "width": 1.5,
+      "dashes": false,
+      "smooth": {
+        "enabled": true,
+        "type": "dynamic"
+      }
+    },
+    {
+      "from": "db6c52ede4ba",
+      "to": "8803892af519",
+      "label": "",
+      "arrows": "to",
+      "color": {
+        "color": "#9C27B0"
+      },
+      "width": 2,
+      "dashes": false,
+      "smooth": {
+        "enabled": true,
+        "type": "dynamic"
+      }
+    },
+    {
+      "from": "8803892af519",
+      "to": "c25a91bb8283",
+      "label": "DISCOVERED",
+      "arrows": "to",
+      "color": {
+        "color": "#4CAF50"
+      },
+      "width": 1.5,
+      "dashes": false,
+      "smooth": {
+        "enabled": true,
+        "type": "dynamic"
+      }
+    },
+    {
+      "from": "8803892af519",
+      "to": "c71129559cee",
+      "label": "DISCOVERED",
+      "arrows": "to",
+      "color": {
+        "color": "#4CAF50"
+      },
+      "width": 1.5,
+      "dashes": false,
+      "smooth": {
+        "enabled": true,
+        "type": "dynamic"
+      }
+    },
+    {
+      "from": "b12e5934f749",
+      "to": "ec370042f0f2",
+      "label": "SUPPORTS",
+      "arrows": "to",
+      "color": {
+        "color": "#FF9800"
+      },
+      "width": 1,
+      "dashes": true,
+      "smooth": {
+        "enabled": true,
+        "type": "dynamic"
+      }
+    },
+    {
+      "from": "c94cd15aaf84",
+      "to": "ec370042f0f2",
+      "label": "SUPPORTS",
+      "arrows": "to",
+      "color": {
+        "color": "#FF9800"
+      },
+      "width": 1,
+      "dashes": true,
+      "smooth": {
+        "enabled": true,
+        "type": "dynamic"
+      }
+    },
+    {
+      "from": "11d06c0bca97",
+      "to": "ec370042f0f2",
+      "label": "SUPPORTS",
+      "arrows": "to",
+      "color": {
+        "color": "#FF9800"
+      },
+      "width": 1,
+      "dashes": true,
+      "smooth": {
+        "enabled": true,
+        "type": "dynamic"
+      }
+    },
+    {
+      "from": "cedbb425eed3",
+      "to": "602202f84cfe",
+      "label": "SUPPORTS",
+      "arrows": "to",
+      "color": {
+        "color": "#FF9800"
+      },
+      "width": 1,
+      "dashes": true,
+      "smooth": {
+        "enabled": true,
+        "type": "dynamic"
+      }
+    },
+    {
+      "from": "337add5d8202",
+      "to": "602202f84cfe",
+      "label": "SUPPORTS",
+      "arrows": "to",
+      "color": {
+        "color": "#FF9800"
+      },
+      "width": 1,
+      "dashes": true,
+      "smooth": {
+        "enabled": true,
+        "type": "dynamic"
+      }
+    },
+    {
+      "from": "b0b623687d07",
+      "to": "602202f84cfe",
+      "label": "SUPPORTS",
+      "arrows": "to",
+      "color": {
+        "color": "#FF9800"
+      },
+      "width": 1,
+      "dashes": true,
+      "smooth": {
+        "enabled": true,
+        "type": "dynamic"
+      }
+    },
+    {
+      "from": "11e34f13a8db",
+      "to": "795f8746e51b",
+      "label": "SUPPORTS",
+      "arrows": "to",
+      "color": {
+        "color": "#FF9800"
+      },
+      "width": 1,
+      "dashes": true,
+      "smooth": {
+        "enabled": true,
+        "type": "dynamic"
+      }
+    },
+    {
+      "from": "4487f6ea3afb",
+      "to": "795f8746e51b",
+      "label": "SUPPORTS",
+      "arrows": "to",
+      "color": {
+        "color": "#FF9800"
+      },
+      "width": 1,
+      "dashes": true,
+      "smooth": {
+        "enabled": true,
+        "type": "dynamic"
+      }
+    },
+    {
+      "from": "11d06c0bca97",
+      "to": "9eeeed3b54c4",
+      "label": "SUPPORTS",
+      "arrows": "to",
+      "color": {
+        "color": "#FF9800"
+      },
+      "width": 1,
+      "dashes": true,
+      "smooth": {
+        "enabled": true,
+        "type": "dynamic"
+      }
+    },
+    {
+      "from": "cedbb425eed3",
+      "to": "9eeeed3b54c4",
+      "label": "SUPPORTS",
+      "arrows": "to",
+      "color": {
+        "color": "#FF9800"
+      },
+      "width": 1,
+      "dashes": true,
+      "smooth": {
+        "enabled": true,
+        "type": "dynamic"
+      }
+    },
+    {
+      "from": "337add5d8202",
+      "to": "9eeeed3b54c4",
+      "label": "SUPPORTS",
+      "arrows": "to",
+      "color": {
+        "color": "#FF9800"
+      },
+      "width": 1,
+      "dashes": true,
+      "smooth": {
+        "enabled": true,
+        "type": "dynamic"
+      }
+    },
+    {
+      "from": "b12e5934f749",
+      "to": "ae30ab033b96",
+      "label": "SUPPORTS",
+      "arrows": "to",
+      "color": {
+        "color": "#FF9800"
+      },
+      "width": 1,
+      "dashes": true,
+      "smooth": {
+        "enabled": true,
+        "type": "dynamic"
+      }
+    },
+    {
+      "from": "c94cd15aaf84",
+      "to": "ae30ab033b96",
+      "label": "SUPPORTS",
+      "arrows": "to",
+      "color": {
+        "color": "#FF9800"
+      },
+      "width": 1,
+      "dashes": true,
+      "smooth": {
+        "enabled": true,
+        "type": "dynamic"
+      }
+    },
+    {
+      "from": "11d06c0bca97",
+      "to": "ae30ab033b96",
+      "label": "SUPPORTS",
+      "arrows": "to",
+      "color": {
+        "color": "#FF9800"
+      },
+      "width": 1,
+      "dashes": true,
+      "smooth": {
+        "enabled": true,
+        "type": "dynamic"
+      }
+    }
+  ],
+  "statistics": {
+    "total_nodes": 32,
+    "total_edges": 40,
+    "node_counts": {
+      "query": 1,
+      "search": 10,
+      "datapoint": 16,
+      "insight": 5
+    },
+    "edge_counts": {
+      "INITIATED": 10,
+      "DISCOVERED": 16,
+      "SUPPORTS": 14
+    },
+    "metrics": {
+      "density": 0.04032258064516129,
+      "avg_degree": 2.5,
+      "dead_end_searches": [
+        "Search #6: Mar-a-Lago calendar girl ...",
+        "Search #8: Epstein Trump business de..."
+      ]
+    }
+  }
+}

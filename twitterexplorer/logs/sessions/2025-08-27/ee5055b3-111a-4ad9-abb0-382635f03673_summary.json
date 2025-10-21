@@ -1,0 +1,78 @@
+{
+  "session_metadata": {
+    "session_id": "ee5055b3-111a-4ad9-abb0-382635f03673",
+    "start_time": "2025-08-27T21:27:04.199760+00:00",
+    "end_time": "2025-08-27T21:27:37.045005+00:00",
+    "duration_seconds": 32.844245,
+    "user_query": "Elon Musk X platform news"
+  },
+  "configuration": {
+    "max_searches": 1,
+    "max_time_minutes": 60,
+    "satisfaction_enabled": true,
+    "satisfaction_threshold": 0.8,
+    "min_searches_before_satisfaction": 10,
+    "show_search_details": true,
+    "show_strategy_reasoning": true,
+    "show_effectiveness_scores": true,
+    "enable_strategy_adaptation": true,
+    "enable_alternative_approaches": true,
+    "enable_name_variation_search": true,
+    "pages_per_search": 1,
+    "search_timeout_seconds": 30,
+    "retry_failed_searches": true,
+    "enforce_endpoint_diversity": false,
+    "max_endpoint_repeats": 5,
+    "diversity_threshold": 0.3
+  },
+  "performance_metrics": {
+    "total_searches": 1,
+    "total_rounds": 1,
+    "total_results_found": 59,
+    "satisfaction_score": 0.0,
+    "satisfaction_breakdown": {
+      "information_coverage": 0.0,
+      "source_diversity": 0.0,
+      "evidence_quality": 0.0,
+      "claim_specificity": 0.0,
+      "contradiction_resolution": 0.0
+    },
+    "completion_reason": "Investigation failed: InvestigationSession.update_satisfaction_metrics() missing 1 required positional argument: 'findings'"
+  },
+  "search_summary": {
+    "searches_by_effectiveness": {
+      "highly_effective": [],
+      "moderately_effective": [],
+      "low_effectiveness": [
+        {
+          "search_id": 1,
+          "query": "",
+          "results": 59,
+          "effectiveness": 2.0
+        }
+      ],
+      "ineffective": []
+    },
+    "most_effective_strategies": [
+      {
+        "strategy": "Graph Strategy: To build a comprehensive understanding of \"Elon Musk X platform news,\" the initial strategy must gather information from diverse sources: direct statements from Elon Musk, broad news coverage, and trending topics on the platform itself. This foundational set of searches will help identify key narratives, major announcements, public reactions, and potential areas for deeper investigation, effectively addressing the initial information gaps.",
+        "avg_effectiveness": 2.0
+      }
+    ],
+    "dead_ends": [],
+    "promising_leads": []
+  },
+  "rounds_summary": [
+    {
+      "round_number": 1,
+      "strategy": "Graph Strategy: To build a comprehensive understanding of \"Elon Musk X platform news,\" the initial strategy must gather information from diverse sources: direct statements from Elon Musk, broad news coverage, and trending topics on the platform itself. This foundational set of searches will help identify key narratives, major announcements, public reactions, and potential areas for deeper investigation, effectively addressing the initial information gaps.",
+      "searches_count": 1,
+      "total_results": 59,
+      "effectiveness": 2.0,
+      "insights": [
+        "Elon Musk's xAI company has open-sourced Grok 2.5.",
+        "xAI has released an update for the Grok App (v1.1.63) with improvements."
+      ]
+    }
+  ]
+}

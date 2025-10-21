@@ -1,9 +1,100 @@
 # STATUS.md - Component Status Tracker
 
-**Last Updated**: 2025-10-19 21:25
-**Current Phase**: Phase 1 (Boolean Monitoring MVP) - 100% COMPLETE + **DEPLOYED IN PRODUCTION** ✅
-**Next Phase**: Phase 2 (Simple Web UI) - Ready to start
+**Last Updated**: 2025-10-20 (AdaptiveBooleanMonitor full test complete)
+**Current Phase**: Phase 1.5 (Adaptive Search & Knowledge Graph) - Week 1 COMPLETE
+**Previous Phase**: Phase 1 (Boolean Monitoring MVP) - 100% COMPLETE + **DEPLOYED IN PRODUCTION** ✅
 **Previous Phase**: Phase 0 (Foundation) - 100% COMPLETE
+
+---
+
+## Phase 1.5: Adaptive Search & Knowledge Graph - Component Status
+
+### Week 1: Adaptive Search Engine
+
+| Component | Status | Evidence | Limitations | Next Action |
+|-----------|--------|----------|-------------|-------------|
+| **AdaptiveSearchEngine Class** | [PASS] | core/adaptive_search_engine.py created (456 lines), tested with "military training exercises" query | Only tested with DVIDS (other sources marked not relevant) | Test with queries that activate multiple sources |
+| **Multi-Phase Iteration** | [PASS] | 3 phases executed: Phase 1 (10 results) → Phase 2 (9 results) → Phase 3 (8 results) | Quality threshold not reached (0.52 < 0.6), hit max_iterations (2) | Tune quality threshold based on query type |
+| **Entity Extraction** | [PASS] | Extracted 14 unique entities using gpt-5-mini with JSON schema | Entity quality not manually reviewed | Review extracted entities for accuracy |
+| **Quality Scoring** | [PASS] | Quality improved across phases: 0.35 → 0.44 → 0.52 | Low source diversity warning (only 1 DB relevant) | Expected - not all sources relevant for all queries |
+| **Deduplication** | [PASS] | 27 total results, 27 unique URLs tracked across phases | None | Working as designed |
+| **ParallelExecutor Integration** | [PASS] | Uses execute_all() method correctly, flattens Dict[db_id, QueryResult] → List[Dict] | None | Ready for BooleanMonitor integration |
+| **AdaptiveBooleanMonitor Integration** | [PASS] | monitoring/adaptive_boolean_monitor.py created (269 lines), full E2E test complete: 19 results, 14 relevant, email sent | ~3.5 min total (84s adaptive search + 101s relevance filtering + email) | Ready for production use |
+
+**Phase 1.5 Week 1 Status**: 7 of 7 components working (100%)
+
+**Evidence** (AdaptiveSearchEngine test - 2025-10-20):
+```
+Query: "military training exercises"
+Databases: SAM.gov, DVIDS, Federal Register
+Relevant databases: 1 (DVIDS only)
+
+Phase 1: Broad search
+- Results: 10 from DVIDS
+- Entities extracted: ["165th Airlift Wing", "Exercise Steadfast Noon 2025", "NATO nuclear sharing"]
+- Quality: 0.35
+
+Phase 2: Targeted search
+- Query refinements: 2 entity-based searches
+- Results: 9 new unique results
+- Entities extracted: ["165th Force Support Squadron", "Air National Guard", "Mobile Kitchen Trailer"]
+- Quality: 0.44
+
+Phase 3: Further refinement
+- Query refinements: 2 entity-based searches
+- Results: 8 new unique results
+- Entities extracted: ["116th ASOS", "Sentry North 25", "165th Airlift Wing"]
+- Quality: 0.52
+
+Total: 27 unique results, 14 entities discovered, 3 phases
+Quality metrics: overall=0.52, diversity=0.037 (low - only DVIDS), warnings=["Low source diversity"]
+Execution time: ~45 seconds (includes LLM entity extraction)
+```
+
+**Evidence** (AdaptiveBooleanMonitor full E2E test - 2025-10-20):
+```
+Test: Adaptive monitor with "military training exercises" keyword
+Databases: DVIDS, SAM.gov
+Relevant: 1 (DVIDS only)
+
+Phase 1: Broad search (17s)
+- Results: 10
+- Entities extracted: ['165th Airlift Wing', 'Steadfast Noon', 'NATO Nuclear Planning Group', 'Tyndall AFB', 'Norwegian Foot March']
+
+Phase 2: Targeted refinement (14s)
+- Queries: 2 entity-based searches
+- Results: 7 new
+- Entities: ['165th Airlift Wing', 'Air National Guard', 'National Guard Bureau', 'AMC', 'Title 10 USC']
+- Quality: 0.42
+
+Phase 3: Further refinement (13s)
+- Queries: 2 entity-based searches
+- Results: 2 new
+- Entities: ['MAINEiacs', '5-Ship Training Sortie', 'US Navy', 'US Coast Guard']
+- Quality: 0.44
+
+Total adaptive search: 19 results, 13 entities discovered, 3 phases, 84 seconds
+
+Deduplication: 19 unique results (0 duplicates)
+New result detection: 15 new (vs 21 previous from earlier test run)
+
+LLM relevance filtering (101 seconds):
+- 15 new results scored
+- 14 relevant (scores 6-10/10): 9/10, 10/10, 7/10, 8/10, 6/10, 7/10, 8/10, 6/10, 8/10, 8/10, 9/10, 8/10, 10/10, 9/10
+- 1 filtered out (score 5/10): firefighter water survival training
+
+Email alert: Sent successfully to brianmills2718@gmail.com
+Result storage: Saved to data/monitors/Test_Adaptive_Monitor_results.json
+
+Total execution time: ~3 minutes 25 seconds (84s adaptive + 101s filtering + 3s email/storage)
+```
+
+**Verified**: Full end-to-end integration working (adaptive search → dedup → new detection → relevance filter → email → storage)
+
+**Unverified**:
+- Performance with multiple relevant databases (only DVIDS was relevant in test)
+- Cost tracking for LLM calls (not shown in test output)
+- Production use with all 6 monitors running adaptive search
 
 ---
 
@@ -201,9 +292,10 @@ Validation: ✅ Service running, all monitors scheduled, first execution tomorro
 | **USAJobs** | [PASS] | Live test: 3 results in 3.6s | None | Ready for production |
 | **ClearanceJobs** | [PASS] | Playwright installed, chromium ready | Function-based (not class), needs wrapper | Test via existing UI |
 | **Discord** | [PASS] | CLI test: 777 results in 978ms, searches local exports | 4 corrupted JSON files skipped, local search only | Ready for production |
+| **Twitter** | [PASS] | test_twitter_integration.py: 10 results in 2.4s via RapidAPI, all tests passed. Boolean monitor test: 10 results for 'NVE' keyword via registry | Requires RAPIDAPI_KEY, uses synchronous api_client (wrapped in asyncio.to_thread) | **Production ready** - Added to NVE monitor |
 | **FBI Vault** | [BLOCKED] | Cloudflare 403 blocking | Cannot bypass bot protection | **DEFER** - Not critical for MVP |
 
-**Phase 0 Database Status**: 5 of 6 working (83%), 1 deferred
+**Phase 0 Database Status**: 6 of 7 working (86%), 1 deferred
 
 ---
 

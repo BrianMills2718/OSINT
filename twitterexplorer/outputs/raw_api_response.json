@@ -1,0 +1,3080 @@
+{
+  "pinned": {
+    "tweet_id": "1954499449452966161",
+    "bookmarks": 575,
+    "created_at": "Sun Aug 10 11:05:56 +0000 2025",
+    "favorites": 9478,
+    "text": "Update your 𝕏 app to use",
+    "lang": "en",
+    "source": "<a href=\"http://twitter.com/download/iphone\" rel=\"nofollow\">Twitter for iPhone</a>",
+    "views": "2338005",
+    "quotes": 157,
+    "replies": 3133,
+    "retweets": 2243,
+    "conversation_id": "1954499449452966161",
+    "media": [],
+    "author": {
+      "rest_id": "44196397",
+      "name": "Elon Musk",
+      "screen_name": "elonmusk",
+      "avatar": "https://pbs.twimg.com/profile_images/1936002956333080576/kqqe2iWO_normal.jpg",
+      "blue_verified": true
+    },
+    "quoted": {
+      "tweet_id": "1954493212581929093",
+      "bookmarks": 2426,
+      "created_at": "Sun Aug 10 10:41:09 +0000 2025",
+      "favorites": 33248,
+      "text": "Long press on any image on 𝕏 to have Grok turn it into a video! https://t.co/nxAuyBtX2s",
+      "lang": "en",
+      "source": "<a href=\"http://twitter.com/download/iphone\" rel=\"nofollow\">Twitter for iPhone</a>",
+      "views": "8423664",
+      "quotes": 403,
+      "replies": 4199,
+      "retweets": 4015,
+      "conversation_id": "1954493212581929093",
+      "author": {
+        "rest_id": "44196397",
+        "name": "Elon Musk",
+        "screen_name": "elonmusk",
+        "avatar": "https://pbs.twimg.com/profile_images/1936002956333080576/kqqe2iWO_normal.jpg",
+        "blue_verified": true
+      },
+      "media": {
+        "photo": [
+          {
+            "media_url_https": "https://pbs.twimg.com/media/Gx_BNywW0AAnkG_.jpg",
+            "id": "1954493206009139200"
+          }
+        ]
+      }
+    }
+  },
+  "timeline": [
+    {
+      "tweet_id": "1954585393128698174",
+      "bookmarks": 0,
+      "created_at": "Sun Aug 10 16:47:26 +0000 2025",
+      "favorites": 0,
+      "text": "RT @MarioNawfal: ELON: THE WINDOW TO MAKE LIFE MULTIPLANETARY IS OPEN - FOR THE FIRST TIME EVER\n\n@elonmusk:\n\n“The window of opportunity to…",
+      "lang": "en",
+      "source": "<a href=\"http://twitter.com/download/iphone\" rel=\"nofollow\">Twitter for iPhone</a>",
+      "views": "23",
+      "quotes": 0,
+      "entities": {
+        "hashtags": [],
+        "symbols": [],
+        "timestamps": [],
+        "urls": [],
+        "user_mentions": [
+          {
+            "id_str": "1319287761048723458",
+            "name": "Mario Nawfal",
+            "screen_name": "MarioNawfal"
+          },
+          {
+            "id_str": "44196397",
+            "name": "Elon Musk",
+            "screen_name": "elonmusk"
+          }
+        ]
+      },
+      "replies": 0,
+      "retweets": 631,
+      "conversation_id": "1954585393128698174",
+      "media": [],
+      "author": {
+        "rest_id": "44196397",
+        "name": "Elon Musk",
+        "screen_name": "elonmusk",
+        "avatar": "https://pbs.twimg.com/profile_images/1936002956333080576/kqqe2iWO_normal.jpg",
+        "blue_verified": true
+      },
+      "retweeted": {
+        "id": "1953788622110335100"
+      },
+      "retweeted_tweet": {
+        "tweet_id": "1953788622110335100",
+        "bookmarks": 185,
+        "created_at": "Fri Aug 08 12:01:21 +0000 2025",
+        "favorites": 3432,
+        "text": "ELON: THE WINDOW TO MAKE LIFE MULTIPLANETARY IS OPEN - FOR THE FIRST TIME EVER\n\n@elonmusk:\n\n“The window of opportunity to make life multiplanetary and have a base on the moon or Mars is open for the first time in the four and a half billion-year history of Earth.\n\nWhile the window is open, we should make life multiplanetary.”\n\nSource: Full Send Podcast, August 2022",
+        "lang": "en",
+        "views": "1394612",
+        "quotes": 38,
+        "entities": {
+          "hashtags": [],
+          "media": [
+            {
+              "display_url": "pic.x.com/jsimM9gl0f",
+              "expanded_url": "https://x.com/MarioNawfal/status/1953788622110335100/video/1",
+              "id_str": "1953788474403815424",
+              "indices": [
+                275,
+                298
+              ],
+              "media_key": "13_1953788474403815424",
+              "media_url_https": "https://pbs.twimg.com/amplify_video_thumb/1953788474403815424/img/5D6ChRIQtGBN0NEW.jpg",
+              "type": "video",
+              "url": "https://t.co/jsimM9gl0f",
+              "additional_media_info": {
+                "monetizable": false
+              },
+              "ext_media_availability": {
+                "status": "Available"
+              },
+              "sizes": {
+                "large": {
+                  "h": 1920,
+                  "w": 1080,
+                  "resize": "fit"
+                },
+                "medium": {
+                  "h": 1200,
+                  "w": 675,
+                  "resize": "fit"
+                },
+                "small": {
+                  "h": 680,
+                  "w": 383,
+                  "resize": "fit"
+                },
+                "thumb": {
+                  "h": 150,
+                  "w": 150,
+                  "resize": "crop"
+                }
+              },
+              "original_info": {
+                "height": 1920,
+                "width": 1080,
+                "focus_rects": []
+              },
+              "video_info": {
+                "aspect_ratio": [
+                  9,
+                  16
+                ],
+                "duration_millis": 23366,
+                "variants": [
+                  {
+                    "content_type": "application/x-mpegURL",
+                    "url": "https://video.twimg.com/amplify_video/1953788474403815424/pl/oK65DOyXTaz7Urbs.m3u8?tag=21&v=846"
+                  },
+                  {
+                    "bitrate": 632000,
+                    "content_type": "video/mp4",
+                    "url": "https://video.twimg.com/amplify_video/1953788474403815424/vid/avc1/320x568/WqO9ikdoLRdaskEp.mp4?tag=21"
+                  },
+                  {
+                    "bitrate": 950000,
+                    "content_type": "video/mp4",
+                    "url": "https://video.twimg.com/amplify_video/1953788474403815424/vid/avc1/480x852/ad8kl04KGvig1Rig.mp4?tag=21"
+                  },
+                  {
+                    "bitrate": 2176000,
+                    "content_type": "video/mp4",
+                    "url": "https://video.twimg.com/amplify_video/1953788474403815424/vid/avc1/720x1280/Kbc3LCj6S7_gmsY2.mp4?tag=21"
+                  },
+                  {
+                    "bitrate": 10368000,
+                    "content_type": "video/mp4",
+                    "url": "https://video.twimg.com/amplify_video/1953788474403815424/vid/avc1/1080x1920/QDpEoUvQP3jcplB7.mp4?tag=21"
+                  }
+                ]
+              },
+              "media_results": {
+                "result": {
+                  "media_key": "13_1953788474403815424"
+                }
+              }
+            }
+          ],
+          "symbols": [],
+          "timestamps": [],
+          "urls": [],
+          "user_mentions": [
+            {
+              "id_str": "44196397",
+              "name": "Elon Musk",
+              "screen_name": "elonmusk",
+              "indices": [
+                80,
+                89
+              ]
+            }
+          ]
+        },
+        "replies": 510,
+        "retweets": 631,
+        "conversation_id": "1953788622110335100",
+        "author": {
+          "rest_id": "1319287761048723458",
+          "name": "Mario Nawfal",
+          "screen_name": "MarioNawfal",
+          "avatar": "https://pbs.twimg.com/profile_images/1938244629071015936/UwtzYY-R_normal.jpg",
+          "blue_verified": true
+        },
+        "media": {
+          "video": [
+            {
+              "media_url_https": "https://pbs.twimg.com/amplify_video_thumb/1953788474403815424/img/5D6ChRIQtGBN0NEW.jpg",
+              "variants": [
+                {
+                  "content_type": "application/x-mpegURL",
+                  "url": "https://video.twimg.com/amplify_video/1953788474403815424/pl/oK65DOyXTaz7Urbs.m3u8?tag=21&v=846"
+                },
+                {
+                  "bitrate": 632000,
+                  "content_type": "video/mp4",
+                  "url": "https://video.twimg.com/amplify_video/1953788474403815424/vid/avc1/320x568/WqO9ikdoLRdaskEp.mp4?tag=21"
+                },
+                {
+                  "bitrate": 950000,
+                  "content_type": "video/mp4",
+                  "url": "https://video.twimg.com/amplify_video/1953788474403815424/vid/avc1/480x852/ad8kl04KGvig1Rig.mp4?tag=21"
+                },
+                {
+                  "bitrate": 2176000,
+                  "content_type": "video/mp4",
+                  "url": "https://video.twimg.com/amplify_video/1953788474403815424/vid/avc1/720x1280/Kbc3LCj6S7_gmsY2.mp4?tag=21"
+                },
+                {
+                  "bitrate": 10368000,
+                  "content_type": "video/mp4",
+                  "url": "https://video.twimg.com/amplify_video/1953788474403815424/vid/avc1/1080x1920/QDpEoUvQP3jcplB7.mp4?tag=21"
+                }
+              ],
+              "aspect_ratio": [
+                9,
+                16
+              ],
+              "duration": 23366,
+              "original_info": {
+                "height": 1920,
+                "width": 1080,
+                "focus_rects": []
+              },
+              "id": "1953788474403815424"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "tweet_id": "1954584762120798218",
+      "bookmarks": 0,
+      "created_at": "Sun Aug 10 16:44:56 +0000 2025",
+      "favorites": 0,
+      "text": "RT @Morning88104856: Morning, 𝕏 fam! 🚀 \n\nGrok Imagine https://t.co/eOw2bpoZaG",
+      "lang": "en",
+      "source": "<a href=\"http://twitter.com/download/iphone\" rel=\"nofollow\">Twitter for iPhone</a>",
+      "views": "53",
+      "quotes": 0,
+      "entities": {
+        "hashtags": [],
+        "symbols": [],
+        "timestamps": [],
+        "urls": [],
+        "user_mentions": [
+          {
+            "id_str": "1623453348127973376",
+            "name": "Morning Glory",
+            "screen_name": "Morning88104856"
+          }
+        ]
+      },
+      "replies": 0,
+      "retweets": 579,
+      "conversation_id": "1954584762120798218",
+      "media": {
+        "video": [
+          {
+            "media_url_https": "https://pbs.twimg.com/amplify_video_thumb/1954482533179027456/img/VDxqYspNfMNo93Ou.jpg",
+            "variants": [
+              {
+                "content_type": "application/x-mpegURL",
+                "url": "https://video.twimg.com/amplify_video/1954482533179027456/pl/Ue1Opbu97BGC538t.m3u8?tag=23"
+              },
+              {
+                "bitrate": 5184000,
+                "content_type": "video/mp4",
+                "url": "https://video.twimg.com/amplify_video/1954482533179027456/vid/avc1/464x688/2O6uxuNYbwd19I7J.mp4?tag=23"
+              }
+            ],
+            "aspect_ratio": [
+              29,
+              43
+            ],
+            "duration": 6062,
+            "original_info": {
+              "height": 688,
+              "width": 464,
+              "focus_rects": []
+            },
+            "id": "1954482533179027456"
+          }
+        ]
+      },
+      "author": {
+        "rest_id": "44196397",
+        "name": "Elon Musk",
+        "screen_name": "elonmusk",
+        "avatar": "https://pbs.twimg.com/profile_images/1936002956333080576/kqqe2iWO_normal.jpg",
+        "blue_verified": true
+      },
+      "retweeted": {
+        "id": "1954482920653259072"
+      },
+      "retweeted_tweet": {
+        "tweet_id": "1954482920653259072",
+        "bookmarks": 201,
+        "created_at": "Sun Aug 10 10:00:15 +0000 2025",
+        "favorites": 4329,
+        "text": "Morning, 𝕏 fam! 🚀 \n\nGrok Imagine https://t.co/eOw2bpoZaG",
+        "lang": "en",
+        "views": "1064792",
+        "quotes": 28,
+        "entities": {
+          "hashtags": [],
+          "media": [
+            {
+              "display_url": "pic.x.com/eOw2bpoZaG",
+              "expanded_url": "https://x.com/Morning88104856/status/1954482920653259072/video/1",
+              "id_str": "1954482533179027456",
+              "indices": [
+                33,
+                56
+              ],
+              "media_key": "13_1954482533179027456",
+              "media_url_https": "https://pbs.twimg.com/amplify_video_thumb/1954482533179027456/img/VDxqYspNfMNo93Ou.jpg",
+              "type": "video",
+              "url": "https://t.co/eOw2bpoZaG",
+              "additional_media_info": {
+                "monetizable": false
+              },
+              "ext_media_availability": {
+                "status": "Available"
+              },
+              "sizes": {
+                "large": {
+                  "h": 688,
+                  "w": 464,
+                  "resize": "fit"
+                },
+                "medium": {
+                  "h": 688,
+                  "w": 464,
+                  "resize": "fit"
+                },
+                "small": {
+                  "h": 680,
+                  "w": 459,
+                  "resize": "fit"
+                },
+                "thumb": {
+                  "h": 150,
+                  "w": 150,
+                  "resize": "crop"
+                }
+              },
+              "original_info": {
+                "height": 688,
+                "width": 464,
+                "focus_rects": []
+              },
+              "allow_download_status": {
+                "allow_download": true
+              },
+              "video_info": {
+                "aspect_ratio": [
+                  29,
+                  43
+                ],
+                "duration_millis": 6062,
+                "variants": [
+                  {
+                    "content_type": "application/x-mpegURL",
+                    "url": "https://video.twimg.com/amplify_video/1954482533179027456/pl/Ue1Opbu97BGC538t.m3u8?tag=23"
+                  },
+                  {
+                    "bitrate": 5184000,
+                    "content_type": "video/mp4",
+                    "url": "https://video.twimg.com/amplify_video/1954482533179027456/vid/avc1/464x688/2O6uxuNYbwd19I7J.mp4?tag=23"
+                  }
+                ]
+              },
+              "media_results": {
+                "result": {
+                  "media_key": "13_1954482533179027456"
+                }
+              },
+              "grok_post_id": "f2fa139b-ac2c-45e7-ba24-eee59fc0a039"
+            }
+          ],
+          "symbols": [],
+          "timestamps": [],
+          "urls": [],
+          "user_mentions": []
+        },
+        "replies": 407,
+        "retweets": 579,
+        "conversation_id": "1954482920653259072",
+        "author": {
+          "rest_id": "1623453348127973376",
+          "name": "Morning Glory",
+          "screen_name": "Morning88104856",
+          "avatar": "https://pbs.twimg.com/profile_images/1932086591087874048/33v1mqYR_normal.jpg",
+          "blue_verified": true
+        },
+        "media": {
+          "video": [
+            {
+              "media_url_https": "https://pbs.twimg.com/amplify_video_thumb/1954482533179027456/img/VDxqYspNfMNo93Ou.jpg",
+              "variants": [
+                {
+                  "content_type": "application/x-mpegURL",
+                  "url": "https://video.twimg.com/amplify_video/1954482533179027456/pl/Ue1Opbu97BGC538t.m3u8?tag=23"
+                },
+                {
+                  "bitrate": 5184000,
+                  "content_type": "video/mp4",
+                  "url": "https://video.twimg.com/amplify_video/1954482533179027456/vid/avc1/464x688/2O6uxuNYbwd19I7J.mp4?tag=23"
+                }
+              ],
+              "aspect_ratio": [
+                29,
+                43
+              ],
+              "duration": 6062,
+              "original_info": {
+                "height": 688,
+                "width": 464,
+                "focus_rects": []
+              },
+              "id": "1954482533179027456"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "tweet_id": "1954578839260082386",
+      "bookmarks": 0,
+      "created_at": "Sun Aug 10 16:21:24 +0000 2025",
+      "favorites": 0,
+      "text": "RT @amXFreeze: Turn your imagination into video, Instantly!\nWith Grok Imagine https://t.co/dBd2Zmrg8P",
+      "lang": "en",
+      "source": "<a href=\"http://twitter.com/download/iphone\" rel=\"nofollow\">Twitter for iPhone</a>",
+      "views": "15",
+      "quotes": 0,
+      "entities": {
+        "hashtags": [],
+        "symbols": [],
+        "timestamps": [],
+        "urls": [],
+        "user_mentions": [
+          {
+            "id_str": "1818311005698678784",
+            "name": "X Freeze",
+            "screen_name": "amXFreeze"
+          }
+        ]
+      },
+      "replies": 0,
+      "retweets": 488,
+      "conversation_id": "1954578839260082386",
+      "media": {
+        "video": [
+          {
+            "media_url_https": "https://pbs.twimg.com/amplify_video_thumb/1954573613509517315/img/kNf-eAr8NByQOzf2.jpg",
+            "variants": [
+              {
+                "content_type": "application/x-mpegURL",
+                "url": "https://video.twimg.com/amplify_video/1954573613509517315/pl/5wjr6kQXVlhEUxM0.m3u8?tag=21&v=cfc"
+              },
+              {
+                "bitrate": 632000,
+                "content_type": "video/mp4",
+                "url": "https://video.twimg.com/amplify_video/1954573613509517315/vid/avc1/320x568/YdJe53Wn5YOsXjms.mp4?tag=21"
+              },
+              {
+                "bitrate": 950000,
+                "content_type": "video/mp4",
+                "url": "https://video.twimg.com/amplify_video/1954573613509517315/vid/avc1/480x852/D_SX9mlDyovzL9Ym.mp4?tag=21"
+              },
+              {
+                "bitrate": 2176000,
+                "content_type": "video/mp4",
+                "url": "https://video.twimg.com/amplify_video/1954573613509517315/vid/avc1/720x1280/_mpGQmUAywIpXBNA.mp4?tag=21"
+              },
+              {
+                "bitrate": 10368000,
+                "content_type": "video/mp4",
+                "url": "https://video.twimg.com/amplify_video/1954573613509517315/vid/avc1/1080x1920/CGS2UuxCLmT38NpU.mp4?tag=21"
+              }
+            ],
+            "aspect_ratio": [
+              9,
+              16
+            ],
+            "duration": 11308,
+            "original_info": {
+              "height": 1920,
+              "width": 1080,
+              "focus_rects": []
+            },
+            "id": "1954573613509517315"
+          }
+        ]
+      },
+      "author": {
+        "rest_id": "44196397",
+        "name": "Elon Musk",
+        "screen_name": "elonmusk",
+        "avatar": "https://pbs.twimg.com/profile_images/1936002956333080576/kqqe2iWO_normal.jpg",
+        "blue_verified": true
+      },
+      "retweeted": {
+        "id": "1954577058543043047"
+      },
+      "retweeted_tweet": {
+        "tweet_id": "1954577058543043047",
+        "bookmarks": 108,
+        "created_at": "Sun Aug 10 16:14:19 +0000 2025",
+        "favorites": 2341,
+        "text": "Turn your imagination into video, Instantly!\nWith Grok Imagine https://t.co/dBd2Zmrg8P",
+        "lang": "en",
+        "views": "736633",
+        "quotes": 22,
+        "entities": {
+          "hashtags": [],
+          "media": [
+            {
+              "display_url": "pic.x.com/dBd2Zmrg8P",
+              "expanded_url": "https://x.com/amXFreeze/status/1954577058543043047/video/1",
+              "id_str": "1954573613509517315",
+              "indices": [
+                63,
+                86
+              ],
+              "media_key": "13_1954573613509517315",
+              "media_url_https": "https://pbs.twimg.com/amplify_video_thumb/1954573613509517315/img/kNf-eAr8NByQOzf2.jpg",
+              "type": "video",
+              "url": "https://t.co/dBd2Zmrg8P",
+              "additional_media_info": {
+                "monetizable": false
+              },
+              "ext_media_availability": {
+                "status": "Available"
+              },
+              "sizes": {
+                "large": {
+                  "h": 1920,
+                  "w": 1080,
+                  "resize": "fit"
+                },
+                "medium": {
+                  "h": 1200,
+                  "w": 675,
+                  "resize": "fit"
+                },
+                "small": {
+                  "h": 680,
+                  "w": 383,
+                  "resize": "fit"
+                },
+                "thumb": {
+                  "h": 150,
+                  "w": 150,
+                  "resize": "crop"
+                }
+              },
+              "original_info": {
+                "height": 1920,
+                "width": 1080,
+                "focus_rects": []
+              },
+              "allow_download_status": {
+                "allow_download": true
+              },
+              "video_info": {
+                "aspect_ratio": [
+                  9,
+                  16
+                ],
+                "duration_millis": 11308,
+                "variants": [
+                  {
+                    "content_type": "application/x-mpegURL",
+                    "url": "https://video.twimg.com/amplify_video/1954573613509517315/pl/5wjr6kQXVlhEUxM0.m3u8?tag=21&v=cfc"
+                  },
+                  {
+                    "bitrate": 632000,
+                    "content_type": "video/mp4",
+                    "url": "https://video.twimg.com/amplify_video/1954573613509517315/vid/avc1/320x568/YdJe53Wn5YOsXjms.mp4?tag=21"
+                  },
+                  {
+                    "bitrate": 950000,
+                    "content_type": "video/mp4",
+                    "url": "https://video.twimg.com/amplify_video/1954573613509517315/vid/avc1/480x852/D_SX9mlDyovzL9Ym.mp4?tag=21"
+                  },
+                  {
+                    "bitrate": 2176000,
+                    "content_type": "video/mp4",
+                    "url": "https://video.twimg.com/amplify_video/1954573613509517315/vid/avc1/720x1280/_mpGQmUAywIpXBNA.mp4?tag=21"
+                  },
+                  {
+                    "bitrate": 10368000,
+                    "content_type": "video/mp4",
+                    "url": "https://video.twimg.com/amplify_video/1954573613509517315/vid/avc1/1080x1920/CGS2UuxCLmT38NpU.mp4?tag=21"
+                  }
+                ]
+              },
+              "media_results": {
+                "result": {
+                  "media_key": "13_1954573613509517315"
+                }
+              }
+            }
+          ],
+          "symbols": [],
+          "timestamps": [],
+          "urls": [],
+          "user_mentions": []
+        },
+        "replies": 415,
+        "retweets": 488,
+        "conversation_id": "1954577058543043047",
+        "author": {
+          "rest_id": "1818311005698678784",
+          "name": "X Freeze",
+          "screen_name": "amXFreeze",
+          "avatar": "https://pbs.twimg.com/profile_images/1876785200010539008/2_HFJjq9_normal.jpg",
+          "blue_verified": true
+        },
+        "media": {
+          "video": [
+            {
+              "media_url_https": "https://pbs.twimg.com/amplify_video_thumb/1954573613509517315/img/kNf-eAr8NByQOzf2.jpg",
+              "variants": [
+                {
+                  "content_type": "application/x-mpegURL",
+                  "url": "https://video.twimg.com/amplify_video/1954573613509517315/pl/5wjr6kQXVlhEUxM0.m3u8?tag=21&v=cfc"
+                },
+                {
+                  "bitrate": 632000,
+                  "content_type": "video/mp4",
+                  "url": "https://video.twimg.com/amplify_video/1954573613509517315/vid/avc1/320x568/YdJe53Wn5YOsXjms.mp4?tag=21"
+                },
+                {
+                  "bitrate": 950000,
+                  "content_type": "video/mp4",
+                  "url": "https://video.twimg.com/amplify_video/1954573613509517315/vid/avc1/480x852/D_SX9mlDyovzL9Ym.mp4?tag=21"
+                },
+                {
+                  "bitrate": 2176000,
+                  "content_type": "video/mp4",
+                  "url": "https://video.twimg.com/amplify_video/1954573613509517315/vid/avc1/720x1280/_mpGQmUAywIpXBNA.mp4?tag=21"
+                },
+                {
+                  "bitrate": 10368000,
+                  "content_type": "video/mp4",
+                  "url": "https://video.twimg.com/amplify_video/1954573613509517315/vid/avc1/1080x1920/CGS2UuxCLmT38NpU.mp4?tag=21"
+                }
+              ],
+              "aspect_ratio": [
+                9,
+                16
+              ],
+              "duration": 11308,
+              "original_info": {
+                "height": 1920,
+                "width": 1080,
+                "focus_rects": []
+              },
+              "id": "1954573613509517315"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "tweet_id": "1954578728547184953",
+      "bookmarks": 0,
+      "created_at": "Sun Aug 10 16:20:57 +0000 2025",
+      "favorites": 0,
+      "text": "RT @dvorahfr: Welcome aboard SpaceX's New York-Melbourne shuttle\nImagine to travel around the world during a meal at a restaurant!\n\nImages…",
+      "lang": "en",
+      "source": "<a href=\"http://twitter.com/download/iphone\" rel=\"nofollow\">Twitter for iPhone</a>",
+      "views": "13",
+      "quotes": 0,
+      "entities": {
+        "hashtags": [],
+        "symbols": [],
+        "timestamps": [],
+        "urls": [],
+        "user_mentions": [
+          {
+            "id_str": "2178040394",
+            "name": "Déborah",
+            "screen_name": "dvorahfr"
+          }
+        ]
+      },
+      "replies": 0,
+      "retweets": 672,
+      "conversation_id": "1954578728547184953",
+      "media": [],
+      "author": {
+        "rest_id": "44196397",
+        "name": "Elon Musk",
+        "screen_name": "elonmusk",
+        "avatar": "https://pbs.twimg.com/profile_images/1936002956333080576/kqqe2iWO_normal.jpg",
+        "blue_verified": true
+      },
+      "retweeted": {
+        "id": "1954577908707508263"
+      },
+      "retweeted_tweet": {
+        "tweet_id": "1954577908707508263",
+        "bookmarks": 175,
+        "created_at": "Sun Aug 10 16:17:42 +0000 2025",
+        "favorites": 3483,
+        "text": "Welcome aboard SpaceX's New York-Melbourne shuttle\nImagine to travel around the world during a meal at a restaurant!\n\nImages &amp; animation: Grok imagine https://t.co/5qh5bbua6O",
+        "lang": "en",
+        "views": "874596",
+        "quotes": 44,
+        "entities": {
+          "hashtags": [],
+          "media": [
+            {
+              "display_url": "pic.x.com/5qh5bbua6O",
+              "expanded_url": "https://x.com/dvorahfr/status/1954577908707508263/video/1",
+              "id_str": "1954577325099495425",
+              "indices": [
+                155,
+                178
+              ],
+              "media_key": "13_1954577325099495425",
+              "media_url_https": "https://pbs.twimg.com/amplify_video_thumb/1954577325099495425/img/4c6saBsOmYI8gBRR.jpg",
+              "type": "video",
+              "url": "https://t.co/5qh5bbua6O",
+              "additional_media_info": {
+                "monetizable": false
+              },
+              "ext_media_availability": {
+                "status": "Available"
+              },
+              "sizes": {
+                "large": {
+                  "h": 2048,
+                  "w": 1382,
+                  "resize": "fit"
+                },
+                "medium": {
+                  "h": 1200,
+                  "w": 809,
+                  "resize": "fit"
+                },
+                "small": {
+                  "h": 680,
+                  "w": 459,
+                  "resize": "fit"
+                },
+                "thumb": {
+                  "h": 150,
+                  "w": 150,
+                  "resize": "crop"
+                }
+              },
+              "original_info": {
+                "height": 3202,
+                "width": 2160,
+                "focus_rects": []
+              },
+              "allow_download_status": {
+                "allow_download": true
+              },
+              "video_info": {
+                "aspect_ratio": [
+                  1080,
+                  1601
+                ],
+                "duration_millis": 60813,
+                "variants": [
+                  {
+                    "content_type": "application/x-mpegURL",
+                    "url": "https://video.twimg.com/amplify_video/1954577325099495425/pl/cTwFSAJ8-J30jLdE.m3u8?tag=21&v=6d6"
+                  },
+                  {
+                    "bitrate": 632000,
+                    "content_type": "video/mp4",
+                    "url": "https://video.twimg.com/amplify_video/1954577325099495425/vid/avc1/320x474/05aFVlqaC7sOQ4jo.mp4?tag=21"
+                  },
+                  {
+                    "bitrate": 950000,
+                    "content_type": "video/mp4",
+                    "url": "https://video.twimg.com/amplify_video/1954577325099495425/vid/avc1/480x710/6evNxv9qJTu-X31O.mp4?tag=21"
+                  },
+                  {
+                    "bitrate": 2176000,
+                    "content_type": "video/mp4",
+                    "url": "https://video.twimg.com/amplify_video/1954577325099495425/vid/avc1/720x1066/FAb_Xh10pnqqWfpU.mp4?tag=21"
+                  },
+                  {
+                    "bitrate": 10368000,
+                    "content_type": "video/mp4",
+                    "url": "https://video.twimg.com/amplify_video/1954577325099495425/vid/avc1/1080x1600/InSK9lBQe0Hymird.mp4?tag=21"
+                  },
+                  {
+                    "bitrate": 25128000,
+                    "content_type": "video/mp4",
+                    "url": "https://video.twimg.com/amplify_video/1954577325099495425/vid/avc1/2160x3202/emjvTophEqYvVHE0.mp4?tag=21"
+                  }
+                ]
+              },
+              "media_results": {
+                "result": {
+                  "media_key": "13_1954577325099495425"
+                }
+              }
+            }
+          ],
+          "symbols": [],
+          "timestamps": [],
+          "urls": [],
+          "user_mentions": []
+        },
+        "replies": 514,
+        "retweets": 672,
+        "conversation_id": "1954577908707508263",
+        "author": {
+          "rest_id": "2178040394",
+          "name": "Déborah",
+          "screen_name": "dvorahfr",
+          "avatar": "https://pbs.twimg.com/profile_images/1605451924144373760/K27zpEfc_normal.jpg",
+          "blue_verified": true
+        },
+        "media": {
+          "video": [
+            {
+              "media_url_https": "https://pbs.twimg.com/amplify_video_thumb/1954577325099495425/img/4c6saBsOmYI8gBRR.jpg",
+              "variants": [
+                {
+                  "content_type": "application/x-mpegURL",
+                  "url": "https://video.twimg.com/amplify_video/1954577325099495425/pl/cTwFSAJ8-J30jLdE.m3u8?tag=21&v=6d6"
+                },
+                {
+                  "bitrate": 632000,
+                  "content_type": "video/mp4",
+                  "url": "https://video.twimg.com/amplify_video/1954577325099495425/vid/avc1/320x474/05aFVlqaC7sOQ4jo.mp4?tag=21"
+                },
+                {
+                  "bitrate": 950000,
+                  "content_type": "video/mp4",
+                  "url": "https://video.twimg.com/amplify_video/1954577325099495425/vid/avc1/480x710/6evNxv9qJTu-X31O.mp4?tag=21"
+                },
+                {
+                  "bitrate": 2176000,
+                  "content_type": "video/mp4",
+                  "url": "https://video.twimg.com/amplify_video/1954577325099495425/vid/avc1/720x1066/FAb_Xh10pnqqWfpU.mp4?tag=21"
+                },
+                {
+                  "bitrate": 10368000,
+                  "content_type": "video/mp4",
+                  "url": "https://video.twimg.com/amplify_video/1954577325099495425/vid/avc1/1080x1600/InSK9lBQe0Hymird.mp4?tag=21"
+                },
+                {
+                  "bitrate": 25128000,
+                  "content_type": "video/mp4",
+                  "url": "https://video.twimg.com/amplify_video/1954577325099495425/vid/avc1/2160x3202/emjvTophEqYvVHE0.mp4?tag=21"
+                }
+              ],
+              "aspect_ratio": [
+                1080,
+                1601
+              ],
+              "duration": 60813,
+              "original_info": {
+                "height": 3202,
+                "width": 2160,
+                "focus_rects": []
+              },
+              "id": "1954577325099495425"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "tweet_id": "1954578288547885073",
+      "bookmarks": 0,
+      "created_at": "Sun Aug 10 16:19:12 +0000 2025",
+      "favorites": 0,
+      "text": "RT @luke_leisher_: I find it funny that SpaceX has some of the coolest aerospace videos ever but they're hidden in a YouTube video from 14…",
+      "lang": "en",
+      "source": "<a href=\"http://twitter.com/download/iphone\" rel=\"nofollow\">Twitter for iPhone</a>",
+      "views": "22",
+      "quotes": 0,
+      "entities": {
+        "hashtags": [],
+        "symbols": [],
+        "timestamps": [],
+        "urls": [],
+        "user_mentions": [
+          {
+            "id_str": "1839268922463498240",
+            "name": "Luke Leisher",
+            "screen_name": "luke_leisher_"
+          }
+        ]
+      },
+      "replies": 0,
+      "retweets": 447,
+      "conversation_id": "1954578288547885073",
+      "media": [],
+      "author": {
+        "rest_id": "44196397",
+        "name": "Elon Musk",
+        "screen_name": "elonmusk",
+        "avatar": "https://pbs.twimg.com/profile_images/1936002956333080576/kqqe2iWO_normal.jpg",
+        "blue_verified": true
+      },
+      "retweeted": {
+        "id": "1954374352071532946"
+      },
+      "retweeted_tweet": {
+        "tweet_id": "1954374352071532946",
+        "bookmarks": 241,
+        "created_at": "Sun Aug 10 02:48:50 +0000 2025",
+        "favorites": 3161,
+        "text": "I find it funny that SpaceX has some of the coolest aerospace videos ever but they're hidden in a YouTube video from 14 years ago with 9k views. https://t.co/sNmvCaodRq",
+        "lang": "en",
+        "views": "774713",
+        "quotes": 16,
+        "entities": {
+          "hashtags": [],
+          "media": [
+            {
+              "display_url": "pic.x.com/sNmvCaodRq",
+              "expanded_url": "https://x.com/luke_leisher_/status/1954374352071532946/video/1",
+              "id_str": "1954374044326764545",
+              "indices": [
+                145,
+                168
+              ],
+              "media_key": "13_1954374044326764545",
+              "media_url_https": "https://pbs.twimg.com/amplify_video_thumb/1954374044326764545/img/xPl6Bt865iTZ63vF.jpg",
+              "type": "video",
+              "url": "https://t.co/sNmvCaodRq",
+              "additional_media_info": {
+                "monetizable": false
+              },
+              "ext_media_availability": {
+                "status": "Available"
+              },
+              "sizes": {
+                "large": {
+                  "h": 360,
+                  "w": 492,
+                  "resize": "fit"
+                },
+                "medium": {
+                  "h": 360,
+                  "w": 492,
+                  "resize": "fit"
+                },
+                "small": {
+                  "h": 360,
+                  "w": 492,
+                  "resize": "fit"
+                },
+                "thumb": {
+                  "h": 150,
+                  "w": 150,
+                  "resize": "crop"
+                }
+              },
+              "original_info": {
+                "height": 360,
+                "width": 492,
+                "focus_rects": []
+              },
+              "video_info": {
+                "aspect_ratio": [
+                  41,
+                  30
+                ],
+                "duration_millis": 179583,
+                "variants": [
+                  {
+                    "content_type": "application/x-mpegURL",
+                    "url": "https://video.twimg.com/amplify_video/1954374044326764545/pl/tqbLdZksUl0fTalV.m3u8?tag=21&v=cfc"
+                  },
+                  {
+                    "bitrate": 256000,
+                    "content_type": "video/mp4",
+                    "url": "https://video.twimg.com/amplify_video/1954374044326764545/vid/avc1/368x270/ZuPa91zcnoEyG337.mp4?tag=21"
+                  },
+                  {
+                    "bitrate": 832000,
+                    "content_type": "video/mp4",
+                    "url": "https://video.twimg.com/amplify_video/1954374044326764545/vid/avc1/492x360/0DppXsFAsEU7nPk4.mp4?tag=21"
+                  }
+                ]
+              },
+              "media_results": {
+                "result": {
+                  "media_key": "13_1954374044326764545"
+                }
+              }
+            }
+          ],
+          "symbols": [],
+          "timestamps": [],
+          "urls": [],
+          "user_mentions": []
+        },
+        "replies": 148,
+        "retweets": 447,
+        "conversation_id": "1954374352071532946",
+        "author": {
+          "rest_id": "1839268922463498240",
+          "name": "Luke Leisher",
+          "screen_name": "luke_leisher_",
+          "avatar": "https://pbs.twimg.com/profile_images/1920523869149855744/oq-Wievk_normal.jpg",
+          "blue_verified": true
+        },
+        "media": {
+          "video": [
+            {
+              "media_url_https": "https://pbs.twimg.com/amplify_video_thumb/1954374044326764545/img/xPl6Bt865iTZ63vF.jpg",
+              "variants": [
+                {
+                  "content_type": "application/x-mpegURL",
+                  "url": "https://video.twimg.com/amplify_video/1954374044326764545/pl/tqbLdZksUl0fTalV.m3u8?tag=21&v=cfc"
+                },
+                {
+                  "bitrate": 256000,
+                  "content_type": "video/mp4",
+                  "url": "https://video.twimg.com/amplify_video/1954374044326764545/vid/avc1/368x270/ZuPa91zcnoEyG337.mp4?tag=21"
+                },
+                {
+                  "bitrate": 832000,
+                  "content_type": "video/mp4",
+                  "url": "https://video.twimg.com/amplify_video/1954374044326764545/vid/avc1/492x360/0DppXsFAsEU7nPk4.mp4?tag=21"
+                }
+              ],
+              "aspect_ratio": [
+                41,
+                30
+              ],
+              "duration": 179583,
+              "original_info": {
+                "height": 360,
+                "width": 492,
+                "focus_rects": []
+              },
+              "id": "1954374044326764545"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "tweet_id": "1954577743930151053",
+      "bookmarks": 0,
+      "created_at": "Sun Aug 10 16:17:03 +0000 2025",
+      "favorites": 0,
+      "text": "RT @stillgray: The upcoming Henry Cavill Warhammer 40,000 show, as Imagined by Grok. https://t.co/ISIZeWAoa9",
+      "lang": "en",
+      "source": "<a href=\"http://twitter.com/download/iphone\" rel=\"nofollow\">Twitter for iPhone</a>",
+      "views": "18",
+      "quotes": 0,
+      "entities": {
+        "hashtags": [],
+        "symbols": [],
+        "timestamps": [],
+        "urls": [],
+        "user_mentions": [
+          {
+            "id_str": "16106584",
+            "name": "Ian Miles Cheong",
+            "screen_name": "stillgray"
+          }
+        ]
+      },
+      "replies": 0,
+      "retweets": 304,
+      "conversation_id": "1954577743930151053",
+      "media": {
+        "video": [
+          {
+            "media_url_https": "https://pbs.twimg.com/amplify_video_thumb/1954570187522375680/img/9EwbO77cUmZU2hj0.jpg",
+            "variants": [
+              {
+                "content_type": "application/x-mpegURL",
+                "url": "https://video.twimg.com/amplify_video/1954570187522375680/pl/z3knrYEGUiD_EjCW.m3u8?tag=23"
+              },
+              {
+                "bitrate": 5184000,
+                "content_type": "video/mp4",
+                "url": "https://video.twimg.com/amplify_video/1954570187522375680/vid/avc1/464x688/Tne9CfUz0GEHni2t.mp4?tag=23"
+              }
+            ],
+            "aspect_ratio": [
+              29,
+              43
+            ],
+            "duration": 6062,
+            "original_info": {
+              "height": 688,
+              "width": 464,
+              "focus_rects": []
+            },
+            "id": "1954570187522375680"
+          }
+        ]
+      },
+      "author": {
+        "rest_id": "44196397",
+        "name": "Elon Musk",
+        "screen_name": "elonmusk",
+        "avatar": "https://pbs.twimg.com/profile_images/1936002956333080576/kqqe2iWO_normal.jpg",
+        "blue_verified": true
+      },
+      "retweeted": {
+        "id": "1954570244657193265"
+      },
+      "retweeted_tweet": {
+        "tweet_id": "1954570244657193265",
+        "bookmarks": 74,
+        "created_at": "Sun Aug 10 15:47:15 +0000 2025",
+        "favorites": 2026,
+        "text": "The upcoming Henry Cavill Warhammer 40,000 show, as Imagined by Grok. https://t.co/ISIZeWAoa9",
+        "lang": "en",
+        "views": "732482",
+        "quotes": 25,
+        "entities": {
+          "hashtags": [],
+          "media": [
+            {
+              "display_url": "pic.x.com/ISIZeWAoa9",
+              "expanded_url": "https://x.com/stillgray/status/1954570244657193265/video/1",
+              "id_str": "1954570187522375680",
+              "indices": [
+                70,
+                93
+              ],
+              "media_key": "13_1954570187522375680",
+              "media_url_https": "https://pbs.twimg.com/amplify_video_thumb/1954570187522375680/img/9EwbO77cUmZU2hj0.jpg",
+              "type": "video",
+              "url": "https://t.co/ISIZeWAoa9",
+              "additional_media_info": {
+                "monetizable": false
+              },
+              "ext_media_availability": {
+                "status": "Available"
+              },
+              "sizes": {
+                "large": {
+                  "h": 688,
+                  "w": 464,
+                  "resize": "fit"
+                },
+                "medium": {
+                  "h": 688,
+                  "w": 464,
+                  "resize": "fit"
+                },
+                "small": {
+                  "h": 680,
+                  "w": 459,
+                  "resize": "fit"
+                },
+                "thumb": {
+                  "h": 150,
+                  "w": 150,
+                  "resize": "crop"
+                }
+              },
+              "original_info": {
+                "height": 688,
+                "width": 464,
+                "focus_rects": []
+              },
+              "allow_download_status": {
+                "allow_download": true
+              },
+              "video_info": {
+                "aspect_ratio": [
+                  29,
+                  43
+                ],
+                "duration_millis": 6062,
+                "variants": [
+                  {
+                    "content_type": "application/x-mpegURL",
+                    "url": "https://video.twimg.com/amplify_video/1954570187522375680/pl/z3knrYEGUiD_EjCW.m3u8?tag=23"
+                  },
+                  {
+                    "bitrate": 5184000,
+                    "content_type": "video/mp4",
+                    "url": "https://video.twimg.com/amplify_video/1954570187522375680/vid/avc1/464x688/Tne9CfUz0GEHni2t.mp4?tag=23"
+                  }
+                ]
+              },
+              "media_results": {
+                "result": {
+                  "media_key": "13_1954570187522375680"
+                }
+              },
+              "grok_post_id": "1e2a15cb-3612-46cb-8547-98854eaf9956"
+            }
+          ],
+          "symbols": [],
+          "timestamps": [],
+          "urls": [],
+          "user_mentions": []
+        },
+        "replies": 235,
+        "retweets": 304,
+        "conversation_id": "1954570244657193265",
+        "author": {
+          "rest_id": "16106584",
+          "name": "Ian Miles Cheong",
+          "screen_name": "stillgray",
+          "avatar": "https://pbs.twimg.com/profile_images/1953624066369220608/EYEJ1lEZ_normal.jpg",
+          "blue_verified": true
+        },
+        "media": {
+          "video": [
+            {
+              "media_url_https": "https://pbs.twimg.com/amplify_video_thumb/1954570187522375680/img/9EwbO77cUmZU2hj0.jpg",
+              "variants": [
+                {
+                  "content_type": "application/x-mpegURL",
+                  "url": "https://video.twimg.com/amplify_video/1954570187522375680/pl/z3knrYEGUiD_EjCW.m3u8?tag=23"
+                },
+                {
+                  "bitrate": 5184000,
+                  "content_type": "video/mp4",
+                  "url": "https://video.twimg.com/amplify_video/1954570187522375680/vid/avc1/464x688/Tne9CfUz0GEHni2t.mp4?tag=23"
+                }
+              ],
+              "aspect_ratio": [
+                29,
+                43
+              ],
+              "duration": 6062,
+              "original_info": {
+                "height": 688,
+                "width": 464,
+                "focus_rects": []
+              },
+              "id": "1954570187522375680"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "tweet_id": "1954574114544320953",
+      "bookmarks": 384,
+      "created_at": "Sun Aug 10 16:02:37 +0000 2025",
+      "favorites": 17644,
+      "text": "Important re timing of vehicle delivery",
+      "lang": "en",
+      "source": "<a href=\"http://twitter.com/download/iphone\" rel=\"nofollow\">Twitter for iPhone</a>",
+      "views": "6504802",
+      "quotes": 80,
+      "entities": {
+        "hashtags": [],
+        "symbols": [],
+        "timestamps": [],
+        "urls": [],
+        "user_mentions": []
+      },
+      "replies": 1470,
+      "retweets": 2213,
+      "conversation_id": "1954574114544320953",
+      "media": [],
+      "author": {
+        "rest_id": "44196397",
+        "name": "Elon Musk",
+        "screen_name": "elonmusk",
+        "avatar": "https://pbs.twimg.com/profile_images/1936002956333080576/kqqe2iWO_normal.jpg",
+        "blue_verified": true
+      },
+      "quoted": {
+        "tweet_id": "1954482085798035659",
+        "bookmarks": 116,
+        "created_at": "Sun Aug 10 09:56:56 +0000 2025",
+        "favorites": 3237,
+        "text": "$7,500 Federal Tax Credit ends Sept 30\n\nYou’ll need to take delivery – not just place an order – by that date to make use of the credit before it’s gone",
+        "lang": "en",
+        "views": "6782250",
+        "quotes": 70,
+        "replies": 214,
+        "retweets": 417,
+        "conversation_id": "1954482085798035659",
+        "author": {
+          "rest_id": "1679769205938311169",
+          "name": "Tesla North America",
+          "screen_name": "tesla_na",
+          "avatar": "https://pbs.twimg.com/profile_images/1681000114607857665/FLyxuLUB_normal.jpg",
+          "blue_verified": true
+        },
+        "media": []
+      }
+    },
+    {
+      "tweet_id": "1954568060574077119",
+      "bookmarks": 383,
+      "created_at": "Sun Aug 10 15:38:34 +0000 2025",
+      "favorites": 5729,
+      "text": "Grok is one-shot coding increasingly complex video games. \n\nOur next update will actually *play* the game, look at the screen and adjust the code to improve both esthetics and playability.",
+      "lang": "en",
+      "views": "1899138",
+      "quotes": 114,
+      "replies": 1195,
+      "retweets": 1088,
+      "conversation_id": "1954568060574077119",
+      "media": [],
+      "entities": {
+        "hashtags": [],
+        "symbols": [],
+        "timestamps": [],
+        "urls": [],
+        "user_mentions": []
+      },
+      "author": {
+        "rest_id": "44196397",
+        "name": "Elon Musk",
+        "screen_name": "elonmusk",
+        "avatar": null,
+        "blue_verified": true
+      },
+      "quoted": {
+        "tweet_id": "1954524767534411829",
+        "bookmarks": 58,
+        "created_at": "Sun Aug 10 12:46:32 +0000 2025",
+        "favorites": 432,
+        "text": "One-shotted a Doom-like FPS shooter in Grok 4 Heavy. Tweaking the prompt to also do this in SuperGrok Expert.\n\nImpressive results so far! https://t.co/sUhRhbDiQm",
+        "lang": "en",
+        "views": "1924278",
+        "quotes": 10,
+        "replies": 100,
+        "retweets": 84,
+        "conversation_id": "1954524767534411829",
+        "author": {
+          "rest_id": "1587601034339561472",
+          "name": "Tetsuo",
+          "screen_name": "tetsuoai",
+          "avatar": "https://pbs.twimg.com/profile_images/1941908983314362368/Wbfh_wgx_normal.jpg",
+          "blue_verified": true
+        },
+        "media": {
+          "video": [
+            {
+              "media_url_https": "https://pbs.twimg.com/amplify_video_thumb/1954523192657313792/img/RFo6BZ795Y0kOyGT.jpg",
+              "variants": [
+                {
+                  "content_type": "application/x-mpegURL",
+                  "url": "https://video.twimg.com/amplify_video/1954523192657313792/pl/8O1rwlnKLAsZFkOR.m3u8?tag=21&v=cfc"
+                },
+                {
+                  "bitrate": 256000,
+                  "content_type": "video/mp4",
+                  "url": "https://video.twimg.com/amplify_video/1954523192657313792/vid/avc1/548x270/7FdPQRVmRwV2b55g.mp4?tag=21"
+                },
+                {
+                  "bitrate": 832000,
+                  "content_type": "video/mp4",
+                  "url": "https://video.twimg.com/amplify_video/1954523192657313792/vid/avc1/730x360/aWUzQAxMUCi32ngf.mp4?tag=21"
+                },
+                {
+                  "bitrate": 2176000,
+                  "content_type": "video/mp4",
+                  "url": "https://video.twimg.com/amplify_video/1954523192657313792/vid/avc1/1460x720/_hMF9QlKvpvQEZCL.mp4?tag=21"
+                },
+                {
+                  "bitrate": 10368000,
+                  "content_type": "video/mp4",
+                  "url": "https://video.twimg.com/amplify_video/1954523192657313792/vid/avc1/2192x1080/MT0GhxKjInrYD4s-.mp4?tag=21"
+                }
+              ],
+              "aspect_ratio": [
+                274,
+                135
+              ],
+              "duration": 59071,
+              "original_info": {
+                "height": 1080,
+                "width": 2192,
+                "focus_rects": []
+              },
+              "id": "1954523192657313792"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "tweet_id": "1954571834692632718",
+      "bookmarks": 51,
+      "created_at": "Sun Aug 10 15:53:34 +0000 2025",
+      "favorites": 1755,
+      "text": "And then feed that back into training to improve the one-shot probability (obviously)",
+      "lang": "en",
+      "views": "689042",
+      "quotes": 11,
+      "replies": 216,
+      "retweets": 308,
+      "conversation_id": "1954568060574077119",
+      "media": [],
+      "reply_to": "1954568060574077119",
+      "entities": {
+        "hashtags": [],
+        "symbols": [],
+        "timestamps": [],
+        "urls": [],
+        "user_mentions": []
+      },
+      "author": {
+        "rest_id": "44196397",
+        "name": "Elon Musk",
+        "screen_name": "elonmusk",
+        "avatar": null,
+        "blue_verified": true
+      }
+    },
+    {
+      "tweet_id": "1954573440234422752",
+      "bookmarks": 172,
+      "created_at": "Sun Aug 10 15:59:57 +0000 2025",
+      "favorites": 3012,
+      "text": "Our V7 foundation model, which finished pre-training last week, is natively multimodal. \n\nIt processes a video/audio bitstream directly, understanding it without converting it into anything, so, for example, it will finally understand nuances in how you speak that convey mood and emphasis.",
+      "lang": "en",
+      "views": "668326",
+      "quotes": 65,
+      "replies": 444,
+      "retweets": 522,
+      "conversation_id": "1954568060574077119",
+      "media": [],
+      "reply_to": "1954571834692632718",
+      "entities": {
+        "hashtags": [],
+        "symbols": [],
+        "timestamps": [],
+        "urls": [],
+        "user_mentions": []
+      },
+      "author": {
+        "rest_id": "44196397",
+        "name": "Elon Musk",
+        "screen_name": "elonmusk",
+        "avatar": null,
+        "blue_verified": true
+      }
+    },
+    {
+      "tweet_id": "1954572282984071273",
+      "bookmarks": 1082,
+      "created_at": "Sun Aug 10 15:55:21 +0000 2025",
+      "favorites": 62530,
+      "text": "😂",
+      "lang": "art",
+      "source": "<a href=\"http://twitter.com/download/iphone\" rel=\"nofollow\">Twitter for iPhone</a>",
+      "views": "9386857",
+      "quotes": 315,
+      "entities": {
+        "hashtags": [],
+        "symbols": [],
+        "timestamps": [],
+        "urls": [],
+        "user_mentions": []
+      },
+      "replies": 5154,
+      "retweets": 6019,
+      "conversation_id": "1954572282984071273",
+      "media": [],
+      "author": {
+        "rest_id": "44196397",
+        "name": "Elon Musk",
+        "screen_name": "elonmusk",
+        "avatar": "https://pbs.twimg.com/profile_images/1936002956333080576/kqqe2iWO_normal.jpg",
+        "blue_verified": true
+      },
+      "quoted": {
+        "tweet_id": "1954512873272516901",
+        "bookmarks": 79,
+        "created_at": "Sun Aug 10 11:59:16 +0000 2025",
+        "favorites": 1191,
+        "text": "@teslaownersSV Superman! 😎 https://t.co/qtA0AZSRhE",
+        "lang": "es",
+        "views": "9399214",
+        "quotes": 67,
+        "replies": 262,
+        "retweets": 173,
+        "conversation_id": "1954442520059920648",
+        "author": {
+          "rest_id": "1824062796302016512",
+          "name": "JeebsTX 🇺🇸",
+          "screen_name": "JeebsTX",
+          "avatar": "https://pbs.twimg.com/profile_images/1824573860315824128/SAPE7RtU_normal.jpg",
+          "blue_verified": true
+        },
+        "media": {
+          "video": [
+            {
+              "media_url_https": "https://pbs.twimg.com/amplify_video_thumb/1954512824413159424/img/wzlQqIFA3YcoDw_f.jpg",
+              "variants": [
+                {
+                  "content_type": "application/x-mpegURL",
+                  "url": "https://video.twimg.com/amplify_video/1954512824413159424/pl/gUUPKibSb-7z4Vml.m3u8?tag=23"
+                },
+                {
+                  "bitrate": 5184000,
+                  "content_type": "video/mp4",
+                  "url": "https://video.twimg.com/amplify_video/1954512824413159424/vid/avc1/528x608/NpfpoEvByQ7JV-kd.mp4?tag=23"
+                }
+              ],
+              "aspect_ratio": [
+                33,
+                38
+              ],
+              "duration": 6062,
+              "original_info": {
+                "height": 608,
+                "width": 528,
+                "focus_rects": []
+              },
+              "id": "1954512824413159424"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "tweet_id": "1954570896485523879",
+      "bookmarks": 0,
+      "created_at": "Sun Aug 10 15:49:50 +0000 2025",
+      "favorites": 0,
+      "text": "RT @mercatusliber: @doganuraldesign Press and hold to make a video with @grok https://t.co/jbZpuXA8tu",
+      "lang": "en",
+      "source": "<a href=\"http://twitter.com/download/iphone\" rel=\"nofollow\">Twitter for iPhone</a>",
+      "views": "67",
+      "quotes": 0,
+      "entities": {
+        "hashtags": [],
+        "symbols": [],
+        "timestamps": [],
+        "urls": [],
+        "user_mentions": [
+          {
+            "id_str": "158961052",
+            "name": "David",
+            "screen_name": "mercatusliber"
+          },
+          {
+            "id_str": "1553043003496960000",
+            "name": "Dogan Ural",
+            "screen_name": "doganuraldesign"
+          },
+          {
+            "id_str": "1720665183188922368",
+            "name": "Grok",
+            "screen_name": "grok"
+          }
+        ]
+      },
+      "replies": 0,
+      "retweets": 311,
+      "conversation_id": "1954570896485523879",
+      "media": {
+        "video": [
+          {
+            "media_url_https": "https://pbs.twimg.com/amplify_video_thumb/1954509942418706432/img/UJC8zAjCXru0Ulyj.jpg",
+            "variants": [
+              {
+                "content_type": "application/x-mpegURL",
+                "url": "https://video.twimg.com/amplify_video/1954509942418706432/pl/kQLiyHtwSaAclgzt.m3u8?tag=23"
+              },
+              {
+                "bitrate": 5184000,
+                "content_type": "video/mp4",
+                "url": "https://video.twimg.com/amplify_video/1954509942418706432/vid/avc1/416x752/AyWgK4rEV-v_z8fD.mp4?tag=23"
+              }
+            ],
+            "aspect_ratio": [
+              26,
+              47
+            ],
+            "duration": 6062,
+            "original_info": {
+              "height": 752,
+              "width": 416,
+              "focus_rects": []
+            },
+            "id": "1954509942418706432"
+          }
+        ]
+      },
+      "author": {
+        "rest_id": "44196397",
+        "name": "Elon Musk",
+        "screen_name": "elonmusk",
+        "avatar": "https://pbs.twimg.com/profile_images/1936002956333080576/kqqe2iWO_normal.jpg",
+        "blue_verified": true
+      },
+      "retweeted": {
+        "id": "1954509992121315415"
+      },
+      "retweeted_tweet": {
+        "tweet_id": "1954509992121315415",
+        "bookmarks": 99,
+        "created_at": "Sun Aug 10 11:47:49 +0000 2025",
+        "favorites": 1640,
+        "text": "@doganuraldesign Press and hold to make a video with @grok https://t.co/jbZpuXA8tu",
+        "lang": "en",
+        "views": "688698",
+        "quotes": 11,
+        "entities": {
+          "hashtags": [],
+          "media": [
+            {
+              "display_url": "pic.x.com/jbZpuXA8tu",
+              "expanded_url": "https://x.com/mercatusliber/status/1954509992121315415/video/1",
+              "id_str": "1954509942418706432",
+              "indices": [
+                59,
+                82
+              ],
+              "media_key": "13_1954509942418706432",
+              "media_url_https": "https://pbs.twimg.com/amplify_video_thumb/1954509942418706432/img/UJC8zAjCXru0Ulyj.jpg",
+              "type": "video",
+              "url": "https://t.co/jbZpuXA8tu",
+              "additional_media_info": {
+                "monetizable": false
+              },
+              "ext_media_availability": {
+                "status": "Available"
+              },
+              "sizes": {
+                "large": {
+                  "h": 752,
+                  "w": 416,
+                  "resize": "fit"
+                },
+                "medium": {
+                  "h": 752,
+                  "w": 416,
+                  "resize": "fit"
+                },
+                "small": {
+                  "h": 680,
+                  "w": 376,
+                  "resize": "fit"
+                },
+                "thumb": {
+                  "h": 150,
+                  "w": 150,
+                  "resize": "crop"
+                }
+              },
+              "original_info": {
+                "height": 752,
+                "width": 416,
+                "focus_rects": []
+              },
+              "allow_download_status": {
+                "allow_download": true
+              },
+              "video_info": {
+                "aspect_ratio": [
+                  26,
+                  47
+                ],
+                "duration_millis": 6062,
+                "variants": [
+                  {
+                    "content_type": "application/x-mpegURL",
+                    "url": "https://video.twimg.com/amplify_video/1954509942418706432/pl/kQLiyHtwSaAclgzt.m3u8?tag=23"
+                  },
+                  {
+                    "bitrate": 5184000,
+                    "content_type": "video/mp4",
+                    "url": "https://video.twimg.com/amplify_video/1954509942418706432/vid/avc1/416x752/AyWgK4rEV-v_z8fD.mp4?tag=23"
+                  }
+                ]
+              },
+              "media_results": {
+                "result": {
+                  "media_key": "13_1954509942418706432"
+                }
+              },
+              "grok_post_id": "ea789c57-59cd-4d53-b3ef-61565a0cfad8"
+            }
+          ],
+          "symbols": [],
+          "timestamps": [],
+          "urls": [],
+          "user_mentions": [
+            {
+              "id_str": "1553043003496960000",
+              "name": "Dogan Ural",
+              "screen_name": "doganuraldesign",
+              "indices": [
+                0,
+                16
+              ]
+            },
+            {
+              "id_str": "1720665183188922368",
+              "name": "Grok",
+              "screen_name": "grok",
+              "indices": [
+                53,
+                58
+              ]
+            }
+          ]
+        },
+        "replies": 150,
+        "retweets": 311,
+        "conversation_id": "1954280291171959080",
+        "author": {
+          "rest_id": "158961052",
+          "name": "David",
+          "screen_name": "mercatusliber",
+          "avatar": "https://pbs.twimg.com/profile_images/1876547550829780992/18MzrEuW_normal.jpg",
+          "blue_verified": true
+        },
+        "media": {
+          "video": [
+            {
+              "media_url_https": "https://pbs.twimg.com/amplify_video_thumb/1954509942418706432/img/UJC8zAjCXru0Ulyj.jpg",
+              "variants": [
+                {
+                  "content_type": "application/x-mpegURL",
+                  "url": "https://video.twimg.com/amplify_video/1954509942418706432/pl/kQLiyHtwSaAclgzt.m3u8?tag=23"
+                },
+                {
+                  "bitrate": 5184000,
+                  "content_type": "video/mp4",
+                  "url": "https://video.twimg.com/amplify_video/1954509942418706432/vid/avc1/416x752/AyWgK4rEV-v_z8fD.mp4?tag=23"
+                }
+              ],
+              "aspect_ratio": [
+                26,
+                47
+              ],
+              "duration": 6062,
+              "original_info": {
+                "height": 752,
+                "width": 416,
+                "focus_rects": []
+              },
+              "id": "1954509942418706432"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "tweet_id": "1954565971697348660",
+      "bookmarks": 0,
+      "created_at": "Sun Aug 10 15:30:16 +0000 2025",
+      "favorites": 0,
+      "text": "RT @KnightWorlds: “The tool that has helped me the most in growing this account I created for medieval enthusiasts is definitely GROK. It h…",
+      "lang": "en",
+      "source": "<a href=\"http://twitter.com/download/iphone\" rel=\"nofollow\">Twitter for iPhone</a>",
+      "views": "20",
+      "quotes": 0,
+      "entities": {
+        "hashtags": [],
+        "symbols": [],
+        "timestamps": [],
+        "urls": [],
+        "user_mentions": [
+          {
+            "id_str": "1801989393319657472",
+            "name": "Knight World",
+            "screen_name": "KnightWorlds"
+          }
+        ]
+      },
+      "replies": 0,
+      "retweets": 465,
+      "conversation_id": "1954565971697348660",
+      "media": [],
+      "author": {
+        "rest_id": "44196397",
+        "name": "Elon Musk",
+        "screen_name": "elonmusk",
+        "avatar": "https://pbs.twimg.com/profile_images/1936002956333080576/kqqe2iWO_normal.jpg",
+        "blue_verified": true
+      },
+      "retweeted": {
+        "id": "1954207691364012255"
+      },
+      "retweeted_tweet": {
+        "tweet_id": "1954207691364012255",
+        "bookmarks": 161,
+        "created_at": "Sat Aug 09 15:46:35 +0000 2025",
+        "favorites": 2648,
+        "text": "“The tool that has helped me the most in growing this account I created for medieval enthusiasts is definitely GROK. It has generated prompts for me to create visuals, crafted quotes, and now it’s even producing videos. You too can use Grok and get its help to grow your account.” https://t.co/tgRy2lLG0c",
+        "lang": "en",
+        "views": "753494",
+        "quotes": 44,
+        "entities": {
+          "hashtags": [],
+          "media": [
+            {
+              "display_url": "pic.x.com/tgRy2lLG0c",
+              "expanded_url": "https://x.com/KnightWorlds/status/1954207691364012255/video/1",
+              "id_str": "1954207635722362880",
+              "indices": [
+                281,
+                304
+              ],
+              "media_key": "13_1954207635722362880",
+              "media_url_https": "https://pbs.twimg.com/amplify_video_thumb/1954207635722362880/img/6ghSWgGWITNDLO6i.jpg",
+              "type": "video",
+              "url": "https://t.co/tgRy2lLG0c",
+              "additional_media_info": {
+                "monetizable": false
+              },
+              "ext_media_availability": {
+                "status": "Available"
+              },
+              "sizes": {
+                "large": {
+                  "h": 624,
+                  "w": 512,
+                  "resize": "fit"
+                },
+                "medium": {
+                  "h": 624,
+                  "w": 512,
+                  "resize": "fit"
+                },
+                "small": {
+                  "h": 624,
+                  "w": 512,
+                  "resize": "fit"
+                },
+                "thumb": {
+                  "h": 150,
+                  "w": 150,
+                  "resize": "crop"
+                }
+              },
+              "original_info": {
+                "height": 624,
+                "width": 512,
+                "focus_rects": []
+              },
+              "allow_download_status": {
+                "allow_download": true
+              },
+              "video_info": {
+                "aspect_ratio": [
+                  32,
+                  39
+                ],
+                "duration_millis": 6062,
+                "variants": [
+                  {
+                    "content_type": "application/x-mpegURL",
+                    "url": "https://video.twimg.com/amplify_video/1954207635722362880/pl/hfa8rxzX5SaDQGxc.m3u8?tag=23"
+                  },
+                  {
+                    "bitrate": 5184000,
+                    "content_type": "video/mp4",
+                    "url": "https://video.twimg.com/amplify_video/1954207635722362880/vid/avc1/512x624/n6AJEzZ1WfqEz-6i.mp4?tag=23"
+                  }
+                ]
+              },
+              "media_results": {
+                "result": {
+                  "media_key": "13_1954207635722362880"
+                }
+              },
+              "grok_post_id": "dfd27957-250f-4c24-ab2d-3a3593d51788"
+            }
+          ],
+          "symbols": [],
+          "timestamps": [],
+          "urls": [],
+          "user_mentions": []
+        },
+        "replies": 343,
+        "retweets": 465,
+        "conversation_id": "1954207691364012255",
+        "author": {
+          "rest_id": "1801989393319657472",
+          "name": "Knight World",
+          "screen_name": "KnightWorlds",
+          "avatar": "https://pbs.twimg.com/profile_images/1834055455296876544/pan1D_d-_normal.jpg",
+          "blue_verified": true
+        },
+        "media": {
+          "video": [
+            {
+              "media_url_https": "https://pbs.twimg.com/amplify_video_thumb/1954207635722362880/img/6ghSWgGWITNDLO6i.jpg",
+              "variants": [
+                {
+                  "content_type": "application/x-mpegURL",
+                  "url": "https://video.twimg.com/amplify_video/1954207635722362880/pl/hfa8rxzX5SaDQGxc.m3u8?tag=23"
+                },
+                {
+                  "bitrate": 5184000,
+                  "content_type": "video/mp4",
+                  "url": "https://video.twimg.com/amplify_video/1954207635722362880/vid/avc1/512x624/n6AJEzZ1WfqEz-6i.mp4?tag=23"
+                }
+              ],
+              "aspect_ratio": [
+                32,
+                39
+              ],
+              "duration": 6062,
+              "original_info": {
+                "height": 624,
+                "width": 512,
+                "focus_rects": []
+              },
+              "id": "1954207635722362880"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "tweet_id": "1954513043473191276",
+      "bookmarks": 0,
+      "created_at": "Sun Aug 10 11:59:57 +0000 2025",
+      "favorites": 0,
+      "text": "RT @techdevnotes: Grok iOS App is now #1 in Hong Kong 🇭🇰 https://t.co/iS33DDKxL7",
+      "lang": "en",
+      "source": "<a href=\"http://twitter.com/download/iphone\" rel=\"nofollow\">Twitter for iPhone</a>",
+      "views": "21",
+      "quotes": 0,
+      "entities": {
+        "hashtags": [],
+        "symbols": [],
+        "timestamps": [],
+        "urls": [],
+        "user_mentions": [
+          {
+            "id_str": "1604863807574212611",
+            "name": "Tech Dev Notes",
+            "screen_name": "techdevnotes"
+          }
+        ]
+      },
+      "replies": 0,
+      "retweets": 538,
+      "conversation_id": "1954513043473191276",
+      "media": {
+        "photo": [
+          {
+            "media_url_https": "https://pbs.twimg.com/media/Gx_R8ybXsAMnTT7.jpg",
+            "id": "1954511605561012227",
+            "sizes": {
+              "h": 930,
+              "w": 750
+            }
+          }
+        ]
+      },
+      "author": {
+        "rest_id": "44196397",
+        "name": "Elon Musk",
+        "screen_name": "elonmusk",
+        "avatar": "https://pbs.twimg.com/profile_images/1936002956333080576/kqqe2iWO_normal.jpg",
+        "blue_verified": true
+      },
+      "retweeted": {
+        "id": "1954511611181359616"
+      },
+      "retweeted_tweet": {
+        "tweet_id": "1954511611181359616",
+        "bookmarks": 59,
+        "created_at": "Sun Aug 10 11:54:15 +0000 2025",
+        "favorites": 2749,
+        "text": "Grok iOS App is now #1 in Hong Kong 🇭🇰 https://t.co/iS33DDKxL7",
+        "lang": "en",
+        "views": "997806",
+        "quotes": 19,
+        "entities": {
+          "hashtags": [],
+          "media": [
+            {
+              "display_url": "pic.x.com/iS33DDKxL7",
+              "expanded_url": "https://x.com/techdevnotes/status/1954511611181359616/photo/1",
+              "id_str": "1954511605561012227",
+              "indices": [
+                39,
+                62
+              ],
+              "media_key": "3_1954511605561012227",
+              "media_url_https": "https://pbs.twimg.com/media/Gx_R8ybXsAMnTT7.jpg",
+              "type": "photo",
+              "url": "https://t.co/iS33DDKxL7",
+              "ext_media_availability": {
+                "status": "Available"
+              },
+              "features": {
+                "large": {
+                  "faces": []
+                },
+                "medium": {
+                  "faces": []
+                },
+                "small": {
+                  "faces": []
+                },
+                "orig": {
+                  "faces": []
+                }
+              },
+              "sizes": {
+                "large": {
+                  "h": 930,
+                  "w": 750,
+                  "resize": "fit"
+                },
+                "medium": {
+                  "h": 930,
+                  "w": 750,
+                  "resize": "fit"
+                },
+                "small": {
+                  "h": 680,
+                  "w": 548,
+                  "resize": "fit"
+                },
+                "thumb": {
+                  "h": 150,
+                  "w": 150,
+                  "resize": "crop"
+                }
+              },
+              "original_info": {
+                "height": 930,
+                "width": 750,
+                "focus_rects": [
+                  {
+                    "x": 0,
+                    "y": 231,
+                    "w": 750,
+                    "h": 420
+                  },
+                  {
+                    "x": 0,
+                    "y": 66,
+                    "w": 750,
+                    "h": 750
+                  },
+                  {
+                    "x": 0,
+                    "y": 14,
+                    "w": 750,
+                    "h": 855
+                  },
+                  {
+                    "x": 116,
+                    "y": 0,
+                    "w": 465,
+                    "h": 930
+                  },
+                  {
+                    "x": 0,
+                    "y": 0,
+                    "w": 750,
+                    "h": 930
+                  }
+                ]
+              },
+              "allow_download_status": {
+                "allow_download": true
+              },
+              "media_results": {
+                "result": {
+                  "media_key": "3_1954511605561012227"
+                }
+              }
+            }
+          ],
+          "symbols": [],
+          "timestamps": [],
+          "urls": [],
+          "user_mentions": []
+        },
+        "replies": 380,
+        "retweets": 538,
+        "conversation_id": "1954511611181359616",
+        "author": {
+          "rest_id": "1604863807574212611",
+          "name": "Tech Dev Notes",
+          "screen_name": "techdevnotes",
+          "avatar": "https://pbs.twimg.com/profile_images/1618185418234646529/f9-GqDq1_normal.jpg",
+          "blue_verified": true
+        },
+        "media": {
+          "photo": [
+            {
+              "media_url_https": "https://pbs.twimg.com/media/Gx_R8ybXsAMnTT7.jpg",
+              "id": "1954511605561012227",
+              "sizes": {
+                "h": 930,
+                "w": 750
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "tweet_id": "1954512201760244074",
+      "bookmarks": 0,
+      "created_at": "Sun Aug 10 11:56:36 +0000 2025",
+      "favorites": 0,
+      "text": "RT @cb_doge: 𝕏 - #1 News App Free \n𝕏 - #1 News App Grossing\nGrok - #2 Productivity App\nGrok - #6 Overall \n\nDownloads are skyrocketing for G…",
+      "lang": "en",
+      "source": "<a href=\"http://twitter.com/download/iphone\" rel=\"nofollow\">Twitter for iPhone</a>",
+      "views": "17",
+      "quotes": 0,
+      "entities": {
+        "hashtags": [],
+        "symbols": [],
+        "timestamps": [],
+        "urls": [],
+        "user_mentions": [
+          {
+            "id_str": "1389913567671975937",
+            "name": "DogeDesigner",
+            "screen_name": "cb_doge"
+          }
+        ]
+      },
+      "replies": 0,
+      "retweets": 579,
+      "conversation_id": "1954512201760244074",
+      "media": [],
+      "author": {
+        "rest_id": "44196397",
+        "name": "Elon Musk",
+        "screen_name": "elonmusk",
+        "avatar": "https://pbs.twimg.com/profile_images/1936002956333080576/kqqe2iWO_normal.jpg",
+        "blue_verified": true
+      },
+      "retweeted": {
+        "id": "1954511598430700016"
+      },
+      "retweeted_tweet": {
+        "tweet_id": "1954511598430700016",
+        "bookmarks": 75,
+        "created_at": "Sun Aug 10 11:54:12 +0000 2025",
+        "favorites": 2491,
+        "text": "𝕏 - #1 News App Free \n𝕏 - #1 News App Grossing\nGrok - #2 Productivity App\nGrok - #6 Overall \n\nDownloads are skyrocketing for Grok. You can try it too. Grok is free to download. Also, it is the fastest AI image &amp; video generator out there. https://t.co/5oLBVyzpxj",
+        "lang": "en",
+        "views": "926182",
+        "quotes": 16,
+        "entities": {
+          "hashtags": [],
+          "media": [
+            {
+              "display_url": "pic.x.com/5oLBVyzpxj",
+              "expanded_url": "https://x.com/cb_doge/status/1954511598430700016/video/1",
+              "id_str": "1954511531942572032",
+              "indices": [
+                243,
+                266
+              ],
+              "media_key": "13_1954511531942572032",
+              "media_url_https": "https://pbs.twimg.com/amplify_video_thumb/1954511531942572032/img/OM8vs1gS6-PiytSx.jpg",
+              "type": "video",
+              "url": "https://t.co/5oLBVyzpxj",
+              "additional_media_info": {
+                "monetizable": false
+              },
+              "ext_media_availability": {
+                "status": "Available"
+              },
+              "sizes": {
+                "large": {
+                  "h": 1080,
+                  "w": 1080,
+                  "resize": "fit"
+                },
+                "medium": {
+                  "h": 1080,
+                  "w": 1080,
+                  "resize": "fit"
+                },
+                "small": {
+                  "h": 680,
+                  "w": 680,
+                  "resize": "fit"
+                },
+                "thumb": {
+                  "h": 150,
+                  "w": 150,
+                  "resize": "crop"
+                }
+              },
+              "original_info": {
+                "height": 1080,
+                "width": 1080,
+                "focus_rects": []
+              },
+              "allow_download_status": {
+                "allow_download": true
+              },
+              "video_info": {
+                "aspect_ratio": [
+                  1,
+                  1
+                ],
+                "duration_millis": 9983,
+                "variants": [
+                  {
+                    "content_type": "application/x-mpegURL",
+                    "url": "https://video.twimg.com/amplify_video/1954511531942572032/pl/9UEfCMFnEpOGTYIf.m3u8?tag=21"
+                  },
+                  {
+                    "bitrate": 432000,
+                    "content_type": "video/mp4",
+                    "url": "https://video.twimg.com/amplify_video/1954511531942572032/vid/avc1/320x320/YQBNCaQkBiOAa7qT.mp4?tag=21"
+                  },
+                  {
+                    "bitrate": 832000,
+                    "content_type": "video/mp4",
+                    "url": "https://video.twimg.com/amplify_video/1954511531942572032/vid/avc1/540x540/KzkhfHe-FslM82Hy.mp4?tag=21"
+                  },
+                  {
+                    "bitrate": 1280000,
+                    "content_type": "video/mp4",
+                    "url": "https://video.twimg.com/amplify_video/1954511531942572032/vid/avc1/720x720/cNKu0E8wdSTsiVkU.mp4?tag=21"
+                  },
+                  {
+                    "bitrate": 8768000,
+                    "content_type": "video/mp4",
+                    "url": "https://video.twimg.com/amplify_video/1954511531942572032/vid/avc1/1080x1080/FtzYZ3fhsJXZ7wBb.mp4?tag=21"
+                  }
+                ]
+              },
+              "media_results": {
+                "result": {
+                  "media_key": "13_1954511531942572032"
+                }
+              }
+            }
+          ],
+          "symbols": [],
+          "timestamps": [],
+          "urls": [],
+          "user_mentions": []
+        },
+        "replies": 378,
+        "retweets": 579,
+        "conversation_id": "1954511598430700016",
+        "author": {
+          "rest_id": "1389913567671975937",
+          "name": "DogeDesigner",
+          "screen_name": "cb_doge",
+          "avatar": "https://pbs.twimg.com/profile_images/1498070100393754625/C2V-fbll_normal.jpg",
+          "blue_verified": true
+        },
+        "media": {
+          "video": [
+            {
+              "media_url_https": "https://pbs.twimg.com/amplify_video_thumb/1954511531942572032/img/OM8vs1gS6-PiytSx.jpg",
+              "variants": [
+                {
+                  "content_type": "application/x-mpegURL",
+                  "url": "https://video.twimg.com/amplify_video/1954511531942572032/pl/9UEfCMFnEpOGTYIf.m3u8?tag=21"
+                },
+                {
+                  "bitrate": 432000,
+                  "content_type": "video/mp4",
+                  "url": "https://video.twimg.com/amplify_video/1954511531942572032/vid/avc1/320x320/YQBNCaQkBiOAa7qT.mp4?tag=21"
+                },
+                {
+                  "bitrate": 832000,
+                  "content_type": "video/mp4",
+                  "url": "https://video.twimg.com/amplify_video/1954511531942572032/vid/avc1/540x540/KzkhfHe-FslM82Hy.mp4?tag=21"
+                },
+                {
+                  "bitrate": 1280000,
+                  "content_type": "video/mp4",
+                  "url": "https://video.twimg.com/amplify_video/1954511531942572032/vid/avc1/720x720/cNKu0E8wdSTsiVkU.mp4?tag=21"
+                },
+                {
+                  "bitrate": 8768000,
+                  "content_type": "video/mp4",
+                  "url": "https://video.twimg.com/amplify_video/1954511531942572032/vid/avc1/1080x1080/FtzYZ3fhsJXZ7wBb.mp4?tag=21"
+                }
+              ],
+              "aspect_ratio": [
+                1,
+                1
+              ],
+              "duration": 9983,
+              "original_info": {
+                "height": 1080,
+                "width": 1080,
+                "focus_rects": []
+              },
+              "id": "1954511531942572032"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "tweet_id": "1954511667896729878",
+      "bookmarks": 0,
+      "created_at": "Sun Aug 10 11:54:29 +0000 2025",
+      "favorites": 0,
+      "text": "RT @AlexJSlaton777: @elonmusk ChatGPT is useful, but I haven't used it much because I don't really like it... I would rather use other AI t…",
+      "lang": "en",
+      "source": "<a href=\"http://twitter.com/download/iphone\" rel=\"nofollow\">Twitter for iPhone</a>",
+      "views": "67",
+      "quotes": 0,
+      "entities": {
+        "hashtags": [],
+        "symbols": [],
+        "timestamps": [],
+        "urls": [],
+        "user_mentions": [
+          {
+            "id_str": "1936662567084048385",
+            "name": "Alasdair Sinclair",
+            "screen_name": "AlexJSlaton777"
+          },
+          {
+            "id_str": "44196397",
+            "name": "Elon Musk",
+            "screen_name": "elonmusk"
+          }
+        ]
+      },
+      "replies": 0,
+      "retweets": 360,
+      "conversation_id": "1954511667896729878",
+      "media": [],
+      "author": {
+        "rest_id": "44196397",
+        "name": "Elon Musk",
+        "screen_name": "elonmusk",
+        "avatar": "https://pbs.twimg.com/profile_images/1936002956333080576/kqqe2iWO_normal.jpg",
+        "blue_verified": true
+      },
+      "retweeted": {
+        "id": "1954511045671702933"
+      },
+      "retweeted_tweet": {
+        "tweet_id": "1954511045671702933",
+        "bookmarks": 86,
+        "created_at": "Sun Aug 10 11:52:01 +0000 2025",
+        "favorites": 2017,
+        "text": "ChatGPT is useful, but I haven't used it much because I don't really like it... I would rather use other AI tools such as Google Gemini or Perplexity...\n\nNowadays Grok 4 is my primary and Google Gemini is my secondary...\n\nI use Grok 4 more than any other artificial intelligence tool these days, by the way.",
+        "lang": "en",
+        "views": "851888",
+        "quotes": 4,
+        "entities": {
+          "hashtags": [],
+          "symbols": [],
+          "timestamps": [],
+          "urls": [],
+          "user_mentions": [
+            {
+              "id_str": "44196397",
+              "name": "Elon Musk",
+              "screen_name": "elonmusk",
+              "indices": [
+                0,
+                9
+              ]
+            }
+          ]
+        },
+        "replies": 271,
+        "retweets": 360,
+        "conversation_id": "1954509652026147091",
+        "author": {
+          "rest_id": "1936662567084048385",
+          "name": "Alasdair Sinclair",
+          "screen_name": "AlexJSlaton777",
+          "avatar": "https://pbs.twimg.com/profile_images/1953393023548571649/v3eSKs15_normal.jpg",
+          "blue_verified": true
+        },
+        "media": []
+      }
+    },
+    {
+      "tweet_id": "1954511426246103250",
+      "bookmarks": 1752,
+      "created_at": "Sun Aug 10 11:53:31 +0000 2025",
+      "favorites": 15237,
+      "text": "Long press on any image to turn it into a video with Grok. \n\nUpdate your iOS app to use. Android coming soon. https://t.co/vUISwawyyU",
+      "lang": "en",
+      "source": "<a href=\"http://twitter.com/download/iphone\" rel=\"nofollow\">Twitter for iPhone</a>",
+      "views": "8182286",
+      "quotes": 290,
+      "entities": {
+        "hashtags": [],
+        "symbols": [],
+        "timestamps": [],
+        "urls": [],
+        "user_mentions": []
+      },
+      "replies": 2942,
+      "retweets": 2133,
+      "conversation_id": "1954511426246103250",
+      "media": {
+        "video": [
+          {
+            "media_url_https": "https://pbs.twimg.com/amplify_video_thumb/1954511347200237569/img/BnmPwb0yynsxleK6.jpg",
+            "variants": [
+              {
+                "content_type": "application/x-mpegURL",
+                "url": "https://video.twimg.com/amplify_video/1954511347200237569/pl/khlI0Xrs4IiOGWid.m3u8?tag=23"
+              },
+              {
+                "bitrate": 5184000,
+                "content_type": "video/mp4",
+                "url": "https://video.twimg.com/amplify_video/1954511347200237569/vid/avc1/512x624/B4rciRPsBc4v9gBD.mp4?tag=23"
+              }
+            ],
+            "aspect_ratio": [
+              32,
+              39
+            ],
+            "duration": 6062,
+            "original_info": {
+              "height": 624,
+              "width": 512,
+              "focus_rects": []
+            },
+            "id": "1954511347200237569"
+          }
+        ]
+      },
+      "author": {
+        "rest_id": "44196397",
+        "name": "Elon Musk",
+        "screen_name": "elonmusk",
+        "avatar": "https://pbs.twimg.com/profile_images/1936002956333080576/kqqe2iWO_normal.jpg",
+        "blue_verified": true
+      },
+      "quoted": {
+        "tweet_id": "1954298226913271861",
+        "bookmarks": 322,
+        "created_at": "Sat Aug 09 21:46:21 +0000 2025",
+        "favorites": 2043,
+        "text": "https://t.co/LvjbuvErDv",
+        "lang": "zxx",
+        "views": "8285791",
+        "quotes": 12,
+        "replies": 48,
+        "retweets": 169,
+        "conversation_id": "1954298226913271861",
+        "author": {
+          "rest_id": "1407802476263264266",
+          "name": "𝔳ê𝔱𝔢𝔪𝔢𝔫𝔱𝔰 𝔢𝔰𝔱𝔥é𝔱𝔦𝔮𝔲𝔢𝔰 ˙⋆✮",
+          "screen_name": "ClothesAesthe",
+          "avatar": "https://pbs.twimg.com/profile_images/1852869343471886336/OMP1HWZS_normal.jpg",
+          "blue_verified": true
+        },
+        "media": {
+          "photo": [
+            {
+              "media_url_https": "https://pbs.twimg.com/media/Gx8P4IVWAAEBvw_.jpg",
+              "id": "1954298220286181377",
+              "sizes": {
+                "h": 1200,
+                "w": 992
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "tweet_id": "1954510073285198052",
+      "bookmarks": 0,
+      "created_at": "Sun Aug 10 11:48:09 +0000 2025",
+      "favorites": 0,
+      "text": "RT @Lord_of_Degen: @iam_smx His name is also \nKekius MaximUSA \nTrue American hero 🇺🇸⚔️ https://t.co/ftYD14bUls",
+      "lang": "tl",
+      "source": "<a href=\"http://twitter.com/download/iphone\" rel=\"nofollow\">Twitter for iPhone</a>",
+      "views": "50",
+      "quotes": 0,
+      "entities": {
+        "hashtags": [],
+        "symbols": [],
+        "timestamps": [],
+        "urls": [],
+        "user_mentions": [
+          {
+            "id_str": "1873053985910996996",
+            "name": "KEK of MaximUSA(Patriotic Kekius)",
+            "screen_name": "Lord_of_Degen"
+          },
+          {
+            "id_str": "1614879930885574656",
+            "name": "SMX 🇺🇸",
+            "screen_name": "iam_smx"
+          }
+        ]
+      },
+      "replies": 0,
+      "retweets": 507,
+      "conversation_id": "1954510073285198052",
+      "media": {
+        "photo": [
+          {
+            "media_url_https": "https://pbs.twimg.com/media/Gx-iscNbIAAETl_.jpg",
+            "id": "1954459647672524800",
+            "sizes": {
+              "h": 1200,
+              "w": 800
+            }
+          }
+        ]
+      },
+      "author": {
+        "rest_id": "44196397",
+        "name": "Elon Musk",
+        "screen_name": "elonmusk",
+        "avatar": "https://pbs.twimg.com/profile_images/1936002956333080576/kqqe2iWO_normal.jpg",
+        "blue_verified": true
+      },
+      "retweeted": {
+        "id": "1954459655129727100"
+      },
+      "retweeted_tweet": {
+        "tweet_id": "1954459655129727100",
+        "bookmarks": 99,
+        "created_at": "Sun Aug 10 08:27:48 +0000 2025",
+        "favorites": 2932,
+        "text": "@iam_smx His name is also \nKekius MaximUSA \nTrue American hero 🇺🇸⚔️ https://t.co/ftYD14bUls",
+        "lang": "tl",
+        "views": "796822",
+        "quotes": 38,
+        "entities": {
+          "hashtags": [],
+          "media": [
+            {
+              "display_url": "pic.x.com/ftYD14bUls",
+              "expanded_url": "https://x.com/Lord_of_Degen/status/1954459655129727100/photo/1",
+              "id_str": "1954459647672524800",
+              "indices": [
+                68,
+                91
+              ],
+              "media_key": "3_1954459647672524800",
+              "media_url_https": "https://pbs.twimg.com/media/Gx-iscNbIAAETl_.jpg",
+              "type": "photo",
+              "url": "https://t.co/ftYD14bUls",
+              "ext_media_availability": {
+                "status": "Available"
+              },
+              "features": {
+                "large": {
+                  "faces": [
+                    {
+                      "x": 315,
+                      "y": 262,
+                      "h": 160,
+                      "w": 160
+                    }
+                  ]
+                },
+                "medium": {
+                  "faces": [
+                    {
+                      "x": 302,
+                      "y": 251,
+                      "h": 153,
+                      "w": 153
+                    }
+                  ]
+                },
+                "small": {
+                  "faces": [
+                    {
+                      "x": 171,
+                      "y": 142,
+                      "h": 87,
+                      "w": 87
+                    }
+                  ]
+                },
+                "orig": {
+                  "faces": [
+                    {
+                      "x": 315,
+                      "y": 262,
+                      "h": 160,
+                      "w": 160
+                    }
+                  ]
+                }
+              },
+              "sizes": {
+                "large": {
+                  "h": 1248,
+                  "w": 832,
+                  "resize": "fit"
+                },
+                "medium": {
+                  "h": 1200,
+                  "w": 800,
+                  "resize": "fit"
+                },
+                "small": {
+                  "h": 680,
+                  "w": 453,
+                  "resize": "fit"
+                },
+                "thumb": {
+                  "h": 150,
+                  "w": 150,
+                  "resize": "crop"
+                }
+              },
+              "original_info": {
+                "height": 1248,
+                "width": 832,
+                "focus_rects": [
+                  {
+                    "x": 0,
+                    "y": 0,
+                    "w": 832,
+                    "h": 466
+                  },
+                  {
+                    "x": 0,
+                    "y": 0,
+                    "w": 832,
+                    "h": 832
+                  },
+                  {
+                    "x": 0,
+                    "y": 0,
+                    "w": 832,
+                    "h": 948
+                  },
+                  {
+                    "x": 208,
+                    "y": 0,
+                    "w": 624,
+                    "h": 1248
+                  },
+                  {
+                    "x": 0,
+                    "y": 0,
+                    "w": 832,
+                    "h": 1248
+                  }
+                ]
+              },
+              "allow_download_status": {
+                "allow_download": true
+              },
+              "media_results": {
+                "result": {
+                  "media_key": "3_1954459647672524800"
+                }
+              }
+            }
+          ],
+          "symbols": [],
+          "timestamps": [],
+          "urls": [],
+          "user_mentions": [
+            {
+              "id_str": "1614879930885574656",
+              "name": "SMX 🇺🇸",
+              "screen_name": "iam_smx",
+              "indices": [
+                0,
+                8
+              ]
+            }
+          ]
+        },
+        "replies": 370,
+        "retweets": 507,
+        "conversation_id": "1954458821998309736",
+        "author": {
+          "rest_id": "1873053985910996996",
+          "name": "KEK of MaximUSA(Patriotic Kekius)",
+          "screen_name": "Lord_of_Degen",
+          "avatar": "https://pbs.twimg.com/profile_images/1936581762508869632/CGcrq-3r_normal.jpg",
+          "blue_verified": true
+        },
+        "media": {
+          "photo": [
+            {
+              "media_url_https": "https://pbs.twimg.com/media/Gx-iscNbIAAETl_.jpg",
+              "id": "1954459647672524800",
+              "sizes": {
+                "h": 1200,
+                "w": 800
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "tweet_id": "1954509834994241725",
+      "bookmarks": 0,
+      "created_at": "Sun Aug 10 11:47:12 +0000 2025",
+      "favorites": 0,
+      "text": "RT @OfeliaLamensky: I guess I need you baby ♥️\nGrok Imagine  🩵 💫✨ https://t.co/mdRlK2RQZp",
+      "lang": "en",
+      "source": "<a href=\"http://twitter.com/download/iphone\" rel=\"nofollow\">Twitter for iPhone</a>",
+      "views": "43",
+      "quotes": 0,
+      "entities": {
+        "hashtags": [],
+        "symbols": [],
+        "timestamps": [],
+        "urls": [],
+        "user_mentions": [
+          {
+            "id_str": "369769172",
+            "name": "Ofelia",
+            "screen_name": "OfeliaLamensky"
+          }
+        ]
+      },
+      "replies": 0,
+      "retweets": 507,
+      "conversation_id": "1954509834994241725",
+      "media": {
+        "video": [
+          {
+            "media_url_https": "https://pbs.twimg.com/amplify_video_thumb/1954186038504521728/img/KlKNrRjBZApCuLKL.jpg",
+            "variants": [
+              {
+                "content_type": "application/x-mpegURL",
+                "url": "https://video.twimg.com/amplify_video/1954186038504521728/pl/DY79LQ7lnyGBoOis.m3u8?tag=21"
+              },
+              {
+                "bitrate": 632000,
+                "content_type": "video/mp4",
+                "url": "https://video.twimg.com/amplify_video/1954186038504521728/vid/avc1/320x624/pTPppGWoynO4GQw5.mp4?tag=21"
+              },
+              {
+                "bitrate": 950000,
+                "content_type": "video/mp4",
+                "url": "https://video.twimg.com/amplify_video/1954186038504521728/vid/avc1/480x938/25eguDQ_rsOGC4Nx.mp4?tag=21"
+              },
+              {
+                "bitrate": 2176000,
+                "content_type": "video/mp4",
+                "url": "https://video.twimg.com/amplify_video/1954186038504521728/vid/avc1/720x1406/UyFPZ1A-xfYkmo9b.mp4?tag=21"
+              },
+              {
+                "bitrate": 10368000,
+                "content_type": "video/mp4",
+                "url": "https://video.twimg.com/amplify_video/1954186038504521728/vid/avc1/982x1920/iIMlGnL_bvbj_shi.mp4?tag=21"
+              }
+            ],
+            "aspect_ratio": [
+              491,
+              960
+            ],
+            "duration": 6033,
+            "original_info": {
+              "height": 1920,
+              "width": 982,
+              "focus_rects": []
+            },
+            "id": "1954186038504521728"
+          }
+        ]
+      },
+      "author": {
+        "rest_id": "44196397",
+        "name": "Elon Musk",
+        "screen_name": "elonmusk",
+        "avatar": "https://pbs.twimg.com/profile_images/1936002956333080576/kqqe2iWO_normal.jpg",
+        "blue_verified": true
+      },
+      "retweeted": {
+        "id": "1954186098663460995"
+      },
+      "retweeted_tweet": {
+        "tweet_id": "1954186098663460995",
+        "bookmarks": 106,
+        "created_at": "Sat Aug 09 14:20:47 +0000 2025",
+        "favorites": 2724,
+        "text": "I guess I need you baby ♥️\nGrok Imagine  🩵 💫✨ https://t.co/mdRlK2RQZp",
+        "lang": "en",
+        "views": "1007729",
+        "quotes": 17,
+        "entities": {
+          "hashtags": [],
+          "media": [
+            {
+              "display_url": "pic.x.com/mdRlK2RQZp",
+              "expanded_url": "https://x.com/OfeliaLamensky/status/1954186098663460995/video/1",
+              "id_str": "1954186038504521728",
+              "indices": [
+                46,
+                69
+              ],
+              "media_key": "13_1954186038504521728",
+              "media_url_https": "https://pbs.twimg.com/amplify_video_thumb/1954186038504521728/img/KlKNrRjBZApCuLKL.jpg",
+              "type": "video",
+              "url": "https://t.co/mdRlK2RQZp",
+              "additional_media_info": {
+                "monetizable": false
+              },
+              "ext_media_availability": {
+                "status": "Available"
+              },
+              "sizes": {
+                "large": {
+                  "h": 1920,
+                  "w": 982,
+                  "resize": "fit"
+                },
+                "medium": {
+                  "h": 1200,
+                  "w": 614,
+                  "resize": "fit"
+                },
+                "small": {
+                  "h": 680,
+                  "w": 348,
+                  "resize": "fit"
+                },
+                "thumb": {
+                  "h": 150,
+                  "w": 150,
+                  "resize": "crop"
+                }
+              },
+              "original_info": {
+                "height": 1920,
+                "width": 982,
+                "focus_rects": []
+              },
+              "allow_download_status": {
+                "allow_download": true
+              },
+              "video_info": {
+                "aspect_ratio": [
+                  491,
+                  960
+                ],
+                "duration_millis": 6033,
+                "variants": [
+                  {
+                    "content_type": "application/x-mpegURL",
+                    "url": "https://video.twimg.com/amplify_video/1954186038504521728/pl/DY79LQ7lnyGBoOis.m3u8?tag=21"
+                  },
+                  {
+                    "bitrate": 632000,
+                    "content_type": "video/mp4",
+                    "url": "https://video.twimg.com/amplify_video/1954186038504521728/vid/avc1/320x624/pTPppGWoynO4GQw5.mp4?tag=21"
+                  },
+                  {
+                    "bitrate": 950000,
+                    "content_type": "video/mp4",
+                    "url": "https://video.twimg.com/amplify_video/1954186038504521728/vid/avc1/480x938/25eguDQ_rsOGC4Nx.mp4?tag=21"
+                  },
+                  {
+                    "bitrate": 2176000,
+                    "content_type": "video/mp4",
+                    "url": "https://video.twimg.com/amplify_video/1954186038504521728/vid/avc1/720x1406/UyFPZ1A-xfYkmo9b.mp4?tag=21"
+                  },
+                  {
+                    "bitrate": 10368000,
+                    "content_type": "video/mp4",
+                    "url": "https://video.twimg.com/amplify_video/1954186038504521728/vid/avc1/982x1920/iIMlGnL_bvbj_shi.mp4?tag=21"
+                  }
+                ]
+              },
+              "media_results": {
+                "result": {
+                  "media_key": "13_1954186038504521728"
+                }
+              }
+            }
+          ],
+          "symbols": [],
+          "timestamps": [],
+          "urls": [],
+          "user_mentions": []
+        },
+        "replies": 315,
+        "retweets": 507,
+        "conversation_id": "1954186098663460995",
+        "author": {
+          "rest_id": "369769172",
+          "name": "Ofelia",
+          "screen_name": "OfeliaLamensky",
+          "avatar": "https://pbs.twimg.com/profile_images/1862556212748861440/197NWLKq_normal.jpg",
+          "blue_verified": true
+        },
+        "media": {
+          "video": [
+            {
+              "media_url_https": "https://pbs.twimg.com/amplify_video_thumb/1954186038504521728/img/KlKNrRjBZApCuLKL.jpg",
+              "variants": [
+                {
+                  "content_type": "application/x-mpegURL",
+                  "url": "https://video.twimg.com/amplify_video/1954186038504521728/pl/DY79LQ7lnyGBoOis.m3u8?tag=21"
+                },
+                {
+                  "bitrate": 632000,
+                  "content_type": "video/mp4",
+                  "url": "https://video.twimg.com/amplify_video/1954186038504521728/vid/avc1/320x624/pTPppGWoynO4GQw5.mp4?tag=21"
+                },
+                {
+                  "bitrate": 950000,
+                  "content_type": "video/mp4",
+                  "url": "https://video.twimg.com/amplify_video/1954186038504521728/vid/avc1/480x938/25eguDQ_rsOGC4Nx.mp4?tag=21"
+                },
+                {
+                  "bitrate": 2176000,
+                  "content_type": "video/mp4",
+                  "url": "https://video.twimg.com/amplify_video/1954186038504521728/vid/avc1/720x1406/UyFPZ1A-xfYkmo9b.mp4?tag=21"
+                },
+                {
+                  "bitrate": 10368000,
+                  "content_type": "video/mp4",
+                  "url": "https://video.twimg.com/amplify_video/1954186038504521728/vid/avc1/982x1920/iIMlGnL_bvbj_shi.mp4?tag=21"
+                }
+              ],
+              "aspect_ratio": [
+                491,
+                960
+              ],
+              "duration": 6033,
+              "original_info": {
+                "height": 1920,
+                "width": 982,
+                "focus_rects": []
+              },
+              "id": "1954186038504521728"
+            }
+          ]
+        }
+      }
+    },
+    {
+      "tweet_id": "1954509652026147091",
+      "bookmarks": 174,
+      "created_at": "Sun Aug 10 11:46:28 +0000 2025",
+      "favorites": 6688,
+      "text": "The trend is good. Grok has now moved up to rank 6 in the App Store. Was rank 56 a few weeks ago.",
+      "lang": "en",
+      "source": "<a href=\"http://twitter.com/download/iphone\" rel=\"nofollow\">Twitter for iPhone</a>",
+      "views": "2026114",
+      "quotes": 65,
+      "entities": {
+        "hashtags": [],
+        "symbols": [],
+        "timestamps": [],
+        "urls": [],
+        "user_mentions": []
+      },
+      "replies": 1387,
+      "retweets": 1216,
+      "conversation_id": "1954509652026147091",
+      "media": [],
+      "author": {
+        "rest_id": "44196397",
+        "name": "Elon Musk",
+        "screen_name": "elonmusk",
+        "avatar": "https://pbs.twimg.com/profile_images/1936002956333080576/kqqe2iWO_normal.jpg",
+        "blue_verified": true
+      },
+      "quoted": {
+        "tweet_id": "1954243965836005606",
+        "bookmarks": 15,
+        "created_at": "Sat Aug 09 18:10:44 +0000 2025",
+        "favorites": 297,
+        "text": "Even my mom is switching to Grok. Pretty sure it’s over for GPT. https://t.co/wiAWa2GPGK",
+        "lang": "en",
+        "views": "2042326",
+        "quotes": 19,
+        "replies": 95,
+        "retweets": 49,
+        "conversation_id": "1954243965836005606",
+        "author": {
+          "rest_id": "1587601034339561472",
+          "name": "Tetsuo",
+          "screen_name": "tetsuoai",
+          "avatar": "https://pbs.twimg.com/profile_images/1941908983314362368/Wbfh_wgx_normal.jpg",
+          "blue_verified": true
+        },
+        "media": {
+          "photo": [
+            {
+              "media_url_https": "https://pbs.twimg.com/media/Gx7eh5CawAAIGGv.jpg",
+              "id": "1954243962153385984",
+              "sizes": {
+                "h": 1200,
+                "w": 554
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "next_cursor": "DAAHCgABGyBWw1x__-wLAAIAAAATMTk1NDUwOTY1MjAyNjE0NzA5MQgAAwAAAAIAAA",
+  "prev_cursor": "DAAHCgABGyBWw1yAJxELAAIAAAATMTk1NDU4NTM5MzEyODY5ODE3NAgAAwAAAAEAAA",
+  "status": "ok",
+  "user": {
+    "status": "active",
+    "profile": "elonmusk",
+    "rest_id": "44196397",
+    "blue_verified": true,
+    "affiliates": {
+      "label": {
+        "url": {
+          "url": "https://twitter.com/X",
+          "urlType": "DeepLink"
+        },
+        "badge": {
+          "url": "https://pbs.twimg.com/profile_images/1683899100922511378/5lY42eHs_bigger.jpg"
+        },
+        "description": "X",
+        "userLabelType": "BusinessLabel",
+        "userLabelDisplayType": "Badge"
+      }
+    },
+    "business_account": [],
+    "avatar": "https://pbs.twimg.com/profile_images/1936002956333080576/kqqe2iWO_normal.jpg",
+    "header_image": "https://pbs.twimg.com/profile_banners/44196397/1739948056",
+    "desc": "",
+    "name": "Elon Musk",
+    "protected": null,
+    "location": "",
+    "friends": 1182,
+    "sub_count": 224015438,
+    "statuses_count": 83214,
+    "media_count": 4056,
+    "created_at": "Tue Jun 02 20:12:29 +0000 2009",
+    "pinned_tweet_ids_str": [
+      "1954499449452966161"
+    ],
+    "id": "44196397"
+  }
+}

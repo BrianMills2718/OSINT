@@ -1,0 +1,87 @@
+{
+  "session_metadata": {
+    "session_id": "1569876a-53b2-4646-892f-384dc94ae83f",
+    "start_time": "2025-08-27T21:25:31.864831+00:00",
+    "end_time": "2025-08-27T21:26:09.144239+00:00",
+    "duration_seconds": 37.278408,
+    "user_query": "Elon Musk X platform announcement"
+  },
+  "configuration": {
+    "max_searches": 2,
+    "max_time_minutes": 60,
+    "satisfaction_enabled": true,
+    "satisfaction_threshold": 0.8,
+    "min_searches_before_satisfaction": 10,
+    "show_search_details": true,
+    "show_strategy_reasoning": true,
+    "show_effectiveness_scores": true,
+    "enable_strategy_adaptation": true,
+    "enable_alternative_approaches": true,
+    "enable_name_variation_search": true,
+    "pages_per_search": 1,
+    "search_timeout_seconds": 30,
+    "retry_failed_searches": true,
+    "enforce_endpoint_diversity": false,
+    "max_endpoint_repeats": 5,
+    "diversity_threshold": 0.3
+  },
+  "performance_metrics": {
+    "total_searches": 2,
+    "total_rounds": 1,
+    "total_results_found": 59,
+    "satisfaction_score": 0.0,
+    "satisfaction_breakdown": {
+      "information_coverage": 0.0,
+      "source_diversity": 0.0,
+      "evidence_quality": 0.0,
+      "claim_specificity": 0.0,
+      "contradiction_resolution": 0.0
+    },
+    "completion_reason": "Investigation failed: InvestigationSession.update_satisfaction_metrics() missing 1 required positional argument: 'findings'"
+  },
+  "search_summary": {
+    "searches_by_effectiveness": {
+      "highly_effective": [],
+      "moderately_effective": [],
+      "low_effectiveness": [
+        {
+          "search_id": 2,
+          "query": "",
+          "results": 59,
+          "effectiveness": 2.0
+        }
+      ],
+      "ineffective": [
+        {
+          "search_id": 1,
+          "query": "from:elonmusk (X platform announcement OR X app new feature OR X rebranding)",
+          "results": 0,
+          "effectiveness": 0.0
+        }
+      ]
+    },
+    "most_effective_strategies": [
+      {
+        "strategy": "Graph Strategy: The original goal is undefined, and there's no initial information on 'Elon Musk X platform announcement'. This round will focus on establishing a foundational understanding by identifying specific announcements made by Elon Musk regarding the X platform. By combining a broad search with direct user timeline access and monitoring trends, we can pinpoint relevant announcements, their timing, and initial public reception, thereby defining the scope of the investigation.",
+        "avg_effectiveness": 1.0
+      }
+    ],
+    "dead_ends": [
+      "from:elonmusk (X platform announcement OR X app new feature OR X rebranding)"
+    ],
+    "promising_leads": []
+  },
+  "rounds_summary": [
+    {
+      "round_number": 1,
+      "strategy": "Graph Strategy: The original goal is undefined, and there's no initial information on 'Elon Musk X platform announcement'. This round will focus on establishing a foundational understanding by identifying specific announcements made by Elon Musk regarding the X platform. By combining a broad search with direct user timeline access and monitoring trends, we can pinpoint relevant announcements, their timing, and initial public reception, thereby defining the scope of the investigation.",
+      "searches_count": 2,
+      "total_results": 59,
+      "effectiveness": 1.0,
+      "insights": [
+        "Elon Musk's xAI company has open-sourced Grok 2.5.",
+        "xAI has released an update for the Grok App (v1.1.63) with improvements."
+      ]
+    }
+  ]
+}

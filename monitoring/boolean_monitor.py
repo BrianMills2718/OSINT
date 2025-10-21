@@ -202,7 +202,11 @@ class BooleanMonitor:
             api_key = None
             if integration.metadata.requires_api_key:
                 # Map source ID to env var name
-                api_key_var = f"{source.upper().replace('-', '_')}_API_KEY"
+                # Special case for Twitter (uses RAPIDAPI_KEY)
+                if source == "twitter":
+                    api_key_var = "RAPIDAPI_KEY"
+                else:
+                    api_key_var = f"{source.upper().replace('-', '_')}_API_KEY"
                 api_key = os.getenv(api_key_var, '')
 
                 if not api_key:

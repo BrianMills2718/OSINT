@@ -1,0 +1,75 @@
+{
+  "session_metadata": {
+    "session_id": "6e97019d-e527-497c-b50b-5a92b64b5150",
+    "start_time": "2025-09-08T07:33:06.891654+00:00",
+    "end_time": "2025-09-08T07:33:58.762137+00:00",
+    "duration_seconds": 51.870483,
+    "user_query": "What are different perspectives on climate change policies"
+  },
+  "configuration": {
+    "max_searches": 1,
+    "max_time_minutes": 60,
+    "satisfaction_enabled": true,
+    "satisfaction_threshold": 0.8,
+    "min_searches_before_satisfaction": 10,
+    "show_search_details": true,
+    "show_strategy_reasoning": true,
+    "show_effectiveness_scores": true,
+    "enable_strategy_adaptation": true,
+    "enable_alternative_approaches": true,
+    "enable_name_variation_search": true,
+    "pages_per_search": 3,
+    "search_timeout_seconds": 30,
+    "retry_failed_searches": true,
+    "enforce_endpoint_diversity": false,
+    "max_endpoint_repeats": 5,
+    "diversity_threshold": 0.3
+  },
+  "performance_metrics": {
+    "total_searches": 1,
+    "total_rounds": 1,
+    "total_results_found": 121,
+    "satisfaction_score": 0.0,
+    "satisfaction_breakdown": {
+      "information_coverage": 0.0,
+      "source_diversity": 0.0,
+      "evidence_quality": 0.0,
+      "claim_specificity": 0.0,
+      "contradiction_resolution": 0.0
+    },
+    "completion_reason": "Reached maximum search limit (1)"
+  },
+  "search_summary": {
+    "searches_by_effectiveness": {
+      "highly_effective": [],
+      "moderately_effective": [
+        {
+          "search_id": 1,
+          "query": "climate change (policy OR policies OR \"carbon tax\" OR \"carbon pricing\" OR \"net zero\" OR \"Green New Deal\" OR adaptation OR mitigation OR \"climate justice\")",
+          "results": 121,
+          "effectiveness": 7.0
+        }
+      ],
+      "low_effectiveness": [],
+      "ineffective": []
+    },
+    "most_effective_strategies": [
+      {
+        "strategy": "Graph Strategy: We currently have no Twitter-derived data about how different actors frame climate change policies. The next round should fill that core gap by collecting (a) representative tweets across time (Top + Latest) to identify dominant frames and emerging narratives, (b) official and activist timelines to capture institutional vs. grassroots policy perspectives, and (c) audience/follower signals and trending topics to understand salience and partisan or regional patterns. To meet the investigation constraints, I will use multiple endpoint types (search, timeline, trends, followers, affilates) so results are complementary and enable mapping of perspectives, influence, and networks.",
+        "avg_effectiveness": 7.0
+      }
+    ],
+    "dead_ends": [],
+    "promising_leads": []
+  },
+  "rounds_summary": [
+    {
+      "round_number": 1,
+      "strategy": "Graph Strategy: We currently have no Twitter-derived data about how different actors frame climate change policies. The next round should fill that core gap by collecting (a) representative tweets across time (Top + Latest) to identify dominant frames and emerging narratives, (b) official and activist timelines to capture institutional vs. grassroots policy perspectives, and (c) audience/follower signals and trending topics to understand salience and partisan or regional patterns. To meet the investigation constraints, I will use multiple endpoint types (search, timeline, trends, followers, affilates) so results are complementary and enable mapping of perspectives, influence, and networks.",
+      "searches_count": 1,
+      "total_results": 121,
+      "effectiveness": 0.0,
+      "insights": []
+    }
+  ]
+}
