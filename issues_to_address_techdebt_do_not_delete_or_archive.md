@@ -66,7 +66,7 @@ Phase 3: Executing searches...
 ### ClearanceJobs Integration - Playwright Not Available on Streamlit Cloud
 **Discovered**: 2025-10-21
 **Severity**: Medium (integration non-functional on Streamlit Cloud)
-**Status**: In Progress
+**Status**: Resolved
 
 **Symptoms**:
 - `ModuleNotFoundError` when importing `playwright.async_api` on Streamlit Cloud
@@ -89,23 +89,22 @@ File "/mount/src/osint/integrations/government/clearancejobs_playwright.py", lin
 - App cannot load due to hard import dependency
 - Security-cleared job data unavailable on cloud deployment
 
-**Solution**:
-Make ClearanceJobs integration optional:
-1. Wrap imports in try/except blocks
-2. Gracefully handle missing Playwright dependency
-3. Show warning in UI when ClearanceJobs unavailable
-4. App continues functioning with other 7 integrations
+**Solution Implemented** (2025-10-21):
+1. ✅ Wrapped ClearanceJobs import in try/except in `integrations/registry.py`
+2. ✅ Only registers ClearanceJobsIntegration if Playwright available
+3. ✅ Wrapped UI import in try/except in `apps/unified_search_app.py`
+4. ✅ Shows helpful error message in ClearanceJobs tab when unavailable
+5. ✅ App continues functioning with other 7 integrations (DVIDS, SAM.gov, USAJobs, Twitter, Discord, Federal Register, Brave Search)
 
-**Files**:
-- `apps/unified_search_app.py` (line 274: hard import)
-- `apps/clearancejobs_search.py` (line 15: hard import)
-- `integrations/government/clearancejobs_integration.py`
-- `integrations/government/clearancejobs_playwright.py`
+**Files Modified**:
+- `integrations/registry.py` - Added `CLEARANCEJOBS_AVAILABLE` flag and conditional registration
+- `apps/unified_search_app.py` - Wrapped import in try/except with user-friendly error message
 
-**Investigation Needed**:
-- Test if Playwright works on Streamlit Cloud with custom `packages.txt`
-- If not viable, make integration optional for cloud deployment
-- Consider alternative: ClearanceJobs API (if available) instead of scraping
+**Result**:
+- App loads successfully on Streamlit Cloud even without Playwright
+- ClearanceJobs tab shows helpful message explaining why it's unavailable
+- All other features fully functional
+- Works perfectly on local deployments that have Playwright installed
 
 ---
 
