@@ -387,10 +387,12 @@ Return tasks in priority order (most important first).
             # Convert Brave results to standard format
             results = []
             for item in data.get('web', {}).get('results', []):
+                description = item.get('description', '')
                 results.append({
                     'source': 'Brave Search',
                     'title': item.get('title', ''),
-                    'snippet': item.get('description', ''),
+                    'description': description,  # Use 'description' for consistency
+                    'snippet': description,      # Also include 'snippet' for backward compatibility
                     'url': item.get('url', ''),
                     'date': item.get('published_date')
                 })
