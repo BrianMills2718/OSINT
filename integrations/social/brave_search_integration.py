@@ -112,12 +112,20 @@ Research Question: {research_question}
 Generate search parameters for the Brave Search API to find investigative journalism,
 analysis, leaked documents, court filings, advocacy reports, and news coverage.
 
+CRITICAL - Query Format Rules:
+- Brave Search uses OR logic (like Google), NOT AND
+- Space-separated keywords = any of these keywords (ranked by relevance)
+- More keywords = BROADER search, not narrower
+- KEEP QUERIES SIMPLE: 3-6 keywords maximum
+- Focus on the most important/specific terms only
+- Avoid keyword stuffing - it reduces result quality
+
 Available parameters:
 - query: Search query string (required)
-  * For investigative research, include terms like: "leaked", "investigation", "report", "court filing", "analysis"
-  * Combine with specific programs/agencies/events
-  * Example: "NSA surveillance programs leaked documents"
-  * Example: "ICE detention facility inspection report"
+  * SIMPLE queries work best: 3-6 keywords maximum
+  * Example: "NSA surveillance leaked documents"  ✓ GOOD (4 keywords)
+  * Example: "NSA PRISM surveillance program leaked documents investigation whistleblower court"  ✗ BAD (too many keywords)
+  * For investigative research, combine the main topic with 1-2 context terms like "leaked", "investigation", "report"
 - count: Number of results (1-20, default 10)
   * Use 10 for general searches
   * Use 20 for broad topics needing comprehensive coverage
@@ -130,11 +138,10 @@ Available parameters:
 - country: Country code (default "us" for U.S.-focused research)
 
 Guidelines for investigative journalism:
-- Prioritize primary sources: leaked documents, official reports, court filings
-- Include investigative journalism outlets: ProPublica, Intercept, ACLU, EFF
-- Avoid SEO spam/aggregator sites (LLM relevance filter handles this)
-- Use freshness filter to find timely coverage
-- For government programs/agencies, combine official names with investigation terms
+- Start with the core topic (3-4 keywords)
+- Add 1-2 context terms if needed ("leaked", "investigation", "report")
+- Let Brave's relevance ranking find the best matches
+- Use freshness filter to narrow by time instead of adding more keywords
 
 If this question is clearly not suited for web search (e.g., structured database query
 like "contracts in SAM.gov" or "jobs at NSA"), return relevant: false.
@@ -146,11 +153,11 @@ Question: "NSA surveillance programs"
 Response:
 {{
   "relevant": true,
-  "query": "NSA surveillance programs leaked documents whistleblower",
+  "query": "NSA surveillance leaked",
   "count": 10,
   "freshness": "pm",
   "country": "us",
-  "reasoning": "Web search for investigative reporting and leaked docs about NSA surveillance"
+  "reasoning": "Simple 3-keyword query for leaked NSA surveillance docs"
 }}
 
 Example 2:
@@ -158,11 +165,11 @@ Question: "ICE detention facilities human rights violations"
 Response:
 {{
   "relevant": true,
-  "query": "ICE detention facilities human rights violations investigation report",
+  "query": "ICE detention violations report",
   "count": 10,
   "freshness": "pm",
   "country": "us",
-  "reasoning": "Find advocacy reports, news coverage, and investigations of ICE detention"
+  "reasoning": "4 keywords focusing on ICE detention and violations reporting"
 }}
 
 Example 3:
@@ -170,11 +177,11 @@ Question: "Recent FBI domestic extremism classifications"
 Response:
 {{
   "relevant": true,
-  "query": "FBI domestic extremism classifications leaked memo analysis",
+  "query": "FBI domestic extremism memo",
   "count": 10,
   "freshness": "pw",
   "country": "us",
-  "reasoning": "Recent news and analysis of FBI domestic extremism policies"
+  "reasoning": "4-keyword query focused on FBI extremism policy docs"
 }}
 
 Example 4:
