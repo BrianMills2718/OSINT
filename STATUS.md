@@ -110,6 +110,80 @@ All 5 production monitors tested with adaptive search enabled:
 
 ---
 
+## Streamlit Cloud Deployment Status
+
+**Last Updated**: 2025-10-21
+**Deployment URL**: https://github.com/BrianMills2718/OSINT (deployed to Streamlit Cloud)
+
+| Component | Status | Evidence | Limitations | Next Action |
+|-----------|--------|----------|-------------|-------------|
+| **GitHub Repository** | [PASS] | Git history cleaned (removed .venv/, exposed API keys), pushed to https://github.com/BrianMills2718/OSINT | Used git filter-repo to rewrite history | Repository ready for collaboration |
+| **Streamlit Cloud Secrets** | [PASS] | All API keys configured via .streamlit/secrets.toml in Streamlit Cloud web interface | User configured manually | Secrets available to cloud app |
+| **Python Dependencies** | [PASS] | requirements.txt updated with playwright, beautifulsoup4, aiohttp, PyYAML, lxml | None | All dependencies installable on cloud |
+| **ClearanceJobs Integration** | [GRACEFUL DEGRADATION] | Made optional: lazy playwright import, try/except in registry.py and unified_search_app.py | Not available on Streamlit Cloud (Playwright requires browser binaries) | Shows helpful error message, 7 of 8 integrations working |
+| **Main App Load** | [PASS] | apps/unified_search_app.py loads successfully on Streamlit Cloud | ClearanceJobs tab shows unavailability warning | App functional with all features except ClearanceJobs |
+| **Deep Research Engine** | [FAIL] | Returns 0 tasks executed, 5 tasks failed on Streamlit Cloud | Root cause unknown - awaiting detailed error logs from user | Enhanced error logging deployed (2025-10-21) |
+| **Error Logging Enhancement** | [DEPLOYED] | Added comprehensive error logging to research/deep_research.py: full tracebacks, error_type, error_message | None | User needs to test Deep Research and share "Failed Tasks" errors |
+
+**Evidence** (Git History Cleanup - 2025-10-21):
+```
+Issue: GitHub push blocked - 115.98 MB playwright binary in .venv/
+Solution: git filter-repo --path .venv --invert-paths --force
+Also removed: SI_UFO_Wiki/ (exposed Perplexity API key), docs/reference/ (exposed Anthropic API key)
+Result: Successfully pushed to GitHub, clean history
+```
+
+**Evidence** (ClearanceJobs Made Optional - 2025-10-21):
+```
+Problem: ModuleNotFoundError: No module named 'playwright' on Streamlit Cloud
+Solution:
+1. Made playwright import lazy in clearancejobs_playwright.py (moved inside function)
+2. Wrapped ClearanceJobs import in try/except in integrations/registry.py
+3. Conditional registration: only register if import succeeds
+4. Wrapped UI import in try/except in unified_search_app.py with helpful error message
+
+Result:
+- App loads successfully on Streamlit Cloud
+- 7 of 8 integrations working (DVIDS, SAM.gov, USAJobs, Twitter, Discord, Federal Register, FBI Vault)
+- ClearanceJobs tab shows user-friendly explanation of why it's unavailable
+- Works perfectly on local deployments that have Playwright installed
+```
+
+**Evidence** (Deep Research Error Logging - 2025-10-21):
+```
+Enhancement deployed to research/deep_research.py:
+1. Task decomposition wrapped in try/except with full traceback
+2. Task execution errors capture: error_type, error_message, traceback, query, retry_count
+3. Synthesis wrapped in try/except
+4. Added failure_details array to final result object
+5. UI enhanced in apps/deep_research_tab.py: Shows expandable "Failed Tasks (Debug Info)" section
+
+Status: DEPLOYED to GitHub/Streamlit Cloud
+Awaiting: User to test Deep Research on cloud and share detailed error messages from "Failed Tasks" section
+```
+
+**Current Blockers**:
+- Deep Research failing on Streamlit Cloud (0 tasks executed, 5 tasks failed)
+- Root cause unknown - could be API key access, timeouts, memory limits, or import errors
+- Requires user to test and share detailed error messages from enhanced error logging
+
+**Next Actions**:
+1. **User tests Deep Research on Streamlit Cloud**
+2. **User shares detailed error messages** from "Failed Tasks (Debug Info)" section in UI
+3. **Fix root cause** based on specific errors (likely API keys, timeouts, or memory limits)
+4. **Verify fix** on Streamlit Cloud deployment
+
+**Deployment Files Modified**:
+- requirements.txt (added playwright, beautifulsoup4, aiohttp, PyYAML, lxml)
+- integrations/government/clearancejobs_playwright.py (lazy import)
+- integrations/registry.py (optional ClearanceJobs registration)
+- apps/unified_search_app.py (graceful ClearanceJobs error handling)
+- research/deep_research.py (comprehensive error logging)
+- apps/deep_research_tab.py (error display UI)
+- issues_to_address_techdebt_do_not_delete_or_archive.md (documented ClearanceJobs issue)
+
+---
+
 ## Phase 1: Boolean Monitoring MVP - Component Status
 
 ### Boolean Monitoring System

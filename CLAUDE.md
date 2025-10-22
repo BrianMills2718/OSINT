@@ -961,10 +961,10 @@ pip list | grep playwright       # Should show: playwright, seleniumbase
 ---
 # CLAUDE.md - Temporary Section (Updated as Tasks Complete)
 
-**Last Updated**: 2025-10-20 20:15
-**Current Phase**: Phase 1.5 (Adaptive Search & Knowledge Graph) - Week 1 COMPLETE ✅
-**Recent Completion**: All 5 production monitors tested with adaptive search + scheduler updated
-**Timeline**: Weeks 1-10
+**Last Updated**: 2025-10-21 (Root directory cleanup + Streamlit Cloud deployment)
+**Current Phase**: Streamlit Cloud Deployment + Deep Research Debugging
+**Recent Completion**: Enhanced error logging in Deep Research, ClearanceJobs made optional, root cleanup complete
+**Timeline**: Awaiting Streamlit Cloud Deep Research test results
 
 ---
 
