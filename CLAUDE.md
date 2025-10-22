@@ -961,43 +961,48 @@ pip list | grep playwright       # Should show: playwright, seleniumbase
 ---
 # CLAUDE.md - Temporary Section (Updated as Tasks Complete)
 
-**Last Updated**: 2025-10-21 (Root directory cleanup + Streamlit Cloud deployment)
-**Current Phase**: Streamlit Cloud Deployment + Deep Research Debugging
-**Recent Completion**: Enhanced error logging in Deep Research, ClearanceJobs made optional, root cleanup complete
-**Timeline**: Awaiting Streamlit Cloud Deep Research test results
+**Last Updated**: 2025-10-22 (Deep Research diagnosis: insufficient results from government DBs)
+**Current Phase**: Deep Research Enhancement - Web Search + Debug Logging
+**Recent Completion**: Diagnosed Deep Research failure on Streamlit Cloud (0 results from gov databases)
+**Timeline**: Fix Deep Research with Brave Search integration, add debug logging UI
 
 ---
 
-## CURRENT PHASE: ADAPTIVE SEARCH & KNOWLEDGE GRAPH
+## CURRENT TASK: FIX DEEP RESEARCH ON STREAMLIT CLOUD
 
-**Decision**: User approved **Option B** - Start with PostgreSQL + Graph Layer, Wikibase-compatible for future migration
+**Problem Diagnosed** (2025-10-22):
+- User tested Deep Research on Streamlit Cloud with query about JSOC/CIA operations
+- Result: 0 tasks executed, 4 tasks failed with "Insufficient results after 2 retries"
+- Root cause: Government databases (DVIDS, SAM.gov, USAJobs) don't have classified JSOC/CIA documents
+- Deep Research needs at least some results to work with, but found 0 results from all sources
 
-**What we're building**:
-1. **Weeks 1-4**: Mozart-style adaptive search (iterative refinement)
-2. **Weeks 5-8**: PostgreSQL knowledge graph (Wikibase-compatible schema)
-3. **Weeks 9-10**: BabyAGI on-demand investigations + visualization
+**Solution**: Add web search capability + enhanced debug logging
+1. **Brave Search Integration**: Search open web for investigative journalism, leaked docs, court filings
+2. **Debug Logging UI**: Display task execution details in expandable UI sections for troubleshooting
 
-**Team size**: 3 people (makes knowledge graph valuable for collaboration)
-
-**Integration strategy**: Hybrid approach
-- **Daily monitoring**: Mozart iterative search (fast, predictable)
-- **On-demand**: BabyAGI deep investigations (thorough, autonomous)
-
-**Documentation**: See `docs/active/` for implementation guides
+**Why This Matters**: Deep Research currently only searches government databases, which don't contain classified/sensitive information that journalists investigate. Web search is essential for investigative use cases.
 
 ---
 
-## PHASE 1 BACKGROUND (Already Complete)
+## BACKGROUND: WHAT'S ALREADY WORKING
 
-**Phase 1 Status**: COMPLETE (100%)
-
-**What's working** ([PASS]):
-- Boolean monitoring system (5 production monitors)
+**Phase 1 - Boolean Monitoring** (COMPLETE + DEPLOYED):
+- 6 production monitors with adaptive search
 - Email alerts with LLM relevance filtering
-- Daily scheduler (ready to deploy)
-- 5 government data sources integrated
+- Daily scheduler running (verified 2025-10-22, PID 356, next run: 6:00 AM)
+- 5 government data sources integrated (DVIDS, SAM.gov, USAJobs, Twitter, Discord)
 
-**Evidence**: See `docs/archived/2025-10-19-phase1-boolean-monitoring/` for completion documentation
+**Phase 1.5 Week 1 - Adaptive Search** (COMPLETE):
+- AdaptiveSearchEngine with multi-phase iteration
+- Entity extraction and quality scoring
+- Integrated with Boolean monitors
+- All 5 production monitors tested successfully
+
+**Streamlit Cloud Deployment** (PARTIAL):
+- App deployed and loading successfully
+- 7 of 8 integrations working (ClearanceJobs optional with graceful degradation)
+- Deep Research failing due to 0 results from government databases
+- Enhanced error logging deployed, user tested and confirmed diagnosis
 
 ---
 
@@ -1024,301 +1029,203 @@ pip list | grep playwright       # Should show: playwright, seleniumbase
 
 ---
 
-## NEXT 3 ACTIONS (Week 1: Start Adaptive Search)
+## NEXT 2 ACTIONS (Deep Research Enhancement)
 
-### Action 1: Build AdaptiveSearchEngine Core
+### Action 1: Integrate Brave Search into Deep Research Engine
 
-**Prerequisites**: Phase 1 complete (monitors working)
+**Prerequisites**: Deep Research Engine deployed (research/deep_research.py exists)
 
-**Goal**: Implement Mozart-style iterative search that refines itself
+**Goal**: Add web search capability to find investigative journalism, leaked documents, court filings
 
-**Implementation guide**: See `docs/active/ADAPTIVE_SEARCH_INTEGRATION.md` (lines 78-353)
+**Why**: Government databases (DVIDS, SAM.gov, USAJobs) don't have classified/sensitive documents. Deep Research needs web search to find investigative reporting on these topics.
 
-**File to create**: `core/adaptive_search_engine.py`
+**Files to modify**:
+- `research/deep_research.py` - Add Brave Search integration method
+- `integrations/registry.py` - Check if BraveSearchIntegration exists, create if needed
+- `requirements.txt` - Ensure required packages present
 
-**Key components**:
+**Implementation**:
 ```python
-class AdaptiveSearchEngine:
-    """
-    Autonomous search that iterates and refines itself.
+# Add to research/deep_research.py
 
-    Pattern:
-    1. Broad initial search (phase1_count: 15 results)
-    2. Analyze top results, extract entities
-    3. Targeted follow-up searches for each entity
-    4. Quality check, iterate if needed
-    5. Stop when quality >= threshold or max iterations
-    """
+async def _search_brave(self, query: str, max_results: int = 10) -> List[Dict]:
+    """Search open web using Brave Search API."""
+    import os
+    import aiohttp
 
-    async def adaptive_search(self, initial_query: str):
-        # Phase 1: Broad search
-        # Phase 2: Extract entities from top results
-        # Phase 3: Targeted searches
-        # Phase 4: Quality check & iterate
-        pass
+    api_key = os.getenv('BRAVE_SEARCH_API_KEY')
+    if not api_key:
+        logging.warning("BRAVE_SEARCH_API_KEY not found, skipping web search")
+        return []
+
+    url = "https://api.search.brave.com/res/v1/web/search"
+    headers = {
+        "Accept": "application/json",
+        "X-Subscription-Token": api_key
+    }
+    params = {
+        "q": query,
+        "count": max_results
+    }
+
+    async with aiohttp.ClientSession() as session:
+        async with session.get(url, headers=headers, params=params) as resp:
+            data = await resp.json()
+
+    # Convert Brave results to standard format
+    results = []
+    for item in data.get('web', {}).get('results', []):
+        results.append({
+            'source': 'Brave Search',
+            'title': item.get('title'),
+            'snippet': item.get('description'),
+            'url': item.get('url'),
+            'date': item.get('published_date')
+        })
+
+    return results
+
+# Update _execute_task method to include web search
+async def _execute_task(self, task: Dict) -> Dict:
+    """Execute a research task - search government DBs AND web."""
+    # Existing government DB search...
+    gov_results = await self._search_government_dbs(task['query'])
+
+    # NEW: Web search
+    web_results = await self._search_brave(task['query'], max_results=20)
+
+    # Combine results
+    all_results = gov_results + web_results
+
+    return {
+        'task_id': task['task_id'],
+        'query': task['query'],
+        'results': all_results,
+        'result_count': len(all_results),
+        'sources': {
+            'government_databases': len(gov_results),
+            'web_search': len(web_results)
+        }
+    }
 ```
 
 **Success Criteria**:
-- [x] AdaptiveSearchEngine class created ✅
-- [x] Core iteration logic implemented (phases 1-4) ✅
-- [x] Entity extraction using gpt-5-mini ✅
-- [x] Quality scoring working ✅
-- [x] Test with single keyword produces multi-phase results ✅
+- [ ] Brave Search API key added to .env and secrets.toml
+- [ ] research/deep_research.py calls Brave Search for each task
+- [ ] Results combine government DBs + web search
+- [ ] Test locally: Deep Research on JSOC/CIA query returns web results
+- [ ] Deploy to Streamlit Cloud, verify web results appear
 
-**Testing**:
-```python
-python3 -c "
-import asyncio
-from core.adaptive_search_engine import AdaptiveSearchEngine
-from core.parallel_executor import ParallelExecutor
-
-async def test():
-    engine = AdaptiveSearchEngine(
-        parallel_executor=ParallelExecutor(),
-        phase1_count=10,
-        phase2_queries=3,
-        max_iterations=2
-    )
-
-    result = await engine.adaptive_search('FISA Section 702')
-
-    print(f'Total results: {result.total_results}')
-    print(f'Phases: {result.iterations}')
-    print(f'Entities discovered: {result.entities_discovered}')
-
-asyncio.run(test())
-"
-```
-
-**Expected output**:
-```
-Phase 1: Broad search (10 results)
-Extracted 5 entities: ['NSA', 'Prism program', 'FISA court']
-Phase 1 complete: 10 results
-Iteration 1: Targeted searches for 3 entities
-  Searching: FISA Section 702 AND NSA
-  Searching: FISA Section 702 AND Prism program
-  Searching: FISA Section 702 AND FISA court
-Iteration 1 complete: 24 new results
-Quality threshold reached (0.75 >= 0.60)
-
-Total results: 34
-Phases: 2
-Entities discovered: ['NSA', 'Prism program', 'FISA court', ...]
-```
-
-**Evidence Required**:
-- Command output showing iteration working
-- Multiple phases executed
-- Entities extracted between phases
-- Quality scores calculated
-
-**On Failure**:
-- Import errors: Check ParallelExecutor still works
-- LLM errors: Verify OPENAI_API_KEY in .env
-- No entities extracted: Check prompt formatting
-- Infinite loop: Verify max_iterations enforced
-
-**Current Status**: [PASS] - COMPLETE
-
-**Evidence** (2025-10-20):
-```
-Test query: "military training exercises"
-Results: 27 unique results across 3 phases
-Entities discovered: 14 entities (e.g., "165th Airlift Wing", "Exercise Steadfast Noon 2025")
-Quality progression: 0.35 → 0.44 → 0.52
-Execution time: ~45 seconds (includes LLM entity extraction)
-```
-
-**File created**: core/adaptive_search_engine.py (456 lines)
-**Status updated**: STATUS.md with Phase 1.5 Week 1 section
-
----
-
-### Action 2: Integrate Adaptive Search with BooleanMonitor
-
-**Prerequisites**: Action 1 complete (AdaptiveSearchEngine working)
-
-**Goal**: Replace static keyword search with adaptive search in monitors
-
-**Implementation guide**: See `docs/active/ADAPTIVE_SEARCH_INTEGRATION.md` (lines 354-433)
-
-**File to create**: `monitoring/adaptive_boolean_monitor.py`
-
-**Key changes**:
-```python
-class AdaptiveBooleanMonitor(BooleanMonitor):
-    """Boolean monitor using adaptive search."""
-
-    def __init__(self, config_path: str):
-        super().__init__(config_path)
-        self.adaptive_engine = AdaptiveSearchEngine(...)
-
-    async def execute_search(self, keywords: List[str]):
-        """Use adaptive search instead of simple parallel search."""
-        for keyword in keywords:
-            adaptive_result = await self.adaptive_engine.adaptive_search(keyword)
-            # Collect all results from all phases
-            all_results.extend(...)
-        return all_results
-```
-
-**Success Criteria**:
-- [x] AdaptiveBooleanMonitor class created ✅
-- [x] Replaces simple search with adaptive search ✅
-- [x] Preserves existing features (email alerts, dedup, etc.) ✅
-- [x] Configurable (can enable/disable adaptive mode) ✅
-- [x] Test with one monitor shows multi-phase search ✅
-
-**Testing**:
-```python
-python3 -c "
-import asyncio
-from monitoring.adaptive_boolean_monitor import AdaptiveBooleanMonitor
-
-async def test():
-    monitor = AdaptiveBooleanMonitor(
-        'data/monitors/configs/surveillance_fisa_monitor.yaml'
-    )
-    results = await monitor.execute_search(['FISA Section 702'])
-    print(f'Found {len(results)} results via adaptive search')
-
-asyncio.run(test())
-"
-```
-
-**Evidence Required**:
-- Monitor executes multiple search phases
-- Entities discovered and searched
-- All results collected
-- Email alert includes adaptive insights
-
-**On Failure**:
-- Config errors: Check YAML format matches BooleanMonitor
-- Integration errors: Verify BooleanMonitor base class unchanged
-- No multi-phase: Check adaptive_engine initialization
-
-**Current Status**: [PASS] - COMPLETE
-
-**Evidence** (2025-10-20 - Full E2E test):
-```
-Test: AdaptiveBooleanMonitor with test_adaptive_monitor.yaml
-Keyword: "military training exercises"
-
-Adaptive search: 19 results (3 phases: 10 → 7 → 2), 13 entities discovered, 84s
-Deduplication: 19 unique, 0 duplicates
-New detection: 15 new (vs 21 previous)
-Relevance filtering: 14 relevant (93% pass rate), 1 filtered out, 101s
-Email alert: Sent successfully to brianmills2718@gmail.com
-Result storage: Saved to Test_Adaptive_Monitor_results.json
-
-Total: 3 minutes 25 seconds end-to-end
-```
-
-**File created**: monitoring/adaptive_boolean_monitor.py (269 lines)
-**Config created**: data/monitors/configs/test_adaptive_monitor.yaml
-**Status updated**: STATUS.md with full E2E test evidence
-
----
-
-### Action 3: Update Monitor Configs for Adaptive Search
-
-**Prerequisites**: Action 2 complete (AdaptiveBooleanMonitor working)
-
-**Goal**: Enable adaptive search on production monitors with tuned parameters
-
-**Files to update**: `data/monitors/configs/*.yaml`
-
-**Changes**:
-```yaml
-# Before (static keywords)
-name: "Surveillance & FISA Programs"
-keywords:
-  - "FISA Section 702"
-  - "NSA surveillance programs"
-
-# After (adaptive search)
-name: "Surveillance & FISA Programs"
-keywords:
-  - "FISA Section 702"
-  - "NSA surveillance programs"
-adaptive_search: true  # NEW
-adaptive_config:
-  phase1_count: 15
-  analyze_top_n: 5
-  phase2_queries: 4
-  max_iterations: 3
-  min_quality: 0.6
-```
-
-**Success Criteria**:
-- [x] All 6 monitor configs updated with adaptive settings ✅
-- [x] Parameters tuned for each monitor type ✅
-- [x] Backward compatible (can disable adaptive if needed) ✅
-- [x] All 5 production monitors tested end-to-end ✅
-- [x] Scheduler updated to use AdaptiveBooleanMonitor ✅
-
-**Testing**:
+**Testing** (local):
 ```bash
-# Test one monitor with adaptive search enabled
-python3 monitoring/adaptive_boolean_monitor.py \
-  data/monitors/configs/surveillance_fisa_monitor.yaml
+source .venv/bin/activate
+streamlit run apps/unified_search_app.py
+# Go to Deep Research tab
+# Enter query: "What is the relationship between JSOC and CIA Title 50 operations?"
+# Verify: Results include web sources (news articles, investigative journalism)
 ```
 
 **Evidence Required**:
-- Monitor runs with adaptive search
-- Multiple phases logged
-- Entities discovered
-- Results found via refinement (not in Phase 1)
+- Command output showing web results returned
+- Task logs showing "web_search: X results" alongside "government_databases: Y results"
+- Final report includes sources from both government DBs and web
 
 **On Failure**:
-- Config parse errors: Check YAML syntax
-- Adaptive not activating: Verify adaptive_search: true
-- Poor quality: Tune thresholds (min_quality, phase1_count, etc.)
+- API key errors: Verify BRAVE_SEARCH_API_KEY in .env and Streamlit Cloud secrets
+- 0 web results: Check API key permissions, try simpler query
+- Import errors: Ensure aiohttp in requirements.txt
 
-**Current Status**: [PASS] - COMPLETE
-
-**Evidence** (2025-10-20 - All 5 production monitors tested):
-```
-1. Surveillance & FISA Programs: 0 results (PASS - no matches, databases marked "not relevant")
-2. Special Operations & Covert Programs: 95 results, 53 new, email sent (PASS)
-   - Entities discovered: JSOC, USSOCOM, 10th Special Forces Group, Title 50 covert action authority
-   - Email sent with 27 relevant results after LLM filtering
-3. Immigration Enforcement Operations: 0 results (PASS - no matches)
-4. Domestic Extremism Classifications: 0 results (PASS)
-5. Inspector General & Oversight Reports: 0 results (PASS)
-```
-
-**Scheduler Updated**: monitoring/scheduler.py now uses AdaptiveBooleanMonitor
-**Configs Updated**: All 6 production monitors enabled with adaptive_search: true
-**Removed**: federal_register source from all configs (not registered in integrations/registry.py)
+**Current Status**: [PENDING]
 
 ---
 
-## WEEK 1 COMPLETE (Actions 1-3 Complete) ✅
+### Action 2: Add Debug Logging Display to Deep Research UI
 
-**What we built**:
-- ✅ AdaptiveSearchEngine (core/adaptive_search_engine.py - 456 lines)
-- ✅ AdaptiveBooleanMonitor integration (monitoring/adaptive_boolean_monitor.py - 269 lines)
-- ✅ 6 production monitor configs with adaptive search enabled
-- ✅ Scheduler updated to use adaptive monitoring
-- ✅ All 5 production monitors tested successfully
+**Prerequisites**: Action 1 in progress or complete (Deep Research with web search)
 
-**Evidence**:
-- Multi-phase iteration working (broad search → entity extraction → targeted refinement)
-- Entity discovery validated (Special Operations found JSOC, USSOCOM, Title 50 authority)
-- Backward compatibility confirmed (can disable with adaptive_search: false)
-- Performance: ~5 minutes per monitor with adaptive vs ~1 minute without
+**Goal**: Display detailed task execution information in expandable UI sections for troubleshooting
 
-**Next (Week 2-4)**:
-- Add BabyAGI for on-demand deep investigations
-- Add web search integration (Brave Search API)
-- Tune adaptive parameters based on production use
+**Why**: User can't see why tasks fail on Streamlit Cloud. Need visibility into task execution: queries generated, sources searched, results found, errors encountered.
 
-**Then (Week 5-8)**:
-- PostgreSQL knowledge graph (Wikibase-compatible schema)
-- Auto-populate from adaptive search results
-- Entity relationship tracking
+**Files to modify**:
+- `apps/deep_research_tab.py` - Add expandable debug sections showing task execution details
+
+**Implementation**:
+```python
+# In apps/deep_research_tab.py, after showing final report
+
+# NEW: Debug Logging Section
+st.markdown("---")
+st.markdown("### 🔍 Task Execution Details")
+
+for i, task in enumerate(tasks_completed):
+    task_id = task.get('task_id', i+1)
+    query = task.get('query', 'Unknown')
+    status = task.get('status', 'UNKNOWN')
+    results_count = task.get('result_count', 0)
+
+    # Color-code status
+    status_emoji = {
+        'TASK_COMPLETED': '✅',
+        'TASK_FAILED': '❌',
+        'TASK_RETRY': '🔄'
+    }.get(status, '❓')
+
+    with st.expander(f"{status_emoji} Task {task_id}: {query} ({results_count} results)", expanded=(status == 'TASK_FAILED')):
+        st.write(f"**Status**: {status}")
+        st.write(f"**Query**: {query}")
+
+        # Show source breakdown
+        sources = task.get('sources', {})
+        if sources:
+            st.write("**Results by Source**:")
+            for source, count in sources.items():
+                st.write(f"  - {source}: {count} results")
+
+        # Show errors if failed
+        if status == 'TASK_FAILED':
+            error = task.get('error', 'Unknown error')
+            st.error(f"**Error**: {error}")
+
+            # Show stack trace if available
+            if 'traceback' in task:
+                st.code(task['traceback'], language='python')
+
+        # Show sample results
+        if task.get('results'):
+            st.write(f"**Sample Results** (showing first 3 of {len(task['results'])}):")
+            for result in task['results'][:3]:
+                st.write(f"- [{result.get('source')}] {result.get('title')}")
+                st.write(f"  {result.get('snippet', '')[:200]}...")
+```
+
+**Success Criteria**:
+- [ ] Each task shows expandable section with execution details
+- [ ] Failed tasks expanded by default, showing full error messages
+- [ ] Successful tasks show results breakdown by source
+- [ ] Stack traces displayed for debugging errors
+- [ ] Test locally and on Streamlit Cloud
+
+**Testing** (local):
+```bash
+source .venv/bin/activate
+streamlit run apps/unified_search_app.py
+# Go to Deep Research tab
+# Enter query (any query)
+# After execution, scroll to "Task Execution Details" section
+# Verify: Each task has expandable section with query, status, results count, errors
+```
+
+**Evidence Required**:
+- Screenshot or description of debug UI showing task details
+- Failed task shows error message and traceback
+- Successful task shows results breakdown
+
+**On Failure**:
+- UI not rendering: Check Streamlit syntax errors
+- Missing data: Verify research/deep_research.py includes debug info in task results
+
+**Current Status**: [PENDING]
 
 ---
 
@@ -1326,71 +1233,111 @@ python3 monitoring/adaptive_boolean_monitor.py \
 
 | Blocker | Impact | Status | Next Action |
 |---------|--------|--------|-------------|
-| None | N/A | **CLEAR** | Choose next direction: deploy scheduler OR Week 2-4 features OR federal_register integration |
+| Deep Research 0 results | Deep Research unusable on Streamlit Cloud for classified/sensitive topics | **ACTIVE** | Add Brave Search integration (Action 1) |
+| No debug visibility | Can't troubleshoot Deep Research failures on cloud | **ACTIVE** | Add debug logging UI (Action 2) |
+| BRAVE_SEARCH_API_KEY missing | Blocks web search implementation | **ACTIVE** | Add API key to .env and Streamlit Cloud secrets |
 
-**No current blockers** - Week 1 complete, ready for next phase decision
+**Current blockers blocking Deep Research on Streamlit Cloud** - Adding web search and debug logging to fix
 
 ---
 
 ## CHECKPOINT QUESTIONS (Answer Every 15 Min)
 
-**Last Checkpoint**: 2025-10-20 (Week 1 COMPLETE - All 5 production monitors tested)
+**Last Checkpoint**: 2025-10-22 (CLAUDE.md TEMPORARY updated with new actions)
 
 **Questions**:
 1. What have I **proven** with command output?
-   - Answer: All 5 production monitors tested successfully. Special Operations found 95 results with entity extraction working (JSOC, USSOCOM, Title 50 authority). Scheduler updated to use AdaptiveBooleanMonitor. Backward compatibility confirmed (adaptive_search: false works).
+   - Answer: Deep Research diagnosis confirmed (user tested on Streamlit Cloud, 0 tasks executed, 4 failed). Root cause identified (government DBs don't have classified JSOC/CIA documents). CLAUDE.md updated with new actions for Brave Search + Debug Logging.
 
 2. What am I **assuming** without evidence?
-   - Answer: Production deployment will run reliably on schedule, adaptive search benefits outweigh 5x performance cost, federal_register integration can be deferred, entity extraction quality will remain good across all topics
+   - Answer: Brave Search will return relevant results for investigative queries, Brave Search API key is available, aiohttp already in requirements.txt, debug UI implementation won't break existing UI, web results will combine cleanly with government DB results
 
 3. What would break if I'm wrong?
-   - Answer: Daily scheduled runs could fail (scheduler not deployed yet), monitors take too long and time out (5min vs 1min), missing federal_register data reduces result quality, poor entity extraction wastes API costs
+   - Answer: Brave Search returns no results (wrong API, wrong query format), API key quota exhausted, missing dependencies break deployment, debug UI causes performance issues, web results have incompatible format
 
 4. What **haven't I tested** yet?
-   - Answer: Actual scheduler deployment (systemd service), multiple relevant databases simultaneously (most tests 0-1 relevant DBs), cost tracking totals for production, performance impact on 6 monitors running daily, federal_register integration
+   - Answer: Brave Search API integration, combining government DB + web results, debug logging UI display, Deep Research with web search locally, deployment with Brave Search on Streamlit Cloud
 
-**Next checkpoint**: After deciding next direction (deploy scheduler OR build Week 2-4 features OR add federal_register integration)
+**Next checkpoint**: After implementing Brave Search integration (Action 1)
 
 ---
 
 ## CODE PATTERNS FOR CURRENT PHASE
 
-**Adaptive Search Pattern**:
-- See `docs/active/ADAPTIVE_SEARCH_INTEGRATION.md` for complete code examples
-- AdaptiveSearchEngine class (lines 78-353)
-- AdaptiveBooleanMonitor integration (lines 354-433)
-
-**Entity Extraction Pattern**:
+**Web Search Integration Pattern** (Brave Search):
 ```python
-from llm_utils import acompletion
+import os
+import aiohttp
+from dotenv import load_dotenv
 
-async def extract_entities(results: List[Dict], query: str) -> List[str]:
-    """Extract entities using gpt-5-mini."""
-    prompt = f"Analyze results, extract 3-5 related entities: {results}"
+load_dotenv()
 
-    response = await acompletion(
-        model="gpt-5-mini",
-        messages=[{"role": "user", "content": prompt}],
-        response_format={"type": "json_schema", ...}
-    )
+async def search_web(query: str, max_results: int = 10) -> List[Dict]:
+    """Search web using Brave Search API."""
+    api_key = os.getenv('BRAVE_SEARCH_API_KEY')
+    if not api_key:
+        logging.warning("BRAVE_SEARCH_API_KEY not found")
+        return []
 
-    entities = json.loads(response.choices[0].message.content)["entities"]
-    return entities
+    url = "https://api.search.brave.com/res/v1/web/search"
+    headers = {
+        "Accept": "application/json",
+        "X-Subscription-Token": api_key
+    }
+    params = {"q": query, "count": max_results}
+
+    async with aiohttp.ClientSession() as session:
+        async with session.get(url, headers=headers, params=params) as resp:
+            data = await resp.json()
+
+    # Convert to standard format
+    results = []
+    for item in data.get('web', {}).get('results', []):
+        results.append({
+            'source': 'Brave Search',
+            'title': item.get('title'),
+            'snippet': item.get('description'),
+            'url': item.get('url'),
+            'date': item.get('published_date')
+        })
+
+    return results
 ```
 
-**Quality Scoring Pattern**:
+**Debug Logging UI Pattern** (Streamlit):
 ```python
-def calculate_quality(results: List[Dict]) -> float:
-    """Calculate quality score 0-1."""
-    # Source diversity
-    sources = set(r['source'] for r in results)
-    diversity = len(sources) / 4.0  # 4+ sources = max
+import streamlit as st
 
-    # Result count
-    count_score = len(results) / 30.0  # 30+ results = max
+# Display task execution details
+st.markdown("### 🔍 Task Execution Details")
 
-    # Weighted average
-    return (diversity * 0.5) + (count_score * 0.5)
+for task in tasks:
+    status = task.get('status')
+    status_emoji = {
+        'TASK_COMPLETED': '✅',
+        'TASK_FAILED': '❌',
+        'TASK_RETRY': '🔄'
+    }.get(status, '❓')
+
+    # Expand failed tasks by default
+    with st.expander(
+        f"{status_emoji} Task {task['task_id']}: {task['query']}",
+        expanded=(status == 'TASK_FAILED')
+    ):
+        st.write(f"**Status**: {status}")
+        st.write(f"**Results**: {task.get('result_count', 0)}")
+
+        # Show errors
+        if status == 'TASK_FAILED' and 'error' in task:
+            st.error(f"**Error**: {task['error']}")
+            if 'traceback' in task:
+                st.code(task['traceback'], language='python')
+
+        # Show results breakdown
+        if 'sources' in task:
+            st.write("**Sources**:")
+            for source, count in task['sources'].items():
+                st.write(f"  - {source}: {count} results")
 ```
 
 ---

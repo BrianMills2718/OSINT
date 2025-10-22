@@ -122,8 +122,8 @@ All 5 production monitors tested with adaptive search enabled:
 | **Python Dependencies** | [PASS] | requirements.txt updated with playwright, beautifulsoup4, aiohttp, PyYAML, lxml | None | All dependencies installable on cloud |
 | **ClearanceJobs Integration** | [GRACEFUL DEGRADATION] | Made optional: lazy playwright import, try/except in registry.py and unified_search_app.py | Not available on Streamlit Cloud (Playwright requires browser binaries) | Shows helpful error message, 7 of 8 integrations working |
 | **Main App Load** | [PASS] | apps/unified_search_app.py loads successfully on Streamlit Cloud | ClearanceJobs tab shows unavailability warning | App functional with all features except ClearanceJobs |
-| **Deep Research Engine** | [FAIL] | Returns 0 tasks executed, 5 tasks failed on Streamlit Cloud | Root cause unknown - awaiting detailed error logs from user | Enhanced error logging deployed (2025-10-21) |
-| **Error Logging Enhancement** | [DEPLOYED] | Added comprehensive error logging to research/deep_research.py: full tracebacks, error_type, error_message | None | User needs to test Deep Research and share "Failed Tasks" errors |
+| **Deep Research Engine** | [FAIL] | Returns 0 tasks executed, 4 tasks failed on Streamlit Cloud | **DIAGNOSED (2025-10-22)**: Government databases don't have classified/sensitive documents (JSOC/CIA operations). Deep Research needs web search capability. | Add Brave Search integration + debug logging UI |
+| **Error Logging Enhancement** | [DEPLOYED] | Added comprehensive error logging to research/deep_research.py: full tracebacks, error_type, error_message | Enhanced logging confirmed diagnosis: "Insufficient results after 2 retries" | Debug logging UI pending (Action 2) |
 
 **Evidence** (Git History Cleanup - 2025-10-21):
 ```
@@ -162,16 +162,54 @@ Status: DEPLOYED to GitHub/Streamlit Cloud
 Awaiting: User to test Deep Research on cloud and share detailed error messages from "Failed Tasks" section
 ```
 
-**Current Blockers**:
-- Deep Research failing on Streamlit Cloud (0 tasks executed, 5 tasks failed)
-- Root cause unknown - could be API key access, timeouts, memory limits, or import errors
-- Requires user to test and share detailed error messages from enhanced error logging
+**Evidence** (Deep Research Diagnosis - 2025-10-22):
+```
+User Test Query: "What is the relationship between JSOC and CIA Title 50 operations?"
+Platform: Streamlit Cloud
 
-**Next Actions**:
-1. **User tests Deep Research on Streamlit Cloud**
-2. **User shares detailed error messages** from "Failed Tasks (Debug Info)" section in UI
-3. **Fix root cause** based on specific errors (likely API keys, timeouts, or memory limits)
-4. **Verify fix** on Streamlit Cloud deployment
+Results:
+- Tasks decomposed: 4 tasks created
+- Tasks executed: 0 completed
+- Tasks failed: 4 failed with "Insufficient results after 2 retries"
+- Sources searched: DVIDS, SAM.gov, USAJobs (government databases only)
+
+Task Execution Log:
+  TASK_FAILED: Insufficient results after 2 retries
+  TASK_FAILED: Insufficient results after 2 retries
+  TASK_FAILED: Insufficient results after 2 retries
+  TASK_FAILED: Insufficient results after 2 retries
+
+Root Cause Diagnosed:
+- Government databases (DVIDS, SAM.gov, USAJobs) only contain public/official documents
+- JSOC/CIA operations are classified/sensitive topics not in government databases
+- Deep Research needs at least some source material to synthesize a report
+- Found 0 results across all government sources for this query type
+
+Why This Matters:
+- Deep Research is designed for investigative journalism use cases
+- Investigative topics often involve classified/sensitive information not in government DBs
+- Need web search to find: investigative journalism, leaked documents, court filings, FOIA releases
+
+Solution:
+1. Add Brave Search integration to search open web
+2. Add debug logging UI to show task execution details for troubleshooting
+3. Combine government DB results + web search results
+4. Test with JSOC/CIA query locally and on cloud
+```
+
+**Current Blockers** (UPDATED 2025-10-22):
+- Deep Research 0 results for classified/sensitive topics on Streamlit Cloud
+- Government databases insufficient for investigative journalism queries
+- No web search capability (Brave Search integration needed)
+- No visibility into task execution failures on cloud (debug UI needed)
+
+**Next Actions** (UPDATED 2025-10-22):
+1. **Add Brave Search integration** to research/deep_research.py (Action 1)
+2. **Add debug logging UI** to apps/deep_research_tab.py (Action 2)
+3. **Add BRAVE_SEARCH_API_KEY** to .env and Streamlit Cloud secrets
+4. **Test locally** with JSOC/CIA query - verify web results
+5. **Deploy to Streamlit Cloud** and verify web search working
+6. **Update STATUS.md** with final evidence after successful deployment
 
 **Deployment Files Modified**:
 - requirements.txt (added playwright, beautifulsoup4, aiohttp, PyYAML, lxml)

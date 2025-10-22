@@ -277,16 +277,115 @@ def render_deep_research_tab(openai_api_key_from_ui):
                 if result['sources_searched']:
                     st.caption(", ".join(result['sources_searched']))
 
-                # Show failure details if any tasks failed
+                # NEW: Detailed task execution display
+                st.markdown("---")
+                st.markdown("### 🔍 Task Execution Details")
+                st.caption("Detailed information about each task, including queries, results found, and errors")
+
+                # Combine completed and failed tasks for display
+                all_tasks_info = []
+
+                # Add completed tasks
+                for event in progress_data["events"]:
+                    if event.event == "task_completed" and event.data:
+                        all_tasks_info.append({
+                            "task_id": event.task_id,
+                            "message": event.message,
+                            "status": "COMPLETED",
+                            "data": event.data
+                        })
+
+                # Add failed tasks
+                for failure in result.get('failure_details', []):
+                    # Find retry events for this task
+                    retry_data = []
+                    for event in progress_data["events"]:
+                        if event.task_id == failure['task_id'] and event.event == "task_retry" and event.data:
+                            retry_data.append(event.data)
+
+                    all_tasks_info.append({
+                        "task_id": failure['task_id'],
+                        "query": failure['query'],
+                        "status": "FAILED",
+                        "error": failure['error'],
+                        "retry_count": failure['retry_count'],
+                        "retry_data": retry_data
+                    })
+
+                # Display each task
+                for task_info in all_tasks_info:
+                    status = task_info.get('status', 'UNKNOWN')
+
+                    # Color-code status
+                    status_emoji = {
+                        'COMPLETED': '✅',
+                        'FAILED': '❌',
+                        'RETRY': '🔄'
+                    }.get(status, '❓')
+
+                    # Get task ID and create expander title
+                    task_id = task_info.get('task_id', 'Unknown')
+
+                    if status == "COMPLETED":
+                        data = task_info.get('data', {})
+                        total_results = data.get('total_results', 0)
+                        expander_title = f"{status_emoji} Task {task_id}: {total_results} results found"
+                        expanded = False
+                    else:  # FAILED
+                        query = task_info.get('query', 'Unknown query')
+                        expander_title = f"{status_emoji} Task {task_id}: {query}"
+                        expanded = True  # Expand failed tasks by default
+
+                    with st.expander(expander_title, expanded=expanded):
+                        st.write(f"**Status**: {status}")
+
+                        if status == "COMPLETED":
+                            data = task_info.get('data', {})
+                            st.write(f"**Message**: {task_info.get('message', 'Completed successfully')}")
+
+                            # Show source breakdown
+                            gov_db_results = data.get('government_databases', 0)
+                            web_results = data.get('web_search', 0)
+                            total_results = data.get('total_results', 0)
+
+                            st.write("**Results by Source**:")
+                            col_s1, col_s2, col_s3 = st.columns(3)
+                            with col_s1:
+                                st.metric("Total", total_results)
+                            with col_s2:
+                                st.metric("Gov DBs", gov_db_results)
+                            with col_s3:
+                                st.metric("Web Search", web_results)
+
+                            # Show entities and quality
+                            if 'entities' in data:
+                                st.write(f"**Entities Found**: {len(data['entities'])}")
+                                if data['entities']:
+                                    st.caption(", ".join(data['entities'][:10]))
+
+                            if 'quality' in data:
+                                st.write(f"**Quality Score**: {data['quality']:.2f}")
+
+                        else:  # FAILED
+                            st.write(f"**Query**: {task_info.get('query', 'Unknown')}")
+                            st.error(f"**Error**: {task_info.get('error', 'Unknown error')}")
+                            st.caption(f"**Retries Attempted**: {task_info.get('retry_count', 0)}")
+
+                            # Show retry attempts with source breakdown
+                            retry_data = task_info.get('retry_data', [])
+                            if retry_data:
+                                st.write("**Retry Attempts**:")
+                                for i, retry in enumerate(retry_data):
+                                    gov_db = retry.get('government_databases', 0)
+                                    web = retry.get('web_search', 0)
+                                    total = retry.get('total_results', 0)
+                                    st.caption(f"  Attempt {i+1}: {total} results ({gov_db} gov DBs + {web} web)")
+                            else:
+                                st.caption("No retry data available")
+
+                # Legacy failed tasks section (keep for backward compatibility)
                 if result.get('failure_details') and len(result['failure_details']) > 0:
-                    st.markdown("---")
-                    st.markdown("### ⚠️ Failed Tasks (Debug Info)")
-                    with st.expander(f"Show {len(result['failure_details'])} failed tasks", expanded=False):
-                        for failure in result['failure_details']:
-                            st.error(f"**Task {failure['task_id']}: {failure['query']}**")
-                            st.caption(f"Error: {failure['error']}")
-                            st.caption(f"Retries attempted: {failure['retry_count']}")
-                            st.markdown("---")
+                    pass  # Already displayed above in new format
 
                 # Export results
                 st.markdown("---")

@@ -16,6 +16,7 @@ import asyncio
 import json
 import sys
 import os
+import logging
 from typing import List, Dict, Optional, Callable
 from datetime import datetime
 from dataclasses import dataclass, asdict
@@ -28,6 +29,10 @@ from core.adaptive_search_engine import AdaptiveSearchEngine
 from core.parallel_executor import ParallelExecutor
 from llm_utils import acompletion
 from config_loader import config
+from dotenv import load_dotenv
+import aiohttp
+
+load_dotenv()
 
 
 class TaskStatus(Enum):
@@ -353,6 +358,50 @@ Return tasks in priority order (most important first).
 
         return tasks
 
+    async def _search_brave(self, query: str, max_results: int = 20) -> List[Dict]:
+        """Search open web using Brave Search API."""
+        api_key = os.getenv('BRAVE_SEARCH_API_KEY')
+        if not api_key:
+            logging.warning("BRAVE_SEARCH_API_KEY not found, skipping web search")
+            return []
+
+        try:
+            url = "https://api.search.brave.com/res/v1/web/search"
+            headers = {
+                "Accept": "application/json",
+                "X-Subscription-Token": api_key
+            }
+            params = {
+                "q": query,
+                "count": max_results
+            }
+
+            async with aiohttp.ClientSession() as session:
+                async with session.get(url, headers=headers, params=params, timeout=aiohttp.ClientTimeout(total=30)) as resp:
+                    if resp.status != 200:
+                        logging.error(f"Brave Search API error: HTTP {resp.status}")
+                        return []
+
+                    data = await resp.json()
+
+            # Convert Brave results to standard format
+            results = []
+            for item in data.get('web', {}).get('results', []):
+                results.append({
+                    'source': 'Brave Search',
+                    'title': item.get('title', ''),
+                    'snippet': item.get('description', ''),
+                    'url': item.get('url', ''),
+                    'date': item.get('published_date')
+                })
+
+            logging.info(f"Brave Search: {len(results)} results for query: {query}")
+            return results
+
+        except Exception as e:
+            logging.error(f"Brave Search error: {type(e).__name__}: {str(e)}")
+            return []
+
     async def _execute_task_with_retry(self, task: ResearchTask) -> bool:
         """
         Execute task with retry logic if it fails.
@@ -364,11 +413,24 @@ Return tasks in priority order (most important first).
 
         while task.retry_count <= self.max_retries_per_task:
             try:
-                # Execute search with adaptive engine
+                # Execute search with adaptive engine (government databases)
                 result = await self.adaptive_search.adaptive_search(task.query)
+                gov_results = result.total_results
+
+                # NEW: Also search web with Brave Search
+                web_results_list = await self._search_brave(task.query, max_results=20)
+
+                # Combine government DB results with web results
+                combined_total = result.total_results + len(web_results_list)
+
+                # Add web results to the result.results list
+                result.results.extend(web_results_list)
+
+                # Update result object with combined data
+                result.total_results = combined_total
 
                 # Check if we got meaningful results
-                if result.total_results >= self.min_results_per_task:
+                if combined_total >= self.min_results_per_task:
                     # Success!
                     task.status = TaskStatus.COMPLETED
                     task.results = asdict(result)
@@ -380,10 +442,12 @@ Return tasks in priority order (most important first).
 
                     self._emit_progress(
                         "task_completed",
-                        f"Found {result.total_results} results across {result.iterations} phases",
+                        f"Found {combined_total} results ({gov_results} gov DBs + {len(web_results_list)} web) across {result.iterations} phases",
                         task_id=task.id,
                         data={
-                            "results": result.total_results,
+                            "total_results": combined_total,
+                            "government_databases": gov_results,
+                            "web_search": len(web_results_list),
                             "entities": result.entities_discovered,
                             "quality": result.final_quality
                         }
@@ -398,8 +462,13 @@ Return tasks in priority order (most important first).
 
                         self._emit_progress(
                             "task_retry",
-                            f"Only {result.total_results} results found, reformulating query...",
-                            task_id=task.id
+                            f"Only {combined_total} results ({gov_results} gov DBs + {len(web_results_list)} web), reformulating query...",
+                            task_id=task.id,
+                            data={
+                                "total_results": combined_total,
+                                "government_databases": gov_results,
+                                "web_search": len(web_results_list)
+                            }
                         )
 
                         # Reformulate query

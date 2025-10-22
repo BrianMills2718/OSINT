@@ -36,6 +36,11 @@ class AdaptiveSearchResult:
     entities_discovered: List[str]
     quality_metrics: Dict
     iterations: int
+    results: List[Dict] = None  # NEW: Actual result objects for synthesis
+
+    def __post_init__(self):
+        if self.results is None:
+            self.results = []
 
 
 class AdaptiveSearchEngine:
@@ -231,7 +236,8 @@ class AdaptiveSearchEngine:
             unique_results=len(seen_urls),
             entities_discovered=all_entities,
             quality_metrics=quality_metrics,
-            iterations=len(phases)
+            iterations=len(phases),
+            results=all_results  # NEW: Pass actual result objects for synthesis
         )
 
         logger.info(f"Adaptive search complete: {result.total_results} results, {result.iterations} phases, quality: {quality_metrics['overall_quality']:.2f}")
