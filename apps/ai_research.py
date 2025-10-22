@@ -252,13 +252,14 @@ async def execute_search_via_registry(source_id: str, research_question: str, ap
         query_params = await integration.generate_query(research_question=research_question)
 
         if not query_params:
-            logger.warning(f"{integration.metadata.name}: Query generation returned None (source deemed not relevant)")
+            logger.info(f"{integration.metadata.name}: Source determined not relevant to this query")
             return {
-                "success": False,
+                "success": True,  # Not an error - correctly determined irrelevance
                 "total": 0,
                 "results": [],
                 "source": integration.metadata.name,
-                "error": "Query generation returned no parameters (source deemed not relevant)",
+                "error": None,
+                "not_relevant": True,  # Flag to show different message in UI
                 "query_params": None
             }
 
@@ -523,7 +524,9 @@ def render_ai_research_tab(openai_api_key_from_ui, dvids_api_key, sam_api_key, u
                 all_results[source_name] = result
 
                 # Show status (query params logged to file)
-                if result['success']:
+                if result.get('not_relevant'):
+                    st.info(f"ℹ️ {source_name}: Not relevant to this query")
+                elif result['success']:
                     st.success(f"✅ {source_name}: Found {result['total']} results")
                 else:
                     st.error(f"❌ {source_name}: {result.get('error', 'Unknown error')}")
