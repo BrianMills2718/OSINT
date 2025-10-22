@@ -146,9 +146,15 @@ def render_deep_research_tab(openai_api_key_from_ui):
     research_btn = st.button("🚀 Start Deep Research", type="primary", use_container_width=True, key="deep_research_btn")
 
     if research_btn and research_question:
-        # Create placeholders for live updates
-        status_container = st.container()
-        progress_container = st.container()
+        # Create empty placeholders for live updates
+        st.markdown("### 📊 Research Progress")
+
+        # Live progress indicators
+        progress_status = st.empty()
+        progress_metrics_container = st.empty()
+        progress_log_container = st.empty()
+
+        # Final result containers (will be filled after completion)
         entity_container = st.container()
         report_container = st.container()
         stats_container = st.container()
@@ -160,8 +166,60 @@ def render_deep_research_tab(openai_api_key_from_ui):
             "tasks_completed": 0,
             "tasks_failed": 0,
             "entities_discovered": set(),
-            "relationships_discovered": []
+            "relationships_discovered": [],
+            "last_update_time": datetime.now()
         }
+
+        def update_progress_ui():
+            """Update the live progress UI with current state."""
+            # Update status message
+            if progress_data["tasks_created"] == 0:
+                progress_status.info("🔄 Initializing research engine...")
+            elif progress_data["tasks_completed"] + progress_data["tasks_failed"] >= progress_data["tasks_created"]:
+                progress_status.success(f"✅ Research complete! Processed {progress_data['tasks_created']} tasks")
+            else:
+                in_progress = progress_data["tasks_created"] - progress_data["tasks_completed"] - progress_data["tasks_failed"]
+                progress_status.info(f"🔬 Research in progress... {progress_data['tasks_completed']} completed, {in_progress} running, {progress_data['tasks_failed']} failed")
+
+            # Update metrics
+            with progress_metrics_container.container():
+                col1, col2, col3 = st.columns(3)
+                with col1:
+                    st.metric("Tasks Created", progress_data["tasks_created"])
+                with col2:
+                    st.metric("Tasks Completed", progress_data["tasks_completed"],
+                             delta=f"{progress_data['tasks_completed']} succeeded" if progress_data["tasks_completed"] > 0 else None)
+                with col3:
+                    st.metric("Tasks Failed", progress_data["tasks_failed"],
+                             delta=f"{progress_data['tasks_failed']} failed" if progress_data["tasks_failed"] > 0 else None,
+                             delta_color="inverse")
+
+            # Update event log (last 10 events)
+            with progress_log_container.container():
+                st.markdown("#### 📋 Recent Events")
+                key_events = []
+                for event in progress_data["events"]:
+                    if event.event in ["task_created", "task_completed", "task_failed", "task_retry", "follow_ups_created"]:
+                        # Format timestamp to show only time
+                        timestamp_str = event.timestamp.split('T')[1][:8] if 'T' in event.timestamp else event.timestamp
+
+                        # Add emoji based on event type
+                        emoji = {
+                            "task_created": "🆕",
+                            "task_completed": "✅",
+                            "task_failed": "❌",
+                            "task_retry": "🔄",
+                            "follow_ups_created": "🔍"
+                        }.get(event.event, "📌")
+
+                        key_events.append(f"{emoji} **[{timestamp_str}]** {event.message}")
+
+                if key_events:
+                    # Show last 10 events in reverse chronological order
+                    for event_msg in reversed(key_events[-10:]):
+                        st.caption(event_msg)
+                else:
+                    st.caption("No events yet...")
 
         def progress_callback(progress: ResearchProgress):
             """Handle progress updates from deep research engine."""
@@ -180,11 +238,13 @@ def render_deep_research_tab(openai_api_key_from_ui):
             elif progress.event == "relationship_discovered":
                 progress_data["relationships_discovered"].append(progress.message)
 
-        # Execute deep research
-        with status_container:
-            st.markdown("### 📊 Research Progress")
+            # Update UI every event (Streamlit will batch updates)
+            update_progress_ui()
 
         try:
+            # Initial UI update
+            update_progress_ui()
+
             # Create engine
             engine = SimpleDeepResearch(
                 max_tasks=max_tasks,
@@ -194,37 +254,14 @@ def render_deep_research_tab(openai_api_key_from_ui):
                 progress_callback=progress_callback
             )
 
-            # Run research (async)
-            with st.spinner(f"🔬 Deep research in progress (max {max_time_minutes} minutes)..."):
-                result = asyncio.run(engine.research(research_question))
+            # Run research (async) - progress_callback will update UI in real-time
+            result = asyncio.run(engine.research(research_question))
 
-            # Display live progress
-            with progress_container:
-                st.markdown("#### 📋 Task Execution Log")
+            # Final UI update
+            update_progress_ui()
 
-                # Show key events
-                key_events = []
-                for event in progress_data["events"]:
-                    if event.event in ["task_created", "task_completed", "task_failed", "task_retry", "follow_ups_created"]:
-                        key_events.append(f"**[{event.timestamp}]** {event.event.upper()}: {event.message}")
-
-                if key_events:
-                    for event_msg in key_events[-20:]:  # Last 20 events
-                        st.caption(event_msg)
-                else:
-                    st.info("No task events logged")
-
-                # Progress metrics
-                col1, col2, col3 = st.columns(3)
-                with col1:
-                    st.metric("Tasks Created", progress_data["tasks_created"])
-                with col2:
-                    st.metric("Tasks Completed", progress_data["tasks_completed"],
-                             delta=f"{progress_data['tasks_completed']} succeeded" if progress_data["tasks_completed"] > 0 else None)
-                with col3:
-                    st.metric("Tasks Failed", progress_data["tasks_failed"],
-                             delta=f"{progress_data['tasks_failed']} failed" if progress_data["tasks_failed"] > 0 else None,
-                             delta_color="inverse")
+            # Now display final results below the progress section
+            st.markdown("---")
 
             # Display entity relationships
             with entity_container:
