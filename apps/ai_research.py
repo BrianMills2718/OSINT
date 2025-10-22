@@ -496,6 +496,7 @@ def render_ai_research_tab(openai_api_key_from_ui, dvids_api_key, sam_api_key, u
                 "sam": sam_api_key,
                 "usajobs": usajobs_api_key,
                 "twitter": rapidapi_key,  # Twitter uses RAPIDAPI_KEY
+                "brave_search": os.getenv("BRAVE_SEARCH_API_KEY"),
                 # Add others as needed - registry will handle any source
             }
 
