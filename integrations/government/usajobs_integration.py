@@ -99,6 +99,9 @@ USAJobs provides: Official U.S. federal government job listings across all agenc
 API Parameters:
 - keywords (string, required):
     Search terms for job titles and descriptions.
+    IMPORTANT: Keep it simple - use 1-3 key words only (e.g., "intelligence" or "cybersecurity analyst").
+    DO NOT use OR operators or complex Boolean queries - the API doesn't handle them well.
+    Simpler is better - broad terms find more results.
 
 - location (string or null, optional):
     Geographic location (e.g., "Washington, DC", "California", "Remote")
