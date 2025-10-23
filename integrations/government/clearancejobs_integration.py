@@ -86,16 +86,26 @@ API Parameters:
 - keywords (string, required):
     Search terms for job titles and descriptions.
 
-Technical note: The scraper only supports keyword search. Clearance levels and posting dates are shown in results but cannot be used as filters.
+    IMPORTANT Query Effectiveness Notes:
+    - ClearanceJobs search works best with focused, specific queries
+    - Very long queries (many comma-separated terms or excessive ORs) tend to return ALL jobs instead of filtering
+    - Balance specificity vs breadth: use enough terms to capture the role, but not so many that the search breaks
+    - Good approach: Core job title/role + 1-2 key qualifications OR synonyms
+    - Example good queries:
+      * "cybersecurity analyst" (simple, specific)
+      * "SIGINT OR signals intelligence analyst" (synonyms for same concept)
+      * "penetration tester OR ethical hacker" (common role synonyms)
+    - Example overly broad queries that may fail:
+      * "cyber, security, analyst, engineer, SIEM, Splunk, TS/SCI, ..." (too many terms)
+      * Long lists of every possible synonym and tool
 
 Research Question: {research_question}
 
-Decide whether ClearanceJobs is relevant for this question.
-Clearance-required jobs reveal what classified programs and agencies are hiring for.
+Generate a focused, effective search query that will actually filter results.
+Consider: What is the core role or skill being searched? What are the 1-2 most important synonyms or qualifications?
 
 Return JSON:
 {{
-  "relevant": boolean,
   "keywords": string,
   "reasoning": string
 }}
