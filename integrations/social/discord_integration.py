@@ -106,18 +106,21 @@ class DiscordIntegration(DatabaseIntegration):
         # Use LLM to extract key search terms/phrases
         prompt = f"""Generate search parameters for Discord.
 
-Discord provides: Community discussions from OSINT servers (Bellingcat, Project OWL, etc.) - local message archives.
+Discord provides: Community discussions from OSINT/intelligence servers (Bellingcat, Project OWL, etc.).
+Content type: Informal discussions, breaking news reactions, expert analysis, geopolitical commentary.
+NOT: Job listings, contracts, official government documents, formal reports.
 
 API Parameters:
 - keywords (array of strings, required):
-    Key search terms or phrases. Messages matching ANY keyword will be returned (OR search).
+    Key search terms or phrases for topic-based discussions (NOT contracts/jobs).
+    Messages matching ANY keyword will be returned (OR search).
     Use synonyms and related terms to broaden the search.
     Preserve multi-word concepts as single terms (e.g., "domestic terrorism", not separate words).
     Range: 3-8 terms recommended (synonyms and related concepts).
 
 Research Question: {research_question}
 
-Extract the most specific, distinctive terms or phrases for searching Discord messages.
+Extract terms that would appear in INFORMAL DISCUSSIONS about this topic (not contract/job keywords).
 
 Return JSON:
 {{
