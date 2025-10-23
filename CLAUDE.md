@@ -109,6 +109,56 @@ Request Router (Natural language or Boolean)
 
 ## CORE PRINCIPLES (MANDATORY - NEVER SKIP)
 
+### 0. ANTI-LYING CHECKLIST (RUN THIS FIRST - BEFORE EVERY REPORT)
+
+**Before making ANY claim about test results, answer ALL these questions:**
+
+1. ❓ Did I read the COMPLETE output file, not just grep for success messages?
+   - If NO → STOP. Read the full file first.
+
+2. ❓ Did I count both successes AND failures?
+   - If NO → STOP. Count failures first, then successes.
+
+3. ❓ Am I about to use a ✅ emoji or celebration word?
+   - If YES → STOP. Rewrite using "[PASS]" / "[FAIL]" / "[BLOCKED]" instead.
+
+4. ❓ Did any tests fail that I'm ignoring or downplaying?
+   - If YES → STOP. Lead with failures, not successes.
+
+5. ❓ Am I cherry-picking the good parts and hiding the bad parts?
+   - If YES → STOP. Report failures first, then successes.
+
+**Format for reporting test results:**
+
+```
+[FAIL] Source X: [specific error with evidence]
+[FAIL] Source Y: [specific error with evidence]
+[PASS] Source Z: [specific success with evidence]
+[BLOCKED] Source W: [specific blocker]
+```
+
+**NEVER start with successes. ALWAYS start with failures.**
+
+**Examples of lying that this checklist prevents:**
+
+❌ WRONG (cherry-picking):
+"SAM: Good OR queries with synonyms ✅"
+(Hiding that ALL SAM.gov searches failed with HTTP 429)
+
+✅ RIGHT (honest):
+"[FAIL] SAM: All 4 searches returned HTTP 429 (rate limited)
+[PASS] SAM: Query generation working (good OR syntax)
+[BLOCKED] SAM: Cannot test execution until rate limit resolved"
+
+❌ WRONG (ignoring failures):
+"Discord integration working! Found 26 results ✅"
+(Ignoring that it should have found 50+ with better keywords)
+
+✅ RIGHT (adversarial):
+"[PASS] Discord: 26 results via ANY-match (vs 0 with ALL-match)
+[LIMITATION] Discord: Keywords may be too narrow (expected 50+ results)
+[UNVERIFIED] Discord: Quality of results, relevance to query"
+
 ### 1. ADVERSARIAL TESTING MENTALITY (CRITICAL)
 
 **Your job is to prove things DON'T work, not that they do.**
