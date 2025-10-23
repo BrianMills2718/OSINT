@@ -251,17 +251,14 @@ async def execute_search_via_registry(source_id: str, research_question: str, ap
         logger.info(f"Generating query parameters for {integration.metadata.name}...")
         query_params = await integration.generate_query(research_question=research_question)
 
+        # RELEVANCE FILTER DISABLED - Always search all sources
+        # Even if LLM says "not relevant", we still execute the search
+        # This ensures we don't miss results due to overly conservative LLM filtering
         if not query_params:
-            logger.info(f"{integration.metadata.name}: Source determined not relevant to this query")
-            return {
-                "success": True,  # Not an error - correctly determined irrelevance
-                "total": 0,
-                "results": [],
-                "source": integration.metadata.name,
-                "error": None,
-                "not_relevant": True,  # Flag to show different message in UI
-                "query_params": None
-            }
+            logger.warning(f"{integration.metadata.name}: LLM returned no query params (not relevant), but searching anyway...")
+            # Create a simple fallback query with just the research question
+            query_params = {"keywords": research_question}
+            logger.info(f"{integration.metadata.name}: Using fallback query params: {query_params}")
 
         logger.info(f"{integration.metadata.name}: Generated query parameters:")
         logger.info(f"  {json.dumps(query_params, indent=2)}")
