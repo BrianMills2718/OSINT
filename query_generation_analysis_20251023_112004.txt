@@ -1,0 +1,364 @@
+QUERY GENERATION ANALYSIS
+Generated: 2025-10-23T11:20:04.362154
+Total queries: 14
+Total sources: 8
+
+
+====================================================================================================
+QUERY: SIGINT signals intelligence
+====================================================================================================
+
+
+--------------------------------------------------------------------------------
+SOURCE: sam
+--------------------------------------------------------------------------------
+Query generation time: 24.20s
+
+✅ LLM marked as RELEVANT
+Query params generated:
+{
+  "keywords": "SIGINT OR \"signals intelligence\" OR COMINT OR ELINT OR \"signals intelligence analysis\" OR \"SIGINT support\" OR \"signal processing\"",
+  "procurement_types": [
+    "Solicitation",
+    "Presolicitation",
+    "Combined Synopsis/Solicitation",
+    "Sources Sought"
+  ],
+  "set_aside": null,
+  "naics_codes": [
+    "541512",
+    "541519",
+    "541690",
+    "541990",
+    "334111",
+    "541611"
+  ],
+  "organization": "Department of Defense",
+  "date_range_days": 180
+}
+
+Search execution:
+  Success: False
+  Total results: 0
+  Response time: 7306ms
+  Error: HTTP 0: 429 Client Error: Too Many Requests for url: https://api.sam.gov/opportunities/v2/search?api_key=SAM-db0e8074-ef7f-41b2-8456-b0f79a0a2112&postedFrom=04%2F26%2F2025&postedTo=10%2F23%2F2025&limit=5&offset=0&keywords=SIGINT+OR+%22signals+intelligence%22+OR+COMINT+OR+ELINT+OR+%22signals+intelligence+analysis%22+OR+%22SIGINT+support%22+OR+%22signal+processing%22&ptype=o%2Cp%2Ck%2Cr&ncode=541512%2C541519%2C541690%2C541990%2C334111%2C541611&organizationName=Department+of+Defense
+
+--------------------------------------------------------------------------------
+SOURCE: dvids
+--------------------------------------------------------------------------------
+Query generation time: 16.00s
+
+❌ LLM marked as NOT RELEVANT
+Query params: None
+
+--------------------------------------------------------------------------------
+SOURCE: usajobs
+--------------------------------------------------------------------------------
+Query generation time: 12.88s
+
+✅ LLM marked as RELEVANT
+Query params generated:
+{
+  "keywords": "signals intelligence",
+  "location": null,
+  "organization": null,
+  "pay_grade_low": null,
+  "pay_grade_high": null
+}
+
+Search execution:
+  Success: True
+  Total results: 3
+  Response time: 656ms
+
+First result sample:
+  Cooperative Education Program
+
+--------------------------------------------------------------------------------
+SOURCE: clearancejobs
+--------------------------------------------------------------------------------
+Query generation time: 12.22s
+
+✅ LLM marked as RELEVANT
+Query params generated:
+{
+  "keywords": "\"signals intelligence\" OR SIGINT OR COMINT OR ELINT OR \"SIGINT analyst\" OR \"signals analyst\" OR \"COMINT analyst\" OR \"ELINT analyst\" OR \"collection manager\" OR \"collection analyst\" OR \"signals collection\" OR \"signal intercept\" OR \"electronic warfare\" OR EW OR \"EW analyst\" OR \"SIGINT linguist\" OR ISR"
+}
+
+Search execution:
+  Success: True
+  Total results: 56344
+  Response time: 4445ms
+
+First result sample:
+  Composite Manufacturing Engineer
+
+--------------------------------------------------------------------------------
+SOURCE: fbi_vault
+--------------------------------------------------------------------------------
+Query generation time: 11.27s
+
+✅ LLM marked as RELEVANT
+Query params generated:
+{
+  "query": "\"signals intelligence\" OR SIGINT OR \"signals-intelligence\" OR \"electronic surveillance\" OR wiretap OR \"communications intercept\" OR \"communications intercepts\" OR NSA OR FISA OR \"foreign intelligence\" OR COMINT OR ECHELON OR \"telephone metadata\" OR \"electronic intercept\""
+}
+
+Search execution:
+  Success: True
+  Total results: 5
+  Response time: 8129ms
+
+First result sample:
+  James (Whitey) Bulger Part 09
+
+--------------------------------------------------------------------------------
+SOURCE: discord
+--------------------------------------------------------------------------------
+Query generation time: 1.61s
+
+✅ LLM marked as RELEVANT
+Query params generated:
+{
+  "keywords": [
+    "signals intelligence",
+    "sigint",
+    "signal interception",
+    "electronic surveillance",
+    "communication intercepts",
+    "intelligence gathering",
+    "data collection",
+    "information warfare"
+  ],
+  "servers": null,
+  "date_range": null
+}
+
+Search execution:
+  Success: True
+  Total results: 41
+  Response time: 7578ms
+
+First result sample:
+  Discord message from scritch_me
+
+--------------------------------------------------------------------------------
+SOURCE: twitter
+--------------------------------------------------------------------------------
+Query generation time: 0.00s
+
+✅ LLM marked as RELEVANT
+Query params generated:
+{
+  "query": "SIGINT signals intelligence",
+  "search_type": "Latest",
+  "max_pages": 2,
+  "reasoning": "Keyword search for: SIGINT signals intelligence"
+}
+
+Search execution:
+  Success: True
+  Total results: 40
+  Response time: 4504ms
+
+First result sample:
+  🇵🇰🇮🇳  Targeted jamming of the Indian Airforce's Signals Intelligence (SIGINT) aircraft, Bombardier G...
+
+--------------------------------------------------------------------------------
+SOURCE: brave_search
+--------------------------------------------------------------------------------
+Query generation time: 8.93s
+
+✅ LLM marked as RELEVANT
+Query params generated:
+{
+  "query": "SIGINT leaked documents",
+  "count": 20,
+  "country": "us",
+  "freshness": "py"
+}
+
+Search execution:
+  Success: True
+  Total results: 5
+  Response time: 1108ms
+
+First result sample:
+  2010s global surveillance disclosures - Wikipedia
+
+====================================================================================================
+QUERY: cyber threat intelligence
+====================================================================================================
+
+
+--------------------------------------------------------------------------------
+SOURCE: sam
+--------------------------------------------------------------------------------
+Query generation time: 10.19s
+
+✅ LLM marked as RELEVANT
+Query params generated:
+{
+  "keywords": "cyber threat intelligence OR threat intelligence OR cyber threat hunting OR CTI OR indicators of compromise OR TTP OR threat sharing",
+  "procurement_types": [
+    "Solicitation",
+    "Presolicitation",
+    "Combined Synopsis/Solicitation",
+    "Sources Sought"
+  ],
+  "set_aside": null,
+  "naics_codes": [
+    "541512",
+    "541519",
+    "518210",
+    "541611",
+    "541990"
+  ],
+  "organization": null,
+  "date_range_days": 180
+}
+
+Search execution:
+  Success: False
+  Total results: 0
+  Response time: 7293ms
+  Error: HTTP 0: 429 Client Error: Too Many Requests for url: https://api.sam.gov/opportunities/v2/search?api_key=SAM-db0e8074-ef7f-41b2-8456-b0f79a0a2112&postedFrom=04%2F26%2F2025&postedTo=10%2F23%2F2025&limit=5&offset=0&keywords=cyber+threat+intelligence+OR+threat+intelligence+OR+cyber+threat+hunting+OR+CTI+OR+indicators+of+compromise+OR+TTP+OR+threat+sharing&ptype=o%2Cp%2Ck%2Cr&ncode=541512%2C541519%2C518210%2C541611%2C541990
+
+--------------------------------------------------------------------------------
+SOURCE: dvids
+--------------------------------------------------------------------------------
+Query generation time: 9.46s
+
+❌ LLM marked as NOT RELEVANT
+Query params: None
+
+--------------------------------------------------------------------------------
+SOURCE: usajobs
+--------------------------------------------------------------------------------
+Query generation time: 10.10s
+
+✅ LLM marked as RELEVANT
+Query params generated:
+{
+  "keywords": "threat intelligence",
+  "location": null,
+  "organization": null,
+  "pay_grade_low": 7,
+  "pay_grade_high": 15
+}
+
+Search execution:
+  Success: True
+  Total results: 5
+  Response time: 1031ms
+
+First result sample:
+  Deportation Officer (Reemployed Annuitant)
+
+--------------------------------------------------------------------------------
+SOURCE: clearancejobs
+--------------------------------------------------------------------------------
+Query generation time: 18.21s
+
+✅ LLM marked as RELEVANT
+Query params generated:
+{
+  "keywords": "\"cyber threat intelligence\" OR \"threat intelligence\" OR \"threat intel\" OR \"threat analyst\" OR \"cyber intelligence\" OR CTI OR \"threat hunter\" OR \"threat hunting\" OR \"malware analyst\" OR \"reverse engineer\" OR \"digital forensics\" OR DFIR OR OSINT OR \"open source intelligence\" OR \"incident response\" OR SOC OR \"security operations center\" OR \"intelligence analyst\" OR \"indicator of compromise\" OR IOC OR APT OR \"cyber threat research\" OR NSA OR CIA OR FBI OR USCYBERCOM OR DHS OR NGA OR DIA"
+}
+
+Search execution:
+  Success: True
+  Total results: 56344
+  Response time: 3012ms
+
+First result sample:
+  Composite Manufacturing Engineer
+
+--------------------------------------------------------------------------------
+SOURCE: fbi_vault
+--------------------------------------------------------------------------------
+Query generation time: 15.94s
+
+✅ LLM marked as RELEVANT
+Query params generated:
+{
+  "query": "cyber OR cybersecurity OR \"cyber threat\" OR \"cyber threat intelligence\" OR malware OR ransomware OR \"data breach\" OR \"incident response\" OR intrusion OR \"denial of service\" OR DDoS OR APT OR \"advanced persistent threat\" OR \"FBI Cyber\" OR \"Internet Crime Complaint Center\" OR IC3 OR botnet OR phishing OR \"command and control\" OR \"nation-state\" OR \"state-sponsored\" OR Conti OR REvil OR DarkSide OR LockBit OR Sandworm OR APT28 OR APT29 OR Lazarus OR APT10"
+}
+
+Search execution:
+  Success: True
+  Total results: 5
+  Response time: 8843ms
+
+First result sample:
+  Conficker Worm Part 01 (Final)
+
+--------------------------------------------------------------------------------
+SOURCE: discord
+--------------------------------------------------------------------------------
+Query generation time: 1.66s
+
+✅ LLM marked as RELEVANT
+Query params generated:
+{
+  "keywords": [
+    "cybersecurity threats",
+    "hacktivism",
+    "data breaches",
+    "threat landscape",
+    "malware analysis",
+    "cyber espionage",
+    "vulnerability assessment",
+    "ransomware attacks"
+  ],
+  "servers": null,
+  "date_range": null
+}
+
+Search execution:
+  Success: False
+  Total results: 0
+  Response time: 5795ms
+  Error: [Errno 32] Broken pipe
+
+--------------------------------------------------------------------------------
+SOURCE: twitter
+--------------------------------------------------------------------------------
+Query generation time: 0.00s
+
+✅ LLM marked as RELEVANT
+Query params generated:
+{
+  "query": "cyber threat intelligence",
+  "search_type": "Latest",
+  "max_pages": 2,
+  "reasoning": "Keyword search for: cyber threat intelligence"
+}
+
+Search execution:
+  Success: False
+  Total results: 0
+  Response time: 2ms
+  Error: Twitter search failed: [Errno 32] Broken pipe
+
+--------------------------------------------------------------------------------
+SOURCE: brave_search
+--------------------------------------------------------------------------------
+Query generation time: 11.92s
+
+✅ LLM marked as RELEVANT
+Query params generated:
+{
+  "query": "cyber threat intelligence leaked investigation",
+  "count": 20,
+  "country": "us",
+  "freshness": "pm"
+}
+
+Search execution:
+  Success: True
+  Total results: 5
+  Response time: 947ms
+
+First result sample:
+  29th September – Threat Intelligence Report - Check Point Research

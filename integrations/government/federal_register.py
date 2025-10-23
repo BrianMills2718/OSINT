@@ -194,11 +194,7 @@ Response:
         schema = {
             "type": "object",
             "properties": {
-                "relevant": {
-                    "type": "boolean",
-                    "description": "Whether this database is relevant to the question"
-                },
-                "term": {
+                                "term": {
                     "type": "string",
                     "description": "Search term for document titles and text"
                 },
@@ -223,7 +219,7 @@ Response:
                     "description": "Brief explanation of the query strategy"
                 }
             },
-            "required": ["relevant", "term", "document_types", "agencies", "date_range_days", "reasoning"],
+            "required": ["term", "document_types", "agencies", "date_range_days", "reasoning"],
             "additionalProperties": False
         }
 
@@ -242,8 +238,9 @@ Response:
 
         result = json.loads(response.choices[0].message.content)
 
-        if not result["relevant"]:
-            return None
+        # RELEVANCE FILTER REMOVED - Always generate query
+        # if not result["relevant"]:
+        #     return None
 
         return {
             "term": result["term"],

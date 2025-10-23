@@ -200,11 +200,7 @@ Response:
         schema = {
             "type": "object",
             "properties": {
-                "relevant": {
-                    "type": "boolean",
-                    "description": "Whether web search is relevant to the question"
-                },
-                "query": {
+                                "query": {
                     "type": "string",
                     "description": "Search query string for Brave Search"
                 },
@@ -227,7 +223,7 @@ Response:
                     "description": "Brief explanation of the query strategy"
                 }
             },
-            "required": ["relevant", "query", "count", "freshness", "country", "reasoning"],
+            "required": ["query", "count", "freshness", "country", "reasoning"],
             "additionalProperties": False
         }
 
@@ -246,8 +242,9 @@ Response:
 
         result = json.loads(response.choices[0].message.content)
 
-        if not result["relevant"]:
-            return None
+        # RELEVANCE FILTER REMOVED - Always generate query
+        # if not result["relevant"]:
+        #     return None
 
         # Build query params dict (exclude null freshness)
         query_params = {

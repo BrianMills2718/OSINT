@@ -149,11 +149,7 @@ Return JSON:
         schema = {
             "type": "object",
             "properties": {
-                "relevant": {
-                    "type": "boolean",
-                    "description": "Whether this database is relevant to the question"
-                },
-                "keywords": {
+                                "keywords": {
                     "type": "string",
                     "description": "Search keywords for media titles and descriptions"
                 },
@@ -184,7 +180,7 @@ Return JSON:
                     "description": "Brief explanation of the query strategy"
                 }
             },
-            "required": ["relevant", "keywords", "media_types", "branches", "country", "from_date", "to_date", "reasoning"],
+            "required": ["keywords", "media_types", "branches", "country", "from_date", "to_date", "reasoning"],
             "additionalProperties": False
         }
 
@@ -203,8 +199,9 @@ Return JSON:
 
         result = json.loads(response.choices[0].message.content)
 
-        if not result["relevant"]:
-            return None
+        # RELEVANCE FILTER REMOVED - Always generate query
+        # if not result["relevant"]:
+        #     return None
 
         return {
             "keywords": result["keywords"],

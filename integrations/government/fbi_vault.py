@@ -114,11 +114,7 @@ Return JSON:
         schema = {
             "type": "object",
             "properties": {
-                "relevant": {
-                    "type": "boolean",
-                    "description": "Whether this database is relevant to the question"
-                },
-                "query": {
+                                "query": {
                     "type": "string",
                     "description": "Search query for FBI Vault documents"
                 },
@@ -127,7 +123,7 @@ Return JSON:
                     "description": "Brief explanation of the query strategy"
                 }
             },
-            "required": ["relevant", "query", "reasoning"],
+            "required": ["query", "reasoning"],
             "additionalProperties": False
         }
 
@@ -146,8 +142,9 @@ Return JSON:
 
         result = json.loads(response.choices[0].message.content)
 
-        if not result["relevant"]:
-            return None
+        # RELEVANCE FILTER REMOVED - Always generate query
+        # if not result["relevant"]:
+        #     return None
 
         return {
             "query": result["query"]
