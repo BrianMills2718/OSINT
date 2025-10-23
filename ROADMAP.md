@@ -1,6 +1,6 @@
 # SigInt Platform - Implementation Roadmap
 
-**Last Updated**: 2025-10-19
+**Last Updated**: 2025-10-23
 **Source**: INVESTIGATIVE_PLATFORM_VISION.md
 **Purpose**: Phase-by-phase implementation plan tracking objectives, success criteria, and actual results
 
@@ -11,7 +11,7 @@
 **Project**: AI-Powered Investigative Journalism Platform
 **Timeline**: 3 months full-time / 6-8 months part-time to production
 **Total Effort**: 230-330 hours (Phases 0-5)
-**Current Phase**: Phase 1 - 100% COMPLETE + OPTIMIZED
+**Current Phase**: Phase 1.5 - Adaptive Search (Week 1 COMPLETE), Streamlit Cloud deployment in progress
 
 ---
 
@@ -180,9 +180,110 @@ Automated monitoring of 1-2 key topics with email alerts using keyword database.
 
 ---
 
+## Phase 1.5: Adaptive Search & Streamlit Deployment (Weeks 3-4)
+
+**Status**: WEEK 1 COMPLETE, Streamlit deployment in progress
+**Started**: 2025-10-20
+**Week 1 Completed**: 2025-10-20
+
+### Objectives
+
+Enhance monitoring with adaptive search capabilities and deploy Streamlit UI to cloud for team access.
+
+### Key Deliverables
+
+**Week 1 - Adaptive Search Engine** (COMPLETE):
+- [x] AdaptiveSearchEngine class with multi-phase iteration
+- [x] Entity extraction for query refinement
+- [x] Quality scoring and convergence detection
+- [x] Integration with Boolean monitors
+- [x] Production testing with all 5 monitors
+
+**Weeks 2-4 - Streamlit Cloud Deployment** (IN PROGRESS):
+- [x] Streamlit app deployed to cloud
+- [x] 7 of 8 integrations working (ClearanceJobs optional)
+- [ ] Deep Research tab fixed (needs web search)
+- [ ] Enhanced error logging and debugging UI
+
+### Success Criteria
+
+**Week 1 - Adaptive Search**: ALL MET
+- Multi-phase iteration working (3 phases tested)
+- Entity extraction generating refinements
+- Quality scores improving across phases
+- Integration with monitors complete
+- Production monitors tested successfully
+
+**Streamlit Deployment**: PARTIAL
+- App loads without errors ✅
+- ClearanceJobs gracefully degrades ✅
+- Deep Research returns results ❌ (0 results for classified topics)
+
+### Actual Results (Week 1 - Adaptive Search)
+
+**Completed**: 2025-10-20
+
+**AdaptiveSearchEngine**:
+- Core implementation: core/adaptive_search_engine.py (456 lines)
+- Multi-phase iteration: 3 phases tested, quality improved from 0.35 → 0.52
+- Entity extraction: 14 unique entities extracted using gpt-5-mini
+- Deduplication: 27 results, all unique URLs tracked
+- Integration: AdaptiveBooleanMonitor created (269 lines)
+
+**Production Monitor Testing**:
+- Special Operations monitor: 95 results, 53 new, 27 relevant after LLM filtering
+- Email alerts: Sent successfully with entity extraction
+- Execution time: ~3.5 minutes (84s adaptive + 101s filtering + email)
+- All 5 monitors tested: 0-95 results depending on topic
+
+**Scheduler Update**:
+- monitoring/scheduler.py now uses AdaptiveBooleanMonitor
+- Running in production since 2025-10-22 (PID 356)
+- Next scheduled run: Daily at 6:00 AM
+
+**Evidence**:
+```
+Test: "military training exercises"
+Phase 1: 10 results, quality 0.35, entities: ["165th Airlift Wing", "NATO nuclear sharing"]
+Phase 2: 9 new results, quality 0.44, entities: ["Air National Guard", "Mobile Kitchen Trailer"]
+Phase 3: 8 new results, quality 0.52, entities: ["116th ASOS", "Sentry North 25"]
+Total: 27 unique results, 3 phases, ~45s execution time
+```
+
+**Limitations Found**:
+- Only tested with 0-1 relevant databases per query
+- Quality threshold (0.6) not reached in tests (best: 0.52)
+- Cost tracking totals not verified for production deployment
+
+### Actual Results (Streamlit Cloud Deployment)
+
+**Completed**: 2025-10-21
+
+**Git Repository Cleanup**:
+- Removed .venv/ from history (115 MB playwright binary)
+- Removed exposed API keys (SI_UFO_Wiki/, docs/reference/)
+- Pushed to https://github.com/BrianMills2718/OSINT
+
+**Deployment Status**:
+- App URL: https://github.com/BrianMills2718/OSINT
+- ClearanceJobs: [GRACEFUL DEGRADATION] - Optional, shows helpful error
+- Main features: All tabs load successfully
+- Deep Research: [FAIL] - 0 tasks executed, 4 tasks failed
+
+**Deep Research Diagnosis** (2025-10-22):
+- Root cause: Government DBs don't have classified/sensitive documents
+- Example query: "JSOC and CIA Title 50 operations" returns 0 results
+- Solution: Add Brave Search integration for web search
+- Status: Enhanced error logging deployed, fix in progress
+
+**Time Spent**: ~20-25 hours (Week 1)
+**Cost**: ~$0.20 (LLM calls for entity extraction and testing)
+
+---
+
 ## Phase 2: Simple Web UI (Weeks 4-5)
 
-**Status**: NOT STARTED
+**Status**: PARTIALLY COMPLETE (Streamlit deployed, needs refinement)
 **Target Start**: 2025-11-05
 **Target Completion**: 2025-11-18
 
@@ -599,16 +700,23 @@ Polish and advanced capabilities based on usage feedback.
 - **Completed**: 2025-10-18
 - **All 5 integrations working**: SAM.gov, DVIDS, USAJobs, ClearanceJobs, Discord (added 2025-10-19)
 
-**Phase 1**: 100% COMPLETE ✅ + OPTIMIZED
+**Phase 1**: 100% COMPLETE ✅ + DEPLOYED IN PRODUCTION
 - **Completed**: 2025-10-19
-- **Production ready**: 5 monitors configured, scheduler ready, email alerts working
-- **Next Action**: Test Boolean queries → Deploy scheduler
+- **Production Status**: Scheduler running (PID 356), 6 monitors configured, daily execution at 6:00 AM
+- **Next Action**: Monitor production results and tune keywords
 
-**Phase 2**: Ready to start (Simple Web UI)
-- **Prerequisites**: All met (Phase 0 and 1 complete)
-- **Optional**: Can defer if command-line tools sufficient
+**Phase 1.5**: WEEK 1 COMPLETE, Streamlit deployment in progress
+- **Week 1 Completed**: 2025-10-20 (Adaptive Search Engine)
+- **Streamlit Deployed**: 2025-10-21 (7 of 8 integrations working)
+- **Current Work**: Fix Deep Research (add Brave Search for web results)
+- **Next Action**: Add rate limit handling to SAM.gov, test CLI backend
 
-**Phases 3-6**: Awaiting Phase 2 decision
+**Phase 2**: PARTIALLY COMPLETE (Streamlit deployed, needs refinement)
+- **Status**: App deployed to cloud, main features working
+- **Blocker**: Deep Research needs web search capability
+- **Next Steps**: Fix Deep Research, add debug logging UI
+
+**Phases 3-6**: Awaiting Phase 1.5/2 completion
 
 ---
 

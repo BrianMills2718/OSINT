@@ -1,22 +1,13 @@
 #!/usr/bin/env python3
 """
-Playwright-based scraper for ClearanceJobs.
+Fixed Playwright-based scraper for ClearanceJobs.
 
-The official ClearanceJobs Python library uses an undocumented API that
-doesn't properly filter search results. This module uses Playwright
-to interact with the actual website search form.
-
-This version uses Playwright instead of Puppeteer MCP, so it can:
-- Run in standalone Python scripts
-- Execute in parallel with other integrations
-- Be deployed anywhere without MCP dependencies
+The previous version filled the search input but didn't properly submit the search.
+This version clicks the Search button after filling the input.
 """
 
 import asyncio
 from typing import Dict, Optional
-
-# Lazy import - only import playwright when function is actually called
-# This prevents ImportError when playwright is not available (e.g., Streamlit Cloud)
 
 
 async def search_clearancejobs(
@@ -52,25 +43,60 @@ async def search_clearancejobs(
                 "error": "Playwright is not installed. Install with: pip install playwright && playwright install chromium"
             }
 
-        from urllib.parse import quote
-
         async with async_playwright() as p:
             # Launch browser
             browser = await p.chromium.launch(headless=headless)
             page = await browser.new_page()
 
-            # FIX: Navigate directly to search URL instead of trying to submit form
-            # The Vue.js form submission was not working (URL stayed at /jobs with no query params)
-            # Direct navigation to ?keywords=TERM works correctly
-            encoded_keywords = quote(keywords) if keywords else ""
-            search_url = f'https://www.clearancejobs.com/jobs?keywords={encoded_keywords}'
+            # Step 1: Navigate to ClearanceJobs
+            await page.goto('https://www.clearancejobs.com/jobs', timeout=30000)
 
-            await page.goto(search_url, timeout=30000)
+            # Step 2: Fill search input
+            await page.fill(
+                'input[placeholder*="Search by keywords"]',
+                keywords
+            )
 
-            # Wait for page to fully load
-            await asyncio.sleep(2)
+            # Step 3: Trigger Vue.js events to enable search button
+            await page.evaluate("""
+                () => {
+                    const input = document.querySelector('input[placeholder*="Search by keywords"]');
+                    input.dispatchEvent(new Event('input', { bubbles: true }));
+                    input.dispatchEvent(new Event('change', { bubbles: true }));
+                    input.dispatchEvent(new KeyboardEvent('keyup', { bubbles: true }));
+                }
+            """)
 
-            # Wait for results to load
+            # Give Vue.js a moment to process the events and enable button
+            await asyncio.sleep(0.5)
+
+            # Step 4: Click the Search button instead of pressing Enter
+            # The button text is "Search" and it's a button element
+            try:
+                await page.click('button:has-text("Search")', timeout=5000)
+            except PlaywrightTimeout:
+                # If button didn't enable, try submitting the form directly
+                await page.evaluate('document.querySelector("form").submit()')
+
+            # Step 5: Wait for navigation/results to load
+            try:
+                await page.wait_for_load_state('networkidle', timeout=10000)
+            except PlaywrightTimeout:
+                pass  # Continue even if network doesn't idle
+
+            # Check if URL changed (search was submitted)
+            final_url = page.url
+            if 'keywords' not in final_url and final_url == 'https://www.clearancejobs.com/jobs':
+                # Search wasn't submitted - return error
+                await browser.close()
+                return {
+                    "success": False,
+                    "total": 0,
+                    "jobs": [],
+                    "error": f"Search not submitted - URL didn't change. Keywords: '{keywords}'"
+                }
+
+            # Step 6: Wait for results to load
             try:
                 await page.wait_for_selector('.job-search-list-item-desktop', timeout=10000)
             except PlaywrightTimeout:
@@ -83,7 +109,7 @@ async def search_clearancejobs(
                     "error": None
                 }
 
-            # Step 6: Extract job data
+            # Step 7: Extract job data
             result = await page.evaluate("""
                 () => {
                     // Dismiss cookie popup if present
@@ -160,10 +186,11 @@ async def search_clearancejobs(
 
 # Example usage
 async def main():
-    """Test the Playwright scraper."""
-    print("Testing ClearanceJobs Playwright scraper...")
+    """Test the fixed Playwright scraper."""
+    print("Testing FIXED ClearanceJobs Playwright scraper...")
 
-    result = await search_clearancejobs("cybersecurity analyst", limit=5)
+    # Test with specific keyword that should return fewer results
+    result = await search_clearancejobs("Kubernetes", limit=5, headless=True)
 
     if result["success"]:
         print(f"✓ Found {result['total']} total results")

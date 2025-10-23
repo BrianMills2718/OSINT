@@ -127,15 +127,11 @@ API Parameters:
 
 Research Question: {research_question}
 
-Decide whether DVIDS is relevant for this question.
-DVIDS is relevant for: military operations, training, equipment, deployments, humanitarian missions.
-DVIDS is NOT relevant for: contracts, jobs, cybersecurity, intelligence analysis (unless visual media).
-
-If relevant, generate appropriate search parameters.
+Generate appropriate search parameters for DVIDS.
+Focus on military operations, training, equipment, deployments, humanitarian missions.
 
 Return JSON:
 {{
-  "relevant": boolean,
   "keywords": string,
   "media_types": array,
   "branches": array,
@@ -203,14 +199,58 @@ Return JSON:
         # if not result["relevant"]:
         #     return None
 
+        # FIX: If LLM returned empty keywords, use fallback extraction
+        keywords = result["keywords"].strip() if result.get("keywords") else ""
+        if not keywords:
+            # Extract basic keywords from research question as fallback
+            fallback_keywords = self._extract_basic_keywords(research_question)
+            if fallback_keywords:
+                keywords = " OR ".join(fallback_keywords[:5])  # Limit to 5 terms
+                print(f"DVIDS: LLM returned empty keywords, using fallback: {keywords}")
+            else:
+                # Truly no keywords - return None (don't flood with all media)
+                return None
+
         return {
-            "keywords": result["keywords"],
+            "keywords": keywords,
             "media_types": result["media_types"],
             "branches": result["branches"],
             "country": result["country"],
             "from_date": result["from_date"],
             "to_date": result["to_date"]
         }
+
+    def _extract_basic_keywords(self, text: str) -> list:
+        """
+        Extract basic keywords from text when LLM returns empty keywords.
+
+        Simple implementation: split on whitespace, remove stopwords.
+
+        Args:
+            text: Research question
+
+        Returns:
+            List of keywords
+        """
+        import re
+
+        # Common stopwords to exclude
+        stopwords = {
+            'the', 'a', 'an', 'and', 'or', 'but', 'in', 'on', 'at', 'to', 'for',
+            'of', 'with', 'by', 'from', 'about', 'as', 'is', 'are', 'was', 'were',
+            'be', 'been', 'being', 'have', 'has', 'had', 'do', 'does', 'did',
+            'will', 'would', 'could', 'should', 'may', 'might', 'can', 'what',
+            'where', 'when', 'who', 'why', 'how', 'which', 'this', 'that', 'these',
+            'those', 'there', 'their', 'them', 'they'
+        }
+
+        # Extract words (alphanumeric sequences)
+        words = re.findall(r'\b\w+\b', text.lower())
+
+        # Filter stopwords and short words
+        keywords = [w for w in words if len(w) > 2 and w not in stopwords]
+
+        return keywords
 
     async def execute_search(self,
                            query_params: Dict,
