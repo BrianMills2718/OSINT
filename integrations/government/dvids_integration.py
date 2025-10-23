@@ -97,27 +97,40 @@ DVIDS provides: U.S. Department of Defense media distribution - photos, videos, 
 
 API Parameters:
 - keywords (string, required):
-    Search terms for media titles and descriptions.
+    Search query using OR operators for alternatives.
+    IMPORTANT: Use "OR" between alternative terms, NOT commas.
+    Keep queries focused - 3-6 main terms with OR alternatives.
+    Example: "F-35 OR fighter jet OR stealth aircraft"
+    NOT: "F-35, fighter jet, stealth aircraft, air force, military"
 
 - media_types (array, required):
     Types of media to search. Valid options: "image", "video", "news"
+    Default to all three: ["image", "video", "news"]
 
 - branches (array, optional):
     Military branches to filter by. Valid options:
     "Army", "Navy", "Air Force", "Marines", "Coast Guard", "Joint"
+    ONLY specify if the question is about a SPECIFIC branch.
+    Leave empty for generic military queries.
 
 - country (string or null, optional):
     Country name (e.g., "United States", "Germany", "Japan")
 
 - from_date (string or null, optional):
     Start date for results in YYYY-MM-DD format.
+    ONLY set if question asks for specific timeframe.
+    Default: null (no date filter)
 
 - to_date (string or null, optional):
     End date for results in YYYY-MM-DD format.
+    Default: null (no date filter)
 
 Research Question: {research_question}
 
 Decide whether DVIDS is relevant for this question.
+DVIDS is relevant for: military operations, training, equipment, deployments, humanitarian missions.
+DVIDS is NOT relevant for: contracts, jobs, cybersecurity, intelligence analysis (unless visual media).
+
 If relevant, generate appropriate search parameters.
 
 Return JSON:
@@ -231,47 +244,84 @@ Return JSON:
             )
 
         try:
-            # Build request parameters
-            params = {
+            # Build base request parameters (shared by all queries)
+            base_params = {
                 "api_key": api_key,
                 "page": 1,
                 "max_results": min(limit, 50)  # DVIDS max is 50
             }
 
-            # Add keywords if specified
-            if query_params.get("keywords"):
-                params["q"] = query_params["keywords"]
-
             # Add media types (DVIDS uses type[] for multiple)
             if query_params.get("media_types") and len(query_params["media_types"]) > 0:
-                params["type[]"] = query_params["media_types"]
+                base_params["type[]"] = query_params["media_types"]
 
             # Add branches (DVIDS uses branch parameter)
-            if query_params.get("branches") and len(query_params["branches"]) > 0:
-                # DVIDS accepts single branch, take first one if multiple
-                params["branch"] = query_params["branches"][0]
+            # ONLY filter by branch if LLM specified a single specific branch
+            # If LLM lists all branches (Army, Navy, AF, Marines, etc.), that means
+            # the query is generic and we should NOT filter by branch
+            if query_params.get("branches") and len(query_params["branches"]) == 1:
+                base_params["branch"] = query_params["branches"][0]
 
             # Add country
             if query_params.get("country"):
-                params["country"] = query_params["country"]
+                base_params["country"] = query_params["country"]
 
             # Add date filters (DVIDS uses ISO 8601 format with Z)
             if query_params.get("from_date"):
-                params["from_publishdate"] = f"{query_params['from_date']}T00:00:00Z"
+                base_params["from_publishdate"] = f"{query_params['from_date']}T00:00:00Z"
 
             if query_params.get("to_date"):
-                params["to_publishdate"] = f"{query_params['to_date']}T23:59:59Z"
+                base_params["to_publishdate"] = f"{query_params['to_date']}T23:59:59Z"
 
-            # Execute API call
+            # Get keywords and check for OR operators
+            keywords_str = query_params.get("keywords", "")
+
+            # Try the full OR query first
+            params = base_params.copy()
+            params["q"] = keywords_str
+
             response = requests.get(endpoint, params=params, timeout=config.get_database_config("dvids")["timeout"])
             response.raise_for_status()
-            response_time_ms = (datetime.now() - start_time).total_seconds() * 1000
 
-            # Parse response
             data = response.json()
             results = data.get("results", [])
             page_info = data.get("page_info", {})
             total = page_info.get("total_results", len(results))
+
+            # DVIDS API quirk: Some OR combinations return 0 despite individual terms working
+            # If we get 0 results with an OR query, decompose and try individual terms
+            if total == 0 and " OR " in keywords_str:
+                print(f"DVIDS: OR query returned 0, decomposing into individual terms...")
+
+                # Split on " OR " to get individual terms
+                individual_terms = [term.strip() for term in keywords_str.split(" OR ")]
+
+                # Collect results from each individual term
+                all_results = []
+                seen_ids = set()  # Deduplicate by ID
+
+                for term in individual_terms:
+                    term_params = base_params.copy()
+                    term_params["q"] = term
+
+                    term_response = requests.get(endpoint, params=term_params, timeout=config.get_database_config("dvids")["timeout"])
+                    if term_response.status_code == 200:
+                        term_data = term_response.json()
+                        term_results = term_data.get("results", [])
+
+                        # Deduplicate - only add results we haven't seen
+                        for result in term_results:
+                            result_id = result.get("id")
+                            if result_id and result_id not in seen_ids:
+                                all_results.append(result)
+                                seen_ids.add(result_id)
+
+                # Update results with decomposed query results
+                results = all_results
+                total = len(results)
+                print(f"DVIDS: Decomposed query found {total} unique results across {len(individual_terms)} terms")
+
+            response_time_ms = (datetime.now() - start_time).total_seconds() * 1000
 
             # Mask API key in params for logging
             log_params = params.copy()

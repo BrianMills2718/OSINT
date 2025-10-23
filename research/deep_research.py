@@ -451,7 +451,7 @@ Return tasks in priority order (most important first).
                             "government_databases": gov_results,
                             "web_search": len(web_results_list),
                             "entities": result.entities_discovered,
-                            "quality": result.final_quality
+                            "quality": result.quality_metrics.get('overall_quality', 0)
                         }
                     )
                     return True
@@ -522,11 +522,13 @@ Return tasks in priority order (most important first).
 
     async def _reformulate_query(self, original_query: str, result) -> str:
         """Reformulate query when it returns insufficient results."""
+        quality_score = result.quality_metrics.get('overall_quality', 0) if hasattr(result, 'quality_metrics') else 0
+
         prompt = f"""The search query returned insufficient results. Reformulate it to be more effective.
 
 Original Query: {original_query}
 Results Found: {result.total_results}
-Quality Score: {result.final_quality:.2f}
+Quality Score: {quality_score:.2f}
 
 Reformulate the query to:
 - Be broader if too specific

@@ -126,7 +126,8 @@ API Parameters:
     Agency or organization name (e.g., "Department of Defense", "Federal Bureau of Investigation")
 
 - date_range_days (integer, required):
-    How many days back from today to search. Range: 1-365 days.
+    How many days back from today to search. Range: 1-364 days (NOT 365).
+    SAM.gov rejects exactly 365 days with "Date range must be null year(s) apart".
     This parameter is REQUIRED by the SAM.gov API.
 
 Research Question: {research_question}
@@ -179,9 +180,9 @@ Return JSON:
                 },
                 "date_range_days": {
                     "type": "integer",
-                    "description": "Days back to search, 1-365",
+                    "description": "Days back to search, 1-364 (NOT 365 - API limit)",
                     "minimum": 1,
-                    "maximum": 365
+                    "maximum": 364
                 },
                 "reasoning": {
                     "type": "string",
@@ -249,7 +250,10 @@ Return JSON:
 
         try:
             # Calculate date range (required by SAM.gov)
+            # CRITICAL: SAM.gov rejects exactly 365 days with "Date range must be null year(s) apart"
+            # Maximum allowed is 364 days
             date_range_days = query_params.get("date_range_days", 60)
+            date_range_days = min(date_range_days, 364)  # Cap at 364 days (API limit)
             to_date = datetime.now()
             from_date = to_date - timedelta(days=date_range_days)
 
@@ -288,10 +292,30 @@ Return JSON:
             if query_params.get("organization"):
                 params["organizationName"] = query_params["organization"]
 
-            # Execute API call
-            response = requests.get(endpoint, params=params,
-                                  timeout=config.get_database_config("sam")["timeout"])
-            response.raise_for_status()
+            # Execute API call with retry logic for rate limits
+            max_retries = 3
+            retry_delays = [2, 4, 8]  # Exponential backoff: 2s, 4s, 8s
+
+            for attempt in range(max_retries):
+                response = requests.get(endpoint, params=params,
+                                      timeout=config.get_database_config("sam")["timeout"])
+
+                # If HTTP 429 (rate limit), retry with backoff
+                if response.status_code == 429:
+                    if attempt < max_retries - 1:  # Don't sleep on last attempt
+                        import time
+                        delay = retry_delays[attempt]
+                        print(f"SAM.gov rate limit hit, retrying in {delay}s...")
+                        time.sleep(delay)
+                        continue
+                    else:
+                        # Last attempt failed, raise the error
+                        response.raise_for_status()
+
+                # Success or non-retryable error
+                response.raise_for_status()
+                break
+
             response_time_ms = (datetime.now() - start_time).total_seconds() * 1000
 
             # Parse response

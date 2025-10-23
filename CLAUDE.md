@@ -961,26 +961,40 @@ pip list | grep playwright       # Should show: playwright, seleniumbase
 ---
 # CLAUDE.md - Temporary Section (Updated as Tasks Complete)
 
-**Last Updated**: 2025-10-22 (Deep Research diagnosis: insufficient results from government DBs)
-**Current Phase**: Deep Research Enhancement - Web Search + Debug Logging
-**Recent Completion**: Diagnosed Deep Research failure on Streamlit Cloud (0 results from gov databases)
-**Timeline**: Fix Deep Research with Brave Search integration, add debug logging UI
+**Last Updated**: 2025-10-22 (Integration fixes in progress - SAM.gov rate limit hit)
+**Current Phase**: Fix CLI Backend FIRST - Do NOT touch Streamlit until CLI works
+**Current Blocker**: SAM.gov HTTP 429 rate limit errors breaking searches
+**Timeline**: Get CLI working → Test CLI thoroughly → THEN and ONLY THEN test Streamlit
 
 ---
 
-## CURRENT TASK: FIX DEEP RESEARCH ON STREAMLIT CLOUD
+## CRITICAL WORKFLOW VIOLATION - STOP TOUCHING STREAMLIT
 
-**Problem Diagnosed** (2025-10-22):
-- User tested Deep Research on Streamlit Cloud with query about JSOC/CIA operations
-- Result: 0 tasks executed, 4 tasks failed with "Insufficient results after 2 retries"
-- Root cause: Government databases (DVIDS, SAM.gov, USAJobs) don't have classified JSOC/CIA documents
-- Deep Research needs at least some results to work with, but found 0 results from all sources
+**User's Explicit Workflow** (MUST FOLLOW):
+1. Get backend/CLI working FIRST
+2. Test CLI thoroughly with multiple queries
+3. ONLY AFTER CLI is solid, then test local Streamlit
+4. ONLY AFTER local Streamlit works, then deploy to cloud
 
-**Solution**: Add web search capability + enhanced debug logging
-1. **Brave Search Integration**: Search open web for investigative journalism, leaked docs, court filings
-2. **Debug Logging UI**: Display task execution details in expandable UI sections for troubleshooting
+**Current Violation**: Tried to test Streamlit before CLI was proven working
 
-**Why This Matters**: Deep Research currently only searches government databases, which don't contain classified/sensitive information that journalists investigate. Web search is essential for investigative use cases.
+**Current Blocker**: SAM.gov HTTP 429 rate limit
+```
+❌ SAM.gov: HTTP 0: 429 Client Error: Too Many Requests
+```
+
+**What This Means**:
+- SAM.gov API is rate limiting our requests
+- Need to add rate limit handling/backoff
+- Need to test via CLI (apps/ai_research.py) NOT Streamlit
+- DO NOT touch Streamlit until CLI version works perfectly
+
+**Integration Status**:
+- Discord: Fixed (ANY-match working)
+- DVIDS: Fixed (query decomposition working)
+- SAM.gov: **BLOCKED** - Rate limit errors (HTTP 429)
+- Twitter: Working (0 results may be legitimate)
+- Brave Search: Working (10 results)
 
 ---
 
@@ -1029,20 +1043,45 @@ pip list | grep playwright       # Should show: playwright, seleniumbase
 
 ---
 
-## NEXT 2 ACTIONS (Deep Research Enhancement)
+## NEXT ACTIONS (CLI ONLY - NO STREAMLIT)
 
-### Action 1: Integrate Brave Search into Deep Research Engine
+### Action 1: Fix SAM.gov Rate Limit Handling
 
-**Prerequisites**: Deep Research Engine deployed (research/deep_research.py exists)
+**Prerequisites**: None - this is the blocker
 
-**Goal**: Add web search capability to find investigative journalism, leaked documents, court filings
+**Goal**: Add rate limit detection and exponential backoff to SAM.gov integration
 
-**Why**: Government databases (DVIDS, SAM.gov, USAJobs) don't have classified/sensitive documents. Deep Research needs web search to find investigative reporting on these topics.
+**Why**: SAM.gov returning HTTP 429 errors, need graceful handling
 
-**Files to modify**:
-- `research/deep_research.py` - Add Brave Search integration method
-- `integrations/registry.py` - Check if BraveSearchIntegration exists, create if needed
-- `requirements.txt` - Ensure required packages present
+**File to modify**: `integrations/government/sam_integration.py`
+
+**Implementation**:
+- Detect HTTP 429 responses
+- Add exponential backoff (1s, 2s, 4s, 8s)
+- Max 3 retries before giving up
+- Return QueryResult with success=False and clear error message
+
+### Action 2: Test CLI Thoroughly (NO STREAMLIT)
+
+**Prerequisites**: Action 1 complete (rate limit handling added)
+
+**Goal**: Verify all integrations work via CLI
+
+**Commands to run**:
+```bash
+cd /home/brian/sam_gov
+source .venv/bin/activate
+python3 apps/ai_research.py "cyber threat intelligence"
+```
+
+**Expected**:
+- SAM.gov: Either results or graceful rate limit error
+- Discord: Results (ANY-match fix)
+- DVIDS: Results or "not relevant"
+- Twitter: Results or 0 (legitimate)
+- Brave Search: Results
+
+**DO NOT TEST STREAMLIT UNTIL THIS WORKS**
 
 **Implementation**:
 ```python

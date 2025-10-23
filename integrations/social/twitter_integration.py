@@ -136,6 +136,23 @@ Research Question: {research_question}
 
 Decide whether Twitter is relevant for this question.
 
+Twitter is useful for:
+- Public discourse and opinions on government programs, policies, leaks
+- Breaking news, whistleblower revelations, investigative journalism
+- Official government accounts and announcements
+- Activism, protests, social movements
+- Expert commentary from journalists, researchers, former officials
+- Real-time reactions to events
+
+Twitter is NOT useful for:
+- Structured data like contracts, jobs, procurement
+- Historical documents or archives
+- Formal government records
+
+If the question involves public discussion, news, leaks, or social/political topics,
+Twitter is HIGHLY RELEVANT. Only mark as not relevant if it's purely about
+structured government data (contracts, jobs, etc.).
+
 Return JSON:
 {{
   "relevant": boolean,

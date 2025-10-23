@@ -110,9 +110,10 @@ Discord provides: Community discussions from OSINT servers (Bellingcat, Project 
 
 API Parameters:
 - keywords (array of strings, required):
-    Key search terms or phrases. Messages must contain ALL keywords (AND search).
+    Key search terms or phrases. Messages matching ANY keyword will be returned (OR search).
+    Use synonyms and related terms to broaden the search.
     Preserve multi-word concepts as single terms (e.g., "domestic terrorism", not separate words).
-    Range: 2-5 terms recommended.
+    Range: 3-8 terms recommended (synonyms and related concepts).
 
 Research Question: {research_question}
 
@@ -297,11 +298,12 @@ Return JSON:
                 for msg in messages:
                     content = msg.get("content", "").lower()
 
-                    # Check if ALL keywords match (AND search)
-                    # This ensures we only get messages containing every keyword
-                    if all(kw in content for kw in keywords):
+                    # Check if ANY keyword matches (OR search)
+                    # This allows for synonym matching - messages with "sigint" OR "signals intelligence"
+                    matched_keywords = [kw for kw in keywords if kw in content]
+                    if matched_keywords:
                         # Calculate match score (how many keywords matched)
-                        matched_keywords = [kw for kw in keywords if kw in content]
+                        # Higher score = more keywords matched
                         score = len(matched_keywords) / len(keywords)
 
                         matches.append({
