@@ -284,6 +284,27 @@ Warning: Could not parse Project Owl...json: Expecting ',' delimiter
    - `query_results_clean.txt` - Generated queries for 3 test queries
    - `query_generation_analysis_20251023_121900.txt` - Partial results with execution
 
+4. **Fixed ClearanceJobs integration**
+   - Changed Playwright scraper from form submission to direct URL navigation
+   - Updated prompt with intelligent guidance (not hard limits)
+   - Verified: Different queries return different counts (272-14,071 results)
+
+5. **Fixed DVIDS empty keywords issue**
+   - Root cause: Prompt didn't guide LLM on non-military topics
+   - Fix: Updated prompt to instruct LLM to find military angle or generate broad terms
+   - Removed fallback code (was masking the prompt issue)
+   - Removed unused `_extract_basic_keywords()` method
+
+6. **Removed Discord dead code**
+   - Empty keywords fallback never executed (LLM never returns empty)
+   - Kept legitimate exception handler for API failures
+   - Verified integration still works correctly
+
+7. **Verified DVIDS OR decomposition**
+   - Legitimate workaround for DVIDS API bug (composite OR queries return 0)
+   - Not a fallback - documented external API issue
+   - Kept as necessary workaround
+
 ---
 
 ## Next Steps

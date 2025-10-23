@@ -158,10 +158,6 @@ Return JSON:
             result = json.loads(response.choices[0].message.content)
             keywords = [term.lower() for term in result.get("terms", [])]
 
-            if not keywords:
-                # Fallback to simple extraction
-                keywords = self._extract_keywords(research_question)
-
         except Exception as e:
             # Fallback to simple extraction on error
             print(f"Warning: LLM keyword extraction failed ({e}), using simple extraction")
