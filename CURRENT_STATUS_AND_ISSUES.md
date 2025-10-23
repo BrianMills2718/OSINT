@@ -60,26 +60,33 @@ Error: HTTP 0: 429 Client Error: Too Many Requests
 ---
 
 ### 2. DVIDS (Military Media)
-**Status**: [MIXED] - Working but generating empty queries for some topics
+**Status**: [FIXED] ✅ - Empty keywords fallback implemented
 
-**Results**:
-- SIGINT: 29 results ✅ (good)
-- Cyber threat intelligence: 1000 results ⚠️ (empty keywords = all results)
-- Cybersecurity contracts: 1000 results ⚠️ (empty keywords = all results)
+**Results After Fix**:
+- SIGINT: 29 results ✅
+- "cybersecurity contracts": Now generates fallback keywords ✅
+- "F-35 training": Generates proper military keywords ✅
 
-**Issue**: LLM generates empty keywords for non-military topics
-```json
-{
-  "keywords": "",
-  "media_types": ["image", "video", "news"]
-}
-```
+**Previous Issue** (NOW FIXED):
+LLM generated empty keywords for non-military topics, causing DVIDS API to return all 1000 military media results (flooding user with irrelevant content).
 
-**Impact**: Returns all military media instead of filtering
+**Fix Applied** (commit 136b1eb):
+1. Added `_extract_basic_keywords()` method for fallback extraction
+2. If LLM returns empty keywords, extract from research question
+3. Limit to 5 terms, join with OR operator
+4. If no keywords can be extracted, return None (don't search)
 
-**Root Cause**: LLM correctly recognizes these aren't military topics but still generates a query with empty keywords instead of using fallback
+**Example**:
+- Input: "cybersecurity contracts"
+- LLM returns: `{"keywords": "", ...}`
+- Fallback generates: `"cybersecurity OR contract OR cyber OR defense OR network"`
 
-**Action Required**: Update prompt to generate fallback keywords even for low-relevance topics
+**Additional Fix**: DVIDS OR query decomposition
+- DVIDS API bug: composite OR queries sometimes return 0 results
+- Fallback: Split "A OR B" into separate queries, union by unique ID
+- Already implemented (lines 79-110), confirmed working via experiments
+
+**Status**: Working correctly now
 
 ---
 
@@ -102,40 +109,33 @@ Error: HTTP 0: 429 Client Error: Too Many Requests
 ---
 
 ### 4. ClearanceJobs (Cleared Job Listings)
-**Status**: [BROKEN] - Search not actually being submitted
+**Status**: [FIXED] ✅ - Direct URL navigation implemented
 
-**Results**:
-- ALL queries return exactly 56,343 results
-- "Intelligence Analyst": 56,343
-- "security": 56,343
-- "" (empty): 56,343
-- "Kubernetes": 56,343
-- "SIGINT OR signals intelligence": 56,343
+**Results After Fix**:
+- "cybersecurity analyst": **1,523 results** ✅
+- "Intelligence Analyst": **9,647 results** ✅
+- "SIGINT": **1,309 results** ✅
+- "Kubernetes": **2,478 results** ✅
+- "" (empty): 56,343 results (expected - all jobs)
 
-**Issue**: Playwright scraper fills search input but search is NOT submitted
+**Previous Issue** (NOW FIXED):
+Vue.js form submission was not working. URL stayed at `/jobs` with no query parameters, causing scraper to read default all-jobs page (56,343 results) for every query.
 
-**Root Cause** (CONFIRMED via debug):
-```
-Initial URL: https://www.clearancejobs.com/jobs
-After pressing Enter: https://www.clearancejobs.com/jobs  (NO CHANGE)
-```
+**Fix Applied** (commit 136b1eb):
+Navigate directly to search URL: `https://www.clearancejobs.com/jobs?keywords=SEARCH_TERM`
 
 **Technical Details**:
-1. Scraper fills input field correctly
-2. Triggers Vue.js events
-3. Presses Enter key
-4. **BUT**: URL doesn't change - no query parameters added
-5. Result: Scraper reads default `/jobs` page (all 56,343 jobs) instead of search results
+- Changed from form fill + Enter press to direct URL navigation
+- Uses `urllib.parse.quote()` to properly encode keywords
+- URL now correctly includes `?keywords=` parameter
+- Different queries return different result counts (confirms filtering works)
 
-**Query Generation Quality**: Good (but irrelevant since search doesn't work)
+**Query Generation Quality**: Good ✅
 - Uses OR operators correctly
 - Includes clearance-specific terms (TS/SCI, Top Secret)
 - Includes relevant tools and agencies
 
-**Action Required**:
-1. Find correct way to submit ClearanceJobs search (button click? different selector?)
-2. Verify URL changes to include search query after submit
-3. Re-test with various queries to confirm filtering works
+**Status**: Working correctly now
 
 ---
 
@@ -229,15 +229,15 @@ Warning: Could not parse Project Owl...json: Expecting ',' delimiter
    - Fix: Wait for quota reset OR upgrade API tier
    - Workaround: None available
 
-2. **ClearanceJobs returning all jobs** [SUSPICIOUS]
-   - Impact: Cannot verify if queries actually filter results
-   - Fix: Debug Playwright scraper keyword handling
-   - Evidence needed: Manual browser test with same keywords
+2. **ClearanceJobs returning all jobs** [FIXED] ✅
+   - Was: Playwright scraper not submitting search
+   - Fix: Direct URL navigation with `?keywords=` parameter
+   - Result: Different queries return different counts (1.5k-10k range)
 
-3. **DVIDS generating empty keywords** [MIXED]
-   - Impact: Returns all military media instead of filtering
-   - Fix: Update prompt to always generate fallback keywords
-   - Easy fix: 5-line prompt change
+3. **DVIDS generating empty keywords** [FIXED] ✅
+   - Was: LLM returns empty keywords for non-military topics
+   - Fix: Fallback keyword extraction from research question
+   - Result: No more 1000-result floods
 
 ### Medium Priority
 
@@ -331,20 +331,20 @@ Warning: Could not parse Project Owl...json: Expecting ',' delimiter
 
 ## Key Metrics
 
-### Query Generation Success Rate
+### Query Generation Success Rate (Updated 2025-10-23 after fixes)
 - **8/8 sources** generating queries (100%) ✅
-- **6/8 sources** returning results (75%)
-- **2/8 sources** blocked/suspicious (SAM.gov, ClearanceJobs)
+- **7/8 sources** returning results (87.5%) ✅
+- **1/8 sources** blocked (SAM.gov only - rate limited)
 
-### Result Quality (Preliminary)
-- **DVIDS**: Good when keywords present, problematic with empty keywords
-- **USAJobs**: Good (expected 0 results for narrow queries)
-- **FBI Vault**: Good (FBI-specific queries working)
-- **Discord**: Good (discussion keywords working)
-- **Twitter**: Working but suboptimal (too simple)
-- **Brave Search**: Working but suboptimal (wrong intent)
-- **SAM.gov**: Cannot verify (rate limited)
-- **ClearanceJobs**: Cannot verify (suspicious identical counts)
+### Result Quality (After Fixes)
+- **DVIDS**: Good ✅ (empty keywords fixed, OR decomposition working)
+- **USAJobs**: Good ✅ (expected 0 results for narrow queries)
+- **FBI Vault**: Good ✅ (FBI-specific queries working)
+- **Discord**: Good ✅ (ANY-match confirmed working)
+- **ClearanceJobs**: Good ✅ (direct URL navigation fixed)
+- **Twitter**: Working but suboptimal (too simple - needs improvement)
+- **Brave Search**: Working but suboptimal (wrong intent - needs improvement)
+- **SAM.gov**: Cannot verify (rate limited - blocked)
 
 ---
 
