@@ -222,12 +222,39 @@ python3 -m pytest tests/contracts/test_integration_contracts.py -v --tb=line
 - pytest-anyio: 4.11.0
 - OS: Linux (WSL2)
 
-**Duration**: 7 minutes 42 seconds (462.83s)
+**Duration**: 9 minutes 48 seconds (588.56s)
 
 **Test Distribution**:
 - Per integration: 20 tests
 - Total integrations: 8
 - Total tests: 160
+
+**LLM API Cost**:
+- LLM calls per run: ~40 (5 query generation tests × 8 integrations)
+- Model: gpt-5-mini (via llm_utils.py)
+- Estimated cost: ~$0.02-0.05 per full test run
+- Note: Only `test_generate_query_*` tests call LLM, other 120 tests are free
+
+**Skip Strategy for Offline/CI**:
+```bash
+# Skip LLM tests (no API calls, runs in ~30 seconds)
+pytest tests/contracts/test_integration_contracts.py -k "not generate_query"
+
+# Skip cold mode tests (faster, only test core contracts)
+pytest tests/contracts/test_integration_contracts.py -k "not cold_mode"
+
+# Run only critical contract tests (inheritance, metadata, QueryResult structure)
+pytest tests/contracts/test_integration_contracts.py -k "test_inherits or test_metadata or test_execute_search_returns_queryresult"
+```
+
+**CI/CD Recommendations**:
+- Run full suite on main branch merges (verify LLM integration)
+- Run core contracts only on PRs (fast feedback, no API cost)
+- Skip generate_query tests if OPENAI_API_KEY not available
+- Use pytest markers to categorize tests:
+  - `@pytest.mark.contract` - Core interface tests
+  - `@pytest.mark.llm` - Tests requiring LLM API
+  - `@pytest.mark.api` - Tests requiring external API access
 
 ---
 

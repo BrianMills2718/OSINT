@@ -108,15 +108,49 @@ def test_disabled_integration_returns_none():
     """Test that disabled integrations return None."""
     print("Testing: Disabled integrations return None")
 
-    # This test assumes you can create a config.yaml with some integrations disabled
-    # For now, just verify the behavior when an integration is disabled
-    print("Note: To fully test this, create config.yaml with an integration disabled")
-    print("Example config.yaml:")
-    print("""
-databases:
-  sam:
-    enabled: false
-""")
+    # Create a mock config_loader to test disabled integration behavior
+    import config_loader
+
+    # Save original get_database_config
+    original_get_db_config = config_loader.config.get_database_config
+
+    # Create mock that disables SAM
+    def mock_get_db_config(integration_id):
+        if integration_id == "sam":
+            return {"enabled": False}
+        # For others, return default enabled
+        return {"enabled": True}
+
+    # Temporarily replace the method
+    config_loader.config.get_database_config = mock_get_db_config
+
+    try:
+        # Clear cached instances to force re-check
+        registry._cached_instances.clear()
+
+        # Test: SAM should return None when disabled
+        sam_instance = registry.get_instance("sam")
+        assert sam_instance is None, "SAM should return None when disabled via config"
+        print("  ✓ SAM returns None when config.enabled=false")
+
+        # Test: DVIDS should still work (not disabled)
+        dvids_instance = registry.get_instance("dvids")
+        assert dvids_instance is not None, "DVIDS should still work when enabled"
+        print("  ✓ DVIDS returns instance when config.enabled=true")
+
+        # Test: is_enabled reflects config
+        assert registry.is_enabled("sam") is False, "is_enabled('sam') should be False"
+        assert registry.is_enabled("dvids") is True, "is_enabled('dvids') should be True"
+        print("  ✓ is_enabled() correctly reflects config flags")
+
+        print("  ✓ Feature flags successfully control integration availability")
+
+    finally:
+        # Restore original method
+        config_loader.config.get_database_config = original_get_db_config
+        # Clear cache again to reset state
+        registry._cached_instances.clear()
+
     print()
 
 
