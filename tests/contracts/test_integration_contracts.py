@@ -24,9 +24,6 @@ from typing import Dict, Any
 # Add project root to path
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.dirname(__file__))))
 
-# Configure pytest-anyio for async testing
-pytestmark = pytest.mark.anyio
-
 from core.database_integration_base import (
     DatabaseIntegration,
     DatabaseMetadata,
@@ -93,6 +90,7 @@ class TestIntegrationContracts:
         assert metadata.description, \
             f"{integration_id}.metadata.description must not be empty"
 
+    @pytest.mark.asyncio
     async def test_is_relevant_returns_bool(self, integration_id, integration_class):
         """is_relevant() must return bool."""
         instance = integration_class()
@@ -101,6 +99,7 @@ class TestIntegrationContracts:
         assert isinstance(result, bool), \
             f"{integration_id}.is_relevant() must return bool, got {type(result)}"
 
+    @pytest.mark.asyncio
     async def test_generate_query_returns_dict(self, integration_id, integration_class):
         """generate_query() must return Dict (relevance filter removed)."""
         instance = integration_class()
@@ -116,6 +115,7 @@ class TestIntegrationContracts:
         assert len(result) > 0, \
             f"{integration_id}.generate_query() returned empty dict"
 
+    @pytest.mark.asyncio
     async def test_execute_search_returns_queryresult(self, integration_id, integration_class):
         """execute_search() must return QueryResult object (not dict)."""
         instance = integration_class()
@@ -154,6 +154,7 @@ class TestIntegrationContracts:
         assert isinstance(result.results, list), \
             f"{integration_id} QueryResult.results must be list"
 
+    @pytest.mark.asyncio
     async def test_execute_search_cold_mode_graceful_failure(self, integration_id, integration_class):
         """execute_search() must handle missing API key gracefully (cold mode)."""
         instance = integration_class()
@@ -188,6 +189,7 @@ class TestIntegrationContracts:
         assert len(result.results) == 0, \
             f"{integration_id} must return empty results when API key missing"
 
+    @pytest.mark.asyncio
     async def test_execute_search_structural_invariants(self, integration_id, integration_class):
         """execute_search() results must have consistent structure."""
         instance = integration_class()
@@ -218,6 +220,7 @@ class TestIntegrationContracts:
 class TestIntegrationQueryGeneration:
     """Test query generation across different query types."""
 
+    @pytest.mark.asyncio
     async def test_generate_query_military_topic(self, integration_id, integration_class):
         """Test query generation for military topics."""
         instance = integration_class()
@@ -228,6 +231,7 @@ class TestIntegrationQueryGeneration:
         assert len(result) > 0, \
             f"{integration_id} returned empty dict for military query"
 
+    @pytest.mark.asyncio
     async def test_generate_query_intelligence_topic(self, integration_id, integration_class):
         """Test query generation for intelligence topics."""
         instance = integration_class()
@@ -238,6 +242,7 @@ class TestIntegrationQueryGeneration:
         assert len(result) > 0, \
             f"{integration_id} returned empty dict for intelligence query"
 
+    @pytest.mark.asyncio
     async def test_generate_query_contract_topic(self, integration_id, integration_class):
         """Test query generation for contract/procurement topics."""
         instance = integration_class()
@@ -248,6 +253,7 @@ class TestIntegrationQueryGeneration:
         assert len(result) > 0, \
             f"{integration_id} returned empty dict for contract query"
 
+    @pytest.mark.asyncio
     async def test_generate_query_job_topic(self, integration_id, integration_class):
         """Test query generation for job listing topics."""
         instance = integration_class()
