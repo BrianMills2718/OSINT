@@ -53,6 +53,7 @@ def get_all_integration_classes():
     return integration_classes
 
 
+@pytest.mark.contract
 @pytest.mark.parametrize("integration_id,integration_class", get_all_integration_classes())
 class TestIntegrationContracts:
     """Contract tests for all database integrations."""
@@ -216,6 +217,8 @@ class TestIntegrationContracts:
                     f"{integration_id} result[{idx}] should have at least one of: {expected_fields}"
 
 
+@pytest.mark.contract
+@pytest.mark.llm
 @pytest.mark.parametrize("integration_id,integration_class", get_all_integration_classes())
 class TestIntegrationQueryGeneration:
     """Test query generation across different query types."""

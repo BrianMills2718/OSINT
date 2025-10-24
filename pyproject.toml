@@ -1,0 +1,29 @@
+[tool.pytest.ini_options]
+# Pytest configuration for SAM.gov Intelligence Platform
+
+# Test markers for selective execution
+markers = [
+    "contract: Core interface tests (fast, no API calls, validates DatabaseIntegration compliance)",
+    "llm: Tests requiring LLM API (cost money, require OPENAI_API_KEY)",
+    "api: Tests requiring external API access (require API keys, may hit rate limits)",
+    "integration: Multi-component tests (test how components work together)",
+    "performance: Load/stress tests (measure throughput, memory, thread safety)",
+]
+
+# Test discovery patterns
+testpaths = ["tests"]
+python_files = ["test_*.py"]
+python_classes = ["Test*"]
+python_functions = ["test_*"]
+
+# Asyncio configuration for pytest-asyncio
+asyncio_mode = "auto"
+asyncio_default_fixture_loop_scope = "function"
+
+# Output options
+addopts = [
+    "-v",                    # Verbose output
+    "--tb=short",            # Short traceback format
+    "--strict-markers",      # Error on unknown markers
+    "--color=yes",           # Colored output
+]
