@@ -1,0 +1,440 @@
+{
+  "entities": [
+    {
+      "id": "memo_followup_disinfo",
+      "name": "FOLLOW-UP TO DISINFORMATION CONFERENCE Memo",
+      "type": "document",
+      "attributes": {
+        "publication_date": "July 24, 1985",
+        "foia_number": "CIA-RDP89G01126R000100100009-9",
+        "classification": "U",
+        "page_count": "4"
+      }
+    },
+    {
+      "id": "dci",
+      "name": "Director of Central Intelligence",
+      "type": "role",
+      "attributes": {}
+    },
+    {
+      "id": "ddi",
+      "name": "Deputy Director for Intelligence",
+      "type": "role",
+      "attributes": {}
+    },
+    {
+      "id": "d_sova",
+      "name": "Director of Soviet Analysis",
+      "type": "role",
+      "attributes": {}
+    },
+    {
+      "id": "snr_analyst_ni",
+      "name": "Senior Analyst for National Issues",
+      "type": "role",
+      "attributes": {}
+    },
+    {
+      "id": "osova",
+      "name": "Office of Soviet Analysis",
+      "type": "organization",
+      "attributes": {}
+    },
+    {
+      "id": "cia",
+      "name": "Central Intelligence Agency",
+      "type": "organization",
+      "attributes": {}
+    },
+    {
+      "id": "state_dept",
+      "name": "State Department",
+      "type": "organization",
+      "attributes": {}
+    },
+    {
+      "id": "nio_fdia",
+      "name": "NIO/FDIA",
+      "type": "organization",
+      "attributes": {}
+    },
+    {
+      "id": "conf_cspd",
+      "name": "Conference on Contemporary Soviet Propaganda and Disinformation",
+      "type": "event",
+      "attributes": {
+        "dates": "June 25-27, 1985"
+      }
+    },
+    {
+      "id": "norman_podhoretz",
+      "name": "Norman Podhoretz",
+      "type": "person",
+      "attributes": {
+        "role_at_conf_cspd": "keynote speaker"
+      }
+    },
+    {
+      "id": "aaron_levenstein",
+      "name": "Aaron Levenstein",
+      "type": "person",
+      "attributes": {}
+    },
+    {
+      "id": "center_prop_research",
+      "name": "Center for Propaganda Research",
+      "type": "organization",
+      "attributes": {
+        "status": "proposed",
+        "funding": "privately funded"
+      }
+    },
+    {
+      "id": "participants_cspd",
+      "name": "CSPD Conference Participants",
+      "type": "group",
+      "attributes": {}
+    },
+    {
+      "id": "defectors_emigres",
+      "name": "Soviet and East European Defectors and Emigres",
+      "type": "group",
+      "attributes": {}
+    },
+    {
+      "id": "disinformation",
+      "name": "Disinformation",
+      "type": "concept",
+      "attributes": {}
+    },
+    {
+      "id": "soviet_propaganda",
+      "name": "Soviet Propaganda",
+      "type": "concept",
+      "attributes": {}
+    },
+    {
+      "id": "contemp_soviet_prop_disinfo",
+      "name": "Contemporary Soviet Propaganda and Disinformation",
+      "type": "concept",
+      "attributes": {}
+    },
+    {
+      "id": "semantic_manipulation",
+      "name": "Semantic manipulation",
+      "type": "concept",
+      "attributes": {}
+    },
+    {
+      "id": "countermeasures",
+      "name": "Countermeasures",
+      "type": "concept",
+      "attributes": {
+        "context": "against disinformation"
+      }
+    },
+    {
+      "id": "conf_followup",
+      "name": "Follow-up conference",
+      "type": "event",
+      "attributes": {
+        "status": "suggested",
+        "topic": "examine countermeasures"
+      }
+    },
+    {
+      "id": "conf_report_cspd",
+      "name": "CSPD Conference Report",
+      "type": "document",
+      "attributes": {
+        "status": "planned"
+      }
+    },
+    {
+      "id": "formal_papers_cspd",
+      "name": "CSPD Formal Papers",
+      "type": "document",
+      "attributes": {
+        "count": "13"
+      }
+    },
+    {
+      "id": "taped_proceedings_cspd",
+      "name": "CSPD Taped Proceedings",
+      "type": "document",
+      "attributes": {
+        "duration": "approximately 21 hours"
+      }
+    },
+    {
+      "id": "participant_list_cspd",
+      "name": "CSPD Participant List",
+      "type": "document",
+      "attributes": {
+        "status": "sent"
+      }
+    },
+    {
+      "id": "govt_us",
+      "name": "US Government",
+      "type": "organization",
+      "attributes": {}
+    },
+    {
+      "id": "testimony_defectors",
+      "name": "Testimony from Defectors and Emigres",
+      "type": "concept",
+      "attributes": {
+        "content": "hands-on experience with disinformation forms and techniques"
+      }
+    },
+    {
+      "id": "academic_conference_type",
+      "name": "Academic Conference",
+      "type": "concept",
+      "attributes": {}
+    },
+    {
+      "id": "domestic_sensitivities",
+      "name": "Domestic Sensitivities",
+      "type": "concept",
+      "attributes": {}
+    }
+  ],
+  "relationships": [
+    {
+      "source": "memo_followup_disinfo",
+      "target": "dci",
+      "type": "addressed_to",
+      "attributes": {}
+    },
+    {
+      "source": "memo_followup_disinfo",
+      "target": "ddi",
+      "type": "routed_via",
+      "attributes": {}
+    },
+    {
+      "source": "memo_followup_disinfo",
+      "target": "d_sova",
+      "type": "routed_via",
+      "attributes": {}
+    },
+    {
+      "source": "memo_followup_disinfo",
+      "target": "snr_analyst_ni",
+      "type": "routed_via",
+      "attributes": {}
+    },
+    {
+      "source": "snr_analyst_ni",
+      "target": "osova",
+      "type": "affiliated_with",
+      "attributes": {}
+    },
+    {
+      "source": "osova",
+      "target": "cia",
+      "type": "part_of",
+      "attributes": {}
+    },
+    {
+      "source": "memo_followup_disinfo",
+      "target": "conf_cspd",
+      "type": "reports_on",
+      "attributes": {}
+    },
+    {
+      "source": "conf_cspd",
+      "target": "contemp_soviet_prop_disinfo",
+      "type": "focuses_on",
+      "attributes": {}
+    },
+    {
+      "source": "contemp_soviet_prop_disinfo",
+      "target": "soviet_propaganda",
+      "type": "includes",
+      "attributes": {}
+    },
+    {
+      "source": "contemp_soviet_prop_disinfo",
+      "target": "disinformation",
+      "type": "includes",
+      "attributes": {}
+    },
+    {
+      "source": "conf_cspd",
+      "target": "participants_cspd",
+      "type": "had_participants",
+      "attributes": {}
+    },
+    {
+      "source": "participants_cspd",
+      "target": "defectors_emigres",
+      "type": "included_group",
+      "attributes": {}
+    },
+    {
+      "source": "defectors_emigres",
+      "target": "testimony_defectors",
+      "type": "provided",
+      "attributes": {}
+    },
+    {
+      "source": "norman_podhoretz",
+      "target": "conf_cspd",
+      "type": "participated_in",
+      "attributes": {
+        "role": "keynote speaker"
+      }
+    },
+    {
+      "source": "norman_podhoretz",
+      "target": "semantic_manipulation",
+      "type": "discussed_as_keynote",
+      "attributes": {
+        "context": "Western vulnerability"
+      }
+    },
+    {
+      "source": "semantic_manipulation",
+      "target": "disinformation",
+      "type": "related_to",
+      "attributes": {}
+    },
+    {
+      "source": "participants_cspd",
+      "target": "disinformation",
+      "type": "discussed",
+      "attributes": {}
+    },
+    {
+      "source": "participants_cspd",
+      "target": "Dealing directly with disinformation in scholarly work",
+      "type": "disagreed_on",
+      "attributes": {}
+    },
+    {
+      "source": "participants_cspd",
+      "target": "Government need to neutralize and counter disinformation",
+      "type": "agreed_on",
+      "attributes": {}
+    },
+    {
+      "source": "govt_us",
+      "target": "disinformation",
+      "type": "should_neutralize_counter",
+      "attributes": {
+        "method": "consciousness-raising among media and public"
+      }
+    },
+    {
+      "source": "conf_cspd",
+      "target": "formal_papers_cspd",
+      "type": "produced_output",
+      "attributes": {}
+    },
+    {
+      "source": "conf_cspd",
+      "target": "taped_proceedings_cspd",
+      "type": "produced_output",
+      "attributes": {}
+    },
+    {
+      "source": "conf_cspd",
+      "target": "conf_report_cspd",
+      "type": "planned_output",
+      "attributes": {}
+    },
+    {
+      "source": "conf_report_cspd",
+      "target": "taped_proceedings_cspd",
+      "type": "based_on",
+      "attributes": {
+        "via": "transcription"
+      }
+    },
+    {
+      "source": "conf_report_cspd",
+      "target": "state_dept",
+      "type": "will_be_disseminated_by",
+      "attributes": {}
+    },
+    {
+      "source": "participants_cspd",
+      "target": "conf_followup",
+      "type": "suggested",
+      "attributes": {}
+    },
+    {
+      "source": "conf_followup",
+      "target": "countermeasures",
+      "type": "will_examine",
+      "attributes": {}
+    },
+    {
+      "source": "participants_cspd",
+      "target": "participant_list_cspd",
+      "type": "suggested",
+      "attributes": {}
+    },
+    {
+      "source": "participant_list_cspd",
+      "target": "participants_cspd",
+      "type": "sent_to",
+      "attributes": {}
+    },
+    {
+      "source": "participant_list_cspd",
+      "target": "cia",
+      "type": "excluded_group",
+      "attributes": {
+        "note": "CIA staffers except the author"
+      }
+    },
+    {
+      "source": "aaron_levenstein",
+      "target": "center_prop_research",
+      "type": "suggested",
+      "attributes": {}
+    },
+    {
+      "source": "center_prop_research",
+      "target": "propaganda_research",
+      "type": "focuses_on",
+      "attributes": {}
+    },
+    {
+      "source": "osova",
+      "target": "nio_fdia",
+      "type": "discussed_with",
+      "attributes": {
+        "topic": "follow-on conference"
+      }
+    },
+    {
+      "source": "osova",
+      "target": "state_dept",
+      "type": "recommends",
+      "attributes": {
+        "action": "conduct academic conference",
+        "condition": "if follow-up is academic"
+      }
+    },
+    {
+      "source": "conf_followup",
+      "target": "academic_conference_type",
+      "type": "is_type",
+      "attributes": {
+        "condition": "if academic"
+      }
+    },
+    {
+      "source": "academic_conference_type",
+      "target": "domestic_sensitivities",
+      "type": "should_deal_with",
+      "attributes": {}
+    }
+  ]
+}

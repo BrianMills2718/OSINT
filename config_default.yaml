@@ -109,6 +109,17 @@ databases:
     enabled: true                 # Requires twitterexplorer_sigint
     timeout: 20
 
+  reddit:
+    enabled: true                 # Requires PRAW (installed)
+    timeout: 15
+    # Credentials loaded from environment variables (.env file)
+    # Required: REDDIT_CLIENT_ID, REDDIT_CLIENT_SECRET, REDDIT_USERNAME, REDDIT_PASSWORD
+    client_id: ${REDDIT_CLIENT_ID}
+    client_secret: ${REDDIT_CLIENT_SECRET}
+    username: ${REDDIT_USERNAME}
+    password: ${REDDIT_PASSWORD}
+    user_agent: "SIGINT_Platform/1.0"
+
   # Web Search
   brave_search:
     enabled: true

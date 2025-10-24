@@ -1,0 +1,1569 @@
+{
+  "entities": [
+    {
+      "id": "golitsyn",
+      "name": "Anatolyi Golitsyn",
+      "type": "person",
+      "attributes": {
+        "role_at_ussr": "Soviet Intelligence Officer",
+        "author_of": "New Lies for Old",
+        "claims_expertise_on": "KGB, Communist Strategies, Strategic Disinformation"
+      }
+    },
+    {
+      "id": "ny_tribune",
+      "name": "New York Tribune",
+      "type": "organization",
+      "attributes": {
+        "type": "Newspaper"
+      }
+    },
+    {
+      "id": "new_lies_for_old",
+      "name": "New Lies for Old",
+      "type": "concept",
+      "attributes": {
+        "type": "Book",
+        "author_claimed_purpose": "Expose Communist Strategic Disinformation Program"
+      }
+    },
+    {
+      "id": "navrozov",
+      "name": "Lev Navrozov",
+      "type": "person",
+      "attributes": {
+        "role": "Author of articles",
+        "described_by_golitsyn": "Confused, disregard for facts, strange attitude for a dissident"
+      }
+    },
+    {
+      "id": "pereira_jf",
+      "name": "John F. Pereira",
+      "type": "person",
+      "attributes": {
+        "title": "Chief"
+      }
+    },
+    {
+      "id": "cia_ims",
+      "name": "Information Management Staff",
+      "type": "organization",
+      "attributes": {
+        "affiliation": "CIA"
+      }
+    },
+    {
+      "id": "cia_do",
+      "name": "Directorate of Operations",
+      "type": "organization",
+      "attributes": {
+        "affiliation": "CIA"
+      }
+    },
+    {
+      "id": "cia_prb",
+      "name": "PRB (CIA Component)",
+      "type": "organization",
+      "attributes": {
+        "affiliation": "CIA"
+      }
+    },
+    {
+      "id": "ussr",
+      "name": "Soviet Union",
+      "type": "location",
+      "attributes": {
+        "type": "Country"
+      }
+    },
+    {
+      "id": "kgb",
+      "name": "KGB",
+      "type": "organization",
+      "attributes": {
+        "affiliation": "USSR",
+        "type": "Intelligence and Security Service"
+      }
+    },
+    {
+      "id": "cc_cpsu",
+      "name": "Central Committee of the Communist Party",
+      "type": "organization",
+      "attributes": {
+        "affiliation": "USSR"
+      }
+    },
+    {
+      "id": "kgb_institute",
+      "name": "KGB Institute",
+      "type": "organization",
+      "attributes": {
+        "affiliation": "KGB",
+        "type": "Training Institution"
+      }
+    },
+    {
+      "id": "kgb_hq_moscow",
+      "name": "KGB Headquarters",
+      "type": "organization",
+      "attributes": {
+        "location": "Moscow",
+        "affiliation": "KGB"
+      }
+    },
+    {
+      "id": "moscow",
+      "name": "Moscow",
+      "type": "location",
+      "attributes": {
+        "part_of": "USSR"
+      }
+    },
+    {
+      "id": "kgb_disinfo_dept",
+      "name": "Disinformation Department (KGB)",
+      "type": "organization",
+      "attributes": {
+        "affiliation": "KGB"
+      }
+    },
+    {
+      "id": "communist_disinfo_program",
+      "name": "Communist Strategic Disinformation Program",
+      "type": "concept",
+      "attributes": {
+        "launched_year": "1958"
+      }
+    },
+    {
+      "id": "the_west",
+      "name": "The West",
+      "type": "concept",
+      "attributes": {
+        "description": "Target of Communist Strategies and Disinformation"
+      }
+    },
+    {
+      "id": "strategic_disinformation",
+      "name": "Strategic Disinformation",
+      "type": "concept",
+      "attributes": {}
+    },
+    {
+      "id": "communist_strategies",
+      "name": "Communist Strategies",
+      "type": "concept",
+      "attributes": {}
+    },
+    {
+      "id": "united_states",
+      "name": "United States",
+      "type": "location",
+      "attributes": {
+        "type": "Country",
+        "part_of": "The West"
+      }
+    },
+    {
+      "id": "salt_negotiations",
+      "name": "SALT negotiations",
+      "type": "concept",
+      "attributes": {
+        "description": "Strategic Arms Limitation Treaty negotiations"
+      }
+    },
+    {
+      "id": "arms_race",
+      "name": "Arms Race",
+      "type": "concept",
+      "attributes": {}
+    },
+    {
+      "id": "nuclear_freeze_debate",
+      "name": "Nuclear Freeze debate",
+      "type": "concept",
+      "attributes": {
+        "location": "United States"
+      }
+    },
+    {
+      "id": "western_europe",
+      "name": "Western Europe",
+      "type": "location",
+      "attributes": {
+        "part_of": "The West"
+      }
+    },
+    {
+      "id": "operation_trust",
+      "name": "Operation Trust",
+      "type": "concept",
+      "attributes": {
+        "type": "Historical KGB operation",
+        "description": "Manipulated controlled political opposition"
+      }
+    },
+    {
+      "id": "ussr_dissident_movement",
+      "name": "Dissident Movement (USSR)",
+      "type": "concept",
+      "attributes": {
+        "location": "USSR",
+        "type": "Political opposition"
+      }
+    },
+    {
+      "id": "angleton",
+      "name": "Mr. Angleton",
+      "type": "person",
+      "attributes": {
+        "expertise": "Disinformation",
+        "affiliation_implied": "CIA"
+      }
+    },
+    {
+      "id": "hackett",
+      "name": "Mr. Hackett",
+      "type": "person",
+      "attributes": {}
+    },
+    {
+      "id": "de_borchgrave",
+      "name": "Mr. Arnaud de Borchgrave",
+      "type": "person",
+      "attributes": {
+        "expertise": "Disinformation"
+      }
+    },
+    {
+      "id": "moss_r",
+      "name": "Mr. Robert Moss",
+      "type": "person",
+      "attributes": {
+        "expertise": "Disinformation"
+      }
+    },
+    {
+      "id": "sis_uk",
+      "name": "British S.I.S.",
+      "type": "organization",
+      "attributes": {
+        "location": "United Kingdom",
+        "type": "Intelligence Service"
+      }
+    },
+    {
+      "id": "communist_bloc",
+      "name": "Communist Bloc",
+      "type": "organization",
+      "attributes": {
+        "type": "Alliance of States"
+      }
+    },
+    {
+      "id": "sino_soviet_split_disinfo",
+      "name": "Sino-Soviet split disinformation",
+      "type": "concept",
+      "attributes": {
+        "type": "Disinformation Tactic/Event"
+      }
+    },
+    {
+      "id": "china",
+      "name": "China",
+      "type": "location",
+      "attributes": {
+        "type": "Country",
+        "part_of": "Communist Bloc"
+      }
+    },
+    {
+      "id": "rumanian_independence_disinfo",
+      "name": "Rumanian Independence Disinformation",
+      "type": "concept",
+      "attributes": {
+        "type": "Specific Disinformation Tactic"
+      }
+    },
+    {
+      "id": "ceasescu_independence_disinfo",
+      "name": "Ceasescu's Independence Disinformation",
+      "type": "concept",
+      "attributes": {
+        "type": "Specific Disinformation Tactic"
+      }
+    },
+    {
+      "id": "german_reunification",
+      "name": "German reunification",
+      "type": "concept",
+      "attributes": {}
+    },
+    {
+      "id": "european_security",
+      "name": "European security",
+      "type": "concept",
+      "attributes": {}
+    },
+    {
+      "id": "eastern_europe",
+      "name": "Eastern Europe",
+      "type": "location",
+      "attributes": {
+        "part_of": "Communist Bloc"
+      }
+    },
+    {
+      "id": "third_world",
+      "name": "Third World",
+      "type": "concept",
+      "attributes": {
+        "description": "Developing Countries"
+      }
+    },
+    {
+      "id": "wars_of_liberation",
+      "name": "Wars of Liberation",
+      "type": "concept",
+      "attributes": {}
+    },
+    {
+      "id": "tito_independence_disinfo",
+      "name": "Tito's independence disinformation",
+      "type": "concept",
+      "attributes": {
+        "type": "Specific Disinformation Tactic"
+      }
+    },
+    {
+      "id": "tito_jb",
+      "name": "Josip Broz Tito",
+      "type": "person",
+      "attributes": {
+        "status": "Late",
+        "associated_with": "Non-Aligned Movement, Tito's independence"
+      }
+    },
+    {
+      "id": "non_aligned_movement",
+      "name": "Non-Aligned Movement",
+      "type": "organization",
+      "attributes": {
+        "associated_with": "Josip Broz Tito",
+        "aim_implied": "Take countries away from the West"
+      }
+    },
+    {
+      "id": "western_governments",
+      "name": "Western governments",
+      "type": "organization",
+      "attributes": {
+        "part_of": "The West"
+      }
+    },
+    {
+      "id": "western_intelligence",
+      "name": "Western intelligence services",
+      "type": "organization",
+      "attributes": {
+        "part_of": "The West"
+      }
+    },
+    {
+      "id": "western_counter_intelligence",
+      "name": "Western counter-intelligence services",
+      "type": "organization",
+      "attributes": {
+        "part_of": "The West"
+      }
+    },
+    {
+      "id": "stalin",
+      "name": "Stalin",
+      "type": "person",
+      "attributes": {
+        "role": "Former Soviet leader",
+        "era": "Stalin years"
+      }
+    },
+    {
+      "id": "shelepin",
+      "name": "Shelepin",
+      "type": "person",
+      "attributes": {
+        "affiliation_implied": "KGB"
+      }
+    },
+    {
+      "id": "sakharov_a",
+      "name": "Academician SAKHAROV",
+      "type": "person",
+      "attributes": {
+        "role": "Academician",
+        "activist_role": "Yes",
+        "status_in_1984": "In exile"
+      }
+    },
+    {
+      "id": "twardouskiy_a",
+      "name": "Writer TWARDOUSKIY",
+      "type": "person",
+      "attributes": {
+        "role": "Writer",
+        "activist_role": "Yes"
+      }
+    },
+    {
+      "id": "jewish_writers",
+      "name": "Jewish writers",
+      "type": "concept",
+      "attributes": {
+        "type": "Group",
+        "era": "1948-1952"
+      }
+    },
+    {
+      "id": "western_correspondents",
+      "name": "Western correspondents",
+      "type": "concept",
+      "attributes": {
+        "location_implied": "Moscow",
+        "type": "Group/Profession"
+      }
+    },
+    {
+      "id": "persons_in_us",
+      "name": "Persons in the United States",
+      "type": "concept",
+      "attributes": {
+        "type": "Group"
+      }
+    },
+    {
+      "id": "communist_intellectuals",
+      "name": "Communist priests, writers, and scientists",
+      "type": "concept",
+      "attributes": {
+        "type": "Group/Profession"
+      }
+    },
+    {
+      "id": "us_arms_reduction_1960s",
+      "name": "US unilateral reduction in arms",
+      "type": "event",
+      "attributes": {
+        "year_range": "1960s"
+      }
+    },
+    {
+      "id": "soviet_military_superiority",
+      "name": "Soviet military superiority",
+      "type": "concept",
+      "attributes": {}
+    },
+    {
+      "id": "us_military_superiority_position",
+      "name": "US military superiority position",
+      "type": "concept",
+      "attributes": {}
+    },
+    {
+      "id": "communist_long_range_policy",
+      "name": "Communist long range policy",
+      "type": "concept",
+      "attributes": {
+        "scope": "Global"
+      }
+    },
+    {
+      "id": "communist_military_strategy",
+      "name": "Communist military strategy",
+      "type": "concept",
+      "attributes": {}
+    },
+    {
+      "id": "communist_economic_strategy",
+      "name": "Communist economic strategy",
+      "type": "concept",
+      "attributes": {}
+    },
+    {
+      "id": "communist_european_strategy",
+      "name": "Communist European strategy",
+      "type": "concept",
+      "attributes": {}
+    },
+    {
+      "id": "communist_third_world_strategy",
+      "name": "Communist Third World strategy",
+      "type": "concept",
+      "attributes": {}
+    },
+    {
+      "id": "honneker_west_germany_rapprochement",
+      "name": "Honneker's raprochment with Western Germany",
+      "type": "concept",
+      "attributes": {
+        "type": "Political Action"
+      }
+    },
+    {
+      "id": "united_front_developing_countries",
+      "name": "United Front with developing countries",
+      "type": "concept",
+      "attributes": {}
+    },
+    {
+      "id": "communist_duality_of_actions",
+      "name": "Communist duality of actions",
+      "type": "concept",
+      "attributes": {
+        "description": "Using varied tactics instead of a monolith"
+      }
+    },
+    {
+      "id": "study_intelligence_security_use",
+      "name": "Studies on Intelligence and Security Asset Use",
+      "type": "concept",
+      "attributes": {
+        "purpose": "Inclusion in strategies against the West"
+      }
+    },
+    {
+      "id": "shelepin_secret_report",
+      "name": "Secret report of Shelepin",
+      "type": "concept",
+      "attributes": {
+        "about": "New political tasks of the KGB"
+      }
+    },
+    {
+      "id": "kgb_political_reorientation",
+      "name": "KGB political reorientation",
+      "type": "event",
+      "attributes": {
+        "year_range": "1959-1960"
+      }
+    },
+    {
+      "id": "leninist_approach",
+      "name": "Leninist approach",
+      "type": "concept",
+      "attributes": {}
+    },
+    {
+      "id": "kgb_officials",
+      "name": "KGB officials",
+      "type": "group",
+      "attributes": {}
+    },
+    {
+      "id": "security_chiefs_bloc_countries",
+      "name": "Security chiefs of bloc countries",
+      "type": "group",
+      "attributes": {
+        "part_of": "Communist Bloc"
+      }
+    },
+    {
+      "id": "western_interests",
+      "name": "Western interests",
+      "type": "concept",
+      "attributes": {
+        "part_of": "The West"
+      }
+    },
+    {
+      "id": "communist_adversaries",
+      "name": "Communist adversaries",
+      "type": "group",
+      "attributes": {}
+    },
+    {
+      "id": "western_analysts",
+      "name": "Western analysts",
+      "type": "group",
+      "attributes": {
+        "part_of": "The West"
+      }
+    },
+    {
+      "id": "us_militarism",
+      "name": "US militarism",
+      "type": "concept",
+      "attributes": {
+        "part_of": "United States"
+      }
+    },
+    {
+      "id": "attack_on_us_militarism",
+      "name": "Attack on US militarism",
+      "type": "event",
+      "attributes": {}
+    },
+    {
+      "id": "genuine_political_opposition",
+      "name": "Genuine political opposition",
+      "type": "concept",
+      "attributes": {}
+    },
+    {
+      "id": "mature_socialist_societies",
+      "name": "Mature socialist societies",
+      "type": "concept",
+      "attributes": {}
+    },
+    {
+      "id": "world_domination",
+      "name": "World domination",
+      "type": "concept",
+      "attributes": {}
+    },
+    {
+      "id": "economic_technical_foundation",
+      "name": "Economic-technical foundation",
+      "type": "concept",
+      "attributes": {
+        "affiliation_implied": "Communist"
+      }
+    },
+    {
+      "id": "western_technology",
+      "name": "Western technology",
+      "type": "concept",
+      "attributes": {
+        "part_of": "The West"
+      }
+    },
+    {
+      "id": "western_credit",
+      "name": "Western credit",
+      "type": "concept",
+      "attributes": {
+        "part_of": "The West"
+      }
+    },
+    {
+      "id": "nato_alliance",
+      "name": "NATO alliance",
+      "type": "organization",
+      "attributes": {
+        "part_of": "The West"
+      }
+    },
+    {
+      "id": "united_states_forces_europe",
+      "name": "United States forces in Europe",
+      "type": "organization",
+      "attributes": {
+        "part_of": "United States",
+        "location": "Western Europe"
+      }
+    },
+    {
+      "id": "active_diplomacy",
+      "name": "Active diplomacy",
+      "type": "concept",
+      "attributes": {}
+    },
+    {
+      "id": "confusion",
+      "name": "Confusion",
+      "type": "concept",
+      "attributes": {}
+    },
+    {
+      "id": "abroad",
+      "name": "Abroad",
+      "type": "location",
+      "attributes": {}
+    },
+    {
+      "id": "communist_countries",
+      "name": "Communist countries",
+      "type": "location",
+      "attributes": {}
+    },
+    {
+      "id": "analysis_of_disinfo_technology",
+      "name": "Analysis of disinformation technology",
+      "type": "concept",
+      "attributes": {}
+    },
+    {
+      "id": "communist_world",
+      "name": "Communist world",
+      "type": "location",
+      "attributes": {}
+    },
+    {
+      "id": "golitsyn_letter",
+      "name": "Golitsyn Letter to NY Tribune",
+      "type": "concept",
+      "attributes": {
+        "type": "Letter to Editor",
+        "date": "November 1984",
+        "about": "\"New Lies for Old\""
+      }
+    },
+    {
+      "id": "experts_on_disinformation",
+      "name": "Experts on disinformation",
+      "type": "group",
+      "attributes": {}
+    },
+    {
+      "id": "soviet_military_strategy",
+      "name": "Soviet military strategy",
+      "type": "concept",
+      "attributes": {}
+    }
+  ],
+  "relationships": [
+    {
+      "source": "golitsyn",
+      "target": "golitsyn_letter",
+      "type": "authored",
+      "attributes": {}
+    },
+    {
+      "source": "golitsyn_letter",
+      "target": "ny_tribune",
+      "type": "sent_to",
+      "attributes": {}
+    },
+    {
+      "source": "golitsyn_letter",
+      "target": "new_lies_for_old",
+      "type": "concerns",
+      "attributes": {}
+    },
+    {
+      "source": "golitsyn_letter",
+      "target": "navrozov",
+      "type": "responds_to_criticism_by",
+      "attributes": {
+        "on_subject": "Golitsyn and his book"
+      }
+    },
+    {
+      "source": "new_lies_for_old",
+      "target": "golitsyn",
+      "type": "authored_by",
+      "attributes": {}
+    },
+    {
+      "source": "navrozov",
+      "target": "ny_tribune",
+      "type": "published_articles_in",
+      "attributes": {
+        "article_dates": "August 23, 1984, October 1, 1984"
+      }
+    },
+    {
+      "source": "navrozov",
+      "target": "golitsyn",
+      "type": "criticized",
+      "attributes": {
+        "subject": "Golitsyn and his book"
+      }
+    },
+    {
+      "source": "navrozov",
+      "target": "new_lies_for_old",
+      "type": "criticized",
+      "attributes": {
+        "aspect": "Historic evidence, access to KGB secrets"
+      }
+    },
+    {
+      "source": "golitsyn",
+      "target": "ussr",
+      "type": "formerly_worked_in",
+      "attributes": {}
+    },
+    {
+      "source": "golitsyn",
+      "target": "kgb",
+      "type": "formerly_worked_for",
+      "attributes": {}
+    },
+    {
+      "source": "golitsyn",
+      "target": "kgb_institute",
+      "type": "attended",
+      "attributes": {
+        "role": "Student",
+        "year_range": "1957-1959"
+      }
+    },
+    {
+      "source": "golitsyn",
+      "target": "kgb_hq_moscow",
+      "type": "worked_at",
+      "attributes": {
+        "role": "Senior Officer",
+        "year_range": "1959-1960"
+      }
+    },
+    {
+      "source": "kgb_hq_moscow",
+      "target": "moscow",
+      "type": "located_in",
+      "attributes": {}
+    },
+    {
+      "source": "cc_cpsu",
+      "target": "kgb_institute",
+      "type": "directed",
+      "attributes": {}
+    },
+    {
+      "source": "cc_cpsu",
+      "target": "kgb",
+      "type": "directed",
+      "attributes": {}
+    },
+    {
+      "source": "kgb_institute",
+      "target": "study_intelligence_security_use",
+      "type": "prepared",
+      "attributes": {}
+    },
+    {
+      "source": "study_intelligence_security_use",
+      "target": "the_west",
+      "type": "concerns_use_against",
+      "attributes": {}
+    },
+    {
+      "source": "golitsyn",
+      "target": "shelepin_secret_report",
+      "type": "read",
+      "attributes": {
+        "while_at": "KGB Institute"
+      }
+    },
+    {
+      "source": "shelepin_secret_report",
+      "target": "kgb",
+      "type": "about_tasks_of",
+      "attributes": {}
+    },
+    {
+      "source": "kgb_institute",
+      "target": "stalin",
+      "type": "re_assessed_political_practices_of",
+      "attributes": {}
+    },
+    {
+      "source": "kgb_institute",
+      "target": "leninist_approach",
+      "type": "shifted_towards",
+      "attributes": {}
+    },
+    {
+      "source": "kgb",
+      "target": "kgb_political_reorientation",
+      "type": "underwent",
+      "attributes": {}
+    },
+    {
+      "source": "kgb",
+      "target": "strategic_disinformation",
+      "type": "prepared_for",
+      "attributes": {
+        "year_range": "1959-1960"
+      }
+    },
+    {
+      "source": "kgb",
+      "target": "communist_strategies",
+      "type": "played_role_in_realization",
+      "attributes": {}
+    },
+    {
+      "source": "kgb_officials",
+      "target": "security_chiefs_bloc_countries",
+      "type": "held_secret_consultations_with",
+      "attributes": {
+        "year_range": "1959-1960"
+      }
+    },
+    {
+      "source": "kgb",
+      "target": "kgb_disinfo_dept",
+      "type": "formed",
+      "attributes": {}
+    },
+    {
+      "source": "golitsyn",
+      "target": "kgb_disinfo_dept",
+      "type": "witnessed_formation_of",
+      "attributes": {}
+    },
+    {
+      "source": "communist_disinfo_program",
+      "target": "the_west",
+      "type": "aimed_against",
+      "attributes": {}
+    },
+    {
+      "source": "communist_disinfo_program",
+      "target": "western_interests",
+      "type": "damaged",
+      "attributes": {}
+    },
+    {
+      "source": "communist_disinfo_program",
+      "target": "communist_adversaries",
+      "type": "benefitted",
+      "attributes": {}
+    },
+    {
+      "source": "communist_disinfo_program",
+      "target": "western_analysts",
+      "type": "generated_confusion_in",
+      "attributes": {}
+    },
+    {
+      "source": "new_lies_for_old",
+      "target": "communist_disinfo_program",
+      "type": "describes",
+      "attributes": {}
+    },
+    {
+      "source": "communist_strategies",
+      "target": "strategic_disinformation",
+      "type": "utilizes",
+      "attributes": {}
+    },
+    {
+      "source": "the_west",
+      "target": "communist_strategies",
+      "type": "unwittingly_helped_realize",
+      "attributes": {}
+    },
+    {
+      "source": "strategic_disinformation",
+      "target": "us_arms_reduction_1960s",
+      "type": "responsible_for",
+      "attributes": {
+        "location": "United States",
+        "year_range": "1960s"
+      }
+    },
+    {
+      "source": "us_arms_reduction_1960s",
+      "target": "soviet_military_superiority",
+      "type": "resulted_in",
+      "attributes": {}
+    },
+    {
+      "source": "us_arms_reduction_1960s",
+      "target": "us_military_superiority_position",
+      "type": "resulted_in_decline_of",
+      "attributes": {}
+    },
+    {
+      "source": "navrozov",
+      "target": "stalin",
+      "type": "equates_practices_of",
+      "attributes": {}
+    },
+    {
+      "source": "navrozov",
+      "target": "shelepin",
+      "type": "equates_practices_of",
+      "attributes": {}
+    },
+    {
+      "source": "golitsyn",
+      "target": "navrozov",
+      "type": "argues_against_equating",
+      "attributes": {
+        "practices_equated": "Stalin and Shelepin on using intellectuals"
+      }
+    },
+    {
+      "source": "stalin",
+      "target": "communist_intellectuals",
+      "type": "repressed",
+      "attributes": {
+        "methods": "imprisoned, exiled, shot",
+        "condition": "Failed to do his bidding"
+      }
+    },
+    {
+      "source": "stalin",
+      "target": "jewish_writers",
+      "type": "responsible_for_death_sentences_of",
+      "attributes": {
+        "year_range": "1948-1952"
+      }
+    },
+    {
+      "source": "shelepin",
+      "target": "communist_intellectuals",
+      "type": "utilized_in",
+      "attributes": {
+        "program": "Strategic Disinformation Program",
+        "method": "Active use"
+      }
+    },
+    {
+      "source": "shelepin",
+      "target": "sakharov_a",
+      "type": "utilized_in_disinfo_program_context",
+      "attributes": {}
+    },
+    {
+      "source": "shelepin",
+      "target": "twardouskiy_a",
+      "type": "utilized_in_disinfo_program_context",
+      "attributes": {}
+    },
+    {
+      "source": "sakharov_a",
+      "target": "strategic_disinformation",
+      "type": "activist_role_examined_in_terms_of",
+      "attributes": {}
+    },
+    {
+      "source": "twardouskiy_a",
+      "target": "strategic_disinformation",
+      "type": "activist_role_examined_in_terms_of",
+      "attributes": {}
+    },
+    {
+      "source": "kgb",
+      "target": "sakharov_a",
+      "type": "tolerated_activist_role_of",
+      "attributes": {
+        "until_year": "1980"
+      }
+    },
+    {
+      "source": "sakharov_a",
+      "target": "western_correspondents",
+      "type": "had_contacts_with",
+      "attributes": {
+        "location": "Moscow",
+        "status": "Long and uninterrupted"
+      }
+    },
+    {
+      "source": "sakharov_a",
+      "target": "persons_in_us",
+      "type": "mailed_letters_manuscripts_to",
+      "attributes": {
+        "start_year": "1968",
+        "status_in_1984": "Recently from exile"
+      }
+    },
+    {
+      "source": "kgb",
+      "target": "sakharov_a",
+      "type": "overlooked_mailing_by",
+      "attributes": {
+        "to": "Persons in US"
+      }
+    },
+    {
+      "source": "sakharov_a",
+      "target": "arms_race",
+      "type": "letters_injected_into_debate_on",
+      "attributes": {
+        "location": "American debate"
+      }
+    },
+    {
+      "source": "sakharov_a",
+      "target": "soviet_military_strategy",
+      "type": "pronouncements_examined_in_terms_of",
+      "attributes": {}
+    },
+    {
+      "source": "sakharov_a",
+      "target": "salt_negotiations",
+      "type": "pronouncements_examined_in_terms_of",
+      "attributes": {}
+    },
+    {
+      "source": "sakharov_a",
+      "target": "strategic_disinformation",
+      "type": "pronouncements_examined_in_terms_of",
+      "attributes": {}
+    },
+    {
+      "source": "communist_strategists",
+      "target": "sakharov_a",
+      "type": "potentially_designed_pronouncements_of",
+      "attributes": {}
+    },
+    {
+      "source": "sakharov_a",
+      "target": "united_states",
+      "type": "pronouncements_aimed_to_influence_policies_in",
+      "attributes": {}
+    },
+    {
+      "source": "sakharov_a",
+      "target": "salt_negotiations",
+      "type": "pronouncements_aimed_to_influence",
+      "attributes": {}
+    },
+    {
+      "source": "sakharov_a",
+      "target": "arms_race",
+      "type": "pronouncements_aimed_to_influence",
+      "attributes": {}
+    },
+    {
+      "source": "sakharov_a",
+      "target": "nuclear_freeze_debate",
+      "type": "potentially_contributed_to",
+      "attributes": {
+        "location": "United States"
+      }
+    },
+    {
+      "source": "sakharov_a",
+      "target": "us_militarism",
+      "type": "predicted_attack_against",
+      "attributes": {
+        "year_range": "beginning of 1980s"
+      }
+    },
+    {
+      "source": "attack_on_us_militarism",
+      "target": "western_europe",
+      "type": "attempted_in",
+      "attributes": {
+        "time": "Recent times (from 1984)"
+      }
+    },
+    {
+      "source": "kgb",
+      "target": "operation_trust",
+      "type": "successfully_manipulated_opposition_via",
+      "attributes": {}
+    },
+    {
+      "source": "kgb",
+      "target": "ussr_dissident_movement",
+      "type": "planned_to_use_as",
+      "attributes": {
+        "role": "New \"Trust\""
+      }
+    },
+    {
+      "source": "ussr_dissident_movement",
+      "target": "operation_trust",
+      "type": "analyzed_as_new",
+      "attributes": {}
+    },
+    {
+      "source": "navrozov",
+      "target": "ussr_dissident_movement",
+      "type": "defends",
+      "attributes": {}
+    },
+    {
+      "source": "navrozov",
+      "target": "angleton",
+      "type": "attacked",
+      "attributes": {}
+    },
+    {
+      "source": "navrozov",
+      "target": "hackett",
+      "type": "attacked",
+      "attributes": {}
+    },
+    {
+      "source": "navrozov",
+      "target": "de_borchgrave",
+      "type": "attacked",
+      "attributes": {}
+    },
+    {
+      "source": "navrozov",
+      "target": "moss_r",
+      "type": "attacked",
+      "attributes": {}
+    },
+    {
+      "source": "navrozov",
+      "target": "sis_uk",
+      "type": "attacked",
+      "attributes": {}
+    },
+    {
+      "source": "navrozov",
+      "target": "golitsyn",
+      "type": "attacked",
+      "attributes": {}
+    },
+    {
+      "source": "navrozov",
+      "target": "experts_on_disinformation",
+      "type": "attacked",
+      "attributes": {}
+    },
+    {
+      "source": "angleton",
+      "target": "communist_disinformation_issue",
+      "type": "raised_concern_for",
+      "attributes": {
+        "location": "United States, Western world"
+      }
+    },
+    {
+      "source": "de_borchgrave",
+      "target": "communist_disinformation_issue",
+      "type": "raised_concern_for",
+      "attributes": {
+        "location": "United States, Western world"
+      }
+    },
+    {
+      "source": "moss_r",
+      "target": "communist_disinformation_issue",
+      "type": "raised_concern_for",
+      "attributes": {
+        "location": "United States, Western world"
+      }
+    },
+    {
+      "source": "communist_disinformation_issue",
+      "target": "united_states",
+      "type": "impacts",
+      "attributes": {}
+    },
+    {
+      "source": "golitsyn",
+      "target": "new_lies_for_old",
+      "type": "claims_exposes",
+      "attributes": {
+        "object": "Communist Strategic Disinformation Program"
+      }
+    },
+    {
+      "source": "new_lies_for_old",
+      "target": "communist_strategies",
+      "type": "claims_creates_obstacles_for",
+      "attributes": {}
+    },
+    {
+      "source": "communist_disinfo_program",
+      "target": "communist_strategists",
+      "type": "product_of",
+      "attributes": {}
+    },
+    {
+      "source": "communist_strategists",
+      "target": "communist_disinfo_program",
+      "type": "conducts",
+      "attributes": {}
+    },
+    {
+      "source": "strategic_disinformation",
+      "target": "confusion",
+      "type": "generates",
+      "attributes": {}
+    },
+    {
+      "source": "confusion",
+      "target": "genuine_political_opposition",
+      "type": "obstacle_for",
+      "attributes": {}
+    },
+    {
+      "source": "communist_long_range_policy",
+      "target": "mature_socialist_societies",
+      "type": "aims_at_developing",
+      "attributes": {}
+    },
+    {
+      "source": "communist_long_range_policy",
+      "target": "world_domination",
+      "type": "aims_at_achieving",
+      "attributes": {}
+    },
+    {
+      "source": "communist_long_range_policy",
+      "target": "communist_military_strategy",
+      "type": "includes",
+      "attributes": {}
+    },
+    {
+      "source": "communist_military_strategy",
+      "target": "communist_bloc",
+      "type": "aims_at_achieving_military_superiority_for",
+      "attributes": {}
+    },
+    {
+      "source": "communist_military_strategy",
+      "target": "united_states",
+      "type": "achieved_via_negotiations_with",
+      "attributes": {
+        "phase": "First phase"
+      }
+    },
+    {
+      "source": "communist_military_strategy",
+      "target": "ussr",
+      "type": "achieved_via_receipt_of_western_tech_by",
+      "attributes": {
+        "phase": "First phase"
+      }
+    },
+    {
+      "source": "communist_military_strategy",
+      "target": "china",
+      "type": "achieved_via_receipt_of_western_tech_by",
+      "attributes": {
+        "phase": "Second phase"
+      }
+    },
+    {
+      "source": "sino_soviet_split_disinfo",
+      "target": "communist_military_strategy",
+      "type": "serves",
+      "attributes": {}
+    },
+    {
+      "source": "communist_economic_strategy",
+      "target": "economic_technical_foundation",
+      "type": "aims_at_developing",
+      "attributes": {
+        "superior_to": "The West"
+      }
+    },
+    {
+      "source": "communist_economic_strategy",
+      "target": "western_technology",
+      "type": "achieved_via_help_of",
+      "attributes": {}
+    },
+    {
+      "source": "communist_economic_strategy",
+      "target": "western_credit",
+      "type": "achieved_via_help_of",
+      "attributes": {}
+    },
+    {
+      "source": "rumanian_independence_disinfo",
+      "target": "communist_economic_strategy",
+      "type": "serves",
+      "attributes": {}
+    },
+    {
+      "source": "sino_soviet_split_disinfo",
+      "target": "communist_economic_strategy",
+      "type": "serves",
+      "attributes": {}
+    },
+    {
+      "source": "communist_european_strategy",
+      "target": "nato_alliance",
+      "type": "aims_at_breaking_up",
+      "attributes": {}
+    },
+    {
+      "source": "communist_european_strategy",
+      "target": "united_states_forces_europe",
+      "type": "aims_at_withdrawal_of",
+      "attributes": {}
+    },
+    {
+      "source": "communist_european_strategy",
+      "target": "german_reunification",
+      "type": "achieved_via",
+      "attributes": {}
+    },
+    {
+      "source": "communist_european_strategy",
+      "target": "european_security",
+      "type": "achieved_via",
+      "attributes": {}
+    },
+    {
+      "source": "communist_european_strategy",
+      "target": "eastern_europe",
+      "type": "achieved_via_false_liberalization_in",
+      "attributes": {}
+    },
+    {
+      "source": "communist_european_strategy",
+      "target": "ussr",
+      "type": "achieved_via_false_liberalization_in",
+      "attributes": {}
+    },
+    {
+      "source": "communist_european_strategy",
+      "target": "eastern_europe",
+      "type": "achieved_via_controlled_opposition_in",
+      "attributes": {}
+    },
+    {
+      "source": "communist_european_strategy",
+      "target": "ussr",
+      "type": "achieved_via_controlled_opposition_in",
+      "attributes": {}
+    },
+    {
+      "source": "ceasescu_independence_disinfo",
+      "target": "communist_european_strategy",
+      "type": "serves",
+      "attributes": {}
+    },
+    {
+      "source": "honneker_west_germany_rapprochement",
+      "target": "communist_european_strategy",
+      "type": "serves",
+      "attributes": {}
+    },
+    {
+      "source": "communist_third_world_strategy",
+      "target": "third_world",
+      "type": "aims_at_eliminating_western_influence_in",
+      "attributes": {}
+    },
+    {
+      "source": "communist_third_world_strategy",
+      "target": "united_front_developing_countries",
+      "type": "aims_at_achieving",
+      "attributes": {}
+    },
+    {
+      "source": "communist_third_world_strategy",
+      "target": "wars_of_liberation",
+      "type": "achieved_via_support_of",
+      "attributes": {}
+    },
+    {
+      "source": "communist_third_world_strategy",
+      "target": "active_diplomacy",
+      "type": "achieved_via",
+      "attributes": {}
+    },
+    {
+      "source": "communist_third_world_strategy",
+      "target": "communist_duality_of_actions",
+      "type": "achieved_via",
+      "attributes": {}
+    },
+    {
+      "source": "sino_soviet_split_disinfo",
+      "target": "communist_third_world_strategy",
+      "type": "serves",
+      "attributes": {}
+    },
+    {
+      "source": "tito_independence_disinfo",
+      "target": "communist_third_world_strategy",
+      "type": "serves",
+      "attributes": {}
+    },
+    {
+      "source": "tito_jb",
+      "target": "tito_independence_disinfo",
+      "type": "associated_with",
+      "attributes": {}
+    },
+    {
+      "source": "tito_jb",
+      "target": "non_aligned_movement",
+      "type": "associated_with",
+      "attributes": {}
+    },
+    {
+      "source": "non_aligned_movement",
+      "target": "the_west",
+      "type": "nearly_succeeded_taking_countries_from",
+      "attributes": {}
+    },
+    {
+      "source": "western_governments",
+      "target": "analysis_of_disinfo_technology",
+      "type": "task_is",
+      "attributes": {}
+    },
+    {
+      "source": "western_intelligence",
+      "target": "analysis_of_disinfo_technology",
+      "type": "task_is",
+      "attributes": {}
+    },
+    {
+      "source": "western_counter_intelligence",
+      "target": "analysis_of_disinfo_technology",
+      "type": "task_is",
+      "attributes": {}
+    },
+    {
+      "source": "analysis_of_disinfo_technology",
+      "target": "strategic_disinformation",
+      "type": "necessary_for_understanding",
+      "attributes": {
+        "location": "The West"
+      }
+    },
+    {
+      "source": "analysis_of_disinfo_technology",
+      "target": "communist_world",
+      "type": "necessary_for_viable_policy_toward",
+      "attributes": {}
+    },
+    {
+      "source": "strategic_disinformation",
+      "target": "genuine_political_opposition",
+      "type": "obstacle_for_functioning_of",
+      "attributes": {}
+    },
+    {
+      "source": "genuine_political_opposition",
+      "target": "communist_countries",
+      "type": "functions_in",
+      "attributes": {}
+    },
+    {
+      "source": "genuine_political_opposition",
+      "target": "abroad",
+      "type": "functions",
+      "attributes": {}
+    },
+    {
+      "source": "pereira_jf",
+      "target": "cia_ims",
+      "type": "is_chief_of",
+      "attributes": {}
+    },
+    {
+      "source": "cia_do",
+      "target": "golitsyn_letter",
+      "type": "approved_release_of",
+      "attributes": {}
+    },
+    {
+      "source": "angleton",
+      "target": "experts_on_disinformation",
+      "type": "is_one_of",
+      "attributes": {}
+    },
+    {
+      "source": "de_borchgrave",
+      "target": "experts_on_disinformation",
+      "type": "is_one_of",
+      "attributes": {}
+    },
+    {
+      "source": "moss_r",
+      "target": "experts_on_disinformation",
+      "type": "is_one_of",
+      "attributes": {}
+    }
+  ]
+}

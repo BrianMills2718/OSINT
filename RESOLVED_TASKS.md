@@ -8,6 +8,18 @@
 
 ## 2025-10-24
 
+- 2025-10-24: Reddit integration BOTH phases complete - [COMPLETE] - Real-time + daily scraper
+- 2025-10-24: Reddit Phase 1 - Real-time search (360 lines, tested, 4 results) - [COMPLETE] - reddit_integration.py
+- 2025-10-24: Reddit Phase 2 - Daily scraper (280 lines, 24 subreddits, rate limited) - [COMPLETE] - reddit_daily_scrape.py
+- 2025-10-24: Reddit config created (24 subreddits across 5 categories) - [COMPLETE] - reddit_config.json
+- 2025-10-24: Reddit cron setup script created (3 AM daily) - [COMPLETE] - setup_reddit_scraper.sh
+- 2025-10-24: Reddit documentation complete (setup, usage, troubleshooting) - [COMPLETE] - experiments/reddit/README.md
+- 2025-10-24: Discord daily scraping setup (cron job at 2 AM, both servers) - [COMPLETE] - Cron configured
+- 2025-10-24: The OWL Discord backfill started (140 chunks, ~18-20 hours) - [IN PROGRESS] - PID 3045417
+- 2025-10-24: Fix Discord DiscordChatExporter CLI path (archive/reference/dce-cli/) - [COMPLETE] - discord_backfill.py:20
+- 2025-10-24: Update Discord token for verified account - [COMPLETE] - discord_servers.json
+- 2025-10-24: Create discord_daily_scrape.py (daily incremental scraper) - [COMPLETE] - New file
+- 2025-10-24: Create Discord scraping documentation (README.md) - [COMPLETE] - experiments/discord/README.md
 - 2025-10-24: Week 2-4 Refactoring - Integration tests (10 scenarios, 2 files) - [COMPLETE] - 64d63a6
 - 2025-10-24: Week 2-4 Refactoring - Performance tests (9 scenarios, 2 files, registry tests PASSED) - [COMPLETE] - 77371fc
 - 2025-10-24: Week 2-4 Refactoring - Fix Trio event loop failures (34 failures → 16 passing) - [COMPLETE] - 824b31d

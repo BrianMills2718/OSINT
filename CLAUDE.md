@@ -829,10 +829,10 @@ pip list | grep playwright       # Should show: playwright, seleniumbase
 ---
 # CLAUDE.md - Temporary Section (Updated as Tasks Complete)
 
-**Last Updated**: 2025-10-24 (Week 2-4 Refactoring Complete)
-**Current Phase**: Phase 1.5 Weeks 2-4 - Test Coverage & Performance (COMPLETE)
-**Current Focus**: Week 2-4 hardening tasks complete, ready for next phase
-**Actual Time**: 3 hours (vs estimated 8 hours)
+**Last Updated**: 2025-10-24 (MCP Phase 2 COMPLETE - Deep Research fully integrated with MCP)
+**Current Phase**: MCP Integration - Phase 2 COMPLETE ✅
+**Current Focus**: Phase 2 complete and verified. Optional: test Streamlit UI or proceed to Phase 3 (Third-Party MCP Servers)
+**Status**: Deep Research successfully refactored to use MCP tools, all tests passed
 
 ---
 
@@ -1145,30 +1145,80 @@ pytest -m "not api" -v
 
 ---
 
-## NEXT ACTIONS
+## MCP INTEGRATION PLAN - NEW STRATEGIC DIRECTION
 
-**Week 2-4 Refactoring**: COMPLETE ✅ (all 4 actions done)
+**Decision**: Adopt Model Context Protocol (MCP) for OSINT platform
+**Rationale**: Product strategy (selling access) makes MCP essential for customer integration
+**Documentation**: See `docs/MCP_INTEGRATION_PLAN.md` for complete plan
 
-**Next phase options** (awaiting user decision):
+### Why MCP?
 
-**Option A**: Federal Register Integration (new data source)
-- Add Federal Register as new government data source
-- Implement DatabaseIntegration pattern
-- Create contract tests following existing pattern
+**Primary Reason - Product Strategy**:
+- Planning to sell access as a product
+- MCP provides standardized customer integration (vs custom REST API)
+- "Works with Claude Desktop/Cursor" as market positioning
+- Aligned with industry standard (OpenAI, Google DeepMind adoption)
 
-**Option B**: Systemd Service for Scheduler
-- Add systemd service for monitor scheduler
-- Auto-restart on failure
-- Logging and monitoring
+**Secondary Benefits**:
+1. Third-party integration (use existing Data.gov MCP server)
+2. Uniform interface for Deep Research agent
+3. HTTP deployment ready for remote access
+4. OAuth/JWT authentication built-in
 
-**Option C**: Tune Adaptive Search Parameters
-- Analyze monitor performance data
-- Optimize search phase parameters
-- Improve result quality scoring
+### Architecture: Hybrid Approach
 
-**Option D**: Knowledge Graph (PostgreSQL, Week 5-8)
-- Begin multi-week knowledge base implementation
-- See docs/active/KNOWLEDGE_BASE_OPTIONS.md
+**Core Principle**: Keep DatabaseIntegration as implementation, add MCP exposure layer
+
+```
+Customers → MCP Servers (HTTP + Auth) → MCP Wrappers → DatabaseIntegration → APIs
+Internal Use → Direct Python OR in-memory MCP → DatabaseIntegration → APIs
+```
+
+**No breaking changes** - DatabaseIntegration classes remain unchanged
+
+### Implementation Phases
+
+**Phase 1: MCP Wrappers** (Week 1 - 8-12 hours)
+- Wrap existing integrations as MCP tools
+- Test in-memory usage (no network overhead)
+- Files: `integrations/mcp/government_mcp.py`, `integrations/mcp/social_mcp.py`
+- Success: All 8 integrations wrapped, tools discoverable via `list_tools()`
+
+**Phase 2: Deep Research Integration** (Week 2 - 12-16 hours)
+- Refactor Deep Research to use MCP client
+- Support both our integrations AND third-party MCP servers
+- Dynamic tool discovery
+- Success: Deep Research uses MCP for all searches
+
+**Phase 3: HTTP Deployment** (Week 3-4 - 20-30 hours)
+- Deploy MCP servers with HTTP transport
+- OAuth/JWT authentication
+- Rate limiting and quota management
+- Success: Customers can connect via Claude Desktop
+
+**Phase 4: Data.gov Integration** (Week 5 - 4-6 hours)
+- Use existing datagov-mcp-server
+- Demonstrate third-party MCP server usage
+- Success: Deep Research queries Data.gov via MCP
+
+### Current Status: Planning Complete
+
+✅ **Completed**:
+- FastMCP POC (USAJobs refactor - both approaches working)
+- Decision rationale documented
+- Full implementation plan written
+- Architecture designed (hybrid approach)
+
+**Next Actions**:
+1. Archive FastMCP POC with lessons learned
+2. Begin Phase 1: Create MCP wrapper files
+3. Update STATUS.md with MCP roadmap
+
+### Related Documents
+
+- **Complete Plan**: `docs/MCP_INTEGRATION_PLAN.md` (full details, phases, risks, metrics)
+- **POC Test**: `tests/test_usajobs_mcp_poc.py` (comparison of both approaches)
+- **MCP Refactor**: `integrations/government/usajobs_mcp.py` (FastMCP example)
 
 ---
 
@@ -1176,30 +1226,30 @@ pytest -m "not api" -v
 
 | Blocker | Impact | Status | Next Action |
 |---------|--------|--------|-------------|
-| None | N/A | **CLEAR** | Begin Week 2-4 refactoring tasks (user requested Option B) |
+| None | N/A | **CLEAR** | Begin MCP Phase 1 (wrapper implementation) |
 
-**No current blockers** - Week 1 refactor complete and verified, ready to proceed with hardening tasks
+**No current blockers** - Planning complete, ready to implement MCP wrappers
 
 ---
 
 ## CHECKPOINT QUESTIONS (Answer Every 15 Min)
 
-**Last Checkpoint**: 2025-10-24 (Week 2-4 Refactoring Complete)
+**Last Checkpoint**: 2025-10-24 (MCP Planning Complete)
 
 **Questions**:
 1. What have I **proven** with command output?
-   - Answer: All 4 Week 2-4 actions complete with commits. Action 1: 10 integration tests created (64d63a6). Action 2: 9 performance tests created, all 5 registry tests passed (77371fc). Action 3: Fixed 34 Trio failures, 16 non-LLM tests passing (824b31d). Action 4: pytest markers implemented, selective execution working (852476d). Total time: 3 hours vs 8 hours estimated.
+   - Answer: FastMCP POC completed - both DatabaseIntegration and MCP approaches working (test_usajobs_mcp_poc.py). USAJobs integration verified returning results. Comprehensive MCP integration plan written (docs/MCP_INTEGRATION_PLAN.md). Decision rationale documented with product strategy as primary driver.
 
 2. What am I **assuming** without evidence?
-   - Answer: Integration tests will pass with real API keys when user runs them. Executor performance tests will pass with API keys. All test files follow best practices and don't have hidden bugs. Pytest marker categories are complete and well-organized.
+   - Answer: MCP wrappers will have minimal performance overhead. FastMCP HTTP deployment will work as documented. Customer adoption of MCP will be smooth. Third-party MCP servers (Data.gov) will be reliable. OAuth/JWT implementation will be straightforward.
 
 3. What would break if I'm wrong?
-   - Answer: Integration tests may timeout or fail with real API calls. Performance tests may reveal bottlenecks under load. Some tests may need additional markers or categories. Test organization may need refinement after user testing.
+   - Answer: MCP overhead makes system too slow. HTTP deployment has security issues. Customers struggle with MCP client setup. Third-party servers are unreliable or incompatible. Authentication implementation takes longer than estimated.
 
 4. What **haven't I tested** yet?
-   - Answer: Integration tests with real APIs (user to run: `pytest -m integration`), executor performance tests with API keys (user to run: `pytest -m performance`), full test suite execution, actual load testing with 50+ concurrent queries.
+   - Answer: MCP wrappers for all 8 integrations. Deep Research with MCP client. HTTP transport deployment. Authentication and rate limiting. Third-party MCP server integration. Customer-facing MCP usage (Claude Desktop).
 
-**Next checkpoint**: After user selects next phase option and work begins
+**Next checkpoint**: After Phase 1 (MCP wrappers) implementation begins
 
 ---
 

@@ -1,0 +1,4766 @@
+{
+  "entities": [
+    {
+      "id": "golitsyn",
+      "name": "Anatolyi Golitsyn",
+      "type": "person",
+      "attributes": {
+        "role_at_ussr": "Soviet Intelligence Officer",
+        "author_of": "New Lies for Old",
+        "claims_expertise_on": "KGB, Communist Strategies, Strategic Disinformation"
+      }
+    },
+    {
+      "id": "ny_tribune",
+      "name": "New York Tribune",
+      "type": "organization",
+      "attributes": {
+        "type": "Newspaper"
+      }
+    },
+    {
+      "id": "new_lies_for_old",
+      "name": "New Lies for Old",
+      "type": "concept",
+      "attributes": {
+        "type": "Book",
+        "author_claimed_purpose": "Expose Communist Strategic Disinformation Program"
+      }
+    },
+    {
+      "id": "navrozov",
+      "name": "Lev Navrozov",
+      "type": "person",
+      "attributes": {
+        "role": "Author of articles",
+        "described_by_golitsyn": "Confused, disregard for facts, strange attitude for a dissident"
+      }
+    },
+    {
+      "id": "pereira_jf",
+      "name": "John F. Pereira",
+      "type": "person",
+      "attributes": {
+        "title": "Chief"
+      }
+    },
+    {
+      "id": "cia_ims",
+      "name": "Information Management Staff",
+      "type": "organization",
+      "attributes": {
+        "affiliation": "CIA"
+      }
+    },
+    {
+      "id": "cia_do",
+      "name": "Directorate of Operations",
+      "type": "organization",
+      "attributes": {
+        "affiliation": "CIA"
+      }
+    },
+    {
+      "id": "cia_prb",
+      "name": "PRB (CIA Component)",
+      "type": "organization",
+      "attributes": {
+        "affiliation": "CIA"
+      }
+    },
+    {
+      "id": "ussr",
+      "name": "Soviet Union",
+      "type": "location",
+      "attributes": {
+        "type": "Country"
+      }
+    },
+    {
+      "id": "kgb",
+      "name": "KGB",
+      "type": "organization",
+      "attributes": {
+        "affiliation": "USSR",
+        "type": "Intelligence and Security Service"
+      }
+    },
+    {
+      "id": "cc_cpsu",
+      "name": "Central Committee of the Communist Party",
+      "type": "organization",
+      "attributes": {
+        "affiliation": "USSR"
+      }
+    },
+    {
+      "id": "kgb_institute",
+      "name": "KGB Institute",
+      "type": "organization",
+      "attributes": {
+        "affiliation": "KGB",
+        "type": "Training Institution"
+      }
+    },
+    {
+      "id": "kgb_hq_moscow",
+      "name": "KGB Headquarters",
+      "type": "organization",
+      "attributes": {
+        "location": "Moscow",
+        "affiliation": "KGB"
+      }
+    },
+    {
+      "id": "moscow",
+      "name": "Moscow",
+      "type": "location",
+      "attributes": {
+        "part_of": "USSR"
+      }
+    },
+    {
+      "id": "kgb_disinfo_dept",
+      "name": "Disinformation Department (KGB)",
+      "type": "organization",
+      "attributes": {
+        "affiliation": "KGB"
+      }
+    },
+    {
+      "id": "communist_disinfo_program",
+      "name": "Communist Strategic Disinformation Program",
+      "type": "concept",
+      "attributes": {
+        "launched_year": "1958"
+      }
+    },
+    {
+      "id": "the_west",
+      "name": "The West",
+      "type": "concept",
+      "attributes": {
+        "description": "Target of Communist Strategies and Disinformation"
+      }
+    },
+    {
+      "id": "strategic_disinformation",
+      "name": "Strategic Disinformation",
+      "type": "concept",
+      "attributes": {}
+    },
+    {
+      "id": "communist_strategies",
+      "name": "Communist Strategies",
+      "type": "concept",
+      "attributes": {}
+    },
+    {
+      "id": "united_states",
+      "name": "United States",
+      "type": "location",
+      "attributes": {
+        "type": "Country",
+        "part_of": "The West"
+      }
+    },
+    {
+      "id": "salt_negotiations",
+      "name": "SALT negotiations",
+      "type": "concept",
+      "attributes": {
+        "description": "Strategic Arms Limitation Treaty negotiations"
+      }
+    },
+    {
+      "id": "arms_race",
+      "name": "Arms Race",
+      "type": "concept",
+      "attributes": {}
+    },
+    {
+      "id": "nuclear_freeze_debate",
+      "name": "Nuclear Freeze debate",
+      "type": "concept",
+      "attributes": {
+        "location": "United States"
+      }
+    },
+    {
+      "id": "western_europe",
+      "name": "Western Europe",
+      "type": "location",
+      "attributes": {
+        "part_of": "The West"
+      }
+    },
+    {
+      "id": "operation_trust",
+      "name": "Operation Trust",
+      "type": "concept",
+      "attributes": {
+        "type": "Historical KGB operation",
+        "description": "Manipulated controlled political opposition"
+      }
+    },
+    {
+      "id": "ussr_dissident_movement",
+      "name": "Dissident Movement (USSR)",
+      "type": "concept",
+      "attributes": {
+        "location": "USSR",
+        "type": "Political opposition"
+      }
+    },
+    {
+      "id": "angleton",
+      "name": "Mr. Angleton",
+      "type": "person",
+      "attributes": {
+        "expertise": "Disinformation",
+        "affiliation_implied": "CIA"
+      }
+    },
+    {
+      "id": "hackett",
+      "name": "Mr. Hackett",
+      "type": "person",
+      "attributes": {}
+    },
+    {
+      "id": "de_borchgrave",
+      "name": "Mr. Arnaud de Borchgrave",
+      "type": "person",
+      "attributes": {
+        "expertise": "Disinformation"
+      }
+    },
+    {
+      "id": "moss_r",
+      "name": "Mr. Robert Moss",
+      "type": "person",
+      "attributes": {
+        "expertise": "Disinformation"
+      }
+    },
+    {
+      "id": "sis_uk",
+      "name": "British S.I.S.",
+      "type": "organization",
+      "attributes": {
+        "location": "United Kingdom",
+        "type": "Intelligence Service"
+      }
+    },
+    {
+      "id": "communist_bloc",
+      "name": "Communist Bloc",
+      "type": "organization",
+      "attributes": {
+        "type": "Alliance of States"
+      }
+    },
+    {
+      "id": "sino_soviet_split_disinfo",
+      "name": "Sino-Soviet split disinformation",
+      "type": "concept",
+      "attributes": {
+        "type": "Disinformation Tactic/Event"
+      }
+    },
+    {
+      "id": "china",
+      "name": "China",
+      "type": "location",
+      "attributes": {
+        "type": "Country",
+        "part_of": "Communist Bloc"
+      }
+    },
+    {
+      "id": "rumanian_independence_disinfo",
+      "name": "Rumanian Independence Disinformation",
+      "type": "concept",
+      "attributes": {
+        "type": "Specific Disinformation Tactic"
+      }
+    },
+    {
+      "id": "ceasescu_independence_disinfo",
+      "name": "Ceasescu's Independence Disinformation",
+      "type": "concept",
+      "attributes": {
+        "type": "Specific Disinformation Tactic"
+      }
+    },
+    {
+      "id": "german_reunification",
+      "name": "German reunification",
+      "type": "concept",
+      "attributes": {}
+    },
+    {
+      "id": "european_security",
+      "name": "European security",
+      "type": "concept",
+      "attributes": {}
+    },
+    {
+      "id": "eastern_europe",
+      "name": "Eastern Europe",
+      "type": "location",
+      "attributes": {
+        "part_of": "Communist Bloc"
+      }
+    },
+    {
+      "id": "third_world",
+      "name": "Third World",
+      "type": "concept",
+      "attributes": {
+        "description": "Developing Countries"
+      }
+    },
+    {
+      "id": "wars_of_liberation",
+      "name": "Wars of Liberation",
+      "type": "concept",
+      "attributes": {}
+    },
+    {
+      "id": "tito_independence_disinfo",
+      "name": "Tito's independence disinformation",
+      "type": "concept",
+      "attributes": {
+        "type": "Specific Disinformation Tactic"
+      }
+    },
+    {
+      "id": "tito_jb",
+      "name": "Josip Broz Tito",
+      "type": "person",
+      "attributes": {
+        "status": "Late",
+        "associated_with": "Non-Aligned Movement, Tito's independence"
+      }
+    },
+    {
+      "id": "non_aligned_movement",
+      "name": "Non-Aligned Movement",
+      "type": "organization",
+      "attributes": {
+        "associated_with": "Josip Broz Tito",
+        "aim_implied": "Take countries away from the West"
+      }
+    },
+    {
+      "id": "western_governments",
+      "name": "Western governments",
+      "type": "organization",
+      "attributes": {
+        "part_of": "The West"
+      }
+    },
+    {
+      "id": "western_intelligence",
+      "name": "Western intelligence services",
+      "type": "organization",
+      "attributes": {
+        "part_of": "The West"
+      }
+    },
+    {
+      "id": "western_counter_intelligence",
+      "name": "Western counter-intelligence services",
+      "type": "organization",
+      "attributes": {
+        "part_of": "The West"
+      }
+    },
+    {
+      "id": "stalin",
+      "name": "Stalin",
+      "type": "person",
+      "attributes": {
+        "role": "Former Soviet leader",
+        "era": "Stalin years"
+      }
+    },
+    {
+      "id": "shelepin",
+      "name": "Shelepin",
+      "type": "person",
+      "attributes": {
+        "affiliation_implied": "KGB"
+      }
+    },
+    {
+      "id": "sakharov_a",
+      "name": "Academician SAKHAROV",
+      "type": "person",
+      "attributes": {
+        "role": "Academician",
+        "activist_role": "Yes",
+        "status_in_1984": "In exile"
+      }
+    },
+    {
+      "id": "twardouskiy_a",
+      "name": "Writer TWARDOUSKIY",
+      "type": "person",
+      "attributes": {
+        "role": "Writer",
+        "activist_role": "Yes"
+      }
+    },
+    {
+      "id": "jewish_writers",
+      "name": "Jewish writers",
+      "type": "concept",
+      "attributes": {
+        "type": "Group",
+        "era": "1948-1952"
+      }
+    },
+    {
+      "id": "western_correspondents",
+      "name": "Western correspondents",
+      "type": "concept",
+      "attributes": {
+        "location_implied": "Moscow",
+        "type": "Group/Profession"
+      }
+    },
+    {
+      "id": "persons_in_us",
+      "name": "Persons in the United States",
+      "type": "concept",
+      "attributes": {
+        "type": "Group"
+      }
+    },
+    {
+      "id": "communist_intellectuals",
+      "name": "Communist priests, writers, and scientists",
+      "type": "concept",
+      "attributes": {
+        "type": "Group/Profession"
+      }
+    },
+    {
+      "id": "us_arms_reduction_1960s",
+      "name": "US unilateral reduction in arms",
+      "type": "event",
+      "attributes": {
+        "year_range": "1960s"
+      }
+    },
+    {
+      "id": "soviet_military_superiority",
+      "name": "Soviet military superiority",
+      "type": "concept",
+      "attributes": {}
+    },
+    {
+      "id": "us_military_superiority_position",
+      "name": "US military superiority position",
+      "type": "concept",
+      "attributes": {}
+    },
+    {
+      "id": "communist_long_range_policy",
+      "name": "Communist long range policy",
+      "type": "concept",
+      "attributes": {
+        "scope": "Global"
+      }
+    },
+    {
+      "id": "communist_military_strategy",
+      "name": "Communist military strategy",
+      "type": "concept",
+      "attributes": {}
+    },
+    {
+      "id": "communist_economic_strategy",
+      "name": "Communist economic strategy",
+      "type": "concept",
+      "attributes": {}
+    },
+    {
+      "id": "communist_european_strategy",
+      "name": "Communist European strategy",
+      "type": "concept",
+      "attributes": {}
+    },
+    {
+      "id": "communist_third_world_strategy",
+      "name": "Communist Third World strategy",
+      "type": "concept",
+      "attributes": {}
+    },
+    {
+      "id": "honneker_west_germany_rapprochement",
+      "name": "Honneker's raprochment with Western Germany",
+      "type": "concept",
+      "attributes": {
+        "type": "Political Action"
+      }
+    },
+    {
+      "id": "united_front_developing_countries",
+      "name": "United Front with developing countries",
+      "type": "concept",
+      "attributes": {}
+    },
+    {
+      "id": "communist_duality_of_actions",
+      "name": "Communist duality of actions",
+      "type": "concept",
+      "attributes": {
+        "description": "Using varied tactics instead of a monolith"
+      }
+    },
+    {
+      "id": "study_intelligence_security_use",
+      "name": "Studies on Intelligence and Security Asset Use",
+      "type": "concept",
+      "attributes": {
+        "purpose": "Inclusion in strategies against the West"
+      }
+    },
+    {
+      "id": "shelepin_secret_report",
+      "name": "Secret report of Shelepin",
+      "type": "concept",
+      "attributes": {
+        "about": "New political tasks of the KGB"
+      }
+    },
+    {
+      "id": "kgb_political_reorientation",
+      "name": "KGB political reorientation",
+      "type": "event",
+      "attributes": {
+        "year_range": "1959-1960"
+      }
+    },
+    {
+      "id": "leninist_approach",
+      "name": "Leninist approach",
+      "type": "concept",
+      "attributes": {}
+    },
+    {
+      "id": "kgb_officials",
+      "name": "KGB officials",
+      "type": "group",
+      "attributes": {}
+    },
+    {
+      "id": "security_chiefs_bloc_countries",
+      "name": "Security chiefs of bloc countries",
+      "type": "group",
+      "attributes": {
+        "part_of": "Communist Bloc"
+      }
+    },
+    {
+      "id": "western_interests",
+      "name": "Western interests",
+      "type": "concept",
+      "attributes": {
+        "part_of": "The West"
+      }
+    },
+    {
+      "id": "communist_adversaries",
+      "name": "Communist adversaries",
+      "type": "group",
+      "attributes": {}
+    },
+    {
+      "id": "western_analysts",
+      "name": "Western analysts",
+      "type": "group",
+      "attributes": {
+        "part_of": "The West"
+      }
+    },
+    {
+      "id": "us_militarism",
+      "name": "US militarism",
+      "type": "concept",
+      "attributes": {
+        "part_of": "United States"
+      }
+    },
+    {
+      "id": "attack_on_us_militarism",
+      "name": "Attack on US militarism",
+      "type": "event",
+      "attributes": {}
+    },
+    {
+      "id": "genuine_political_opposition",
+      "name": "Genuine political opposition",
+      "type": "concept",
+      "attributes": {}
+    },
+    {
+      "id": "mature_socialist_societies",
+      "name": "Mature socialist societies",
+      "type": "concept",
+      "attributes": {}
+    },
+    {
+      "id": "world_domination",
+      "name": "World domination",
+      "type": "concept",
+      "attributes": {}
+    },
+    {
+      "id": "economic_technical_foundation",
+      "name": "Economic-technical foundation",
+      "type": "concept",
+      "attributes": {
+        "affiliation_implied": "Communist"
+      }
+    },
+    {
+      "id": "western_technology",
+      "name": "Western technology",
+      "type": "concept",
+      "attributes": {
+        "part_of": "The West"
+      }
+    },
+    {
+      "id": "western_credit",
+      "name": "Western credit",
+      "type": "concept",
+      "attributes": {
+        "part_of": "The West"
+      }
+    },
+    {
+      "id": "nato_alliance",
+      "name": "NATO alliance",
+      "type": "organization",
+      "attributes": {
+        "part_of": "The West"
+      }
+    },
+    {
+      "id": "united_states_forces_europe",
+      "name": "United States forces in Europe",
+      "type": "organization",
+      "attributes": {
+        "part_of": "United States",
+        "location": "Western Europe"
+      }
+    },
+    {
+      "id": "active_diplomacy",
+      "name": "Active diplomacy",
+      "type": "concept",
+      "attributes": {}
+    },
+    {
+      "id": "confusion",
+      "name": "Confusion",
+      "type": "concept",
+      "attributes": {}
+    },
+    {
+      "id": "abroad",
+      "name": "Abroad",
+      "type": "location",
+      "attributes": {}
+    },
+    {
+      "id": "communist_countries",
+      "name": "Communist countries",
+      "type": "location",
+      "attributes": {}
+    },
+    {
+      "id": "analysis_of_disinfo_technology",
+      "name": "Analysis of disinformation technology",
+      "type": "concept",
+      "attributes": {}
+    },
+    {
+      "id": "communist_world",
+      "name": "Communist world",
+      "type": "location",
+      "attributes": {}
+    },
+    {
+      "id": "golitsyn_letter",
+      "name": "Golitsyn Letter to NY Tribune",
+      "type": "concept",
+      "attributes": {
+        "type": "Letter to Editor",
+        "date": "November 1984",
+        "about": "\"New Lies for Old\""
+      }
+    },
+    {
+      "id": "experts_on_disinformation",
+      "name": "Experts on disinformation",
+      "type": "group",
+      "attributes": {}
+    },
+    {
+      "id": "soviet_military_strategy",
+      "name": "Soviet military strategy",
+      "type": "concept",
+      "attributes": {}
+    },
+    {
+      "id": "doc_05798947",
+      "name": "CIA Document 05798947",
+      "type": "event",
+      "attributes": {
+        "Document Type": "FOIA",
+        "Collection": "FOIA Collection",
+        "Document Number": "05798947",
+        "Release Decision": "RIPPUB",
+        "Original Classification": "U",
+        "Page Count": "7",
+        "Creation Date": "2022-12-28",
+        "Release Date": "2017-09-25",
+        "Case Number": "F-2016-02688",
+        "Approval For Release Date": "2017-09-13"
+      }
+    },
+    {
+      "id": "concept_soviet_disinfo_blitz",
+      "name": "Soviet Disinformation Blitz",
+      "type": "concept",
+      "attributes": {}
+    },
+    {
+      "id": "loc_washington_dc",
+      "name": "Washington, D.C.",
+      "type": "location",
+      "attributes": {}
+    },
+    {
+      "id": "concept_memorandum",
+      "name": "Memorandum Subjecting Soviet Disinformation Blitz",
+      "type": "concept",
+      "attributes": {
+        "date": "1987-07-13"
+      }
+    },
+    {
+      "id": "person_fritz_ermarth",
+      "name": "Fritz Ermarth",
+      "type": "person",
+      "attributes": {}
+    },
+    {
+      "id": "org_nsc",
+      "name": "NSC",
+      "type": "organization",
+      "attributes": {}
+    },
+    {
+      "id": "loc_ussr",
+      "name": "USSR",
+      "type": "location",
+      "attributes": {}
+    },
+    {
+      "id": "concept_glasnost",
+      "name": "Glasnost",
+      "type": "concept",
+      "attributes": {}
+    },
+    {
+      "id": "org_fsic",
+      "name": "Foreign Subversion and Instability Center",
+      "type": "organization",
+      "attributes": {}
+    },
+    {
+      "id": "org_ogi",
+      "name": "Office of Global Issues",
+      "type": "organization",
+      "attributes": {}
+    },
+    {
+      "id": "org_di",
+      "name": "Directorate of Intelligence",
+      "type": "organization",
+      "attributes": {}
+    },
+    {
+      "id": "doc_gi_m_87_20122",
+      "name": "GI M 87-20122",
+      "type": "event",
+      "attributes": {
+        "date": "1987-07-08",
+        "type": "report"
+      }
+    },
+    {
+      "id": "org_cia",
+      "name": "Central Intelligence Agency",
+      "type": "organization",
+      "attributes": {}
+    },
+    {
+      "id": "concept_terrorism",
+      "name": "Terrorism",
+      "type": "concept",
+      "attributes": {}
+    },
+    {
+      "id": "concept_subversion",
+      "name": "Subversion",
+      "type": "concept",
+      "attributes": {}
+    },
+    {
+      "id": "concept_human_rights",
+      "name": "Human Rights",
+      "type": "concept",
+      "attributes": {}
+    },
+    {
+      "id": "concept_us_military_bases",
+      "name": "US Military Bases",
+      "type": "concept",
+      "attributes": {}
+    },
+    {
+      "id": "concept_us_military_personnel",
+      "name": "US Military Personnel",
+      "type": "concept",
+      "attributes": {}
+    },
+    {
+      "id": "concept_destabilization",
+      "name": "Destabilization",
+      "type": "concept",
+      "attributes": {}
+    },
+    {
+      "id": "concept_coups",
+      "name": "Coups",
+      "type": "concept",
+      "attributes": {}
+    },
+    {
+      "id": "concept_assassinations",
+      "name": "Political Assassinations",
+      "type": "concept",
+      "attributes": {}
+    },
+    {
+      "id": "event_fiji_coup_1987",
+      "name": "Military Coup in Fiji",
+      "type": "event",
+      "attributes": {
+        "date": "1987-05"
+      }
+    },
+    {
+      "id": "loc_fiji",
+      "name": "Fiji",
+      "type": "location",
+      "attributes": {}
+    },
+    {
+      "id": "org_radio_moscow",
+      "name": "Radio Moscow",
+      "type": "organization",
+      "attributes": {}
+    },
+    {
+      "id": "org_tass",
+      "name": "TASS",
+      "type": "organization",
+      "attributes": {}
+    },
+    {
+      "id": "org_izvestia",
+      "name": "Izvestia",
+      "type": "organization",
+      "attributes": {}
+    },
+    {
+      "id": "org_wpc",
+      "name": "World Peace Council",
+      "type": "organization",
+      "attributes": {
+        "control": "Soviet-controlled"
+      }
+    },
+    {
+      "id": "org_leftist_british_newspaper",
+      "name": "Leftist British Newspaper",
+      "type": "organization",
+      "attributes": {
+        "description": "leftist British"
+      }
+    },
+    {
+      "id": "person_walters",
+      "name": "Walters",
+      "type": "person",
+      "attributes": {
+        "role": "former CIA Deputy Director"
+      }
+    },
+    {
+      "id": "org_usss",
+      "name": "US Secret Service",
+      "type": "organization",
+      "attributes": {}
+    },
+    {
+      "id": "loc_zimbabwe",
+      "name": "Zimbabwe",
+      "type": "location",
+      "attributes": {}
+    },
+    {
+      "id": "loc_uruguay",
+      "name": "Uruguay",
+      "type": "location",
+      "attributes": {}
+    },
+    {
+      "id": "event_palme_assassination_1986",
+      "name": "Assassination of Olof Palme",
+      "type": "event",
+      "attributes": {
+        "date": "1986-02"
+      }
+    },
+    {
+      "id": "person_olof_palme",
+      "name": "Olof Palme",
+      "type": "person",
+      "attributes": {
+        "role": "Swedish Prime Minister"
+      }
+    },
+    {
+      "id": "loc_sweden",
+      "name": "Sweden",
+      "type": "location",
+      "attributes": {}
+    },
+    {
+      "id": "org_soviet_bloc_press",
+      "name": "Soviet and Bloc Press",
+      "type": "organization",
+      "attributes": {}
+    },
+    {
+      "id": "artifact_palme_film",
+      "name": "Why Did They Kill Olof Palme? (Film)",
+      "type": "event",
+      "attributes": {
+        "type": "television docu-drama"
+      }
+    },
+    {
+      "id": "loc_congo",
+      "name": "Congo",
+      "type": "location",
+      "attributes": {}
+    },
+    {
+      "id": "person_mobutu",
+      "name": "Mobutu",
+      "type": "person",
+      "attributes": {
+        "role": "President",
+        "country": "Zaire"
+      }
+    },
+    {
+      "id": "loc_zaire",
+      "name": "Zaire",
+      "type": "location",
+      "attributes": {}
+    },
+    {
+      "id": "person_sassou_nguesso",
+      "name": "Sassou-Nguesso",
+      "type": "person",
+      "attributes": {
+        "role": "President",
+        "country": "Congo"
+      }
+    },
+    {
+      "id": "artifact_cia_insider",
+      "name": "CIA Insider (Pamphlet)",
+      "type": "event",
+      "attributes": {
+        "type": "pamphlet",
+        "distribution": "unattributed",
+        "content": "alleged CIA agents and officers"
+      }
+    },
+    {
+      "id": "loc_india",
+      "name": "India",
+      "type": "location",
+      "attributes": {}
+    },
+    {
+      "id": "loc_pakistan",
+      "name": "Pakistan",
+      "type": "location",
+      "attributes": {}
+    },
+    {
+      "id": "loc_peru",
+      "name": "Peru",
+      "type": "location",
+      "attributes": {}
+    },
+    {
+      "id": "loc_guyana",
+      "name": "Guyana",
+      "type": "location",
+      "attributes": {}
+    },
+    {
+      "id": "loc_african_countries",
+      "name": "African Countries (Generic)",
+      "type": "location",
+      "attributes": {}
+    },
+    {
+      "id": "loc_western_countries",
+      "name": "Western Countries (Generic)",
+      "type": "location",
+      "attributes": {}
+    },
+    {
+      "id": "artifact_novosti_book",
+      "name": "Novosti Book",
+      "type": "event",
+      "attributes": {
+        "type": "book"
+      }
+    },
+    {
+      "id": "event_jonestown_massacre_1978",
+      "name": "Jonestown Massacre",
+      "type": "event",
+      "attributes": {
+        "date": "1978"
+      }
+    },
+    {
+      "id": "org_novosti",
+      "name": "Novosti",
+      "type": "organization",
+      "attributes": {}
+    },
+    {
+      "id": "org_pro_soviet_indian_press",
+      "name": "Pro-Soviet Indian Press",
+      "type": "organization",
+      "attributes": {}
+    },
+    {
+      "id": "org_communist_press_uruguay",
+      "name": "Communist Press of Uruguay",
+      "type": "organization",
+      "attributes": {}
+    },
+    {
+      "id": "loc_east_germany",
+      "name": "East Germany",
+      "type": "location",
+      "attributes": {}
+    },
+    {
+      "id": "org_communist_press_east_germany",
+      "name": "Communist Press of East Germany",
+      "type": "organization",
+      "attributes": {}
+    },
+    {
+      "id": "org_finnish_press",
+      "name": "Finnish Press",
+      "type": "organization",
+      "attributes": {}
+    },
+    {
+      "id": "org_danish_press",
+      "name": "Danish Press",
+      "type": "organization",
+      "attributes": {}
+    },
+    {
+      "id": "org_soviet_bloc_media",
+      "name": "Soviet Bloc Media (Generic)",
+      "type": "organization",
+      "attributes": {}
+    },
+    {
+      "id": "concept_child_trafficking_allegations",
+      "name": "Child Trafficking Allegations (Campaign)",
+      "type": "concept",
+      "attributes": {
+        "description": "Alleging US trafficking in Central American children for organ transplants"
+      }
+    },
+    {
+      "id": "loc_central_america",
+      "name": "Central America",
+      "type": "location",
+      "attributes": {}
+    },
+    {
+      "id": "concept_organ_transplants",
+      "name": "Organ Transplant Operations",
+      "type": "concept",
+      "attributes": {}
+    },
+    {
+      "id": "org_cuban_media",
+      "name": "Cuban Media",
+      "type": "organization",
+      "attributes": {}
+    },
+    {
+      "id": "org_nicaraguan_media",
+      "name": "Nicaraguan Media",
+      "type": "organization",
+      "attributes": {}
+    },
+    {
+      "id": "org_yugoslav_media",
+      "name": "Yugoslav Media",
+      "type": "organization",
+      "attributes": {}
+    },
+    {
+      "id": "org_dom_rep_press",
+      "name": "Dominican Republic Press",
+      "type": "organization",
+      "attributes": {}
+    },
+    {
+      "id": "loc_dom_rep",
+      "name": "Dominican Republic",
+      "type": "location",
+      "attributes": {}
+    },
+    {
+      "id": "org_france_press",
+      "name": "France Press",
+      "type": "organization",
+      "attributes": {}
+    },
+    {
+      "id": "loc_france",
+      "name": "France",
+      "type": "location",
+      "attributes": {}
+    },
+    {
+      "id": "org_guatemala_press",
+      "name": "Guatemala Press",
+      "type": "organization",
+      "attributes": {}
+    },
+    {
+      "id": "loc_guatemala",
+      "name": "Guatemala",
+      "type": "location",
+      "attributes": {}
+    },
+    {
+      "id": "org_honduras_press",
+      "name": "Honduras Press",
+      "type": "organization",
+      "attributes": {}
+    },
+    {
+      "id": "loc_honduras",
+      "name": "Honduras",
+      "type": "location",
+      "attributes": {}
+    },
+    {
+      "id": "org_india_press",
+      "name": "Indian Press",
+      "type": "organization",
+      "attributes": {}
+    },
+    {
+      "id": "concept_apartheid",
+      "name": "Apartheid",
+      "type": "concept",
+      "attributes": {}
+    },
+    {
+      "id": "concept_ethnic_weapon_allegations",
+      "name": "Ethnic Weapon Allegations (Campaign)",
+      "type": "concept",
+      "attributes": {
+        "start_period": "early 1980s",
+        "description": "Alleging US/South Africa research on a race-specific biological weapon"
+      }
+    },
+    {
+      "id": "loc_south_africa",
+      "name": "South Africa",
+      "type": "location",
+      "attributes": {}
+    },
+    {
+      "id": "concept_ethnic_weapon",
+      "name": "Ethnic Weapon",
+      "type": "concept",
+      "attributes": {}
+    },
+    {
+      "id": "concept_aids_origin_allegations",
+      "name": "AIDS Origin Allegations (Campaign)",
+      "type": "concept",
+      "attributes": {
+        "start_date": "1985-10",
+        "description": "Charging AIDS is the result of US biological warfare experiments"
+      }
+    },
+    {
+      "id": "concept_aids",
+      "name": "AIDS",
+      "type": "concept",
+      "attributes": {}
+    },
+    {
+      "id": "concept_biowar_experiments",
+      "name": "Biological Warfare Experiments",
+      "type": "concept",
+      "attributes": {}
+    },
+    {
+      "id": "concept_us_military_troops",
+      "name": "US Military Troops",
+      "type": "concept",
+      "attributes": {}
+    },
+    {
+      "id": "concept_us_port_access",
+      "name": "US Port Access Rights",
+      "type": "concept",
+      "attributes": {}
+    },
+    {
+      "id": "org_ukrainian_paper",
+      "name": "Ukrainian Paper",
+      "type": "organization",
+      "attributes": {}
+    },
+    {
+      "id": "loc_ukraine",
+      "name": "Ukraine",
+      "type": "location",
+      "attributes": {}
+    },
+    {
+      "id": "person_japanese",
+      "name": "Japanese People",
+      "type": "person",
+      "attributes": {}
+    },
+    {
+      "id": "loc_japan",
+      "name": "Japan",
+      "type": "location",
+      "attributes": {}
+    },
+    {
+      "id": "artifact_forged_press_release_berlin_1987",
+      "name": "Forged Press Release West Berlin May 1987",
+      "type": "event",
+      "attributes": {
+        "date": "1987-05",
+        "location": "West Berlin",
+        "type": "forged press release"
+      }
+    },
+    {
+      "id": "loc_west_berlin",
+      "name": "West Berlin",
+      "type": "location",
+      "attributes": {}
+    },
+    {
+      "id": "org_us_army_hospital_berlin",
+      "name": "US Army Hospital West Berlin",
+      "type": "organization",
+      "attributes": {}
+    },
+    {
+      "id": "concept_sdi",
+      "name": "Strategic Defense Initiative (SDI)",
+      "type": "concept",
+      "attributes": {}
+    },
+    {
+      "id": "loc_diego_garcia",
+      "name": "Diego Garcia",
+      "type": "location",
+      "attributes": {}
+    },
+    {
+      "id": "event_us_zaire_maneuvers",
+      "name": "US-Zaire Military Maneuvers",
+      "type": "event",
+      "attributes": {}
+    },
+    {
+      "id": "loc_kamina_base",
+      "name": "Kamina Air Force Base",
+      "type": "location",
+      "attributes": {}
+    },
+    {
+      "id": "loc_fort_detrick",
+      "name": "Fort Detrick",
+      "type": "location",
+      "attributes": {}
+    },
+    {
+      "id": "org_press_60_countries",
+      "name": "Press of Over 60 Countries (Generic)",
+      "type": "organization",
+      "attributes": {}
+    },
+    {
+      "id": "org_sainik_samachar",
+      "name": "Sainik Samachar",
+      "type": "organization",
+      "attributes": {
+        "type": "official Indian armed forces journal"
+      }
+    },
+    {
+      "id": "org_nonaligned_movement",
+      "name": "Nonaligned Movement",
+      "type": "organization",
+      "attributes": {}
+    },
+    {
+      "id": "loc_southern_africa",
+      "name": "Southern Africa",
+      "type": "location",
+      "attributes": {}
+    },
+    {
+      "id": "concept_soviet_forgeries",
+      "name": "Soviet Forgeries",
+      "type": "concept",
+      "attributes": {
+        "rate_1986_1987": "approx 20 per year",
+        "historical_rate": "approx 10-15 per year"
+      }
+    },
+    {
+      "id": "person_us_officials",
+      "name": "US Officials (Generic)",
+      "type": "person",
+      "attributes": {}
+    },
+    {
+      "id": "org_sikh_movement",
+      "name": "Sikh Separatist Movement",
+      "type": "organization",
+      "attributes": {}
+    },
+    {
+      "id": "org_india_separatist_movements",
+      "name": "Other Separatist Movements in India (Generic)",
+      "type": "organization",
+      "attributes": {}
+    },
+    {
+      "id": "person_ousted_fiji_pm",
+      "name": "Ousted Fiji Prime Minister",
+      "type": "person",
+      "attributes": {}
+    },
+    {
+      "id": "org_us_congress",
+      "name": "US Congress",
+      "type": "organization",
+      "attributes": {}
+    },
+    {
+      "id": "concept_alleged_cia_lists",
+      "name": "Lists of Alleged CIA Personnel (Concept)",
+      "type": "concept",
+      "attributes": {}
+    },
+    {
+      "id": "loc_kinshasa",
+      "name": "Kinshasa",
+      "type": "location",
+      "attributes": {}
+    },
+    {
+      "id": "person_zairean_editor",
+      "name": "Editor of Zairean Newspaper",
+      "type": "person",
+      "attributes": {
+        "country": "Zaire"
+      }
+    },
+    {
+      "id": "org_zairean_newspaper",
+      "name": "Zairean Newspaper (Generic)",
+      "type": "organization",
+      "attributes": {}
+    },
+    {
+      "id": "org_usis",
+      "name": "USIS",
+      "type": "organization",
+      "attributes": {}
+    },
+    {
+      "id": "org_zaire_security",
+      "name": "Zairean Government Security Service (Generic)",
+      "type": "organization",
+      "attributes": {}
+    },
+    {
+      "id": "person_kathleen_bailey",
+      "name": "Kathleen Bailey",
+      "type": "person",
+      "attributes": {}
+    },
+    {
+      "id": "org_sa_ddci",
+      "name": "SA/DDCI",
+      "type": "organization",
+      "attributes": {}
+    },
+    {
+      "id": "org_exdir",
+      "name": "ExDir",
+      "type": "organization",
+      "attributes": {}
+    },
+    {
+      "id": "org_nio_ussr_ee",
+      "name": "NIO/USSR-EE",
+      "type": "organization",
+      "attributes": {}
+    },
+    {
+      "id": "org_acting_nio_fdia",
+      "name": "Acting NIO/FDIA",
+      "type": "organization",
+      "attributes": {}
+    },
+    {
+      "id": "org_ddo_pps",
+      "name": "DDO/PPS",
+      "type": "organization",
+      "attributes": {}
+    },
+    {
+      "id": "org_sova_sig_spu",
+      "name": "SOVA/SIG/SPU",
+      "type": "organization",
+      "attributes": {}
+    },
+    {
+      "id": "org_c_ddo_pps",
+      "name": "C/DDO/PPS",
+      "type": "organization",
+      "attributes": {}
+    },
+    {
+      "id": "org_addi",
+      "name": "ADDI",
+      "type": "organization",
+      "attributes": {}
+    },
+    {
+      "id": "org_ddi_registry",
+      "name": "DDI Registry",
+      "type": "organization",
+      "attributes": {}
+    },
+    {
+      "id": "org_ddi_pes",
+      "name": "DDI/PES",
+      "type": "organization",
+      "attributes": {}
+    },
+    {
+      "id": "org_cpas_iss",
+      "name": "CPAS/ISS",
+      "type": "organization",
+      "attributes": {}
+    },
+    {
+      "id": "org_d_ogi",
+      "name": "D/OGI",
+      "type": "organization",
+      "attributes": {}
+    },
+    {
+      "id": "org_dd_ogi",
+      "name": "DD/OGI",
+      "type": "organization",
+      "attributes": {}
+    },
+    {
+      "id": "org_ogi_pg_ch",
+      "name": "OGI/PG/Ch",
+      "type": "organization",
+      "attributes": {}
+    },
+    {
+      "id": "org_ogi_exs_pg",
+      "name": "OGI/EXS/PG",
+      "type": "organization",
+      "attributes": {}
+    },
+    {
+      "id": "org_cpas_cb",
+      "name": "CPAS/CB",
+      "type": "organization",
+      "attributes": {}
+    },
+    {
+      "id": "org_fsic_am",
+      "name": "FSIC/AM",
+      "type": "organization",
+      "attributes": {}
+    },
+    {
+      "id": "memo_followup_disinfo",
+      "name": "FOLLOW-UP TO DISINFORMATION CONFERENCE Memo",
+      "type": "document",
+      "attributes": {
+        "publication_date": "July 24, 1985",
+        "foia_number": "CIA-RDP89G01126R000100100009-9",
+        "classification": "U",
+        "page_count": "4"
+      }
+    },
+    {
+      "id": "dci",
+      "name": "Director of Central Intelligence",
+      "type": "role",
+      "attributes": {}
+    },
+    {
+      "id": "ddi",
+      "name": "Deputy Director for Intelligence",
+      "type": "role",
+      "attributes": {}
+    },
+    {
+      "id": "d_sova",
+      "name": "Director of Soviet Analysis",
+      "type": "role",
+      "attributes": {}
+    },
+    {
+      "id": "snr_analyst_ni",
+      "name": "Senior Analyst for National Issues",
+      "type": "role",
+      "attributes": {}
+    },
+    {
+      "id": "osova",
+      "name": "Office of Soviet Analysis",
+      "type": "organization",
+      "attributes": {}
+    },
+    {
+      "id": "state_dept",
+      "name": "State Department",
+      "type": "organization",
+      "attributes": {}
+    },
+    {
+      "id": "nio_fdia",
+      "name": "NIO/FDIA",
+      "type": "organization",
+      "attributes": {}
+    },
+    {
+      "id": "conf_cspd",
+      "name": "Conference on Contemporary Soviet Propaganda and Disinformation",
+      "type": "event",
+      "attributes": {
+        "dates": "June 25-27, 1985"
+      }
+    },
+    {
+      "id": "norman_podhoretz",
+      "name": "Norman Podhoretz",
+      "type": "person",
+      "attributes": {
+        "role_at_conf_cspd": "keynote speaker"
+      }
+    },
+    {
+      "id": "aaron_levenstein",
+      "name": "Aaron Levenstein",
+      "type": "person",
+      "attributes": {}
+    },
+    {
+      "id": "center_prop_research",
+      "name": "Center for Propaganda Research",
+      "type": "organization",
+      "attributes": {
+        "status": "proposed",
+        "funding": "privately funded"
+      }
+    },
+    {
+      "id": "participants_cspd",
+      "name": "CSPD Conference Participants",
+      "type": "group",
+      "attributes": {}
+    },
+    {
+      "id": "defectors_emigres",
+      "name": "Soviet and East European Defectors and Emigres",
+      "type": "group",
+      "attributes": {}
+    },
+    {
+      "id": "disinformation",
+      "name": "Disinformation",
+      "type": "concept",
+      "attributes": {}
+    },
+    {
+      "id": "soviet_propaganda",
+      "name": "Soviet Propaganda",
+      "type": "concept",
+      "attributes": {}
+    },
+    {
+      "id": "contemp_soviet_prop_disinfo",
+      "name": "Contemporary Soviet Propaganda and Disinformation",
+      "type": "concept",
+      "attributes": {}
+    },
+    {
+      "id": "semantic_manipulation",
+      "name": "Semantic manipulation",
+      "type": "concept",
+      "attributes": {}
+    },
+    {
+      "id": "countermeasures",
+      "name": "Countermeasures",
+      "type": "concept",
+      "attributes": {
+        "context": "against disinformation"
+      }
+    },
+    {
+      "id": "conf_followup",
+      "name": "Follow-up conference",
+      "type": "event",
+      "attributes": {
+        "status": "suggested",
+        "topic": "examine countermeasures"
+      }
+    },
+    {
+      "id": "conf_report_cspd",
+      "name": "CSPD Conference Report",
+      "type": "document",
+      "attributes": {
+        "status": "planned"
+      }
+    },
+    {
+      "id": "formal_papers_cspd",
+      "name": "CSPD Formal Papers",
+      "type": "document",
+      "attributes": {
+        "count": "13"
+      }
+    },
+    {
+      "id": "taped_proceedings_cspd",
+      "name": "CSPD Taped Proceedings",
+      "type": "document",
+      "attributes": {
+        "duration": "approximately 21 hours"
+      }
+    },
+    {
+      "id": "participant_list_cspd",
+      "name": "CSPD Participant List",
+      "type": "document",
+      "attributes": {
+        "status": "sent"
+      }
+    },
+    {
+      "id": "govt_us",
+      "name": "US Government",
+      "type": "organization",
+      "attributes": {}
+    },
+    {
+      "id": "testimony_defectors",
+      "name": "Testimony from Defectors and Emigres",
+      "type": "concept",
+      "attributes": {
+        "content": "hands-on experience with disinformation forms and techniques"
+      }
+    },
+    {
+      "id": "academic_conference_type",
+      "name": "Academic Conference",
+      "type": "concept",
+      "attributes": {}
+    },
+    {
+      "id": "domestic_sensitivities",
+      "name": "Domestic Sensitivities",
+      "type": "concept",
+      "attributes": {}
+    },
+    {
+      "id": "cia_document_0043_7",
+      "name": "CIA-RDP90-00965R000302330043-7",
+      "type": "document",
+      "attributes": {
+        "title": "SOVIETS SAID READYING DISINFORMATION BLITZ",
+        "document_type": "CREST",
+        "collection": "General CIA Records",
+        "number": "CIA-RDP90-00965R000302330043-7",
+        "release_decision": "RIPPUB",
+        "original_classification": "K",
+        "page_count": "1",
+        "document_creation_date": "December 22, 2016",
+        "document_release_date": "October 10, 2012",
+        "sequence_number": "43",
+        "publication_date": "September 27, 1985",
+        "content_type": "OPEN SOURCE"
+      }
+    },
+    {
+      "id": "article_disinfo_blitz",
+      "name": "SOVIETS SAID READYING DISINFORMATION BLITZ",
+      "type": "document_part",
+      "attributes": {
+        "type": "Article",
+        "source_publication_date": "27 September 1985"
+      }
+    },
+    {
+      "id": "bill_gertz",
+      "name": "Bill Gertz",
+      "type": "person",
+      "attributes": {
+        "role": "Author",
+        "affiliation": "THE WASHINGTON TIMES"
+      }
+    },
+    {
+      "id": "ladislav_bittman",
+      "name": "Ladislav Bittman",
+      "type": "person",
+      "attributes": {
+        "former_role_1": "Soviet bloc intelligence officer",
+        "former_role_2": "Czech intelligence specialist",
+        "defection_context": "immediately after the 1968 invasion of Czechoslovakia",
+        "current_role": "communications teacher",
+        "teaching_name": "under an assumed name",
+        "intelligence_specialty": "use of disinformation",
+        "served_duration_intel": "14 years in Czechoslovakian intelligence service",
+        "directed_team_duration": "last two years in Prague",
+        "career_end_year": "1968"
+      }
+    },
+    {
+      "id": "mikhail_gorbachev",
+      "name": "Mikhail Gorbachev",
+      "type": "person",
+      "attributes": {
+        "role": "Soviet leader"
+      }
+    },
+    {
+      "id": "president_reagan",
+      "name": "President Reagan",
+      "type": "person",
+      "attributes": {
+        "role": "President"
+      }
+    },
+    {
+      "id": "washington_times",
+      "name": "THE WASHINGTON TIMES",
+      "type": "organization",
+      "attributes": {}
+    },
+    {
+      "id": "ap",
+      "name": "AP",
+      "type": "organization",
+      "attributes": {}
+    },
+    {
+      "id": "pergammon_brassys",
+      "name": "Pergamon-Brassy's",
+      "type": "organization",
+      "attributes": {}
+    },
+    {
+      "id": "fbi",
+      "name": "FBI",
+      "type": "organization",
+      "attributes": {}
+    },
+    {
+      "id": "czechoslovakia",
+      "name": "Czechoslovakia",
+      "type": "location",
+      "attributes": {}
+    },
+    {
+      "id": "prague",
+      "name": "Prague",
+      "type": "location",
+      "attributes": {}
+    },
+    {
+      "id": "geneva",
+      "name": "Geneva",
+      "type": "location",
+      "attributes": {}
+    },
+    {
+      "id": "east_coast_university",
+      "name": "East Coast university",
+      "type": "organization",
+      "attributes": {}
+    },
+    {
+      "id": "western_societies",
+      "name": "Western societies",
+      "type": "concept",
+      "attributes": {}
+    },
+    {
+      "id": "western_individuals",
+      "name": "Western individuals",
+      "type": "concept",
+      "attributes": {}
+    },
+    {
+      "id": "western_media",
+      "name": "Western media",
+      "type": "concept",
+      "attributes": {}
+    },
+    {
+      "id": "us_press",
+      "name": "U.S. press",
+      "type": "concept",
+      "attributes": {}
+    },
+    {
+      "id": "broadcast_news_media",
+      "name": "broadcast news media",
+      "type": "concept",
+      "attributes": {}
+    },
+    {
+      "id": "prominent_newspapers",
+      "name": "prominent newspapers",
+      "type": "concept",
+      "attributes": {}
+    },
+    {
+      "id": "third_world_countries",
+      "name": "Third World countries",
+      "type": "location",
+      "attributes": {}
+    },
+    {
+      "id": "los_angeles",
+      "name": "Los Angeles",
+      "type": "location",
+      "attributes": {}
+    },
+    {
+      "id": "ku_klux_klan",
+      "name": "Ku Klux Klan",
+      "type": "organization",
+      "attributes": {
+        "note": "Purported source of KGB forgery letter"
+      }
+    },
+    {
+      "id": "summit_1985",
+      "name": "November 1985 summit meeting",
+      "type": "event",
+      "attributes": {
+        "month": "November",
+        "year": "1985"
+      }
+    },
+    {
+      "id": "czechoslovakia_invasion_1968",
+      "name": "1968 invasion of Czechoslovakia",
+      "type": "event",
+      "attributes": {
+        "year": "1968"
+      }
+    },
+    {
+      "id": "watergate_scandal",
+      "name": "Watergate scandal",
+      "type": "event",
+      "attributes": {}
+    },
+    {
+      "id": "olympics_1984",
+      "name": "1984 Olympic Games",
+      "type": "event",
+      "attributes": {
+        "year": "1984"
+      }
+    },
+    {
+      "id": "active_measures",
+      "name": "active measures",
+      "type": "concept",
+      "attributes": {
+        "description": "Soviet covert action programs",
+        "type": "covert action programs"
+      }
+    },
+    {
+      "id": "overt_propaganda",
+      "name": "overt propaganda",
+      "type": "concept",
+      "attributes": {
+        "description": "official propaganda structure"
+      }
+    },
+    {
+      "id": "forgeries",
+      "name": "Forgeries",
+      "type": "concept",
+      "attributes": {
+        "type": "false and misleading information",
+        "part_of_manipulation": "Western media"
+      }
+    },
+    {
+      "id": "agents_in_media",
+      "name": "agents in the media",
+      "type": "concept",
+      "attributes": {
+        "type": "paid agents",
+        "part_of_manipulation": "Western media"
+      }
+    },
+    {
+      "id": "unwitting_collaborators",
+      "name": "unwitting collaborators",
+      "type": "concept",
+      "attributes": {
+        "part_of_manipulation": "Western media"
+      }
+    },
+    {
+      "id": "the_kgb_and_disinformation_book",
+      "name": "The KGB and Disinformation: An Insider's View",
+      "type": "concept",
+      "attributes": {
+        "type": "Book"
+      }
+    },
+    {
+      "id": "us_intelligence_services",
+      "name": "U.S. intelligence services",
+      "type": "organization",
+      "attributes": {}
+    },
+    {
+      "id": "soviet_policy_goals",
+      "name": "Soviet policy goals",
+      "type": "concept",
+      "attributes": {}
+    },
+    {
+      "id": "positive_soviet_image",
+      "name": "positive image of the Soviet proposals and policies",
+      "type": "concept",
+      "attributes": {}
+    },
+    {
+      "id": "planted_stories",
+      "name": "planted stories",
+      "type": "concept",
+      "attributes": {
+        "basis": "outlines provided by Soviet case officers"
+      }
+    },
+    {
+      "id": "us_foreign_policy",
+      "name": "U.S. foreign policy",
+      "type": "concept",
+      "attributes": {}
+    },
+    {
+      "id": "anti_soviet_public_figure",
+      "name": "anti-Soviet public figure",
+      "type": "concept",
+      "attributes": {}
+    },
+    {
+      "id": "journalists_recruited_by_soviets",
+      "name": "journalists ... recruited by the Soviets",
+      "type": "concept",
+      "attributes": {}
+    },
+    {
+      "id": "critical_judgment",
+      "name": "critical judgment",
+      "type": "concept",
+      "attributes": {}
+    },
+    {
+      "id": "kgb_forgery_letter_1984",
+      "name": "KGB forgery letter criticizing black athletes",
+      "type": "concept",
+      "attributes": {
+        "type": "Forged document",
+        "year": "1984",
+        "identified_by": "FBI",
+        "purported_source": "Ku Klux Klan"
+      }
+    },
+    {
+      "id": "black_athletes",
+      "name": "black athletes",
+      "type": "concept",
+      "attributes": {}
+    },
+    {
+      "id": "1960s",
+      "name": "1960s",
+      "type": "concept",
+      "attributes": {
+        "type": "Time period"
+      }
+    },
+    {
+      "id": "early_1970s",
+      "name": "early 1970s",
+      "type": "concept",
+      "attributes": {
+        "type": "Time period"
+      }
+    },
+    {
+      "id": "mid_1970s",
+      "name": "mid-1970s",
+      "type": "concept",
+      "attributes": {
+        "type": "Time period"
+      }
+    },
+    {
+      "id": "late_1970s",
+      "name": "late 1970s",
+      "type": "concept",
+      "attributes": {
+        "type": "Time period"
+      }
+    },
+    {
+      "id": "czechoslovakian_intelligence_service",
+      "name": "Czechoslovakian intelligence service",
+      "type": "organization",
+      "attributes": {}
+    }
+  ],
+  "relationships": [
+    {
+      "source": "golitsyn",
+      "target": "golitsyn_letter",
+      "type": "authored",
+      "attributes": {}
+    },
+    {
+      "source": "golitsyn_letter",
+      "target": "ny_tribune",
+      "type": "sent_to",
+      "attributes": {}
+    },
+    {
+      "source": "golitsyn_letter",
+      "target": "new_lies_for_old",
+      "type": "concerns",
+      "attributes": {}
+    },
+    {
+      "source": "golitsyn_letter",
+      "target": "navrozov",
+      "type": "responds_to_criticism_by",
+      "attributes": {
+        "on_subject": "Golitsyn and his book"
+      }
+    },
+    {
+      "source": "new_lies_for_old",
+      "target": "golitsyn",
+      "type": "authored_by",
+      "attributes": {}
+    },
+    {
+      "source": "navrozov",
+      "target": "ny_tribune",
+      "type": "published_articles_in",
+      "attributes": {
+        "article_dates": "August 23, 1984, October 1, 1984"
+      }
+    },
+    {
+      "source": "navrozov",
+      "target": "golitsyn",
+      "type": "criticized",
+      "attributes": {
+        "subject": "Golitsyn and his book"
+      }
+    },
+    {
+      "source": "navrozov",
+      "target": "new_lies_for_old",
+      "type": "criticized",
+      "attributes": {
+        "aspect": "Historic evidence, access to KGB secrets"
+      }
+    },
+    {
+      "source": "golitsyn",
+      "target": "ussr",
+      "type": "formerly_worked_in",
+      "attributes": {}
+    },
+    {
+      "source": "golitsyn",
+      "target": "kgb",
+      "type": "formerly_worked_for",
+      "attributes": {}
+    },
+    {
+      "source": "golitsyn",
+      "target": "kgb_institute",
+      "type": "attended",
+      "attributes": {
+        "role": "Student",
+        "year_range": "1957-1959"
+      }
+    },
+    {
+      "source": "golitsyn",
+      "target": "kgb_hq_moscow",
+      "type": "worked_at",
+      "attributes": {
+        "role": "Senior Officer",
+        "year_range": "1959-1960"
+      }
+    },
+    {
+      "source": "kgb_hq_moscow",
+      "target": "moscow",
+      "type": "located_in",
+      "attributes": {}
+    },
+    {
+      "source": "cc_cpsu",
+      "target": "kgb_institute",
+      "type": "directed",
+      "attributes": {}
+    },
+    {
+      "source": "cc_cpsu",
+      "target": "kgb",
+      "type": "directed",
+      "attributes": {}
+    },
+    {
+      "source": "kgb_institute",
+      "target": "study_intelligence_security_use",
+      "type": "prepared",
+      "attributes": {}
+    },
+    {
+      "source": "study_intelligence_security_use",
+      "target": "the_west",
+      "type": "concerns_use_against",
+      "attributes": {}
+    },
+    {
+      "source": "golitsyn",
+      "target": "shelepin_secret_report",
+      "type": "read",
+      "attributes": {
+        "while_at": "KGB Institute"
+      }
+    },
+    {
+      "source": "shelepin_secret_report",
+      "target": "kgb",
+      "type": "about_tasks_of",
+      "attributes": {}
+    },
+    {
+      "source": "kgb_institute",
+      "target": "stalin",
+      "type": "re_assessed_political_practices_of",
+      "attributes": {}
+    },
+    {
+      "source": "kgb_institute",
+      "target": "leninist_approach",
+      "type": "shifted_towards",
+      "attributes": {}
+    },
+    {
+      "source": "kgb",
+      "target": "kgb_political_reorientation",
+      "type": "underwent",
+      "attributes": {}
+    },
+    {
+      "source": "kgb",
+      "target": "strategic_disinformation",
+      "type": "prepared_for",
+      "attributes": {
+        "year_range": "1959-1960"
+      }
+    },
+    {
+      "source": "kgb",
+      "target": "communist_strategies",
+      "type": "played_role_in_realization",
+      "attributes": {}
+    },
+    {
+      "source": "kgb_officials",
+      "target": "security_chiefs_bloc_countries",
+      "type": "held_secret_consultations_with",
+      "attributes": {
+        "year_range": "1959-1960"
+      }
+    },
+    {
+      "source": "kgb",
+      "target": "kgb_disinfo_dept",
+      "type": "formed",
+      "attributes": {}
+    },
+    {
+      "source": "golitsyn",
+      "target": "kgb_disinfo_dept",
+      "type": "witnessed_formation_of",
+      "attributes": {}
+    },
+    {
+      "source": "communist_disinfo_program",
+      "target": "the_west",
+      "type": "aimed_against",
+      "attributes": {}
+    },
+    {
+      "source": "communist_disinfo_program",
+      "target": "western_interests",
+      "type": "damaged",
+      "attributes": {}
+    },
+    {
+      "source": "communist_disinfo_program",
+      "target": "communist_adversaries",
+      "type": "benefitted",
+      "attributes": {}
+    },
+    {
+      "source": "communist_disinfo_program",
+      "target": "western_analysts",
+      "type": "generated_confusion_in",
+      "attributes": {}
+    },
+    {
+      "source": "new_lies_for_old",
+      "target": "communist_disinfo_program",
+      "type": "describes",
+      "attributes": {}
+    },
+    {
+      "source": "communist_strategies",
+      "target": "strategic_disinformation",
+      "type": "utilizes",
+      "attributes": {}
+    },
+    {
+      "source": "the_west",
+      "target": "communist_strategies",
+      "type": "unwittingly_helped_realize",
+      "attributes": {}
+    },
+    {
+      "source": "strategic_disinformation",
+      "target": "us_arms_reduction_1960s",
+      "type": "responsible_for",
+      "attributes": {
+        "location": "United States",
+        "year_range": "1960s"
+      }
+    },
+    {
+      "source": "us_arms_reduction_1960s",
+      "target": "soviet_military_superiority",
+      "type": "resulted_in",
+      "attributes": {}
+    },
+    {
+      "source": "us_arms_reduction_1960s",
+      "target": "us_military_superiority_position",
+      "type": "resulted_in_decline_of",
+      "attributes": {}
+    },
+    {
+      "source": "navrozov",
+      "target": "stalin",
+      "type": "equates_practices_of",
+      "attributes": {}
+    },
+    {
+      "source": "navrozov",
+      "target": "shelepin",
+      "type": "equates_practices_of",
+      "attributes": {}
+    },
+    {
+      "source": "golitsyn",
+      "target": "navrozov",
+      "type": "argues_against_equating",
+      "attributes": {
+        "practices_equated": "Stalin and Shelepin on using intellectuals"
+      }
+    },
+    {
+      "source": "stalin",
+      "target": "communist_intellectuals",
+      "type": "repressed",
+      "attributes": {
+        "methods": "imprisoned, exiled, shot",
+        "condition": "Failed to do his bidding"
+      }
+    },
+    {
+      "source": "stalin",
+      "target": "jewish_writers",
+      "type": "responsible_for_death_sentences_of",
+      "attributes": {
+        "year_range": "1948-1952"
+      }
+    },
+    {
+      "source": "shelepin",
+      "target": "communist_intellectuals",
+      "type": "utilized_in",
+      "attributes": {
+        "program": "Strategic Disinformation Program",
+        "method": "Active use"
+      }
+    },
+    {
+      "source": "shelepin",
+      "target": "sakharov_a",
+      "type": "utilized_in_disinfo_program_context",
+      "attributes": {}
+    },
+    {
+      "source": "shelepin",
+      "target": "twardouskiy_a",
+      "type": "utilized_in_disinfo_program_context",
+      "attributes": {}
+    },
+    {
+      "source": "sakharov_a",
+      "target": "strategic_disinformation",
+      "type": "activist_role_examined_in_terms_of",
+      "attributes": {}
+    },
+    {
+      "source": "twardouskiy_a",
+      "target": "strategic_disinformation",
+      "type": "activist_role_examined_in_terms_of",
+      "attributes": {}
+    },
+    {
+      "source": "kgb",
+      "target": "sakharov_a",
+      "type": "tolerated_activist_role_of",
+      "attributes": {
+        "until_year": "1980"
+      }
+    },
+    {
+      "source": "sakharov_a",
+      "target": "western_correspondents",
+      "type": "had_contacts_with",
+      "attributes": {
+        "location": "Moscow",
+        "status": "Long and uninterrupted"
+      }
+    },
+    {
+      "source": "sakharov_a",
+      "target": "persons_in_us",
+      "type": "mailed_letters_manuscripts_to",
+      "attributes": {
+        "start_year": "1968",
+        "status_in_1984": "Recently from exile"
+      }
+    },
+    {
+      "source": "kgb",
+      "target": "sakharov_a",
+      "type": "overlooked_mailing_by",
+      "attributes": {
+        "to": "Persons in US"
+      }
+    },
+    {
+      "source": "sakharov_a",
+      "target": "arms_race",
+      "type": "letters_injected_into_debate_on",
+      "attributes": {
+        "location": "American debate"
+      }
+    },
+    {
+      "source": "sakharov_a",
+      "target": "soviet_military_strategy",
+      "type": "pronouncements_examined_in_terms_of",
+      "attributes": {}
+    },
+    {
+      "source": "sakharov_a",
+      "target": "salt_negotiations",
+      "type": "pronouncements_examined_in_terms_of",
+      "attributes": {}
+    },
+    {
+      "source": "sakharov_a",
+      "target": "strategic_disinformation",
+      "type": "pronouncements_examined_in_terms_of",
+      "attributes": {}
+    },
+    {
+      "source": "communist_strategists",
+      "target": "sakharov_a",
+      "type": "potentially_designed_pronouncements_of",
+      "attributes": {}
+    },
+    {
+      "source": "sakharov_a",
+      "target": "united_states",
+      "type": "pronouncements_aimed_to_influence_policies_in",
+      "attributes": {}
+    },
+    {
+      "source": "sakharov_a",
+      "target": "salt_negotiations",
+      "type": "pronouncements_aimed_to_influence",
+      "attributes": {}
+    },
+    {
+      "source": "sakharov_a",
+      "target": "arms_race",
+      "type": "pronouncements_aimed_to_influence",
+      "attributes": {}
+    },
+    {
+      "source": "sakharov_a",
+      "target": "nuclear_freeze_debate",
+      "type": "potentially_contributed_to",
+      "attributes": {
+        "location": "United States"
+      }
+    },
+    {
+      "source": "sakharov_a",
+      "target": "us_militarism",
+      "type": "predicted_attack_against",
+      "attributes": {
+        "year_range": "beginning of 1980s"
+      }
+    },
+    {
+      "source": "attack_on_us_militarism",
+      "target": "western_europe",
+      "type": "attempted_in",
+      "attributes": {
+        "time": "Recent times (from 1984)"
+      }
+    },
+    {
+      "source": "kgb",
+      "target": "operation_trust",
+      "type": "successfully_manipulated_opposition_via",
+      "attributes": {}
+    },
+    {
+      "source": "kgb",
+      "target": "ussr_dissident_movement",
+      "type": "planned_to_use_as",
+      "attributes": {
+        "role": "New \"Trust\""
+      }
+    },
+    {
+      "source": "ussr_dissident_movement",
+      "target": "operation_trust",
+      "type": "analyzed_as_new",
+      "attributes": {}
+    },
+    {
+      "source": "navrozov",
+      "target": "ussr_dissident_movement",
+      "type": "defends",
+      "attributes": {}
+    },
+    {
+      "source": "navrozov",
+      "target": "angleton",
+      "type": "attacked",
+      "attributes": {}
+    },
+    {
+      "source": "navrozov",
+      "target": "hackett",
+      "type": "attacked",
+      "attributes": {}
+    },
+    {
+      "source": "navrozov",
+      "target": "de_borchgrave",
+      "type": "attacked",
+      "attributes": {}
+    },
+    {
+      "source": "navrozov",
+      "target": "moss_r",
+      "type": "attacked",
+      "attributes": {}
+    },
+    {
+      "source": "navrozov",
+      "target": "sis_uk",
+      "type": "attacked",
+      "attributes": {}
+    },
+    {
+      "source": "navrozov",
+      "target": "golitsyn",
+      "type": "attacked",
+      "attributes": {}
+    },
+    {
+      "source": "navrozov",
+      "target": "experts_on_disinformation",
+      "type": "attacked",
+      "attributes": {}
+    },
+    {
+      "source": "angleton",
+      "target": "communist_disinformation_issue",
+      "type": "raised_concern_for",
+      "attributes": {
+        "location": "United States, Western world"
+      }
+    },
+    {
+      "source": "de_borchgrave",
+      "target": "communist_disinformation_issue",
+      "type": "raised_concern_for",
+      "attributes": {
+        "location": "United States, Western world"
+      }
+    },
+    {
+      "source": "moss_r",
+      "target": "communist_disinformation_issue",
+      "type": "raised_concern_for",
+      "attributes": {
+        "location": "United States, Western world"
+      }
+    },
+    {
+      "source": "communist_disinformation_issue",
+      "target": "united_states",
+      "type": "impacts",
+      "attributes": {}
+    },
+    {
+      "source": "golitsyn",
+      "target": "new_lies_for_old",
+      "type": "claims_exposes",
+      "attributes": {
+        "object": "Communist Strategic Disinformation Program"
+      }
+    },
+    {
+      "source": "new_lies_for_old",
+      "target": "communist_strategies",
+      "type": "claims_creates_obstacles_for",
+      "attributes": {}
+    },
+    {
+      "source": "communist_disinfo_program",
+      "target": "communist_strategists",
+      "type": "product_of",
+      "attributes": {}
+    },
+    {
+      "source": "communist_strategists",
+      "target": "communist_disinfo_program",
+      "type": "conducts",
+      "attributes": {}
+    },
+    {
+      "source": "strategic_disinformation",
+      "target": "confusion",
+      "type": "generates",
+      "attributes": {}
+    },
+    {
+      "source": "confusion",
+      "target": "genuine_political_opposition",
+      "type": "obstacle_for",
+      "attributes": {}
+    },
+    {
+      "source": "communist_long_range_policy",
+      "target": "mature_socialist_societies",
+      "type": "aims_at_developing",
+      "attributes": {}
+    },
+    {
+      "source": "communist_long_range_policy",
+      "target": "world_domination",
+      "type": "aims_at_achieving",
+      "attributes": {}
+    },
+    {
+      "source": "communist_long_range_policy",
+      "target": "communist_military_strategy",
+      "type": "includes",
+      "attributes": {}
+    },
+    {
+      "source": "communist_military_strategy",
+      "target": "communist_bloc",
+      "type": "aims_at_achieving_military_superiority_for",
+      "attributes": {}
+    },
+    {
+      "source": "communist_military_strategy",
+      "target": "united_states",
+      "type": "achieved_via_negotiations_with",
+      "attributes": {
+        "phase": "First phase"
+      }
+    },
+    {
+      "source": "communist_military_strategy",
+      "target": "ussr",
+      "type": "achieved_via_receipt_of_western_tech_by",
+      "attributes": {
+        "phase": "First phase"
+      }
+    },
+    {
+      "source": "communist_military_strategy",
+      "target": "china",
+      "type": "achieved_via_receipt_of_western_tech_by",
+      "attributes": {
+        "phase": "Second phase"
+      }
+    },
+    {
+      "source": "sino_soviet_split_disinfo",
+      "target": "communist_military_strategy",
+      "type": "serves",
+      "attributes": {}
+    },
+    {
+      "source": "communist_economic_strategy",
+      "target": "economic_technical_foundation",
+      "type": "aims_at_developing",
+      "attributes": {
+        "superior_to": "The West"
+      }
+    },
+    {
+      "source": "communist_economic_strategy",
+      "target": "western_technology",
+      "type": "achieved_via_help_of",
+      "attributes": {}
+    },
+    {
+      "source": "communist_economic_strategy",
+      "target": "western_credit",
+      "type": "achieved_via_help_of",
+      "attributes": {}
+    },
+    {
+      "source": "rumanian_independence_disinfo",
+      "target": "communist_economic_strategy",
+      "type": "serves",
+      "attributes": {}
+    },
+    {
+      "source": "sino_soviet_split_disinfo",
+      "target": "communist_economic_strategy",
+      "type": "serves",
+      "attributes": {}
+    },
+    {
+      "source": "communist_european_strategy",
+      "target": "nato_alliance",
+      "type": "aims_at_breaking_up",
+      "attributes": {}
+    },
+    {
+      "source": "communist_european_strategy",
+      "target": "united_states_forces_europe",
+      "type": "aims_at_withdrawal_of",
+      "attributes": {}
+    },
+    {
+      "source": "communist_european_strategy",
+      "target": "german_reunification",
+      "type": "achieved_via",
+      "attributes": {}
+    },
+    {
+      "source": "communist_european_strategy",
+      "target": "european_security",
+      "type": "achieved_via",
+      "attributes": {}
+    },
+    {
+      "source": "communist_european_strategy",
+      "target": "eastern_europe",
+      "type": "achieved_via_false_liberalization_in",
+      "attributes": {}
+    },
+    {
+      "source": "communist_european_strategy",
+      "target": "ussr",
+      "type": "achieved_via_false_liberalization_in",
+      "attributes": {}
+    },
+    {
+      "source": "communist_european_strategy",
+      "target": "eastern_europe",
+      "type": "achieved_via_controlled_opposition_in",
+      "attributes": {}
+    },
+    {
+      "source": "communist_european_strategy",
+      "target": "ussr",
+      "type": "achieved_via_controlled_opposition_in",
+      "attributes": {}
+    },
+    {
+      "source": "ceasescu_independence_disinfo",
+      "target": "communist_european_strategy",
+      "type": "serves",
+      "attributes": {}
+    },
+    {
+      "source": "honneker_west_germany_rapprochement",
+      "target": "communist_european_strategy",
+      "type": "serves",
+      "attributes": {}
+    },
+    {
+      "source": "communist_third_world_strategy",
+      "target": "third_world",
+      "type": "aims_at_eliminating_western_influence_in",
+      "attributes": {}
+    },
+    {
+      "source": "communist_third_world_strategy",
+      "target": "united_front_developing_countries",
+      "type": "aims_at_achieving",
+      "attributes": {}
+    },
+    {
+      "source": "communist_third_world_strategy",
+      "target": "wars_of_liberation",
+      "type": "achieved_via_support_of",
+      "attributes": {}
+    },
+    {
+      "source": "communist_third_world_strategy",
+      "target": "active_diplomacy",
+      "type": "achieved_via",
+      "attributes": {}
+    },
+    {
+      "source": "communist_third_world_strategy",
+      "target": "communist_duality_of_actions",
+      "type": "achieved_via",
+      "attributes": {}
+    },
+    {
+      "source": "sino_soviet_split_disinfo",
+      "target": "communist_third_world_strategy",
+      "type": "serves",
+      "attributes": {}
+    },
+    {
+      "source": "tito_independence_disinfo",
+      "target": "communist_third_world_strategy",
+      "type": "serves",
+      "attributes": {}
+    },
+    {
+      "source": "tito_jb",
+      "target": "tito_independence_disinfo",
+      "type": "associated_with",
+      "attributes": {}
+    },
+    {
+      "source": "tito_jb",
+      "target": "non_aligned_movement",
+      "type": "associated_with",
+      "attributes": {}
+    },
+    {
+      "source": "non_aligned_movement",
+      "target": "the_west",
+      "type": "nearly_succeeded_taking_countries_from",
+      "attributes": {}
+    },
+    {
+      "source": "western_governments",
+      "target": "analysis_of_disinfo_technology",
+      "type": "task_is",
+      "attributes": {}
+    },
+    {
+      "source": "western_intelligence",
+      "target": "analysis_of_disinfo_technology",
+      "type": "task_is",
+      "attributes": {}
+    },
+    {
+      "source": "western_counter_intelligence",
+      "target": "analysis_of_disinfo_technology",
+      "type": "task_is",
+      "attributes": {}
+    },
+    {
+      "source": "analysis_of_disinfo_technology",
+      "target": "strategic_disinformation",
+      "type": "necessary_for_understanding",
+      "attributes": {
+        "location": "The West"
+      }
+    },
+    {
+      "source": "analysis_of_disinfo_technology",
+      "target": "communist_world",
+      "type": "necessary_for_viable_policy_toward",
+      "attributes": {}
+    },
+    {
+      "source": "strategic_disinformation",
+      "target": "genuine_political_opposition",
+      "type": "obstacle_for_functioning_of",
+      "attributes": {}
+    },
+    {
+      "source": "genuine_political_opposition",
+      "target": "communist_countries",
+      "type": "functions_in",
+      "attributes": {}
+    },
+    {
+      "source": "genuine_political_opposition",
+      "target": "abroad",
+      "type": "functions",
+      "attributes": {}
+    },
+    {
+      "source": "pereira_jf",
+      "target": "cia_ims",
+      "type": "is_chief_of",
+      "attributes": {}
+    },
+    {
+      "source": "cia_do",
+      "target": "golitsyn_letter",
+      "type": "approved_release_of",
+      "attributes": {}
+    },
+    {
+      "source": "angleton",
+      "target": "experts_on_disinformation",
+      "type": "is_one_of",
+      "attributes": {}
+    },
+    {
+      "source": "de_borchgrave",
+      "target": "experts_on_disinformation",
+      "type": "is_one_of",
+      "attributes": {}
+    },
+    {
+      "source": "moss_r",
+      "target": "experts_on_disinformation",
+      "type": "is_one_of",
+      "attributes": {}
+    },
+    {
+      "source": "concept_memorandum",
+      "target": "concept_soviet_disinfo_blitz",
+      "type": "about",
+      "attributes": {}
+    },
+    {
+      "source": "person_fritz_ermarth",
+      "target": "concept_memorandum",
+      "type": "requested",
+      "attributes": {}
+    },
+    {
+      "source": "person_fritz_ermarth",
+      "target": "org_nsc",
+      "type": "works_for",
+      "attributes": {}
+    },
+    {
+      "source": "concept_memorandum",
+      "target": "org_fsic",
+      "type": "prepared_by",
+      "attributes": {}
+    },
+    {
+      "source": "org_fsic",
+      "target": "org_ogi",
+      "type": "part_of",
+      "attributes": {}
+    },
+    {
+      "source": "org_ogi",
+      "target": "org_di",
+      "type": "part_of",
+      "attributes": {}
+    },
+    {
+      "source": "org_di",
+      "target": "org_cia",
+      "type": "part_of",
+      "attributes": {}
+    },
+    {
+      "source": "concept_memorandum",
+      "target": "doc_gi_m_87_20122",
+      "type": "has_attachment",
+      "attributes": {}
+    },
+    {
+      "source": "doc_gi_m_87_20122",
+      "target": "concept_soviet_disinfo_blitz",
+      "type": "about",
+      "attributes": {}
+    },
+    {
+      "source": "doc_gi_m_87_20122",
+      "target": "org_ogi",
+      "type": "prepared_by",
+      "attributes": {}
+    },
+    {
+      "source": "loc_ussr",
+      "target": "concept_soviet_disinfo_blitz",
+      "type": "conducts",
+      "attributes": {}
+    },
+    {
+      "source": "loc_ussr",
+      "target": "concept_glasnost",
+      "type": "associated_with",
+      "attributes": {}
+    },
+    {
+      "source": "concept_soviet_disinfo_blitz",
+      "target": "united_states",
+      "type": "targets",
+      "attributes": {}
+    },
+    {
+      "source": "concept_soviet_disinfo_blitz",
+      "target": "third_world",
+      "type": "targets_audiences_in",
+      "attributes": {}
+    },
+    {
+      "source": "concept_soviet_disinfo_blitz",
+      "target": "concept_terrorism",
+      "type": "alleges_us_practices",
+      "attributes": {}
+    },
+    {
+      "source": "concept_soviet_disinfo_blitz",
+      "target": "concept_subversion",
+      "type": "alleges_us_practices",
+      "attributes": {}
+    },
+    {
+      "source": "concept_soviet_disinfo_blitz",
+      "target": "concept_human_rights",
+      "type": "alleges_us_violates",
+      "attributes": {}
+    },
+    {
+      "source": "concept_soviet_disinfo_blitz",
+      "target": "concept_us_military_bases",
+      "type": "targets",
+      "attributes": {}
+    },
+    {
+      "source": "concept_soviet_disinfo_blitz",
+      "target": "concept_us_military_personnel",
+      "type": "targets",
+      "attributes": {}
+    },
+    {
+      "source": "concept_soviet_disinfo_blitz",
+      "target": "concept_destabilization",
+      "type": "alleges_us_practices",
+      "attributes": {
+        "target": "foreign countries"
+      }
+    },
+    {
+      "source": "concept_soviet_disinfo_blitz",
+      "target": "concept_coups",
+      "type": "alleges_us_sponsors",
+      "attributes": {}
+    },
+    {
+      "source": "concept_soviet_disinfo_blitz",
+      "target": "concept_assassinations",
+      "type": "alleges_us_conducts",
+      "attributes": {
+        "target": "political leaders"
+      }
+    },
+    {
+      "source": "event_fiji_coup_1987",
+      "target": "loc_fiji",
+      "type": "occurred_in",
+      "attributes": {}
+    },
+    {
+      "source": "loc_ussr",
+      "target": "event_fiji_coup_1987",
+      "type": "publicized",
+      "attributes": {
+        "focus": "rumors of US involvement"
+      }
+    },
+    {
+      "source": "org_radio_moscow",
+      "target": "loc_ussr",
+      "type": "associated_with",
+      "attributes": {}
+    },
+    {
+      "source": "org_tass",
+      "target": "loc_ussr",
+      "type": "associated_with",
+      "attributes": {}
+    },
+    {
+      "source": "org_izvestia",
+      "target": "loc_ussr",
+      "type": "associated_with",
+      "attributes": {}
+    },
+    {
+      "source": "org_radio_moscow",
+      "target": "event_fiji_coup_1987",
+      "type": "reported_on",
+      "attributes": {}
+    },
+    {
+      "source": "org_tass",
+      "target": "event_fiji_coup_1987",
+      "type": "reported_on",
+      "attributes": {}
+    },
+    {
+      "source": "org_izvestia",
+      "target": "event_fiji_coup_1987",
+      "type": "reported_on",
+      "attributes": {}
+    },
+    {
+      "source": "org_radio_moscow",
+      "target": "united_states",
+      "type": "alleged_involvement_in_event",
+      "attributes": {
+        "event": "event_fiji_coup_1987"
+      }
+    },
+    {
+      "source": "org_tass",
+      "target": "org_cia",
+      "type": "alleged_involvement_in_event",
+      "attributes": {
+        "event": "event_fiji_coup_1987"
+      }
+    },
+    {
+      "source": "org_tass",
+      "target": "org_usss",
+      "type": "alleged_involvement_in_event",
+      "attributes": {
+        "event": "event_fiji_coup_1987"
+      }
+    },
+    {
+      "source": "org_radio_moscow",
+      "target": "org_wpc",
+      "type": "reported_statement_by",
+      "attributes": {}
+    },
+    {
+      "source": "org_wpc",
+      "target": "org_leftist_british_newspaper",
+      "type": "cited",
+      "attributes": {}
+    },
+    {
+      "source": "org_wpc",
+      "target": "person_walters",
+      "type": "alleged_location_during_event",
+      "attributes": {
+        "location": "loc_fiji",
+        "event": "event_fiji_coup_1987"
+      }
+    },
+    {
+      "source": "person_walters",
+      "target": "org_cia",
+      "type": "alleged_former_role",
+      "attributes": {
+        "role": "Deputy Director"
+      }
+    },
+    {
+      "source": "org_wpc",
+      "target": "united_states",
+      "type": "alleged_citizens_participated_in_event",
+      "attributes": {
+        "event": "event_fiji_coup_1987"
+      }
+    },
+    {
+      "source": "org_tass",
+      "target": "loc_zimbabwe",
+      "type": "story_replayed_in",
+      "attributes": {}
+    },
+    {
+      "source": "org_tass",
+      "target": "loc_uruguay",
+      "type": "story_replayed_in",
+      "attributes": {}
+    },
+    {
+      "source": "loc_ussr",
+      "target": "united_states",
+      "type": "alleges_involvement_in_event",
+      "attributes": {
+        "event": "event_palme_assassination_1986"
+      }
+    },
+    {
+      "source": "event_palme_assassination_1986",
+      "target": "person_olof_palme",
+      "type": "targeted",
+      "attributes": {}
+    },
+    {
+      "source": "event_palme_assassination_1986",
+      "target": "loc_sweden",
+      "type": "occurred_in",
+      "attributes": {}
+    },
+    {
+      "source": "org_soviet_bloc_press",
+      "target": "united_states",
+      "type": "alleged_complicity_in_event",
+      "attributes": {
+        "event": "event_palme_assassination_1986"
+      }
+    },
+    {
+      "source": "loc_ussr",
+      "target": "artifact_palme_film",
+      "type": "produced",
+      "attributes": {}
+    },
+    {
+      "source": "artifact_palme_film",
+      "target": "loc_sweden",
+      "type": "shown_in",
+      "attributes": {}
+    },
+    {
+      "source": "artifact_palme_film",
+      "target": "loc_ussr",
+      "type": "shown_in",
+      "attributes": {}
+    },
+    {
+      "source": "artifact_palme_film",
+      "target": "org_cia",
+      "type": "alleged_involvement_in_event",
+      "attributes": {
+        "event": "event_palme_assassination_1986"
+      }
+    },
+    {
+      "source": "loc_ussr",
+      "target": "concept_soviet_forgeries",
+      "type": "uses",
+      "attributes": {}
+    },
+    {
+      "source": "loc_ussr",
+      "target": "concept_destabilization",
+      "type": "alleges_cia_plans",
+      "attributes": {
+        "target": "loc_third_world"
+      }
+    },
+    {
+      "source": "kgb",
+      "target": "loc_ussr",
+      "type": "part_of",
+      "attributes": {}
+    },
+    {
+      "source": "kgb",
+      "target": "loc_congo",
+      "type": "planted_rumor_in",
+      "attributes": {
+        "date": "Spring 1987"
+      }
+    },
+    {
+      "source": "kgb",
+      "target": "person_mobutu",
+      "type": "rumor_alleges_planned_action",
+      "attributes": {
+        "action": "use CIA for assassination"
+      }
+    },
+    {
+      "source": "person_mobutu",
+      "target": "loc_zaire",
+      "type": "president_of",
+      "attributes": {}
+    },
+    {
+      "source": "person_sassou_nguesso",
+      "target": "loc_congo",
+      "type": "president_of",
+      "attributes": {}
+    },
+    {
+      "source": "kgb",
+      "target": "artifact_cia_insider",
+      "type": "circulated",
+      "attributes": {
+        "date": "1986"
+      }
+    },
+    {
+      "source": "artifact_cia_insider",
+      "target": "loc_india",
+      "type": "circulated_in",
+      "attributes": {}
+    },
+    {
+      "source": "artifact_cia_insider",
+      "target": "loc_pakistan",
+      "type": "circulated_in",
+      "attributes": {}
+    },
+    {
+      "source": "artifact_cia_insider",
+      "target": "loc_peru",
+      "type": "circulated_in",
+      "attributes": {}
+    },
+    {
+      "source": "artifact_cia_insider",
+      "target": "loc_guyana",
+      "type": "circulated_in",
+      "attributes": {}
+    },
+    {
+      "source": "artifact_cia_insider",
+      "target": "loc_african_countries",
+      "type": "circulated_in",
+      "attributes": {}
+    },
+    {
+      "source": "artifact_cia_insider",
+      "target": "org_cia",
+      "type": "is_about",
+      "attributes": {
+        "description": "alleged agents and officers"
+      }
+    },
+    {
+      "source": "loc_ussr",
+      "target": "loc_western_countries",
+      "type": "targets",
+      "attributes": {
+        "topic": "concept_human_rights"
+      }
+    },
+    {
+      "source": "org_novosti",
+      "target": "loc_ussr",
+      "type": "associated_with",
+      "attributes": {}
+    },
+    {
+      "source": "org_novosti",
+      "target": "artifact_novosti_book",
+      "type": "published",
+      "attributes": {}
+    },
+    {
+      "source": "artifact_novosti_book",
+      "target": "org_cia",
+      "type": "alleges_instigated_event",
+      "attributes": {
+        "event": "event_jonestown_massacre_1978"
+      }
+    },
+    {
+      "source": "artifact_novosti_book",
+      "target": "loc_ussr",
+      "type": "alleges_motive_related_to",
+      "attributes": {
+        "motive": "prevent emigration to"
+      }
+    },
+    {
+      "source": "org_izvestia",
+      "target": "artifact_novosti_book",
+      "type": "publicized_allegation_from",
+      "attributes": {
+        "date": "1987-01-30"
+      }
+    },
+    {
+      "source": "org_pro_soviet_indian_press",
+      "target": "artifact_novosti_book",
+      "type": "replayed_allegation_from",
+      "attributes": {}
+    },
+    {
+      "source": "org_pro_soviet_indian_press",
+      "target": "loc_india",
+      "type": "located_in",
+      "attributes": {}
+    },
+    {
+      "source": "org_communist_press_uruguay",
+      "target": "artifact_novosti_book",
+      "type": "replayed_allegation_from",
+      "attributes": {}
+    },
+    {
+      "source": "org_communist_press_uruguay",
+      "target": "loc_uruguay",
+      "type": "located_in",
+      "attributes": {}
+    },
+    {
+      "source": "org_communist_press_east_germany",
+      "target": "artifact_novosti_book",
+      "type": "replayed_allegation_from",
+      "attributes": {}
+    },
+    {
+      "source": "org_communist_press_east_germany",
+      "target": "loc_east_germany",
+      "type": "located_in",
+      "attributes": {}
+    },
+    {
+      "source": "org_finnish_press",
+      "target": "artifact_novosti_book",
+      "type": "reviewed",
+      "attributes": {}
+    },
+    {
+      "source": "org_danish_press",
+      "target": "artifact_novosti_book",
+      "type": "reviewed",
+      "attributes": {}
+    },
+    {
+      "source": "loc_ussr",
+      "target": "concept_child_trafficking_allegations",
+      "type": "is_behind",
+      "attributes": {}
+    },
+    {
+      "source": "concept_child_trafficking_allegations",
+      "target": "united_states",
+      "type": "alleges_involvement",
+      "attributes": {}
+    },
+    {
+      "source": "concept_child_trafficking_allegations",
+      "target": "loc_central_america",
+      "type": "alleges_source_location",
+      "attributes": {}
+    },
+    {
+      "source": "concept_child_trafficking_allegations",
+      "target": "concept_organ_transplants",
+      "type": "alleges_purpose",
+      "attributes": {}
+    },
+    {
+      "source": "concept_child_trafficking_allegations",
+      "target": "org_soviet_bloc_media",
+      "type": "appeared_in",
+      "attributes": {
+        "date_range": "Since beginning of 1987"
+      }
+    },
+    {
+      "source": "concept_child_trafficking_allegations",
+      "target": "org_cuban_media",
+      "type": "appeared_in",
+      "attributes": {
+        "date_range": "Since beginning of 1987"
+      }
+    },
+    {
+      "source": "concept_child_trafficking_allegations",
+      "target": "org_nicaraguan_media",
+      "type": "appeared_in",
+      "attributes": {
+        "date_range": "Since beginning of 1987"
+      }
+    },
+    {
+      "source": "concept_child_trafficking_allegations",
+      "target": "org_yugoslav_media",
+      "type": "appeared_in",
+      "attributes": {
+        "date_range": "Since beginning of 1987"
+      }
+    },
+    {
+      "source": "concept_child_trafficking_allegations",
+      "target": "org_dom_rep_press",
+      "type": "appeared_in",
+      "attributes": {
+        "date_range": "Since beginning of 1987"
+      }
+    },
+    {
+      "source": "org_dom_rep_press",
+      "target": "loc_dom_rep",
+      "type": "located_in",
+      "attributes": {}
+    },
+    {
+      "source": "concept_child_trafficking_allegations",
+      "target": "org_france_press",
+      "type": "appeared_in",
+      "attributes": {
+        "date_range": "Since beginning of 1987"
+      }
+    },
+    {
+      "source": "org_france_press",
+      "target": "loc_france",
+      "type": "located_in",
+      "attributes": {}
+    },
+    {
+      "source": "concept_child_trafficking_allegations",
+      "target": "org_guatemala_press",
+      "type": "appeared_in",
+      "attributes": {
+        "date_range": "Since beginning of 1987"
+      }
+    },
+    {
+      "source": "org_guatemala_press",
+      "target": "loc_guatemala",
+      "type": "located_in",
+      "attributes": {}
+    },
+    {
+      "source": "concept_child_trafficking_allegations",
+      "target": "org_honduras_press",
+      "type": "appeared_in",
+      "attributes": {
+        "date_range": "Since beginning of 1987"
+      }
+    },
+    {
+      "source": "org_honduras_press",
+      "target": "loc_honduras",
+      "type": "located_in",
+      "attributes": {}
+    },
+    {
+      "source": "concept_child_trafficking_allegations",
+      "target": "org_india_press",
+      "type": "appeared_in",
+      "attributes": {
+        "date_range": "Since beginning of 1987"
+      }
+    },
+    {
+      "source": "org_india_press",
+      "target": "loc_india",
+      "type": "located_in",
+      "attributes": {}
+    },
+    {
+      "source": "loc_ussr",
+      "target": "concept_apartheid",
+      "type": "exploits",
+      "attributes": {}
+    },
+    {
+      "source": "loc_ussr",
+      "target": "concept_ethnic_weapon_allegations",
+      "type": "pushes",
+      "attributes": {}
+    },
+    {
+      "source": "concept_ethnic_weapon_allegations",
+      "target": "united_states",
+      "type": "alleges_research_on",
+      "attributes": {
+        "topic": "concept_ethnic_weapon"
+      }
+    },
+    {
+      "source": "concept_ethnic_weapon_allegations",
+      "target": "loc_south_africa",
+      "type": "alleges_research_on",
+      "attributes": {
+        "topic": "concept_ethnic_weapon"
+      }
+    },
+    {
+      "source": "concept_ethnic_weapon_allegations",
+      "target": "concept_ethnic_weapon",
+      "type": "is_about",
+      "attributes": {}
+    },
+    {
+      "source": "org_radio_moscow",
+      "target": "concept_ethnic_weapon_allegations",
+      "type": "charged_about",
+      "attributes": {
+        "date": "1987-02"
+      }
+    },
+    {
+      "source": "loc_ussr",
+      "target": "concept_aids_origin_allegations",
+      "type": "conducts_campaign_on",
+      "attributes": {}
+    },
+    {
+      "source": "concept_aids_origin_allegations",
+      "target": "concept_aids",
+      "type": "alleges_resulted_from",
+      "attributes": {
+        "origin": "concept_biowar_experiments"
+      }
+    },
+    {
+      "source": "concept_aids_origin_allegations",
+      "target": "united_states",
+      "type": "alleges_conducted",
+      "attributes": {
+        "action": "concept_biowar_experiments"
+      }
+    },
+    {
+      "source": "concept_aids_origin_allegations",
+      "target": "concept_us_military_bases",
+      "type": "used_to_heighten_opposition",
+      "attributes": {}
+    },
+    {
+      "source": "concept_aids_origin_allegations",
+      "target": "concept_us_military_troops",
+      "type": "used_to_heighten_opposition",
+      "attributes": {}
+    },
+    {
+      "source": "concept_aids_origin_allegations",
+      "target": "concept_us_port_access",
+      "type": "used_to_heighten_opposition",
+      "attributes": {}
+    },
+    {
+      "source": "org_ukrainian_paper",
+      "target": "concept_aids",
+      "type": "claimed_about",
+      "attributes": {
+        "date": "1987-02"
+      }
+    },
+    {
+      "source": "org_ukrainian_paper",
+      "target": "loc_ukraine",
+      "type": "located_in",
+      "attributes": {}
+    },
+    {
+      "source": "loc_ukraine",
+      "target": "loc_ussr",
+      "type": "part_of",
+      "attributes": {}
+    },
+    {
+      "source": "org_ukrainian_paper",
+      "target": "person_japanese",
+      "type": "alleged_panic_in",
+      "attributes": {
+        "location": "loc_japan"
+      }
+    },
+    {
+      "source": "org_ukrainian_paper",
+      "target": "concept_aids",
+      "type": "alleged_spread_by",
+      "attributes": {
+        "agent": "concept_us_military_personnel"
+      }
+    },
+    {
+      "source": "concept_us_military_personnel",
+      "target": "loc_japan",
+      "type": "located_in",
+      "attributes": {}
+    },
+    {
+      "source": "org_ukrainian_paper",
+      "target": "concept_us_military_bases",
+      "type": "alleged_businesses_near_barred_americans",
+      "attributes": {}
+    },
+    {
+      "source": "loc_ussr",
+      "target": "artifact_forged_press_release_berlin_1987",
+      "type": "suspected_behind",
+      "attributes": {}
+    },
+    {
+      "source": "artifact_forged_press_release_berlin_1987",
+      "target": "loc_west_berlin",
+      "type": "surfaced_in",
+      "attributes": {}
+    },
+    {
+      "source": "artifact_forged_press_release_berlin_1987",
+      "target": "org_us_army_hospital_berlin",
+      "type": "alleged_about",
+      "attributes": {
+        "content": "overflowing with AIDS victims"
+      }
+    },
+    {
+      "source": "org_us_army_hospital_berlin",
+      "target": "loc_west_berlin",
+      "type": "located_in",
+      "attributes": {}
+    },
+    {
+      "source": "loc_ussr",
+      "target": "concept_sdi",
+      "type": "alleges_us_uses_facilities_for",
+      "attributes": {}
+    },
+    {
+      "source": "loc_ussr",
+      "target": "united_states",
+      "type": "alleges_attempts_to_acquire",
+      "attributes": {
+        "target": "concept_us_military_bases",
+        "purpose": "concept_destabilization"
+      }
+    },
+    {
+      "source": "org_indian_press",
+      "target": "loc_india",
+      "type": "located_in",
+      "attributes": {}
+    },
+    {
+      "source": "org_indian_press",
+      "target": "loc_ussr",
+      "type": "ran_article_on_charges_by",
+      "attributes": {
+        "date": "1987-03"
+      }
+    },
+    {
+      "source": "loc_ussr",
+      "target": "united_states",
+      "type": "alleges_production_at",
+      "attributes": {
+        "item": "concept_sdi components",
+        "location": "loc_diego_garcia"
+      }
+    },
+    {
+      "source": "org_radio_moscow",
+      "target": "event_us_zaire_maneuvers",
+      "type": "charged_about",
+      "attributes": {
+        "date": "1987-04"
+      }
+    },
+    {
+      "source": "united_states",
+      "target": "event_us_zaire_maneuvers",
+      "type": "participated_in",
+      "attributes": {}
+    },
+    {
+      "source": "loc_zaire",
+      "target": "event_us_zaire_maneuvers",
+      "type": "participated_in",
+      "attributes": {}
+    },
+    {
+      "source": "org_radio_moscow",
+      "target": "united_states",
+      "type": "alleges_interest_in_location",
+      "attributes": {
+        "location": "loc_kamina_base",
+        "purpose": "concept_destabilization"
+      }
+    },
+    {
+      "source": "loc_kamina_base",
+      "target": "loc_zaire",
+      "type": "located_in",
+      "attributes": {}
+    },
+    {
+      "source": "concept_aids_origin_allegations",
+      "target": "loc_fort_detrick",
+      "type": "alleges_developed_at",
+      "attributes": {}
+    },
+    {
+      "source": "concept_aids_origin_allegations",
+      "target": "org_press_60_countries",
+      "type": "replayed_in",
+      "attributes": {}
+    },
+    {
+      "source": "concept_aids_origin_allegations",
+      "target": "org_sainik_samachar",
+      "type": "appeared_in",
+      "attributes": {
+        "date": "1987-04"
+      }
+    },
+    {
+      "source": "org_sainik_samachar",
+      "target": "loc_india",
+      "type": "located_in",
+      "attributes": {}
+    },
+    {
+      "source": "loc_ussr",
+      "target": "org_nonaligned_movement",
+      "type": "attempts_to_influence",
+      "attributes": {
+        "goal": "intensify anti-US sentiment"
+      }
+    },
+    {
+      "source": "loc_ussr",
+      "target": "loc_southern_africa",
+      "type": "exploits_tensions_in",
+      "attributes": {}
+    },
+    {
+      "source": "concept_soviet_disinfo_blitz",
+      "target": "concept_soviet_forgeries",
+      "type": "uses_as_vehicle",
+      "attributes": {}
+    },
+    {
+      "source": "concept_soviet_disinfo_blitz",
+      "target": "united_states",
+      "type": "alleges_coup_plotting_against",
+      "attributes": {
+        "target": "loc_black_african_states"
+      }
+    },
+    {
+      "source": "concept_soviet_disinfo_blitz",
+      "target": "united_states",
+      "type": "alleges_cooperation_with",
+      "attributes": {
+        "collaborator": "loc_south_africa"
+      }
+    },
+    {
+      "source": "concept_soviet_disinfo_blitz",
+      "target": "united_states",
+      "type": "alleges_circumvention_of",
+      "attributes": {
+        "target": "concept_arms_embargo_sa"
+      }
+    },
+    {
+      "source": "loc_ussr",
+      "target": "concept_soviet_disinfo_blitz",
+      "type": "produces",
+      "attributes": {
+        "description": "often crude and emotional"
+      }
+    },
+    {
+      "source": "loc_ussr",
+      "target": "concept_soviet_disinfo_blitz",
+      "type": "increasing_level_of_activity",
+      "attributes": {
+        "evidence": "soviet forgeries rate"
+      }
+    },
+    {
+      "source": "loc_ussr",
+      "target": "concept_soviet_disinfo_blitz",
+      "type": "benefits_from",
+      "attributes": {}
+    },
+    {
+      "source": "person_us_officials",
+      "target": "concept_aids_origin_allegations",
+      "type": "protested",
+      "attributes": {}
+    },
+    {
+      "source": "loc_india",
+      "target": "loc_washington_dc",
+      "type": "public_opinion_attributes_role",
+      "attributes": {
+        "role": "largest promoter of international terrorism",
+        "date": "1985"
+      }
+    },
+    {
+      "source": "loc_ussr",
+      "target": "loc_india",
+      "type": "targets_with_theme",
+      "attributes": {
+        "theme": "US conspiracy to destabilize"
+      }
+    },
+    {
+      "source": "loc_ussr",
+      "target": "united_states",
+      "type": "alleges_support_for",
+      "attributes": {
+        "supported": "org_sikh_movement"
+      }
+    },
+    {
+      "source": "loc_ussr",
+      "target": "united_states",
+      "type": "alleges_support_for",
+      "attributes": {
+        "supported": "org_india_separatist_movements"
+      }
+    },
+    {
+      "source": "person_ousted_fiji_pm",
+      "target": "event_fiji_coup_1987",
+      "type": "commented_on",
+      "attributes": {
+        "date": "1987-06",
+        "location": "loc_washington_dc",
+        "content": "suspicions of US involvement"
+      }
+    },
+    {
+      "source": "person_ousted_fiji_pm",
+      "target": "org_us_congress",
+      "type": "requested_inquiry_by",
+      "attributes": {}
+    },
+    {
+      "source": "loc_moscow",
+      "target": "org_cia",
+      "type": "targets_with_program",
+      "attributes": {}
+    },
+    {
+      "source": "loc_ussr",
+      "target": "concept_alleged_cia_lists",
+      "type": "produced",
+      "attributes": {}
+    },
+    {
+      "source": "concept_alleged_cia_lists",
+      "target": "org_cia",
+      "type": "targets",
+      "attributes": {
+        "target_type": "personnel"
+      }
+    },
+    {
+      "source": "concept_alleged_cia_lists",
+      "target": "person_zairean_editor",
+      "type": "appeared_on",
+      "attributes": {}
+    },
+    {
+      "source": "concept_alleged_cia_lists",
+      "target": "person_zairean_editor",
+      "type": "effected",
+      "attributes": {
+        "effect": "intimidated, cast suspicion"
+      }
+    },
+    {
+      "source": "loc_kinshasa",
+      "target": "loc_zaire",
+      "type": "located_in",
+      "attributes": {}
+    },
+    {
+      "source": "person_zairean_editor",
+      "target": "org_zairean_newspaper",
+      "type": "works_for",
+      "attributes": {}
+    },
+    {
+      "source": "person_zairean_editor",
+      "target": "org_usis",
+      "type": "was_contact_of",
+      "attributes": {}
+    },
+    {
+      "source": "person_zairean_editor",
+      "target": "org_zaire_security",
+      "type": "feared_interrogation_by",
+      "attributes": {}
+    },
+    {
+      "source": "org_zaire_security",
+      "target": "loc_zaire",
+      "type": "located_in",
+      "attributes": {}
+    },
+    {
+      "source": "concept_memorandum",
+      "target": "person_kathleen_bailey",
+      "type": "has_distribution_to",
+      "attributes": {}
+    },
+    {
+      "source": "concept_memorandum",
+      "target": "org_sa_ddci",
+      "type": "has_distribution_to",
+      "attributes": {}
+    },
+    {
+      "source": "concept_memorandum",
+      "target": "org_exdir",
+      "type": "has_distribution_to",
+      "attributes": {}
+    },
+    {
+      "source": "concept_memorandum",
+      "target": "org_nio_ussr_ee",
+      "type": "has_distribution_to",
+      "attributes": {}
+    },
+    {
+      "source": "concept_memorandum",
+      "target": "org_acting_nio_fdia",
+      "type": "has_distribution_to",
+      "attributes": {}
+    },
+    {
+      "source": "concept_memorandum",
+      "target": "org_ddo_pps",
+      "type": "has_distribution_to",
+      "attributes": {}
+    },
+    {
+      "source": "concept_memorandum",
+      "target": "org_sova_sig_spu",
+      "type": "has_distribution_to",
+      "attributes": {}
+    },
+    {
+      "source": "concept_memorandum",
+      "target": "org_c_ddo_pps",
+      "type": "has_distribution_to",
+      "attributes": {}
+    },
+    {
+      "source": "concept_memorandum",
+      "target": "org_di",
+      "type": "has_distribution_to",
+      "attributes": {}
+    },
+    {
+      "source": "concept_memorandum",
+      "target": "org_addi",
+      "type": "has_distribution_to",
+      "attributes": {}
+    },
+    {
+      "source": "concept_memorandum",
+      "target": "org_ddi_registry",
+      "type": "has_distribution_to",
+      "attributes": {}
+    },
+    {
+      "source": "concept_memorandum",
+      "target": "org_ddi_pes",
+      "type": "has_distribution_to",
+      "attributes": {}
+    },
+    {
+      "source": "concept_memorandum",
+      "target": "org_cpas_iss",
+      "type": "has_distribution_to",
+      "attributes": {}
+    },
+    {
+      "source": "concept_memorandum",
+      "target": "org_d_ogi",
+      "type": "has_distribution_to",
+      "attributes": {}
+    },
+    {
+      "source": "concept_memorandum",
+      "target": "org_dd_ogi",
+      "type": "has_distribution_to",
+      "attributes": {}
+    },
+    {
+      "source": "concept_memorandum",
+      "target": "org_ogi_pg_ch",
+      "type": "has_distribution_to",
+      "attributes": {}
+    },
+    {
+      "source": "concept_memorandum",
+      "target": "org_ogi_exs_pg",
+      "type": "has_distribution_to",
+      "attributes": {}
+    },
+    {
+      "source": "concept_memorandum",
+      "target": "org_cpas_cb",
+      "type": "has_distribution_to",
+      "attributes": {}
+    },
+    {
+      "source": "concept_memorandum",
+      "target": "org_fsic_am",
+      "type": "has_distribution_to",
+      "attributes": {}
+    },
+    {
+      "source": "memo_followup_disinfo",
+      "target": "dci",
+      "type": "addressed_to",
+      "attributes": {}
+    },
+    {
+      "source": "memo_followup_disinfo",
+      "target": "ddi",
+      "type": "routed_via",
+      "attributes": {}
+    },
+    {
+      "source": "memo_followup_disinfo",
+      "target": "d_sova",
+      "type": "routed_via",
+      "attributes": {}
+    },
+    {
+      "source": "memo_followup_disinfo",
+      "target": "snr_analyst_ni",
+      "type": "routed_via",
+      "attributes": {}
+    },
+    {
+      "source": "snr_analyst_ni",
+      "target": "osova",
+      "type": "affiliated_with",
+      "attributes": {}
+    },
+    {
+      "source": "osova",
+      "target": "org_cia",
+      "type": "part_of",
+      "attributes": {}
+    },
+    {
+      "source": "memo_followup_disinfo",
+      "target": "conf_cspd",
+      "type": "reports_on",
+      "attributes": {}
+    },
+    {
+      "source": "conf_cspd",
+      "target": "contemp_soviet_prop_disinfo",
+      "type": "focuses_on",
+      "attributes": {}
+    },
+    {
+      "source": "contemp_soviet_prop_disinfo",
+      "target": "soviet_propaganda",
+      "type": "includes",
+      "attributes": {}
+    },
+    {
+      "source": "contemp_soviet_prop_disinfo",
+      "target": "disinformation",
+      "type": "includes",
+      "attributes": {}
+    },
+    {
+      "source": "conf_cspd",
+      "target": "participants_cspd",
+      "type": "had_participants",
+      "attributes": {}
+    },
+    {
+      "source": "participants_cspd",
+      "target": "defectors_emigres",
+      "type": "included_group",
+      "attributes": {}
+    },
+    {
+      "source": "defectors_emigres",
+      "target": "testimony_defectors",
+      "type": "provided",
+      "attributes": {}
+    },
+    {
+      "source": "norman_podhoretz",
+      "target": "conf_cspd",
+      "type": "participated_in",
+      "attributes": {
+        "role": "keynote speaker"
+      }
+    },
+    {
+      "source": "norman_podhoretz",
+      "target": "semantic_manipulation",
+      "type": "discussed_as_keynote",
+      "attributes": {
+        "context": "Western vulnerability"
+      }
+    },
+    {
+      "source": "semantic_manipulation",
+      "target": "disinformation",
+      "type": "related_to",
+      "attributes": {}
+    },
+    {
+      "source": "participants_cspd",
+      "target": "disinformation",
+      "type": "discussed",
+      "attributes": {}
+    },
+    {
+      "source": "participants_cspd",
+      "target": "Dealing directly with disinformation in scholarly work",
+      "type": "disagreed_on",
+      "attributes": {}
+    },
+    {
+      "source": "participants_cspd",
+      "target": "Government need to neutralize and counter disinformation",
+      "type": "agreed_on",
+      "attributes": {}
+    },
+    {
+      "source": "govt_us",
+      "target": "disinformation",
+      "type": "should_neutralize_counter",
+      "attributes": {
+        "method": "consciousness-raising among media and public"
+      }
+    },
+    {
+      "source": "conf_cspd",
+      "target": "formal_papers_cspd",
+      "type": "produced_output",
+      "attributes": {}
+    },
+    {
+      "source": "conf_cspd",
+      "target": "taped_proceedings_cspd",
+      "type": "produced_output",
+      "attributes": {}
+    },
+    {
+      "source": "conf_cspd",
+      "target": "conf_report_cspd",
+      "type": "planned_output",
+      "attributes": {}
+    },
+    {
+      "source": "conf_report_cspd",
+      "target": "taped_proceedings_cspd",
+      "type": "based_on",
+      "attributes": {
+        "via": "transcription"
+      }
+    },
+    {
+      "source": "conf_report_cspd",
+      "target": "state_dept",
+      "type": "will_be_disseminated_by",
+      "attributes": {}
+    },
+    {
+      "source": "participants_cspd",
+      "target": "conf_followup",
+      "type": "suggested",
+      "attributes": {}
+    },
+    {
+      "source": "conf_followup",
+      "target": "countermeasures",
+      "type": "will_examine",
+      "attributes": {}
+    },
+    {
+      "source": "participants_cspd",
+      "target": "participant_list_cspd",
+      "type": "suggested",
+      "attributes": {}
+    },
+    {
+      "source": "participant_list_cspd",
+      "target": "participants_cspd",
+      "type": "sent_to",
+      "attributes": {}
+    },
+    {
+      "source": "participant_list_cspd",
+      "target": "org_cia",
+      "type": "excluded_group",
+      "attributes": {
+        "note": "CIA staffers except the author"
+      }
+    },
+    {
+      "source": "aaron_levenstein",
+      "target": "center_prop_research",
+      "type": "suggested",
+      "attributes": {}
+    },
+    {
+      "source": "center_prop_research",
+      "target": "propaganda_research",
+      "type": "focuses_on",
+      "attributes": {}
+    },
+    {
+      "source": "osova",
+      "target": "nio_fdia",
+      "type": "discussed_with",
+      "attributes": {
+        "topic": "follow-on conference"
+      }
+    },
+    {
+      "source": "osova",
+      "target": "state_dept",
+      "type": "recommends",
+      "attributes": {
+        "action": "conduct academic conference",
+        "condition": "if follow-up is academic"
+      }
+    },
+    {
+      "source": "conf_followup",
+      "target": "academic_conference_type",
+      "type": "is_type",
+      "attributes": {
+        "condition": "if academic"
+      }
+    },
+    {
+      "source": "academic_conference_type",
+      "target": "domestic_sensitivities",
+      "type": "should_deal_with",
+      "attributes": {}
+    },
+    {
+      "source": "cia_document_0043_7",
+      "target": "article_disinfo_blitz",
+      "type": "contains",
+      "attributes": {}
+    },
+    {
+      "source": "article_disinfo_blitz",
+      "target": "bill_gertz",
+      "type": "authored_by",
+      "attributes": {}
+    },
+    {
+      "source": "article_disinfo_blitz",
+      "target": "washington_times",
+      "type": "published_in",
+      "attributes": {}
+    },
+    {
+      "source": "article_disinfo_blitz",
+      "target": "ap",
+      "type": "associated_with_source",
+      "attributes": {}
+    },
+    {
+      "source": "bill_gertz",
+      "target": "ladislav_bittman",
+      "type": "interviewed",
+      "attributes": {}
+    },
+    {
+      "source": "ladislav_bittman",
+      "target": "czechoslovakia_invasion_1968",
+      "type": "defected_after",
+      "attributes": {}
+    },
+    {
+      "source": "ladislav_bittman",
+      "target": "east_coast_university",
+      "type": "teaches_at",
+      "attributes": {
+        "under_assumed_name": "true"
+      }
+    },
+    {
+      "source": "ladislav_bittman",
+      "target": "disinformation",
+      "type": "is_specialist_in",
+      "attributes": {}
+    },
+    {
+      "source": "ladislav_bittman",
+      "target": "the_kgb_and_disinformation_book",
+      "type": "authored",
+      "attributes": {}
+    },
+    {
+      "source": "the_kgb_and_disinformation_book",
+      "target": "pergammon_brassys",
+      "type": "published_by",
+      "attributes": {}
+    },
+    {
+      "source": "ladislav_bittman",
+      "target": "czechoslovakian_intelligence_service",
+      "type": "served_in",
+      "attributes": {
+        "duration": "14 years"
+      }
+    },
+    {
+      "source": "ladislav_bittman",
+      "target": "prague",
+      "type": "directed_team_in",
+      "attributes": {
+        "duration": "last two years"
+      }
+    },
+    {
+      "source": "ladislav_bittman",
+      "target": "us_intelligence_services",
+      "type": "debriefed_by",
+      "attributes": {}
+    },
+    {
+      "source": "ladislav_bittman",
+      "target": "the_west",
+      "type": "provided_details_to",
+      "attributes": {
+        "topic": "how Soviets use disinformation"
+      }
+    },
+    {
+      "source": "ussr",
+      "target": "disinformation",
+      "type": "preparing_for_campaign",
+      "attributes": {
+        "scale": "massive blitz",
+        "context": "post-summit"
+      }
+    },
+    {
+      "source": "ussr",
+      "target": "summit_1985",
+      "type": "preparing_for",
+      "attributes": {}
+    },
+    {
+      "source": "ussr",
+      "target": "united_states",
+      "type": "prepares_to_blame",
+      "attributes": {
+        "condition": "if summit fails"
+      }
+    },
+    {
+      "source": "ussr",
+      "target": "disinformation",
+      "type": "uses_tactic",
+      "attributes": {}
+    },
+    {
+      "source": "disinformation",
+      "target": "united_states",
+      "type": "targets",
+      "attributes": {
+        "purpose": "discredit"
+      }
+    },
+    {
+      "source": "disinformation",
+      "target": "western_societies",
+      "type": "targets",
+      "attributes": {
+        "purpose": "influence and undermine"
+      }
+    },
+    {
+      "source": "disinformation",
+      "target": "western_individuals",
+      "type": "targets",
+      "attributes": {
+        "purpose": "influence and undermine"
+      }
+    },
+    {
+      "source": "ussr",
+      "target": "active_measures",
+      "type": "uses_program",
+      "attributes": {}
+    },
+    {
+      "source": "active_measures",
+      "target": "disinformation",
+      "type": "includes",
+      "attributes": {}
+    },
+    {
+      "source": "active_measures",
+      "target": "soviet_policy_goals",
+      "type": "implements",
+      "attributes": {}
+    },
+    {
+      "source": "ussr",
+      "target": "overt_propaganda",
+      "type": "uses",
+      "attributes": {}
+    },
+    {
+      "source": "overt_propaganda",
+      "target": "positive_soviet_image",
+      "type": "promotes",
+      "attributes": {}
+    },
+    {
+      "source": "ussr",
+      "target": "western_media",
+      "type": "manipulates",
+      "attributes": {}
+    },
+    {
+      "source": "ussr",
+      "target": "us_press",
+      "type": "manipulates",
+      "attributes": {}
+    },
+    {
+      "source": "ussr",
+      "target": "forgeries",
+      "type": "uses_tactic",
+      "attributes": {}
+    },
+    {
+      "source": "ussr",
+      "target": "agents_in_media",
+      "type": "uses_tactic",
+      "attributes": {}
+    },
+    {
+      "source": "ussr",
+      "target": "unwitting_collaborators",
+      "type": "uses_tactic",
+      "attributes": {}
+    },
+    {
+      "source": "mikhail_gorbachev",
+      "target": "ussr",
+      "type": "is_leader_of",
+      "attributes": {}
+    },
+    {
+      "source": "mikhail_gorbachev",
+      "target": "summit_1985",
+      "type": "attends",
+      "attributes": {}
+    },
+    {
+      "source": "president_reagan",
+      "target": "summit_1985",
+      "type": "attends",
+      "attributes": {}
+    },
+    {
+      "source": "summit_1985",
+      "target": "geneva",
+      "type": "located_in",
+      "attributes": {}
+    },
+    {
+      "source": "ladislav_bittman",
+      "target": "disinformation",
+      "type": "described_as",
+      "attributes": {
+        "description": "Soviet covert action"
+      }
+    },
+    {
+      "source": "kgb",
+      "target": "disinformation",
+      "type": "involved_in",
+      "attributes": {}
+    },
+    {
+      "source": "kgb",
+      "target": "active_measures",
+      "type": "involved_in",
+      "attributes": {}
+    },
+    {
+      "source": "kgb",
+      "target": "forgeries",
+      "type": "uses",
+      "attributes": {}
+    },
+    {
+      "source": "kgb",
+      "target": "major_intelligence_disaster",
+      "type": "sensitive_to",
+      "attributes": {}
+    },
+    {
+      "source": "major_intelligence_disaster",
+      "target": "agent_defection_arrest",
+      "type": "includes",
+      "attributes": {}
+    },
+    {
+      "source": "major_intelligence_disaster",
+      "target": "active_measure_exposure",
+      "type": "includes",
+      "attributes": {}
+    },
+    {
+      "source": "fbi",
+      "target": "kgb_forgery_letter_1984",
+      "type": "identified_as_fake",
+      "attributes": {}
+    },
+    {
+      "source": "kgb",
+      "target": "kgb_forgery_letter_1984",
+      "type": "created",
+      "attributes": {}
+    },
+    {
+      "source": "kgb_forgery_letter_1984",
+      "target": "black_athletes",
+      "type": "criticized",
+      "attributes": {}
+    },
+    {
+      "source": "kgb_forgery_letter_1984",
+      "target": "third_world_countries",
+      "type": "sent_to",
+      "attributes": {}
+    },
+    {
+      "source": "kgb_forgery_letter_1984",
+      "target": "olympics_1984",
+      "type": "context_before",
+      "attributes": {}
+    },
+    {
+      "source": "kgb_forgery_letter_1984",
+      "target": "ku_klux_klan",
+      "type": "purported_source",
+      "attributes": {}
+    },
+    {
+      "source": "olympics_1984",
+      "target": "los_angeles",
+      "type": "located_in",
+      "attributes": {}
+    },
+    {
+      "source": "agents_in_media",
+      "target": "prominent_newspapers",
+      "type": "work_for",
+      "attributes": {}
+    },
+    {
+      "source": "agents_in_media",
+      "target": "broadcast_news_media",
+      "type": "work_for",
+      "attributes": {}
+    },
+    {
+      "source": "agents_in_media",
+      "target": "planted_stories",
+      "type": "report",
+      "attributes": {}
+    },
+    {
+      "source": "planted_stories",
+      "target": "us_foreign_policy",
+      "type": "damage",
+      "attributes": {}
+    },
+    {
+      "source": "planted_stories",
+      "target": "anti_soviet_public_figure",
+      "type": "target",
+      "attributes": {}
+    },
+    {
+      "source": "forgeries",
+      "target": "the_west",
+      "type": "used_against",
+      "attributes": {
+        "time_period": "1960s and early 1970s"
+      }
+    },
+    {
+      "source": "forgeries",
+      "target": "watergate_scandal",
+      "type": "declined_during",
+      "attributes": {
+        "time_period": "mid-1970s"
+      }
+    },
+    {
+      "source": "forgeries",
+      "target": "late_1970s",
+      "type": "increased_since",
+      "attributes": {}
+    },
+    {
+      "source": "ladislav_bittman",
+      "target": "disinformation",
+      "type": "recognizes_in",
+      "attributes": {
+        "location": "U.S. press"
+      }
+    },
+    {
+      "source": "us_press",
+      "target": "critical_judgment",
+      "type": "has_attribute",
+      "attributes": {}
+    },
+    {
+      "source": "us_press",
+      "target": "journalists_recruited_by_soviets",
+      "type": "contains",
+      "attributes": {}
+    },
+    {
+      "source": "journalists_recruited_by_soviets",
+      "target": "prominent_newspapers",
+      "type": "work_for",
+      "attributes": {}
+    },
+    {
+      "source": "journalists_recruited_by_soviets",
+      "target": "broadcast_news_media",
+      "type": "work_for",
+      "attributes": {}
+    }
+  ]
+}

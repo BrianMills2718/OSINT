@@ -1,0 +1,938 @@
+
+================================================================================
+DEEP INVESTIGATION DATABASE INTEGRATION TEST
+================================================================================
+
+Databases loaded: 8
+  - SAM.gov (sam)
+  - DVIDS (dvids)
+  - USAJobs (usajobs)
+  - ClearanceJobs (clearancejobs)
+  - FBI Vault (fbi_vault)
+  - Discord (discord)
+  - Twitter (twitter)
+  - Brave Search (brave_search)
+
+API keys loaded:
+  - sam: SAM-db0e***2112
+  - dvids: key-68f3***c377
+  - usajobs: HjEl/dTP***Nlc=
+  - clearancejobs: (none)
+  - brave_search: BSAlba0w***CZhH
+
+================================================================================
+Test Question: defense contractors AI security
+================================================================================
+
+[2025-10-24T09:25:27.305306] RESEARCH_STARTED: Starting deep research: defense contractors AI security
+[2025-10-24T09:25:27.305312] DECOMPOSITION_STARTED: Breaking question into research tasks...
+[2025-10-24T09:25:44.626061] TASK_CREATED: Task 0: defense contractors use of artificial intelligence security challenges
+[2025-10-24T09:25:44.626071] TASK_CREATED: Task 1: Department of Defense AI security contracting requirements
+[2025-10-24T09:25:44.626075] TASK_CREATED: Task 2: incidents breaches artificial intelligence systems at defense contractors
+[2025-10-24T09:25:44.626077] TASK_CREATED: Task 3: best practices for securing machine learning systems in defense contractors
+[2025-10-24T09:25:44.626080] TASK_CREATED: Task 4: supply chain risks third party components in defense contractor AI systems
+[2025-10-24T09:25:44.626085] DECOMPOSITION_COMPLETE: Created 5 initial tasks
+  Data: {
+  "tasks": [
+    {
+      "id": 0,
+      "query": "defense contractors use of artificial intelligence security challenges"
+    },
+    {
+      "id": 1,
+      "query": "Department of Defense AI security contracting requirements"
+    },
+    {
+      "id": 2,
+      "query": "incidents breaches artificial intelligence systems at defense contractors"
+    },
+    {
+      "id": 3,
+      "query": "best practices for securing machine learning systems in defense contractors"
+    },
+    {
+      "id": 4,
+      "query": "supply chain risks third party components in defense contractor AI systems"
+    }
+  ]
+}
+[2025-10-24T09:25:44.626124] BATCH_STARTED: Executing batch of 1 tasks in parallel
+  Data: {
+  "tasks": [
+    {
+      "id": 0,
+      "query": "defense contractors use of artificial intelligence security challenges"
+    }
+  ]
+}
+[2025-10-24T09:25:44.626140] TASK_STARTED: Executing: defense contractors use of artificial intelligence security challenges
+🔍 Researching across 8 databases...
+  Phase 1: Checking relevance...
+  ✓ 8/8 databases are relevant
+  Phase 2: Generating queries...
+    ✓ SAM.gov: Query generated
+    ✓ DVIDS: Query generated
+    ✓ USAJobs: Query generated
+    ✓ ClearanceJobs: Query generated
+    ✓ FBI Vault: Query generated
+    ✓ Discord: Query generated
+    ✓ Twitter: Query generated
+    ✓ Brave Search: Query generated
+  ✓ Generated 8 queries
+  Phase 3: Executing searches...
+DVIDS: OR query returned 0, decomposing into individual terms...
+DVIDS: Decomposed query found 277 unique results across 21 terms
+Warning: Could not parse data/exports/Project Owl: The OSINT Community - Europe, Russia, and Caucasus - ⛳🏆-eurrrrrrrrrobog [746747727160803418] (2025-09-07 to 2025-09-14).json: Expecting ',' delimiter: line 298005 column 6 (char 8716157)
+Warning: Could not parse data/exports/Project Owl: The OSINT Community - Middle East - 🌴-palm-tree-oasis [749424816255402055] (2025-08-17 to 2025-08-24).json: Expecting ',' delimiter: line 79366 column 14 (char 2343133)
+Warning: Could not parse data/exports/Project Owl: The OSINT Community - Europe, Russia, and Caucasus - ⛳🏆-eurrrrrrrrrobog [746747727160803418] (2025-08-31 to 2025-09-07).json: Expecting ',' delimiter: line 934769 column 12 (char 27265597)
+Warning: Could not parse data/exports/Project Owl: The OSINT Community - Americas - 🐸-the-swamp [1418332901220679720] (2025-10-05 to 2025-10-12).json: Expecting ',' delimiter: line 307827 column 6 (char 9291979)
+Warning: Could not parse data/exports/Project Owl: The OSINT Community - PO Community - 🏈-sporrts [741739377989779507] (2025-09-21 to 2025-09-28).json: Expecting ',' delimiter: line 266765 column 6 (char 7690159)
+============================================================== {threading.py:1030:SB} starts ===============================================================
+Warning: Could not parse data/exports/Project Owl: The OSINT Community - Americas - 🐸-deep-hurting-swamp [1418332901220679720] (2025-10-12 to 2025-10-19).json: Expecting ',' delimiter: line 1028686 column 14 (char 30910924)
+Warning: Could not parse data/exports/Project Owl: The OSINT Community - Americas - 🐸-the-swamp [1418332901220679720] (2025-09-28 to 2025-10-05).json: Expecting ',' delimiter: line 30157 column 12 (char 920116)
+
+start error
+
+X11 display failed! Will use regular xvfb!
+Warning: Could not parse data/exports/Project Owl: The OSINT Community - Americas - north-america [715937915112521770] (2025-09-28 to 2025-10-05).json: Expecting ',' delimiter: line 259490 column 12 (char 7865521)
+Warning: Could not parse data/exports/Project Owl: The OSINT Community - Americas - 🐸-the-swamp [1418332901220679720] (2025-10-12 to 2025-10-19).json: Expecting ',' delimiter: line 265672 column 6 (char 7939300)
+Warning: Could not parse data/exports/Project Owl: The OSINT Community - Middle East - 🌴-palm-tree-oasis [749424816255402055] (2025-08-10 to 2025-08-17).json: Expecting ',' delimiter: line 263795 column 12 (char 7636281)
+Warning: Could not parse data/exports/Bellingcat - ・━━ Server info - announcements [709768274031935560].json: Expecting ',' delimiter: line 77762 column 6 (char 3071942)
+========================================================== {threading.py:1030:SB} passed in 8.90s ==========================================================
+    ✓ SAM.gov: 0 results (3926ms)
+    ✓ DVIDS: 277 results (7602ms)
+    ✓ USAJobs: 0 results (643ms)
+    ✓ ClearanceJobs: 52815 results (11695ms)
+    ✓ FBI Vault: 15 results (11498ms)
+    ✓ Discord: 41 results (5679ms)
+    ✗ Twitter: 0 results (0ms)
+    ✓ Brave Search: 15 results (1104ms)
+✓ Completed in 48.8s
+🔍 Researching across 8 databases...
+  Phase 1: Checking relevance...
+  ✓ 8/8 databases are relevant
+  Phase 2: Generating queries...
+    ✓ SAM.gov: Query generated
+    ✓ DVIDS: Query generated
+    ✓ USAJobs: Query generated
+    ✓ ClearanceJobs: Query generated
+    ✓ FBI Vault: Query generated
+    ✓ Discord: Query generated
+    ✓ Twitter: Query generated
+    ✓ Brave Search: Query generated
+  ✓ Generated 8 queries
+  Phase 3: Executing searches...
+============================================================== {threading.py:1030:SB} starts ===============================================================
+
+start error
+
+X11 display failed! Will use regular xvfb!
+Warning: Could not parse data/exports/Project Owl: The OSINT Community - Europe, Russia, and Caucasus - ⛳🏆-eurrrrrrrrrobog [746747727160803418] (2025-09-07 to 2025-09-14).json: Expecting ',' delimiter: line 298005 column 6 (char 8716157)
+Warning: Could not parse data/exports/Project Owl: The OSINT Community - Middle East - 🌴-palm-tree-oasis [749424816255402055] (2025-08-17 to 2025-08-24).json: Expecting ',' delimiter: line 79366 column 14 (char 2343133)
+Warning: Could not parse data/exports/Project Owl: The OSINT Community - Europe, Russia, and Caucasus - ⛳🏆-eurrrrrrrrrobog [746747727160803418] (2025-08-31 to 2025-09-07).json: Expecting ',' delimiter: line 934769 column 12 (char 27265597)
+Warning: Could not parse data/exports/Project Owl: The OSINT Community - Americas - 🐸-the-swamp [1418332901220679720] (2025-10-05 to 2025-10-12).json: Expecting ',' delimiter: line 307827 column 6 (char 9291979)
+Warning: Could not parse data/exports/Project Owl: The OSINT Community - PO Community - 🏈-sporrts [741739377989779507] (2025-09-21 to 2025-09-28).json: Expecting ',' delimiter: line 266765 column 6 (char 7690159)
+Warning: Could not parse data/exports/Project Owl: The OSINT Community - Americas - 🐸-deep-hurting-swamp [1418332901220679720] (2025-10-12 to 2025-10-19).json: Expecting ',' delimiter: line 1102293 column 12 (char 33139354)
+Warning: Could not parse data/exports/Project Owl: The OSINT Community - Americas - 🐸-the-swamp [1418332901220679720] (2025-09-28 to 2025-10-05).json: Expecting ',' delimiter: line 30157 column 12 (char 920116)
+Warning: Could not parse data/exports/Project Owl: The OSINT Community - Americas - north-america [715937915112521770] (2025-09-28 to 2025-10-05).json: Expecting ',' delimiter: line 259490 column 12 (char 7865521)
+Warning: Could not parse data/exports/Project Owl: The OSINT Community - Americas - 🐸-the-swamp [1418332901220679720] (2025-10-12 to 2025-10-19).json: Expecting ',' delimiter: line 265672 column 6 (char 7939300)
+Warning: Could not parse data/exports/Project Owl: The OSINT Community - Middle East - 🌴-palm-tree-oasis [749424816255402055] (2025-08-10 to 2025-08-17).json: Expecting ',' delimiter: line 263795 column 12 (char 7636281)
+Warning: Could not parse data/exports/Bellingcat - ・━━ Server info - announcements [709768274031935560].json: Expecting ',' delimiter: line 77762 column 6 (char 3071942)
+========================================================== {threading.py:1030:SB} passed in 7.54s ==========================================================
+    ✗ SAM.gov: 0 results (31684ms)
+    ✗ DVIDS: 0 results (261ms)
+    ✓ USAJobs: 0 results (483ms)
+    ✓ ClearanceJobs: 19749 results (10058ms)
+    ✓ FBI Vault: 10 results (7610ms)
+    ✓ Discord: 21 results (5738ms)
+    ✗ Twitter: 0 results (0ms)
+    ✓ Brave Search: 10 results (943ms)
+✓ Completed in 67.3s
+🔍 Researching across 8 databases...
+  Phase 1: Checking relevance...
+  ✓ 8/8 databases are relevant
+  Phase 2: Generating queries...
+    ✓ SAM.gov: Query generated
+    ✓ DVIDS: Query generated
+    ✓ USAJobs: Query generated
+    ✓ ClearanceJobs: Query generated
+    ✓ FBI Vault: Query generated
+    ✓ Discord: Query generated
+    ✓ Twitter: Query generated
+    ✓ Brave Search: Query generated
+  ✓ Generated 8 queries
+  Phase 3: Executing searches...
+============================================================== {threading.py:1030:SB} starts ===============================================================
+
+start error
+
+X11 display failed! Will use regular xvfb!
+Warning: Could not parse data/exports/Project Owl: The OSINT Community - Europe, Russia, and Caucasus - ⛳🏆-eurrrrrrrrrobog [746747727160803418] (2025-09-07 to 2025-09-14).json: Expecting ',' delimiter: line 298005 column 6 (char 8716157)
+Warning: Could not parse data/exports/Project Owl: The OSINT Community - Middle East - 🌴-palm-tree-oasis [749424816255402055] (2025-08-17 to 2025-08-24).json: Expecting ',' delimiter: line 79366 column 14 (char 2343133)
+Warning: Could not parse data/exports/Project Owl: The OSINT Community - Europe, Russia, and Caucasus - ⛳🏆-eurrrrrrrrrobog [746747727160803418] (2025-08-31 to 2025-09-07).json: Expecting ',' delimiter: line 934769 column 12 (char 27265597)
+Warning: Could not parse data/exports/Project Owl: The OSINT Community - Americas - 🐸-the-swamp [1418332901220679720] (2025-10-05 to 2025-10-12).json: Expecting ',' delimiter: line 307827 column 6 (char 9291979)
+Warning: Could not parse data/exports/Project Owl: The OSINT Community - PO Community - 🏈-sporrts [741739377989779507] (2025-09-21 to 2025-09-28).json: Expecting ',' delimiter: line 266765 column 6 (char 7690159)
+Warning: Could not parse data/exports/Project Owl: The OSINT Community - Americas - 🐸-deep-hurting-swamp [1418332901220679720] (2025-10-12 to 2025-10-19).json: Expecting ',' delimiter: line 1141418 column 12 (char 34332045)
+Warning: Could not parse data/exports/Project Owl: The OSINT Community - Americas - 🐸-the-swamp [1418332901220679720] (2025-09-28 to 2025-10-05).json: Expecting ',' delimiter: line 30157 column 12 (char 920116)
+Warning: Could not parse data/exports/Project Owl: The OSINT Community - Americas - north-america [715937915112521770] (2025-09-28 to 2025-10-05).json: Expecting ',' delimiter: line 259490 column 12 (char 7865521)
+Warning: Could not parse data/exports/Project Owl: The OSINT Community - Americas - 🐸-the-swamp [1418332901220679720] (2025-10-12 to 2025-10-19).json: Expecting ',' delimiter: line 265672 column 6 (char 7939300)
+Warning: Could not parse data/exports/Project Owl: The OSINT Community - Middle East - 🌴-palm-tree-oasis [749424816255402055] (2025-08-10 to 2025-08-17).json: Expecting ',' delimiter: line 263795 column 12 (char 7636281)
+Warning: Could not parse data/exports/Bellingcat - ・━━ Server info - announcements [709768274031935560].json: Expecting ',' delimiter: line 77762 column 6 (char 3071942)
+========================================================== {threading.py:1030:SB} passed in 7.54s ==========================================================
+    ✓ SAM.gov: 0 results (3984ms)
+    ✗ DVIDS: 0 results (227ms)
+    ✓ USAJobs: 0 results (508ms)
+    ✓ ClearanceJobs: 3 results (9929ms)
+    ✓ FBI Vault: 10 results (7620ms)
+    ✓ Discord: 1 results (5832ms)
+    ✗ Twitter: 0 results (0ms)
+    ✓ Brave Search: 10 results (949ms)
+✓ Completed in 40.2s
+🔍 Researching across 8 databases...
+  Phase 1: Checking relevance...
+  ✓ 8/8 databases are relevant
+  Phase 2: Generating queries...
+
+Give Feedback / Get Help: https://github.com/BerriAI/litellm/issues/new
+LiteLLM.Info: If you need to debug this error, use `litellm._turn_on_debug()'.
+
+⚠️ Query generation error for Twitter: All models failed. Last error from gpt-5-mini: litellm.ServiceUnavailableError: ServiceUnavailableError: OpenAIException - upstream connect error or disconnect/reset before headers. reset reason: connection termination
+    ✓ SAM.gov: Query generated
+    ✓ DVIDS: Query generated
+    ✓ USAJobs: Query generated
+    ✓ ClearanceJobs: Query generated
+    ✓ FBI Vault: Query generated
+    ✓ Discord: Query generated
+    ✗ Twitter: ERROR - generate_query() returned None (prompt regression or LLM failure)
+ERROR:root:CRITICAL: Integration Twitter returned None for query: 'defense contractors use of artificial intelligence security challenges AND 3rd Network Battalion (U.S. Army)'. This should NEVER happen - indicates prompt regression, LLM failure, or uncaught exception. Check integration code and LLM responses.
+    ✓ Brave Search: Query generated
+  ✓ Generated 7 queries
+  Phase 3: Executing searches...
+============================================================== {threading.py:1030:SB} starts ===============================================================
+
+start error
+
+X11 display failed! Will use regular xvfb!
+Warning: Could not parse data/exports/Project Owl: The OSINT Community - Europe, Russia, and Caucasus - ⛳🏆-eurrrrrrrrrobog [746747727160803418] (2025-09-07 to 2025-09-14).json: Expecting ',' delimiter: line 298005 column 6 (char 8716157)
+Warning: Could not parse data/exports/Project Owl: The OSINT Community - Middle East - 🌴-palm-tree-oasis [749424816255402055] (2025-08-17 to 2025-08-24).json: Expecting ',' delimiter: line 79366 column 14 (char 2343133)
+Warning: Could not parse data/exports/Project Owl: The OSINT Community - Europe, Russia, and Caucasus - ⛳🏆-eurrrrrrrrrobog [746747727160803418] (2025-08-31 to 2025-09-07).json: Expecting ',' delimiter: line 934769 column 12 (char 27265597)
+Warning: Could not parse data/exports/Project Owl: The OSINT Community - Americas - 🐸-the-swamp [1418332901220679720] (2025-10-05 to 2025-10-12).json: Expecting ',' delimiter: line 307827 column 6 (char 9291979)
+Warning: Could not parse data/exports/Project Owl: The OSINT Community - PO Community - 🏈-sporrts [741739377989779507] (2025-09-21 to 2025-09-28).json: Expecting ',' delimiter: line 266765 column 6 (char 7690159)
+Warning: Could not parse data/exports/Project Owl: The OSINT Community - Americas - 🐸-deep-hurting-swamp [1418332901220679720] (2025-10-12 to 2025-10-19).json: Expecting ',' delimiter: line 1217008 column 12 (char 36585451)
+Warning: Could not parse data/exports/Project Owl: The OSINT Community - Americas - 🐸-the-swamp [1418332901220679720] (2025-09-28 to 2025-10-05).json: Expecting ',' delimiter: line 30157 column 12 (char 920116)
+Warning: Could not parse data/exports/Project Owl: The OSINT Community - Americas - north-america [715937915112521770] (2025-09-28 to 2025-10-05).json: Expecting ',' delimiter: line 259490 column 12 (char 7865521)
+Warning: Could not parse data/exports/Project Owl: The OSINT Community - Americas - 🐸-the-swamp [1418332901220679720] (2025-10-12 to 2025-10-19).json: Expecting ',' delimiter: line 265672 column 6 (char 7939300)
+Warning: Could not parse data/exports/Project Owl: The OSINT Community - Middle East - 🌴-palm-tree-oasis [749424816255402055] (2025-08-10 to 2025-08-17).json: Expecting ',' delimiter: line 263795 column 12 (char 7636281)
+Warning: Could not parse data/exports/Bellingcat - ・━━ Server info - announcements [709768274031935560].json: Expecting ',' delimiter: line 77762 column 6 (char 3071942)
+========================================================== {threading.py:1030:SB} passed in 7.18s ==========================================================
+    ✓ SAM.gov: 0 results (4051ms)
+    ✗ DVIDS: 0 results (280ms)
+    ✓ USAJobs: 0 results (495ms)
+    ✓ ClearanceJobs: 33 results (9819ms)
+    ✓ FBI Vault: 10 results (7250ms)
+    ✓ Discord: 0 results (5569ms)
+    ✓ Brave Search: 10 results (993ms)
+✓ Completed in 56.7s
+🔍 Researching across 8 databases...
+  Phase 1: Checking relevance...
+  ✓ 8/8 databases are relevant
+  Phase 2: Generating queries...
+    ✓ SAM.gov: Query generated
+    ✓ DVIDS: Query generated
+    ✓ USAJobs: Query generated
+    ✓ ClearanceJobs: Query generated
+    ✓ FBI Vault: Query generated
+    ✓ Discord: Query generated
+    ✓ Twitter: Query generated
+    ✓ Brave Search: Query generated
+  ✓ Generated 8 queries
+  Phase 3: Executing searches...
+DVIDS: OR query returned 0, decomposing into individual terms...
+DVIDS: Decomposed query found 3 unique results across 6 terms
+============================================================== {threading.py:1030:SB} starts ===============================================================
+
+start error
+
+X11 display failed! Will use regular xvfb!
+Warning: Could not parse data/exports/Project Owl: The OSINT Community - Europe, Russia, and Caucasus - ⛳🏆-eurrrrrrrrrobog [746747727160803418] (2025-09-07 to 2025-09-14).json: Expecting ',' delimiter: line 298005 column 6 (char 8716157)
+Warning: Could not parse data/exports/Project Owl: The OSINT Community - Middle East - 🌴-palm-tree-oasis [749424816255402055] (2025-08-17 to 2025-08-24).json: Expecting ',' delimiter: line 79366 column 14 (char 2343133)
+Warning: Could not parse data/exports/Project Owl: The OSINT Community - Europe, Russia, and Caucasus - ⛳🏆-eurrrrrrrrrobog [746747727160803418] (2025-08-31 to 2025-09-07).json: Expecting ',' delimiter: line 934769 column 12 (char 27265597)
+Warning: Could not parse data/exports/Project Owl: The OSINT Community - Americas - 🐸-the-swamp [1418332901220679720] (2025-10-05 to 2025-10-12).json: Expecting ',' delimiter: line 307827 column 6 (char 9291979)
+Warning: Could not parse data/exports/Project Owl: The OSINT Community - PO Community - 🏈-sporrts [741739377989779507] (2025-09-21 to 2025-09-28).json: Expecting ',' delimiter: line 266765 column 6 (char 7690159)
+Warning: Could not parse data/exports/Project Owl: The OSINT Community - Americas - 🐸-the-swamp [1418332901220679720] (2025-09-28 to 2025-10-05).json: Expecting ',' delimiter: line 30157 column 12 (char 920116)
+Warning: Could not parse data/exports/Project Owl: The OSINT Community - Americas - north-america [715937915112521770] (2025-09-28 to 2025-10-05).json: Expecting ',' delimiter: line 259490 column 12 (char 7865521)
+Warning: Could not parse data/exports/Project Owl: The OSINT Community - Americas - 🐸-the-swamp [1418332901220679720] (2025-10-12 to 2025-10-19).json: Expecting ',' delimiter: line 265672 column 6 (char 7939300)
+Warning: Could not parse data/exports/Project Owl: The OSINT Community - Middle East - 🌴-palm-tree-oasis [749424816255402055] (2025-08-10 to 2025-08-17).json: Expecting ',' delimiter: line 263795 column 12 (char 7636281)
+Warning: Could not parse data/exports/Bellingcat - ・━━ Server info - announcements [709768274031935560].json: Expecting ',' delimiter: line 77762 column 6 (char 3071942)
+========================================================== {threading.py:1030:SB} passed in 7.51s ==========================================================
+    ✓ SAM.gov: 0 results (7563ms)
+    ✓ DVIDS: 3 results (2686ms)
+    ✓ USAJobs: 0 results (454ms)
+    ✓ ClearanceJobs: 33 results (10141ms)
+    ✓ FBI Vault: 10 results (7578ms)
+    ✓ Discord: 1 results (5841ms)
+    ✗ Twitter: 0 results (0ms)
+    ✓ Brave Search: 10 results (1046ms)
+✓ Completed in 45.3s
+[2025-10-24T09:30:53.984356] RELATIONSHIP_DISCOVERED: Connected: Naval Medical Center San Diego (NMCSD) <-> DoD Mentor-Protégé Program Summit 2025
+[2025-10-24T09:30:53.984417] RELATIONSHIP_DISCOVERED: Connected: Naval Medical Center San Diego (NMCSD) <-> Joint Artificial Intelligence Center (JAIC)
+[2025-10-24T09:30:53.984432] RELATIONSHIP_DISCOVERED: Connected: Naval Medical Center San Diego (NMCSD) <-> 3rd Network Battalion (U.S. Army)
+[2025-10-24T09:30:53.984443] RELATIONSHIP_DISCOVERED: Connected: Naval Medical Center San Diego (NMCSD) <-> DoD Mentor-Protégé Program
+[2025-10-24T09:30:53.984453] RELATIONSHIP_DISCOVERED: Connected: Naval Medical Center San Diego (NMCSD) <-> DoD Directive 3000.09 (Autonomy in Weapon Systems)
+[2025-10-24T09:30:53.984462] RELATIONSHIP_DISCOVERED: Connected: Naval Medical Center San Diego (NMCSD) <-> KDA Consulting (Disabled Veteran, Woman-Owned Small Business)
+[2025-10-24T09:30:53.984471] RELATIONSHIP_DISCOVERED: Connected: Naval Medical Center San Diego (NMCSD) <-> Department of Defense AI Ethics Principles
+[2025-10-24T09:30:53.984480] RELATIONSHIP_DISCOVERED: Connected: Naval Medical Center San Diego (NMCSD) <-> MITRE (MITRE Corporation)
+[2025-10-24T09:30:53.984490] RELATIONSHIP_DISCOVERED: Connected: DoD Mentor-Protégé Program Summit 2025 <-> Joint Artificial Intelligence Center (JAIC)
+[2025-10-24T09:30:53.984499] RELATIONSHIP_DISCOVERED: Connected: DoD Mentor-Protégé Program Summit 2025 <-> 3rd Network Battalion (U.S. Army)
+[2025-10-24T09:30:53.984508] RELATIONSHIP_DISCOVERED: Connected: DoD Mentor-Protégé Program Summit 2025 <-> DoD Mentor-Protégé Program
+[2025-10-24T09:30:53.984516] RELATIONSHIP_DISCOVERED: Connected: DoD Mentor-Protégé Program Summit 2025 <-> DoD Directive 3000.09 (Autonomy in Weapon Systems)
+[2025-10-24T09:30:53.984527] RELATIONSHIP_DISCOVERED: Connected: DoD Mentor-Protégé Program Summit 2025 <-> KDA Consulting (Disabled Veteran, Woman-Owned Small Business)
+[2025-10-24T09:30:53.984537] RELATIONSHIP_DISCOVERED: Connected: DoD Mentor-Protégé Program Summit 2025 <-> Department of Defense AI Ethics Principles
+[2025-10-24T09:30:53.984545] RELATIONSHIP_DISCOVERED: Connected: DoD Mentor-Protégé Program Summit 2025 <-> MITRE (MITRE Corporation)
+[2025-10-24T09:30:53.984554] RELATIONSHIP_DISCOVERED: Connected: Joint Artificial Intelligence Center (JAIC) <-> 3rd Network Battalion (U.S. Army)
+[2025-10-24T09:30:53.984564] RELATIONSHIP_DISCOVERED: Connected: Joint Artificial Intelligence Center (JAIC) <-> DoD Mentor-Protégé Program
+[2025-10-24T09:30:53.984572] RELATIONSHIP_DISCOVERED: Connected: Joint Artificial Intelligence Center (JAIC) <-> DoD Directive 3000.09 (Autonomy in Weapon Systems)
+[2025-10-24T09:30:53.984583] RELATIONSHIP_DISCOVERED: Connected: Joint Artificial Intelligence Center (JAIC) <-> KDA Consulting (Disabled Veteran, Woman-Owned Small Business)
+[2025-10-24T09:30:53.984592] RELATIONSHIP_DISCOVERED: Connected: Joint Artificial Intelligence Center (JAIC) <-> Department of Defense AI Ethics Principles
+[2025-10-24T09:30:53.984601] RELATIONSHIP_DISCOVERED: Connected: Joint Artificial Intelligence Center (JAIC) <-> MITRE (MITRE Corporation)
+[2025-10-24T09:30:53.984610] RELATIONSHIP_DISCOVERED: Connected: 3rd Network Battalion (U.S. Army) <-> DoD Mentor-Protégé Program
+[2025-10-24T09:30:53.984618] RELATIONSHIP_DISCOVERED: Connected: 3rd Network Battalion (U.S. Army) <-> DoD Directive 3000.09 (Autonomy in Weapon Systems)
+[2025-10-24T09:30:53.984627] RELATIONSHIP_DISCOVERED: Connected: 3rd Network Battalion (U.S. Army) <-> KDA Consulting (Disabled Veteran, Woman-Owned Small Business)
+[2025-10-24T09:30:53.984635] RELATIONSHIP_DISCOVERED: Connected: 3rd Network Battalion (U.S. Army) <-> Department of Defense AI Ethics Principles
+[2025-10-24T09:30:53.984643] RELATIONSHIP_DISCOVERED: Connected: 3rd Network Battalion (U.S. Army) <-> MITRE (MITRE Corporation)
+[2025-10-24T09:30:53.984651] RELATIONSHIP_DISCOVERED: Connected: DoD Mentor-Protégé Program <-> DoD Directive 3000.09 (Autonomy in Weapon Systems)
+[2025-10-24T09:30:53.984660] RELATIONSHIP_DISCOVERED: Connected: DoD Mentor-Protégé Program <-> KDA Consulting (Disabled Veteran, Woman-Owned Small Business)
+[2025-10-24T09:30:53.984669] RELATIONSHIP_DISCOVERED: Connected: DoD Mentor-Protégé Program <-> Department of Defense AI Ethics Principles
+[2025-10-24T09:30:53.984677] RELATIONSHIP_DISCOVERED: Connected: DoD Mentor-Protégé Program <-> MITRE (MITRE Corporation)
+[2025-10-24T09:30:53.984685] RELATIONSHIP_DISCOVERED: Connected: DoD Directive 3000.09 (Autonomy in Weapon Systems) <-> KDA Consulting (Disabled Veteran, Woman-Owned Small Business)
+[2025-10-24T09:30:53.984695] RELATIONSHIP_DISCOVERED: Connected: DoD Directive 3000.09 (Autonomy in Weapon Systems) <-> Department of Defense AI Ethics Principles
+[2025-10-24T09:30:53.984703] RELATIONSHIP_DISCOVERED: Connected: DoD Directive 3000.09 (Autonomy in Weapon Systems) <-> MITRE (MITRE Corporation)
+[2025-10-24T09:30:53.984712] RELATIONSHIP_DISCOVERED: Connected: KDA Consulting (Disabled Veteran, Woman-Owned Small Business) <-> Department of Defense AI Ethics Principles
+[2025-10-24T09:30:53.984720] RELATIONSHIP_DISCOVERED: Connected: KDA Consulting (Disabled Veteran, Woman-Owned Small Business) <-> MITRE (MITRE Corporation)
+[2025-10-24T09:30:53.984729] RELATIONSHIP_DISCOVERED: Connected: Department of Defense AI Ethics Principles <-> MITRE (MITRE Corporation)
+[2025-10-24T09:30:53.984752] TASK_COMPLETED: Found 176 results (156 gov DBs + 20 web) across 2 phases
+  Data: {
+  "total_results": 176,
+  "government_databases": 156,
+  "web_search": 20,
+  "entities": [
+    "Naval Medical Center San Diego (NMCSD)",
+    "DoD Mentor-Prot\u00e9g\u00e9 Program Summit 2025",
+    "Joint Artificial Intelligence Center (JAIC)",
+    "3rd Network Battalion (U.S. Army)",
+    "DoD Mentor-Prot\u00e9g\u00e9 Program",
+    "DoD Directive 3000.09 (Autonomy in Weapon Systems)",
+    "KDA Consulting (Disabled Veteran, Woman-Owned Small Business)",
+    "Department of Defense AI Ethics Principles",
+    "MITRE (MITRE Corporation)"
+  ],
+  "quality": 0.7500000000000001
+}
+[2025-10-24T09:30:53.984936] BATCH_COMPLETE: Batch complete: 1/1 succeeded
+  Data: {
+  "successful": 1,
+  "failed": 0
+}
+[2025-10-24T09:30:53.985002] BATCH_STARTED: Executing batch of 1 tasks in parallel
+  Data: {
+  "tasks": [
+    {
+      "id": 1,
+      "query": "Department of Defense AI security contracting requirements"
+    }
+  ]
+}
+[2025-10-24T09:30:53.985036] TASK_STARTED: Executing: Department of Defense AI security contracting requirements
+🔍 Researching across 8 databases...
+  Phase 1: Checking relevance...
+  ✓ 8/8 databases are relevant
+  Phase 2: Generating queries...
+    ✓ SAM.gov: Query generated
+    ✓ DVIDS: Query generated
+    ✓ USAJobs: Query generated
+    ✓ ClearanceJobs: Query generated
+    ✓ FBI Vault: Query generated
+    ✓ Discord: Query generated
+    ✓ Twitter: Query generated
+    ✓ Brave Search: Query generated
+  ✓ Generated 8 queries
+  Phase 3: Executing searches...
+SAM.gov rate limit hit, retrying in 2s...
+SAM.gov rate limit hit, retrying in 4s...
+DVIDS: OR query returned 0, decomposing into individual terms...
+DVIDS: Decomposed query found 89 unique results across 10 terms
+============================================================== {threading.py:1030:SB} starts ===============================================================
+
+start error
+
+X11 display failed! Will use regular xvfb!
+Warning: Could not parse data/exports/Project Owl: The OSINT Community - Europe, Russia, and Caucasus - ⛳🏆-eurrrrrrrrrobog [746747727160803418] (2025-09-07 to 2025-09-14).json: Expecting ',' delimiter: line 298005 column 6 (char 8716157)
+Warning: Could not parse data/exports/Project Owl: The OSINT Community - Middle East - 🌴-palm-tree-oasis [749424816255402055] (2025-08-17 to 2025-08-24).json: Expecting ',' delimiter: line 79366 column 14 (char 2343133)
+Warning: Could not parse data/exports/Project Owl: The OSINT Community - Europe, Russia, and Caucasus - ⛳🏆-eurrrrrrrrrobog [746747727160803418] (2025-08-31 to 2025-09-07).json: Expecting ',' delimiter: line 934769 column 12 (char 27265597)
+Warning: Could not parse data/exports/Project Owl: The OSINT Community - Americas - 🐸-the-swamp [1418332901220679720] (2025-10-05 to 2025-10-12).json: Expecting ',' delimiter: line 307827 column 6 (char 9291979)
+Warning: Could not parse data/exports/Project Owl: The OSINT Community - PO Community - 🏈-sporrts [741739377989779507] (2025-09-21 to 2025-09-28).json: Expecting ',' delimiter: line 266765 column 6 (char 7690159)
+Warning: Could not parse data/exports/Project Owl: The OSINT Community - Americas - 🐸-the-swamp [1418332901220679720] (2025-09-28 to 2025-10-05).json: Expecting ',' delimiter: line 30157 column 12 (char 920116)
+Warning: Could not parse data/exports/Project Owl: The OSINT Community - Americas - north-america [715937915112521770] (2025-09-28 to 2025-10-05).json: Expecting ',' delimiter: line 259490 column 12 (char 7865521)
+Warning: Could not parse data/exports/Project Owl: The OSINT Community - Americas - 🐸-the-swamp [1418332901220679720] (2025-10-12 to 2025-10-19).json: Expecting ',' delimiter: line 265672 column 6 (char 7939300)
+Warning: Could not parse data/exports/Project Owl: The OSINT Community - Middle East - 🌴-palm-tree-oasis [749424816255402055] (2025-08-10 to 2025-08-17).json: Expecting ',' delimiter: line 263795 column 12 (char 7636281)
+Warning: Could not parse data/exports/Bellingcat - ・━━ Server info - announcements [709768274031935560].json: Expecting ',' delimiter: line 77762 column 6 (char 3071942)
+========================================================== {threading.py:1030:SB} passed in 7.77s ==========================================================
+    ✗ SAM.gov: 0 results (7195ms)
+    ✓ DVIDS: 89 results (3985ms)
+    ✓ USAJobs: 0 results (525ms)
+    ✓ ClearanceJobs: 52815 results (10311ms)
+    ✓ FBI Vault: 15 results (7844ms)
+    ✓ Discord: 5 results (5836ms)
+    ✗ Twitter: 0 results (0ms)
+    ✓ Brave Search: 15 results (1063ms)
+✓ Completed in 45.5s
+🔍 Researching across 8 databases...
+  Phase 1: Checking relevance...
+  ✓ 8/8 databases are relevant
+  Phase 2: Generating queries...
+    ✓ SAM.gov: Query generated
+    ✓ DVIDS: Query generated
+    ✓ USAJobs: Query generated
+    ✓ ClearanceJobs: Query generated
+    ✓ FBI Vault: Query generated
+    ✓ Discord: Query generated
+    ✓ Twitter: Query generated
+    ✓ Brave Search: Query generated
+  ✓ Generated 8 queries
+  Phase 3: Executing searches...
+SAM.gov rate limit hit, retrying in 2s...
+SAM.gov rate limit hit, retrying in 4s...
+============================================================== {threading.py:1030:SB} starts ===============================================================
+
+start error
+
+X11 display failed! Will use regular xvfb!
+Warning: Could not parse data/exports/Project Owl: The OSINT Community - Europe, Russia, and Caucasus - ⛳🏆-eurrrrrrrrrobog [746747727160803418] (2025-09-07 to 2025-09-14).json: Expecting ',' delimiter: line 298005 column 6 (char 8716157)
+Warning: Could not parse data/exports/Project Owl: The OSINT Community - Middle East - 🌴-palm-tree-oasis [749424816255402055] (2025-08-17 to 2025-08-24).json: Expecting ',' delimiter: line 79366 column 14 (char 2343133)
+Warning: Could not parse data/exports/Project Owl: The OSINT Community - Europe, Russia, and Caucasus - ⛳🏆-eurrrrrrrrrobog [746747727160803418] (2025-08-31 to 2025-09-07).json: Expecting ',' delimiter: line 934769 column 12 (char 27265597)
+Warning: Could not parse data/exports/Project Owl: The OSINT Community - Americas - 🐸-the-swamp [1418332901220679720] (2025-10-05 to 2025-10-12).json: Expecting ',' delimiter: line 307827 column 6 (char 9291979)
+Warning: Could not parse data/exports/Project Owl: The OSINT Community - PO Community - 🏈-sporrts [741739377989779507] (2025-09-21 to 2025-09-28).json: Expecting ',' delimiter: line 266765 column 6 (char 7690159)
+Warning: Could not parse data/exports/Project Owl: The OSINT Community - Americas - 🐸-the-swamp [1418332901220679720] (2025-09-28 to 2025-10-05).json: Expecting ',' delimiter: line 30157 column 12 (char 920116)
+Warning: Could not parse data/exports/Project Owl: The OSINT Community - Americas - north-america [715937915112521770] (2025-09-28 to 2025-10-05).json: Expecting ',' delimiter: line 259490 column 12 (char 7865521)
+Warning: Could not parse data/exports/Project Owl: The OSINT Community - Americas - 🐸-the-swamp [1418332901220679720] (2025-10-12 to 2025-10-19).json: Expecting ',' delimiter: line 265672 column 6 (char 7939300)
+Warning: Could not parse data/exports/Project Owl: The OSINT Community - Middle East - 🌴-palm-tree-oasis [749424816255402055] (2025-08-10 to 2025-08-17).json: Expecting ',' delimiter: line 263795 column 12 (char 7636281)
+Warning: Could not parse data/exports/Bellingcat - ・━━ Server info - announcements [709768274031935560].json: Expecting ',' delimiter: line 77762 column 6 (char 3071942)
+Warning: Could not parse data/exports/Project Owl: The OSINT Community - Europe, Russia, and Caucasus - ⛳🏆-eurrrrrrrrrobog [746747727160803418] (2025-10-12 to 2025-10-19).json: Expecting ',' delimiter: line 79068 column 6 (char 2327357)
+========================================================== {threading.py:1030:SB} passed in 7.46s ==========================================================
+    ✗ SAM.gov: 0 results (8705ms)
+    ✗ DVIDS: 0 results (208ms)
+    ✓ USAJobs: 0 results (730ms)
+    ✓ ClearanceJobs: 5 results (10209ms)
+    ✓ FBI Vault: 10 results (7535ms)
+    ✓ Discord: 7 results (5869ms)
+    ✗ Twitter: 0 results (0ms)
+    ✓ Brave Search: 10 results (935ms)
+✓ Completed in 47.2s
+🔍 Researching across 8 databases...
+  Phase 1: Checking relevance...
+  ✓ 8/8 databases are relevant
+  Phase 2: Generating queries...
+    ✓ SAM.gov: Query generated
+    ✓ DVIDS: Query generated
+    ✓ USAJobs: Query generated
+    ✓ ClearanceJobs: Query generated
+    ✓ FBI Vault: Query generated
+    ✓ Discord: Query generated
+    ✓ Twitter: Query generated
+    ✓ Brave Search: Query generated
+  ✓ Generated 8 queries
+  Phase 3: Executing searches...
+SAM.gov rate limit hit, retrying in 2s...
+SAM.gov rate limit hit, retrying in 4s...
+============================================================== {threading.py:1030:SB} starts ===============================================================
+
+start error
+
+X11 display failed! Will use regular xvfb!
+Warning: Could not parse data/exports/Project Owl: The OSINT Community - Europe, Russia, and Caucasus - ⛳🏆-eurrrrrrrrrobog [746747727160803418] (2025-09-07 to 2025-09-14).json: Expecting ',' delimiter: line 298005 column 6 (char 8716157)
+Warning: Could not parse data/exports/Project Owl: The OSINT Community - Middle East - 🌴-palm-tree-oasis [749424816255402055] (2025-08-17 to 2025-08-24).json: Expecting ',' delimiter: line 79366 column 14 (char 2343133)
+Warning: Could not parse data/exports/Project Owl: The OSINT Community - Europe, Russia, and Caucasus - ⛳🏆-eurrrrrrrrrobog [746747727160803418] (2025-08-31 to 2025-09-07).json: Expecting ',' delimiter: line 934769 column 12 (char 27265597)
+Warning: Could not parse data/exports/Project Owl: The OSINT Community - Americas - 🐸-the-swamp [1418332901220679720] (2025-10-05 to 2025-10-12).json: Expecting ',' delimiter: line 307827 column 6 (char 9291979)
+Warning: Could not parse data/exports/Project Owl: The OSINT Community - PO Community - 🏈-sporrts [741739377989779507] (2025-09-21 to 2025-09-28).json: Expecting ',' delimiter: line 266765 column 6 (char 7690159)
+Warning: Could not parse data/exports/Project Owl: The OSINT Community - Americas - 🐸-the-swamp [1418332901220679720] (2025-09-28 to 2025-10-05).json: Expecting ',' delimiter: line 30157 column 12 (char 920116)
+Warning: Could not parse data/exports/Project Owl: The OSINT Community - Americas - north-america [715937915112521770] (2025-09-28 to 2025-10-05).json: Expecting ',' delimiter: line 259490 column 12 (char 7865521)
+Warning: Could not parse data/exports/Project Owl: The OSINT Community - Americas - 🐸-the-swamp [1418332901220679720] (2025-10-12 to 2025-10-19).json: Expecting ',' delimiter: line 265672 column 6 (char 7939300)
+Warning: Could not parse data/exports/Project Owl: The OSINT Community - Middle East - 🌴-palm-tree-oasis [749424816255402055] (2025-08-10 to 2025-08-17).json: Expecting ',' delimiter: line 263795 column 12 (char 7636281)
+Warning: Could not parse data/exports/Bellingcat - ・━━ Server info - announcements [709768274031935560].json: Expecting ',' delimiter: line 77762 column 6 (char 3071942)
+Warning: Could not parse data/exports/Project Owl: The OSINT Community - Europe, Russia, and Caucasus - ⛳🏆-eurrrrrrrrrobog [746747727160803418] (2025-10-12 to 2025-10-19).json: Expecting ',' delimiter: line 170267 column 6 (char 5002762)
+========================================================== {threading.py:1030:SB} passed in 7.50s ==========================================================
+    ✗ SAM.gov: 0 results (7333ms)
+    ✗ DVIDS: 0 results (271ms)
+    ✓ USAJobs: 0 results (513ms)
+    ✓ ClearanceJobs: 54354 results (10178ms)
+    ✓ FBI Vault: 10 results (7582ms)
+    ✓ Discord: 58 results (5933ms)
+    ✗ Twitter: 0 results (0ms)
+    ✓ Brave Search: 10 results (969ms)
+✓ Completed in 37.6s
+🔍 Researching across 8 databases...
+  Phase 1: Checking relevance...
+  ✓ 8/8 databases are relevant
+  Phase 2: Generating queries...
+    ✓ SAM.gov: Query generated
+    ✓ DVIDS: Query generated
+    ✓ USAJobs: Query generated
+    ✓ ClearanceJobs: Query generated
+    ✓ FBI Vault: Query generated
+    ✓ Discord: Query generated
+    ✓ Twitter: Query generated
+    ✓ Brave Search: Query generated
+  ✓ Generated 8 queries
+  Phase 3: Executing searches...
+SAM.gov rate limit hit, retrying in 2s...
+SAM.gov rate limit hit, retrying in 4s...
+DVIDS: OR query returned 0, decomposing into individual terms...
+DVIDS: Decomposed query found 53 unique results across 6 terms
+============================================================== {threading.py:1030:SB} starts ===============================================================
+
+start error
+
+X11 display failed! Will use regular xvfb!
+Warning: Could not parse data/exports/Project Owl: The OSINT Community - Europe, Russia, and Caucasus - ⛳🏆-eurrrrrrrrrobog [746747727160803418] (2025-09-07 to 2025-09-14).json: Expecting ',' delimiter: line 298005 column 6 (char 8716157)
+Warning: Could not parse data/exports/Project Owl: The OSINT Community - Middle East - 🌴-palm-tree-oasis [749424816255402055] (2025-08-17 to 2025-08-24).json: Expecting ',' delimiter: line 79366 column 14 (char 2343133)
+Warning: Could not parse data/exports/Project Owl: The OSINT Community - Europe, Russia, and Caucasus - ⛳🏆-eurrrrrrrrrobog [746747727160803418] (2025-08-31 to 2025-09-07).json: Expecting ',' delimiter: line 934769 column 12 (char 27265597)
+Warning: Could not parse data/exports/Project Owl: The OSINT Community - Americas - 🐸-the-swamp [1418332901220679720] (2025-10-05 to 2025-10-12).json: Expecting ',' delimiter: line 307827 column 6 (char 9291979)
+Warning: Could not parse data/exports/Project Owl: The OSINT Community - PO Community - 🏈-sporrts [741739377989779507] (2025-09-21 to 2025-09-28).json: Expecting ',' delimiter: line 266765 column 6 (char 7690159)
+Warning: Could not parse data/exports/Project Owl: The OSINT Community - Americas - 🐸-the-swamp [1418332901220679720] (2025-09-28 to 2025-10-05).json: Expecting ',' delimiter: line 30157 column 12 (char 920116)
+Warning: Could not parse data/exports/Project Owl: The OSINT Community - Americas - north-america [715937915112521770] (2025-09-28 to 2025-10-05).json: Expecting ',' delimiter: line 259490 column 12 (char 7865521)
+Warning: Could not parse data/exports/Project Owl: The OSINT Community - Americas - 🐸-the-swamp [1418332901220679720] (2025-10-12 to 2025-10-19).json: Expecting ',' delimiter: line 265672 column 6 (char 7939300)
+Warning: Could not parse data/exports/Project Owl: The OSINT Community - Middle East - 🌴-palm-tree-oasis [749424816255402055] (2025-08-10 to 2025-08-17).json: Expecting ',' delimiter: line 263795 column 12 (char 7636281)
+Warning: Could not parse data/exports/Bellingcat - ・━━ Server info - announcements [709768274031935560].json: Expecting ',' delimiter: line 77762 column 6 (char 3071942)
+Warning: Could not parse data/exports/Project Owl: The OSINT Community - Europe, Russia, and Caucasus - ⛳🏆-eurrrrrrrrrobog [746747727160803418] (2025-10-12 to 2025-10-19).json: Expecting ',' delimiter: line 281820 column 14 (char 8326345)
+========================================================== {threading.py:1030:SB} passed in 7.59s ==========================================================
+    ✗ SAM.gov: 0 results (7262ms)
+    ✓ DVIDS: 53 results (2738ms)
+    ✓ USAJobs: 3 results (624ms)
+    ✓ ClearanceJobs: 233 results (11471ms)
+    ✓ FBI Vault: 10 results (7661ms)
+    ✓ Discord: 18 results (5771ms)
+    ✗ Twitter: 0 results (0ms)
+    ✓ Brave Search: 10 results (1010ms)
+✓ Completed in 46.3s
+🔍 Researching across 8 databases...
+  Phase 1: Checking relevance...
+  ✓ 8/8 databases are relevant
+  Phase 2: Generating queries...
+    ✓ SAM.gov: Query generated
+    ✓ DVIDS: Query generated
+    ✓ USAJobs: Query generated
+    ✓ ClearanceJobs: Query generated
+    ✓ FBI Vault: Query generated
+    ✓ Discord: Query generated
+    ✓ Twitter: Query generated
+    ✓ Brave Search: Query generated
+  ✓ Generated 8 queries
+  Phase 3: Executing searches...
+SAM.gov rate limit hit, retrying in 2s...
+SAM.gov rate limit hit, retrying in 4s...
+DVIDS: OR query returned 0, decomposing into individual terms...
+DVIDS: Decomposed query found 59 unique results across 10 terms
+============================================================== {threading.py:1030:SB} starts ===============================================================
+
+start error
+
+X11 display failed! Will use regular xvfb!
+Warning: Could not parse data/exports/Project Owl: The OSINT Community - Europe, Russia, and Caucasus - ⛳🏆-eurrrrrrrrrobog [746747727160803418] (2025-09-07 to 2025-09-14).json: Expecting ',' delimiter: line 298005 column 6 (char 8716157)
+Warning: Could not parse data/exports/Project Owl: The OSINT Community - Middle East - 🌴-palm-tree-oasis [749424816255402055] (2025-08-17 to 2025-08-24).json: Expecting ',' delimiter: line 79366 column 14 (char 2343133)
+Warning: Could not parse data/exports/Project Owl: The OSINT Community - Europe, Russia, and Caucasus - ⛳🏆-eurrrrrrrrrobog [746747727160803418] (2025-08-31 to 2025-09-07).json: Expecting ',' delimiter: line 934769 column 12 (char 27265597)
+Warning: Could not parse data/exports/Project Owl: The OSINT Community - Americas - 🐸-the-swamp [1418332901220679720] (2025-10-05 to 2025-10-12).json: Expecting ',' delimiter: line 307827 column 6 (char 9291979)
+Warning: Could not parse data/exports/Project Owl: The OSINT Community - PO Community - 🏈-sporrts [741739377989779507] (2025-09-21 to 2025-09-28).json: Expecting ',' delimiter: line 266765 column 6 (char 7690159)
+Warning: Could not parse data/exports/Project Owl: The OSINT Community - Americas - 🐸-the-swamp [1418332901220679720] (2025-09-28 to 2025-10-05).json: Expecting ',' delimiter: line 30157 column 12 (char 920116)
+Warning: Could not parse data/exports/Project Owl: The OSINT Community - Americas - north-america [715937915112521770] (2025-09-28 to 2025-10-05).json: Expecting ',' delimiter: line 259490 column 12 (char 7865521)
+Warning: Could not parse data/exports/Project Owl: The OSINT Community - Americas - 🐸-the-swamp [1418332901220679720] (2025-10-12 to 2025-10-19).json: Expecting ',' delimiter: line 265672 column 6 (char 7939300)
+Warning: Could not parse data/exports/Project Owl: The OSINT Community - Middle East - 🌴-palm-tree-oasis [749424816255402055] (2025-08-10 to 2025-08-17).json: Expecting ',' delimiter: line 263795 column 12 (char 7636281)
+Warning: Could not parse data/exports/Bellingcat - ・━━ Server info - announcements [709768274031935560].json: Expecting ',' delimiter: line 77762 column 6 (char 3071942)
+Warning: Could not parse data/exports/Project Owl: The OSINT Community - Europe, Russia, and Caucasus - ⛳🏆-eurrrrrrrrrobog [746747727160803418] (2025-10-12 to 2025-10-19).json: Expecting ',' delimiter: line 446367 column 6 (char 13177652)
+========================================================== {threading.py:1030:SB} passed in 8.91s ==========================================================
+    ✗ SAM.gov: 0 results (7186ms)
+    ✓ DVIDS: 59 results (3606ms)
+    ✓ USAJobs: 0 results (416ms)
+    ✓ ClearanceJobs: 56626 results (11487ms)
+    ✓ FBI Vault: 10 results (8974ms)
+    ✓ Discord: 3 results (7170ms)
+    ✗ Twitter: 0 results (0ms)
+    ✓ Brave Search: 10 results (981ms)
+✓ Completed in 40.6s
+[2025-10-24T09:35:00.743192] RELATIONSHIP_DISCOVERED: Connected: DoD Chief Digital and Artificial Intelligence Office (CDAO) <-> Defense Manufacturing Technology (ManTech) Program
+[2025-10-24T09:35:00.743248] RELATIONSHIP_DISCOVERED: Connected: DoD Chief Digital and Artificial Intelligence Office (CDAO) <-> Defense Counterintelligence and Security Agency (DCSA)
+[2025-10-24T09:35:00.743264] RELATIONSHIP_DISCOVERED: Connected: DoD Chief Digital and Artificial Intelligence Office (CDAO) <-> Keith DeVries
+[2025-10-24T09:35:00.743273] RELATIONSHIP_DISCOVERED: Connected: DoD Chief Digital and Artificial Intelligence Office (CDAO) <-> Randolph Air Force Base
+[2025-10-24T09:35:00.743282] RELATIONSHIP_DISCOVERED: Connected: DoD Chief Digital and Artificial Intelligence Office (CDAO) <-> NIST AI Risk Management Framework (AI RMF)
+[2025-10-24T09:35:00.743291] RELATIONSHIP_DISCOVERED: Connected: DoD Chief Digital and Artificial Intelligence Office (CDAO) <-> Insider Threat Analyst Forum
+[2025-10-24T09:35:00.743299] RELATIONSHIP_DISCOVERED: Connected: DoD Chief Digital and Artificial Intelligence Office (CDAO) <-> ManTech International Corporation
+[2025-10-24T09:35:00.743307] RELATIONSHIP_DISCOVERED: Connected: DoD Chief Digital and Artificial Intelligence Office (CDAO) <-> Defense Federal Acquisition Regulation Supplement (DFARS)
+[2025-10-24T09:35:00.743317] RELATIONSHIP_DISCOVERED: Connected: DoD Chief Digital and Artificial Intelligence Office (CDAO) <-> National Security Innovation Network (NSIN)
+[2025-10-24T09:35:00.743327] RELATIONSHIP_DISCOVERED: Connected: Defense Manufacturing Technology (ManTech) Program <-> Defense Counterintelligence and Security Agency (DCSA)
+[2025-10-24T09:35:00.743336] RELATIONSHIP_DISCOVERED: Connected: Defense Manufacturing Technology (ManTech) Program <-> Keith DeVries
+[2025-10-24T09:35:00.743344] RELATIONSHIP_DISCOVERED: Connected: Defense Manufacturing Technology (ManTech) Program <-> Randolph Air Force Base
+[2025-10-24T09:35:00.743355] RELATIONSHIP_DISCOVERED: Connected: Defense Manufacturing Technology (ManTech) Program <-> NIST AI Risk Management Framework (AI RMF)
+[2025-10-24T09:35:00.743363] RELATIONSHIP_DISCOVERED: Connected: Defense Manufacturing Technology (ManTech) Program <-> Insider Threat Analyst Forum
+[2025-10-24T09:35:00.743389] RELATIONSHIP_DISCOVERED: Connected: Defense Manufacturing Technology (ManTech) Program <-> ManTech International Corporation
+[2025-10-24T09:35:00.743403] RELATIONSHIP_DISCOVERED: Connected: Defense Manufacturing Technology (ManTech) Program <-> Defense Federal Acquisition Regulation Supplement (DFARS)
+[2025-10-24T09:35:00.743415] RELATIONSHIP_DISCOVERED: Connected: Defense Manufacturing Technology (ManTech) Program <-> National Security Innovation Network (NSIN)
+[2025-10-24T09:35:00.743426] RELATIONSHIP_DISCOVERED: Connected: Defense Counterintelligence and Security Agency (DCSA) <-> Keith DeVries
+[2025-10-24T09:35:00.743435] RELATIONSHIP_DISCOVERED: Connected: Defense Counterintelligence and Security Agency (DCSA) <-> Randolph Air Force Base
+[2025-10-24T09:35:00.743443] RELATIONSHIP_DISCOVERED: Connected: Defense Counterintelligence and Security Agency (DCSA) <-> NIST AI Risk Management Framework (AI RMF)
+[2025-10-24T09:35:00.743452] RELATIONSHIP_DISCOVERED: Connected: Defense Counterintelligence and Security Agency (DCSA) <-> Insider Threat Analyst Forum
+[2025-10-24T09:35:00.743460] RELATIONSHIP_DISCOVERED: Connected: Defense Counterintelligence and Security Agency (DCSA) <-> ManTech International Corporation
+[2025-10-24T09:35:00.743468] RELATIONSHIP_DISCOVERED: Connected: Defense Counterintelligence and Security Agency (DCSA) <-> Defense Federal Acquisition Regulation Supplement (DFARS)
+[2025-10-24T09:35:00.743477] RELATIONSHIP_DISCOVERED: Connected: Defense Counterintelligence and Security Agency (DCSA) <-> National Security Innovation Network (NSIN)
+[2025-10-24T09:35:00.743487] RELATIONSHIP_DISCOVERED: Connected: Keith DeVries <-> Randolph Air Force Base
+[2025-10-24T09:35:00.743512] RELATIONSHIP_DISCOVERED: Connected: Keith DeVries <-> NIST AI Risk Management Framework (AI RMF)
+[2025-10-24T09:35:00.743525] RELATIONSHIP_DISCOVERED: Connected: Keith DeVries <-> Insider Threat Analyst Forum
+[2025-10-24T09:35:00.743534] RELATIONSHIP_DISCOVERED: Connected: Keith DeVries <-> ManTech International Corporation
+[2025-10-24T09:35:00.743558] RELATIONSHIP_DISCOVERED: Connected: Keith DeVries <-> Defense Federal Acquisition Regulation Supplement (DFARS)
+[2025-10-24T09:35:00.743572] RELATIONSHIP_DISCOVERED: Connected: Keith DeVries <-> National Security Innovation Network (NSIN)
+[2025-10-24T09:35:00.743581] RELATIONSHIP_DISCOVERED: Connected: Randolph Air Force Base <-> NIST AI Risk Management Framework (AI RMF)
+[2025-10-24T09:35:00.743590] RELATIONSHIP_DISCOVERED: Connected: Randolph Air Force Base <-> Insider Threat Analyst Forum
+[2025-10-24T09:35:00.743614] RELATIONSHIP_DISCOVERED: Connected: Randolph Air Force Base <-> ManTech International Corporation
+[2025-10-24T09:35:00.743627] RELATIONSHIP_DISCOVERED: Connected: Randolph Air Force Base <-> Defense Federal Acquisition Regulation Supplement (DFARS)
+[2025-10-24T09:35:00.743635] RELATIONSHIP_DISCOVERED: Connected: Randolph Air Force Base <-> National Security Innovation Network (NSIN)
+[2025-10-24T09:35:00.743645] RELATIONSHIP_DISCOVERED: Connected: NIST AI Risk Management Framework (AI RMF) <-> Insider Threat Analyst Forum
+[2025-10-24T09:35:00.743670] RELATIONSHIP_DISCOVERED: Connected: NIST AI Risk Management Framework (AI RMF) <-> ManTech International Corporation
+[2025-10-24T09:35:00.743683] RELATIONSHIP_DISCOVERED: Connected: NIST AI Risk Management Framework (AI RMF) <-> Defense Federal Acquisition Regulation Supplement (DFARS)
+[2025-10-24T09:35:00.743692] RELATIONSHIP_DISCOVERED: Connected: NIST AI Risk Management Framework (AI RMF) <-> National Security Innovation Network (NSIN)
+[2025-10-24T09:35:00.743702] RELATIONSHIP_DISCOVERED: Connected: Insider Threat Analyst Forum <-> ManTech International Corporation
+[2025-10-24T09:35:00.743726] RELATIONSHIP_DISCOVERED: Connected: Insider Threat Analyst Forum <-> Defense Federal Acquisition Regulation Supplement (DFARS)
+[2025-10-24T09:35:00.743740] RELATIONSHIP_DISCOVERED: Connected: Insider Threat Analyst Forum <-> National Security Innovation Network (NSIN)
+[2025-10-24T09:35:00.743767] RELATIONSHIP_DISCOVERED: Connected: ManTech International Corporation <-> Defense Federal Acquisition Regulation Supplement (DFARS)
+[2025-10-24T09:35:00.743780] RELATIONSHIP_DISCOVERED: Connected: ManTech International Corporation <-> National Security Innovation Network (NSIN)
+[2025-10-24T09:35:00.743790] RELATIONSHIP_DISCOVERED: Connected: Defense Federal Acquisition Regulation Supplement (DFARS) <-> National Security Innovation Network (NSIN)
+[2025-10-24T09:35:00.743804] TASK_COMPLETED: Found 205 results (185 gov DBs + 20 web) across 2 phases
+  Data: {
+  "total_results": 205,
+  "government_databases": 185,
+  "web_search": 20,
+  "entities": [
+    "DoD Chief Digital and Artificial Intelligence Office (CDAO)",
+    "Defense Manufacturing Technology (ManTech) Program",
+    "Defense Counterintelligence and Security Agency (DCSA)",
+    "Keith DeVries",
+    "Randolph Air Force Base",
+    "NIST AI Risk Management Framework (AI RMF)",
+    "Insider Threat Analyst Forum",
+    "ManTech International Corporation",
+    "Defense Federal Acquisition Regulation Supplement (DFARS)",
+    "National Security Innovation Network (NSIN)"
+  ],
+  "quality": 0.7500000000000001
+}
+[2025-10-24T09:35:00.743966] BATCH_COMPLETE: Batch complete: 1/1 succeeded
+  Data: {
+  "successful": 1,
+  "failed": 0
+}
+[2025-10-24T09:35:00.744039] BATCH_STARTED: Executing batch of 1 tasks in parallel
+  Data: {
+  "tasks": [
+    {
+      "id": 2,
+      "query": "incidents breaches artificial intelligence systems at defense contractors"
+    }
+  ]
+}
+[2025-10-24T09:35:00.744108] TASK_STARTED: Executing: incidents breaches artificial intelligence systems at defense contractors
+🔍 Researching across 8 databases...
+  Phase 1: Checking relevance...
+  ✓ 8/8 databases are relevant
+  Phase 2: Generating queries...
+    ✓ SAM.gov: Query generated
+    ✓ DVIDS: Query generated
+    ✓ USAJobs: Query generated
+    ✓ ClearanceJobs: Query generated
+    ✓ FBI Vault: Query generated
+    ✓ Discord: Query generated
+    ✓ Twitter: Query generated
+    ✓ Brave Search: Query generated
+  ✓ Generated 8 queries
+  Phase 3: Executing searches...
+SAM.gov rate limit hit, retrying in 2s...
+SAM.gov rate limit hit, retrying in 4s...
+DVIDS: OR query returned 0, decomposing into individual terms...
+DVIDS: Decomposed query found 10 unique results across 6 terms
+============================================================== {threading.py:1030:SB} starts ===============================================================
+
+start error
+
+X11 display failed! Will use regular xvfb!
+Warning: Could not parse data/exports/Project Owl: The OSINT Community - Europe, Russia, and Caucasus - ⛳🏆-eurrrrrrrrrobog [746747727160803418] (2025-09-07 to 2025-09-14).json: Expecting ',' delimiter: line 298005 column 6 (char 8716157)
+Warning: Could not parse data/exports/Project Owl: The OSINT Community - Middle East - 🌴-palm-tree-oasis [749424816255402055] (2025-08-17 to 2025-08-24).json: Expecting ',' delimiter: line 79366 column 14 (char 2343133)
+Warning: Could not parse data/exports/Project Owl: The OSINT Community - Europe, Russia, and Caucasus - ⛳🏆-eurrrrrrrrrobog [746747727160803418] (2025-08-31 to 2025-09-07).json: Expecting ',' delimiter: line 934769 column 12 (char 27265597)
+Warning: Could not parse data/exports/Project Owl: The OSINT Community - Americas - 🐸-the-swamp [1418332901220679720] (2025-10-05 to 2025-10-12).json: Expecting ',' delimiter: line 307827 column 6 (char 9291979)
+Warning: Could not parse data/exports/Project Owl: The OSINT Community - PO Community - 🏈-sporrts [741739377989779507] (2025-09-21 to 2025-09-28).json: Expecting ',' delimiter: line 266765 column 6 (char 7690159)
+Warning: Could not parse data/exports/Project Owl: The OSINT Community - Americas - 🐸-the-swamp [1418332901220679720] (2025-09-28 to 2025-10-05).json: Expecting ',' delimiter: line 30157 column 12 (char 920116)
+Warning: Could not parse data/exports/Project Owl: The OSINT Community - Americas - north-america [715937915112521770] (2025-09-28 to 2025-10-05).json: Expecting ',' delimiter: line 259490 column 12 (char 7865521)
+Warning: Could not parse data/exports/Project Owl: The OSINT Community - Americas - 🐸-the-swamp [1418332901220679720] (2025-10-12 to 2025-10-19).json: Expecting ',' delimiter: line 265672 column 6 (char 7939300)
+Warning: Could not parse data/exports/Project Owl: The OSINT Community - Middle East - 🌴-palm-tree-oasis [749424816255402055] (2025-08-10 to 2025-08-17).json: Expecting ',' delimiter: line 263795 column 12 (char 7636281)
+Warning: Could not parse data/exports/Bellingcat - ・━━ Server info - announcements [709768274031935560].json: Expecting ',' delimiter: line 77762 column 6 (char 3071942)
+Warning: Could not parse data/exports/Project Owl: The OSINT Community - Europe, Russia, and Caucasus - ⛳🏆-eurrrrrrrrrobog [746747727160803418] (2025-10-12 to 2025-10-19).json: Expecting ',' delimiter: line 707951 column 6 (char 20751514)
+========================================================== {threading.py:1030:SB} passed in 9.22s ==========================================================
+    ✗ SAM.gov: 0 results (7223ms)
+    ✓ DVIDS: 10 results (2381ms)
+    ✓ USAJobs: 0 results (487ms)
+    ✓ ClearanceJobs: 23274 results (12511ms)
+    ✓ FBI Vault: 15 results (9307ms)
+    ✓ Discord: 0 results (7896ms)
+    ✗ Twitter: 0 results (0ms)
+    ✓ Brave Search: 15 results (1224ms)
+✓ Completed in 51.0s
+🔍 Researching across 8 databases...
+  Phase 1: Checking relevance...
+  ✓ 8/8 databases are relevant
+  Phase 2: Generating queries...
+    ✓ SAM.gov: Query generated
+    ✓ DVIDS: Query generated
+    ✓ USAJobs: Query generated
+    ✓ ClearanceJobs: Query generated
+    ✓ FBI Vault: Query generated
+    ✓ Discord: Query generated
+    ✓ Twitter: Query generated
+    ✓ Brave Search: Query generated
+  ✓ Generated 8 queries
+  Phase 3: Executing searches...
+SAM.gov rate limit hit, retrying in 2s...
+SAM.gov rate limit hit, retrying in 4s...
+DVIDS: OR query returned 0, decomposing into individual terms...
+DVIDS: Decomposed query found 10 unique results across 6 terms
+============================================================== {threading.py:1030:SB} starts ===============================================================
+
+start error
+
+X11 display failed! Will use regular xvfb!
+Warning: Could not parse data/exports/Project Owl: The OSINT Community - Europe, Russia, and Caucasus - ⛳🏆-eurrrrrrrrrobog [746747727160803418] (2025-09-07 to 2025-09-14).json: Expecting ',' delimiter: line 298005 column 6 (char 8716157)
+Warning: Could not parse data/exports/Project Owl: The OSINT Community - Middle East - 🌴-palm-tree-oasis [749424816255402055] (2025-08-17 to 2025-08-24).json: Expecting ',' delimiter: line 79366 column 14 (char 2343133)
+Warning: Could not parse data/exports/Project Owl: The OSINT Community - Europe, Russia, and Caucasus - ⛳🏆-eurrrrrrrrrobog [746747727160803418] (2025-08-31 to 2025-09-07).json: Expecting ',' delimiter: line 934769 column 12 (char 27265597)
+Warning: Could not parse data/exports/Project Owl: The OSINT Community - Americas - 🐸-the-swamp [1418332901220679720] (2025-10-05 to 2025-10-12).json: Expecting ',' delimiter: line 307827 column 6 (char 9291979)
+Warning: Could not parse data/exports/Project Owl: The OSINT Community - PO Community - 🏈-sporrts [741739377989779507] (2025-09-21 to 2025-09-28).json: Expecting ',' delimiter: line 266765 column 6 (char 7690159)
+Warning: Could not parse data/exports/Project Owl: The OSINT Community - Americas - 🐸-the-swamp [1418332901220679720] (2025-09-28 to 2025-10-05).json: Expecting ',' delimiter: line 30157 column 12 (char 920116)
+Warning: Could not parse data/exports/Project Owl: The OSINT Community - Americas - north-america [715937915112521770] (2025-09-28 to 2025-10-05).json: Expecting ',' delimiter: line 259490 column 12 (char 7865521)
+Warning: Could not parse data/exports/Project Owl: The OSINT Community - Americas - 🐸-the-swamp [1418332901220679720] (2025-10-12 to 2025-10-19).json: Expecting ',' delimiter: line 265672 column 6 (char 7939300)
+Warning: Could not parse data/exports/Project Owl: The OSINT Community - Middle East - 🌴-palm-tree-oasis [749424816255402055] (2025-08-10 to 2025-08-17).json: Expecting ',' delimiter: line 263795 column 12 (char 7636281)
+Warning: Could not parse data/exports/Bellingcat - ・━━ Server info - announcements [709768274031935560].json: Expecting ',' delimiter: line 77762 column 6 (char 3071942)
+Warning: Could not parse data/exports/Project Owl: The OSINT Community - Europe, Russia, and Caucasus - ⛳🏆-eurrrrrrrrrobog [746747727160803418] (2025-10-12 to 2025-10-19).json: Expecting ',' delimiter: line 990529 column 6 (char 28952747)
+========================================================== {threading.py:1030:SB} passed in 7.61s ==========================================================
+    ✗ SAM.gov: 0 results (7218ms)
+    ✓ DVIDS: 10 results (2588ms)
+    ✓ USAJobs: 0 results (422ms)
+    ✓ ClearanceJobs: 270 results (16044ms)
+    ✓ FBI Vault: 10 results (7686ms)
+    ✓ Discord: 0 results (6376ms)
+    ✗ Twitter: 0 results (0ms)
+    ✓ Brave Search: 10 results (1060ms)
+✓ Completed in 51.0s
+🔍 Researching across 8 databases...
+  Phase 1: Checking relevance...
+  ✓ 8/8 databases are relevant
+  Phase 2: Generating queries...
+    ✓ SAM.gov: Query generated
+    ✓ DVIDS: Query generated
+    ✓ USAJobs: Query generated
+    ✓ ClearanceJobs: Query generated
+    ✓ FBI Vault: Query generated
+    ✓ Discord: Query generated
+    ✓ Twitter: Query generated
+    ✓ Brave Search: Query generated
+  ✓ Generated 8 queries
+  Phase 3: Executing searches...
+SAM.gov rate limit hit, retrying in 2s...
+SAM.gov rate limit hit, retrying in 4s...
+DVIDS: OR query returned 0, decomposing into individual terms...
+DVIDS: Decomposed query found 134 unique results across 18 terms
+============================================================== {threading.py:1030:SB} starts ===============================================================
+
+start error
+
+X11 display failed! Will use regular xvfb!
+Warning: Could not parse data/exports/Project Owl: The OSINT Community - Europe, Russia, and Caucasus - ⛳🏆-eurrrrrrrrrobog [746747727160803418] (2025-09-07 to 2025-09-14).json: Expecting ',' delimiter: line 298005 column 6 (char 8716157)
+Warning: Could not parse data/exports/Project Owl: The OSINT Community - Middle East - 🌴-palm-tree-oasis [749424816255402055] (2025-08-17 to 2025-08-24).json: Expecting ',' delimiter: line 79366 column 14 (char 2343133)
+Warning: Could not parse data/exports/Project Owl: The OSINT Community - Europe, Russia, and Caucasus - ⛳🏆-eurrrrrrrrrobog [746747727160803418] (2025-08-31 to 2025-09-07).json: Expecting ',' delimiter: line 934769 column 12 (char 27265597)
+Warning: Could not parse data/exports/Project Owl: The OSINT Community - Americas - 🐸-the-swamp [1418332901220679720] (2025-10-05 to 2025-10-12).json: Expecting ',' delimiter: line 307827 column 6 (char 9291979)
+Warning: Could not parse data/exports/Project Owl: The OSINT Community - PO Community - 🏈-sporrts [741739377989779507] (2025-09-21 to 2025-09-28).json: Expecting ',' delimiter: line 266765 column 6 (char 7690159)
+Warning: Could not parse data/exports/Project Owl: The OSINT Community - Americas - 🐸-the-swamp [1418332901220679720] (2025-09-28 to 2025-10-05).json: Expecting ',' delimiter: line 30157 column 12 (char 920116)
+Warning: Could not parse data/exports/Project Owl: The OSINT Community - Americas - north-america [715937915112521770] (2025-09-28 to 2025-10-05).json: Expecting ',' delimiter: line 259490 column 12 (char 7865521)
+Warning: Could not parse data/exports/Project Owl: The OSINT Community - Middle East - 🌴-palm-tree-oasis [749424816255402055] (2025-10-12 to 2025-10-19).json: Expecting ',' delimiter: line 6131 column 14 (char 186644)
+Warning: Could not parse data/exports/Project Owl: The OSINT Community - Americas - 🐸-the-swamp [1418332901220679720] (2025-10-12 to 2025-10-19).json: Expecting ',' delimiter: line 265672 column 6 (char 7939300)
+Warning: Could not parse data/exports/Project Owl: The OSINT Community - Middle East - 🌴-palm-tree-oasis [749424816255402055] (2025-08-10 to 2025-08-17).json: Expecting ',' delimiter: line 263795 column 12 (char 7636281)
+Warning: Could not parse data/exports/Bellingcat - ・━━ Server info - announcements [709768274031935560].json: Expecting ',' delimiter: line 77762 column 6 (char 3071942)
+========================================================== {threading.py:1030:SB} passed in 9.35s ==========================================================
+    ✗ SAM.gov: 0 results (12170ms)
+    ✓ DVIDS: 134 results (6353ms)
+    ✓ USAJobs: 0 results (416ms)
+    ✓ ClearanceJobs: 6605 results (12779ms)
+    ✓ FBI Vault: 10 results (9431ms)
+    ✓ Discord: 2 results (8240ms)
+    ✗ Twitter: 0 results (0ms)
+    ✓ Brave Search: 10 results (930ms)
+✓ Completed in 76.3s
+🔍 Researching across 8 databases...
+  Phase 1: Checking relevance...
+  ✓ 8/8 databases are relevant
+  Phase 2: Generating queries...
+    ✓ SAM.gov: Query generated
+    ✓ DVIDS: Query generated
+    ✓ USAJobs: Query generated
+    ✓ ClearanceJobs: Query generated
+    ✓ FBI Vault: Query generated
+    ✓ Discord: Query generated
+    ✓ Twitter: Query generated
+    ✓ Brave Search: Query generated
+  ✓ Generated 8 queries
+  Phase 3: Executing searches...
+SAM.gov rate limit hit, retrying in 2s...
+SAM.gov rate limit hit, retrying in 4s...
+DVIDS: OR query returned 0, decomposing into individual terms...
+DVIDS: Decomposed query found 177 unique results across 21 terms
+============================================================== {threading.py:1030:SB} starts ===============================================================
+
+start error
+
+X11 display failed! Will use regular xvfb!
+Warning: Could not parse data/exports/Project Owl: The OSINT Community - Europe, Russia, and Caucasus - ⛳🏆-eurrrrrrrrrobog [746747727160803418] (2025-09-07 to 2025-09-14).json: Expecting ',' delimiter: line 298005 column 6 (char 8716157)
+Warning: Could not parse data/exports/Project Owl: The OSINT Community - Middle East - 🌴-palm-tree-oasis [749424816255402055] (2025-08-17 to 2025-08-24).json: Expecting ',' delimiter: line 79366 column 14 (char 2343133)
+Warning: Could not parse data/exports/Project Owl: The OSINT Community - Europe, Russia, and Caucasus - ⛳🏆-eurrrrrrrrrobog [746747727160803418] (2025-08-31 to 2025-09-07).json: Expecting ',' delimiter: line 934769 column 12 (char 27265597)
+Warning: Could not parse data/exports/Project Owl: The OSINT Community - Americas - 🐸-the-swamp [1418332901220679720] (2025-10-05 to 2025-10-12).json: Expecting ',' delimiter: line 307827 column 6 (char 9291979)
+Warning: Could not parse data/exports/Project Owl: The OSINT Community - PO Community - 🏈-sporrts [741739377989779507] (2025-09-21 to 2025-09-28).json: Expecting ',' delimiter: line 266765 column 6 (char 7690159)
+Warning: Could not parse data/exports/Project Owl: The OSINT Community - Americas - 🐸-the-swamp [1418332901220679720] (2025-09-28 to 2025-10-05).json: Expecting ',' delimiter: line 30157 column 12 (char 920116)
+Warning: Could not parse data/exports/Project Owl: The OSINT Community - Americas - north-america [715937915112521770] (2025-09-28 to 2025-10-05).json: Expecting ',' delimiter: line 259490 column 12 (char 7865521)
+Warning: Could not parse data/exports/Project Owl: The OSINT Community - Middle East - 🌴-palm-tree-oasis [749424816255402055] (2025-10-12 to 2025-10-19).json: Expecting ',' delimiter: line 129580 column 12 (char 3849147)
+Warning: Could not parse data/exports/Project Owl: The OSINT Community - Americas - 🐸-the-swamp [1418332901220679720] (2025-10-12 to 2025-10-19).json: Expecting ',' delimiter: line 265672 column 6 (char 7939300)
+Warning: Could not parse data/exports/Project Owl: The OSINT Community - Middle East - 🌴-palm-tree-oasis [749424816255402055] (2025-08-10 to 2025-08-17).json: Expecting ',' delimiter: line 263795 column 12 (char 7636281)
+Warning: Could not parse data/exports/Bellingcat - ・━━ Server info - announcements [709768274031935560].json: Expecting ',' delimiter: line 77762 column 6 (char 3071942)
+========================================================== {threading.py:1030:SB} passed in 7.70s ==========================================================
+    ✗ SAM.gov: 0 results (8576ms)
+    ✓ DVIDS: 177 results (6396ms)
+    ✓ USAJobs: 0 results (550ms)
+    ✓ ClearanceJobs: 20571 results (11589ms)
+    ✓ FBI Vault: 10 results (8206ms)
+    ✓ Discord: 0 results (7220ms)
+    ✗ Twitter: 0 results (0ms)
+    ✓ Brave Search: 10 results (984ms)
+✓ Completed in 51.0s
+🔍 Researching across 8 databases...
+  Phase 1: Checking relevance...
+  ✓ 8/8 databases are relevant
+  Phase 2: Generating queries...
+    ✓ SAM.gov: Query generated
+    ✓ DVIDS: Query generated
+    ✓ USAJobs: Query generated
+    ✓ ClearanceJobs: Query generated
+    ✓ FBI Vault: Query generated
+    ✓ Discord: Query generated
+    ✓ Twitter: Query generated
+    ✓ Brave Search: Query generated
+  ✓ Generated 8 queries
+  Phase 3: Executing searches...
+SAM.gov rate limit hit, retrying in 2s...
+SAM.gov rate limit hit, retrying in 4s...
+============================================================== {threading.py:1030:SB} starts ===============================================================
+
+start error
+
+X11 display failed! Will use regular xvfb!
+Warning: Could not parse data/exports/Project Owl: The OSINT Community - Europe, Russia, and Caucasus - ⛳🏆-eurrrrrrrrrobog [746747727160803418] (2025-09-07 to 2025-09-14).json: Expecting ',' delimiter: line 298005 column 6 (char 8716157)
+Warning: Could not parse data/exports/Project Owl: The OSINT Community - Middle East - 🌴-palm-tree-oasis [749424816255402055] (2025-08-17 to 2025-08-24).json: Expecting ',' delimiter: line 79366 column 14 (char 2343133)
+Warning: Could not parse data/exports/Project Owl: The OSINT Community - Europe, Russia, and Caucasus - ⛳🏆-eurrrrrrrrrobog [746747727160803418] (2025-08-31 to 2025-09-07).json: Expecting ',' delimiter: line 934769 column 12 (char 27265597)
+Warning: Could not parse data/exports/Project Owl: The OSINT Community - Americas - 🐸-the-swamp [1418332901220679720] (2025-10-05 to 2025-10-12).json: Expecting ',' delimiter: line 307827 column 6 (char 9291979)
+Warning: Could not parse data/exports/Project Owl: The OSINT Community - PO Community - 🏈-sporrts [741739377989779507] (2025-09-21 to 2025-09-28).json: Expecting ',' delimiter: line 266765 column 6 (char 7690159)
+Warning: Could not parse data/exports/Project Owl: The OSINT Community - Americas - 🐸-the-swamp [1418332901220679720] (2025-09-28 to 2025-10-05).json: Expecting ',' delimiter: line 30157 column 12 (char 920116)
+Warning: Could not parse data/exports/Project Owl: The OSINT Community - Americas - north-america [715937915112521770] (2025-09-28 to 2025-10-05).json: Expecting ',' delimiter: line 259490 column 12 (char 7865521)
+Warning: Could not parse data/exports/Project Owl: The OSINT Community - Middle East - 🌴-palm-tree-oasis [749424816255402055] (2025-10-12 to 2025-10-19).json: Expecting ',' delimiter: line 293314 column 12 (char 8727512)
+Warning: Could not parse data/exports/Project Owl: The OSINT Community - Americas - 🐸-the-swamp [1418332901220679720] (2025-10-12 to 2025-10-19).json: Expecting ',' delimiter: line 265672 column 6 (char 7939300)
+Warning: Could not parse data/exports/Project Owl: The OSINT Community - Middle East - 🌴-palm-tree-oasis [749424816255402055] (2025-08-10 to 2025-08-17).json: Expecting ',' delimiter: line 263795 column 12 (char 7636281)
+Warning: Could not parse data/exports/Bellingcat - ・━━ Server info - announcements [709768274031935560].json: Expecting ',' delimiter: line 77762 column 6 (char 3071942)
+========================================================= {threading.py:1030:SB} passed in 95.64s ==========================================================
+    ✗ SAM.gov: 0 results (7301ms)
+    ✗ DVIDS: 0 results (223ms)
+    ✓ USAJobs: 0 results (413ms)
+    ✓ ClearanceJobs: 23351 results (14036ms)
+    ✓ FBI Vault: 0 results (95707ms)
+    ✓ Discord: 0 results (6282ms)
+    ✗ Twitter: 0 results (0ms)
+    ✓ Brave Search: 10 results (3039ms)
+✓ Completed in 147.0s
+[2025-10-24T09:42:01.722402] RELATIONSHIP_DISCOVERED: Connected: NATO underwater sensors testing <-> Special Forces divers (NATO)
+[2025-10-24T09:42:01.722455] RELATIONSHIP_DISCOVERED: Connected: NATO underwater sensors testing <-> NIST SP 800-171
+[2025-10-24T09:42:01.722470] RELATIONSHIP_DISCOVERED: Connected: NATO underwater sensors testing <-> Office of Personnel Management (OPM) 2015 data breach
+[2025-10-24T09:42:01.722479] RELATIONSHIP_DISCOVERED: Connected: NATO underwater sensors testing <-> Joint Readiness Training Center (JRTC), Fort Polk
+[2025-10-24T09:42:01.722488] RELATIONSHIP_DISCOVERED: Connected: NATO underwater sensors testing <-> Ironclad 2021 (cyber defense exercise)
+[2025-10-24T09:42:01.722496] RELATIONSHIP_DISCOVERED: Connected: NATO underwater sensors testing <-> DFARS clause 252.204-7012
+[2025-10-24T09:42:01.722504] RELATIONSHIP_DISCOVERED: Connected: NATO underwater sensors testing <-> CMMC (Cybersecurity Maturity Model Certification)
+[2025-10-24T09:42:01.722513] RELATIONSHIP_DISCOVERED: Connected: NATO underwater sensors testing <-> DoD Cybersecurity Incident Reporting
+[2025-10-24T09:42:01.722522] RELATIONSHIP_DISCOVERED: Connected: Special Forces divers (NATO) <-> NIST SP 800-171
+[2025-10-24T09:42:01.722530] RELATIONSHIP_DISCOVERED: Connected: Special Forces divers (NATO) <-> Office of Personnel Management (OPM) 2015 data breach
+[2025-10-24T09:42:01.722539] RELATIONSHIP_DISCOVERED: Connected: Special Forces divers (NATO) <-> Joint Readiness Training Center (JRTC), Fort Polk
+[2025-10-24T09:42:01.722547] RELATIONSHIP_DISCOVERED: Connected: Special Forces divers (NATO) <-> Ironclad 2021 (cyber defense exercise)
+[2025-10-24T09:42:01.722555] RELATIONSHIP_DISCOVERED: Connected: Special Forces divers (NATO) <-> DFARS clause 252.204-7012
+[2025-10-24T09:42:01.722563] RELATIONSHIP_DISCOVERED: Connected: Special Forces divers (NATO) <-> CMMC (Cybersecurity Maturity Model Certification)
+[2025-10-24T09:42:01.722571] RELATIONSHIP_DISCOVERED: Connected: Special Forces divers (NATO) <-> DoD Cybersecurity Incident Reporting
+[2025-10-24T09:42:01.722581] RELATIONSHIP_DISCOVERED: Connected: NIST SP 800-171 <-> Office of Personnel Management (OPM) 2015 data breach
+[2025-10-24T09:42:01.722609] RELATIONSHIP_DISCOVERED: Connected: NIST SP 800-171 <-> Joint Readiness Training Center (JRTC), Fort Polk
+[2025-10-24T09:42:01.722624] RELATIONSHIP_DISCOVERED: Connected: NIST SP 800-171 <-> Ironclad 2021 (cyber defense exercise)
+[2025-10-24T09:42:01.722634] RELATIONSHIP_DISCOVERED: Connected: NIST SP 800-171 <-> DFARS clause 252.204-7012
+[2025-10-24T09:42:01.722643] RELATIONSHIP_DISCOVERED: Connected: NIST SP 800-171 <-> CMMC (Cybersecurity Maturity Model Certification)
+[2025-10-24T09:42:01.722668] RELATIONSHIP_DISCOVERED: Connected: NIST SP 800-171 <-> DoD Cybersecurity Incident Reporting
+[2025-10-24T09:42:01.722699] RELATIONSHIP_DISCOVERED: Connected: Office of Personnel Management (OPM) 2015 data breach <-> Joint Readiness Training Center (JRTC), Fort Polk
+[2025-10-24T09:42:01.722730] RELATIONSHIP_DISCOVERED: Connected: Office of Personnel Management (OPM) 2015 data breach <-> Ironclad 2021 (cyber defense exercise)
+[2025-10-24T09:42:01.722743] RELATIONSHIP_DISCOVERED: Connected: Office of Personnel Management (OPM) 2015 data breach <-> DFARS clause 252.204-7012
+[2025-10-24T09:42:01.722752] RELATIONSHIP_DISCOVERED: Connected: Office of Personnel Management (OPM) 2015 data breach <-> CMMC (Cybersecurity Maturity Model Certification)
+[2025-10-24T09:42:01.722761] RELATIONSHIP_DISCOVERED: Connected: Office of Personnel Management (OPM) 2015 data breach <-> DoD Cybersecurity Incident Reporting
+[2025-10-24T09:42:01.722788] RELATIONSHIP_DISCOVERED: Connected: Joint Readiness Training Center (JRTC), Fort Polk <-> Ironclad 2021 (cyber defense exercise)
+[2025-10-24T09:42:01.722802] RELATIONSHIP_DISCOVERED: Connected: Joint Readiness Training Center (JRTC), Fort Polk <-> DFARS clause 252.204-7012
+[2025-10-24T09:42:01.722811] RELATIONSHIP_DISCOVERED: Connected: Joint Readiness Training Center (JRTC), Fort Polk <-> CMMC (Cybersecurity Maturity Model Certification)
+[2025-10-24T09:42:01.722819] RELATIONSHIP_DISCOVERED: Connected: Joint Readiness Training Center (JRTC), Fort Polk <-> DoD Cybersecurity Incident Reporting
+[2025-10-24T09:42:01.722828] RELATIONSHIP_DISCOVERED: Connected: Ironclad 2021 (cyber defense exercise) <-> DFARS clause 252.204-7012
+[2025-10-24T09:42:01.722837] RELATIONSHIP_DISCOVERED: Connected: Ironclad 2021 (cyber defense exercise) <-> CMMC (Cybersecurity Maturity Model Certification)
+[2025-10-24T09:42:01.722845] RELATIONSHIP_DISCOVERED: Connected: Ironclad 2021 (cyber defense exercise) <-> DoD Cybersecurity Incident Reporting
+[2025-10-24T09:42:01.722854] RELATIONSHIP_DISCOVERED: Connected: DFARS clause 252.204-7012 <-> CMMC (Cybersecurity Maturity Model Certification)
+[2025-10-24T09:42:01.722864] RELATIONSHIP_DISCOVERED: Connected: DFARS clause 252.204-7012 <-> DoD Cybersecurity Incident Reporting
+[2025-10-24T09:42:01.722873] RELATIONSHIP_DISCOVERED: Connected: CMMC (Cybersecurity Maturity Model Certification) <-> DoD Cybersecurity Incident Reporting
+[2025-10-24T09:42:01.722885] TASK_COMPLETED: Found 198 results (178 gov DBs + 20 web) across 2 phases
+  Data: {
+  "total_results": 198,
+  "government_databases": 178,
+  "web_search": 20,
+  "entities": [
+    "NATO underwater sensors testing",
+    "Special Forces divers (NATO)",
+    "NIST SP 800-171",
+    "Office of Personnel Management (OPM) 2015 data breach",
+    "Joint Readiness Training Center (JRTC), Fort Polk",
+    "Ironclad 2021 (cyber defense exercise)",
+    "DFARS clause 252.204-7012",
+    "CMMC (Cybersecurity Maturity Model Certification)",
+    "DoD Cybersecurity Incident Reporting"
+  ],
+  "quality": 0.7500000000000001
+}
+[2025-10-24T09:42:01.723022] BATCH_COMPLETE: Batch complete: 1/1 succeeded
+  Data: {
+  "successful": 1,
+  "failed": 0
+}
+[2025-10-24T09:42:01.723081] SYNTHESIS_STARTED: Synthesizing final report...
+[2025-10-24T09:42:40.985165] SYNTHESIS_COMPLETE: Report complete
+
+================================================================================
+RESULTS
+================================================================================
+Tasks executed: 3
+Tasks failed: 0
+Total results: 579
+Sources searched: Brave Search, FBI Vault, Unknown
+Elapsed time: 17.2 minutes
+
+Government databases used: 2
+  - FBI Vault
+  - Unknown
+
+Web search used: 1
+  - Brave Search
+
+================================================================================
+✓ SUCCESS: Government databases are being searched!
+  Found results from 2 government source(s)

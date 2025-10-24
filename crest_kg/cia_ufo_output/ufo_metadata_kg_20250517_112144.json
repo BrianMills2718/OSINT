@@ -1,0 +1,3616 @@
+{
+  "entities": [
+    {
+      "id": "d_0",
+      "name": "THE CENTRAL INTELLIGENCE AGENCY AND OVERHEAD RECONNAISSANCE; THE U-2 AND OXCART PROGRAMS, 1954-1974",
+      "type": "document",
+      "attributes": {
+        "url": "https://www.cia.gov/readingroom/document/0000190094",
+        "Document Number (FOIA) /ESDN (CREST)": "0000190094",
+        "Original Classification": "U",
+        "Document Page Count": "406",
+        "Document Release Date": "January 1, 1900",
+        "Publication Date": "March 1, 1992"
+      }
+    },
+    {
+      "id": "c_1",
+      "name": "UFOs: Fact or Fiction?",
+      "type": "collection",
+      "attributes": {}
+    },
+    {
+      "id": "t_2",
+      "name": "March 1, 1992",
+      "type": "time",
+      "attributes": {}
+    },
+    {
+      "id": "f_3",
+      "name": "DOC_0000190094.pdf",
+      "type": "file",
+      "attributes": {
+        "url": "https://www.cia.gov/readingroom/docs/DOC_0000190094.pdf"
+      }
+    },
+    {
+      "id": "d_4",
+      "name": "SIGHTINGS OF UNIDENTIFIED FLYING OBJECTS, 19 JANUARY-15 MAY 1954",
+      "type": "document",
+      "attributes": {
+        "url": "https://www.cia.gov/readingroom/document/0000015478",
+        "Document Number (FOIA) /ESDN (CREST)": "0000015478",
+        "Original Classification": "U",
+        "Document Page Count": "6",
+        "Document Release Date": "October 5, 1978",
+        "Publication Date": "June 5, 1954"
+      }
+    },
+    {
+      "id": "t_5",
+      "name": "June 5, 1954",
+      "type": "time",
+      "attributes": {}
+    },
+    {
+      "id": "concept_0",
+      "name": "ufo",
+      "type": "concept",
+      "attributes": {}
+    },
+    {
+      "id": "concept_1",
+      "name": "sighting",
+      "type": "concept",
+      "attributes": {}
+    },
+    {
+      "id": "time_2",
+      "name": "19 JANUARY-15 MAY 1954",
+      "type": "time",
+      "attributes": {}
+    },
+    {
+      "id": "f_9",
+      "name": "DOC_0000015478.pdf",
+      "type": "file",
+      "attributes": {
+        "url": "https://www.cia.gov/readingroom/docs/DOC_0000015478.pdf"
+      }
+    },
+    {
+      "id": "d_10",
+      "name": "UNTITLED  (TO THORNTON PAGE FROM PHILIP STRONG ACKNOWLEDGING HIS LETTER OF 18 M",
+      "type": "document",
+      "attributes": {
+        "url": "https://www.cia.gov/readingroom/document/0000015325",
+        "Document Number (FOIA) /ESDN (CREST)": "0000015325",
+        "Original Classification": "U",
+        "Document Page Count": "2",
+        "Document Release Date": "October 5, 1978",
+        "Publication Date": "February 4, 1959"
+      }
+    },
+    {
+      "id": "t_11",
+      "name": "February 4, 1959",
+      "type": "time",
+      "attributes": {}
+    },
+    {
+      "id": "location_0",
+      "name": "THORNTON PAGE FROM PHILIP STRONG ACKNOWLEDGING HIS LETTER OF",
+      "type": "location",
+      "attributes": {}
+    },
+    {
+      "id": "person_1",
+      "name": "THORNTON PAGE",
+      "type": "person",
+      "attributes": {}
+    },
+    {
+      "id": "f_14",
+      "name": "DOC_0000015325.pdf",
+      "type": "file",
+      "attributes": {
+        "url": "https://www.cia.gov/readingroom/docs/DOC_0000015325.pdf"
+      }
+    },
+    {
+      "id": "d_15",
+      "name": "'FLYING SAUCERS' IN EAST GERMANY",
+      "type": "document",
+      "attributes": {
+        "url": "https://www.cia.gov/readingroom/document/0000015464",
+        "Document Number (FOIA) /ESDN (CREST)": "0000015464",
+        "Original Classification": "U",
+        "Document Page Count": "4",
+        "Document Release Date": "October 5, 1978",
+        "Publication Date": "July 6, 1952"
+      }
+    },
+    {
+      "id": "t_16",
+      "name": "July 6, 1952",
+      "type": "time",
+      "attributes": {}
+    },
+    {
+      "id": "location_1",
+      "name": "EAST GERMANY",
+      "type": "location",
+      "attributes": {}
+    },
+    {
+      "id": "f_18",
+      "name": "DOC_0000015464.pdf",
+      "type": "file",
+      "attributes": {
+        "url": "https://www.cia.gov/readingroom/docs/DOC_0000015464.pdf"
+      }
+    },
+    {
+      "id": "d_19",
+      "name": "FURTHER TO FCDA MEETING",
+      "type": "document",
+      "attributes": {
+        "url": "https://www.cia.gov/readingroom/document/0000015360",
+        "Document Number (FOIA) /ESDN (CREST)": "0000015360",
+        "Original Classification": "U",
+        "Document Page Count": "2",
+        "Document Release Date": "October 5, 1978",
+        "Publication Date": "March 5, 1953"
+      }
+    },
+    {
+      "id": "t_20",
+      "name": "March 5, 1953",
+      "type": "time",
+      "attributes": {}
+    },
+    {
+      "id": "location_0",
+      "name": "FCDA MEETING",
+      "type": "location",
+      "attributes": {}
+    },
+    {
+      "id": "f_22",
+      "name": "DOC_0000015360.pdf",
+      "type": "file",
+      "attributes": {
+        "url": "https://www.cia.gov/readingroom/docs/DOC_0000015360.pdf"
+      }
+    },
+    {
+      "id": "d_23",
+      "name": "UNIDENTIFIED AIRCRAFT REPORTED OVER SPAIN, GREECE, NORTH AFRICA",
+      "type": "document",
+      "attributes": {
+        "url": "https://www.cia.gov/readingroom/document/0000015473",
+        "Document Number (FOIA) /ESDN (CREST)": "0000015473",
+        "Original Classification": "U",
+        "Document Page Count": "2",
+        "Document Release Date": "October 5, 1978",
+        "Publication Date": "January 1, 1954"
+      }
+    },
+    {
+      "id": "t_24",
+      "name": "January 1, 1954",
+      "type": "time",
+      "attributes": {}
+    },
+    {
+      "id": "location_0",
+      "name": "SPAIN",
+      "type": "location",
+      "attributes": {}
+    },
+    {
+      "id": "f_26",
+      "name": "DOC_0000015473.pdf",
+      "type": "file",
+      "attributes": {
+        "url": "https://www.cia.gov/readingroom/docs/DOC_0000015473.pdf"
+      }
+    },
+    {
+      "id": "d_27",
+      "name": "NATIONAL INVESTIGATIONS COMMITTEE ON AERIAL PHENOMENA (NICAP)  (PUBD IS UNKNOWN",
+      "type": "document",
+      "attributes": {
+        "url": "https://www.cia.gov/readingroom/document/0000015455",
+        "Document Number (FOIA) /ESDN (CREST)": "0000015455",
+        "Original Classification": "U",
+        "Document Page Count": "3",
+        "Document Release Date": "October 5, 1978",
+        "Publication Date": "January 4, 1953"
+      }
+    },
+    {
+      "id": "t_28",
+      "name": "January 4, 1953",
+      "type": "time",
+      "attributes": {}
+    },
+    {
+      "id": "f_29",
+      "name": "DOC_0000015455.pdf",
+      "type": "file",
+      "attributes": {
+        "url": "https://www.cia.gov/readingroom/docs/DOC_0000015455.pdf"
+      }
+    },
+    {
+      "id": "d_30",
+      "name": "SIGHTINGS OF FLYING SAUCERS OR UNCONVENTIONAL AIRCRAFT",
+      "type": "document",
+      "attributes": {
+        "url": "https://www.cia.gov/readingroom/document/0000015382",
+        "Document Number (FOIA) /ESDN (CREST)": "0000015382",
+        "Original Classification": "U",
+        "Document Page Count": "3",
+        "Document Release Date": "October 5, 1978",
+        "Publication Date": "September 1, 1955"
+      }
+    },
+    {
+      "id": "t_31",
+      "name": "September 1, 1955",
+      "type": "time",
+      "attributes": {}
+    },
+    {
+      "id": "f_32",
+      "name": "DOC_0000015382.pdf",
+      "type": "file",
+      "attributes": {
+        "url": "https://www.cia.gov/readingroom/docs/DOC_0000015382.pdf"
+      }
+    },
+    {
+      "id": "d_33",
+      "name": "SIGHTINGS OF UNIDENTIFIED FLYING OBJECTS",
+      "type": "document",
+      "attributes": {
+        "url": "https://www.cia.gov/readingroom/document/0000015481",
+        "Document Number (FOIA) /ESDN (CREST)": "0000015481",
+        "Original Classification": "U",
+        "Document Page Count": "4",
+        "Document Release Date": "October 5, 1978",
+        "Publication Date": "September 1, 1954"
+      }
+    },
+    {
+      "id": "t_34",
+      "name": "September 1, 1954",
+      "type": "time",
+      "attributes": {}
+    },
+    {
+      "id": "f_35",
+      "name": "DOC_0000015481.pdf",
+      "type": "file",
+      "attributes": {
+        "url": "https://www.cia.gov/readingroom/docs/DOC_0000015481.pdf"
+      }
+    },
+    {
+      "id": "d_36",
+      "name": "UNTITLED  (TO THORNTON PAGE FROM PHILIP STRONG DISCUSSING 14 ESSAYS BY Y OUR FR",
+      "type": "document",
+      "attributes": {
+        "url": "https://www.cia.gov/readingroom/document/0000015329",
+        "Document Number (FOIA) /ESDN (CREST)": "0000015329",
+        "Original Classification": "U",
+        "Document Page Count": "2",
+        "Document Release Date": "October 5, 1978",
+        "Publication Date": "January 5, 1960"
+      }
+    },
+    {
+      "id": "t_37",
+      "name": "January 5, 1960",
+      "type": "time",
+      "attributes": {}
+    },
+    {
+      "id": "location_0",
+      "name": "THORNTON PAGE FROM PHILIP STRONG DISCUSSING",
+      "type": "location",
+      "attributes": {}
+    },
+    {
+      "id": "f_39",
+      "name": "DOC_0000015329.pdf",
+      "type": "file",
+      "attributes": {
+        "url": "https://www.cia.gov/readingroom/docs/DOC_0000015329.pdf"
+      }
+    },
+    {
+      "id": "d_40",
+      "name": "REPORT ON BOOK ENTITLED 'FLYING SAUCERS FROM OUTER SPACE'",
+      "type": "document",
+      "attributes": {
+        "url": "https://www.cia.gov/readingroom/document/0000015363",
+        "Document Number (FOIA) /ESDN (CREST)": "0000015363",
+        "Original Classification": "U",
+        "Document Page Count": "3",
+        "Document Release Date": "October 5, 1978",
+        "Publication Date": "November 2, 1953"
+      }
+    },
+    {
+      "id": "t_41",
+      "name": "November 2, 1953",
+      "type": "time",
+      "attributes": {}
+    },
+    {
+      "id": "location_1",
+      "name": "OUTER",
+      "type": "location",
+      "attributes": {}
+    },
+    {
+      "id": "f_43",
+      "name": "DOC_0000015363.pdf",
+      "type": "file",
+      "attributes": {
+        "url": "https://www.cia.gov/readingroom/docs/DOC_0000015363.pdf"
+      }
+    },
+    {
+      "id": "d_44",
+      "name": "CURRENT STATUS OF UNIDENTIFIED FLYING OBJECTS (UFOB) PROJECT",
+      "type": "document",
+      "attributes": {
+        "url": "https://www.cia.gov/readingroom/document/0000015365",
+        "Document Number (FOIA) /ESDN (CREST)": "0000015365",
+        "Original Classification": "U",
+        "Document Page Count": "4",
+        "Document Release Date": "October 5, 1978",
+        "Publication Date": "November 4, 1953"
+      }
+    },
+    {
+      "id": "t_45",
+      "name": "November 4, 1953",
+      "type": "time",
+      "attributes": {}
+    },
+    {
+      "id": "f_46",
+      "name": "DOC_0000015365.pdf",
+      "type": "file",
+      "attributes": {
+        "url": "https://www.cia.gov/readingroom/docs/DOC_0000015365.pdf"
+      }
+    },
+    {
+      "id": "d_47",
+      "name": "UNTITLED  (TO DONALD KEYHOE FROM J S HARMAN ACKNOWLEDGING HIS LETTER OF 22 SEPT",
+      "type": "document",
+      "attributes": {
+        "url": "https://www.cia.gov/readingroom/document/0000015319",
+        "Document Number (FOIA) /ESDN (CREST)": "0000015319",
+        "Original Classification": "U",
+        "Document Page Count": "2",
+        "Document Release Date": "October 5, 1978",
+        "Publication Date": "September 5, 1958"
+      }
+    },
+    {
+      "id": "t_48",
+      "name": "September 5, 1958",
+      "type": "time",
+      "attributes": {}
+    },
+    {
+      "id": "location_0",
+      "name": "DONALD KEYHOE FROM J S HARMAN ACKNOWLEDGING HIS LETTER OF",
+      "type": "location",
+      "attributes": {}
+    },
+    {
+      "id": "person_1",
+      "name": "DONALD KEYHOE",
+      "type": "person",
+      "attributes": {}
+    },
+    {
+      "id": "f_51",
+      "name": "DOC_0000015319.pdf",
+      "type": "file",
+      "attributes": {
+        "url": "https://www.cia.gov/readingroom/docs/DOC_0000015319.pdf"
+      }
+    },
+    {
+      "id": "d_52",
+      "name": "UNTITLED  (ON BASIS OF YOUR CONVERSATION WITH ATIC, WE INFORMED DCI'S OF FICE T",
+      "type": "document",
+      "attributes": {
+        "url": "https://www.cia.gov/readingroom/document/0000015248",
+        "Document Number (FOIA) /ESDN (CREST)": "0000015248",
+        "Original Classification": "U",
+        "Document Page Count": "1",
+        "Document Release Date": "October 5, 1978",
+        "Publication Date": "July 2, 1957"
+      }
+    },
+    {
+      "id": "t_53",
+      "name": "July 2, 1957",
+      "type": "time",
+      "attributes": {}
+    },
+    {
+      "id": "f_54",
+      "name": "DOC_0000015248.pdf",
+      "type": "file",
+      "attributes": {
+        "url": "https://www.cia.gov/readingroom/docs/DOC_0000015248.pdf"
+      }
+    },
+    {
+      "id": "t_55",
+      "name": "July 3, 1954",
+      "type": "time",
+      "attributes": {}
+    },
+    {
+      "id": "f_56",
+      "name": "DOC_0000015479.pdf",
+      "type": "file",
+      "attributes": {
+        "url": "https://www.cia.gov/readingroom/docs/DOC_0000015479.pdf"
+      }
+    },
+    {
+      "id": "d_57",
+      "name": "UNTITLED  (TO JOSEPH KARTH FROM LAWRENCE HOUSTON REGARDING 30 JUNE INQUI RY CON",
+      "type": "document",
+      "attributes": {
+        "url": "https://www.cia.gov/readingroom/document/0000015333",
+        "Document Number (FOIA) /ESDN (CREST)": "0000015333",
+        "Original Classification": "U",
+        "Document Page Count": "4",
+        "Document Release Date": "October 5, 1978",
+        "Publication Date": "May 5, 1961"
+      }
+    },
+    {
+      "id": "t_58",
+      "name": "May 5, 1961",
+      "type": "time",
+      "attributes": {}
+    },
+    {
+      "id": "location_0",
+      "name": "JOSEPH KARTH FROM LAWRENCE HOUSTON REGARDING",
+      "type": "location",
+      "attributes": {}
+    },
+    {
+      "id": "person_1",
+      "name": "JOSEPH KARTH FROM LAWRENCE HOUS",
+      "type": "person",
+      "attributes": {}
+    },
+    {
+      "id": "f_61",
+      "name": "DOC_0000015333.pdf",
+      "type": "file",
+      "attributes": {
+        "url": "https://www.cia.gov/readingroom/docs/DOC_0000015333.pdf"
+      }
+    },
+    {
+      "id": "d_62",
+      "name": "UNEXPLAINED TRAVELING BRIGHT LIGHT SEEN IN THE SKY",
+      "type": "document",
+      "attributes": {
+        "url": "https://www.cia.gov/readingroom/document/0000015268",
+        "Document Number (FOIA) /ESDN (CREST)": "0000015268",
+        "Original Classification": "U",
+        "Document Page Count": "2",
+        "Document Release Date": "October 5, 1978",
+        "Publication Date": "September 1, 1958"
+      }
+    },
+    {
+      "id": "t_63",
+      "name": "September 1, 1958",
+      "type": "time",
+      "attributes": {}
+    },
+    {
+      "id": "location_0",
+      "name": "THE SKY",
+      "type": "location",
+      "attributes": {}
+    },
+    {
+      "id": "f_65",
+      "name": "DOC_0000015268.pdf",
+      "type": "file",
+      "attributes": {
+        "url": "https://www.cia.gov/readingroom/docs/DOC_0000015268.pdf"
+      }
+    },
+    {
+      "id": "d_66",
+      "name": "UNTITLED  (TO SAMUEL GOUDSMIT FROM PHILIP STRONG DISCUSSING HYNEK'S AND LLOYD'S",
+      "type": "document",
+      "attributes": {
+        "url": "https://www.cia.gov/readingroom/document/0000015304",
+        "Document Number (FOIA) /ESDN (CREST)": "0000015304",
+        "Original Classification": "U",
+        "Document Page Count": "2",
+        "Document Release Date": "October 5, 1978",
+        "Publication Date": "January 5, 1958"
+      }
+    },
+    {
+      "id": "t_67",
+      "name": "January 5, 1958",
+      "type": "time",
+      "attributes": {}
+    },
+    {
+      "id": "location_0",
+      "name": "SAMUEL GOUDSMIT FROM PHILIP STRONG DISCUSSING",
+      "type": "location",
+      "attributes": {}
+    },
+    {
+      "id": "person_1",
+      "name": "SAMUEL GOUDSMIT",
+      "type": "person",
+      "attributes": {}
+    },
+    {
+      "id": "f_70",
+      "name": "DOC_0000015304.pdf",
+      "type": "file",
+      "attributes": {
+        "url": "https://www.cia.gov/readingroom/docs/DOC_0000015304.pdf"
+      }
+    },
+    {
+      "id": "d_71",
+      "name": "UNUSUAL UFOB REPORT",
+      "type": "document",
+      "attributes": {
+        "url": "https://www.cia.gov/readingroom/document/0000015374",
+        "Document Number (FOIA) /ESDN (CREST)": "0000015374",
+        "Original Classification": "U",
+        "Document Page Count": "2",
+        "Document Release Date": "October 5, 1978",
+        "Publication Date": "June 2, 1955"
+      }
+    },
+    {
+      "id": "t_72",
+      "name": "June 2, 1955",
+      "type": "time",
+      "attributes": {}
+    },
+    {
+      "id": "f_73",
+      "name": "DOC_0000015374.pdf",
+      "type": "file",
+      "attributes": {
+        "url": "https://www.cia.gov/readingroom/docs/DOC_0000015374.pdf"
+      }
+    },
+    {
+      "id": "d_74",
+      "name": "FLYING OBJECTS SEEN IN SHAKHTY AREA",
+      "type": "document",
+      "attributes": {
+        "url": "https://www.cia.gov/readingroom/document/0000015264",
+        "Document Number (FOIA) /ESDN (CREST)": "0000015264",
+        "Original Classification": "U",
+        "Document Page Count": "5",
+        "Document Release Date": "October 5, 1978",
+        "Publication Date": "July 2, 1955"
+      }
+    },
+    {
+      "id": "t_75",
+      "name": "July 2, 1955",
+      "type": "time",
+      "attributes": {}
+    },
+    {
+      "id": "location_1",
+      "name": "SHAKHTY AREA",
+      "type": "location",
+      "attributes": {}
+    },
+    {
+      "id": "f_77",
+      "name": "DOC_0000015264.pdf",
+      "type": "file",
+      "attributes": {
+        "url": "https://www.cia.gov/readingroom/docs/DOC_0000015264.pdf"
+      }
+    },
+    {
+      "id": "d_78",
+      "name": "UNTITLED  (WITH MEMO ATTACHED DATED 570111, SUBJECT: TRANSMITTAL OF CORR ESPOND",
+      "type": "document",
+      "attributes": {
+        "url": "https://www.cia.gov/readingroom/document/0000015483",
+        "Document Number (FOIA) /ESDN (CREST)": "0000015483",
+        "Original Classification": "U",
+        "Document Page Count": "3",
+        "Document Release Date": "October 5, 1978",
+        "Publication Date": "January 1, 1957"
+      }
+    },
+    {
+      "id": "t_79",
+      "name": "January 1, 1957",
+      "type": "time",
+      "attributes": {}
+    },
+    {
+      "id": "f_80",
+      "name": "DOC_0000015483.pdf",
+      "type": "file",
+      "attributes": {
+        "url": "https://www.cia.gov/readingroom/docs/DOC_0000015483.pdf"
+      }
+    },
+    {
+      "id": "d_81",
+      "name": "UNTITLED  (TO THORNTON PAGE FROM PHILIP STRONG ENCLOSING COPY OF A LETTE R WITH",
+      "type": "document",
+      "attributes": {
+        "url": "https://www.cia.gov/readingroom/document/0000015301",
+        "Document Number (FOIA) /ESDN (CREST)": "0000015301",
+        "Original Classification": "U",
+        "Document Page Count": "2",
+        "Document Release Date": "October 5, 1978",
+        "Publication Date": "November 5, 1957"
+      }
+    },
+    {
+      "id": "t_82",
+      "name": "November 5, 1957",
+      "type": "time",
+      "attributes": {}
+    },
+    {
+      "id": "location_0",
+      "name": "THORNTON PAGE FROM PHILIP STRONG ENCLOSING COPY OF A LETTE R WITH",
+      "type": "location",
+      "attributes": {}
+    },
+    {
+      "id": "f_84",
+      "name": "DOC_0000015301.pdf",
+      "type": "file",
+      "attributes": {
+        "url": "https://www.cia.gov/readingroom/docs/DOC_0000015301.pdf"
+      }
+    },
+    {
+      "id": "d_85",
+      "name": "INQUIRY BY MAJOR DONALD E. KEYHOE (DELETED)",
+      "type": "document",
+      "attributes": {
+        "url": "https://www.cia.gov/readingroom/document/0000015416",
+        "Document Number (FOIA) /ESDN (CREST)": "0000015416",
+        "Original Classification": "U",
+        "Document Page Count": "5",
+        "Document Release Date": "October 5, 1978",
+        "Publication Date": "January 4, 1959"
+      }
+    },
+    {
+      "id": "t_86",
+      "name": "January 4, 1959",
+      "type": "time",
+      "attributes": {}
+    },
+    {
+      "id": "f_87",
+      "name": "DOC_0000015416.pdf",
+      "type": "file",
+      "attributes": {
+        "url": "https://www.cia.gov/readingroom/docs/DOC_0000015416.pdf"
+      }
+    },
+    {
+      "id": "d_88",
+      "name": "UNTITLED  (TO LUIS ALVAREZ FROM PHILIP STRONG REGARDING LEON DAVIDSON'S POSSIBL",
+      "type": "document",
+      "attributes": {
+        "url": "https://www.cia.gov/readingroom/document/0000015314",
+        "Document Number (FOIA) /ESDN (CREST)": "0000015314",
+        "Original Classification": "U",
+        "Document Page Count": "2",
+        "Document Release Date": "October 5, 1978",
+        "Publication Date": "April 4, 1958"
+      }
+    },
+    {
+      "id": "t_89",
+      "name": "April 4, 1958",
+      "type": "time",
+      "attributes": {}
+    },
+    {
+      "id": "location_0",
+      "name": "LUIS ALVAREZ FROM PHILIP STRONG REGARDING LEON",
+      "type": "location",
+      "attributes": {}
+    },
+    {
+      "id": "person_1",
+      "name": "LUIS ALVAREZ",
+      "type": "person",
+      "attributes": {}
+    },
+    {
+      "id": "f_92",
+      "name": "DOC_0000015314.pdf",
+      "type": "file",
+      "attributes": {
+        "url": "https://www.cia.gov/readingroom/docs/DOC_0000015314.pdf"
+      }
+    },
+    {
+      "id": "d_93",
+      "name": "UNTITLED  (TO LUIS ALVAREZ FROM PHILIP STRONG ENCLOSING COPY OF A LETTER  WITH",
+      "type": "document",
+      "attributes": {
+        "url": "https://www.cia.gov/readingroom/document/0000015302",
+        "Document Number (FOIA) /ESDN (CREST)": "0000015302",
+        "Original Classification": "U",
+        "Document Page Count": "2",
+        "Document Release Date": "October 5, 1978",
+        "Publication Date": "November 5, 1957"
+      }
+    },
+    {
+      "id": "location_0",
+      "name": "LUIS ALVAREZ FROM PHILIP STRONG ENCLOSING COPY OF A LETTER  WITH",
+      "type": "location",
+      "attributes": {}
+    },
+    {
+      "id": "f_95",
+      "name": "DOC_0000015302.pdf",
+      "type": "file",
+      "attributes": {
+        "url": "https://www.cia.gov/readingroom/docs/DOC_0000015302.pdf"
+      }
+    },
+    {
+      "id": "d_96",
+      "name": "FLYING SAUCERS",
+      "type": "document",
+      "attributes": {
+        "url": "https://www.cia.gov/readingroom/document/0000015345",
+        "Document Number (FOIA) /ESDN (CREST)": "0000015345",
+        "Original Classification": "U",
+        "Document Page Count": "2",
+        "Document Release Date": "October 5, 1978",
+        "Publication Date": "November 3, 1952"
+      }
+    },
+    {
+      "id": "t_97",
+      "name": "November 3, 1952",
+      "type": "time",
+      "attributes": {}
+    },
+    {
+      "id": "f_98",
+      "name": "DOC_0000015345.pdf",
+      "type": "file",
+      "attributes": {
+        "url": "https://www.cia.gov/readingroom/docs/DOC_0000015345.pdf"
+      }
+    },
+    {
+      "id": "d_99",
+      "name": "BOLIVIA  REPORTS CONFLICT ON DETAILS OF FALLEN OBJECT",
+      "type": "document",
+      "attributes": {
+        "url": "https://www.cia.gov/readingroom/document/0000015258",
+        "Document Number (FOIA) /ESDN (CREST)": "0000015258",
+        "Original Classification": "U",
+        "Document Page Count": "1",
+        "Document Release Date": "October 5, 1978",
+        "Publication Date": "April 3, 1978"
+      }
+    },
+    {
+      "id": "t_100",
+      "name": "April 3, 1978",
+      "type": "time",
+      "attributes": {}
+    },
+    {
+      "id": "f_101",
+      "name": "DOC_0000015258.pdf",
+      "type": "file",
+      "attributes": {
+        "url": "https://www.cia.gov/readingroom/docs/DOC_0000015258.pdf"
+      }
+    },
+    {
+      "id": "d_102",
+      "name": "FLYING SAUCERS   (MATCH MAGAZINE CARRIED AN ARTICLE ON UFO SIGHTING; MAR S WILL",
+      "type": "document",
+      "attributes": {
+        "url": "https://www.cia.gov/readingroom/document/0000015384",
+        "Document Number (FOIA) /ESDN (CREST)": "0000015384",
+        "Original Classification": "U",
+        "Document Page Count": "2",
+        "Document Release Date": "October 5, 1978",
+        "Publication Date": "February 1, 1956"
+      }
+    },
+    {
+      "id": "t_103",
+      "name": "February 1, 1956",
+      "type": "time",
+      "attributes": {}
+    },
+    {
+      "id": "f_104",
+      "name": "DOC_0000015384.pdf",
+      "type": "file",
+      "attributes": {
+        "url": "https://www.cia.gov/readingroom/docs/DOC_0000015384.pdf"
+      }
+    },
+    {
+      "id": "d_105",
+      "name": "REPORT OF UFO AT TIME OF SOVIET SATELLITE FAILURE",
+      "type": "document",
+      "attributes": {
+        "url": "https://www.cia.gov/readingroom/document/0000015438",
+        "Document Number (FOIA) /ESDN (CREST)": "0000015438",
+        "Original Classification": "U",
+        "Document Page Count": "1",
+        "Document Release Date": "October 5, 1978",
+        "Publication Date": "January 4, 1978"
+      }
+    },
+    {
+      "id": "t_106",
+      "name": "January 4, 1978",
+      "type": "time",
+      "attributes": {}
+    },
+    {
+      "id": "location_1",
+      "name": "TIME OF SOVIET SATELLITE FAILURE",
+      "type": "location",
+      "attributes": {}
+    },
+    {
+      "id": "f_108",
+      "name": "DOC_0000015438.pdf",
+      "type": "file",
+      "attributes": {
+        "url": "https://www.cia.gov/readingroom/docs/DOC_0000015438.pdf"
+      }
+    },
+    {
+      "id": "d_109",
+      "name": "DELETED  (MEMBER OF SOVIET COMMITTEE THE USSR ESTABLISHED TO INVESTIGATE  UNUSU",
+      "type": "document",
+      "attributes": {
+        "url": "https://www.cia.gov/readingroom/document/0000015270",
+        "Document Number (FOIA) /ESDN (CREST)": "0000015270",
+        "Original Classification": "U",
+        "Document Page Count": "4",
+        "Document Release Date": "October 5, 1978",
+        "Publication Date": "March 1, 1972"
+      }
+    },
+    {
+      "id": "t_110",
+      "name": "March 1, 1972",
+      "type": "time",
+      "attributes": {}
+    },
+    {
+      "id": "location_0",
+      "name": "INVESTIGATE  UNUSU",
+      "type": "location",
+      "attributes": {}
+    },
+    {
+      "id": "f_112",
+      "name": "DOC_0000015270.pdf",
+      "type": "file",
+      "attributes": {
+        "url": "https://www.cia.gov/readingroom/docs/DOC_0000015270.pdf"
+      }
+    },
+    {
+      "id": "d_113",
+      "name": "VISIT OF DR. CONDON TO NPIC, 20 FEBRUARY 1957",
+      "type": "document",
+      "attributes": {
+        "url": "https://www.cia.gov/readingroom/document/0000015435",
+        "Document Number (FOIA) /ESDN (CREST)": "0000015435",
+        "Original Classification": "U",
+        "Document Page Count": "3",
+        "Document Release Date": "October 5, 1978",
+        "Publication Date": "January 4, 1967"
+      }
+    },
+    {
+      "id": "t_114",
+      "name": "January 4, 1967",
+      "type": "time",
+      "attributes": {}
+    },
+    {
+      "id": "location_0",
+      "name": "NPIC",
+      "type": "location",
+      "attributes": {}
+    },
+    {
+      "id": "time_1",
+      "name": "20 FEBRUARY 1957",
+      "type": "time",
+      "attributes": {}
+    },
+    {
+      "id": "f_117",
+      "name": "DOC_0000015435.pdf",
+      "type": "file",
+      "attributes": {
+        "url": "https://www.cia.gov/readingroom/docs/DOC_0000015435.pdf"
+      }
+    },
+    {
+      "id": "d_118",
+      "name": "UNIDENTIFIED FLYING OBJECT SIGHTED AT BEHSHAHR",
+      "type": "document",
+      "attributes": {
+        "url": "https://www.cia.gov/readingroom/document/0000015496",
+        "Document Number (FOIA) /ESDN (CREST)": "0000015496",
+        "Original Classification": "U",
+        "Document Page Count": "2",
+        "Document Release Date": "October 5, 1978",
+        "Publication Date": "June 3, 1960"
+      }
+    },
+    {
+      "id": "t_119",
+      "name": "June 3, 1960",
+      "type": "time",
+      "attributes": {}
+    },
+    {
+      "id": "location_1",
+      "name": "BEHSHAHR",
+      "type": "location",
+      "attributes": {}
+    },
+    {
+      "id": "f_121",
+      "name": "DOC_0000015496.pdf",
+      "type": "file",
+      "attributes": {
+        "url": "https://www.cia.gov/readingroom/docs/DOC_0000015496.pdf"
+      }
+    },
+    {
+      "id": "d_122",
+      "name": "(DELETED) SIGHTING OF UNIDENTIFIED AIRBORNE OBJECTS NEAR LENINGRAD/(DELE TED)",
+      "type": "document",
+      "attributes": {
+        "url": "https://www.cia.gov/readingroom/document/0000015267",
+        "Document Number (FOIA) /ESDN (CREST)": "0000015267",
+        "Original Classification": "U",
+        "Document Page Count": "3",
+        "Document Release Date": "October 5, 1978",
+        "Publication Date": "September 5, 1958"
+      }
+    },
+    {
+      "id": "f_123",
+      "name": "DOC_0000015267.pdf",
+      "type": "file",
+      "attributes": {
+        "url": "https://www.cia.gov/readingroom/docs/DOC_0000015267.pdf"
+      }
+    },
+    {
+      "id": "d_124",
+      "name": "UNTITLED  (DCI HAS RECEIVED A LETTER FROM LEON DAVIDSON REQUESTING INFOR MATION",
+      "type": "document",
+      "attributes": {
+        "url": "https://www.cia.gov/readingroom/document/0000015247",
+        "Document Number (FOIA) /ESDN (CREST)": "0000015247",
+        "Original Classification": "U",
+        "Document Page Count": "1",
+        "Document Release Date": "October 5, 1978",
+        "Publication Date": "March 4, 1957"
+      }
+    },
+    {
+      "id": "t_125",
+      "name": "March 4, 1957",
+      "type": "time",
+      "attributes": {}
+    },
+    {
+      "id": "location_0",
+      "name": "LEON DAVIDSON REQUESTING INFOR MATION",
+      "type": "location",
+      "attributes": {}
+    },
+    {
+      "id": "f_127",
+      "name": "DOC_0000015247.pdf",
+      "type": "file",
+      "attributes": {
+        "url": "https://www.cia.gov/readingroom/docs/DOC_0000015247.pdf"
+      }
+    },
+    {
+      "id": "t_128",
+      "name": "March 4, 1953",
+      "type": "time",
+      "attributes": {}
+    },
+    {
+      "id": "f_129",
+      "name": "DOC_0000015359.pdf",
+      "type": "file",
+      "attributes": {
+        "url": "https://www.cia.gov/readingroom/docs/DOC_0000015359.pdf"
+      }
+    },
+    {
+      "id": "d_130",
+      "name": "RESPONSIBILITY FOR 'UNIDENTIFIED FLYING OBJECTS'",
+      "type": "document",
+      "attributes": {
+        "url": "https://www.cia.gov/readingroom/document/0000015387",
+        "Document Number (FOIA) /ESDN (CREST)": "0000015387",
+        "Original Classification": "U",
+        "Document Page Count": "3",
+        "Document Release Date": "October 5, 1978",
+        "Publication Date": "January 4, 1956"
+      }
+    },
+    {
+      "id": "t_131",
+      "name": "January 4, 1956",
+      "type": "time",
+      "attributes": {}
+    },
+    {
+      "id": "f_132",
+      "name": "DOC_0000015387.pdf",
+      "type": "file",
+      "attributes": {
+        "url": "https://www.cia.gov/readingroom/docs/DOC_0000015387.pdf"
+      }
+    },
+    {
+      "id": "d_133",
+      "name": "AIR FORCE REQUEST TO DECLASSIFY CIA UFO REPORT",
+      "type": "document",
+      "attributes": {
+        "url": "https://www.cia.gov/readingroom/document/0000015430",
+        "Document Number (FOIA) /ESDN (CREST)": "0000015430",
+        "Original Classification": "U",
+        "Document Page Count": "2",
+        "Document Release Date": "October 5, 1978",
+        "Publication Date": "July 2, 1966"
+      }
+    },
+    {
+      "id": "t_134",
+      "name": "July 2, 1966",
+      "type": "time",
+      "attributes": {}
+    },
+    {
+      "id": "location_1",
+      "name": "DECLASSIFY CIA UFO REPORT",
+      "type": "location",
+      "attributes": {}
+    },
+    {
+      "id": "f_136",
+      "name": "DOC_0000015430.pdf",
+      "type": "file",
+      "attributes": {
+        "url": "https://www.cia.gov/readingroom/docs/DOC_0000015430.pdf"
+      }
+    },
+    {
+      "id": "d_137",
+      "name": "UNTITLED  (TO DONALD KEYHOE FROM J. S. EARMAN STATING STILL HAVE INSUFFI CIENT",
+      "type": "document",
+      "attributes": {
+        "url": "https://www.cia.gov/readingroom/document/0000015324",
+        "Document Number (FOIA) /ESDN (CREST)": "0000015324",
+        "Original Classification": "U",
+        "Document Page Count": "1",
+        "Document Release Date": "October 5, 1978",
+        "Publication Date": "February 4, 1959"
+      }
+    },
+    {
+      "id": "location_0",
+      "name": "DONALD KEYHOE FROM J",
+      "type": "location",
+      "attributes": {}
+    },
+    {
+      "id": "f_139",
+      "name": "DOC_0000015324.pdf",
+      "type": "file",
+      "attributes": {
+        "url": "https://www.cia.gov/readingroom/docs/DOC_0000015324.pdf"
+      }
+    },
+    {
+      "id": "d_140",
+      "name": "LIGHT PHENOMENA EAST OF TASHKENT",
+      "type": "document",
+      "attributes": {
+        "url": "https://www.cia.gov/readingroom/document/0000015282",
+        "Document Number (FOIA) /ESDN (CREST)": "0000015282",
+        "Original Classification": "U",
+        "Document Page Count": "4",
+        "Document Release Date": "October 5, 1978",
+        "Publication Date": "January 1, 1952"
+      }
+    },
+    {
+      "id": "t_141",
+      "name": "January 1, 1952",
+      "type": "time",
+      "attributes": {}
+    },
+    {
+      "id": "location_0",
+      "name": "TASHKENT",
+      "type": "location",
+      "attributes": {}
+    },
+    {
+      "id": "f_143",
+      "name": "DOC_0000015282.pdf",
+      "type": "file",
+      "attributes": {
+        "url": "https://www.cia.gov/readingroom/docs/DOC_0000015282.pdf"
+      }
+    },
+    {
+      "id": "d_144",
+      "name": "FLYING SAUCERS  (PUBD IS UNKNOWN)",
+      "type": "document",
+      "attributes": {
+        "url": "https://www.cia.gov/readingroom/document/0000015338",
+        "Document Number (FOIA) /ESDN (CREST)": "0000015338",
+        "Original Classification": "U",
+        "Document Page Count": "26",
+        "Document Release Date": "October 5, 1978",
+        "Publication Date": "June 2, 1952"
+      }
+    },
+    {
+      "id": "t_145",
+      "name": "June 2, 1952",
+      "type": "time",
+      "attributes": {}
+    },
+    {
+      "id": "f_146",
+      "name": "DOC_0000015338.pdf",
+      "type": "file",
+      "attributes": {
+        "url": "https://www.cia.gov/readingroom/docs/DOC_0000015338.pdf"
+      }
+    }
+  ],
+  "relationships": [
+    {
+      "source": "d_0",
+      "target": "c_1",
+      "type": "part_of",
+      "attributes": {}
+    },
+    {
+      "source": "d_0",
+      "target": "t_2",
+      "type": "published_on",
+      "attributes": {}
+    },
+    {
+      "source": "d_0",
+      "target": "f_3",
+      "type": "has_file",
+      "attributes": {}
+    },
+    {
+      "source": "d_4",
+      "target": "c_1",
+      "type": "part_of",
+      "attributes": {}
+    },
+    {
+      "source": "d_4",
+      "target": "t_5",
+      "type": "published_on",
+      "attributes": {}
+    },
+    {
+      "source": "d_4",
+      "target": "concept_0",
+      "type": "about",
+      "attributes": {}
+    },
+    {
+      "source": "d_4",
+      "target": "concept_1",
+      "type": "about",
+      "attributes": {}
+    },
+    {
+      "source": "d_4",
+      "target": "concept_1",
+      "type": "about",
+      "attributes": {}
+    },
+    {
+      "source": "d_4",
+      "target": "time_2",
+      "type": "date",
+      "attributes": {}
+    },
+    {
+      "source": "d_4",
+      "target": "f_9",
+      "type": "has_file",
+      "attributes": {}
+    },
+    {
+      "source": "d_10",
+      "target": "c_1",
+      "type": "part_of",
+      "attributes": {}
+    },
+    {
+      "source": "d_10",
+      "target": "t_11",
+      "type": "published_on",
+      "attributes": {}
+    },
+    {
+      "source": "d_10",
+      "target": "location_0",
+      "type": "location",
+      "attributes": {}
+    },
+    {
+      "source": "d_10",
+      "target": "person_1",
+      "type": "person",
+      "attributes": {}
+    },
+    {
+      "source": "d_10",
+      "target": "f_14",
+      "type": "has_file",
+      "attributes": {}
+    },
+    {
+      "source": "d_15",
+      "target": "c_1",
+      "type": "part_of",
+      "attributes": {}
+    },
+    {
+      "source": "d_15",
+      "target": "t_16",
+      "type": "published_on",
+      "attributes": {}
+    },
+    {
+      "source": "d_15",
+      "target": "concept_0",
+      "type": "about",
+      "attributes": {}
+    },
+    {
+      "source": "d_15",
+      "target": "location_1",
+      "type": "location",
+      "attributes": {}
+    },
+    {
+      "source": "d_15",
+      "target": "f_18",
+      "type": "has_file",
+      "attributes": {}
+    },
+    {
+      "source": "d_19",
+      "target": "c_1",
+      "type": "part_of",
+      "attributes": {}
+    },
+    {
+      "source": "d_19",
+      "target": "t_20",
+      "type": "published_on",
+      "attributes": {}
+    },
+    {
+      "source": "d_19",
+      "target": "location_0",
+      "type": "location",
+      "attributes": {}
+    },
+    {
+      "source": "d_19",
+      "target": "f_22",
+      "type": "has_file",
+      "attributes": {}
+    },
+    {
+      "source": "d_23",
+      "target": "c_1",
+      "type": "part_of",
+      "attributes": {}
+    },
+    {
+      "source": "d_23",
+      "target": "t_24",
+      "type": "published_on",
+      "attributes": {}
+    },
+    {
+      "source": "d_23",
+      "target": "location_0",
+      "type": "location",
+      "attributes": {}
+    },
+    {
+      "source": "d_23",
+      "target": "f_26",
+      "type": "has_file",
+      "attributes": {}
+    },
+    {
+      "source": "d_27",
+      "target": "c_1",
+      "type": "part_of",
+      "attributes": {}
+    },
+    {
+      "source": "d_27",
+      "target": "t_28",
+      "type": "published_on",
+      "attributes": {}
+    },
+    {
+      "source": "d_27",
+      "target": "f_29",
+      "type": "has_file",
+      "attributes": {}
+    },
+    {
+      "source": "d_30",
+      "target": "c_1",
+      "type": "part_of",
+      "attributes": {}
+    },
+    {
+      "source": "d_30",
+      "target": "t_31",
+      "type": "published_on",
+      "attributes": {}
+    },
+    {
+      "source": "d_30",
+      "target": "concept_0",
+      "type": "about",
+      "attributes": {}
+    },
+    {
+      "source": "d_30",
+      "target": "concept_1",
+      "type": "about",
+      "attributes": {}
+    },
+    {
+      "source": "d_30",
+      "target": "f_32",
+      "type": "has_file",
+      "attributes": {}
+    },
+    {
+      "source": "d_33",
+      "target": "c_1",
+      "type": "part_of",
+      "attributes": {}
+    },
+    {
+      "source": "d_33",
+      "target": "t_34",
+      "type": "published_on",
+      "attributes": {}
+    },
+    {
+      "source": "d_33",
+      "target": "concept_0",
+      "type": "about",
+      "attributes": {}
+    },
+    {
+      "source": "d_33",
+      "target": "concept_1",
+      "type": "about",
+      "attributes": {}
+    },
+    {
+      "source": "d_33",
+      "target": "concept_1",
+      "type": "about",
+      "attributes": {}
+    },
+    {
+      "source": "d_33",
+      "target": "f_35",
+      "type": "has_file",
+      "attributes": {}
+    },
+    {
+      "source": "d_36",
+      "target": "c_1",
+      "type": "part_of",
+      "attributes": {}
+    },
+    {
+      "source": "d_36",
+      "target": "t_37",
+      "type": "published_on",
+      "attributes": {}
+    },
+    {
+      "source": "d_36",
+      "target": "location_0",
+      "type": "location",
+      "attributes": {}
+    },
+    {
+      "source": "d_36",
+      "target": "person_1",
+      "type": "person",
+      "attributes": {}
+    },
+    {
+      "source": "d_36",
+      "target": "f_39",
+      "type": "has_file",
+      "attributes": {}
+    },
+    {
+      "source": "d_40",
+      "target": "c_1",
+      "type": "part_of",
+      "attributes": {}
+    },
+    {
+      "source": "d_40",
+      "target": "t_41",
+      "type": "published_on",
+      "attributes": {}
+    },
+    {
+      "source": "d_40",
+      "target": "concept_0",
+      "type": "about",
+      "attributes": {}
+    },
+    {
+      "source": "d_40",
+      "target": "location_1",
+      "type": "location",
+      "attributes": {}
+    },
+    {
+      "source": "d_40",
+      "target": "f_43",
+      "type": "has_file",
+      "attributes": {}
+    },
+    {
+      "source": "d_44",
+      "target": "c_1",
+      "type": "part_of",
+      "attributes": {}
+    },
+    {
+      "source": "d_44",
+      "target": "t_45",
+      "type": "published_on",
+      "attributes": {}
+    },
+    {
+      "source": "d_44",
+      "target": "concept_0",
+      "type": "about",
+      "attributes": {}
+    },
+    {
+      "source": "d_44",
+      "target": "concept_1",
+      "type": "about",
+      "attributes": {}
+    },
+    {
+      "source": "d_44",
+      "target": "concept_1",
+      "type": "about",
+      "attributes": {}
+    },
+    {
+      "source": "d_44",
+      "target": "f_46",
+      "type": "has_file",
+      "attributes": {}
+    },
+    {
+      "source": "d_47",
+      "target": "c_1",
+      "type": "part_of",
+      "attributes": {}
+    },
+    {
+      "source": "d_47",
+      "target": "t_48",
+      "type": "published_on",
+      "attributes": {}
+    },
+    {
+      "source": "d_47",
+      "target": "location_0",
+      "type": "location",
+      "attributes": {}
+    },
+    {
+      "source": "d_47",
+      "target": "person_1",
+      "type": "person",
+      "attributes": {}
+    },
+    {
+      "source": "d_47",
+      "target": "f_51",
+      "type": "has_file",
+      "attributes": {}
+    },
+    {
+      "source": "d_52",
+      "target": "c_1",
+      "type": "part_of",
+      "attributes": {}
+    },
+    {
+      "source": "d_52",
+      "target": "t_53",
+      "type": "published_on",
+      "attributes": {}
+    },
+    {
+      "source": "d_52",
+      "target": "f_54",
+      "type": "has_file",
+      "attributes": {}
+    },
+    {
+      "source": "d_33",
+      "target": "c_1",
+      "type": "part_of",
+      "attributes": {}
+    },
+    {
+      "source": "d_33",
+      "target": "t_55",
+      "type": "published_on",
+      "attributes": {}
+    },
+    {
+      "source": "d_33",
+      "target": "concept_0",
+      "type": "about",
+      "attributes": {}
+    },
+    {
+      "source": "d_33",
+      "target": "concept_1",
+      "type": "about",
+      "attributes": {}
+    },
+    {
+      "source": "d_33",
+      "target": "concept_1",
+      "type": "about",
+      "attributes": {}
+    },
+    {
+      "source": "d_33",
+      "target": "f_56",
+      "type": "has_file",
+      "attributes": {}
+    },
+    {
+      "source": "d_57",
+      "target": "c_1",
+      "type": "part_of",
+      "attributes": {}
+    },
+    {
+      "source": "d_57",
+      "target": "t_58",
+      "type": "published_on",
+      "attributes": {}
+    },
+    {
+      "source": "d_57",
+      "target": "location_0",
+      "type": "location",
+      "attributes": {}
+    },
+    {
+      "source": "d_57",
+      "target": "person_1",
+      "type": "person",
+      "attributes": {}
+    },
+    {
+      "source": "d_57",
+      "target": "f_61",
+      "type": "has_file",
+      "attributes": {}
+    },
+    {
+      "source": "d_62",
+      "target": "c_1",
+      "type": "part_of",
+      "attributes": {}
+    },
+    {
+      "source": "d_62",
+      "target": "t_63",
+      "type": "published_on",
+      "attributes": {}
+    },
+    {
+      "source": "d_62",
+      "target": "location_0",
+      "type": "location",
+      "attributes": {}
+    },
+    {
+      "source": "d_62",
+      "target": "f_65",
+      "type": "has_file",
+      "attributes": {}
+    },
+    {
+      "source": "d_66",
+      "target": "c_1",
+      "type": "part_of",
+      "attributes": {}
+    },
+    {
+      "source": "d_66",
+      "target": "t_67",
+      "type": "published_on",
+      "attributes": {}
+    },
+    {
+      "source": "d_66",
+      "target": "location_0",
+      "type": "location",
+      "attributes": {}
+    },
+    {
+      "source": "d_66",
+      "target": "person_1",
+      "type": "person",
+      "attributes": {}
+    },
+    {
+      "source": "d_66",
+      "target": "f_70",
+      "type": "has_file",
+      "attributes": {}
+    },
+    {
+      "source": "d_71",
+      "target": "c_1",
+      "type": "part_of",
+      "attributes": {}
+    },
+    {
+      "source": "d_71",
+      "target": "t_72",
+      "type": "published_on",
+      "attributes": {}
+    },
+    {
+      "source": "d_71",
+      "target": "concept_0",
+      "type": "about",
+      "attributes": {}
+    },
+    {
+      "source": "d_71",
+      "target": "f_73",
+      "type": "has_file",
+      "attributes": {}
+    },
+    {
+      "source": "d_74",
+      "target": "c_1",
+      "type": "part_of",
+      "attributes": {}
+    },
+    {
+      "source": "d_74",
+      "target": "t_75",
+      "type": "published_on",
+      "attributes": {}
+    },
+    {
+      "source": "d_74",
+      "target": "concept_0",
+      "type": "about",
+      "attributes": {}
+    },
+    {
+      "source": "d_74",
+      "target": "location_1",
+      "type": "location",
+      "attributes": {}
+    },
+    {
+      "source": "d_74",
+      "target": "f_77",
+      "type": "has_file",
+      "attributes": {}
+    },
+    {
+      "source": "d_78",
+      "target": "c_1",
+      "type": "part_of",
+      "attributes": {}
+    },
+    {
+      "source": "d_78",
+      "target": "t_79",
+      "type": "published_on",
+      "attributes": {}
+    },
+    {
+      "source": "d_78",
+      "target": "f_80",
+      "type": "has_file",
+      "attributes": {}
+    },
+    {
+      "source": "d_81",
+      "target": "c_1",
+      "type": "part_of",
+      "attributes": {}
+    },
+    {
+      "source": "d_81",
+      "target": "t_82",
+      "type": "published_on",
+      "attributes": {}
+    },
+    {
+      "source": "d_81",
+      "target": "location_0",
+      "type": "location",
+      "attributes": {}
+    },
+    {
+      "source": "d_81",
+      "target": "person_1",
+      "type": "person",
+      "attributes": {}
+    },
+    {
+      "source": "d_81",
+      "target": "f_84",
+      "type": "has_file",
+      "attributes": {}
+    },
+    {
+      "source": "d_85",
+      "target": "c_1",
+      "type": "part_of",
+      "attributes": {}
+    },
+    {
+      "source": "d_85",
+      "target": "t_86",
+      "type": "published_on",
+      "attributes": {}
+    },
+    {
+      "source": "d_85",
+      "target": "f_87",
+      "type": "has_file",
+      "attributes": {}
+    },
+    {
+      "source": "d_88",
+      "target": "c_1",
+      "type": "part_of",
+      "attributes": {}
+    },
+    {
+      "source": "d_88",
+      "target": "t_89",
+      "type": "published_on",
+      "attributes": {}
+    },
+    {
+      "source": "d_88",
+      "target": "location_0",
+      "type": "location",
+      "attributes": {}
+    },
+    {
+      "source": "d_88",
+      "target": "person_1",
+      "type": "person",
+      "attributes": {}
+    },
+    {
+      "source": "d_88",
+      "target": "f_92",
+      "type": "has_file",
+      "attributes": {}
+    },
+    {
+      "source": "d_93",
+      "target": "c_1",
+      "type": "part_of",
+      "attributes": {}
+    },
+    {
+      "source": "d_93",
+      "target": "t_82",
+      "type": "published_on",
+      "attributes": {}
+    },
+    {
+      "source": "d_93",
+      "target": "location_0",
+      "type": "location",
+      "attributes": {}
+    },
+    {
+      "source": "d_93",
+      "target": "person_1",
+      "type": "person",
+      "attributes": {}
+    },
+    {
+      "source": "d_93",
+      "target": "f_95",
+      "type": "has_file",
+      "attributes": {}
+    },
+    {
+      "source": "d_96",
+      "target": "c_1",
+      "type": "part_of",
+      "attributes": {}
+    },
+    {
+      "source": "d_96",
+      "target": "t_97",
+      "type": "published_on",
+      "attributes": {}
+    },
+    {
+      "source": "d_96",
+      "target": "concept_0",
+      "type": "about",
+      "attributes": {}
+    },
+    {
+      "source": "d_96",
+      "target": "f_98",
+      "type": "has_file",
+      "attributes": {}
+    },
+    {
+      "source": "d_99",
+      "target": "c_1",
+      "type": "part_of",
+      "attributes": {}
+    },
+    {
+      "source": "d_99",
+      "target": "t_100",
+      "type": "published_on",
+      "attributes": {}
+    },
+    {
+      "source": "d_99",
+      "target": "f_101",
+      "type": "has_file",
+      "attributes": {}
+    },
+    {
+      "source": "d_102",
+      "target": "c_1",
+      "type": "part_of",
+      "attributes": {}
+    },
+    {
+      "source": "d_102",
+      "target": "t_103",
+      "type": "published_on",
+      "attributes": {}
+    },
+    {
+      "source": "d_102",
+      "target": "concept_0",
+      "type": "about",
+      "attributes": {}
+    },
+    {
+      "source": "d_102",
+      "target": "concept_1",
+      "type": "about",
+      "attributes": {}
+    },
+    {
+      "source": "d_102",
+      "target": "concept_1",
+      "type": "about",
+      "attributes": {}
+    },
+    {
+      "source": "d_102",
+      "target": "f_104",
+      "type": "has_file",
+      "attributes": {}
+    },
+    {
+      "source": "d_105",
+      "target": "c_1",
+      "type": "part_of",
+      "attributes": {}
+    },
+    {
+      "source": "d_105",
+      "target": "t_106",
+      "type": "published_on",
+      "attributes": {}
+    },
+    {
+      "source": "d_105",
+      "target": "concept_0",
+      "type": "about",
+      "attributes": {}
+    },
+    {
+      "source": "d_105",
+      "target": "location_1",
+      "type": "location",
+      "attributes": {}
+    },
+    {
+      "source": "d_105",
+      "target": "f_108",
+      "type": "has_file",
+      "attributes": {}
+    },
+    {
+      "source": "d_109",
+      "target": "c_1",
+      "type": "part_of",
+      "attributes": {}
+    },
+    {
+      "source": "d_109",
+      "target": "t_110",
+      "type": "published_on",
+      "attributes": {}
+    },
+    {
+      "source": "d_109",
+      "target": "location_0",
+      "type": "location",
+      "attributes": {}
+    },
+    {
+      "source": "d_109",
+      "target": "f_112",
+      "type": "has_file",
+      "attributes": {}
+    },
+    {
+      "source": "d_113",
+      "target": "c_1",
+      "type": "part_of",
+      "attributes": {}
+    },
+    {
+      "source": "d_113",
+      "target": "t_114",
+      "type": "published_on",
+      "attributes": {}
+    },
+    {
+      "source": "d_113",
+      "target": "location_0",
+      "type": "location",
+      "attributes": {}
+    },
+    {
+      "source": "d_113",
+      "target": "time_1",
+      "type": "date",
+      "attributes": {}
+    },
+    {
+      "source": "d_113",
+      "target": "f_117",
+      "type": "has_file",
+      "attributes": {}
+    },
+    {
+      "source": "d_118",
+      "target": "c_1",
+      "type": "part_of",
+      "attributes": {}
+    },
+    {
+      "source": "d_118",
+      "target": "t_119",
+      "type": "published_on",
+      "attributes": {}
+    },
+    {
+      "source": "d_118",
+      "target": "concept_0",
+      "type": "about",
+      "attributes": {}
+    },
+    {
+      "source": "d_118",
+      "target": "concept_1",
+      "type": "about",
+      "attributes": {}
+    },
+    {
+      "source": "d_118",
+      "target": "location_1",
+      "type": "location",
+      "attributes": {}
+    },
+    {
+      "source": "d_118",
+      "target": "f_121",
+      "type": "has_file",
+      "attributes": {}
+    },
+    {
+      "source": "d_122",
+      "target": "c_1",
+      "type": "part_of",
+      "attributes": {}
+    },
+    {
+      "source": "d_122",
+      "target": "t_48",
+      "type": "published_on",
+      "attributes": {}
+    },
+    {
+      "source": "d_122",
+      "target": "concept_0",
+      "type": "about",
+      "attributes": {}
+    },
+    {
+      "source": "d_122",
+      "target": "f_123",
+      "type": "has_file",
+      "attributes": {}
+    },
+    {
+      "source": "d_124",
+      "target": "c_1",
+      "type": "part_of",
+      "attributes": {}
+    },
+    {
+      "source": "d_124",
+      "target": "t_125",
+      "type": "published_on",
+      "attributes": {}
+    },
+    {
+      "source": "d_124",
+      "target": "location_0",
+      "type": "location",
+      "attributes": {}
+    },
+    {
+      "source": "d_124",
+      "target": "f_127",
+      "type": "has_file",
+      "attributes": {}
+    },
+    {
+      "source": "location_0",
+      "target": "c_1",
+      "type": "part_of",
+      "attributes": {}
+    },
+    {
+      "source": "location_0",
+      "target": "t_128",
+      "type": "published_on",
+      "attributes": {}
+    },
+    {
+      "source": "location_0",
+      "target": "f_129",
+      "type": "has_file",
+      "attributes": {}
+    },
+    {
+      "source": "d_130",
+      "target": "c_1",
+      "type": "part_of",
+      "attributes": {}
+    },
+    {
+      "source": "d_130",
+      "target": "t_131",
+      "type": "published_on",
+      "attributes": {}
+    },
+    {
+      "source": "d_130",
+      "target": "concept_0",
+      "type": "about",
+      "attributes": {}
+    },
+    {
+      "source": "d_130",
+      "target": "concept_1",
+      "type": "about",
+      "attributes": {}
+    },
+    {
+      "source": "d_130",
+      "target": "f_132",
+      "type": "has_file",
+      "attributes": {}
+    },
+    {
+      "source": "d_133",
+      "target": "c_1",
+      "type": "part_of",
+      "attributes": {}
+    },
+    {
+      "source": "d_133",
+      "target": "t_134",
+      "type": "published_on",
+      "attributes": {}
+    },
+    {
+      "source": "d_133",
+      "target": "concept_0",
+      "type": "about",
+      "attributes": {}
+    },
+    {
+      "source": "d_133",
+      "target": "location_1",
+      "type": "location",
+      "attributes": {}
+    },
+    {
+      "source": "d_133",
+      "target": "f_136",
+      "type": "has_file",
+      "attributes": {}
+    },
+    {
+      "source": "d_137",
+      "target": "c_1",
+      "type": "part_of",
+      "attributes": {}
+    },
+    {
+      "source": "d_137",
+      "target": "t_11",
+      "type": "published_on",
+      "attributes": {}
+    },
+    {
+      "source": "d_137",
+      "target": "location_0",
+      "type": "location",
+      "attributes": {}
+    },
+    {
+      "source": "d_137",
+      "target": "person_1",
+      "type": "person",
+      "attributes": {}
+    },
+    {
+      "source": "d_137",
+      "target": "f_139",
+      "type": "has_file",
+      "attributes": {}
+    },
+    {
+      "source": "d_140",
+      "target": "c_1",
+      "type": "part_of",
+      "attributes": {}
+    },
+    {
+      "source": "d_140",
+      "target": "t_141",
+      "type": "published_on",
+      "attributes": {}
+    },
+    {
+      "source": "d_140",
+      "target": "location_0",
+      "type": "location",
+      "attributes": {}
+    },
+    {
+      "source": "d_140",
+      "target": "f_143",
+      "type": "has_file",
+      "attributes": {}
+    },
+    {
+      "source": "d_144",
+      "target": "c_1",
+      "type": "part_of",
+      "attributes": {}
+    },
+    {
+      "source": "d_144",
+      "target": "t_145",
+      "type": "published_on",
+      "attributes": {}
+    },
+    {
+      "source": "d_144",
+      "target": "concept_0",
+      "type": "about",
+      "attributes": {}
+    },
+    {
+      "source": "d_144",
+      "target": "f_146",
+      "type": "has_file",
+      "attributes": {}
+    },
+    {
+      "source": "d_4",
+      "target": "d_15",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_4",
+      "target": "d_30",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_4",
+      "target": "d_33",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_4",
+      "target": "d_40",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_4",
+      "target": "d_44",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_4",
+      "target": "d_33",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_4",
+      "target": "d_71",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_4",
+      "target": "d_74",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_4",
+      "target": "d_96",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_4",
+      "target": "d_102",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_4",
+      "target": "d_105",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_4",
+      "target": "d_118",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_4",
+      "target": "d_122",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_4",
+      "target": "d_130",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_4",
+      "target": "d_133",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_4",
+      "target": "d_144",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_15",
+      "target": "d_30",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_15",
+      "target": "d_33",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_15",
+      "target": "d_40",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_15",
+      "target": "d_44",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_15",
+      "target": "d_33",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_15",
+      "target": "d_71",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_15",
+      "target": "d_74",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_15",
+      "target": "d_96",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_15",
+      "target": "d_102",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_15",
+      "target": "d_105",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_15",
+      "target": "d_118",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_15",
+      "target": "d_122",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_15",
+      "target": "d_130",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_15",
+      "target": "d_133",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_15",
+      "target": "d_144",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_30",
+      "target": "d_33",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_30",
+      "target": "d_40",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_30",
+      "target": "d_44",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_30",
+      "target": "d_33",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_30",
+      "target": "d_71",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_30",
+      "target": "d_74",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_30",
+      "target": "d_96",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_30",
+      "target": "d_102",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_30",
+      "target": "d_105",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_30",
+      "target": "d_118",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_30",
+      "target": "d_122",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_30",
+      "target": "d_130",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_30",
+      "target": "d_133",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_30",
+      "target": "d_144",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_33",
+      "target": "d_40",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_33",
+      "target": "d_44",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_33",
+      "target": "d_33",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_33",
+      "target": "d_71",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_33",
+      "target": "d_74",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_33",
+      "target": "d_96",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_33",
+      "target": "d_102",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_33",
+      "target": "d_105",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_33",
+      "target": "d_118",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_33",
+      "target": "d_122",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_33",
+      "target": "d_130",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_33",
+      "target": "d_133",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_33",
+      "target": "d_144",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_40",
+      "target": "d_44",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_40",
+      "target": "d_33",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_40",
+      "target": "d_71",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_40",
+      "target": "d_74",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_40",
+      "target": "d_96",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_40",
+      "target": "d_102",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_40",
+      "target": "d_105",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_40",
+      "target": "d_118",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_40",
+      "target": "d_122",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_40",
+      "target": "d_130",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_40",
+      "target": "d_133",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_40",
+      "target": "d_144",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_44",
+      "target": "d_33",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_44",
+      "target": "d_71",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_44",
+      "target": "d_74",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_44",
+      "target": "d_96",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_44",
+      "target": "d_102",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_44",
+      "target": "d_105",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_44",
+      "target": "d_118",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_44",
+      "target": "d_122",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_44",
+      "target": "d_130",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_44",
+      "target": "d_133",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_44",
+      "target": "d_144",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_33",
+      "target": "d_71",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_33",
+      "target": "d_74",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_33",
+      "target": "d_96",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_33",
+      "target": "d_102",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_33",
+      "target": "d_105",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_33",
+      "target": "d_118",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_33",
+      "target": "d_122",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_33",
+      "target": "d_130",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_33",
+      "target": "d_133",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_33",
+      "target": "d_144",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_71",
+      "target": "d_74",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_71",
+      "target": "d_96",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_71",
+      "target": "d_102",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_71",
+      "target": "d_105",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_71",
+      "target": "d_118",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_71",
+      "target": "d_122",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_71",
+      "target": "d_130",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_71",
+      "target": "d_133",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_71",
+      "target": "d_144",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_74",
+      "target": "d_96",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_74",
+      "target": "d_102",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_74",
+      "target": "d_105",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_74",
+      "target": "d_118",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_74",
+      "target": "d_122",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_74",
+      "target": "d_130",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_74",
+      "target": "d_133",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_74",
+      "target": "d_144",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_96",
+      "target": "d_102",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_96",
+      "target": "d_105",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_96",
+      "target": "d_118",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_96",
+      "target": "d_122",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_96",
+      "target": "d_130",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_96",
+      "target": "d_133",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_96",
+      "target": "d_144",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_102",
+      "target": "d_105",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_102",
+      "target": "d_118",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_102",
+      "target": "d_122",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_102",
+      "target": "d_130",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_102",
+      "target": "d_133",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_102",
+      "target": "d_144",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_105",
+      "target": "d_118",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_105",
+      "target": "d_122",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_105",
+      "target": "d_130",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_105",
+      "target": "d_133",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_105",
+      "target": "d_144",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_118",
+      "target": "d_122",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_118",
+      "target": "d_130",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_118",
+      "target": "d_133",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_118",
+      "target": "d_144",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_122",
+      "target": "d_130",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_122",
+      "target": "d_133",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_122",
+      "target": "d_144",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_130",
+      "target": "d_133",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_130",
+      "target": "d_144",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_133",
+      "target": "d_144",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_4",
+      "target": "d_4",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_4",
+      "target": "d_30",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_4",
+      "target": "d_33",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_4",
+      "target": "d_33",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_4",
+      "target": "d_44",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_4",
+      "target": "d_44",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_4",
+      "target": "d_33",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_4",
+      "target": "d_33",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_4",
+      "target": "d_102",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_4",
+      "target": "d_102",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_4",
+      "target": "d_118",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_4",
+      "target": "d_130",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_4",
+      "target": "d_30",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_4",
+      "target": "d_33",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_4",
+      "target": "d_33",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_4",
+      "target": "d_44",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_4",
+      "target": "d_44",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_4",
+      "target": "d_33",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_4",
+      "target": "d_33",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_4",
+      "target": "d_102",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_4",
+      "target": "d_102",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_4",
+      "target": "d_118",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_4",
+      "target": "d_130",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_30",
+      "target": "d_33",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_30",
+      "target": "d_33",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_30",
+      "target": "d_44",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_30",
+      "target": "d_44",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_30",
+      "target": "d_33",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_30",
+      "target": "d_33",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_30",
+      "target": "d_102",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_30",
+      "target": "d_102",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_30",
+      "target": "d_118",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_30",
+      "target": "d_130",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_33",
+      "target": "d_33",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_33",
+      "target": "d_44",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_33",
+      "target": "d_44",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_33",
+      "target": "d_33",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_33",
+      "target": "d_33",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_33",
+      "target": "d_102",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_33",
+      "target": "d_102",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_33",
+      "target": "d_118",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_33",
+      "target": "d_130",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_33",
+      "target": "d_44",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_33",
+      "target": "d_44",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_33",
+      "target": "d_33",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_33",
+      "target": "d_33",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_33",
+      "target": "d_102",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_33",
+      "target": "d_102",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_33",
+      "target": "d_118",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_33",
+      "target": "d_130",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_44",
+      "target": "d_44",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_44",
+      "target": "d_33",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_44",
+      "target": "d_33",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_44",
+      "target": "d_102",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_44",
+      "target": "d_102",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_44",
+      "target": "d_118",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_44",
+      "target": "d_130",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_44",
+      "target": "d_33",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_44",
+      "target": "d_33",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_44",
+      "target": "d_102",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_44",
+      "target": "d_102",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_44",
+      "target": "d_118",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_44",
+      "target": "d_130",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_33",
+      "target": "d_33",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_33",
+      "target": "d_102",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_33",
+      "target": "d_102",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_33",
+      "target": "d_118",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_33",
+      "target": "d_130",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_33",
+      "target": "d_102",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_33",
+      "target": "d_102",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_33",
+      "target": "d_118",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_33",
+      "target": "d_130",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_102",
+      "target": "d_102",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_102",
+      "target": "d_118",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_102",
+      "target": "d_130",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_102",
+      "target": "d_118",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_102",
+      "target": "d_130",
+      "type": "related_topic",
+      "attributes": {}
+    },
+    {
+      "source": "d_118",
+      "target": "d_130",
+      "type": "related_topic",
+      "attributes": {}
+    }
+  ]
+}

@@ -1,0 +1,513 @@
+{
+  "entities": [
+    {
+      "id": "document_1",
+      "name": "SOVIETS SAID READYING DISINFORMATION BLITZ",
+      "type": "document",
+      "attributes": {
+        "Document Type": "CREST",
+        "Collection": "General CIA Records",
+        "Document Number (FOIA) /ESDN (CREST)": "CIA-RDP90-00965R000302330043-7",
+        "Release Decision": "RIPPUB",
+        "Original Classification": "K",
+        "Document Page Count": "1",
+        "Document Creation Date": "December 22, 2016",
+        "Document Release Date": "October 10, 2012",
+        "Sequence Number": "43",
+        "Publication Date": "September 27, 1985",
+        "Content Type": "OPEN SOURCE"
+      }
+    },
+    {
+      "id": "ladislav_bittman",
+      "name": "Ladislav Bittman",
+      "type": "person",
+      "attributes": {
+        "role": "former Soviet bloc intelligence officer",
+        "specialization": "Czech intelligence specialist",
+        "status": "defector",
+        "activity_current": "teaches communications at an East Coast university under an assumed name",
+        "activity_past_1": "specialist in disinformation",
+        "service_duration": "14 years in Czechoslovakian intelligence service",
+        "activity_past_2": "spent last two years in Prague directing a team of disinformation specialists",
+        "career_end": "1968",
+        "status_current": "continues to recognize Soviet disinformation programs in the U.S. press"
+      }
+    },
+    {
+      "id": "bill_gertz",
+      "name": "Bill Gertz",
+      "type": "person",
+      "attributes": {
+        "role": "author"
+      }
+    },
+    {
+      "id": "president_reagan",
+      "name": "President Reagan",
+      "type": "person",
+      "attributes": {
+        "role": "US leader"
+      }
+    },
+    {
+      "id": "mikhail_gorbachev",
+      "name": "Mikhail Gorbachev",
+      "type": "person",
+      "attributes": {
+        "role": "Soviet leader"
+      }
+    },
+    {
+      "id": "soviet_union",
+      "name": "Soviet Union",
+      "type": "organization",
+      "attributes": {}
+    },
+    {
+      "id": "united_states",
+      "name": "United States",
+      "type": "location",
+      "attributes": {}
+    },
+    {
+      "id": "washington_times",
+      "name": "THE WASHINGTON TIMES",
+      "type": "organization",
+      "attributes": {}
+    },
+    {
+      "id": "november_summit_1985",
+      "name": "November summit meeting",
+      "type": "event",
+      "attributes": {
+        "year": "1985"
+      }
+    },
+    {
+      "id": "geneva",
+      "name": "Geneva",
+      "type": "location",
+      "attributes": {}
+    },
+    {
+      "id": "disinformation_concept",
+      "name": "Disinformation",
+      "type": "concept",
+      "attributes": {
+        "description": "Soviet covert action to influence and undermine Western societies or individuals",
+        "components": "false and misleading information, forgeries, paid agents, unwitting collaborators",
+        "goal": "undermine Western policies"
+      }
+    },
+    {
+      "id": "pergamong_brassys",
+      "name": "Pergamon-Brassy's",
+      "type": "organization",
+      "attributes": {}
+    },
+    {
+      "id": "kgb_disinformation_book",
+      "name": "The KGB and Disinformation: An Insider's View",
+      "type": "publication",
+      "attributes": {}
+    },
+    {
+      "id": "western_societies",
+      "name": "Western societies",
+      "type": "location",
+      "attributes": {}
+    },
+    {
+      "id": "western_europe",
+      "name": "Western Europe",
+      "type": "location",
+      "attributes": {}
+    },
+    {
+      "id": "active_measures_concept",
+      "name": "Active measures",
+      "type": "concept",
+      "attributes": {
+        "description": "covert action programs",
+        "goal": "implement Soviet policy goals around the world",
+        "relation": "in concert with Soviet overt propaganda"
+      }
+    },
+    {
+      "id": "soviet_overt_propaganda_concept",
+      "name": "Soviet overt propaganda",
+      "type": "concept",
+      "attributes": {
+        "activity": "promoting a positive image of the Soviet proposals and policies"
+      }
+    },
+    {
+      "id": "kgb",
+      "name": "KGB",
+      "type": "organization",
+      "attributes": {}
+    },
+    {
+      "id": "czechoslovakian_intelligence_service",
+      "name": "Czechoslovakian intelligence service",
+      "type": "organization",
+      "attributes": {}
+    },
+    {
+      "id": "prague",
+      "name": "Prague",
+      "type": "location",
+      "attributes": {}
+    },
+    {
+      "id": "us_intelligence_services",
+      "name": "U.S. intelligence services",
+      "type": "organization",
+      "attributes": {}
+    },
+    {
+      "id": "invasion_czechoslovakia_1968",
+      "name": "1968 invasion of Czechoslovakia",
+      "type": "event",
+      "attributes": {
+        "year": "1968"
+      }
+    },
+    {
+      "id": "us_press",
+      "name": "U.S. press",
+      "type": "organization",
+      "attributes": {}
+    },
+    {
+      "id": "forgeries_concept",
+      "name": "Forgeries",
+      "type": "concept",
+      "attributes": {}
+    },
+    {
+      "id": "watergate_scandal",
+      "name": "Watergate scandal",
+      "type": "event",
+      "attributes": {}
+    },
+    {
+      "id": "kgb_forgery_example_1",
+      "name": "Letter criticizing black athletes (KGB forgery)",
+      "type": "concept",
+      "attributes": {
+        "purported_author": "Ku Klux Klan",
+        "topic": "criticizing black athletes"
+      }
+    },
+    {
+      "id": "black_athletes_group",
+      "name": "black athletes",
+      "type": "group",
+      "attributes": {}
+    },
+    {
+      "id": "third_world_countries",
+      "name": "Third World countries",
+      "type": "location",
+      "attributes": {}
+    },
+    {
+      "id": "olympic_games_1984",
+      "name": "1984 Olympic Games",
+      "type": "event",
+      "attributes": {
+        "year": "1984"
+      }
+    },
+    {
+      "id": "los_angeles",
+      "name": "Los Angeles",
+      "type": "location",
+      "attributes": {}
+    },
+    {
+      "id": "fbi",
+      "name": "FBI",
+      "type": "organization",
+      "attributes": {}
+    },
+    {
+      "id": "ku_klux_klan",
+      "name": "Ku Klux Klan",
+      "type": "organization",
+      "attributes": {}
+    }
+  ],
+  "relationships": [
+    {
+      "source": "document_1",
+      "target": "washington_times",
+      "type": "published_by",
+      "attributes": {}
+    },
+    {
+      "source": "document_1",
+      "target": "bill_gertz",
+      "type": "authored_by",
+      "attributes": {}
+    },
+    {
+      "source": "document_1",
+      "target": "ladislav_bittman",
+      "type": "features_interview_with",
+      "attributes": {}
+    },
+    {
+      "source": "ladislav_bittman",
+      "target": "soviet_union",
+      "type": "was_intelligence_officer_of",
+      "attributes": {
+        "notes": "Soviet bloc"
+      }
+    },
+    {
+      "source": "ladislav_bittman",
+      "target": "czechoslovakian_intelligence_service",
+      "type": "served_in",
+      "attributes": {
+        "duration": "14 years"
+      }
+    },
+    {
+      "source": "ladislav_bittman",
+      "target": "invasion_czechoslovakia_1968",
+      "type": "defected_after",
+      "attributes": {}
+    },
+    {
+      "source": "ladislav_bittman",
+      "target": "us_intelligence_services",
+      "type": "was_debriefed_by",
+      "attributes": {}
+    },
+    {
+      "source": "ladislav_bittman",
+      "target": "east_coast",
+      "type": "teaches_at_university_in",
+      "attributes": {}
+    },
+    {
+      "source": "ladislav_bittman",
+      "target": "disinformation_concept",
+      "type": "is_specialist_in",
+      "attributes": {}
+    },
+    {
+      "source": "ladislav_bittman",
+      "target": "prague",
+      "type": "directed_disinformation_team_in",
+      "attributes": {
+        "duration": "last two years of service"
+      }
+    },
+    {
+      "source": "ladislav_bittman",
+      "target": "kgb_disinformation_book",
+      "type": "authored",
+      "attributes": {}
+    },
+    {
+      "source": "pergamong_brassys",
+      "target": "kgb_disinformation_book",
+      "type": "published",
+      "attributes": {
+        "date": "yesterday"
+      }
+    },
+    {
+      "source": "soviet_union",
+      "target": "disinformation_concept",
+      "type": "prepares",
+      "attributes": {
+        "scale": "massive",
+        "timing": "readying"
+      }
+    },
+    {
+      "source": "soviet_union",
+      "target": "november_summit_1985",
+      "type": "participant_in",
+      "attributes": {}
+    },
+    {
+      "source": "united_states",
+      "target": "november_summit_1985",
+      "type": "participant_in",
+      "attributes": {}
+    },
+    {
+      "source": "president_reagan",
+      "target": "november_summit_1985",
+      "type": "participant_in",
+      "attributes": {}
+    },
+    {
+      "source": "mikhail_gorbachev",
+      "target": "november_summit_1985",
+      "type": "participant_in",
+      "attributes": {}
+    },
+    {
+      "source": "november_summit_1985",
+      "target": "geneva",
+      "type": "located_in",
+      "attributes": {}
+    },
+    {
+      "source": "soviet_union",
+      "target": "disinformation_concept",
+      "type": "uses",
+      "attributes": {}
+    },
+    {
+      "source": "disinformation_concept",
+      "target": "western_societies",
+      "type": "aims_to_influence",
+      "attributes": {}
+    },
+    {
+      "source": "disinformation_concept",
+      "target": "western_societies",
+      "type": "aims_to_undermine",
+      "attributes": {}
+    },
+    {
+      "source": "disinformation_concept",
+      "target": "western_europe",
+      "type": "targets",
+      "attributes": {
+        "context": "post-summit campaign"
+      }
+    },
+    {
+      "source": "disinformation_concept",
+      "target": "united_states",
+      "type": "targets",
+      "attributes": {
+        "context": "post-summit campaign"
+      }
+    },
+    {
+      "source": "disinformation_concept",
+      "target": "united_states",
+      "type": "aims_to_blame_for_failure_of",
+      "attributes": {
+        "context": "if summit fails"
+      }
+    },
+    {
+      "source": "disinformation_concept",
+      "target": "president_reagan",
+      "type": "aims_to_portray_as",
+      "attributes": {
+        "role": "primary villain",
+        "context": "if summit fails"
+      }
+    },
+    {
+      "source": "disinformation_concept",
+      "target": "active_measures_concept",
+      "type": "is_component_of",
+      "attributes": {}
+    },
+    {
+      "source": "soviet_union",
+      "target": "active_measures_concept",
+      "type": "uses",
+      "attributes": {}
+    },
+    {
+      "source": "active_measures_concept",
+      "target": "soviet_policy_goals_concept",
+      "type": "implements",
+      "attributes": {}
+    },
+    {
+      "source": "active_measures_concept",
+      "target": "soviet_overt_propaganda_concept",
+      "type": "works_in_concert_with",
+      "attributes": {}
+    },
+    {
+      "source": "kgb",
+      "target": "forgeries_concept",
+      "type": "uses",
+      "attributes": {}
+    },
+    {
+      "source": "forgeries_concept",
+      "target": "disinformation_concept",
+      "type": "used_in",
+      "attributes": {}
+    },
+    {
+      "source": "watergate_scandal",
+      "target": "forgeries_concept",
+      "type": "influenced_use_of",
+      "attributes": {
+        "effect": "declined in mid-1970s"
+      }
+    },
+    {
+      "source": "soviet_union",
+      "target": "western_media",
+      "type": "manipulates",
+      "attributes": {}
+    },
+    {
+      "source": "soviet_union",
+      "target": "american_media",
+      "type": "has_agents_in",
+      "attributes": {}
+    },
+    {
+      "source": "american_media",
+      "target": "us_press",
+      "type": "includes",
+      "attributes": {}
+    },
+    {
+      "source": "kgb_forgery_example_1",
+      "target": "ku_klux_klan",
+      "type": "purported_author",
+      "attributes": {}
+    },
+    {
+      "source": "kgb_forgery_example_1",
+      "target": "fbi",
+      "type": "identified_as_fake_by",
+      "attributes": {}
+    },
+    {
+      "source": "kgb_forgery_example_1",
+      "target": "black_athletes_group",
+      "type": "criticized",
+      "attributes": {}
+    },
+    {
+      "source": "kgb_forgery_example_1",
+      "target": "third_world_countries",
+      "type": "sent_to",
+      "attributes": {}
+    },
+    {
+      "source": "kgb_forgery_example_1",
+      "target": "olympic_games_1984",
+      "type": "timed_before",
+      "attributes": {}
+    },
+    {
+      "source": "olympic_games_1984",
+      "target": "los_angeles",
+      "type": "located_in",
+      "attributes": {}
+    }
+  ]
+}

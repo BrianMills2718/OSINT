@@ -1,0 +1,551 @@
+{
+  "entities": [
+    {
+      "id": "e0",
+      "name": "THE CENTRAL INTELLIGENCE AGENCY AND OVERHEAD RECONNAISSANCE; THE U-2 AND OXCART PROGRAMS, 1954-1974",
+      "type": "document",
+      "attributes": {
+        "Document Type": "FOIA",
+        "Collection": "UFOs: Fact or Fiction?",
+        "Document Number (FOIA) /ESDN (CREST)": "0000190094",
+        "Original Classification": "U",
+        "Document Page Count": "406",
+        "Document Release Date": "January 1, 1900",
+        "Publication Date": "March 1, 1992"
+      }
+    },
+    {
+      "id": "e1",
+      "name": "SIGHTINGS OF UNIDENTIFIED FLYING OBJECTS, 19 JANUARY-15 MAY 1954",
+      "type": "document",
+      "attributes": {
+        "Document Type": "FOIA",
+        "Collection": "UFOs: Fact or Fiction?",
+        "Document Number (FOIA) /ESDN (CREST)": "0000015478",
+        "Original Classification": "U",
+        "Document Page Count": "6",
+        "Document Release Date": "October 5, 1978",
+        "Publication Date": "June 5, 1954"
+      }
+    },
+    {
+      "id": "e2",
+      "name": "UNTITLED  (TO THORNTON PAGE FROM PHILIP STRONG ACKNOWLEDGING HIS LETTER OF 18 M",
+      "type": "document",
+      "attributes": {
+        "Document Type": "FOIA",
+        "Collection": "UFOs: Fact or Fiction?",
+        "Document Number (FOIA) /ESDN (CREST)": "0000015325",
+        "Original Classification": "U",
+        "Document Page Count": "2",
+        "Document Release Date": "October 5, 1978",
+        "Publication Date": "February 4, 1959"
+      }
+    },
+    {
+      "id": "e3",
+      "name": "'FLYING SAUCERS' IN EAST GERMANY",
+      "type": "document",
+      "attributes": {
+        "Document Type": "FOIA",
+        "Collection": "UFOs: Fact or Fiction?",
+        "Document Number (FOIA) /ESDN (CREST)": "0000015464",
+        "Original Classification": "U",
+        "Document Page Count": "4",
+        "Document Release Date": "October 5, 1978",
+        "Publication Date": "July 6, 1952"
+      }
+    },
+    {
+      "id": "e4",
+      "name": "FURTHER TO FCDA MEETING",
+      "type": "document",
+      "attributes": {
+        "Document Type": "FOIA",
+        "Collection": "UFOs: Fact or Fiction?",
+        "Document Number (FOIA) /ESDN (CREST)": "0000015360",
+        "Original Classification": "U",
+        "Document Page Count": "2",
+        "Document Release Date": "October 5, 1978",
+        "Publication Date": "March 5, 1953"
+      }
+    },
+    {
+      "id": "e5",
+      "name": "UNIDENTIFIED AIRCRAFT REPORTED OVER SPAIN, GREECE, NORTH AFRICA",
+      "type": "document",
+      "attributes": {
+        "Document Type": "FOIA",
+        "Collection": "UFOs: Fact or Fiction?",
+        "Document Number (FOIA) /ESDN (CREST)": "0000015473",
+        "Original Classification": "U",
+        "Document Page Count": "2",
+        "Document Release Date": "October 5, 1978",
+        "Publication Date": "January 1, 1954"
+      }
+    },
+    {
+      "id": "e6",
+      "name": "NATIONAL INVESTIGATIONS COMMITTEE ON AERIAL PHENOMENA (NICAP)  (PUBD IS UNKNOWN",
+      "type": "document",
+      "attributes": {
+        "Document Type": "FOIA",
+        "Collection": "UFOs: Fact or Fiction?",
+        "Document Number (FOIA) /ESDN (CREST)": "0000015455",
+        "Original Classification": "U",
+        "Document Page Count": "3",
+        "Document Release Date": "October 5, 1978",
+        "Publication Date": "January 4, 1953"
+      }
+    },
+    {
+      "id": "e7",
+      "name": "SIGHTINGS OF FLYING SAUCERS OR UNCONVENTIONAL AIRCRAFT",
+      "type": "document",
+      "attributes": {
+        "Document Type": "FOIA",
+        "Collection": "UFOs: Fact or Fiction?",
+        "Document Number (FOIA) /ESDN (CREST)": "0000015382",
+        "Original Classification": "U",
+        "Document Page Count": "3",
+        "Document Release Date": "October 5, 1978",
+        "Publication Date": "September 1, 1955"
+      }
+    },
+    {
+      "id": "e8",
+      "name": "SIGHTINGS OF UNIDENTIFIED FLYING OBJECTS",
+      "type": "document",
+      "attributes": {
+        "Document Type": "FOIA",
+        "Collection": "UFOs: Fact or Fiction?",
+        "Document Number (FOIA) /ESDN (CREST)": "0000015479",
+        "Original Classification": "U",
+        "Document Page Count": "4",
+        "Document Release Date": "October 5, 1978",
+        "Publication Date": "July 3, 1954"
+      }
+    },
+    {
+      "id": "e9",
+      "name": "UNTITLED  (TO THORNTON PAGE FROM PHILIP STRONG DISCUSSING 14 ESSAYS BY Y OUR FR",
+      "type": "document",
+      "attributes": {
+        "Document Type": "FOIA",
+        "Collection": "UFOs: Fact or Fiction?",
+        "Document Number (FOIA) /ESDN (CREST)": "0000015329",
+        "Original Classification": "U",
+        "Document Page Count": "2",
+        "Document Release Date": "October 5, 1978",
+        "Publication Date": "January 5, 1960"
+      }
+    },
+    {
+      "id": "e10",
+      "name": "REPORT ON BOOK ENTITLED 'FLYING SAUCERS FROM OUTER SPACE'",
+      "type": "document",
+      "attributes": {
+        "Document Type": "FOIA",
+        "Collection": "UFOs: Fact or Fiction?",
+        "Document Number (FOIA) /ESDN (CREST)": "0000015363",
+        "Original Classification": "U",
+        "Document Page Count": "3",
+        "Document Release Date": "October 5, 1978",
+        "Publication Date": "November 2, 1953"
+      }
+    },
+    {
+      "id": "e11",
+      "name": "CURRENT STATUS OF UNIDENTIFIED FLYING OBJECTS (UFOB) PROJECT",
+      "type": "document",
+      "attributes": {
+        "Document Type": "FOIA",
+        "Collection": "UFOs: Fact or Fiction?",
+        "Document Number (FOIA) /ESDN (CREST)": "0000015365",
+        "Original Classification": "U",
+        "Document Page Count": "4",
+        "Document Release Date": "October 5, 1978",
+        "Publication Date": "November 4, 1953"
+      }
+    },
+    {
+      "id": "e12",
+      "name": "UNTITLED  (TO DONALD KEYHOE FROM J S HARMAN ACKNOWLEDGING HIS LETTER OF 22 SEPT",
+      "type": "document",
+      "attributes": {
+        "Document Type": "FOIA",
+        "Collection": "UFOs: Fact or Fiction?",
+        "Document Number (FOIA) /ESDN (CREST)": "0000015319",
+        "Original Classification": "U",
+        "Document Page Count": "2",
+        "Document Release Date": "October 5, 1978",
+        "Publication Date": "September 5, 1958"
+      }
+    },
+    {
+      "id": "e13",
+      "name": "UNTITLED  (ON BASIS OF YOUR CONVERSATION WITH ATIC, WE INFORMED DCI'S OF FICE T",
+      "type": "document",
+      "attributes": {
+        "Document Type": "FOIA",
+        "Collection": "UFOs: Fact or Fiction?",
+        "Document Number (FOIA) /ESDN (CREST)": "0000015248",
+        "Original Classification": "U",
+        "Document Page Count": "1",
+        "Document Release Date": "October 5, 1978",
+        "Publication Date": "July 2, 1957"
+      }
+    },
+    {
+      "id": "e14",
+      "name": "UNTITLED  (TO JOSEPH KARTH FROM LAWRENCE HOUSTON REGARDING 30 JUNE INQUI RY CON",
+      "type": "document",
+      "attributes": {
+        "Document Type": "FOIA",
+        "Collection": "UFOs: Fact or Fiction?",
+        "Document Number (FOIA) /ESDN (CREST)": "0000015333",
+        "Original Classification": "U",
+        "Document Page Count": "4",
+        "Document Release Date": "October 5, 1978",
+        "Publication Date": "May 5, 1961"
+      }
+    },
+    {
+      "id": "e15",
+      "name": "UNEXPLAINED TRAVELING BRIGHT LIGHT SEEN IN THE SKY",
+      "type": "document",
+      "attributes": {
+        "Document Type": "FOIA",
+        "Collection": "UFOs: Fact or Fiction?",
+        "Document Number (FOIA) /ESDN (CREST)": "0000015268",
+        "Original Classification": "U",
+        "Document Page Count": "2",
+        "Document Release Date": "October 5, 1978",
+        "Publication Date": "September 1, 1958"
+      }
+    },
+    {
+      "id": "e16",
+      "name": "UNTITLED  (TO SAMUEL GOUDSMIT FROM PHILIP STRONG DISCUSSING HYNEK'S AND LLOYD'S",
+      "type": "document",
+      "attributes": {
+        "Document Type": "FOIA",
+        "Collection": "UFOs: Fact or Fiction?",
+        "Document Number (FOIA) /ESDN (CREST)": "0000015304",
+        "Original Classification": "U",
+        "Document Page Count": "2",
+        "Document Release Date": "October 5, 1978",
+        "Publication Date": "January 5, 1958"
+      }
+    },
+    {
+      "id": "e17",
+      "name": "UNUSUAL UFOB REPORT",
+      "type": "document",
+      "attributes": {
+        "Document Type": "FOIA",
+        "Collection": "UFOs: Fact or Fiction?",
+        "Document Number (FOIA) /ESDN (CREST)": "0000015374",
+        "Original Classification": "U",
+        "Document Page Count": "2",
+        "Document Release Date": "October 5, 1978",
+        "Publication Date": "June 2, 1955"
+      }
+    },
+    {
+      "id": "e18",
+      "name": "FLYING OBJECTS SEEN IN SHAKHTY AREA",
+      "type": "document",
+      "attributes": {
+        "Document Type": "FOIA",
+        "Collection": "UFOs: Fact or Fiction?",
+        "Document Number (FOIA) /ESDN (CREST)": "0000015264",
+        "Original Classification": "U",
+        "Document Page Count": "5",
+        "Document Release Date": "October 5, 1978",
+        "Publication Date": "July 2, 1955"
+      }
+    },
+    {
+      "id": "e19",
+      "name": "UNTITLED  (WITH MEMO ATTACHED DATED 570111, SUBJECT: TRANSMITTAL OF CORR ESPOND",
+      "type": "document",
+      "attributes": {
+        "Document Type": "FOIA",
+        "Collection": "UFOs: Fact or Fiction?",
+        "Document Number (FOIA) /ESDN (CREST)": "0000015483",
+        "Original Classification": "U",
+        "Document Page Count": "3",
+        "Document Release Date": "October 5, 1978",
+        "Publication Date": "January 1, 1957"
+      }
+    },
+    {
+      "id": "e20",
+      "name": "UNTITLED  (TO THORNTON PAGE FROM PHILIP STRONG ENCLOSING COPY OF A LETTE R WITH",
+      "type": "document",
+      "attributes": {
+        "Document Type": "FOIA",
+        "Collection": "UFOs: Fact or Fiction?",
+        "Document Number (FOIA) /ESDN (CREST)": "0000015301",
+        "Original Classification": "U",
+        "Document Page Count": "2",
+        "Document Release Date": "October 5, 1978",
+        "Publication Date": "November 5, 1957"
+      }
+    },
+    {
+      "id": "e21",
+      "name": "INQUIRY BY MAJOR DONALD E. KEYHOE (DELETED)",
+      "type": "document",
+      "attributes": {
+        "Document Type": "FOIA",
+        "Collection": "UFOs: Fact or Fiction?",
+        "Document Number (FOIA) /ESDN (CREST)": "0000015416",
+        "Original Classification": "U",
+        "Document Page Count": "5",
+        "Document Release Date": "October 5, 1978",
+        "Publication Date": "January 4, 1959"
+      }
+    },
+    {
+      "id": "e22",
+      "name": "UNTITLED  (TO LUIS ALVAREZ FROM PHILIP STRONG REGARDING LEON DAVIDSON'S POSSIBL",
+      "type": "document",
+      "attributes": {
+        "Document Type": "FOIA",
+        "Collection": "UFOs: Fact or Fiction?",
+        "Document Number (FOIA) /ESDN (CREST)": "0000015314",
+        "Original Classification": "U",
+        "Document Page Count": "2",
+        "Document Release Date": "October 5, 1978",
+        "Publication Date": "April 4, 1958"
+      }
+    },
+    {
+      "id": "e23",
+      "name": "UNTITLED  (TO LUIS ALVAREZ FROM PHILIP STRONG ENCLOSING COPY OF A LETTER  WITH",
+      "type": "document",
+      "attributes": {
+        "Document Type": "FOIA",
+        "Collection": "UFOs: Fact or Fiction?",
+        "Document Number (FOIA) /ESDN (CREST)": "0000015302",
+        "Original Classification": "U",
+        "Document Page Count": "2",
+        "Document Release Date": "October 5, 1978",
+        "Publication Date": "November 5, 1957"
+      }
+    },
+    {
+      "id": "e24",
+      "name": "FLYING SAUCERS",
+      "type": "document",
+      "attributes": {
+        "Document Type": "FOIA",
+        "Collection": "UFOs: Fact or Fiction?",
+        "Document Number (FOIA) /ESDN (CREST)": "0000015345",
+        "Original Classification": "U",
+        "Document Page Count": "2",
+        "Document Release Date": "October 5, 1978",
+        "Publication Date": "November 3, 1952"
+      }
+    },
+    {
+      "id": "e25",
+      "name": "BOLIVIA  REPORTS CONFLICT ON DETAILS OF FALLEN OBJECT",
+      "type": "document",
+      "attributes": {
+        "Document Type": "FOIA",
+        "Collection": "UFOs: Fact or Fiction?",
+        "Document Number (FOIA) /ESDN (CREST)": "0000015258",
+        "Original Classification": "U",
+        "Document Page Count": "1",
+        "Document Release Date": "October 5, 1978",
+        "Publication Date": "April 3, 1978"
+      }
+    },
+    {
+      "id": "e26",
+      "name": "FLYING SAUCERS   (MATCH MAGAZINE CARRIED AN ARTICLE ON UFO SIGHTING; MAR S WILL",
+      "type": "document",
+      "attributes": {
+        "Document Type": "FOIA",
+        "Collection": "UFOs: Fact or Fiction?",
+        "Document Number (FOIA) /ESDN (CREST)": "0000015384",
+        "Original Classification": "U",
+        "Document Page Count": "2",
+        "Document Release Date": "October 5, 1978",
+        "Publication Date": "February 1, 1956"
+      }
+    },
+    {
+      "id": "e27",
+      "name": "REPORT OF UFO AT TIME OF SOVIET SATELLITE FAILURE",
+      "type": "document",
+      "attributes": {
+        "Document Type": "FOIA",
+        "Collection": "UFOs: Fact or Fiction?",
+        "Document Number (FOIA) /ESDN (CREST)": "0000015438",
+        "Original Classification": "U",
+        "Document Page Count": "1",
+        "Document Release Date": "October 5, 1978",
+        "Publication Date": "January 4, 1978"
+      }
+    },
+    {
+      "id": "e28",
+      "name": "DELETED  (MEMBER OF SOVIET COMMITTEE THE USSR ESTABLISHED TO INVESTIGATE  UNUSU",
+      "type": "document",
+      "attributes": {
+        "Document Type": "FOIA",
+        "Collection": "UFOs: Fact or Fiction?",
+        "Document Number (FOIA) /ESDN (CREST)": "0000015270",
+        "Original Classification": "U",
+        "Document Page Count": "4",
+        "Document Release Date": "October 5, 1978",
+        "Publication Date": "March 1, 1972"
+      }
+    },
+    {
+      "id": "e29",
+      "name": "VISIT OF DR. CONDON TO NPIC, 20 FEBRUARY 1957",
+      "type": "document",
+      "attributes": {
+        "Document Type": "FOIA",
+        "Collection": "UFOs: Fact or Fiction?",
+        "Document Number (FOIA) /ESDN (CREST)": "0000015435",
+        "Original Classification": "U",
+        "Document Page Count": "3",
+        "Document Release Date": "October 5, 1978",
+        "Publication Date": "January 4, 1967"
+      }
+    },
+    {
+      "id": "e30",
+      "name": "UNIDENTIFIED FLYING OBJECT SIGHTED AT BEHSHAHR",
+      "type": "document",
+      "attributes": {
+        "Document Type": "FOIA",
+        "Collection": "UFOs: Fact or Fiction?",
+        "Document Number (FOIA) /ESDN (CREST)": "0000015496",
+        "Original Classification": "U",
+        "Document Page Count": "2",
+        "Document Release Date": "October 5, 1978",
+        "Publication Date": "June 3, 1960"
+      }
+    },
+    {
+      "id": "e31",
+      "name": "(DELETED) SIGHTING OF UNIDENTIFIED AIRBORNE OBJECTS NEAR LENINGRAD/(DELE TED)",
+      "type": "document",
+      "attributes": {
+        "Document Type": "FOIA",
+        "Collection": "UFOs: Fact or Fiction?",
+        "Document Number (FOIA) /ESDN (CREST)": "0000015267",
+        "Original Classification": "U",
+        "Document Page Count": "3",
+        "Document Release Date": "October 5, 1978",
+        "Publication Date": "September 5, 1958"
+      }
+    },
+    {
+      "id": "e32",
+      "name": "UNTITLED  (DCI HAS RECEIVED A LETTER FROM LEON DAVIDSON REQUESTING INFOR MATION",
+      "type": "document",
+      "attributes": {
+        "Document Type": "FOIA",
+        "Collection": "UFOs: Fact or Fiction?",
+        "Document Number (FOIA) /ESDN (CREST)": "0000015247",
+        "Original Classification": "U",
+        "Document Page Count": "1",
+        "Document Release Date": "October 5, 1978",
+        "Publication Date": "March 4, 1957"
+      }
+    },
+    {
+      "id": "e33",
+      "name": "FCDA MEETING",
+      "type": "document",
+      "attributes": {
+        "Document Type": "FOIA",
+        "Collection": "UFOs: Fact or Fiction?",
+        "Document Number (FOIA) /ESDN (CREST)": "0000015359",
+        "Original Classification": "U",
+        "Document Page Count": "2",
+        "Document Release Date": "October 5, 1978",
+        "Publication Date": "March 4, 1953"
+      }
+    },
+    {
+      "id": "e34",
+      "name": "RESPONSIBILITY FOR 'UNIDENTIFIED FLYING OBJECTS'",
+      "type": "document",
+      "attributes": {
+        "Document Type": "FOIA",
+        "Collection": "UFOs: Fact or Fiction?",
+        "Document Number (FOIA) /ESDN (CREST)": "0000015387",
+        "Original Classification": "U",
+        "Document Page Count": "3",
+        "Document Release Date": "October 5, 1978",
+        "Publication Date": "January 4, 1956"
+      }
+    },
+    {
+      "id": "e35",
+      "name": "AIR FORCE REQUEST TO DECLASSIFY CIA UFO REPORT",
+      "type": "document",
+      "attributes": {
+        "Document Type": "FOIA",
+        "Collection": "UFOs: Fact or Fiction?",
+        "Document Number (FOIA) /ESDN (CREST)": "0000015430",
+        "Original Classification": "U",
+        "Document Page Count": "2",
+        "Document Release Date": "October 5, 1978",
+        "Publication Date": "July 2, 1966"
+      }
+    },
+    {
+      "id": "e36",
+      "name": "UNTITLED  (TO DONALD KEYHOE FROM J. S. EARMAN STATING STILL HAVE INSUFFI CIENT",
+      "type": "document",
+      "attributes": {
+        "Document Type": "FOIA",
+        "Collection": "UFOs: Fact or Fiction?",
+        "Document Number (FOIA) /ESDN (CREST)": "0000015324",
+        "Original Classification": "U",
+        "Document Page Count": "1",
+        "Document Release Date": "October 5, 1978",
+        "Publication Date": "February 4, 1959"
+      }
+    },
+    {
+      "id": "e37",
+      "name": "LIGHT PHENOMENA EAST OF TASHKENT",
+      "type": "document",
+      "attributes": {
+        "Document Type": "FOIA",
+        "Collection": "UFOs: Fact or Fiction?",
+        "Document Number (FOIA) /ESDN (CREST)": "0000015282",
+        "Original Classification": "U",
+        "Document Page Count": "4",
+        "Document Release Date": "October 5, 1978",
+        "Publication Date": "January 1, 1952"
+      }
+    },
+    {
+      "id": "e38",
+      "name": "FLYING SAUCERS  (PUBD IS UNKNOWN)",
+      "type": "document",
+      "attributes": {
+        "Document Type": "FOIA",
+        "Collection": "UFOs: Fact or Fiction?",
+        "Document Number (FOIA) /ESDN (CREST)": "0000015338",
+        "Original Classification": "U",
+        "Document Page Count": "26",
+        "Document Release Date": "October 5, 1978",
+        "Publication Date": "June 2, 1952"
+      }
+    }
+  ],
+  "relationships": []
+}

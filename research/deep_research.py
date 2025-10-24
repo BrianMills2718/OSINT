@@ -26,12 +26,14 @@ from enum import Enum
 # Add parent directory to path
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from core.adaptive_search_engine import AdaptiveSearchEngine
-from core.parallel_executor import ParallelExecutor
 from llm_utils import acompletion
 from config_loader import config
 from dotenv import load_dotenv
 import aiohttp
+
+# MCP imports
+from fastmcp import Client
+from integrations.mcp import government_mcp, social_mcp
 
 load_dotenv()
 
@@ -112,7 +114,6 @@ class SimpleDeepResearch:
 
     def __init__(
         self,
-        adaptive_search: Optional[AdaptiveSearchEngine] = None,
         max_tasks: int = 15,
         max_retries_per_task: int = 2,
         max_time_minutes: int = 120,
@@ -124,7 +125,6 @@ class SimpleDeepResearch:
         Initialize deep research engine.
 
         Args:
-            adaptive_search: AdaptiveSearchEngine instance (creates default if None)
             max_tasks: Maximum tasks to execute (prevents infinite loops)
             max_retries_per_task: Max retries for failed tasks
             max_time_minutes: Maximum investigation time
@@ -132,9 +132,6 @@ class SimpleDeepResearch:
             max_concurrent_tasks: Maximum tasks to execute in parallel (1 = sequential, 3-5 = parallel)
             progress_callback: Function to call with progress updates
         """
-        self.adaptive_search = adaptive_search or AdaptiveSearchEngine(
-            parallel_executor=ParallelExecutor()
-        )
         self.max_tasks = max_tasks
         self.max_retries_per_task = max_retries_per_task
         self.max_time_minutes = max_time_minutes
@@ -152,6 +149,25 @@ class SimpleDeepResearch:
         self.entity_graph: Dict[str, List[str]] = {}  # entity -> related entities
         self.results_by_task: Dict[int, Dict] = {}
         self.start_time: Optional[datetime] = None
+
+        # Load API keys from environment
+        self.api_keys = {
+            "sam": os.getenv("SAM_GOV_API_KEY"),
+            "dvids": os.getenv("DVIDS_API_KEY"),
+            "usajobs": os.getenv("USAJOBS_API_KEY"),
+            "brave_search": os.getenv("BRAVE_SEARCH_API_KEY"),
+        }
+
+        # MCP tool configuration
+        self.mcp_tools = [
+            {"name": "search_sam", "server": government_mcp.mcp, "api_key_name": "sam"},
+            {"name": "search_dvids", "server": government_mcp.mcp, "api_key_name": "dvids"},
+            {"name": "search_usajobs", "server": government_mcp.mcp, "api_key_name": "usajobs"},
+            {"name": "search_clearancejobs", "server": government_mcp.mcp, "api_key_name": None},
+            {"name": "search_twitter", "server": social_mcp.mcp, "api_key_name": None},
+            {"name": "search_reddit", "server": social_mcp.mcp, "api_key_name": None},
+            {"name": "search_discord", "server": social_mcp.mcp, "api_key_name": None},
+        ]
 
     def _emit_progress(self, event: str, message: str, task_id: Optional[int] = None, data: Optional[Dict] = None):
         """Emit progress update for live streaming."""
@@ -379,6 +395,9 @@ Each task should be:
 - A clear, searchable query (can be used with database search or web search)
 - Focused on one aspect of the overall question
 - Likely to return concrete results (not too broad, not too narrow)
+- Simple keyword-based queries (avoid complex Boolean operators like OR, AND, NOT)
+- No site filters (site:gov) or date ranges (2015..2025) - these reduce results
+- Natural language queries work best (e.g., "government surveillance contracts Palantir" instead of "site:gov contract Palantir OR Clearview")
 
 Return tasks in priority order (most important first).
 """
@@ -521,9 +540,111 @@ Return tasks in priority order (most important first).
         # Should never reach here, but return empty if all retries exhausted
         return []
 
+    async def _search_mcp_tools(self, query: str, limit: int = 10) -> List[Dict]:
+        """
+        Search using MCP tools (government + social sources).
+
+        Returns:
+            List of results with standardized format
+        """
+        # Emit progress: starting MCP tool searches
+        print(f"🔍 Searching {len(self.mcp_tools)} databases via MCP tools...")
+
+        all_results = []
+        sources_count = {}
+
+        # Execute MCP tool searches in parallel
+        async def call_mcp_tool(tool_config: Dict) -> Dict:
+            """Call a single MCP tool."""
+            tool_name = tool_config["name"]
+            server = tool_config["server"]
+            api_key_name = tool_config["api_key_name"]
+
+            try:
+                # Get API key if needed
+                api_key = self.api_keys.get(api_key_name) if api_key_name else None
+
+                # Build tool arguments
+                args = {
+                    "research_question": query,
+                    "limit": limit
+                }
+                if api_key:
+                    args["api_key"] = api_key
+
+                # Call MCP tool via in-memory client
+                async with Client(server) as client:
+                    result = await client.call_tool(tool_name, args)
+
+                    # Parse result (FastMCP returns ToolResult with content)
+                    import json
+                    result_data = json.loads(result.content[0].text)
+
+                    # Get source name from result_data
+                    source_name = result_data.get("source", tool_name)
+
+                    # Add source field to each individual result for proper tracking
+                    results_with_source = []
+                    for r in result_data.get("results", []):
+                        # Make a copy to avoid mutating original
+                        r_copy = dict(r)
+                        # Add source if not already present
+                        if "source" not in r_copy:
+                            r_copy["source"] = source_name
+                        results_with_source.append(r_copy)
+
+                    return {
+                        "tool": tool_name,
+                        "success": result_data.get("success", False),
+                        "source": source_name,  # Pass through source from wrapper
+                        "results": results_with_source,  # Individual results now have source
+                        "total": result_data.get("total", 0),
+                        "error": result_data.get("error")
+                    }
+
+            except Exception as e:
+                logging.error(f"MCP tool {tool_name} failed: {type(e).__name__}: {str(e)}")
+                return {
+                    "tool": tool_name,
+                    "success": False,
+                    "results": [],
+                    "total": 0,
+                    "error": str(e)
+                }
+
+        # Call all MCP tools in parallel
+        mcp_results = await asyncio.gather(*[
+            call_mcp_tool(tool) for tool in self.mcp_tools
+        ])
+
+        # Combine results and track per-source counts
+        for tool_result in mcp_results:
+            if tool_result["success"]:
+                tool_results = tool_result["results"]
+                all_results.extend(tool_results)
+                # Get source from wrapper level (now passed through from call_mcp_tool)
+                source = tool_result.get("source", tool_result["tool"])
+                sources_count[source] = sources_count.get(source, 0) + len(tool_results)
+                # Log each successful source with counts
+                print(f"  ✓ {source}: {len(tool_results)} results")
+            else:
+                # Log failed sources
+                print(f"  ✗ {tool_result['tool']}: Failed - {tool_result.get('error', 'Unknown error')}")
+
+        # Log summary with per-source breakdown
+        print(f"\n✓ MCP tools complete: {len(all_results)} total results from {len(sources_count)} sources")
+        if sources_count:
+            print("  Per-source breakdown:")
+            for source, count in sorted(sources_count.items(), key=lambda x: x[1], reverse=True):
+                print(f"    • {source}: {count} results")
+
+        return all_results
+
     async def _execute_task_with_retry(self, task: ResearchTask) -> bool:
         """
         Execute task with retry logic if it fails.
+
+        Uses MCP tools for government and social searches.
 
         Returns:
             True if task succeeded (eventually), False if exhausted retries
@@ -532,46 +653,53 @@ Return tasks in priority order (most important first).
 
         while task.retry_count <= self.max_retries_per_task:
             try:
-                # Execute search with adaptive engine (government databases)
-                result = await self.adaptive_search.adaptive_search(task.query)
-                gov_results = result.total_results
+                # Search using MCP tools (government + social sources)
+                mcp_results = await self._search_mcp_tools(task.query, limit=10)
 
-                # NEW: Also search web with Brave Search
-                web_results_list = await self._search_brave(task.query, max_results=20)
+                # Also search web with Brave Search
+                web_results = await self._search_brave(task.query, max_results=20)
 
-                # Combine government DB results with web results
-                combined_total = result.total_results + len(web_results_list)
+                # Combine MCP results with web results
+                all_results = mcp_results + web_results
+                combined_total = len(all_results)
 
-                # Add web results to the result.results list
-                result.results.extend(web_results_list)
-
-                # Update result object with combined data
-                result.total_results = combined_total
+                # Extract entities from results
+                print(f"🔍 Extracting entities from {len(all_results)} results...")
+                entities_found = await self._extract_entities(all_results)
+                print(f"✓ Found {len(entities_found)} entities: {', '.join(entities_found[:5])}{'...' if len(entities_found) > 5 else ''}")
 
                 # Check if we got meaningful results
                 if combined_total >= self.min_results_per_task:
                     # Success!
                     task.status = TaskStatus.COMPLETED
-                    task.results = asdict(result)
-                    task.entities_found = result.entities_discovered
+                    task.entities_found = entities_found
+
+                    result_dict = {
+                        "total_results": combined_total,
+                        "results": all_results,
+                        "entities_discovered": entities_found,
+                        "sources": self._get_sources(all_results)
+                    }
+
+                    task.results = result_dict
 
                     # Codex fix: Protect shared dict writes with lock
                     async with self.resource_manager.results_lock:
-                        self.results_by_task[task.id] = asdict(result)
+                        self.results_by_task[task.id] = result_dict
 
                     # Update entity graph (with lock for concurrent safety)
-                    await self._update_entity_graph(task.entities_found)
+                    await self._update_entity_graph(entities_found)
 
                     self._emit_progress(
                         "task_completed",
-                        f"Found {combined_total} results ({gov_results} gov DBs + {len(web_results_list)} web) across {result.iterations} phases",
+                        f"Found {combined_total} results ({len(mcp_results)} MCP tools + {len(web_results)} web)",
                         task_id=task.id,
                         data={
                             "total_results": combined_total,
-                            "government_databases": gov_results,
-                            "web_search": len(web_results_list),
-                            "entities": result.entities_discovered,
-                            "quality": result.quality_metrics.get('overall_quality', 0)
+                            "mcp_results": len(mcp_results),
+                            "web_results": len(web_results),
+                            "entities": entities_found,
+                            "sources": self._get_sources(all_results)
                         }
                     )
                     return True
@@ -584,17 +712,17 @@ Return tasks in priority order (most important first).
 
                         self._emit_progress(
                             "task_retry",
-                            f"Only {combined_total} results ({gov_results} gov DBs + {len(web_results_list)} web), reformulating query...",
+                            f"Only {combined_total} results ({len(mcp_results)} MCP + {len(web_results)} web), reformulating query...",
                             task_id=task.id,
                             data={
                                 "total_results": combined_total,
-                                "government_databases": gov_results,
-                                "web_search": len(web_results_list)
+                                "mcp_results": len(mcp_results),
+                                "web_results": len(web_results)
                             }
                         )
 
                         # Reformulate query
-                        task.query = await self._reformulate_query(task.query, result)
+                        task.query = await self._reformulate_query_simple(task.query, combined_total)
                         self._emit_progress(
                             "query_reformulated",
                             f"New query: {task.query}",
@@ -640,23 +768,102 @@ Return tasks in priority order (most important first).
 
         return False
 
-    async def _reformulate_query(self, original_query: str, result) -> str:
-        """Reformulate query when it returns insufficient results."""
-        quality_score = result.quality_metrics.get('overall_quality', 0) if hasattr(result, 'quality_metrics') else 0
+    async def _extract_entities(self, results: List[Dict]) -> List[str]:
+        """
+        Extract entities from search results using LLM.
 
+        Args:
+            results: List of search results
+
+        Returns:
+            List of entity names found
+        """
+        if not results:
+            return []
+
+        # Sample up to 10 results for entity extraction
+        sample = results[:10]
+
+        # Build prompt with result titles and snippets
+        results_text = "\n\n".join([
+            f"Title: {r.get('title', '')}\nSnippet: {r.get('snippet', r.get('description', ''))[:200]}"
+            for r in sample
+        ])
+
+        prompt = f"""Extract key entities (people, organizations, programs, operations) from these search results.
+
+Results:
+{results_text}
+
+Return a JSON list of entity names (3-10 entities). Focus on named entities that could be researched further.
+
+Example: ["Joint Special Operations Command", "CIA", "Kabul attack", "Operation Cyclone"]
+"""
+
+        schema = {
+            "type": "object",
+            "properties": {
+                "entities": {
+                    "type": "array",
+                    "items": {"type": "string"},
+                    "minItems": 0,
+                    "maxItems": 10
+                }
+            },
+            "required": ["entities"],
+            "additionalProperties": False
+        }
+
+        try:
+            response = await acompletion(
+                model=config.get_model("query_generation"),
+                messages=[{"role": "user", "content": prompt}],
+                response_format={
+                    "type": "json_schema",
+                    "json_schema": {
+                        "strict": True,
+                        "name": "entity_extraction",
+                        "schema": schema
+                    }
+                }
+            )
+
+            import json
+            result = json.loads(response.choices[0].message.content)
+            return result.get("entities", [])
+
+        except Exception as e:
+            logging.error(f"Entity extraction failed: {type(e).__name__}: {str(e)}")
+            return []
+
+    def _get_sources(self, results: List[Dict]) -> List[str]:
+        """Extract unique source names from results."""
+        sources = set()
+        for r in results:
+            source = r.get("source", "Unknown")
+            sources.add(source)
+        return list(sources)
+
+    async def _reformulate_query_simple(self, original_query: str, results_count: int) -> str:
+        """Reformulate query when it returns insufficient results."""
         prompt = f"""The search query returned insufficient results. Reformulate it to be more effective.
 
 Original Query: {original_query}
-Results Found: {result.total_results}
-Quality Score: {quality_score:.2f}
+Results Found: {results_count}
 
 Reformulate the query to:
-- Be broader if too specific
-- Be more specific if too vague
-- Use different terminology
-- Focus on different aspect of the topic
+- Be BROADER and SIMPLER to get more results
+- Remove complex Boolean operators (OR, AND, NOT) if present
+- Remove site filters (site:gov) or date ranges (2015..2025) if present
+- Use natural language keywords instead of structured queries
+- Try different terminology or synonyms
+- Focus on core concepts, not specific details
 
-Return ONLY the new query text, nothing else.
+Examples:
+- "site:gov contract (Palantir OR Clearview)" → "government contracts Palantir Clearview surveillance"
+- "investigation report lawsuit 2018..2025" → "investigation reports lawsuits surveillance privacy"
+
+Return ONLY the new query text, nothing else. Keep it simple and broad.
 """
 
         response = await acompletion(

@@ -1,0 +1,655 @@
+{
+  "entities": [
+    {
+      "id": "doc_memo",
+      "name": "Follow-up to Disinformation Conference Memo",
+      "type": "concept",
+      "attributes": {
+        "document_title": "FOLLOW-UP TO DISINFORMATION CONFERENCE",
+        "document_type": "MEMO",
+        "publication_date": "1985-07-24"
+      }
+    },
+    {
+      "id": "person_dci",
+      "name": "Director of Central Intelligence",
+      "type": "person",
+      "attributes": {
+        "role": "Recipient of Memorandum"
+      }
+    },
+    {
+      "id": "person_ddi",
+      "name": "Deputy Director for Intelligence",
+      "type": "person",
+      "attributes": {
+        "role": "Route for Memorandum"
+      }
+    },
+    {
+      "id": "person_dsova",
+      "name": "Director of Soviet Analysis",
+      "type": "person",
+      "attributes": {
+        "role": "Route for Memorandum",
+        "organization": "Office of Soviet Analysis"
+      }
+    },
+    {
+      "id": "person_snina",
+      "name": "Senior Analyst for National Issues",
+      "type": "person",
+      "attributes": {
+        "role": "Implied Author",
+        "organization": "Office of Soviet Analysis"
+      }
+    },
+    {
+      "id": "org_sova",
+      "name": "Office of Soviet Analysis",
+      "type": "organization",
+      "attributes": {}
+    },
+    {
+      "id": "event_cspd_conf",
+      "name": "Conference on Contemporary Soviet Propaganda and Disinformation (CSPD)",
+      "type": "event",
+      "attributes": {
+        "date": "June 25-27, 1985"
+      }
+    },
+    {
+      "id": "concept_disinfo",
+      "name": "Disinformation",
+      "type": "concept",
+      "attributes": {}
+    },
+    {
+      "id": "concept_soviet_propaganda",
+      "name": "Soviet Propaganda",
+      "type": "concept",
+      "attributes": {}
+    },
+    {
+      "id": "concept_cspd",
+      "name": "Contemporary Soviet Propaganda and Disinformation",
+      "type": "concept",
+      "attributes": {}
+    },
+    {
+      "id": "group_def_emigres",
+      "name": "Soviet and East European defectors and emigres",
+      "type": "person",
+      "attributes": {
+        "type": "group",
+        "role": "Conference Participant"
+      }
+    },
+    {
+      "id": "group_academics",
+      "name": "Academics",
+      "type": "person",
+      "attributes": {
+        "type": "group",
+        "role": "Conference Participant"
+      }
+    },
+    {
+      "id": "group_gov_specialists",
+      "name": "Government specialists",
+      "type": "person",
+      "attributes": {
+        "type": "group",
+        "role": "Conference Participant"
+      }
+    },
+    {
+      "id": "group_cia_staffers",
+      "name": "CIA staffers",
+      "type": "person",
+      "attributes": {
+        "type": "group",
+        "role": "Conference Participant",
+        "details": "Excluded from participant list except one"
+      }
+    },
+    {
+      "id": "concept_sem_dim",
+      "name": "Semantic dimension",
+      "type": "concept",
+      "attributes": {}
+    },
+    {
+      "id": "concept_western_vuln",
+      "name": "Western vulnerability to semantic manipulation",
+      "type": "concept",
+      "attributes": {}
+    },
+    {
+      "id": "person_norman_podhoretz",
+      "name": "Norman Podhoretz",
+      "type": "person",
+      "attributes": {
+        "role": "Keynote Speaker"
+      }
+    },
+    {
+      "id": "concept_ambiguity",
+      "name": "Ambiguity and contradictoriness of Soviet policy",
+      "type": "concept",
+      "attributes": {}
+    },
+    {
+      "id": "concept_countermeasures",
+      "name": "Countermeasures",
+      "type": "concept",
+      "attributes": {}
+    },
+    {
+      "id": "concept_conscious_raising",
+      "name": "Consciousness-raising among media and public",
+      "type": "concept",
+      "attributes": {}
+    },
+    {
+      "id": "concept_conf_report",
+      "name": "Conference Report/Proceedings",
+      "type": "concept",
+      "attributes": {
+        "type": "publication",
+        "status": "Planned"
+      }
+    },
+    {
+      "id": "org_state_department",
+      "name": "State Department",
+      "type": "organization",
+      "attributes": {}
+    },
+    {
+      "id": "concept_participant_list",
+      "name": "List of conference participants",
+      "type": "concept",
+      "attributes": {
+        "status": "Created"
+      }
+    },
+    {
+      "id": "concept_specialist_network",
+      "name": "Network of disinformation specialists",
+      "type": "concept",
+      "attributes": {
+        "status": "Goal"
+      }
+    },
+    {
+      "id": "event_followup_conf",
+      "name": "Follow-up conference",
+      "type": "event",
+      "attributes": {
+        "status": "Suggested"
+      }
+    },
+    {
+      "id": "person_aaron_levenstein",
+      "name": "Aaron Levenstein",
+      "type": "person",
+      "attributes": {}
+    },
+    {
+      "id": "org_center_prop_res",
+      "name": "Center for Propaganda Research",
+      "type": "organization",
+      "attributes": {
+        "status": "Proposed",
+        "funding": "Privately funded"
+      }
+    },
+    {
+      "id": "org_niofdia",
+      "name": "NIO~FDIA",
+      "type": "organization",
+      "attributes": {}
+    },
+    {
+      "id": "org_ddi_registry",
+      "name": "DDI Registry",
+      "type": "organization",
+      "attributes": {}
+    },
+    {
+      "id": "org_er",
+      "name": "ER",
+      "type": "organization",
+      "attributes": {}
+    },
+    {
+      "id": "org_nig_chrono",
+      "name": "NIG Chrono",
+      "type": "organization",
+      "attributes": {}
+    },
+    {
+      "id": "concept_formal_papers",
+      "name": "Formal papers (conference)",
+      "type": "concept",
+      "attributes": {
+        "type": "content",
+        "count": "13"
+      }
+    },
+    {
+      "id": "concept_taped_discussions",
+      "name": "Taped discussions (conference)",
+      "type": "concept",
+      "attributes": {
+        "type": "content",
+        "duration": "approx. 21 hours"
+      }
+    },
+    {
+      "id": "concept_new_evidence_disinfo",
+      "name": "New evidence on disinformation",
+      "type": "concept",
+      "attributes": {}
+    },
+    {
+      "id": "concept_testimony_accounts",
+      "name": "Testimony/Accounts (defectors)",
+      "type": "concept",
+      "attributes": {
+        "type": "content"
+      }
+    },
+    {
+      "id": "concept_problem_recognizing_disinfo",
+      "name": "Problem of recognizing disinformation",
+      "type": "concept",
+      "attributes": {}
+    },
+    {
+      "id": "concept_gov_action_disinfo",
+      "name": "Neutralizing and countering Soviet disinformation",
+      "type": "concept",
+      "attributes": {}
+    },
+    {
+      "id": "concept_academic_views_disinfo",
+      "name": "Western scholars dealing with disinformation",
+      "type": "concept",
+      "attributes": {}
+    },
+    {
+      "id": "concept_philosophical_views",
+      "name": "Philosophical views",
+      "type": "concept",
+      "attributes": {}
+    },
+    {
+      "id": "concept_sem_manipulation",
+      "name": "Semantic manipulation",
+      "type": "concept",
+      "attributes": {}
+    },
+    {
+      "id": "meta_doc_num",
+      "name": "CIA-RDP89G01126R000100100009-9",
+      "type": "concept",
+      "attributes": {
+        "type": "Document Identifier"
+      }
+    },
+    {
+      "id": "meta_release_date",
+      "name": "August 19, 2011",
+      "type": "concept",
+      "attributes": {
+        "type": "Release Date"
+      }
+    }
+  ],
+  "relationships": [
+    {
+      "source": "doc_memo",
+      "target": "event_cspd_conf",
+      "type": "reports_on",
+      "attributes": {}
+    },
+    {
+      "source": "doc_memo",
+      "target": "person_dci",
+      "type": "for",
+      "attributes": {}
+    },
+    {
+      "source": "doc_memo",
+      "target": "person_ddi",
+      "type": "routed_through",
+      "attributes": {}
+    },
+    {
+      "source": "doc_memo",
+      "target": "person_dsova",
+      "type": "routed_through",
+      "attributes": {}
+    },
+    {
+      "source": "doc_memo",
+      "target": "person_snina",
+      "type": "authored_by",
+      "attributes": {}
+    },
+    {
+      "source": "person_dsova",
+      "target": "org_sova",
+      "type": "part_of",
+      "attributes": {}
+    },
+    {
+      "source": "person_snina",
+      "target": "org_sova",
+      "type": "part_of",
+      "attributes": {}
+    },
+    {
+      "source": "event_cspd_conf",
+      "target": "concept_cspd",
+      "type": "about",
+      "attributes": {}
+    },
+    {
+      "source": "concept_cspd",
+      "target": "concept_soviet_propaganda",
+      "type": "includes",
+      "attributes": {}
+    },
+    {
+      "source": "concept_cspd",
+      "target": "concept_disinfo",
+      "type": "includes",
+      "attributes": {}
+    },
+    {
+      "source": "event_cspd_conf",
+      "target": "group_def_emigres",
+      "type": "attended_by",
+      "attributes": {}
+    },
+    {
+      "source": "event_cspd_conf",
+      "target": "group_academics",
+      "type": "attended_by",
+      "attributes": {}
+    },
+    {
+      "source": "event_cspd_conf",
+      "target": "group_gov_specialists",
+      "type": "attended_by",
+      "attributes": {}
+    },
+    {
+      "source": "event_cspd_conf",
+      "target": "group_cia_staffers",
+      "type": "attended_by",
+      "attributes": {}
+    },
+    {
+      "source": "event_cspd_conf",
+      "target": "person_norman_podhoretz",
+      "type": "featured_speaker",
+      "attributes": {
+        "role": "Keynote Speaker"
+      }
+    },
+    {
+      "source": "event_cspd_conf",
+      "target": "concept_new_evidence_disinfo",
+      "type": "produced",
+      "attributes": {}
+    },
+    {
+      "source": "event_cspd_conf",
+      "target": "concept_sem_dim",
+      "type": "discussed",
+      "attributes": {
+        "detail": "less focus than hoped"
+      }
+    },
+    {
+      "source": "group_academics",
+      "target": "concept_formal_papers",
+      "type": "prepared",
+      "attributes": {
+        "context": "for conference"
+      }
+    },
+    {
+      "source": "event_cspd_conf",
+      "target": "concept_taped_discussions",
+      "type": "generated",
+      "attributes": {}
+    },
+    {
+      "source": "group_academics",
+      "target": "concept_formal_papers",
+      "type": "presented",
+      "attributes": {
+        "context": "at conference"
+      }
+    },
+    {
+      "source": "group_def_emigres",
+      "target": "concept_testimony_accounts",
+      "type": "provided",
+      "attributes": {
+        "context": "at conference"
+      }
+    },
+    {
+      "source": "event_cspd_conf",
+      "target": "concept_problem_recognizing_disinfo",
+      "type": "highlighted",
+      "attributes": {}
+    },
+    {
+      "source": "concept_formal_papers",
+      "target": "concept_problem_recognizing_disinfo",
+      "type": "focused_attention_on",
+      "attributes": {}
+    },
+    {
+      "source": "concept_testimony_accounts",
+      "target": "concept_disinfo",
+      "type": "illustrated",
+      "attributes": {
+        "detail": "forms and techniques"
+      }
+    },
+    {
+      "source": "event_cspd_conf",
+      "target": "group_def_emigres",
+      "type": "brought_together",
+      "attributes": {}
+    },
+    {
+      "source": "event_cspd_conf",
+      "target": "group_academics",
+      "type": "brought_together",
+      "attributes": {}
+    },
+    {
+      "source": "event_cspd_conf",
+      "target": "group_gov_specialists",
+      "type": "brought_together",
+      "attributes": {}
+    },
+    {
+      "source": "group_academics",
+      "target": "concept_academic_views_disinfo",
+      "type": "had_differing_views_on",
+      "attributes": {}
+    },
+    {
+      "source": "concept_academic_views_disinfo",
+      "target": "concept_disinfo",
+      "type": "related_to",
+      "attributes": {}
+    },
+    {
+      "source": "concept_academic_views_disinfo",
+      "target": "concept_ambiguity",
+      "type": "related_to",
+      "attributes": {}
+    },
+    {
+      "source": "concept_philosophical_views",
+      "target": "person_norman_podhoretz",
+      "type": "outlined_by",
+      "attributes": {
+        "context": "in keynote address"
+      }
+    },
+    {
+      "source": "concept_philosophical_views",
+      "target": "concept_western_vuln",
+      "type": "explain",
+      "attributes": {}
+    },
+    {
+      "source": "concept_western_vuln",
+      "target": "concept_sem_manipulation",
+      "type": "related_to",
+      "attributes": {}
+    },
+    {
+      "source": "event_cspd_conf",
+      "target": "concept_gov_action_disinfo",
+      "type": "participants_agreed_on",
+      "attributes": {}
+    },
+    {
+      "source": "concept_gov_action_disinfo",
+      "target": "concept_conscious_raising",
+      "type": "suggested_method",
+      "attributes": {}
+    },
+    {
+      "source": "event_cspd_conf",
+      "target": "concept_conf_report",
+      "type": "participants_suggested",
+      "attributes": {}
+    },
+    {
+      "source": "event_cspd_conf",
+      "target": "concept_participant_list",
+      "type": "participants_suggested",
+      "attributes": {}
+    },
+    {
+      "source": "event_cspd_conf",
+      "target": "event_followup_conf",
+      "type": "participants_suggested",
+      "attributes": {}
+    },
+    {
+      "source": "concept_conf_report",
+      "target": "concept_formal_papers",
+      "type": "based_on",
+      "attributes": {}
+    },
+    {
+      "source": "concept_conf_report",
+      "target": "concept_taped_discussions",
+      "type": "based_on",
+      "attributes": {}
+    },
+    {
+      "source": "concept_conf_report",
+      "target": "org_state_department",
+      "type": "will_be_disseminated_by",
+      "attributes": {}
+    },
+    {
+      "source": "concept_participant_list",
+      "target": "concept_specialist_network",
+      "type": "goal",
+      "attributes": {}
+    },
+    {
+      "source": "concept_participant_list",
+      "target": "group_cia_staffers",
+      "type": "excludes",
+      "attributes": {
+        "detail": "except one"
+      }
+    },
+    {
+      "source": "event_followup_conf",
+      "target": "concept_countermeasures",
+      "type": "about",
+      "attributes": {}
+    },
+    {
+      "source": "person_aaron_levenstein",
+      "target": "org_center_prop_res",
+      "type": "suggested",
+      "attributes": {}
+    },
+    {
+      "source": "org_sova",
+      "target": "event_followup_conf",
+      "type": "discussed",
+      "attributes": {}
+    },
+    {
+      "source": "org_sova",
+      "target": "org_niofdia",
+      "type": "discussed_with",
+      "attributes": {}
+    },
+    {
+      "source": "org_sova",
+      "target": "org_state_department",
+      "type": "believes_should_be_under_auspices_of",
+      "attributes": {
+        "condition": "if academic conference"
+      }
+    },
+    {
+      "source": "doc_memo",
+      "target": "org_er",
+      "type": "distributed_to",
+      "attributes": {}
+    },
+    {
+      "source": "doc_memo",
+      "target": "org_ddi_registry",
+      "type": "distributed_to",
+      "attributes": {}
+    },
+    {
+      "source": "doc_memo",
+      "target": "org_nig_chrono",
+      "type": "distributed_to",
+      "attributes": {}
+    },
+    {
+      "source": "doc_memo",
+      "target": "org_sova",
+      "type": "originated_from",
+      "attributes": {}
+    },
+    {
+      "source": "doc_memo",
+      "target": "meta_doc_num",
+      "type": "identifies_as",
+      "attributes": {}
+    },
+    {
+      "source": "doc_memo",
+      "target": "meta_release_date",
+      "type": "sanitized_and_approved_for_release_on",
+      "attributes": {}
+    }
+  ]
+}

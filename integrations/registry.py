@@ -28,8 +28,12 @@ try:
 except ImportError:
     TWITTER_AVAILABLE = False
 
-# Future social integrations
-# from integrations.social.reddit_integration import RedditIntegration
+# Reddit integration requires PRAW (installed)
+try:
+    from integrations.social.reddit_integration import RedditIntegration
+    REDDIT_AVAILABLE = True
+except ImportError:
+    REDDIT_AVAILABLE = False
 
 
 class IntegrationRegistry:
@@ -68,12 +72,13 @@ class IntegrationRegistry:
         self._try_register("discord", DiscordIntegration)
         if TWITTER_AVAILABLE:
             self._try_register("twitter", TwitterIntegration)
+        if REDDIT_AVAILABLE:
+            self._try_register("reddit", RedditIntegration)
 
         # Web search
         self._try_register("brave_search", BraveSearchIntegration)
 
         # Future social media sources (Phase 3)
-        # self._try_register("reddit", RedditIntegration)
         # self._try_register("telegram", TelegramIntegration)
 
     def _try_register(self, integration_id: str, integration_class: Type[DatabaseIntegration]):

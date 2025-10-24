@@ -1,0 +1,1261 @@
+{
+  "entities": [
+    {
+      "id": "doc_05798947",
+      "name": "Document 05798947",
+      "type": "document",
+      "attributes": {
+        "title": "THE CONTINUING SOVIET DISINFORMATION BLITZ",
+        "document_type": "FOIA",
+        "collection": "FOIA Collection",
+        "release_decision": "RIPPUB",
+        "original_classification": "U",
+        "page_count": "7",
+        "creation_date": "1987-07-13",
+        "release_date": "2017-09-13",
+        "case_number": "F-2016-02688",
+        "document_creation_date_metadata": "2022-12-28",
+        "document_release_date_metadata": "2017-09-25"
+      }
+    },
+    {
+      "id": "org_cia",
+      "name": "CIA",
+      "type": "organization"
+    },
+    {
+      "id": "org_nsc",
+      "name": "NSC",
+      "type": "organization"
+    },
+    {
+      "id": "org_wpc",
+      "name": "World Peace Council",
+      "type": "organization",
+      "attributes": {
+        "control": "Soviet-controlled"
+      }
+    },
+    {
+      "id": "org_tass",
+      "name": "TASS",
+      "type": "organization",
+      "attributes": {
+        "type": "news agency"
+      }
+    },
+    {
+      "id": "org_izvestia",
+      "name": "Izvestia",
+      "type": "organization",
+      "attributes": {
+        "type": "newspaper"
+      }
+    },
+    {
+      "id": "org_kgb",
+      "name": "KGB",
+      "type": "organization"
+    },
+    {
+      "id": "org_novosti",
+      "name": "Novosti",
+      "type": "organization",
+      "attributes": {
+        "type": "publishing house"
+      }
+    },
+    {
+      "id": "org_usis",
+      "name": "USIS",
+      "type": "organization"
+    },
+    {
+      "id": "org_ussr",
+      "name": "USSR",
+      "type": "organization"
+    },
+    {
+      "id": "org_us",
+      "name": "United States",
+      "type": "organization"
+    },
+    {
+      "id": "org_soviet_bloc",
+      "name": "Soviet Bloc",
+      "type": "organization"
+    },
+    {
+      "id": "org_nam",
+      "name": "Nonaligned Movement",
+      "type": "organization"
+    },
+    {
+      "id": "org_saf",
+      "name": "South Africa",
+      "type": "organization"
+    },
+    {
+      "id": "org_saf_security",
+      "name": "Zairean government's security service",
+      "type": "organization"
+    },
+    {
+      "id": "org_ogi",
+      "name": "Office of Global Issues",
+      "type": "organization",
+      "attributes": {
+        "part_of": "Directorate of Intelligence"
+      }
+    },
+    {
+      "id": "org_fsic",
+      "name": "Foreign Subversion and Instability Center",
+      "type": "organization",
+      "attributes": {
+        "part_of": "Office of Global Issues"
+      }
+    },
+    {
+      "id": "org_di",
+      "name": "Directorate of Intelligence",
+      "type": "organization"
+    },
+    {
+      "id": "org_radio_moscow",
+      "name": "Radio Moscow",
+      "type": "organization",
+      "attributes": {
+        "type": "media outlet"
+      }
+    },
+    {
+      "id": "org_us_secret_service",
+      "name": "US Secret Service",
+      "type": "organization"
+    },
+    {
+      "id": "loc_west",
+      "name": "West",
+      "type": "location"
+    },
+    {
+      "id": "loc_ukraine",
+      "name": "Ukraine",
+      "type": "location",
+      "attributes": {
+        "type": "location_of_newspaper"
+      }
+    },
+    {
+      "id": "org_us_army_hospital_west_berlin",
+      "name": "US Army hospital",
+      "type": "organization",
+      "attributes": {
+        "location": "West Berlin"
+      }
+    },
+    {
+      "id": "org_sainik_samachar",
+      "name": "Sainik Samachar",
+      "type": "organization",
+      "attributes": {
+        "type": "official armed forces journal",
+        "location": "India"
+      }
+    },
+    {
+      "id": "org_us_congress",
+      "name": "US Congress",
+      "type": "organization"
+    },
+    {
+      "id": "group_us_officials",
+      "name": "US officials",
+      "type": "group"
+    },
+    {
+      "id": "person_ermarth_fritz",
+      "name": "Fritz Ermarth",
+      "type": "person",
+      "attributes": {
+        "organization": "NSC"
+      }
+    },
+    {
+      "id": "person_walters",
+      "name": "Walters",
+      "type": "person",
+      "attributes": {
+        "role": "former Deputy Director",
+        "organization": "CIA"
+      }
+    },
+    {
+      "id": "person_palme_olof",
+      "name": "Olof Palme",
+      "type": "person",
+      "attributes": {
+        "role": "Prime Minister",
+        "organization": "Sweden"
+      }
+    },
+    {
+      "id": "person_mobutu",
+      "name": "Mobutu",
+      "type": "person",
+      "attributes": {
+        "role": "President",
+        "organization": "Zaire"
+      }
+    },
+    {
+      "id": "person_sassou_nguesso",
+      "name": "Sassou-Nguesso",
+      "type": "person",
+      "attributes": {
+        "role": "President",
+        "organization": "Congo"
+      }
+    },
+    {
+      "id": "person_fiji_pm_ousted",
+      "name": "Ousted Prime Minister of Fiji",
+      "type": "person",
+      "attributes": {
+        "organization": "Fiji",
+        "status": "ousted"
+      }
+    },
+    {
+      "id": "person_kinshasa_editor",
+      "name": "Editor of Zairean newspaper",
+      "type": "person",
+      "attributes": {
+        "location": "Kinshasa"
+      }
+    },
+    {
+      "id": "concept_cult_members",
+      "name": "Cult members (Jonestown)",
+      "type": "concept"
+    },
+    {
+      "id": "loc_washington_dc",
+      "name": "Washington, D. C.",
+      "type": "location"
+    },
+    {
+      "id": "loc_moscow",
+      "name": "Moscow",
+      "type": "location"
+    },
+    {
+      "id": "loc_fiji",
+      "name": "Fiji",
+      "type": "location"
+    },
+    {
+      "id": "loc_third_world",
+      "name": "Third World",
+      "type": "location"
+    },
+    {
+      "id": "loc_sweden",
+      "name": "Sweden",
+      "type": "location"
+    },
+    {
+      "id": "loc_ussr",
+      "name": "USSR",
+      "type": "location"
+    },
+    {
+      "id": "loc_congo",
+      "name": "Congo",
+      "type": "location"
+    },
+    {
+      "id": "loc_zaire",
+      "name": "Zaire",
+      "type": "location"
+    },
+    {
+      "id": "loc_india",
+      "name": "India",
+      "type": "location"
+    },
+    {
+      "id": "loc_pakistan",
+      "name": "Pakistan",
+      "type": "location"
+    },
+    {
+      "id": "loc_peru",
+      "name": "Peru",
+      "type": "location"
+    },
+    {
+      "id": "loc_guyana",
+      "name": "Guyana",
+      "type": "location"
+    },
+    {
+      "id": "loc_africa",
+      "name": "Africa",
+      "type": "location"
+    },
+    {
+      "id": "loc_east_germany",
+      "name": "East Germany",
+      "type": "location"
+    },
+    {
+      "id": "loc_finland",
+      "name": "Finland",
+      "type": "location"
+    },
+    {
+      "id": "loc_denmark",
+      "name": "Denmark",
+      "type": "location"
+    },
+    {
+      "id": "loc_central_america",
+      "name": "Central America",
+      "type": "location"
+    },
+    {
+      "id": "loc_dominican_republic",
+      "name": "Dominican Republic",
+      "type": "location"
+    },
+    {
+      "id": "loc_france",
+      "name": "France",
+      "type": "location"
+    },
+    {
+      "id": "loc_guatemala",
+      "name": "Guatemala",
+      "type": "location"
+    },
+    {
+      "id": "loc_honduras",
+      "name": "Honduras",
+      "type": "location"
+    },
+    {
+      "id": "loc_south_africa",
+      "name": "South Africa",
+      "type": "location"
+    },
+    {
+      "id": "loc_japan",
+      "name": "Japan",
+      "type": "location"
+    },
+    {
+      "id": "loc_west_berlin",
+      "name": "West Berlin",
+      "type": "location"
+    },
+    {
+      "id": "loc_diego_garcia",
+      "name": "Diego Garcia",
+      "type": "location"
+    },
+    {
+      "id": "loc_kamina_air_force_base",
+      "name": "Kamina air force base",
+      "type": "location",
+      "attributes": {
+        "part_of": "Zaire",
+        "region": "southern"
+      }
+    },
+    {
+      "id": "loc_kinshasa",
+      "name": "Kinshasa",
+      "type": "location"
+    },
+    {
+      "id": "loc_southern_africa",
+      "name": "Southern Africa",
+      "type": "location"
+    },
+    {
+      "id": "loc_black_african_states",
+      "name": "Black African states",
+      "type": "location"
+    },
+    {
+      "id": "event_fiji_coup_may_1987",
+      "name": "Military coup in Fiji",
+      "type": "event",
+      "attributes": {
+        "date": "May 1987",
+        "location": "Fiji"
+      }
+    },
+    {
+      "id": "event_palme_assassination_feb_1986",
+      "name": "Assassination of Olof Palme",
+      "type": "event",
+      "attributes": {
+        "date": "February 1986",
+        "location": "Sweden"
+      }
+    },
+    {
+      "id": "event_jonestown_massacre_1978",
+      "name": "Jonestown massacre",
+      "type": "event",
+      "attributes": {
+        "date": "1978"
+      }
+    },
+    {
+      "id": "event_us_children_trafficking_allegation",
+      "name": "Alleged US trafficking in Central American children",
+      "type": "event",
+      "attributes": {
+        "start_date": "Beginning of 1987"
+      }
+    },
+    {
+      "id": "event_aids_origin_allegation",
+      "name": "Alleged AIDS origin story campaign",
+      "type": "event",
+      "attributes": {
+        "start_date": "October 1985",
+        "alleged_origin_source": "US biological warfare experiments"
+      }
+    },
+    {
+      "id": "event_us_zaire_maneuvers_april_1987",
+      "name": "Joint US-Zaire military maneuvers",
+      "type": "event",
+      "attributes": {
+        "date": "April 1987",
+        "location": "Zaire"
+      }
+    },
+    {
+      "id": "concept_soviet_disinformation",
+      "name": "Soviet Disinformation",
+      "type": "concept"
+    },
+    {
+      "id": "concept_glasnost",
+      "name": "Glasnost",
+      "type": "concept"
+    },
+    {
+      "id": "concept_perestroika_reforms",
+      "name": "Perestroika/Reforms",
+      "type": "concept"
+    },
+    {
+      "id": "concept_anti_us_allegations",
+      "name": "Anti-US allegations",
+      "type": "concept"
+    },
+    {
+      "id": "concept_terrorism",
+      "name": "Terrorism",
+      "type": "concept"
+    },
+    {
+      "id": "concept_subversion",
+      "name": "Subversion",
+      "type": "concept"
+    },
+    {
+      "id": "concept_human_rights",
+      "name": "Human Rights",
+      "type": "concept"
+    },
+    {
+      "id": "concept_us_military_bases",
+      "name": "US military bases",
+      "type": "concept"
+    },
+    {
+      "id": "concept_us_military_personnel",
+      "name": "US military personnel",
+      "type": "concept"
+    },
+    {
+      "id": "concept_biological_warfare",
+      "name": "Biological warfare",
+      "type": "concept"
+    },
+    {
+      "id": "concept_ethnic_weapon",
+      "name": "Ethnic weapon",
+      "type": "concept"
+    },
+    {
+      "id": "concept_aids",
+      "name": "AIDS",
+      "type": "concept"
+    },
+    {
+      "id": "concept_sdi",
+      "name": "Strategic Defense Initiative (SDI)",
+      "type": "concept"
+    },
+    {
+      "id": "concept_forgeries",
+      "name": "Forgeries",
+      "type": "concept",
+      "attributes": {
+        "source_suspected": "USSR"
+      }
+    },
+    {
+      "id": "concept_rumors",
+      "name": "Rumors",
+      "type": "concept",
+      "attributes": {
+        "source_suspected": "KGB"
+      }
+    },
+    {
+      "id": "concept_anonymous_mailings",
+      "name": "Anonymous mailings",
+      "type": "concept",
+      "attributes": {
+        "source_suspected": "KGB"
+      }
+    },
+    {
+      "id": "concept_anti_us_sentiment",
+      "name": "Anti-US sentiment",
+      "type": "concept"
+    },
+    {
+      "id": "concept_apartheid",
+      "name": "Apartheid",
+      "type": "concept"
+    },
+    {
+      "id": "concept_sikh_separatist_movement",
+      "name": "Sikh separatist movement",
+      "type": "concept"
+    },
+    {
+      "id": "concept_international_terrorism",
+      "name": "International terrorism",
+      "type": "concept"
+    },
+    {
+      "id": "concept_public_diplomacy",
+      "name": "Public diplomacy",
+      "type": "concept"
+    },
+    {
+      "id": "concept_propaganda",
+      "name": "Propaganda",
+      "type": "concept"
+    },
+    {
+      "id": "concept_us_destabilization_theme",
+      "name": "US Destabilization of Foreign Countries",
+      "type": "concept",
+      "attributes": {
+        "type": "Soviet theme"
+      }
+    },
+    {
+      "id": "concept_human_rights_counteroffensive",
+      "name": "Human Rights Counteroffensive",
+      "type": "concept",
+      "attributes": {
+        "source": "Moscow"
+      }
+    },
+    {
+      "id": "concept_targeting_us_military",
+      "name": "Targeting the US Military",
+      "type": "concept",
+      "attributes": {
+        "source": "Moscow",
+        "type": "Disinformation Program"
+      }
+    },
+    {
+      "id": "concept_anti_cia_program",
+      "name": "Anti-CIA program",
+      "type": "concept",
+      "attributes": {
+        "source": "Moscow"
+      }
+    },
+    {
+      "id": "concept_organ_transplant",
+      "name": "Organ transplant operations",
+      "type": "concept"
+    },
+    {
+      "id": "concept_race",
+      "name": "Race",
+      "type": "concept"
+    },
+    {
+      "id": "concept_us_port_access_rights",
+      "name": "US port access rights",
+      "type": "concept"
+    },
+    {
+      "id": "concept_military_use",
+      "name": "Military use",
+      "type": "concept"
+    },
+    {
+      "id": "concept_repetition",
+      "name": "Repetition",
+      "type": "concept",
+      "attributes": {
+        "context": "Soviet disinformation tactic"
+      }
+    },
+    {
+      "id": "concept_crude_emotional_appeals",
+      "name": "Crude, emotional appeals",
+      "type": "concept",
+      "attributes": {
+        "context": "Soviet disinformation characteristic"
+      }
+    },
+    {
+      "id": "concept_rate_of_forgeries",
+      "name": "Rate of forgeries surfaced",
+      "type": "concept"
+    },
+    {
+      "id": "concept_us_saf_cooperation_allegation",
+      "name": "Alleged US-South African cooperation",
+      "type": "concept"
+    },
+    {
+      "id": "concept_us_saf_arms_embargo_circumvention_allegation",
+      "name": "Alleged US circumvention of arms embargo",
+      "type": "concept",
+      "attributes": {
+        "target": "South Africa"
+      }
+    },
+    {
+      "id": "doc_forged_press_release_west_berlin",
+      "name": "Forged press release (West Berlin)",
+      "type": "document",
+      "attributes": {
+        "location": "West Berlin",
+        "date_surfaced": "May 1987",
+        "source_suspected": "Soviets"
+      }
+    },
+    {
+      "id": "concept_lists_alleged_cia_agents",
+      "name": "Lists of alleged CIA agents",
+      "type": "concept",
+      "attributes": {
+        "type": "disinformation material",
+        "source_suspected": "Moscow"
+      }
+    }
+  ],
+  "relationships": [
+    {
+      "source": "doc_05798947",
+      "target": "concept_soviet_disinformation",
+      "type": "is_about",
+      "attributes": {
+        "aspect": "Continuing Blitz"
+      }
+    },
+    {
+      "source": "doc_05798947",
+      "target": "org_fsic",
+      "type": "prepared_by"
+    },
+    {
+      "source": "org_fsic",
+      "target": "org_ogi",
+      "type": "part_of"
+    },
+    {
+      "source": "org_ogi",
+      "target": "org_di",
+      "type": "part_of"
+    },
+    {
+      "source": "person_ermarth_fritz",
+      "target": "org_nsc",
+      "type": "works_for"
+    },
+    {
+      "source": "person_ermarth_fritz",
+      "target": "doc_05798947",
+      "type": "requested"
+    },
+    {
+      "source": "org_ussr",
+      "target": "concept_soviet_disinformation",
+      "type": "conducts"
+    },
+    {
+      "source": "org_ussr",
+      "target": "concept_anti_us_allegations",
+      "type": "publicizes"
+    },
+    {
+      "source": "org_ussr",
+      "target": "concept_glasnost",
+      "type": "associated_with"
+    },
+    {
+      "source": "org_ussr",
+      "target": "concept_perestroika_reforms",
+      "type": "associated_with"
+    },
+    {
+      "source": "concept_soviet_disinformation",
+      "target": "org_us",
+      "type": "targets"
+    },
+    {
+      "source": "concept_soviet_disinformation",
+      "target": "concept_terrorism",
+      "type": "portrays_as"
+    },
+    {
+      "source": "concept_soviet_disinformation",
+      "target": "concept_subversion",
+      "type": "portrays_as"
+    },
+    {
+      "source": "concept_soviet_disinformation",
+      "target": "concept_human_rights",
+      "type": "portrays_as",
+      "attributes": {
+        "role": "violator of"
+      }
+    },
+    {
+      "source": "org_ussr",
+      "target": "concept_us_military_bases",
+      "type": "fosters_opposition_to"
+    },
+    {
+      "source": "org_ussr",
+      "target": "concept_us_military_personnel",
+      "type": "fosters_opposition_to"
+    },
+    {
+      "source": "concept_soviet_disinformation",
+      "target": "loc_third_world",
+      "type": "targets"
+    },
+    {
+      "source": "org_ussr",
+      "target": "concept_us_destabilization_theme",
+      "type": "promotes"
+    },
+    {
+      "source": "concept_us_destabilization_theme",
+      "target": "org_us",
+      "type": "alleges_activity_by"
+    },
+    {
+      "source": "concept_us_destabilization_theme",
+      "target": "loc_third_world",
+      "type": "alleges_activity_at"
+    },
+    {
+      "source": "concept_us_destabilization_theme",
+      "target": "concept_subversion",
+      "type": "alleges_activity",
+      "attributes": {
+        "method": "sponsoring"
+      }
+    },
+    {
+      "source": "event_fiji_coup_may_1987",
+      "target": "loc_fiji",
+      "type": "occurred_in"
+    },
+    {
+      "source": "org_radio_moscow",
+      "target": "event_fiji_coup_may_1987",
+      "type": "reported_on"
+    },
+    {
+      "source": "org_tass",
+      "target": "event_fiji_coup_may_1987",
+      "type": "reported_on"
+    },
+    {
+      "source": "org_izvestia",
+      "target": "event_fiji_coup_may_1987",
+      "type": "reported_on"
+    },
+    {
+      "source": "org_wpc",
+      "target": "event_fiji_coup_may_1987",
+      "type": "alleges_involvement_in",
+      "attributes": {
+        "target": "org_us"
+      }
+    },
+    {
+      "source": "org_wpc",
+      "target": "person_walters",
+      "type": "alleges_presence_at",
+      "attributes": {
+        "location": "loc_fiji",
+        "time": "when plot planned"
+      }
+    },
+    {
+      "source": "org_tass",
+      "target": "event_fiji_coup_may_1987",
+      "type": "alleges_involvement_in",
+      "attributes": {
+        "target": "org_cia"
+      }
+    },
+    {
+      "source": "org_tass",
+      "target": "event_fiji_coup_may_1987",
+      "type": "alleges_involvement_in",
+      "attributes": {
+        "target": "org_us_secret_service"
+      }
+    },
+    {
+      "source": "event_palme_assassination_feb_1986",
+      "target": "loc_sweden",
+      "type": "occurred_in"
+    },
+    {
+      "source": "org_ussr",
+      "target": "event_palme_assassination_feb_1986",
+      "type": "efforts_to_implicate",
+      "attributes": {
+        "target": "org_us"
+      }
+    },
+    {
+      "source": "org_soviet_bloc",
+      "target": "event_palme_assassination_feb_1986",
+      "type": "reported_on",
+      "attributes": {
+        "allegation": "US complicity"
+      }
+    },
+    {
+      "source": "org_ussr",
+      "target": "concept_forgeries",
+      "type": "uses_method"
+    },
+    {
+      "source": "org_ussr",
+      "target": "concept_rumors",
+      "type": "uses_method"
+    },
+    {
+      "source": "org_ussr",
+      "target": "concept_anonymous_mailings",
+      "type": "uses_method"
+    },
+    {
+      "source": "org_kgb",
+      "target": "concept_rumors",
+      "type": "uses_method",
+      "attributes": {
+        "action": "planted"
+      }
+    },
+    {
+      "source": "concept_rumors",
+      "target": "org_cia",
+      "type": "alleges_activity_by",
+      "attributes": {
+        "activity": "assassinate person_sassou_nguesso",
+        "instigator": "person_mobutu"
+      }
+    },
+    {
+      "source": "org_kgb",
+      "target": "concept_anonymous_mailings",
+      "type": "uses_method",
+      "attributes": {
+        "action": "circulated"
+      }
+    },
+    {
+      "source": "concept_anonymous_mailings",
+      "target": "org_cia",
+      "type": "alleges_about",
+      "attributes": {
+        "content": "named alleged agents and officers"
+      }
+    },
+    {
+      "source": "org_ussr",
+      "target": "concept_human_rights_counteroffensive",
+      "type": "conducts"
+    },
+    {
+      "source": "concept_human_rights_counteroffensive",
+      "target": "loc_west",
+      "type": "targets"
+    },
+    {
+      "source": "org_ussr",
+      "target": "event_jonestown_massacre_1978",
+      "type": "issued_charges_on"
+    },
+    {
+      "source": "org_ussr",
+      "target": "event_jonestown_massacre_1978",
+      "type": "alleges_involvement_in",
+      "attributes": {
+        "target": "org_cia",
+        "reason": "prevented concept_cult_members emigration to USSR"
+      }
+    },
+    {
+      "source": "org_novosti",
+      "target": "event_jonestown_massacre_1978",
+      "type": "published",
+      "attributes": {
+        "type": "book"
+      }
+    },
+    {
+      "source": "org_izvestia",
+      "target": "event_jonestown_massacre_1978",
+      "type": "reported_on",
+      "attributes": {
+        "date": "1987-01-30"
+      }
+    },
+    {
+      "source": "org_ussr",
+      "target": "event_us_children_trafficking_allegation",
+      "type": "conducts_campaign"
+    },
+    {
+      "source": "event_us_children_trafficking_allegation",
+      "target": "org_us",
+      "type": "alleges_activity_by"
+    },
+    {
+      "source": "event_us_children_trafficking_allegation",
+      "target": "loc_central_america",
+      "type": "alleges_source_location"
+    },
+    {
+      "source": "event_us_children_trafficking_allegation",
+      "target": "concept_organ_transplant",
+      "type": "alleges_purpose_is"
+    },
+    {
+      "source": "org_ussr",
+      "target": "event_us_children_trafficking_allegation",
+      "type": "reported_on"
+    },
+    {
+      "source": "org_ussr",
+      "target": "concept_apartheid",
+      "type": "exploits_issue"
+    },
+    {
+      "source": "org_ussr",
+      "target": "concept_ethnic_weapon",
+      "type": "pushes_allegations_on"
+    },
+    {
+      "source": "concept_ethnic_weapon",
+      "target": "org_us",
+      "type": "alleges_research_partnership_with"
+    },
+    {
+      "source": "concept_ethnic_weapon",
+      "target": "org_saf",
+      "type": "alleges_research_partnership_with"
+    },
+    {
+      "source": "concept_ethnic_weapon",
+      "target": "concept_biological_warfare",
+      "type": "is_type_of"
+    },
+    {
+      "source": "concept_ethnic_weapon",
+      "target": "concept_race",
+      "type": "alleges_designed_to_target_based_on"
+    },
+    {
+      "source": "org_radio_moscow",
+      "target": "concept_ethnic_weapon",
+      "type": "reported_on",
+      "attributes": {
+        "date": "February 1987"
+      }
+    },
+    {
+      "source": "org_ussr",
+      "target": "concept_targeting_us_military",
+      "type": "conducts"
+    },
+    {
+      "source": "event_aids_origin_allegation",
+      "target": "concept_aids",
+      "type": "is_about"
+    },
+    {
+      "source": "event_aids_origin_allegation",
+      "target": "concept_biological_warfare",
+      "type": "alleges_origin_is"
+    },
+    {
+      "source": "org_ussr",
+      "target": "event_aids_origin_allegation",
+      "type": "conducts_campaign"
+    },
+    {
+      "source": "org_ussr",
+      "target": "event_aids_origin_allegation",
+      "type": "uses_to_foster_opposition_to",
+      "attributes": {
+        "target": "concept_us_military_bases"
+      }
+    },
+    {
+      "source": "org_ussr",
+      "target": "event_aids_origin_allegation",
+      "type": "uses_to_foster_opposition_to",
+      "attributes": {
+        "target": "concept_us_military_personnel"
+      }
+    },
+    {
+      "source": "org_ussr",
+      "target": "event_aids_origin_allegation",
+      "type": "uses_to_foster_opposition_to",
+      "attributes": {
+        "target": "concept_us_port_access_rights"
+      }
+    },
+    {
+      "source": "loc_ukraine",
+      "target": "event_aids_origin_allegation",
+      "type": "reported_on",
+      "attributes": {
+        "date": "February 1987"
+      }
+    },
+    {
+      "source": "org_ussr",
+      "target": "doc_forged_press_release_west_berlin",
+      "type": "suspected_source_of"
+    },
+    {
+      "source": "doc_forged_press_release_west_berlin",
+      "target": "loc_west_berlin",
+      "type": "surfaced_in"
+    },
+    {
+      "source": "doc_forged_press_release_west_berlin",
+      "target": "org_us_army_hospital_west_berlin",
+      "type": "alleges_about",
+      "attributes": {
+        "content": "overflowing with AIDS victims"
+      }
+    },
+    {
+      "source": "org_ussr",
+      "target": "concept_us_military_facilities",
+      "type": "alleges_about",
+      "attributes": {
+        "allegation": "used in concept_sdi program"
+      }
+    },
+    {
+      "source": "org_ussr",
+      "target": "org_us",
+      "type": "alleges_intent",
+      "attributes": {
+        "intent": "acquire new bases",
+        "purpose": "destabilize regions"
+      }
+    },
+    {
+      "source": "org_sainik_samachar",
+      "target": "event_aids_origin_allegation",
+      "type": "reported_on",
+      "attributes": {
+        "date": "April 1987"
+      }
+    },
+    {
+      "source": "org_press_india",
+      "target": "loc_diego_garcia",
+      "type": "reported_on",
+      "attributes": {
+        "subject": "Soviet charges about SDI"
+      }
+    },
+    {
+      "source": "loc_diego_garcia",
+      "target": "concept_military_use",
+      "type": "has_sensitivity_about"
+    },
+    {
+      "source": "org_radio_moscow",
+      "target": "event_us_zaire_maneuvers_april_1987",
+      "type": "interprets_as",
+      "attributes": {
+        "interpretation": "US interest in loc_kamina_air_force_base for destabilization"
+      }
+    },
+    {
+      "source": "concept_soviet_disinformation",
+      "target": "concept_repetition",
+      "type": "is_characterized_by"
+    },
+    {
+      "source": "event_aids_origin_allegation",
+      "target": "loc_third_world",
+      "type": "circulated_in",
+      "attributes": {
+        "count": "over 60 countries"
+      }
+    },
+    {
+      "source": "concept_soviet_disinformation",
+      "target": "concept_crude_emotional_appeals",
+      "type": "is_often_comprised_of"
+    },
+    {
+      "source": "concept_crude_emotional_appeals",
+      "target": "loc_third_world",
+      "type": "believed_effective_in"
+    },
+    {
+      "source": "concept_soviet_disinformation",
+      "target": "concept_rate_of_forgeries",
+      "type": "evidenced_by"
+    },
+    {
+      "source": "org_ussr",
+      "target": "concept_soviet_disinformation",
+      "type": "gained_benefit_from"
+    },
+    {
+      "source": "event_aids_origin_allegation",
+      "target": "group_us_officials",
+      "type": "prompted_action_from",
+      "attributes": {
+        "action": "protest"
+      }
+    },
+    {
+      "source": "org_ussr",
+      "target": "loc_india",
+      "type": "promotes_theme_in",
+      "attributes": {
+        "theme": "US destabilizing India"
+      }
+    },
+    {
+      "source": "org_us",
+      "target": "loc_india",
+      "type": "alleges_activity_at",
+      "attributes": {
+        "activity": "supporting separatist movements"
+      }
+    },
+    {
+      "source": "org_us",
+      "target": "concept_sikh_separatist_movement",
+      "type": "alleges_support_for"
+    },
+    {
+      "source": "loc_india",
+      "target": "org_us",
+      "type": "public_opinion_believes_promoter_of",
+      "attributes": {
+        "concept": "international terrorism",
+        "strength": "single largest",
+        "date": "1985"
+      }
+    },
+    {
+      "source": "person_fiji_pm_ousted",
+      "target": "org_us",
+      "type": "suspected_involvement_in",
+      "attributes": {
+        "target": "event_fiji_coup_may_1987"
+      }
+    },
+    {
+      "source": "person_fiji_pm_ousted",
+      "target": "org_us_congress",
+      "type": "called_for",
+      "attributes": {
+        "action": "inquiry"
+      }
+    },
+    {
+      "source": "org_ussr",
+      "target": "concept_anti_cia_program",
+      "type": "conducts"
+    },
+    {
+      "source": "concept_anti_cia_program",
+      "target": "org_cia",
+      "type": "targets"
+    },
+    {
+      "source": "concept_anti_cia_program",
+      "target": "concept_lists_alleged_cia_agents",
+      "type": "includes_component"
+    },
+    {
+      "source": "concept_anti_cia_program",
+      "target": "person",
+      "type": "has_impact_on",
+      "attributes": {
+        "impact": "intimidates and casts suspicion"
+      }
+    },
+    {
+      "source": "concept_lists_alleged_cia_agents",
+      "target": "org_cia",
+      "type": "alleges_about"
+    },
+    {
+      "source": "person_kinshasa_editor",
+      "target": "org_usis",
+      "type": "contact_of"
+    },
+    {
+      "source": "person_kinshasa_editor",
+      "target": "org_saf_security",
+      "type": "feared_action_from",
+      "attributes": {
+        "action": "interrogation"
+      }
+    },
+    {
+      "source": "person_kinshasa_editor",
+      "target": "concept_lists_alleged_cia_agents",
+      "type": "listed_on"
+    }
+  ]
+}
