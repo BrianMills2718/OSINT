@@ -8,13 +8,17 @@ import matplotlib.pyplot as plt
 from google import genai
 from google.genai import types
 from typing import Dict, List, Any, Optional
+from dotenv import load_dotenv
 
-# Set your API key here
-os.environ["GEMINI_API_KEY"] = "AIzaSyDXaLhSWAQhGNHZqdbvY-qFB0jxyPbiiow"   # Replace with your actual API key
+# Load environment variables from .env file
+load_dotenv()
 
 class KnowledgeGraphCreator:
     def __init__(self, model_name="gemini-2.5-flash-preview-04-17"):
-        self.client = genai.Client(api_key=os.environ["GEMINI_API_KEY"])
+        api_key = os.getenv("GEMINI_API_KEY")
+        if not api_key:
+            raise ValueError("GEMINI_API_KEY not found in environment variables. Please add it to .env file")
+        self.client = genai.Client(api_key=api_key)
         self.model_name = model_name
         self.max_retries = 3
         self.retry_delay = 2

@@ -1,0 +1,705 @@
+(.venv) brian@DESKTOP-79G7E9D:~/sam_gov$ source .venv/bin/activate
+python3 tests/test_deep_research_mcp.py
+
+================================================================================
+MCP INTEGRATION TEST
+================================================================================
+
+Query: military cybersecurity training
+Config: max_tasks=5, parallel=2
+
+🚀 [RESEARCH_STARTED] Starting deep research: military cybersecurity training
+[2025-10-24T12:28:40.724374] RESEARCH_STARTED: Starting deep research: military cybersecurity training
+ℹ️ [DECOMPOSITION_STARTED] Breaking question into research tasks...
+[2025-10-24T12:28:40.724420] DECOMPOSITION_STARTED: Breaking question into research tasks...
+ℹ️ [TASK_CREATED] Task 0: military cybersecurity training programs and curricula
+[2025-10-24T12:28:56.804272] TASK_CREATED: Task 0: military cybersecurity training programs and curricula
+ℹ️ [TASK_CREATED] Task 1: military cyber ranges and simulation exercises
+[2025-10-24T12:28:56.804330] TASK_CREATED: Task 1: military cyber ranges and simulation exercises
+ℹ️ [TASK_CREATED] Task 2: cybersecurity certifications required for military cyber personnel
+[2025-10-24T12:28:56.804347] TASK_CREATED: Task 2: cybersecurity certifications required for military cyber personnel
+ℹ️ [TASK_CREATED] Task 3: companies providing military cybersecurity training
+[2025-10-24T12:28:56.804355] TASK_CREATED: Task 3: companies providing military cybersecurity training
+ℹ️ [TASK_CREATED] Task 4: evaluations of military cybersecurity training effectiveness
+[2025-10-24T12:28:56.804362] TASK_CREATED: Task 4: evaluations of military cybersecurity training effectiveness
+📋 [DECOMPOSITION_COMPLETE] Created 5 initial tasks
+[2025-10-24T12:28:56.804372] DECOMPOSITION_COMPLETE: Created 5 initial tasks
+  Data: {
+  "tasks": [
+    {
+      "id": 0,
+      "query": "military cybersecurity training programs and curricula"
+    },
+    {
+      "id": 1,
+      "query": "military cyber ranges and simulation exercises"
+    },
+    {
+      "id": 2,
+      "query": "cybersecurity certifications required for military cyber personnel"
+    },
+    {
+      "id": 3,
+      "query": "companies providing military cybersecurity training"
+    },
+    {
+      "id": 4,
+      "query": "evaluations of military cybersecurity training effectiveness"
+    }
+  ]
+}
+ℹ️ [BATCH_STARTED] Executing batch of 2 tasks in parallel
+[2025-10-24T12:28:56.804432] BATCH_STARTED: Executing batch of 2 tasks in parallel
+  Data: {
+  "tasks": [
+    {
+      "id": 0,
+      "query": "military cybersecurity training programs and curricula"
+    },
+    {
+      "id": 1,
+      "query": "military cyber ranges and simulation exercises"
+    }
+  ]
+}
+▶️ [TASK_STARTED] Executing: military cybersecurity training programs and curricula
+[2025-10-24T12:28:56.804460] TASK_STARTED: Executing: military cybersecurity training programs and curricula
+▶️ [TASK_STARTED] Executing: military cyber ranges and simulation exercises
+[2025-10-24T12:28:56.804468] TASK_STARTED: Executing: military cyber ranges and simulation exercises
+🔍 Searching 7 databases via MCP tools...
+🔍 Searching 7 databases via MCP tools...
+Warning: Could not parse data/exports/Project Owl: The OSINT Community - Europe, Russia, and Caucasus - ⛳🏆-eurrrrrrrrrobog [746747727160803418] (2025-09-07 to 2025-09-14).json: Expecting ',' delimiter: line 298005 column 6 (char 8716157)
+Warning: Could not parse data/exports/Project Owl: The OSINT Community - Middle East - 🌴-palm-tree-oasis [749424816255402055] (2025-08-17 to 2025-08-24).json: Expecting ',' delimiter: line 79366 column 14 (char 2343133)
+Warning: Could not parse data/exports/Project Owl: The OSINT Community - Europe, Russia, and Caucasus - ⛳🏆-eurrrrrrrrrobog [746747727160803418] (2025-08-31 to 2025-09-07).json: Expecting ',' delimiter: line 934769 column 12 (char 27265597)
+Warning: Could not parse data/exports/Project Owl: The OSINT Community - Americas - 🐸-the-swamp [1418332901220679720] (2025-10-05 to 2025-10-12).json: Expecting ',' delimiter: line 307827 column 6 (char 9291979)
+Warning: Could not parse data/exports/Project Owl: The OSINT Community - Americas - 🐸-the-swamp [1418332901220679720] (2025-09-28 to 2025-10-05).json: Expecting ',' delimiter: line 30157 column 12 (char 920116)
+Warning: Could not parse data/exports/Project Owl: The OSINT Community - Americas - 🐸-the-swamp [1418332901220679720] (2025-10-12 to 2025-10-19).json: Expecting ',' delimiter: line 265672 column 6 (char 7939300)
+Warning: Could not parse data/exports/Project Owl: The OSINT Community - Middle East - 🌴-palm-tree-oasis [749424816255402055] (2025-10-05 to 2025-10-12).json: Expecting ',' delimiter: line 195554 column 14 (char 5810849)
+Warning: Could not parse data/exports/Project Owl: The OSINT Community - Middle East - 🌴-palm-tree-oasis [749424816255402055] (2025-08-10 to 2025-08-17).json: Expecting ',' delimiter: line 263795 column 12 (char 7636281)
+Warning: Could not parse data/exports/Bellingcat - ・━━ Server info - announcements [709768274031935560].json: Expecting ',' delimiter: line 77762 column 6 (char 3071942)
+Warning: Could not parse data/exports/Project Owl: The OSINT Community - Middle East - 🌴-palm-tree-oasis [749424816255402055] (2025-09-28 to 2025-10-05).json: Expecting ',' delimiter: line 397335 column 14 (char 11715730)
+DVIDS: OR query returned 0, decomposing into individual terms...
+DVIDS: Decomposed query found 58 unique results across 6 terms
+SAM.gov rate limit hit, retrying in 2s...
+SAM.gov rate limit hit, retrying in 4s...
+Warning: Could not parse data/exports/Project Owl: The OSINT Community - Europe, Russia, and Caucasus - ⛳🏆-eurrrrrrrrrobog [746747727160803418] (2025-09-07 to 2025-09-14).json: Expecting ',' delimiter: line 298005 column 6 (char 8716157)
+Warning: Could not parse data/exports/Project Owl: The OSINT Community - Middle East - 🌴-palm-tree-oasis [749424816255402055] (2025-08-17 to 2025-08-24).json: Expecting ',' delimiter: line 79366 column 14 (char 2343133)
+Warning: Could not parse data/exports/Project Owl: The OSINT Community - Europe, Russia, and Caucasus - ⛳🏆-eurrrrrrrrrobog [746747727160803418] (2025-08-31 to 2025-09-07).json: Expecting ',' delimiter: line 934769 column 12 (char 27265597)
+Warning: Could not parse data/exports/Project Owl: The OSINT Community - Americas - 🐸-the-swamp [1418332901220679720] (2025-10-05 to 2025-10-12).json: Expecting ',' delimiter: line 307827 column 6 (char 9291979)
+Warning: Could not parse data/exports/Project Owl: The OSINT Community - Americas - 🐸-the-swamp [1418332901220679720] (2025-09-28 to 2025-10-05).json: Expecting ',' delimiter: line 30157 column 12 (char 920116)
+Warning: Could not parse data/exports/Project Owl: The OSINT Community - Americas - 🐸-the-swamp [1418332901220679720] (2025-10-12 to 2025-10-19).json: Expecting ',' delimiter: line 265672 column 6 (char 7939300)
+Warning: Could not parse data/exports/Project Owl: The OSINT Community - Middle East - 🌴-palm-tree-oasis [749424816255402055] (2025-10-05 to 2025-10-12).json: Expecting ',' delimiter: line 195554 column 14 (char 5810849)
+Warning: Could not parse data/exports/Project Owl: The OSINT Community - Americas - north-america [715937915112521770] (2025-09-21 to 2025-09-28).json: Expecting ',' delimiter: line 24633 column 12 (char 777906)
+Warning: Could not parse data/exports/Project Owl: The OSINT Community - Middle East - 🌴-palm-tree-oasis [749424816255402055] (2025-08-10 to 2025-08-17).json: Expecting ',' delimiter: line 263795 column 12 (char 7636281)
+Warning: Could not parse data/exports/Bellingcat - ・━━ Server info - announcements [709768274031935560].json: Expecting ',' delimiter: line 77762 column 6 (char 3071942)
+Warning: Could not parse data/exports/Project Owl: The OSINT Community - Middle East - 🌴-palm-tree-oasis [749424816255402055] (2025-09-28 to 2025-10-05).json: Expecting ',' delimiter: line 397335 column 14 (char 11715730)
+SAM.gov rate limit hit, retrying in 2s...
+SAM.gov rate limit hit, retrying in 4s...
+DVIDS: OR query returned 0, decomposing into individual terms...
+DVIDS: Decomposed query found 50 unique results across 5 terms
+
+Executing Step: Call search.php (Reason: Twitter is relevant for real-time announcements, expert commentary, and public discussion about military cyber ranges and exercises. The query captures common phrase variants and wargame/training terms, restricts to military/defense actors (DoD, USCYBERCOM, NATO, service names) and excludes gaming/esports noise. Using Latest and 3 pages (~60 tweets) balances recency with breadth.)
+
+Executing Step: Call search.php (Reason: Twitter is relevant for this research because it surfaces real-time discussion, official announcements (service cyber commands, DoD), expert commentary, news about exercises/changes to curricula, and reports/leaks. I chose a query that combines program/training terms (training, curriculum, cyber range, CTF, red/blue team) with military/agency identifiers (DoD, USCYBERCOM, service cyber units, NATO/CCDCOE). I excluded job/hiring results to reduce recruitment posts. "Latest" is selected to capture recent developments and real-time discussion; 3 pages (~60 tweets) balances breadth with manageability.)
+  Requesting URL: https://twitter-api45.p.rapidapi.com/search.php
+  Requesting URL: https://twitter-api45.p.rapidapi.com/search.php
+  With Params: {'query': '("cyber range" OR "cyber-range" OR "cyber ranges" OR "cyber wargame" OR "cyber wargames" OR "cyber exercise" OR "cyber exercises" OR "cyber drill" OR "cyber training") AND (military OR DoD OR USCYBERCOM OR NATO OR "armed forces" OR defense OR defence OR army OR navy OR "air force" OR marines) NOT (gaming OR esports OR "video game" OR gameplay OR streamer)', 'search_type': 'Latest'}
+  With Params: {'query': '(("military cybersecurity" OR "military cyber" OR "defense cyber" OR "military cyber training" OR "cybersecurity training" OR "cyber training" OR "cyber curriculum" OR "cyber courses" OR "cyber range" OR CTF OR "capture the flag" OR "red team" OR "blue team") AND (military OR "armed forces" OR DoD OR "Department of Defense" OR USCYBERCOM OR "Cyber Command" OR NATO OR CCDCOE OR "Army Cyber" OR "Navy Cyber" OR "Air Force Cyber" OR "Marine Corps")) NOT (hiring OR jobs OR "job opening")', 'search_type': 'Latest'}
+  Fetching page 1...
+  Fetching page 1...
+  Extracted list data from key: 'timeline'
+  Extracted list data from key: 'timeline'
+  Fetching page 2 with cursor DAADDAABAA...
+  Fetching page 2 with cursor DAADDAABAA...
+  Extracted list data from key: 'timeline'
+  Finished fetching for search.php. Total pages: 2. Has next cursor: False
+  Successfully processed request for search.php.
+  Extracted list data from key: 'timeline'
+  Finished fetching for search.php. Total pages: 2. Has next cursor: False
+  Successfully processed request for search.php.
+  ✗ search_sam: Failed - HTTP 0: 429 Client Error: Too Many Requests for url: https://api.sam.gov/opportunities/v2/search?api_key=SAM-db0e8074-ef7f-41b2-8456-b0f79a0a2112&postedFrom=10%2F25%2F2024&postedTo=10%2F24%2F2025&limit=10&offset=0&keywords=military+cybersecurity+training%2C+cybersecurity+curriculum%2C+cyber+training%2C+cyber+range%2C+cyber+workforce+development%2C+cybersecurity+course%2C+cyber+exercises%2C+cyber+education&ptype=o%2Cp%2Ck%2Cr&ncode=611430%2C541512%2C541519&organizationName=Department+of+Defense
+  ✓ search_dvids: 10 results
+  ✓ search_usajobs: 0 results
+  ✓ search_clearancejobs: 1 results
+  ✓ search_twitter: 0 results
+  ✓ search_reddit: 10 results
+  ✓ search_discord: 0 results
+✓ MCP tools complete: 21 total results from 4 sources
+🔍 Extracting entities from 41 results...
+  ✗ search_sam: Failed - HTTP 0: 429 Client Error: Too Many Requests for url: https://api.sam.gov/opportunities/v2/search?api_key=SAM-db0e8074-ef7f-41b2-8456-b0f79a0a2112&postedFrom=10%2F25%2F2024&postedTo=10%2F24%2F2025&limit=10&offset=0&keywords=cyber+range+cyber-range+%22cyber+simulation%22+%22simulation+exercise%22+%22cyber+training%22+wargame+%22virtual+testbed%22+network+emulation&ptype=o%2Cp%2Ck%2Cr&ncode=541512%2C541519%2C541611%2C541990%2C518210%2C611420
+  ✓ search_dvids: 10 results
+  ✓ search_usajobs: 10 results
+  ✓ search_clearancejobs: 2 results
+  ✓ search_twitter: 0 results
+  ✓ search_reddit: 0 results
+  ✓ search_discord: 0 results
+✓ MCP tools complete: 22 total results from 4 sources
+🔍 Extracting entities from 40 results...
+✓ Found 10 entities: BRIGHT STAR 25, CPT Hayden Young, Texas National Guard, Qatar Armed Forces, Egyptian Armed Forces...
+ℹ️ [RELATIONSHIP_DISCOVERED] Connected: BRIGHT STAR 25 <-> CPT Hayden Young
+[2025-10-24T12:29:54.399353] RELATIONSHIP_DISCOVERED: Connected: BRIGHT STAR 25 <-> CPT Hayden Young
+ℹ️ [RELATIONSHIP_DISCOVERED] Connected: BRIGHT STAR 25 <-> Texas National Guard
+[2025-10-24T12:29:54.399388] RELATIONSHIP_DISCOVERED: Connected: BRIGHT STAR 25 <-> Texas National Guard
+ℹ️ [RELATIONSHIP_DISCOVERED] Connected: BRIGHT STAR 25 <-> Qatar Armed Forces
+[2025-10-24T12:29:54.399415] RELATIONSHIP_DISCOVERED: Connected: BRIGHT STAR 25 <-> Qatar Armed Forces
+ℹ️ [RELATIONSHIP_DISCOVERED] Connected: BRIGHT STAR 25 <-> Egyptian Armed Forces
+[2025-10-24T12:29:54.399441] RELATIONSHIP_DISCOVERED: Connected: BRIGHT STAR 25 <-> Egyptian Armed Forces
+ℹ️ [RELATIONSHIP_DISCOVERED] Connected: BRIGHT STAR 25 <-> Cyber Shield 2025
+[2025-10-24T12:29:54.399479] RELATIONSHIP_DISCOVERED: Connected: BRIGHT STAR 25 <-> Cyber Shield 2025
+ℹ️ [RELATIONSHIP_DISCOVERED] Connected: BRIGHT STAR 25 <-> KATUSA Friendship Week
+[2025-10-24T12:29:54.399506] RELATIONSHIP_DISCOVERED: Connected: BRIGHT STAR 25 <-> KATUSA Friendship Week
+ℹ️ [RELATIONSHIP_DISCOVERED] Connected: BRIGHT STAR 25 <-> PFC Lee Man Hi
+[2025-10-24T12:29:54.399544] RELATIONSHIP_DISCOVERED: Connected: BRIGHT STAR 25 <-> PFC Lee Man Hi
+ℹ️ [RELATIONSHIP_DISCOVERED] Connected: BRIGHT STAR 25 <-> Immediate Response 25
+[2025-10-24T12:29:54.399572] RELATIONSHIP_DISCOVERED: Connected: BRIGHT STAR 25 <-> Immediate Response 25
+ℹ️ [RELATIONSHIP_DISCOVERED] Connected: BRIGHT STAR 25 <-> Montenegro
+[2025-10-24T12:29:54.399598] RELATIONSHIP_DISCOVERED: Connected: BRIGHT STAR 25 <-> Montenegro
+ℹ️ [RELATIONSHIP_DISCOVERED] Connected: CPT Hayden Young <-> Texas National Guard
+[2025-10-24T12:29:54.399624] RELATIONSHIP_DISCOVERED: Connected: CPT Hayden Young <-> Texas National Guard
+ℹ️ [RELATIONSHIP_DISCOVERED] Connected: CPT Hayden Young <-> Qatar Armed Forces
+[2025-10-24T12:29:54.399662] RELATIONSHIP_DISCOVERED: Connected: CPT Hayden Young <-> Qatar Armed Forces
+ℹ️ [RELATIONSHIP_DISCOVERED] Connected: CPT Hayden Young <-> Egyptian Armed Forces
+[2025-10-24T12:29:54.399690] RELATIONSHIP_DISCOVERED: Connected: CPT Hayden Young <-> Egyptian Armed Forces
+ℹ️ [RELATIONSHIP_DISCOVERED] Connected: CPT Hayden Young <-> Cyber Shield 2025
+[2025-10-24T12:29:54.399726] RELATIONSHIP_DISCOVERED: Connected: CPT Hayden Young <-> Cyber Shield 2025
+ℹ️ [RELATIONSHIP_DISCOVERED] Connected: CPT Hayden Young <-> KATUSA Friendship Week
+[2025-10-24T12:29:54.399764] RELATIONSHIP_DISCOVERED: Connected: CPT Hayden Young <-> KATUSA Friendship Week
+ℹ️ [RELATIONSHIP_DISCOVERED] Connected: CPT Hayden Young <-> PFC Lee Man Hi
+[2025-10-24T12:29:54.399789] RELATIONSHIP_DISCOVERED: Connected: CPT Hayden Young <-> PFC Lee Man Hi
+ℹ️ [RELATIONSHIP_DISCOVERED] Connected: CPT Hayden Young <-> Immediate Response 25
+[2025-10-24T12:29:54.399799] RELATIONSHIP_DISCOVERED: Connected: CPT Hayden Young <-> Immediate Response 25
+ℹ️ [RELATIONSHIP_DISCOVERED] Connected: CPT Hayden Young <-> Montenegro
+[2025-10-24T12:29:54.399804] RELATIONSHIP_DISCOVERED: Connected: CPT Hayden Young <-> Montenegro
+ℹ️ [RELATIONSHIP_DISCOVERED] Connected: Texas National Guard <-> Qatar Armed Forces
+[2025-10-24T12:29:54.399811] RELATIONSHIP_DISCOVERED: Connected: Texas National Guard <-> Qatar Armed Forces
+ℹ️ [RELATIONSHIP_DISCOVERED] Connected: Texas National Guard <-> Egyptian Armed Forces
+[2025-10-24T12:29:54.399818] RELATIONSHIP_DISCOVERED: Connected: Texas National Guard <-> Egyptian Armed Forces
+ℹ️ [RELATIONSHIP_DISCOVERED] Connected: Texas National Guard <-> Cyber Shield 2025
+[2025-10-24T12:29:54.399841] RELATIONSHIP_DISCOVERED: Connected: Texas National Guard <-> Cyber Shield 2025
+ℹ️ [RELATIONSHIP_DISCOVERED] Connected: Texas National Guard <-> KATUSA Friendship Week
+[2025-10-24T12:29:54.399851] RELATIONSHIP_DISCOVERED: Connected: Texas National Guard <-> KATUSA Friendship Week
+ℹ️ [RELATIONSHIP_DISCOVERED] Connected: Texas National Guard <-> PFC Lee Man Hi
+[2025-10-24T12:29:54.399858] RELATIONSHIP_DISCOVERED: Connected: Texas National Guard <-> PFC Lee Man Hi
+ℹ️ [RELATIONSHIP_DISCOVERED] Connected: Texas National Guard <-> Immediate Response 25
+[2025-10-24T12:29:54.399864] RELATIONSHIP_DISCOVERED: Connected: Texas National Guard <-> Immediate Response 25
+ℹ️ [RELATIONSHIP_DISCOVERED] Connected: Texas National Guard <-> Montenegro
+[2025-10-24T12:29:54.399899] RELATIONSHIP_DISCOVERED: Connected: Texas National Guard <-> Montenegro
+ℹ️ [RELATIONSHIP_DISCOVERED] Connected: Qatar Armed Forces <-> Egyptian Armed Forces
+[2025-10-24T12:29:54.399938] RELATIONSHIP_DISCOVERED: Connected: Qatar Armed Forces <-> Egyptian Armed Forces
+ℹ️ [RELATIONSHIP_DISCOVERED] Connected: Qatar Armed Forces <-> Cyber Shield 2025
+[2025-10-24T12:29:54.399966] RELATIONSHIP_DISCOVERED: Connected: Qatar Armed Forces <-> Cyber Shield 2025
+ℹ️ [RELATIONSHIP_DISCOVERED] Connected: Qatar Armed Forces <-> KATUSA Friendship Week
+[2025-10-24T12:29:54.399992] RELATIONSHIP_DISCOVERED: Connected: Qatar Armed Forces <-> KATUSA Friendship Week
+ℹ️ [RELATIONSHIP_DISCOVERED] Connected: Qatar Armed Forces <-> PFC Lee Man Hi
+[2025-10-24T12:29:54.400028] RELATIONSHIP_DISCOVERED: Connected: Qatar Armed Forces <-> PFC Lee Man Hi
+ℹ️ [RELATIONSHIP_DISCOVERED] Connected: Qatar Armed Forces <-> Immediate Response 25
+[2025-10-24T12:29:54.400066] RELATIONSHIP_DISCOVERED: Connected: Qatar Armed Forces <-> Immediate Response 25
+ℹ️ [RELATIONSHIP_DISCOVERED] Connected: Qatar Armed Forces <-> Montenegro
+[2025-10-24T12:29:54.400104] RELATIONSHIP_DISCOVERED: Connected: Qatar Armed Forces <-> Montenegro
+ℹ️ [RELATIONSHIP_DISCOVERED] Connected: Egyptian Armed Forces <-> Cyber Shield 2025
+[2025-10-24T12:29:54.400144] RELATIONSHIP_DISCOVERED: Connected: Egyptian Armed Forces <-> Cyber Shield 2025
+ℹ️ [RELATIONSHIP_DISCOVERED] Connected: Egyptian Armed Forces <-> KATUSA Friendship Week
+[2025-10-24T12:29:54.400182] RELATIONSHIP_DISCOVERED: Connected: Egyptian Armed Forces <-> KATUSA Friendship Week
+ℹ️ [RELATIONSHIP_DISCOVERED] Connected: Egyptian Armed Forces <-> PFC Lee Man Hi
+[2025-10-24T12:29:54.400220] RELATIONSHIP_DISCOVERED: Connected: Egyptian Armed Forces <-> PFC Lee Man Hi
+ℹ️ [RELATIONSHIP_DISCOVERED] Connected: Egyptian Armed Forces <-> Immediate Response 25
+[2025-10-24T12:29:54.400259] RELATIONSHIP_DISCOVERED: Connected: Egyptian Armed Forces <-> Immediate Response 25
+ℹ️ [RELATIONSHIP_DISCOVERED] Connected: Egyptian Armed Forces <-> Montenegro
+[2025-10-24T12:29:54.400297] RELATIONSHIP_DISCOVERED: Connected: Egyptian Armed Forces <-> Montenegro
+ℹ️ [RELATIONSHIP_DISCOVERED] Connected: Cyber Shield 2025 <-> KATUSA Friendship Week
+[2025-10-24T12:29:54.400336] RELATIONSHIP_DISCOVERED: Connected: Cyber Shield 2025 <-> KATUSA Friendship Week
+ℹ️ [RELATIONSHIP_DISCOVERED] Connected: Cyber Shield 2025 <-> PFC Lee Man Hi
+[2025-10-24T12:29:54.400375] RELATIONSHIP_DISCOVERED: Connected: Cyber Shield 2025 <-> PFC Lee Man Hi
+ℹ️ [RELATIONSHIP_DISCOVERED] Connected: Cyber Shield 2025 <-> Immediate Response 25
+[2025-10-24T12:29:54.400414] RELATIONSHIP_DISCOVERED: Connected: Cyber Shield 2025 <-> Immediate Response 25
+ℹ️ [RELATIONSHIP_DISCOVERED] Connected: Cyber Shield 2025 <-> Montenegro
+[2025-10-24T12:29:54.400453] RELATIONSHIP_DISCOVERED: Connected: Cyber Shield 2025 <-> Montenegro
+ℹ️ [RELATIONSHIP_DISCOVERED] Connected: KATUSA Friendship Week <-> PFC Lee Man Hi
+[2025-10-24T12:29:54.400498] RELATIONSHIP_DISCOVERED: Connected: KATUSA Friendship Week <-> PFC Lee Man Hi
+ℹ️ [RELATIONSHIP_DISCOVERED] Connected: KATUSA Friendship Week <-> Immediate Response 25
+[2025-10-24T12:29:54.400536] RELATIONSHIP_DISCOVERED: Connected: KATUSA Friendship Week <-> Immediate Response 25
+ℹ️ [RELATIONSHIP_DISCOVERED] Connected: KATUSA Friendship Week <-> Montenegro
+[2025-10-24T12:29:54.400575] RELATIONSHIP_DISCOVERED: Connected: KATUSA Friendship Week <-> Montenegro
+ℹ️ [RELATIONSHIP_DISCOVERED] Connected: PFC Lee Man Hi <-> Immediate Response 25
+[2025-10-24T12:29:54.400614] RELATIONSHIP_DISCOVERED: Connected: PFC Lee Man Hi <-> Immediate Response 25
+ℹ️ [RELATIONSHIP_DISCOVERED] Connected: PFC Lee Man Hi <-> Montenegro
+[2025-10-24T12:29:54.400656] RELATIONSHIP_DISCOVERED: Connected: PFC Lee Man Hi <-> Montenegro
+ℹ️ [RELATIONSHIP_DISCOVERED] Connected: Immediate Response 25 <-> Montenegro
+[2025-10-24T12:29:54.400713] RELATIONSHIP_DISCOVERED: Connected: Immediate Response 25 <-> Montenegro
+✅ [TASK_COMPLETED] Found 41 results (21 MCP tools + 20 web)
+    Results: 41
+    Entities: BRIGHT STAR 25, CPT Hayden Young, Texas National Guard...
+[2025-10-24T12:29:54.400769] TASK_COMPLETED: Found 41 results (21 MCP tools + 20 web)
+  Data: {
+  "total_results": 41,
+  "mcp_results": 21,
+  "web_results": 20,
+  "entities": [
+    "BRIGHT STAR 25",
+    "CPT Hayden Young",
+    "Texas National Guard",
+    "Qatar Armed Forces",
+    "Egyptian Armed Forces",
+    "Cyber Shield 2025",
+    "KATUSA Friendship Week",
+    "PFC Lee Man Hi",
+    "Immediate Response 25",
+    "Montenegro"
+  ],
+  "sources": [
+    "Unknown",
+    "Brave Search"
+  ]
+}
+✓ Found 10 entities: Emerald Warrior, Air Force Special Operations Command (AFSOC), TacRAT 2025, RD25, National Cyber Range Complex...
+ℹ️ [RELATIONSHIP_DISCOVERED] Connected: Emerald Warrior <-> Air Force Special Operations Command (AFSOC)
+[2025-10-24T12:29:59.922667] RELATIONSHIP_DISCOVERED: Connected: Emerald Warrior <-> Air Force Special Operations Command (AFSOC)
+ℹ️ [RELATIONSHIP_DISCOVERED] Connected: Emerald Warrior <-> TacRAT 2025
+[2025-10-24T12:29:59.922705] RELATIONSHIP_DISCOVERED: Connected: Emerald Warrior <-> TacRAT 2025
+ℹ️ [RELATIONSHIP_DISCOVERED] Connected: Emerald Warrior <-> RD25
+[2025-10-24T12:29:59.922717] RELATIONSHIP_DISCOVERED: Connected: Emerald Warrior <-> RD25
+ℹ️ [RELATIONSHIP_DISCOVERED] Connected: Emerald Warrior <-> National Cyber Range Complex
+[2025-10-24T12:29:59.922738] RELATIONSHIP_DISCOVERED: Connected: Emerald Warrior <-> National Cyber Range Complex
+ℹ️ [RELATIONSHIP_DISCOVERED] Connected: Emerald Warrior <-> U.S. Marines
+[2025-10-24T12:29:59.922767] RELATIONSHIP_DISCOVERED: Connected: Emerald Warrior <-> U.S. Marines
+ℹ️ [RELATIONSHIP_DISCOVERED] Connected: Emerald Warrior <-> U.S. Soldiers
+[2025-10-24T12:29:59.922793] RELATIONSHIP_DISCOVERED: Connected: Emerald Warrior <-> U.S. Soldiers
+ℹ️ [RELATIONSHIP_DISCOVERED] Connected: Emerald Warrior <-> Japan Self-Defense Force
+[2025-10-24T12:29:59.922830] RELATIONSHIP_DISCOVERED: Connected: Emerald Warrior <-> Japan Self-Defense Force
+ℹ️ [RELATIONSHIP_DISCOVERED] Connected: Emerald Warrior <-> Utah Air National Guard
+[2025-10-24T12:29:59.922858] RELATIONSHIP_DISCOVERED: Connected: Emerald Warrior <-> Utah Air National Guard
+ℹ️ [RELATIONSHIP_DISCOVERED] Connected: Emerald Warrior <-> Super Garuda Shield 25 CYBEREX
+[2025-10-24T12:29:59.922898] RELATIONSHIP_DISCOVERED: Connected: Emerald Warrior <-> Super Garuda Shield 25 CYBEREX
+ℹ️ [RELATIONSHIP_DISCOVERED] Connected: Air Force Special Operations Command (AFSOC) <-> TacRAT 2025
+[2025-10-24T12:29:59.922926] RELATIONSHIP_DISCOVERED: Connected: Air Force Special Operations Command (AFSOC) <-> TacRAT 2025
+ℹ️ [RELATIONSHIP_DISCOVERED] Connected: Air Force Special Operations Command (AFSOC) <-> RD25
+[2025-10-24T12:29:59.922936] RELATIONSHIP_DISCOVERED: Connected: Air Force Special Operations Command (AFSOC) <-> RD25
+ℹ️ [RELATIONSHIP_DISCOVERED] Connected: Air Force Special Operations Command (AFSOC) <-> National Cyber Range Complex
+[2025-10-24T12:29:59.922959] RELATIONSHIP_DISCOVERED: Connected: Air Force Special Operations Command (AFSOC) <-> National Cyber Range Complex
+ℹ️ [RELATIONSHIP_DISCOVERED] Connected: Air Force Special Operations Command (AFSOC) <-> U.S. Marines
+[2025-10-24T12:29:59.922970] RELATIONSHIP_DISCOVERED: Connected: Air Force Special Operations Command (AFSOC) <-> U.S. Marines
+ℹ️ [RELATIONSHIP_DISCOVERED] Connected: Air Force Special Operations Command (AFSOC) <-> U.S. Soldiers
+[2025-10-24T12:29:59.922976] RELATIONSHIP_DISCOVERED: Connected: Air Force Special Operations Command (AFSOC) <-> U.S. Soldiers
+ℹ️ [RELATIONSHIP_DISCOVERED] Connected: Air Force Special Operations Command (AFSOC) <-> Japan Self-Defense Force
+[2025-10-24T12:29:59.922982] RELATIONSHIP_DISCOVERED: Connected: Air Force Special Operations Command (AFSOC) <-> Japan Self-Defense Force
+ℹ️ [RELATIONSHIP_DISCOVERED] Connected: Air Force Special Operations Command (AFSOC) <-> Utah Air National Guard
+[2025-10-24T12:29:59.923005] RELATIONSHIP_DISCOVERED: Connected: Air Force Special Operations Command (AFSOC) <-> Utah Air National Guard
+ℹ️ [RELATIONSHIP_DISCOVERED] Connected: Air Force Special Operations Command (AFSOC) <-> Super Garuda Shield 25 CYBEREX
+[2025-10-24T12:29:59.923016] RELATIONSHIP_DISCOVERED: Connected: Air Force Special Operations Command (AFSOC) <-> Super Garuda Shield 25 CYBEREX
+ℹ️ [RELATIONSHIP_DISCOVERED] Connected: TacRAT 2025 <-> RD25
+[2025-10-24T12:29:59.923040] RELATIONSHIP_DISCOVERED: Connected: TacRAT 2025 <-> RD25
+ℹ️ [RELATIONSHIP_DISCOVERED] Connected: TacRAT 2025 <-> National Cyber Range Complex
+[2025-10-24T12:29:59.923078] RELATIONSHIP_DISCOVERED: Connected: TacRAT 2025 <-> National Cyber Range Complex
+ℹ️ [RELATIONSHIP_DISCOVERED] Connected: TacRAT 2025 <-> U.S. Marines
+[2025-10-24T12:29:59.923117] RELATIONSHIP_DISCOVERED: Connected: TacRAT 2025 <-> U.S. Marines
+ℹ️ [RELATIONSHIP_DISCOVERED] Connected: TacRAT 2025 <-> U.S. Soldiers
+[2025-10-24T12:29:59.923143] RELATIONSHIP_DISCOVERED: Connected: TacRAT 2025 <-> U.S. Soldiers
+ℹ️ [RELATIONSHIP_DISCOVERED] Connected: TacRAT 2025 <-> Japan Self-Defense Force
+[2025-10-24T12:29:59.923182] RELATIONSHIP_DISCOVERED: Connected: TacRAT 2025 <-> Japan Self-Defense Force
+ℹ️ [RELATIONSHIP_DISCOVERED] Connected: TacRAT 2025 <-> Utah Air National Guard
+[2025-10-24T12:29:59.923195] RELATIONSHIP_DISCOVERED: Connected: TacRAT 2025 <-> Utah Air National Guard
+ℹ️ [RELATIONSHIP_DISCOVERED] Connected: TacRAT 2025 <-> Super Garuda Shield 25 CYBEREX
+[2025-10-24T12:29:59.923230] RELATIONSHIP_DISCOVERED: Connected: TacRAT 2025 <-> Super Garuda Shield 25 CYBEREX
+ℹ️ [RELATIONSHIP_DISCOVERED] Connected: RD25 <-> National Cyber Range Complex
+[2025-10-24T12:29:59.923269] RELATIONSHIP_DISCOVERED: Connected: RD25 <-> National Cyber Range Complex
+ℹ️ [RELATIONSHIP_DISCOVERED] Connected: RD25 <-> U.S. Marines
+[2025-10-24T12:29:59.923309] RELATIONSHIP_DISCOVERED: Connected: RD25 <-> U.S. Marines
+ℹ️ [RELATIONSHIP_DISCOVERED] Connected: RD25 <-> U.S. Soldiers
+[2025-10-24T12:29:59.923348] RELATIONSHIP_DISCOVERED: Connected: RD25 <-> U.S. Soldiers
+ℹ️ [RELATIONSHIP_DISCOVERED] Connected: RD25 <-> Japan Self-Defense Force
+[2025-10-24T12:29:59.923375] RELATIONSHIP_DISCOVERED: Connected: RD25 <-> Japan Self-Defense Force
+ℹ️ [RELATIONSHIP_DISCOVERED] Connected: RD25 <-> Utah Air National Guard
+[2025-10-24T12:29:59.923412] RELATIONSHIP_DISCOVERED: Connected: RD25 <-> Utah Air National Guard
+ℹ️ [RELATIONSHIP_DISCOVERED] Connected: RD25 <-> Super Garuda Shield 25 CYBEREX
+[2025-10-24T12:29:59.923450] RELATIONSHIP_DISCOVERED: Connected: RD25 <-> Super Garuda Shield 25 CYBEREX
+ℹ️ [RELATIONSHIP_DISCOVERED] Connected: National Cyber Range Complex <-> U.S. Marines
+[2025-10-24T12:29:59.923466] RELATIONSHIP_DISCOVERED: Connected: National Cyber Range Complex <-> U.S. Marines
+ℹ️ [RELATIONSHIP_DISCOVERED] Connected: National Cyber Range Complex <-> U.S. Soldiers
+[2025-10-24T12:29:59.923500] RELATIONSHIP_DISCOVERED: Connected: National Cyber Range Complex <-> U.S. Soldiers
+ℹ️ [RELATIONSHIP_DISCOVERED] Connected: National Cyber Range Complex <-> Japan Self-Defense Force
+[2025-10-24T12:29:59.923527] RELATIONSHIP_DISCOVERED: Connected: National Cyber Range Complex <-> Japan Self-Defense Force
+ℹ️ [RELATIONSHIP_DISCOVERED] Connected: National Cyber Range Complex <-> Utah Air National Guard
+[2025-10-24T12:29:59.923563] RELATIONSHIP_DISCOVERED: Connected: National Cyber Range Complex <-> Utah Air National Guard
+ℹ️ [RELATIONSHIP_DISCOVERED] Connected: National Cyber Range Complex <-> Super Garuda Shield 25 CYBEREX
+[2025-10-24T12:29:59.923598] RELATIONSHIP_DISCOVERED: Connected: National Cyber Range Complex <-> Super Garuda Shield 25 CYBEREX
+ℹ️ [RELATIONSHIP_DISCOVERED] Connected: U.S. Marines <-> U.S. Soldiers
+[2025-10-24T12:29:59.923627] RELATIONSHIP_DISCOVERED: Connected: U.S. Marines <-> U.S. Soldiers
+ℹ️ [RELATIONSHIP_DISCOVERED] Connected: U.S. Marines <-> Japan Self-Defense Force
+[2025-10-24T12:29:59.923666] RELATIONSHIP_DISCOVERED: Connected: U.S. Marines <-> Japan Self-Defense Force
+ℹ️ [RELATIONSHIP_DISCOVERED] Connected: U.S. Marines <-> Utah Air National Guard
+[2025-10-24T12:29:59.923704] RELATIONSHIP_DISCOVERED: Connected: U.S. Marines <-> Utah Air National Guard
+ℹ️ [RELATIONSHIP_DISCOVERED] Connected: U.S. Marines <-> Super Garuda Shield 25 CYBEREX
+[2025-10-24T12:29:59.923717] RELATIONSHIP_DISCOVERED: Connected: U.S. Marines <-> Super Garuda Shield 25 CYBEREX
+ℹ️ [RELATIONSHIP_DISCOVERED] Connected: U.S. Soldiers <-> Japan Self-Defense Force
+[2025-10-24T12:29:59.923752] RELATIONSHIP_DISCOVERED: Connected: U.S. Soldiers <-> Japan Self-Defense Force
+ℹ️ [RELATIONSHIP_DISCOVERED] Connected: U.S. Soldiers <-> Utah Air National Guard
+[2025-10-24T12:29:59.923791] RELATIONSHIP_DISCOVERED: Connected: U.S. Soldiers <-> Utah Air National Guard
+ℹ️ [RELATIONSHIP_DISCOVERED] Connected: U.S. Soldiers <-> Super Garuda Shield 25 CYBEREX
+[2025-10-24T12:29:59.923817] RELATIONSHIP_DISCOVERED: Connected: U.S. Soldiers <-> Super Garuda Shield 25 CYBEREX
+ℹ️ [RELATIONSHIP_DISCOVERED] Connected: Japan Self-Defense Force <-> Utah Air National Guard
+[2025-10-24T12:29:59.923856] RELATIONSHIP_DISCOVERED: Connected: Japan Self-Defense Force <-> Utah Air National Guard
+ℹ️ [RELATIONSHIP_DISCOVERED] Connected: Japan Self-Defense Force <-> Super Garuda Shield 25 CYBEREX
+[2025-10-24T12:29:59.923895] RELATIONSHIP_DISCOVERED: Connected: Japan Self-Defense Force <-> Super Garuda Shield 25 CYBEREX
+ℹ️ [RELATIONSHIP_DISCOVERED] Connected: Utah Air National Guard <-> Super Garuda Shield 25 CYBEREX
+[2025-10-24T12:29:59.923935] RELATIONSHIP_DISCOVERED: Connected: Utah Air National Guard <-> Super Garuda Shield 25 CYBEREX
+✅ [TASK_COMPLETED] Found 40 results (22 MCP tools + 18 web)
+    Results: 40
+    Entities: Emerald Warrior, Air Force Special Operations Command (AFSOC), TacRAT 2025...
+[2025-10-24T12:29:59.923985] TASK_COMPLETED: Found 40 results (22 MCP tools + 18 web)
+  Data: {
+  "total_results": 40,
+  "mcp_results": 22,
+  "web_results": 18,
+  "entities": [
+    "Emerald Warrior",
+    "Air Force Special Operations Command (AFSOC)",
+    "TacRAT 2025",
+    "RD25",
+    "National Cyber Range Complex",
+    "U.S. Marines",
+    "U.S. Soldiers",
+    "Japan Self-Defense Force",
+    "Utah Air National Guard",
+    "Super Garuda Shield 25 CYBEREX"
+  ],
+  "sources": [
+    "Unknown",
+    "Brave Search"
+  ]
+}
+ℹ️ [BATCH_COMPLETE] Batch complete: 2/2 succeeded
+[2025-10-24T12:29:59.924161] BATCH_COMPLETE: Batch complete: 2/2 succeeded
+  Data: {
+  "successful": 2,
+  "failed": 0
+}
+ℹ️ [BATCH_STARTED] Executing batch of 2 tasks in parallel
+[2025-10-24T12:29:59.924248] BATCH_STARTED: Executing batch of 2 tasks in parallel
+  Data: {
+  "tasks": [
+    {
+      "id": 2,
+      "query": "cybersecurity certifications required for military cyber personnel"
+    },
+    {
+      "id": 3,
+      "query": "companies providing military cybersecurity training"
+    }
+  ]
+}
+▶️ [TASK_STARTED] Executing: cybersecurity certifications required for military cyber personnel
+[2025-10-24T12:29:59.924300] TASK_STARTED: Executing: cybersecurity certifications required for military cyber personnel
+▶️ [TASK_STARTED] Executing: companies providing military cybersecurity training
+[2025-10-24T12:29:59.924339] TASK_STARTED: Executing: companies providing military cybersecurity training
+🔍 Searching 7 databases via MCP tools...
+🔍 Searching 7 databases via MCP tools...
+Warning: Could not parse data/exports/Project Owl: The OSINT Community - Europe, Russia, and Caucasus - ⛳🏆-eurrrrrrrrrobog [746747727160803418] (2025-09-07 to 2025-09-14).json: Expecting ',' delimiter: line 298005 column 6 (char 8716157)
+Warning: Could not parse data/exports/Project Owl: The OSINT Community - Middle East - 🌴-palm-tree-oasis [749424816255402055] (2025-08-17 to 2025-08-24).json: Expecting ',' delimiter: line 79366 column 14 (char 2343133)
+Warning: Could not parse data/exports/Project Owl: The OSINT Community - Europe, Russia, and Caucasus - ⛳🏆-eurrrrrrrrrobog [746747727160803418] (2025-08-31 to 2025-09-07).json: Expecting ',' delimiter: line 934769 column 12 (char 27265597)
+Warning: Could not parse data/exports/Project Owl: The OSINT Community - Americas - 🐸-the-swamp [1418332901220679720] (2025-10-05 to 2025-10-12).json: Expecting ',' delimiter: line 307827 column 6 (char 9291979)
+Warning: Could not parse data/exports/Project Owl: The OSINT Community - Americas - 🐸-the-swamp [1418332901220679720] (2025-09-28 to 2025-10-05).json: Expecting ',' delimiter: line 30157 column 12 (char 920116)
+Warning: Could not parse data/exports/Project Owl: The OSINT Community - Americas - 🐸-the-swamp [1418332901220679720] (2025-10-12 to 2025-10-19).json: Expecting ',' delimiter: line 265672 column 6 (char 7939300)
+Warning: Could not parse data/exports/Project Owl: The OSINT Community - Middle East - 🌴-palm-tree-oasis [749424816255402055] (2025-10-05 to 2025-10-12).json: Expecting ',' delimiter: line 195554 column 14 (char 5810849)
+Warning: Could not parse data/exports/Project Owl: The OSINT Community - Americas - north-america [715937915112521770] (2025-09-21 to 2025-09-28).json: Expecting ',' delimiter: line 72628 column 12 (char 2234717)
+Warning: Could not parse data/exports/Project Owl: The OSINT Community - Middle East - 🌴-palm-tree-oasis [749424816255402055] (2025-08-10 to 2025-08-17).json: Expecting ',' delimiter: line 263795 column 12 (char 7636281)
+Warning: Could not parse data/exports/Bellingcat - ・━━ Server info - announcements [709768274031935560].json: Expecting ',' delimiter: line 77762 column 6 (char 3071942)
+Warning: Could not parse data/exports/Project Owl: The OSINT Community - Middle East - 🌴-palm-tree-oasis [749424816255402055] (2025-09-28 to 2025-10-05).json: Expecting ',' delimiter: line 397335 column 14 (char 11715730)
+Warning: Could not parse data/exports/Project Owl: The OSINT Community - Europe, Russia, and Caucasus - ⛳🏆-eurrrrrrrrrobog [746747727160803418] (2025-09-07 to 2025-09-14).json: Expecting ',' delimiter: line 298005 column 6 (char 8716157)
+Warning: Could not parse data/exports/Project Owl: The OSINT Community - Middle East - 🌴-palm-tree-oasis [749424816255402055] (2025-08-17 to 2025-08-24).json: Expecting ',' delimiter: line 79366 column 14 (char 2343133)
+Warning: Could not parse data/exports/Project Owl: The OSINT Community - Europe, Russia, and Caucasus - ⛳🏆-eurrrrrrrrrobog [746747727160803418] (2025-08-31 to 2025-09-07).json: Expecting ',' delimiter: line 934769 column 12 (char 27265597)
+Warning: Could not parse data/exports/Project Owl: The OSINT Community - Americas - 🐸-the-swamp [1418332901220679720] (2025-10-05 to 2025-10-12).json: Expecting ',' delimiter: line 307827 column 6 (char 9291979)
+Warning: Could not parse data/exports/Project Owl: The OSINT Community - Americas - 🐸-the-swamp [1418332901220679720] (2025-09-28 to 2025-10-05).json: Expecting ',' delimiter: line 30157 column 12 (char 920116)
+Warning: Could not parse data/exports/Project Owl: The OSINT Community - Americas - 🐸-the-swamp [1418332901220679720] (2025-10-12 to 2025-10-19).json: Expecting ',' delimiter: line 265672 column 6 (char 7939300)
+Warning: Could not parse data/exports/Project Owl: The OSINT Community - Middle East - 🌴-palm-tree-oasis [749424816255402055] (2025-10-05 to 2025-10-12).json: Expecting ',' delimiter: line 195554 column 14 (char 5810849)
+Warning: Could not parse data/exports/Project Owl: The OSINT Community - Americas - north-america [715937915112521770] (2025-09-21 to 2025-09-28).json: Expecting ',' delimiter: line 79353 column 12 (char 2440065)
+Warning: Could not parse data/exports/Project Owl: The OSINT Community - Middle East - 🌴-palm-tree-oasis [749424816255402055] (2025-08-10 to 2025-08-17).json: Expecting ',' delimiter: line 263795 column 12 (char 7636281)
+Warning: Could not parse data/exports/Bellingcat - ・━━ Server info - announcements [709768274031935560].json: Expecting ',' delimiter: line 77762 column 6 (char 3071942)
+Warning: Could not parse data/exports/Project Owl: The OSINT Community - Middle East - 🌴-palm-tree-oasis [749424816255402055] (2025-09-28 to 2025-10-05).json: Expecting ',' delimiter: line 397335 column 14 (char 11715730)
+
+Executing Step: Call search.php (Reason: Relevant = true because Twitter is useful for finding company accounts, announcements, press releases and expert commentary about organizations that provide military/defense cyber training. The query combines exact phrases for training products (e.g., "military cybersecurity training", "cyber range") with defense-related terms (DoD, military) and supplier/business terms (company, provider, contractor) to surface corporate accounts and posts about providers while excluding hiring/job noise.)
+  Requesting URL: https://twitter-api45.p.rapidapi.com/search.php
+  With Params: {'query': '(("military cybersecurity training" OR "defense cyber training" OR "cybersecurity training for the military" OR "cyber training" OR "military cyber range" OR "cyber range") AND (military OR defense OR DoD OR "Department of Defense" OR "armed forces")) AND (company OR provider OR vendor OR contractor OR "training provider" OR "offers" OR "launched" OR "awarded" OR contract OR delivers) NOT (job OR hiring OR recruit OR recruiting)', 'search_type': 'People'}
+  Fetching page 1...
+SAM.gov rate limit hit, retrying in 2s...
+  Extracted list data from key: 'timeline'
+  Finished fetching for search.php. Total pages: 1. Has next cursor: False
+  Successfully processed request for search.php.
+SAM.gov rate limit hit, retrying in 4s...
+DVIDS: OR query returned 0, decomposing into individual terms...
+DVIDS: Decomposed query found 50 unique results across 5 terms
+DVIDS: OR query returned 0, decomposing into individual terms...
+DVIDS: Decomposed query found 41 unique results across 6 terms
+SAM.gov rate limit hit, retrying in 2s...
+SAM.gov rate limit hit, retrying in 4s...
+
+Executing Step: Call search.php (Reason: Twitter is useful for real-time announcements, expert commentary, and community discussion about DoD policy (e.g., DoD 8570/8140) and practical certification experiences, but it is not a substitute for official policy documents. This query focuses on DoD certification policies, common cert names, and military cyber contexts while excluding job/hiring noise; "Latest" will surface recent announcements and discussion.)
+  Requesting URL: https://twitter-api45.p.rapidapi.com/search.php
+  With Params: {'query': '("DoD 8570" OR "DoD 8140" OR 8570 OR 8140 OR "8570/8140") AND (certification OR certifications OR certs OR "cybersecurity certification") AND (military OR "military cyber" OR "cyber workforce" OR "cyber personnel" OR "service members" OR army OR navy OR "air force" OR marines OR "space force") AND ("Security+" OR "CompTIA Security+" OR CISSP OR CEH OR "Certified Ethical Hacker" OR CCNA OR GIAC OR GSEC OR IAT OR IAM) NOT (job OR hiring OR recruiting OR careers OR internship)', 'search_type': 'Latest'}
+  Fetching page 1...
+  Extracted list data from key: 'timeline'
+  Fetching page 2 with cursor DAADDAABAA...
+  Extracted list data from key: 'timeline'
+  Finished fetching for search.php. Total pages: 2. Has next cursor: False
+  Successfully processed request for search.php.
+  ✗ search_sam: Failed - HTTP 0: 429 Client Error: Too Many Requests for url: https://api.sam.gov/opportunities/v2/search?api_key=SAM-db0e8074-ef7f-41b2-8456-b0f79a0a2112&postedFrom=09%2F24%2F2025&postedTo=10%2F24%2F2025&limit=10&offset=0
+  ✓ search_dvids: 10 results
+  ✓ search_usajobs: 0 results
+  ✓ search_clearancejobs: 10 results
+  ✓ search_twitter: 0 results
+  ✓ search_reddit: 4 results
+  ✓ search_discord: 0 results
+✓ MCP tools complete: 24 total results from 4 sources
+  ✗ search_sam: Failed - HTTP 0: 429 Client Error: Too Many Requests for url: https://api.sam.gov/opportunities/v2/search?api_key=SAM-db0e8074-ef7f-41b2-8456-b0f79a0a2112&postedFrom=10%2F25%2F2024&postedTo=10%2F24%2F2025&limit=10&offset=0&keywords=military+cybersecurity+training%2C+cyber+training%2C+cyber+defense+training%2C+cyber+range%2C+cybersecurity+workforce+development%2C+information+assurance+training&ptype=o%2Cp%2Ck%2Cr&ncode=541512%2C541519%2C611420%2C611430%2C541611&organizationName=Department+of+Defense
+  ✓ search_dvids: 10 results
+  ✓ search_usajobs: 0 results
+  ✓ search_clearancejobs: 10 results
+  ✓ search_twitter: 0 results
+  ✓ search_reddit: 0 results
+  ✓ search_discord: 0 results
+✓ MCP tools complete: 20 total results from 5 sources
+🔍 Extracting entities from 44 results...
+🔍 Extracting entities from 40 results...
+✓ Found 10 entities: CPT Hayden Young, Texas National Guard, BRIGHT STAR 25, Qatar armed forces, Egyptian armed forces...
+ℹ️ [RELATIONSHIP_DISCOVERED] Connected: CPT Hayden Young <-> BRIGHT STAR 25
+[2025-10-24T12:30:54.443481] RELATIONSHIP_DISCOVERED: Connected: CPT Hayden Young <-> BRIGHT STAR 25
+ℹ️ [RELATIONSHIP_DISCOVERED] Connected: CPT Hayden Young <-> Qatar armed forces
+[2025-10-24T12:30:54.443642] RELATIONSHIP_DISCOVERED: Connected: CPT Hayden Young <-> Qatar armed forces
+ℹ️ [RELATIONSHIP_DISCOVERED] Connected: CPT Hayden Young <-> Egyptian armed forces
+[2025-10-24T12:30:54.443840] RELATIONSHIP_DISCOVERED: Connected: CPT Hayden Young <-> Egyptian armed forces
+ℹ️ [RELATIONSHIP_DISCOVERED] Connected: Texas National Guard <-> BRIGHT STAR 25
+[2025-10-24T12:30:54.443889] RELATIONSHIP_DISCOVERED: Connected: Texas National Guard <-> BRIGHT STAR 25
+ℹ️ [RELATIONSHIP_DISCOVERED] Connected: Texas National Guard <-> Qatar armed forces
+[2025-10-24T12:30:54.444035] RELATIONSHIP_DISCOVERED: Connected: Texas National Guard <-> Qatar armed forces
+ℹ️ [RELATIONSHIP_DISCOVERED] Connected: Texas National Guard <-> Egyptian armed forces
+[2025-10-24T12:30:54.444086] RELATIONSHIP_DISCOVERED: Connected: Texas National Guard <-> Egyptian armed forces
+ℹ️ [RELATIONSHIP_DISCOVERED] Connected: BRIGHT STAR 25 <-> Qatar armed forces
+[2025-10-24T12:30:54.444174] RELATIONSHIP_DISCOVERED: Connected: BRIGHT STAR 25 <-> Qatar armed forces
+ℹ️ [RELATIONSHIP_DISCOVERED] Connected: BRIGHT STAR 25 <-> Egyptian armed forces
+[2025-10-24T12:30:54.444252] RELATIONSHIP_DISCOVERED: Connected: BRIGHT STAR 25 <-> Egyptian armed forces
+ℹ️ [RELATIONSHIP_DISCOVERED] Connected: Qatar armed forces <-> Egyptian armed forces
+[2025-10-24T12:30:54.444304] RELATIONSHIP_DISCOVERED: Connected: Qatar armed forces <-> Egyptian armed forces
+ℹ️ [RELATIONSHIP_DISCOVERED] Connected: Qatar armed forces <-> Cyber Shield 2025
+[2025-10-24T12:30:54.444382] RELATIONSHIP_DISCOVERED: Connected: Qatar armed forces <-> Cyber Shield 2025
+ℹ️ [RELATIONSHIP_DISCOVERED] Connected: Qatar armed forces <-> KATUSA Friendship Week
+[2025-10-24T12:30:54.444420] RELATIONSHIP_DISCOVERED: Connected: Qatar armed forces <-> KATUSA Friendship Week
+ℹ️ [RELATIONSHIP_DISCOVERED] Connected: Qatar armed forces <-> PFC Lee Man Hi
+[2025-10-24T12:30:54.444496] RELATIONSHIP_DISCOVERED: Connected: Qatar armed forces <-> PFC Lee Man Hi
+ℹ️ [RELATIONSHIP_DISCOVERED] Connected: Qatar armed forces <-> Immediate Response 25
+[2025-10-24T12:30:54.444575] RELATIONSHIP_DISCOVERED: Connected: Qatar armed forces <-> Immediate Response 25
+ℹ️ [RELATIONSHIP_DISCOVERED] Connected: Qatar armed forces <-> Montenegro
+[2025-10-24T12:30:54.444708] RELATIONSHIP_DISCOVERED: Connected: Qatar armed forces <-> Montenegro
+ℹ️ [RELATIONSHIP_DISCOVERED] Connected: Egyptian armed forces <-> Cyber Shield 2025
+[2025-10-24T12:30:54.445074] RELATIONSHIP_DISCOVERED: Connected: Egyptian armed forces <-> Cyber Shield 2025
+ℹ️ [RELATIONSHIP_DISCOVERED] Connected: Egyptian armed forces <-> KATUSA Friendship Week
+[2025-10-24T12:30:54.445206] RELATIONSHIP_DISCOVERED: Connected: Egyptian armed forces <-> KATUSA Friendship Week
+ℹ️ [RELATIONSHIP_DISCOVERED] Connected: Egyptian armed forces <-> PFC Lee Man Hi
+[2025-10-24T12:30:54.445337] RELATIONSHIP_DISCOVERED: Connected: Egyptian armed forces <-> PFC Lee Man Hi
+ℹ️ [RELATIONSHIP_DISCOVERED] Connected: Egyptian armed forces <-> Immediate Response 25
+[2025-10-24T12:30:54.445468] RELATIONSHIP_DISCOVERED: Connected: Egyptian armed forces <-> Immediate Response 25
+ℹ️ [RELATIONSHIP_DISCOVERED] Connected: Egyptian armed forces <-> Montenegro
+[2025-10-24T12:30:54.445511] RELATIONSHIP_DISCOVERED: Connected: Egyptian armed forces <-> Montenegro
+✅ [TASK_COMPLETED] Found 40 results (20 MCP tools + 20 web)
+    Results: 40
+    Entities: CPT Hayden Young, Texas National Guard, BRIGHT STAR 25...
+[2025-10-24T12:30:54.445572] TASK_COMPLETED: Found 40 results (20 MCP tools + 20 web)
+  Data: {
+  "total_results": 40,
+  "mcp_results": 20,
+  "web_results": 20,
+  "entities": [
+    "CPT Hayden Young",
+    "Texas National Guard",
+    "BRIGHT STAR 25",
+    "Qatar armed forces",
+    "Egyptian armed forces",
+    "Cyber Shield 2025",
+    "KATUSA Friendship Week",
+    "PFC Lee Man Hi",
+    "Immediate Response 25",
+    "Montenegro"
+  ],
+  "sources": [
+    "Unknown",
+    "Brave Search"
+  ]
+}
+✓ Found 5 entities: Maryland Army National Guard, Cyber Shield 2025, 102nd Intelligence Wing, United States Air Force, Maryland National Guard
+ℹ️ [RELATIONSHIP_DISCOVERED] Connected: Maryland Army National Guard <-> Cyber Shield 2025
+[2025-10-24T12:30:57.108030] RELATIONSHIP_DISCOVERED: Connected: Maryland Army National Guard <-> Cyber Shield 2025
+ℹ️ [RELATIONSHIP_DISCOVERED] Connected: Maryland Army National Guard <-> 102nd Intelligence Wing
+[2025-10-24T12:30:57.108081] RELATIONSHIP_DISCOVERED: Connected: Maryland Army National Guard <-> 102nd Intelligence Wing
+ℹ️ [RELATIONSHIP_DISCOVERED] Connected: Maryland Army National Guard <-> United States Air Force
+[2025-10-24T12:30:57.108112] RELATIONSHIP_DISCOVERED: Connected: Maryland Army National Guard <-> United States Air Force
+ℹ️ [RELATIONSHIP_DISCOVERED] Connected: Maryland Army National Guard <-> Maryland National Guard
+[2025-10-24T12:30:57.108152] RELATIONSHIP_DISCOVERED: Connected: Maryland Army National Guard <-> Maryland National Guard
+ℹ️ [RELATIONSHIP_DISCOVERED] Connected: Cyber Shield 2025 <-> 102nd Intelligence Wing
+[2025-10-24T12:30:57.108196] RELATIONSHIP_DISCOVERED: Connected: Cyber Shield 2025 <-> 102nd Intelligence Wing
+ℹ️ [RELATIONSHIP_DISCOVERED] Connected: Cyber Shield 2025 <-> United States Air Force
+[2025-10-24T12:30:57.108231] RELATIONSHIP_DISCOVERED: Connected: Cyber Shield 2025 <-> United States Air Force
+ℹ️ [RELATIONSHIP_DISCOVERED] Connected: Cyber Shield 2025 <-> Maryland National Guard
+[2025-10-24T12:30:57.108241] RELATIONSHIP_DISCOVERED: Connected: Cyber Shield 2025 <-> Maryland National Guard
+ℹ️ [RELATIONSHIP_DISCOVERED] Connected: 102nd Intelligence Wing <-> United States Air Force
+[2025-10-24T12:30:57.108248] RELATIONSHIP_DISCOVERED: Connected: 102nd Intelligence Wing <-> United States Air Force
+ℹ️ [RELATIONSHIP_DISCOVERED] Connected: 102nd Intelligence Wing <-> Maryland National Guard
+[2025-10-24T12:30:57.108255] RELATIONSHIP_DISCOVERED: Connected: 102nd Intelligence Wing <-> Maryland National Guard
+ℹ️ [RELATIONSHIP_DISCOVERED] Connected: United States Air Force <-> Maryland National Guard
+[2025-10-24T12:30:57.108293] RELATIONSHIP_DISCOVERED: Connected: United States Air Force <-> Maryland National Guard
+✅ [TASK_COMPLETED] Found 44 results (24 MCP tools + 20 web)
+    Results: 44
+    Entities: Maryland Army National Guard, Cyber Shield 2025, 102nd Intelligence Wing...
+[2025-10-24T12:30:57.108330] TASK_COMPLETED: Found 44 results (24 MCP tools + 20 web)
+  Data: {
+  "total_results": 44,
+  "mcp_results": 24,
+  "web_results": 20,
+  "entities": [
+    "Maryland Army National Guard",
+    "Cyber Shield 2025",
+    "102nd Intelligence Wing",
+    "United States Air Force",
+    "Maryland National Guard"
+  ],
+  "sources": [
+    "Unknown",
+    "Brave Search"
+  ]
+}
+ℹ️ [BATCH_COMPLETE] Batch complete: 2/2 succeeded
+[2025-10-24T12:30:57.108477] BATCH_COMPLETE: Batch complete: 2/2 succeeded
+  Data: {
+  "successful": 2,
+  "failed": 0
+}
+ℹ️ [BATCH_STARTED] Executing batch of 1 tasks in parallel
+[2025-10-24T12:30:57.108575] BATCH_STARTED: Executing batch of 1 tasks in parallel
+  Data: {
+  "tasks": [
+    {
+      "id": 4,
+      "query": "evaluations of military cybersecurity training effectiveness"
+    }
+  ]
+}
+▶️ [TASK_STARTED] Executing: evaluations of military cybersecurity training effectiveness
+[2025-10-24T12:30:57.108670] TASK_STARTED: Executing: evaluations of military cybersecurity training effectiveness
+🔍 Searching 7 databases via MCP tools...
+Warning: Could not parse data/exports/Project Owl: The OSINT Community - Europe, Russia, and Caucasus - ⛳🏆-eurrrrrrrrrobog [746747727160803418] (2025-09-07 to 2025-09-14).json: Expecting ',' delimiter: line 298005 column 6 (char 8716157)
+Warning: Could not parse data/exports/Project Owl: The OSINT Community - Middle East - 🌴-palm-tree-oasis [749424816255402055] (2025-08-17 to 2025-08-24).json: Expecting ',' delimiter: line 79366 column 14 (char 2343133)
+Warning: Could not parse data/exports/Project Owl: The OSINT Community - Europe, Russia, and Caucasus - ⛳🏆-eurrrrrrrrrobog [746747727160803418] (2025-08-31 to 2025-09-07).json: Expecting ',' delimiter: line 934769 column 12 (char 27265597)
+Warning: Could not parse data/exports/Project Owl: The OSINT Community - Americas - 🐸-the-swamp [1418332901220679720] (2025-10-05 to 2025-10-12).json: Expecting ',' delimiter: line 307827 column 6 (char 9291979)
+Warning: Could not parse data/exports/Project Owl: The OSINT Community - Americas - 🐸-the-swamp [1418332901220679720] (2025-09-28 to 2025-10-05).json: Expecting ',' delimiter: line 30157 column 12 (char 920116)
+Warning: Could not parse data/exports/Project Owl: The OSINT Community - Americas - 🐸-the-swamp [1418332901220679720] (2025-10-12 to 2025-10-19).json: Expecting ',' delimiter: line 265672 column 6 (char 7939300)
+Warning: Could not parse data/exports/Project Owl: The OSINT Community - Middle East - 🌴-palm-tree-oasis [749424816255402055] (2025-10-05 to 2025-10-12).json: Expecting ',' delimiter: line 195554 column 14 (char 5810849)
+Warning: Could not parse data/exports/Project Owl: The OSINT Community - Americas - north-america [715937915112521770] (2025-09-21 to 2025-09-28).json: Expecting ',' delimiter: line 139328 column 6 (char 4284703)
+Warning: Could not parse data/exports/Project Owl: The OSINT Community - Middle East - 🌴-palm-tree-oasis [749424816255402055] (2025-08-10 to 2025-08-17).json: Expecting ',' delimiter: line 263795 column 12 (char 7636281)
+Warning: Could not parse data/exports/Bellingcat - ・━━ Server info - announcements [709768274031935560].json: Expecting ',' delimiter: line 77762 column 6 (char 3071942)
+Warning: Could not parse data/exports/Project Owl: The OSINT Community - Middle East - 🌴-palm-tree-oasis [749424816255402055] (2025-09-28 to 2025-10-05).json: Expecting ',' delimiter: line 397335 column 14 (char 11715730)
+DVIDS: OR query returned 0, decomposing into individual terms...
+DVIDS: Decomposed query found 48 unique results across 5 terms
+SAM.gov rate limit hit, retrying in 2s...
+SAM.gov rate limit hit, retrying in 4s...
+
+Executing Step: Call search.php (Reason: Twitter is highly relevant for this question because it surfaces real-time news, expert commentary, official accounts, and public reactions about military cyber training and evaluations. The query combines phrases for training and measurement terms, includes major organizations (DoD, services, NATO) to find program-specific posts, and excludes hiring/recruitment terms to reduce job-post noise. Using "Latest" and 3 pages balances timeliness and breadth of results.)
+  Requesting URL: https://twitter-api45.p.rapidapi.com/search.php
+  With Params: {'query': '("military cybersecurity training" OR "military cyber training" OR "cybersecurity training" OR "cyber training" OR "cyber range" OR "red team" OR "blue team") AND (effectiveness OR evaluation OR evaluations OR "training effectiveness" OR assessment OR assessments OR study OR studies OR "after-action" OR "after action" OR readiness OR outcomes) AND (DoD OR Pentagon OR "U.S. Army" OR "US Army" OR USAF OR "U.S. Air Force" OR Navy OR NATO OR "armed forces" OR servicemember* OR veteran*) NOT (hiring OR job OR jobs OR vacancy OR vacancies OR recruit* OR "now hiring")', 'search_type': 'Latest'}
+  Fetching page 1...
+  Extracted list data from key: 'timeline'
+  Fetching page 2 with cursor DAADDAABAA...
+  Extracted list data from key: 'timeline'
+  Finished fetching for search.php. Total pages: 2. Has next cursor: False
+  Successfully processed request for search.php.
+  ✗ search_sam: Failed - HTTP 0: 429 Client Error: Too Many Requests for url: https://api.sam.gov/opportunities/v2/search?api_key=SAM-db0e8074-ef7f-41b2-8456-b0f79a0a2112&postedFrom=10%2F25%2F2024&postedTo=10%2F24%2F2025&limit=10&offset=0&keywords=military+cybersecurity+training+evaluation+OR+training+effectiveness+OR+training+assessment+OR+program+evaluation+OR+cyber+training&ptype=o%2Cp%2Ck%2Cr&ncode=541611%2C541512%2C541519%2C541990&organizationName=Department+of+Defense
+  ✓ search_dvids: 10 results
+  ✓ search_usajobs: 0 results
+  ✓ search_clearancejobs: 10 results
+  ✓ search_twitter: 0 results
+  ✓ search_reddit: 0 results
+  ✓ search_discord: 0 results
+✓ MCP tools complete: 20 total results from 5 sources
+🔍 Extracting entities from 40 results...
+✓ Found 9 entities: BRIGHT STAR 25, Texas National Guard, Qatar Armed Forces, Egyptian Armed Forces, Cyber Shield 2025...
+ℹ️ [RELATIONSHIP_DISCOVERED] Connected: BRIGHT STAR 25 <-> KATUSA
+[2025-10-24T12:31:29.357956] RELATIONSHIP_DISCOVERED: Connected: BRIGHT STAR 25 <-> KATUSA
+ℹ️ [RELATIONSHIP_DISCOVERED] Connected: Texas National Guard <-> KATUSA
+[2025-10-24T12:31:29.358012] RELATIONSHIP_DISCOVERED: Connected: Texas National Guard <-> KATUSA
+ℹ️ [RELATIONSHIP_DISCOVERED] Connected: Qatar Armed Forces <-> KATUSA
+[2025-10-24T12:31:29.358045] RELATIONSHIP_DISCOVERED: Connected: Qatar Armed Forces <-> KATUSA
+ℹ️ [RELATIONSHIP_DISCOVERED] Connected: Egyptian Armed Forces <-> KATUSA
+[2025-10-24T12:31:29.358075] RELATIONSHIP_DISCOVERED: Connected: Egyptian Armed Forces <-> KATUSA
+ℹ️ [RELATIONSHIP_DISCOVERED] Connected: Cyber Shield 2025 <-> KATUSA
+[2025-10-24T12:31:29.358104] RELATIONSHIP_DISCOVERED: Connected: Cyber Shield 2025 <-> KATUSA
+ℹ️ [RELATIONSHIP_DISCOVERED] Connected: KATUSA <-> PFC Lee Man Hi
+[2025-10-24T12:31:29.358134] RELATIONSHIP_DISCOVERED: Connected: KATUSA <-> PFC Lee Man Hi
+ℹ️ [RELATIONSHIP_DISCOVERED] Connected: KATUSA <-> Immediate Response 25
+[2025-10-24T12:31:29.358173] RELATIONSHIP_DISCOVERED: Connected: KATUSA <-> Immediate Response 25
+ℹ️ [RELATIONSHIP_DISCOVERED] Connected: KATUSA <-> Montenegro
+[2025-10-24T12:31:29.358214] RELATIONSHIP_DISCOVERED: Connected: KATUSA <-> Montenegro
+✅ [TASK_COMPLETED] Found 40 results (20 MCP tools + 20 web)
+    Results: 40
+    Entities: BRIGHT STAR 25, Texas National Guard, Qatar Armed Forces...
+[2025-10-24T12:31:29.358253] TASK_COMPLETED: Found 40 results (20 MCP tools + 20 web)
+  Data: {
+  "total_results": 40,
+  "mcp_results": 20,
+  "web_results": 20,
+  "entities": [
+    "BRIGHT STAR 25",
+    "Texas National Guard",
+    "Qatar Armed Forces",
+    "Egyptian Armed Forces",
+    "Cyber Shield 2025",
+    "KATUSA",
+    "PFC Lee Man Hi",
+    "Immediate Response 25",
+    "Montenegro"
+  ],
+  "sources": [
+    "Unknown",
+    "Brave Search"
+  ]
+}
+ℹ️ [BATCH_COMPLETE] Batch complete: 1/1 succeeded
+[2025-10-24T12:31:29.358403] BATCH_COMPLETE: Batch complete: 1/1 succeeded
+  Data: {
+  "successful": 1,
+  "failed": 0
+}
+ℹ️ [SYNTHESIS_STARTED] Synthesizing final report...
+[2025-10-24T12:31:29.358484] SYNTHESIS_STARTED: Synthesizing final report...
+📝 [SYNTHESIS_COMPLETE] Report complete
+[2025-10-24T12:31:59.673770] SYNTHESIS_COMPLETE: Report complete
+
+================================================================================
+FINAL RESULTS
+================================================================================
+
+Tasks Executed: 5
+Tasks Failed: 0
+Total Results: 205
+Entities Discovered: 27
+Sources Searched: Unknown, Brave Search
+Elapsed Time: 3.3 minutes
+
+Sample Entities: Texas National Guard, Qatar Armed Forces, 102nd Intelligence Wing, KATUSA, BRIGHT STAR 25
+
+================================================================================
+REPORT PREVIEW (first 500 chars)
+================================================================================
+# Research Report: Military Cybersecurity Training — Synthesis of Findings
+
+## Executive Summary
+This review synthesizes open-source reporting on military cybersecurity training drawn from 5 targeted search tasks yielding 25 results and 27 discovered entities. Findings show that multinational field exercises (e.g., BRIGHT STAR 25, Cyber Shield 2025, RD25) and national-level certification events (Maryland and Texas National Guard activities) are central venues for cyber skills development, intero...
+
+================================================================================
+VALIDATION
+================================================================================
+✅ Tasks executed successfully
+✅ Results returned from MCP tools
+✅ Sources searched: Unknown, Brave Search
+✅ Entities extracted: 27
+
+================================================================================
+✅ MCP INTEGRATION TEST PASSED
+================================================================================
+
+(.venv) brian@DESKTOP-79G7E9D:~/sam_gov$ 

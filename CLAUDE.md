@@ -829,10 +829,10 @@ pip list | grep playwright       # Should show: playwright, seleniumbase
 ---
 # CLAUDE.md - Temporary Section (Updated as Tasks Complete)
 
-**Last Updated**: 2025-10-24 (MCP Phase 2 COMPLETE - Deep Research fully integrated with MCP)
-**Current Phase**: MCP Integration - Phase 2 COMPLETE ✅
-**Current Focus**: Phase 2 complete and verified. Optional: test Streamlit UI or proceed to Phase 3 (Third-Party MCP Servers)
-**Status**: Deep Research successfully refactored to use MCP tools, all tests passed
+**Last Updated**: 2025-10-24 (Data.gov MCP Pre-Flight Analysis COMPLETE)
+**Current Phase**: MCP Integration - Phase 2 COMPLETE ✅, Phase 3 Planning COMPLETE ✅
+**Current Focus**: Data.gov MCP integration pre-flight analysis complete. Awaiting user GO/NO-GO decision.
+**Status**: Comprehensive risk analysis documented with mitigation plans. Ready to proceed with hybrid approach (third-party server POC + custom integration later).
 
 ---
 
@@ -1222,13 +1222,85 @@ Internal Use → Direct Python OR in-memory MCP → DatabaseIntegration → APIs
 
 ---
 
+## DATA.GOV MCP INTEGRATION - PRE-FLIGHT ANALYSIS COMPLETE
+
+**Status**: COMPLETE ✅ (2025-10-24)
+**Document**: `docs/DATAGOV_MCP_PREFLIGHT_ANALYSIS.md` (comprehensive risk analysis)
+**Decision Required**: GO/NO-GO for datagov-mcp-server integration
+**Recommendation**: PROCEED with hybrid approach
+
+### Analysis Summary
+
+**Documentation Reviewed**:
+- ✅ MCP_INTEGRATION_PLAN.md - Phase 3/4 plans
+- ✅ STATUS.md - Phase 2 complete, all 9 MCP tools working
+- ✅ CLAUDE.md - Current phase status
+- ✅ archive/2025-10-24/README.md - Phase 1 POC archived
+
+**Uncertainties Identified** (9 total):
+1. STDIO transport reliability (Python ↔ Node.js)
+2. datagov-mcp-server quality/maintenance
+3. Node.js dependency management in Python project
+4. Data.gov CKAN API relevance for investigative journalism
+5. Tool selection logic (when to call Data.gov vs other tools)
+6. Customer value proposition
+7. Competitive landscape
+8. Testing strategy for third-party MCP server
+9. Deployment complexity (Streamlit Cloud + Node.js)
+
+**Critical Risks Identified** (3):
+1. **STDIO Transport Unreliable** (MEDIUM likelihood, HIGH impact)
+   - Mitigation: Thorough POC testing, error handling, optional status
+2. **Node.js Not Available on Streamlit Cloud** (MEDIUM likelihood, HIGH impact)
+   - Mitigation: Make Data.gov optional (like ClearanceJobs), graceful degradation
+3. **datagov-mcp-server Has Blocking Bugs** (LOW likelihood, MEDIUM impact)
+   - Mitigation: Fork immediately, custom integration fallback
+
+**Mitigation Plans**: 7 comprehensive plans covering all critical and high-impact risks
+
+**Recommendation**: HYBRID APPROACH
+- Phase 3 (Now): Integrate datagov-mcp-server (6-9 hours)
+  - Demonstrates third-party MCP integration (strategic goal)
+  - Tests STDIO transport (new capability)
+  - Make optional via Node.js detection (risk mitigation)
+- Phase 4 (Later): Build custom DataGovIntegration (4-6 hours)
+  - Eliminates Node.js dependency
+  - Full control over implementation
+  - Fallback if third-party server fails
+
+**GO/NO-GO Criteria**:
+- GO if: POC STDIO test succeeds 8/10 calls with <5s latency
+- NO-GO if: <5/10 success OR >10s latency OR blocking bug found
+- DEFER if: Low value (datasets not relevant) OR high complexity (>12 hours)
+
+**Implementation Timeline** (if GO):
+- Phase 1: POC Testing (2-3 hours)
+- Phase 2: Integration (3-4 hours)
+- Phase 3: Documentation & Testing (1-2 hours)
+- **Total**: 6-9 hours
+
+**Alternative Approaches**:
+1. Custom Integration Only (4-6 hours, no Node.js, Python-native)
+2. Hybrid (datagov-mcp-server + custom later) ← **RECOMMENDED**
+3. Skip Data.gov (focus on other features)
+
+### Next Steps
+
+**Awaiting User Decision**:
+1. Review `docs/DATAGOV_MCP_PREFLIGHT_ANALYSIS.md`
+2. Approve hybrid approach OR choose alternative
+3. If GO: Begin Phase 1 POC testing
+4. If NO-GO: Defer to custom integration OR skip entirely
+
+---
+
 ## IMMEDIATE BLOCKERS
 
 | Blocker | Impact | Status | Next Action |
 |---------|--------|--------|-------------|
-| None | N/A | **CLEAR** | Begin MCP Phase 1 (wrapper implementation) |
+| User GO/NO-GO Decision | Blocks Data.gov integration | **AWAITING USER** | Review DATAGOV_MCP_PREFLIGHT_ANALYSIS.md and decide |
 
-**No current blockers** - Planning complete, ready to implement MCP wrappers
+**Current Status**: Pre-flight analysis complete, awaiting user decision on Data.gov MCP integration approach
 
 ---
 
