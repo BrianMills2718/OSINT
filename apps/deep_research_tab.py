@@ -24,7 +24,7 @@ load_dotenv()
 def render_deep_research_tab(openai_api_key_from_ui):
     """Render the Deep Research tab in Streamlit UI."""
 
-    st.markdown("### 🔬 Deep Research Engine")
+    st.markdown("### 🔬 Deep Investigation")
     st.caption("Multi-phase investigative research with task decomposition, entity tracking, and automated follow-ups")
 
     # Get OpenAI API key
@@ -61,17 +61,18 @@ def render_deep_research_tab(openai_api_key_from_ui):
 
     # Info box explaining the difference
     st.info("""
-    **🔬 Deep Research vs 🤖 AI Research:**
+    **🔬 Deep Investigation vs ⚡ Quick Search:**
 
-    - **AI Research** (Quick): Searches selected databases in parallel, returns results in ~10-30 seconds
-    - **Deep Research** (Thorough): Multi-phase investigation with:
+    - **Quick Search** (Fast): Searches selected databases in parallel, returns results in ~10-30 seconds
+    - **Deep Investigation** (Thorough): Multi-phase investigation with:
       - Task decomposition (breaks complex questions into sub-tasks)
       - Retry logic (reformulates failed queries)
       - Entity tracking (connects entities across results)
       - Follow-up tasks (automatically investigates interesting findings)
+      - Web search integration (Brave Search for open web results)
       - Can run for minutes to hours
 
-    Use Deep Research for complex, multi-part questions requiring thorough investigation.
+    Use Deep Investigation for complex, multi-part questions requiring thorough investigation.
     """)
 
     # Research question input

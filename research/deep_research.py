@@ -17,6 +17,7 @@ import json
 import sys
 import os
 import logging
+import time
 from typing import List, Dict, Optional, Callable
 from datetime import datetime
 from dataclasses import dataclass, asdict
@@ -33,6 +34,29 @@ from dotenv import load_dotenv
 import aiohttp
 
 load_dotenv()
+
+
+class ResourceManager:
+    """
+    Centralized manager for API rate limiting and resource gating.
+
+    Ensures all code paths respect rate limits and prevents concurrent
+    access issues with shared state.
+    """
+
+    def __init__(self):
+        # Global Brave Search lock (1 req/sec limit)
+        self.brave_lock = asyncio.Lock()
+
+        # Entity graph lock (prevent concurrent modifications)
+        self.entity_graph_lock = asyncio.Lock()
+
+        # Results lock (prevent concurrent modifications)
+        self.results_lock = asyncio.Lock()
+
+    # Note: execute_with_rate_limit() removed per Codex recommendation
+    # Explicit locks (brave_lock, entity_graph_lock, results_lock) are clearer and sufficient
+    # If needed in future, database integrations already have their own rate limiting
 
 
 class TaskStatus(Enum):
@@ -93,6 +117,7 @@ class SimpleDeepResearch:
         max_retries_per_task: int = 2,
         max_time_minutes: int = 120,
         min_results_per_task: int = 3,
+        max_concurrent_tasks: int = 3,
         progress_callback: Optional[Callable[[ResearchProgress], None]] = None
     ):
         """
@@ -104,6 +129,7 @@ class SimpleDeepResearch:
             max_retries_per_task: Max retries for failed tasks
             max_time_minutes: Maximum investigation time
             min_results_per_task: Minimum results to consider task successful
+            max_concurrent_tasks: Maximum tasks to execute in parallel (1 = sequential, 3-5 = parallel)
             progress_callback: Function to call with progress updates
         """
         self.adaptive_search = adaptive_search or AdaptiveSearchEngine(
@@ -113,7 +139,11 @@ class SimpleDeepResearch:
         self.max_retries_per_task = max_retries_per_task
         self.max_time_minutes = max_time_minutes
         self.min_results_per_task = min_results_per_task
+        self.max_concurrent_tasks = max_concurrent_tasks
         self.progress_callback = progress_callback
+
+        # Resource management
+        self.resource_manager = ResourceManager()
 
         # State
         self.task_queue: List[ResearchTask] = []
@@ -209,7 +239,7 @@ class SimpleDeepResearch:
                 "error": error_msg
             }
 
-        # Step 2: Execute tasks
+        # Step 2: Execute tasks (parallel batch execution)
         task_counter = len(self.task_queue)
 
         while self.task_queue and len(self.completed_tasks) < self.max_tasks:
@@ -221,29 +251,73 @@ class SimpleDeepResearch:
                 )
                 break
 
-            # Get next task
-            task = self.task_queue.pop(0)
-            self._emit_progress("task_started", f"Executing: {task.query}", task_id=task.id)
+            # Get batch of tasks (up to max_concurrent_tasks)
+            batch_size = min(self.max_concurrent_tasks, len(self.task_queue))
+            batch = [self.task_queue.pop(0) for _ in range(batch_size)]
 
-            # Execute task with retry logic
-            success = await self._execute_task_with_retry(task)
+            # Emit batch start
+            self._emit_progress(
+                "batch_started",
+                f"Executing batch of {batch_size} tasks in parallel",
+                data={"tasks": [{"id": t.id, "query": t.query} for t in batch]}
+            )
 
-            if success:
-                self.completed_tasks.append(task)
+            # Codex fix: Emit task_started for each task before parallel execution
+            for task in batch:
+                task.status = TaskStatus.IN_PROGRESS
+                self._emit_progress("task_started", f"Executing: {task.query}", task_id=task.id)
 
-                # Check if we should create follow-up tasks
-                if self._should_create_follow_ups(task):
-                    follow_ups = await self._create_follow_up_tasks(task, task_counter)
-                    task_counter += len(follow_ups)
-                    self.task_queue.extend(follow_ups)
+            # Execute batch in parallel
+            results = await asyncio.gather(*[
+                self._execute_task_with_retry(task)
+                for task in batch
+            ], return_exceptions=True)
+
+            # Process results
+            for task, success_or_exception in zip(batch, results):
+                # Handle exceptions
+                if isinstance(success_or_exception, Exception):
                     self._emit_progress(
-                        "follow_ups_created",
-                        f"Created {len(follow_ups)} follow-up tasks",
-                        task_id=task.id,
-                        data={"follow_ups": [{"id": t.id, "query": t.query} for t in follow_ups]}
+                        "task_exception",
+                        f"Task {task.id} threw exception: {type(success_or_exception).__name__}: {str(success_or_exception)}",
+                        task_id=task.id
                     )
-            else:
-                self.failed_tasks.append(task)
+                    task.status = TaskStatus.FAILED
+                    task.error = str(success_or_exception)
+                    self.failed_tasks.append(task)
+                    continue
+
+                success = success_or_exception
+
+                if success:
+                    self.completed_tasks.append(task)
+
+                    # Check if we should create follow-up tasks
+                    # NOTE: Codex fix - check TOTAL workload, not just completed tasks
+                    total_pending_workload = len(self.task_queue) + len(batch) - (batch.index(task) + 1)
+                    if self._should_create_follow_ups(task, total_pending_workload):
+                        follow_ups = await self._create_follow_up_tasks(task, task_counter)
+                        task_counter += len(follow_ups)
+                        self.task_queue.extend(follow_ups)
+                        self._emit_progress(
+                            "follow_ups_created",
+                            f"Created {len(follow_ups)} follow-up tasks",
+                            task_id=task.id,
+                            data={"follow_ups": [{"id": t.id, "query": t.query} for t in follow_ups]}
+                        )
+                else:
+                    self.failed_tasks.append(task)
+
+            # Emit batch complete
+            successful_in_batch = sum(1 for r in results if r is True)
+            self._emit_progress(
+                "batch_complete",
+                f"Batch complete: {successful_in_batch}/{batch_size} succeeded",
+                data={
+                    "successful": successful_in_batch,
+                    "failed": batch_size - successful_in_batch
+                }
+            )
 
         # Step 3: Synthesize report
         try:
@@ -359,13 +433,19 @@ Return tasks in priority order (most important first).
         return tasks
 
     async def _search_brave(self, query: str, max_results: int = 20) -> List[Dict]:
-        """Search open web using Brave Search API."""
+        """
+        Search open web using Brave Search API.
+
+        Includes rate limiting (1 req/sec) and retry logic for HTTP 429 errors.
+        Uses ResourceManager global lock to ensure rate limit respected across parallel tasks.
+        """
         api_key = os.getenv('BRAVE_SEARCH_API_KEY')
         if not api_key:
             logging.warning("BRAVE_SEARCH_API_KEY not found, skipping web search")
             return []
 
-        try:
+        # Use ResourceManager to ensure only 1 Brave Search call at a time (1 req/sec limit)
+        async with self.resource_manager.brave_lock:
             url = "https://api.search.brave.com/res/v1/web/search"
             headers = {
                 "Accept": "application/json",
@@ -376,33 +456,70 @@ Return tasks in priority order (most important first).
                 "count": max_results
             }
 
-            async with aiohttp.ClientSession() as session:
-                async with session.get(url, headers=headers, params=params, timeout=aiohttp.ClientTimeout(total=30)) as resp:
-                    if resp.status != 200:
-                        logging.error(f"Brave Search API error: HTTP {resp.status}")
-                        return []
+            # Retry logic for rate limits
+            max_retries = 3
+            retry_delays = [1.0, 2.0, 4.0]  # Exponential backoff (1s, 2s, 4s)
 
-                    data = await resp.json()
+            for attempt in range(max_retries):
+                try:
+                    # Rate limiting: 1 request per second (Brave Search free tier limit)
+                    if attempt > 0:
+                        delay = retry_delays[attempt - 1]
+                        logging.info(f"Brave Search: Waiting {delay}s before retry {attempt}/{max_retries}")
+                        await asyncio.sleep(delay)
+                    else:
+                        # Always wait 1 second between calls to respect rate limit
+                        await asyncio.sleep(1.0)
 
-            # Convert Brave results to standard format
-            results = []
-            for item in data.get('web', {}).get('results', []):
-                description = item.get('description', '')
-                results.append({
-                    'source': 'Brave Search',
-                    'title': item.get('title', ''),
-                    'description': description,  # Use 'description' for consistency
-                    'snippet': description,      # Also include 'snippet' for backward compatibility
-                    'url': item.get('url', ''),
-                    'date': item.get('published_date')
-                })
+                    # Codex fix: Move aiohttp.ClientSession inside try block for proper error handling
+                    async with aiohttp.ClientSession() as session:
+                        async with session.get(url, headers=headers, params=params, timeout=aiohttp.ClientTimeout(total=30)) as resp:
+                            # Handle rate limiting
+                            if resp.status == 429:
+                                if attempt < max_retries - 1:
+                                    logging.warning(f"Brave Search: HTTP 429 (rate limit), retry {attempt + 1}/{max_retries}")
+                                    continue  # Retry with exponential backoff
+                                else:
+                                    logging.error(f"Brave Search: HTTP 429 after {max_retries} retries, giving up")
+                                    return []
 
-            logging.info(f"Brave Search: {len(results)} results for query: {query}")
-            return results
+                            # Handle other errors
+                            if resp.status != 200:
+                                logging.error(f"Brave Search API error: HTTP {resp.status}")
+                                return []
 
-        except Exception as e:
-            logging.error(f"Brave Search error: {type(e).__name__}: {str(e)}")
-            return []
+                            data = await resp.json()
+
+                    # Convert Brave results to standard format
+                    results = []
+                    for item in data.get('web', {}).get('results', []):
+                        description = item.get('description', '')
+                        results.append({
+                            'source': 'Brave Search',
+                            'title': item.get('title', ''),
+                            'description': description,  # Use 'description' for consistency
+                            'snippet': description,      # Also include 'snippet' for backward compatibility
+                            'url': item.get('url', ''),
+                            'date': item.get('published_date')
+                        })
+
+                    logging.info(f"Brave Search: {len(results)} results for query: {query}")
+                    return results
+
+                except asyncio.TimeoutError:
+                    logging.error(f"Brave Search timeout for query: {query}")
+                    if attempt < max_retries - 1:
+                        continue  # Retry
+                    return []
+
+                except Exception as e:
+                    logging.error(f"Brave Search error: {type(e).__name__}: {str(e)}")
+                    if attempt < max_retries - 1:
+                        continue  # Retry
+                    return []
+
+        # Should never reach here, but return empty if all retries exhausted
+        return []
 
     async def _execute_task_with_retry(self, task: ResearchTask) -> bool:
         """
@@ -411,7 +528,7 @@ Return tasks in priority order (most important first).
         Returns:
             True if task succeeded (eventually), False if exhausted retries
         """
-        task.status = TaskStatus.IN_PROGRESS
+        # Note: task.status already set to IN_PROGRESS in batch loop before parallel execution
 
         while task.retry_count <= self.max_retries_per_task:
             try:
@@ -437,10 +554,13 @@ Return tasks in priority order (most important first).
                     task.status = TaskStatus.COMPLETED
                     task.results = asdict(result)
                     task.entities_found = result.entities_discovered
-                    self.results_by_task[task.id] = asdict(result)
 
-                    # Update entity graph
-                    self._update_entity_graph(task.entities_found)
+                    # Codex fix: Protect shared dict writes with lock
+                    async with self.resource_manager.results_lock:
+                        self.results_by_task[task.id] = asdict(result)
+
+                    # Update entity graph (with lock for concurrent safety)
+                    await self._update_entity_graph(task.entities_found)
 
                     self._emit_progress(
                         "task_completed",
@@ -546,24 +666,38 @@ Return ONLY the new query text, nothing else.
 
         return response.choices[0].message.content.strip().strip('"')
 
-    def _update_entity_graph(self, entities: List[str]):
-        """Update entity relationship graph."""
-        # For now, simple co-occurrence tracking
-        # TODO: Use LLM to extract actual relationships
-        for i, entity1 in enumerate(entities):
-            if entity1 not in self.entity_graph:
-                self.entity_graph[entity1] = []
+    async def _update_entity_graph(self, entities: List[str]):
+        """
+        Update entity relationship graph.
 
-            for entity2 in entities[i+1:]:
-                if entity2 not in self.entity_graph[entity1]:
-                    self.entity_graph[entity1].append(entity2)
-                    self._emit_progress(
-                        "relationship_discovered",
-                        f"Connected: {entity1} <-> {entity2}"
-                    )
+        Uses ResourceManager lock to prevent concurrent modification races.
+        """
+        async with self.resource_manager.entity_graph_lock:
+            # For now, simple co-occurrence tracking
+            # TODO: Use LLM to extract actual relationships
+            for i, entity1 in enumerate(entities):
+                if entity1 not in self.entity_graph:
+                    self.entity_graph[entity1] = []
 
-    def _should_create_follow_ups(self, task: ResearchTask) -> bool:
-        """Decide if we should create follow-up tasks based on results."""
+                for entity2 in entities[i+1:]:
+                    if entity2 not in self.entity_graph[entity1]:
+                        self.entity_graph[entity1].append(entity2)
+                        self._emit_progress(
+                            "relationship_discovered",
+                            f"Connected: {entity1} <-> {entity2}"
+                        )
+
+    def _should_create_follow_ups(self, task: ResearchTask, total_pending_workload: int = 0) -> bool:
+        """
+        Decide if we should create follow-up tasks based on results.
+
+        Args:
+            task: Completed task to evaluate
+            total_pending_workload: Total pending tasks (queue + currently executing batch)
+
+        Returns:
+            True if follow-ups should be created
+        """
         if not task.results:
             return False
 
@@ -571,11 +705,20 @@ Return ONLY the new query text, nothing else.
         total_results = results.get('total_results', 0)
         entities_found = len(task.entities_found)
 
-        # Create follow-ups if we found interesting entities and good results
+        # Codex fix: Check TOTAL workload (completed + pending + would-be follow-ups)
+        # This prevents follow-up explosion when parallel execution creates many tasks at once
+        max_follow_ups = 2  # We create up to 2 follow-ups per task
+        total_workload_if_created = (
+            len(self.completed_tasks) +  # Already completed
+            total_pending_workload +      # Queue + current batch remainder
+            max_follow_ups                # Would-be follow-ups
+        )
+
+        # Create follow-ups if we found interesting entities and good results AND room in workload
         return (
-            total_results >= 5 and  # Found meaningful results
-            entities_found >= 3 and  # Discovered multiple entities
-            len(self.completed_tasks) < self.max_tasks - 3  # Room for follow-ups
+            total_results >= 5 and                      # Found meaningful results
+            entities_found >= 3 and                     # Discovered multiple entities
+            total_workload_if_created < self.max_tasks  # Room for follow-ups in total workload
         )
 
     async def _create_follow_up_tasks(self, parent_task: ResearchTask, current_task_id: int) -> List[ResearchTask]:

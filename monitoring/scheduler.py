@@ -176,7 +176,12 @@ class MonitorScheduler:
 
         logger.info(f"Scheduled jobs ({len(jobs)}):")
         for job in jobs:
-            logger.info(f"  - {job.name}: {job.next_run_time}")
+            # Get next run time - APScheduler 4.x uses trigger.get_next_fire_time()
+            try:
+                next_run = str(job.trigger)
+            except:
+                next_run = "unknown"
+            logger.info(f"  - {job.name}: {next_run}")
 
 
 async def main():

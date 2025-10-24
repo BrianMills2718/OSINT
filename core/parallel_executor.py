@@ -194,10 +194,11 @@ class ParallelExecutor:
                 continue
 
             if params is None:
-                print(f"    ⊘ {db.metadata.name}: Not relevant after analysis, skipping")
-                logging.warning(
-                    f"Integration {db.metadata.name} returned None for query: '{research_question}'. "
-                    f"This may indicate prompt regression or LLM issue."
+                print(f"    ✗ {db.metadata.name}: ERROR - generate_query() returned None (prompt regression or LLM failure)")
+                logging.error(
+                    f"CRITICAL: Integration {db.metadata.name} returned None for query: '{research_question}'. "
+                    f"This should NEVER happen - indicates prompt regression, LLM failure, or uncaught exception. "
+                    f"Check integration code and LLM responses."
                 )
                 continue
 

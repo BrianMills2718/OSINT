@@ -352,10 +352,10 @@ Be concise but thorough. Focus on insights that directly relate to the research 
 
 
 def render_ai_research_tab(openai_api_key_from_ui, dvids_api_key, sam_api_key, usajobs_api_key=None, rapidapi_key=None):
-    """Render the AI Research tab in the Streamlit app."""
+    """Render the Quick Search tab in the Streamlit app."""
 
-    st.markdown("### 🤖 AI-Powered Research Assistant")
-    st.caption("Ask a research question and AI will search across all databases and summarize results")
+    st.markdown("### ⚡ Quick Search")
+    st.caption("Fast parallel search across all databases with AI-powered source selection and summarization")
 
     # Get OpenAI API key from multiple sources (priority order):
     # 1. User input in sidebar (highest priority - allows override)

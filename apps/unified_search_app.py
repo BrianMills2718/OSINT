@@ -217,8 +217,8 @@ with st.sidebar:
 # Create main tabs - New UX with User Guide first, then primary features
 tab1, tab2, tab3, tab4, tab5 = st.tabs([
     "📖 User Guide",
-    "🤖 AI Research",
-    "🔬 Deep Research",
+    "⚡ Quick Search",
+    "🔬 Deep Investigation",
     "📊 Monitor Management",
     "⚙️ Advanced Search"
 ])
@@ -231,14 +231,14 @@ with tab1:
     render_user_guide_tab()
 
 # ============================================================================
-# TAB 2: AI RESEARCH (PRIMARY INTERFACE)
+# TAB 2: QUICK SEARCH (formerly "AI Research")
 # ============================================================================
 with tab2:
     from ai_research import render_ai_research_tab
     render_ai_research_tab(openai_api_key, dvids_api_key, sam_api_key, usajobs_api_key, rapidapi_key)
 
 # ============================================================================
-# TAB 3: DEEP RESEARCH
+# TAB 3: DEEP INVESTIGATION (formerly "Deep Research")
 # ============================================================================
 with tab3:
     from deep_research_tab import render_deep_research_tab
@@ -326,6 +326,6 @@ col_f1, col_f2, col_f3 = st.columns(3)
 with col_f1:
     st.caption("💡 **New?** Check the User Guide tab for tutorials and FAQs")
 with col_f2:
-    st.caption("🤖 **Recommended:** Start with AI Research for best results")
+    st.caption("⚡ **Recommended:** Start with Quick Search for best results")
 with col_f3:
     st.caption("⚠️ Respect API limits and terms of service")

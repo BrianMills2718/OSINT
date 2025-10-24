@@ -17,7 +17,7 @@ from typing import Optional, List
 
 
 CONFIG_FILE = Path("discord_backfill_state.json")
-DCE_CLI = Path("../../dce-cli/DiscordChatExporter.Cli")
+DCE_CLI = Path("../../archive/reference/dce-cli/DiscordChatExporter.Cli")
 EXPORTS_DIR = Path("../../data/exports")
 LOGS_DIR = Path("../../data/logs")
 
