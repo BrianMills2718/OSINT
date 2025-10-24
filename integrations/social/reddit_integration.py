@@ -94,17 +94,27 @@ class RedditIntegration(DatabaseIntegration):
 
     async def is_relevant(self, research_question: str) -> bool:
         """
-        Quick relevance check - always return True, let generate_query() LLM decide.
+        Quick relevance check for Reddit.
 
-        The LLM in generate_query() is smarter at determining relevance and avoids
-        false negatives from overly restrictive keyword matching.
+        Reddit is useful for: Community discussions, opinions, user experiences, informal leads
+        Reddit is NOT useful for: Official contracts, formal solicitations, structured procurement data
 
         Args:
             research_question: The user's research question
 
         Returns:
-            Always True - relevance determined by generate_query()
+            False if asking about official contracts/solicitations, True for discussion/community queries
         """
+        question_lower = research_question.lower()
+
+        # Contract/procurement queries - Reddit doesn't have official solicitations
+        contract_keywords = ["contract", "solicitation", "rfp", "procurement", "award", "bidding", "idiq", "gwac"]
+        if any(keyword in question_lower for keyword in contract_keywords):
+            # Check if asking about discussion/experience with contracts (Reddit IS relevant for that)
+            discourse_keywords = ["discussion", "experience", "advice", "tips", "community", "opinion"]
+            if not any(keyword in question_lower for keyword in discourse_keywords):
+                return False
+
         return True
 
     async def generate_query(self, research_question: str) -> Optional[Dict]:

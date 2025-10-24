@@ -64,17 +64,33 @@ class TwitterIntegration(DatabaseIntegration):
 
     async def is_relevant(self, research_question: str) -> bool:
         """
-        Quick relevance check - always return True, let generate_query() LLM decide.
+        Quick relevance check for Twitter.
 
-        The LLM in generate_query() is smarter at determining relevance and avoids
-        false negatives from overly restrictive keyword matching.
+        Twitter is useful for: Public discourse, breaking news, leaks, social movements
+        Twitter is NOT useful for: Structured data (contracts, jobs, procurement)
 
         Args:
             research_question: The user's research question
 
         Returns:
-            Always True - relevance determined by generate_query()
+            False if asking about structured data (contracts/jobs), True for social/news queries
         """
+        # Quick keyword check for structured data queries where Twitter isn't helpful
+        question_lower = research_question.lower()
+
+        # Contract/procurement queries - Twitter rarely has official solicitations
+        contract_keywords = ["contract", "solicitation", "rfp", "procurement", "award", "bidding", "idiq", "gwac"]
+        if any(keyword in question_lower for keyword in contract_keywords):
+            # Check if also asking about discourse/news about contracts (Twitter IS relevant for that)
+            discourse_keywords = ["discussion", "news", "announcement", "opinion", "reaction", "controversy"]
+            if not any(keyword in question_lower for keyword in discourse_keywords):
+                return False
+
+        # Job posting queries - Twitter has job ads but better sources exist (USAJobs, ClearanceJobs)
+        job_keywords = ["jobs available", "job openings", "hiring for", "recruiting for"]
+        if any(keyword in question_lower for keyword in job_keywords):
+            return False
+
         return True
 
     async def generate_query(self, research_question: str) -> Optional[Dict]:

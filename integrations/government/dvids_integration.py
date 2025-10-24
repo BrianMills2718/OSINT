@@ -55,17 +55,28 @@ class DVIDSIntegration(DatabaseIntegration):
 
     async def is_relevant(self, research_question: str) -> bool:
         """
-        Quick relevance check - always return True, let generate_query() LLM decide.
+        Quick relevance check for DVIDS.
 
-        The LLM in generate_query() is smarter at determining relevance and avoids
-        false negatives from overly restrictive keyword matching.
+        DVIDS contains: Military media, photos, videos, news, operations, training
+        DVIDS does NOT contain: Contract solicitations, procurement, awards, RFPs
 
         Args:
             research_question: The user's research question
 
         Returns:
-            Always True - relevance determined by generate_query()
+            False if asking about contracts/procurement, True for military content
         """
+        # Quick keyword check for contract-related queries
+        question_lower = research_question.lower()
+        contract_keywords = [
+            "contract", "solicitation", "rfp", "procurement", "award",
+            "vendor", "bidding", "idiq", "gwac", "schedule", "naics", "psc"
+        ]
+
+        # If query is about contracts, DVIDS is not relevant
+        if any(keyword in question_lower for keyword in contract_keywords):
+            return False
+
         return True
 
     async def generate_query(self, research_question: str) -> Optional[Dict]:
