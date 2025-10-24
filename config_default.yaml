@@ -72,7 +72,10 @@ timeouts:
 # ============================================================================
 # Database-Specific Settings
 # ============================================================================
+# Feature Flags: Set enabled: false to disable specific integrations
+# This allows instant rollback if an integration breaks or causes issues
 databases:
+  # Government Data Sources
   sam:
     enabled: true
     timeout: 30                   # SAM.gov can be slow
@@ -92,6 +95,24 @@ databases:
     enabled: true
     requires_puppeteer: true      # Needs browser automation
     timeout: 45                   # Longer for Puppeteer operations
+
+  fbi_vault:
+    enabled: true
+    timeout: 30                   # FBI Vault scraping can be slow
+
+  # Social Media & Community Sources
+  discord:
+    enabled: true
+    timeout: 5                    # Local file search, fast
+
+  twitter:
+    enabled: true                 # Requires twitterexplorer_sigint
+    timeout: 20
+
+  # Web Search
+  brave_search:
+    enabled: true
+    timeout: 10
 
 # ============================================================================
 # Provider Fallback (LiteLLM Feature)

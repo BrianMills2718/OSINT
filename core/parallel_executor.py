@@ -7,6 +7,7 @@ including relevance checking, query generation, and search execution.
 """
 
 import asyncio
+import logging
 from typing import List, Dict, Optional, Tuple
 from datetime import datetime
 from core.database_integration_base import DatabaseIntegration, QueryResult
@@ -194,6 +195,10 @@ class ParallelExecutor:
 
             if params is None:
                 print(f"    ⊘ {db.metadata.name}: Not relevant after analysis, skipping")
+                logging.warning(
+                    f"Integration {db.metadata.name} returned None for query: '{research_question}'. "
+                    f"This may indicate prompt regression or LLM issue."
+                )
                 continue
 
             print(f"    ✓ {db.metadata.name}: Query generated")
