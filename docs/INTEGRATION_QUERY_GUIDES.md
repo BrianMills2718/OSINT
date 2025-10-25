@@ -84,24 +84,113 @@ Accuracy: 0/1 = 0%
 ## DVIDS (Defense Visual Information Distribution Service)
 
 ### API Endpoint
-- REST API: `https://api.dvidshub.net/v1/`
-- Official docs: (TODO: add link)
+- REST API: `https://api.dvidshub.net/search`
+- Official docs: https://www.dvidshub.net/api
 
-### Query Syntax
+### Query Syntax (Empirically Tested)
 
-**Status**: Not yet tested empirically
-**Documentation**: TODO - review official API docs
+**Testing Date**: 2025-10-25
+**Test Method**: Systematic isolation testing with 25+ queries
+**Evidence Files**:
+- `tests/test_dvids_isolate_403.py`
+- `tests/test_dvids_final_isolation.py`
+- `tests/test_dvids_quotes_only.py`
+
+#### What Works (Evidence-Based)
+
+| Syntax | Example | Status | Notes |
+|--------|---------|--------|-------|
+| **Simple keywords** | `JSOC` | ✅ 200 | Single terms work |
+| **Multiple keywords** | `JSOC Delta Force DEVGRU` | ✅ 200 | No quotes needed |
+| **OR operator (unquoted)** | `JSOC OR Delta OR DEVGRU` | ✅ 200 | Up to 12+ OR terms work |
+| **1 quoted phrase** | `"Joint Special Operations Command"` | ✅ 200 | Single phrase OK |
+| **2 quoted phrases** | `"hello world" OR "foo bar"` | ✅ 200 | Max 2 phrases work |
+| **Long URLs** | 757 char URL with dummy terms | ✅ 200 | Length not the issue |
+
+#### What Doesn't Work (Evidence-Based)
+
+| Syntax | Example | Status | Issue |
+|--------|---------|--------|-------|
+| **3+ quoted phrases** | `"phrase1" OR "phrase2" OR "phrase3"` | ❌ 403 | **HARD LIMIT** |
+| **Complex quoted queries** | `JSOC OR "Joint Special Operations Command" OR "special operations"` | ❌ 403 | 3rd quoted phrase triggers block |
+
+#### Test Evidence
+
+**Critical Finding**: DVIDS API limits queries with quoted phrases to maximum 2 OR terms total.
+
+**The Rule**:
+- If query has NO quoted phrases → unlimited OR terms allowed
+- If query has ANY quoted phrases → maximum 2 TOTAL OR terms allowed (quoted or unquoted)
+
+**Verification Testing (2025-10-25)**:
+
+**No Quotes - Unlimited OR Terms Allowed**:
+```
+✅ PASS | 2 terms:  one OR two
+✅ PASS | 3 terms:  one OR two OR three
+✅ PASS | 5 terms:  one OR two OR three OR four OR five
+✅ PASS | 10 terms: one OR two OR three OR four OR five OR six OR seven OR eight OR nine OR ten
+```
+
+**With Quotes - Maximum 2 TOTAL OR Terms**:
+```
+At Limit (2 terms) - PASS:
+✅ PASS | 1 quoted alone:        "one two"
+✅ PASS | 1 quoted + 1 unquoted: "one two" OR three
+✅ PASS | 2 quoted + 0 unquoted: "one two" OR "three four"
+
+Over Limit (3+ terms) - FAIL:
+❌ FAIL | 1 quoted + 2 unquoted: "one two" OR three OR four
+❌ FAIL | 2 quoted + 1 unquoted: "one two" OR "three four" OR five
+❌ FAIL | 3 quoted + 0 unquoted: "one two" OR "three four" OR "five six"
+```
+
+**Content-agnostic**: Works with innocent terms ("hello", "world") and military terms (JSOC, Delta Force) equally.
+
+**Not content filtering**:
+- `JSOC` alone: ✅ 200
+- `Delta Force` alone: ✅ 200
+- `JSOC OR Delta OR DEVGRU` (unquoted): ✅ 200 (no limit without quotes)
+- `JSOC OR "Delta Force" OR DEVGRU`: ❌ 403 (3 terms with 1 quoted)
+
+**Not URL length**:
+- 757 char URL: ✅ 200 (with unquoted terms)
+- 116 char URL: ❌ 403 (with 3 OR terms + quotes)
 
 ### Known Limitations
 
-**Intermittent HTTP 403 errors** (documented in STATUS.md):
-- Cause: Unknown (content filtering suspected but not proven)
-- Frequency: ~2/3 queries for sensitive operational terms (JSOC, special operations)
-- Mitigation: Query decomposition already implemented (dvids_integration.py:299)
+**Maximum 2 OR terms when quotes are used**:
+- Root cause: API security measure (likely prevents query injection or abuse)
+- Trigger: Any query containing quoted phrases + 3 or more OR terms
+- Workaround: Remove quotes OR limit to 2 total OR terms
+- Status: API limitation, cannot be changed
+- Note: Unlimited OR terms allowed if NO quotes used
+
+**Query decomposition mitigation**:
+- Implementation: `dvids_integration.py:299`
+- Behavior: Breaks complex OR queries into individual term searches
+- Effectiveness: Helps avoid 3+ phrase limit by searching terms separately
+- Result: Combines results from multiple simple queries
 
 ### Recommendations
 
-(TODO: Conduct systematic query syntax testing similar to Reddit)
+1. **Limit quoted phrases to 2 maximum**: Hard API limit
+2. **Prefer unquoted keywords**: `JSOC Delta Force` instead of `"JSOC" OR "Delta Force" OR "DEVGRU"`
+3. **Use query decomposition**: Already implemented for OR queries
+4. **Single complex phrase OK**: `"Joint Special Operations Command"` works alone
+5. **Avoid LLM-generated complex queries**: LLMs tend to create queries with 3+ quoted phrases
+
+### Implementation Notes
+
+**Current LLM prompt** (dvids_integration.py:200):
+- May generate queries with 3+ quoted phrases
+- Should be updated to limit quoted phrases to 2 maximum
+- Consider instructing LLM to prefer unquoted keywords
+
+**Mitigation already exists**:
+- Query decomposition at line 299 handles OR queries
+- Breaks complex queries into simple terms
+- Combines results from multiple API calls
 
 ---
 

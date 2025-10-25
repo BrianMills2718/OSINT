@@ -90,6 +90,7 @@ databases:
     enabled: true
     timeout: 20
     default_date_range_days: 90   # Military media archives
+    origin: null                  # Set to registered domain if API key has origin restrictions (e.g., "https://example.com")
 
   clearancejobs:
     enabled: true

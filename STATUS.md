@@ -1056,6 +1056,71 @@ Validation: ✅ Service running, all monitors scheduled, first execution tomorro
 
 ---
 
+## Known Limitations & Workarounds
+
+### DVIDS Query Syntax Limitation (HTTP 403)
+
+| Issue | Status | Evidence | Mitigation | Next Action |
+|-------|--------|----------|------------|-------------|
+| **HTTP 403 with Quoted Phrases** | [CONFIRMED] | Systematic isolation testing (25+ queries): Any query with quoted phrases + 3+ OR terms triggers 403. Unlimited OR terms work WITHOUT quotes. 100% reproducible. | Query decomposition (dvids_integration.py:299) breaks OR queries into individual searches. Update LLM prompt to limit quoted phrases. | Update dvids_integration.py LLM prompt with tested syntax guidance |
+
+**Root Cause**: DVIDS API security measure - limits queries with quoted phrases to maximum 2 OR terms total
+
+**Test Evidence** (2025-10-25):
+- **Test files**: tests/test_dvids_isolate_403.py, tests/test_dvids_final_isolation.py, tests/test_dvids_quotes_only.py
+- **Total queries tested**: 25+ systematic isolation tests
+- **Reproducibility**: 100% consistent pattern
+
+**The Rule (Confirmed)**:
+```
+If query has NO quoted phrases → unlimited OR terms allowed
+If query has ANY quoted phrases → maximum 2 TOTAL OR terms allowed (quoted or unquoted)
+```
+
+**Verification Testing (2025-10-25)**:
+
+**No Quotes - Unlimited OR Terms Allowed**:
+```
+✅ PASS | 2 terms:  one OR two
+✅ PASS | 3 terms:  one OR two OR three
+✅ PASS | 5 terms:  one OR two OR three OR four OR five
+✅ PASS | 10 terms: one OR two OR three OR four OR five OR six OR seven OR eight OR nine OR ten
+```
+
+**With Quotes - Maximum 2 TOTAL OR Terms**:
+```
+At Limit (2 terms) - PASS:
+✅ PASS | 1 quoted alone:        "one two"
+✅ PASS | 1 quoted + 1 unquoted: "one two" OR three
+✅ PASS | 2 quoted + 0 unquoted: "one two" OR "three four"
+
+Over Limit (3+ terms) - FAIL:
+❌ FAIL | 1 quoted + 2 unquoted: "one two" OR three OR four
+❌ FAIL | 2 quoted + 1 unquoted: "one two" OR "three four" OR five
+❌ FAIL | 3 quoted + 0 unquoted: "one two" OR "three four" OR "five six"
+```
+
+**What We Ruled Out**:
+- ❌ Content filtering: Tested with innocent terms ("hello world") - same 403 pattern
+- ❌ URL length: 757 char URLs work fine with unquoted terms
+- ❌ Number of OR clauses: 12+ OR clauses work WITHOUT quotes
+- ❌ Specific keywords: JSOC, Delta Force work individually and in unquoted OR queries
+- ❌ Origin restrictions: All origin configurations tested - all work
+
+**Implementation Details**:
+- Origin header support added as defensive coding (dvids_integration.py:289-295, 320)
+- Query decomposition already exists (dvids_integration.py:299) - helps avoid limit
+- LLM prompt needs update to avoid generating 3+ OR terms with quotes
+
+**Detailed Documentation**: See docs/INTEGRATION_QUERY_GUIDES.md for complete empirical testing results
+
+**Recommendation**:
+1. Update LLM prompt in dvids_integration.py to prefer unquoted keywords
+2. Limit quoted phrases to 2 total OR terms maximum
+3. Query decomposition already mitigates this by breaking complex queries into simple searches
+
+---
+
 ## Phase 0: Foundation - Component Status
 
 ### Database Integrations
@@ -1063,7 +1128,7 @@ Validation: ✅ Service running, all monitors scheduled, first execution tomorro
 | Component | Status | Evidence | Limitations | Next Action |
 |-----------|--------|----------|-------------|-------------|
 | **SAM.gov** | [PASS] | Live test: 200 OK, 0 results (likely rate limited) | Slow API (12s), rate limits reached | Use existing tracker to monitor limits |
-| **DVIDS** | [PASS] | Live test: 1000 results in 1.1s | None | Ready for production |
+| **DVIDS** | [PASS] | Live test: 1000 results in 1.1s | Intermittent HTTP 403 errors, root cause unknown (see Known Limitations section above) | Ready for production, monitor 403 error patterns |
 | **USAJobs** | [PASS] | Live test: 3 results in 3.6s | None | Ready for production |
 | **ClearanceJobs** | [PASS] | Playwright installed, chromium ready | Function-based (not class), needs wrapper | Test via existing UI |
 | **Discord** | [PASS] | CLI test: 777 results in 978ms, searches local exports | 4 corrupted JSON files skipped, local search only | Ready for production |

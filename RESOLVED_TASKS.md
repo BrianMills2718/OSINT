@@ -6,6 +6,12 @@
 
 ---
 
+## 2025-10-25
+
+- 2025-10-25: Reddit query syntax empirical testing - BEST: Unquoted AND (43% accuracy). AVOID: Quoted phrases + Boolean (0%). Created docs/INTEGRATION_QUERY_GUIDES.md with evidence-based recommendations. - [COMPLETE] - c049e6f
+- 2025-10-25: AGENT2 - DVIDS 403 investigation COMPLETE - Root cause: DVIDS API limits queries with quoted phrases to max 2 OR terms. Systematic isolation testing (25+ queries) proved 100% reproducible pattern. NOT content filtering (tested with innocent terms). Query decomposition mitigation already exists. Documented in docs/INTEGRATION_QUERY_GUIDES.md. - [COMPLETE] - tests/test_dvids_isolate_403.py, tests/test_dvids_final_isolation.py
+- 2025-10-25: DVIDS LLM prompt updated with empirical query syntax guidance - Added tested syntax rules: prefer unquoted keywords (unlimited OR), avoid quoted phrases (2-term limit). References docs/INTEGRATION_QUERY_GUIDES.md for evidence. Prevents LLM from generating queries that trigger HTTP 403. - [COMPLETE] - dvids_integration.py:110-131
+
 ## 2025-10-24
 
 - 2025-10-24: Reddit integration BOTH phases complete - [COMPLETE] - Real-time + daily scraper

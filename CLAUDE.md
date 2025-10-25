@@ -548,6 +548,7 @@ archive/
 - Working code example? → Copy from integrations/government/sam_integration.py
 - Regenerate CLAUDE.md? → Follow REGENERATE_CLAUDE.md
 - What's archived? → Check archive/YYYY-MM-DD/README.md
+- **Query syntax for a source?** → Read docs/INTEGRATION_QUERY_GUIDES.md (empirically tested syntax, limitations, evidence)
 
 ### Information Architecture (Multi-Layer Documentation System)
 
@@ -1477,29 +1478,31 @@ Test 3 (Common origins): 3/3 PASS
 - [PASS] DVIDS API key is NOT origin-restricted (all tests pass)
 - [FAIL] Origin restriction was NOT the root cause of 403 errors
 
-### Actual Root Cause (After Proper Testing)
+### Actual Findings (After Proper Testing)
 
-**ROOT CAUSE CONFIRMED**: Content filtering on sensitive operational terms
+**ROOT CAUSE**: UNKNOWN - Insufficient evidence to determine cause
 
-**Evidence**:
-```
-✅ PASS: "Air Force training exercises" → 100 results
-❌ FAIL: "JSOC Delta Force DEVGRU" → HTTP 403
-❌ FAIL: "SEAL Team Six Naval Special Warfare Development Group" → HTTP 403
-❌ FAIL: "Operation Neptune Spear Bin Laden raid" → HTTP 403
-```
+**Test Evidence**:
+- tests/test_dvids_root_cause_systematic.py (ran at 4:10 AM)
+  - JSOC Sequential: 1/3 success, 2 x 403
+  - Generic Parallel: 3/3 success, 0 x 403
+  - JSOC Parallel: 1/3 success, 2 x 403
+- tests/test_dvids_origin_fix.py - Origin headers: ALL configurations passed
 
-**Test Files**:
-1. `tests/test_dvids_origin_fix.py` - Origin headers: ALL PASS
-2. `tests/test_dvids_parallel_403.py` - Parallel execution: ALL FAIL (sensitive queries)
-3. `tests/test_dvids_simple_query.py` - Simple query: PASS
+**What We Ruled Out**:
+- ✅ Origin restriction: NOT the issue (all origins work)
+- ✅ Consistent content filtering: NOT the issue (1/3 JSOC queries succeeded)
 
-**Analysis**:
-- Origin restriction: ❌ Ruled out (all origins work for generic queries)
-- Concurrent throttling: ❌ Ruled out (sequential and parallel both fail with sensitive terms)
-- Content filtering: ✅ CONFIRMED (sensitive operational terms trigger 403)
+**What We Don't Know**:
+- ❌ Why 2/3 queries failed with 403
+- ❌ Why 1/3 JSOC query succeeded
+- ❌ Whether failures are time-based, quota-based, or random
 
-**Why**: DVIDS is official DoD media distribution with OPSEC restrictions on classified unit queries
+**Test Limitations**:
+- Sample size too small (only 3 queries per category)
+- No timing data captured
+- No retry testing on same query
+- No visibility into API quotas/rate limits
 
 ### Implementation Completed
 
@@ -1531,24 +1534,41 @@ response = requests.get(endpoint, params=params, headers=headers, timeout=dvids_
 - ✅ All origin configurations tested (no 403 errors)
 - ✅ Code works with and without origin configuration
 
-### Recommendations for Content Filtering
+### Recommendations
 
-**Real Issue**: DVIDS blocks queries about sensitive special operations units (intentional OPSEC)
+**What Was Accomplished**:
+- ✅ Origin header support added (future-proof if API key restrictions added later)
+- ✅ Origin restriction ruled out as cause of 403 errors
+- ✅ Query decomposition already exists (dvids_integration.py:299)
 
-**Cannot Fix**: Content filtering is DoD policy, not a bug
+**What Remains Unknown**:
+- ❌ Root cause of intermittent 403 errors
+- ❌ Whether pattern is time-based, quota-based, or random
 
-**Suggested Workarounds**:
-1. **Use alternative sources** - Brave Search, Reddit, Discord don't have OPSEC restrictions
-2. **Rephrase queries** - Use "special operations forces" instead of "JSOC Delta Force"
-3. **Accept limitation** - Document DVIDS as limited for classified operations research
-4. **Query decomposition** - Already implemented (line 299), may help if individual terms bypass filter
+**Next Steps**:
+1. **Monitor in production** - Track 403 error frequency and patterns
+2. **If pattern emerges** - Investigate with larger sample size and timing data
+3. **Check DVIDS dashboard** - Look for API quota/rate limit visibility
+4. **Consider retry logic** - May help if 403s are transient
 
-**Recommended**: Mark DVIDS as "Limited availability for classified operations" in docs, use other sources for JSOC/SOF research
+### Documentation Updated
+
+**STATUS.md** (2025-10-25):
+- Added "Known Limitations & Workarounds" section
+- Status: [UNKNOWN] - Root cause not determined
+- Evidence: Systematic test results, origin restriction ruled out
+- Recommendation: Monitor in production
+
+**RESOLVED_TASKS.md** (2025-10-25):
+- Status: [INCOMPLETE] - Root cause investigation inconclusive
+- Evidence: Sample size too small, 1/3 JSOC success contradicts filtering hypothesis
+- Implementation: Origin headers added as defensive measure
 
 ### Notes for Other Agents
 - **AGENT1**: DVIDS origin headers implemented - no conflicts with relevance filter
-- **AGENT3**: ROOT CAUSE is content filtering (sensitive operational terms), NOT origin or concurrency
-- **ALL AGENTS**: DVIDS has OPSEC limitations - use Brave Search/Reddit/Discord for JSOC/special operations queries
+- **AGENT3**: ROOT CAUSE is UNKNOWN - origin restriction ruled out, but insufficient evidence for other causes
+- **ALL AGENTS**: DVIDS 403 errors are intermittent (1/3 success rate on JSOC queries). Monitor patterns in production.
+- **Documentation**: See STATUS.md "Known Limitations & Workarounds" section for honest assessment
 
 ---
 

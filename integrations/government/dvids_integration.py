@@ -108,11 +108,27 @@ DVIDS provides: U.S. Department of Defense media distribution - photos, videos, 
 
 API Parameters:
 - keywords (string, required):
-    Search query using OR operators for alternatives.
-    IMPORTANT: Use "OR" between alternative terms, NOT commas.
-    Keep queries focused - 3-6 main terms with OR alternatives.
-    Example: "F-35 OR fighter jet OR stealth aircraft"
-    NOT: "F-35, fighter jet, stealth aircraft, air force, military"
+    Search query syntax (empirically tested 2025-10-25):
+
+    BEST SYNTAX (avoid HTTP 403 errors):
+    - Use UNQUOTED keywords with OR: JSOC OR special operations OR counterterrorism
+    - Unlimited OR terms allowed WITHOUT quotes
+
+    LIMITED SYNTAX (triggers HTTP 403 if exceeded):
+    - Quoted phrases LIMIT you to maximum 2 TOTAL OR terms
+    - Example ALLOWED: "Joint Special Operations Command" OR JSOC (2 terms)
+    - Example FORBIDDEN: "JSOC" OR "Delta Force" OR DEVGRU (3 terms) → HTTP 403
+
+    STRATEGY:
+    - Keep queries focused - 3-6 main terms with OR alternatives
+    - PREFER unquoted keywords: JSOC OR special operations OR Delta Force
+    - AVOID quoted phrases when possible (triggers 2-term limit)
+    - If you must use quotes, LIMIT to 2 TOTAL OR terms maximum
+
+    Example GOOD: F-35 OR fighter jet OR stealth aircraft OR air superiority
+    Example BAD: "F-35 Lightning" OR "fighter jet" OR "stealth aircraft" → 403 error
+
+    See docs/INTEGRATION_QUERY_GUIDES.md for detailed empirical test results.
 
 - media_types (array, required):
     Types of media to search. Valid options: "image", "video", "news"
@@ -286,7 +302,14 @@ Return JSON:
             params = base_params.copy()
             params["q"] = keywords_str
 
-            response = requests.get(endpoint, params=params, timeout=config.get_database_config("dvids")["timeout"])
+            # Add Origin/Referer headers if configured (DVIDS API keys may have origin restrictions)
+            headers = {}
+            dvids_config = config.get_database_config("dvids")
+            if dvids_config.get("origin"):
+                headers["Origin"] = dvids_config["origin"]
+                headers["Referer"] = dvids_config["origin"]
+
+            response = requests.get(endpoint, params=params, headers=headers, timeout=dvids_config["timeout"])
             response.raise_for_status()
 
             data = response.json()
@@ -310,7 +333,7 @@ Return JSON:
                     term_params = base_params.copy()
                     term_params["q"] = term
 
-                    term_response = requests.get(endpoint, params=term_params, timeout=config.get_database_config("dvids")["timeout"])
+                    term_response = requests.get(endpoint, params=term_params, headers=headers, timeout=dvids_config["timeout"])
                     if term_response.status_code == 200:
                         term_data = term_response.json()
                         term_results = term_data.get("results", [])
