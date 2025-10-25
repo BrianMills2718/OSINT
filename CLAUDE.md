@@ -2,6 +2,47 @@
 
 ---
 
+## MULTI-AGENT COORDINATION (CRITICAL - READ FIRST)
+
+**MANDATORY**: Multiple AI agents work on this codebase simultaneously. Task coordination prevents duplicate/conflicting work.
+
+### Agent Registry
+- **AGENT1**: Primary development agent (this agent)
+- **AGENT2**: Secondary development agent
+- **AGENT3**: Testing/validation agent
+- **CODEX**: Code review agent (read-only, provides feedback)
+
+### Task Claiming Protocol
+
+**BEFORE starting ANY work**:
+1. **Read TEMPORARY section** → Check "IMMEDIATE BLOCKERS" and "NEXT ACTIONS"
+2. **Check task status** → Is task marked "CLAIMED BY: [AGENT_NAME]"?
+3. **If unclaimed** → Add "CLAIMED BY: AGENT1" (or your agent name) to task
+4. **If claimed by other agent** → DO NOT WORK ON IT - choose different task
+
+**WHILE working**:
+1. Update task status frequently: "IN PROGRESS - AGENT1"
+2. If blocked, update: "BLOCKED - AGENT1 - [reason]"
+3. DO NOT remove tasks claimed by other agents
+
+**AFTER completing**:
+1. **IMMEDIATELY** mark task: "[PASS]/[FAIL]/[BLOCKED]"
+2. **Remove obsolete tasks** from NEXT ACTIONS (prevent duplication)
+3. Add one-line summary to RESOLVED_TASKS.md
+4. Commit changes with clear message
+
+### Conflict Resolution
+- If two agents claim same task → Earlier timestamp wins
+- If conflict detected → Stop work, update CLAUDE.md, ask user to arbitrate
+- Never overwrite another agent's work without explicit user approval
+
+### Communication
+- All coordination through CLAUDE.md TEMPORARY section
+- Leave notes for other agents in task descriptions
+- Use format: "NOTE FOR AGENT2: [message]"
+
+---
+
 ## PURPOSE OF THIS FILE
 
 **CRITICAL**: This file is attached to the context window of EVERY Claude Code API call.
@@ -1291,6 +1332,58 @@ Internal Use → Direct Python OR in-memory MCP → DatabaseIntegration → APIs
 2. Approve hybrid approach OR choose alternative
 3. If GO: Begin Phase 1 POC testing
 4. If NO-GO: Defer to custom integration OR skip entirely
+
+---
+
+## AGENT1 - OPTIONAL RELEVANCE FILTER IMPLEMENTATION [CLAIMED - IN PROGRESS]
+
+**Status**: IN PROGRESS - AGENT1 (2025-10-24)
+**Context**: User wants default behavior to search ALL sources, with OPTIONAL checkbox to enable relevance filtering
+**Priority**: HIGH (improves debugging transparency, removes hidden fallback logic)
+**Estimated Time**: 1-2 hours
+
+### Tasks
+
+**Task 1: Add UI Checkbox for Relevance Filter** [CLAIMED BY: AGENT1 - IN PROGRESS]
+- File: `apps/ai_research.py` (lines 432-455)
+- Changes needed:
+  - Add checkbox after "Comprehensive Search" checkbox (line ~440)
+  - Label: "🎯 Apply relevance filtering (experimental)"
+  - Help text: "Filter out sources that likely don't have relevant data. May miss results - use with caution."
+  - Default: unchecked (filter DISABLED by default)
+  - Pass `apply_relevance_filter` parameter to search execution
+
+**Task 2: Update execute_search_via_registry() Logic** [CLAIMED BY: AGENT1 - PENDING]
+- File: `apps/ai_research.py` (lines 200-302, specifically 250-261)
+- Changes needed:
+  - Accept `apply_relevance_filter: bool = False` parameter
+  - **Remove fallback query logic** (lines 254-261 - creates fake queries when generate_query returns None)
+  - If `apply_relevance_filter=True`: Call `is_relevant()`, skip if False, log clearly
+  - If `apply_relevance_filter=False` (default): Skip `is_relevant()` check entirely, always search
+  - If `generate_query()` returns None: Treat as ERROR (not fallback), return error result
+
+**Task 3: Update Logging** [CLAIMED BY: AGENT1 - PENDING]
+- File: `apps/ai_research.py` (logging throughout execute_search_via_registry)
+- Changes needed:
+  - When filter enabled + source skipped: Log "Filtered out (not relevant for [query type])"
+  - When filter disabled: No mention of relevance
+  - When generate_query() returns None: Log "ERROR: generate_query failed - this should never happen"
+
+**Task 4: Update UI Display** [CLAIMED BY: AGENT1 - PENDING]
+- File: `apps/ai_research.py` (lines 523-529)
+- Changes needed:
+  - Update status display to show "⊘ Source: Filtered out (not relevant)" when `not_relevant=True`
+  - Keep existing success/error display logic
+
+### Success Criteria
+- [ ] Checkbox added to UI with correct label and help text
+- [ ] Checkbox default = unchecked (filter disabled)
+- [ ] When unchecked: ALL selected sources searched (no relevance filtering)
+- [ ] When checked: Sources filtered via is_relevant() before searching
+- [ ] Fallback query logic removed (lines 254-261 deleted)
+- [ ] generate_query() returning None treated as ERROR
+- [ ] Logging distinguishes filtered vs searched vs error
+- [ ] User tested locally with contract query - confirms filtering only when checkbox enabled
 
 ---
 
