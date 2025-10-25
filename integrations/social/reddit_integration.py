@@ -43,12 +43,15 @@ class RedditIntegration(DatabaseIntegration):
 
     Search Capabilities:
     - Keyword search across post titles and content
-    - Simple OR operators supported (complex Boolean logic NOT supported)
+    - Boolean operators supported (with limitations - see query syntax guide)
     - Subreddit-specific or multi-subreddit search
     - Time-filtered results
 
-    Note: Reddit API does NOT support complex Boolean queries (AND, nested parentheses).
-    Use simple keywords (2-4 words) and let Reddit's relevance ranking work.
+    Query Syntax (Empirically Tested 2025-10-25):
+    - BEST: Unquoted keywords with AND (e.g., "threat intelligence AND contract") - 43% accuracy
+    - AVOID: Quoted phrases with Boolean (e.g., "threat intelligence" AND contract) - 0% accuracy
+    - AVOID: Parentheses for grouping (e.g., (contract OR procurement)) - breaks queries
+    - See docs/INTEGRATION_QUERY_GUIDES.md for detailed test results
 
     Rate Limits:
     - Reddit API: 60 requests per minute
@@ -163,20 +166,22 @@ organized into topic-specific communities (subreddits).
 
 API Parameters:
 - query (string, required):
-    Reddit search query. Use SIMPLE KEYWORDS or simple OR operators ONLY.
-    Reddit does NOT support complex Boolean logic (nested parentheses, AND with multiple terms).
+    Reddit search query syntax (empirically tested 2025-10-25):
 
-    CORRECT examples:
-    - "threat intelligence" (simple keywords)
-    - "JTTF OR counterterrorism" (simple OR)
-    - "NSA whistleblower" (multiple keywords)
+    BEST SYNTAX (43% accuracy):
+    - Use UNQUOTED keywords with AND: threat intelligence AND contract
 
-    WRONG examples (will return 0 results):
-    - "threat AND intelligence" (AND not supported)
-    - "\"threat intelligence\" AND (contract OR procurement)" (complex nested Boolean)
+    WORKING (15% accuracy):
+    - Simple keywords: threat intelligence contract
+    - Simple OR: JTTF OR counterterrorism
 
-    Strategy: Use 2-4 relevant keywords that capture the research question.
-    Let Reddit's relevance ranking do the work instead of complex Boolean logic.
+    AVOID (0% accuracy - breaks queries):
+    - Quoted phrases with Boolean: "threat intelligence" AND contract
+    - Parentheses for grouping: (contract OR procurement)
+    - Nested queries: "threat intelligence" AND (contract OR procurement)
+
+    Strategy: Use 2-3 unquoted keywords with AND for best results.
+    Reddit's search uses fuzzy matching - even best syntax only achieves ~40% accuracy.
 
 - subreddits (array of strings, required):
     List of subreddit names to search (without r/ prefix).
@@ -245,7 +250,7 @@ Return JSON:
             "properties": {
                 "query": {
                     "type": "string",
-                    "description": "Reddit search query with simple keywords (2-4 words) or simple OR operators. NO complex Boolean logic."
+                    "description": "Reddit search query using UNQUOTED keywords with AND (best accuracy). AVOID quoted phrases with Boolean."
                 },
                 "subreddits": {
                     "type": "array",
