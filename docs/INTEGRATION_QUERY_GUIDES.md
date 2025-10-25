@@ -202,18 +202,54 @@ Over Limit (3+ terms) - FAIL:
 
 ### Query Syntax
 
-**Status**: Not yet tested empirically
-**Documentation**: Official API supports full Lucene query syntax
+**Status**: Unable to test empirically due to strict rate limits
+**Documentation**: Official API claims to support full Lucene query syntax
+**Testing Date**: 2025-10-25
+
+### Query Syntax (Documented)
+
+**SAM.gov Official Documentation** claims full Lucene support:
+- Boolean operators: AND, OR, NOT
+- Quoted phrases: "exact phrase"
+- Parentheses: (term1 OR term2) AND term3
+- Character limit: ~200 characters maximum for keywords parameter
+
+**Cannot Verify**: Empirical testing blocked by aggressive rate limiting (HTTP 429)
 
 ### Known Limitations
 
-- **Rate limiting**: Aggressive rate limits, HTTP 429 common
-- **Slow API**: 12s average response time
-- Mitigation: Exponential backoff implemented (sam_integration.py:213-235)
+**Rate Limiting (Critical Issue)**:
+- **Severity**: SEVERE - blocks empirical testing entirely
+- **Test Evidence** (2025-10-25): 15/15 test queries returned HTTP 429 (100% rate limited)
+- **Timing**: Even with 2-second delays between requests, all queries rate limited
+- **Impact**: Cannot validate query syntax, Boolean operators, or character limits empirically
+- **Mitigation**: Exponential backoff implemented (sam_integration.py:293-314)
+  - Retries: 3 attempts with 2s, 4s, 8s delays
+  - Not sufficient for testing workload
+- **Production Status**: Working with retry logic, but unreliable for high-volume queries
+
+**Slow API**:
+- Average response time: 12s (when not rate limited)
+- Timeout configured: 15s (sam_integration.py:298)
 
 ### Recommendations
 
-(TODO: Conduct systematic query syntax testing)
+**For Query Generation** (LLM Prompt):
+1. **Assume Lucene syntax works** per official documentation
+2. **Keep queries simple** - prefer 2-3 keywords over complex Boolean
+3. **Limit length** - stay under 200 characters
+4. **Avoid over-optimization** - rate limits make complex queries impractical
+
+**For Testing**:
+1. **Cannot conduct systematic syntax testing** due to rate limits
+2. **Test with production queries only** - avoid test suites that trigger 429
+3. **Accept official documentation** without empirical validation
+
+**For Production**:
+1. **Use exponential backoff** (already implemented)
+2. **Limit SAM.gov queries** - only use when specifically needed
+3. **Cache results aggressively** - avoid repeated queries
+4. **Consider SAM.gov unreliable** for high-volume applications
 
 ---
 
@@ -223,18 +259,103 @@ Over Limit (3+ terms) - FAIL:
 - REST API: `https://data.usajobs.gov/api/search`
 - Official docs: https://developer.usajobs.gov/
 
-### Query Syntax
+### Query Syntax (Empirically Tested)
 
-**Status**: Not yet tested empirically
+**Testing Date**: 2025-10-25
+**Test Method**: 11 query variations tested against live API
+**Test File**: tests/test_usajobs_query_syntax.py
 
-### Known Limitations
+#### What Works (Evidence-Based)
 
-- Requires specific headers: `User-Agent` (email) and `Authorization-Key` (NOT Bearer token)
-- Fixed in usajobs_integration.py
+| Syntax | Example | Results | Notes |
+|--------|---------|---------|-------|
+| **Simple keywords** | `intelligence` | 10 | BEST - most results |
+| **Two keywords (space)** | `intelligence analyst` | 3 | Works, fewer results than single keyword |
+| **Boolean AND** | `intelligence AND analyst` | 2 | Works, but more restrictive than space |
+| **Boolean OR** | `intelligence OR security` | 10 | Works well, similar to simple keyword |
+| **Boolean NOT** | `intelligence NOT classified` | 4 | Works as expected |
+| **Quoted phrase** | `"intelligence analyst"` | 1 | Works for exact matching |
+
+#### What Doesn't Work (Evidence-Based)
+
+| Syntax | Example | Results | Issue |
+|--------|---------|---------|-------|
+| **Three keywords (space)** | `intelligence analyst senior` | 0 | Too specific - no matches |
+| **Quoted phrase with AND** | `"intelligence analyst" AND senior` | 0 | Complexity breaks query |
+| **Parentheses** | `(intelligence OR security) AND analyst` | 0 | Grouping not supported |
+| **Complex Boolean** | `intelligence OR security OR analyst OR investigator` | 0 | Multiple OR terms break query |
+| **Mixed quotes + OR** | `"intelligence analyst" OR cybersecurity` | 0 | Mixing syntax breaks query |
+
+#### Test Evidence
+
+**Key Finding**: Simple Boolean operators (AND, OR, NOT) work individually, but COMPLEX queries with multiple operators or parentheses return 0 results.
+
+**Simple Keywords Performance**:
+```
+✅ "intelligence" → 10 results (BEST)
+✅ "intelligence analyst" → 3 results (Good)
+✅ "intelligence analyst senior" → 0 results (Too specific)
+```
+
+**Boolean Operators Performance**:
+```
+✅ "intelligence AND analyst" → 2 results (Works, but fewer than space-separated)
+✅ "intelligence OR security" → 10 results (Works well, similar to simple)
+✅ "intelligence NOT classified" → 4 results (Works as expected)
+```
+
+**Complex Queries Performance**:
+```
+❌ "intelligence OR security OR analyst OR investigator" → 0 results (Multiple OR breaks)
+❌ "(intelligence OR security) AND analyst" → 0 results (Parentheses not supported)
+❌ '"intelligence analyst" OR cybersecurity' → 0 results (Mixed syntax breaks)
+```
+
+**Accuracy Comparison**:
+- Simple queries: 4.3 results average (3 tests)
+- Boolean queries: 5.3 results average (3 tests)
+- Conclusion: Single Boolean operators work as well or better than simple keywords
 
 ### Recommendations
 
-(TODO: Conduct systematic query syntax testing)
+**For Query Generation** (LLM Prompt):
+
+**✅ DO USE**:
+1. **Single keyword** - Best for broad searches: `intelligence`
+2. **Two keywords (space)** - Good for focused searches: `intelligence analyst`
+3. **Single Boolean operator** - AND/OR/NOT work individually: `intelligence OR security`
+4. **Quoted phrases** - For exact matches: `"intelligence analyst"`
+
+**❌ DO NOT USE**:
+1. **Three or more keywords** - Too specific, likely 0 results
+2. **Multiple OR terms** - `term1 OR term2 OR term3` breaks query
+3. **Parentheses** - Grouping not supported
+4. **Mixed syntax** - Don't combine quotes + Boolean
+5. **Complex Boolean** - Stick to simple single-operator queries
+
+**Strategy**:
+- **Prefer**: Simple 1-2 keyword queries
+- **Allow**: Single Boolean operator if needed (AND/OR/NOT)
+- **Avoid**: Complexity - USAJobs API breaks with complex queries
+
+### Known Limitations
+
+**Query Complexity Intolerance**:
+- Single Boolean operators work
+- Multiple Boolean operators return 0 results
+- Parentheses not supported for grouping
+- Mixing quoted phrases with Boolean breaks queries
+
+**API Headers**:
+- Requires specific headers: `User-Agent` (email) and `Authorization-Key` (NOT Bearer token)
+- Fixed in usajobs_integration.py
+
+### Implementation Notes
+
+**Current LLM Prompt** (usajobs_integration.py:102-104):
+- States: "DO NOT use OR operators or complex Boolean queries"
+- **Evidence**: Partially incorrect - single OR works fine, complex queries don't
+- **Recommendation**: Update to allow single Boolean operators, disallow complexity
 
 ---
 

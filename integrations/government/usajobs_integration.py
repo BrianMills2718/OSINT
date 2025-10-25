@@ -98,10 +98,30 @@ USAJobs provides: Official U.S. federal government job listings across all agenc
 
 API Parameters:
 - keywords (string, required):
-    Search terms for job titles and descriptions.
-    IMPORTANT: Keep it simple - use 1-3 key words only (e.g., "intelligence" or "cybersecurity analyst").
-    DO NOT use OR operators or complex Boolean queries - the API doesn't handle them well.
-    Simpler is better - broad terms find more results.
+    Search query syntax (empirically tested 2025-10-25):
+
+    BEST SYNTAX (most results):
+    - Single keyword: intelligence
+    - Two keywords (space): intelligence analyst
+
+    WORKING (single Boolean operator only):
+    - Simple AND: intelligence AND analyst
+    - Simple OR: intelligence OR security
+    - Simple NOT: intelligence NOT classified
+
+    FORBIDDEN (returns 0 results):
+    - Three or more keywords: intelligence analyst senior
+    - Multiple OR terms: intelligence OR security OR analyst
+    - Parentheses grouping: (intelligence OR security) AND analyst
+    - Mixed syntax: "intelligence analyst" OR cybersecurity
+    - Complex Boolean: Any query with 2+ Boolean operators
+
+    STRATEGY:
+    - PREFER: Simple 1-2 keywords (e.g., "intelligence" or "intelligence analyst")
+    - ALLOW: Single Boolean operator if needed (AND/OR/NOT)
+    - AVOID: Complexity - USAJobs API breaks with complex queries
+
+    See docs/INTEGRATION_QUERY_GUIDES.md for detailed empirical test results.
 
 - location (string or null, optional):
     Geographic location (e.g., "Washington, DC", "California", "Remote")
