@@ -463,16 +463,11 @@ def render_ai_research_tab(openai_api_key_from_ui, dvids_api_key, sam_api_key, u
     col1, col2 = st.columns([3, 1])
 
     with col1:
-        comprehensive_mode = st.checkbox(
-            "🔍 Comprehensive Search (maximum coverage)",
+        # Single checkbox: Default ON (comprehensive + no filtering)
+        focused_search = st.checkbox(
+            "🎯 Focused Search (faster, selective)",
             value=False,
-            help="Enable to cast the widest possible net - includes every database that could potentially have relevant info. Disable for more selective, focused results."
-        )
-
-        apply_relevance_filter = st.checkbox(
-            "🎯 Apply relevance filtering (experimental)",
-            value=False,
-            help="Filter out sources that likely don't have relevant data. May miss results - use with caution. Default: off (search all selected sources)."
+            help="Enable for faster, more selective results. Disable (default) for comprehensive search across all relevant sources with no filtering."
         )
 
     with col2:
@@ -484,15 +479,17 @@ def render_ai_research_tab(openai_api_key_from_ui, dvids_api_key, sam_api_key, u
             key="ai_results_limit"
         )
 
-    # Info about search mode
-    if comprehensive_mode:
-        st.info("💡 **Comprehensive mode**: Searches EVERY database that might have relevant info. Slower and more expensive, but ensures exhaustive coverage.")
-    else:
-        st.info("💡 **Intelligent mode** (default): AI selects all relevant databases while excluding clearly irrelevant sources. Balances coverage with efficiency.")
+    # Set internal variables based on checkbox
+    # Default (unchecked) = Comprehensive mode ON, filtering OFF
+    # Checked = Comprehensive mode OFF, filtering OFF
+    comprehensive_mode = not focused_search
+    apply_relevance_filter = False  # Always disabled (kept for future use)
 
-    # Info about relevance filtering
-    if apply_relevance_filter:
-        st.warning("⚠️ **Relevance filtering enabled**: Sources will be pre-filtered before searching. This may exclude relevant sources. Recommended: keep this OFF for maximum transparency.")
+    # Info about search mode
+    if focused_search:
+        st.info("💡 **Focused mode**: AI selects most relevant databases. Faster and cheaper, but may miss some results.")
+    else:
+        st.info("💡 **Comprehensive mode** (default): Searches ALL relevant sources with no filtering. Maximum coverage and transparency.")
 
     # Search button
     search_btn = st.button("🚀 Research", type="primary", use_container_width=True, key="ai_search_btn")
