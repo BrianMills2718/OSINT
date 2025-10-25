@@ -197,7 +197,7 @@ Return JSON array of selected sources."""
     return json.loads(result_text)
 
 
-async def execute_search_via_registry(source_id: str, research_question: str, api_keys: dict, limit: int = 10) -> dict:
+async def execute_search_via_registry(source_id: str, research_question: str, api_keys: dict, limit: int = 10, apply_relevance_filter: bool = False) -> dict:
     """
     Execute search via registry for any source.
 
@@ -206,9 +206,10 @@ async def execute_search_via_registry(source_id: str, research_question: str, ap
         research_question: Research question to generate query from
         api_keys: Dict mapping source_id to API key
         limit: Max results
+        apply_relevance_filter: If True, check is_relevant() before searching. If False (default), always search.
 
     Returns:
-        Dict with {success, total, results, source, error}
+        Dict with {success, total, results, source, error, not_relevant}
     """
     from integrations.registry import registry
 
@@ -218,6 +219,7 @@ async def execute_search_via_registry(source_id: str, research_question: str, ap
     logger.info(f"Starting search for source: {source_id}")
     logger.info(f"Research question: {research_question}")
     logger.info(f"Result limit: {limit}")
+    logger.info(f"Apply relevance filter: {apply_relevance_filter}")
 
     try:
         # Get integration class from registry
@@ -233,6 +235,28 @@ async def execute_search_via_registry(source_id: str, research_question: str, ap
 
         # Instantiate integration
         integration = integration_class()
+
+        # Check relevance FIRST (if filter enabled)
+        if apply_relevance_filter:
+            logger.info(f"Checking relevance for {integration.metadata.name}...")
+            is_relevant = await integration.is_relevant(research_question)
+
+            if not is_relevant:
+                logger.warning(f"{integration.metadata.name}: Filtered out (not relevant for this query type)")
+                return {
+                    "success": True,  # Not an error
+                    "total": 0,
+                    "results": [],
+                    "source": integration.metadata.name,
+                    "not_relevant": True,
+                    "error": None,
+                    "response_time_ms": (datetime.now() - start_time).total_seconds() * 1000,
+                    "query_params": None
+                }
+
+            logger.info(f"{integration.metadata.name}: Marked RELEVANT, proceeding with search...")
+        else:
+            logger.info(f"{integration.metadata.name}: Relevance filter disabled, searching all sources...")
 
         # Get API key if needed
         api_key = None
@@ -251,14 +275,20 @@ async def execute_search_via_registry(source_id: str, research_question: str, ap
         logger.info(f"Generating query parameters for {integration.metadata.name}...")
         query_params = await integration.generate_query(research_question=research_question)
 
-        # RELEVANCE FILTER DISABLED - Always search all sources
-        # Even if LLM says "not relevant", we still execute the search
-        # This ensures we don't miss results due to overly conservative LLM filtering
+        # If generate_query returns None, this is a BUG (should never happen)
         if not query_params:
-            logger.warning(f"{integration.metadata.name}: LLM returned no query params (not relevant), but searching anyway...")
-            # Create a simple fallback query with just the research question
-            query_params = {"keywords": research_question}
-            logger.info(f"{integration.metadata.name}: Using fallback query params: {query_params}")
+            logger.error(f"{integration.metadata.name}: ERROR - generate_query() returned None!")
+            logger.error(f"  This should NEVER happen - indicates prompt regression, LLM failure, or bug")
+            logger.error(f"  Query: '{research_question}'")
+            return {
+                "success": False,
+                "total": 0,
+                "results": [],
+                "source": integration.metadata.name,
+                "error": "Query generation failed (generate_query returned None - this is a BUG)",
+                "response_time_ms": (datetime.now() - start_time).total_seconds() * 1000,
+                "query_params": None
+            }
 
         logger.info(f"{integration.metadata.name}: Generated query parameters:")
         logger.info(f"  {json.dumps(query_params, indent=2)}")
@@ -439,6 +469,12 @@ def render_ai_research_tab(openai_api_key_from_ui, dvids_api_key, sam_api_key, u
             help="Enable to cast the widest possible net - includes every database that could potentially have relevant info. Disable for more selective, focused results."
         )
 
+        apply_relevance_filter = st.checkbox(
+            "🎯 Apply relevance filtering (experimental)",
+            value=False,
+            help="Filter out sources that likely don't have relevant data. May miss results - use with caution. Default: off (search all selected sources)."
+        )
+
     with col2:
         results_per_db = st.number_input(
             "Results per database",
@@ -453,6 +489,10 @@ def render_ai_research_tab(openai_api_key_from_ui, dvids_api_key, sam_api_key, u
         st.info("💡 **Comprehensive mode**: Searches EVERY database that might have relevant info. Slower and more expensive, but ensures exhaustive coverage.")
     else:
         st.info("💡 **Intelligent mode** (default): AI selects all relevant databases while excluding clearly irrelevant sources. Balances coverage with efficiency.")
+
+    # Info about relevance filtering
+    if apply_relevance_filter:
+        st.warning("⚠️ **Relevance filtering enabled**: Sources will be pre-filtered before searching. This may exclude relevant sources. Recommended: keep this OFF for maximum transparency.")
 
     # Search button
     search_btn = st.button("🚀 Research", type="primary", use_container_width=True, key="ai_search_btn")
@@ -507,7 +547,7 @@ def render_ai_research_tab(openai_api_key_from_ui, dvids_api_key, sam_api_key, u
                     source_id = selected['source_id']
                     # Pass full research question, not just keywords
                     # Each integration's generate_query() will see the full context
-                    task = execute_search_via_registry(source_id, research_question, api_keys, results_per_db)
+                    task = execute_search_via_registry(source_id, research_question, api_keys, results_per_db, apply_relevance_filter)
                     tasks.append(task)
 
                 return await asyncio.gather(*tasks)
