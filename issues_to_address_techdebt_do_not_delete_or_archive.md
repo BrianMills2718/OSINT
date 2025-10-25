@@ -141,6 +141,64 @@ File "/mount/src/osint/integrations/government/clearancejobs_playwright.py", lin
 
 ## Low Priority
 
+### Enhanced Entity Extraction (crest_kg) - Performance Too Slow
+**Discovered**: 2025-10-24
+**Severity**: Low (optional feature, current simple extraction works)
+**Status**: DEFERRED - NO-GO for now
+
+**Issue**: Enhanced knowledge graph extraction with relationships + attributes is 4x slower than acceptable
+
+**Evidence** (from validation tests):
+```
+Simple extraction:  12-14s per 5 results (2.8s per result)
+Enhanced KG:        55-66s per 5 results (12s per result)
+Time overhead:      3.9-4.7x (limit: 3.0x)
+
+9-task investigation impact:
+- Current:  126s (2 min)
+- Enhanced: 540s (9 min overhead) ← UNACCEPTABLE
+```
+
+**Quality** (from validation):
+- ✅ Entities: +77% more (16-20 vs 8-9)
+- ✅ Relationships: 20-24 extracted (simple: 0)
+- ✅ Attributes: Rich metadata on entities
+- ⚠️ Accuracy: ~90% (10% inferred from context)
+
+**Root Cause**:
+- gpt-5-mini reasoning tokens scale exponentially with output complexity
+- Complex JSON (entities + relationships + attributes) requires massive reasoning
+- 10x more output tokens → 4x more total time
+
+**Optimization Options** (not tested):
+1. **gpt-4o-mini instead**: 50-60% faster, may hit 3x limit (30 min test)
+2. **End-of-investigation only**: Run once on ALL results (2-3 min total acceptable)
+3. **Simpler schema**: Remove attributes, keep just entities + relationships (20% faster)
+4. **Hybrid approach**: Simple per-task + enhanced at end
+
+**Reconsider if**:
+- User demand validated (do they actually want graph visualizations?)
+- End-of-investigation extraction acceptable (2-3 min)
+- gpt-4o-mini testing shows <3x overhead
+- Relationships prove critical for investigative value
+
+**Don't reconsider if**:
+- Need per-task extraction for follow-up tasks
+- Need real-time response (<30s)
+- Current simple extraction sufficient
+
+**Files**:
+- Validation results: `CREST_KG_VALIDATION_RESULTS.md`
+- Test scripts: `tests/test_crest_kg_schema_validation.py`, `tests/test_crest_kg_quality_comparison.py`
+- Reference: `crest_kg/kg_from_text2.py` (fixed hardcoded API key)
+- Integration plan: `CREST_KG_INTEGRATION_PLAN.md`
+
+**Decision**: NO-GO for current implementation. Keep simple extraction as-is. Revisit only if user demand or performance improves.
+
+**Last Reviewed**: 2025-10-24
+
+---
+
 ### Twitter Integration - Missing Dependency
 **Discovered**: 2025-10-21
 **Severity**: Low (optional Phase 3 integration)
@@ -203,4 +261,4 @@ File "/mount/src/osint/integrations/government/clearancejobs_playwright.py", lin
 
 ---
 
-**Last Updated**: 2025-10-21
+**Last Updated**: 2025-10-24

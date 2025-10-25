@@ -139,9 +139,6 @@ class RedditIntegration(DatabaseIntegration):
                 "reasoning": "Searching intelligence/security subreddits for JTTF discussions"
             }
         """
-        # Check relevance first
-        if not await self.is_relevant(research_question):
-            return None
 
         # Handle simple keywords from Boolean monitors
         # If research_question is just 1-3 words, treat as keyword search

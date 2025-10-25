@@ -829,10 +829,10 @@ pip list | grep playwright       # Should show: playwright, seleniumbase
 ---
 # CLAUDE.md - Temporary Section (Updated as Tasks Complete)
 
-**Last Updated**: 2025-10-24 (Data.gov MCP Pre-Flight Analysis COMPLETE)
-**Current Phase**: MCP Integration - Phase 2 COMPLETE ✅, Phase 3 Planning COMPLETE ✅
-**Current Focus**: Data.gov MCP integration pre-flight analysis complete. Awaiting user GO/NO-GO decision.
-**Status**: Comprehensive risk analysis documented with mitigation plans. Ready to proceed with hybrid approach (third-party server POC + custom integration later).
+**Last Updated**: 2025-10-24 (Data.gov MCP Automated Validation COMPLETE ✅)
+**Current Phase**: MCP Integration - Phase 2 COMPLETE ✅, Phase 3 Validation IN PROGRESS
+**Current Focus**: Automated STDIO validation PASSED (100% success, 4.95s avg latency). Awaiting manual data quality assessment.
+**Status**: Technical feasibility confirmed. Ready to proceed pending user manual validation of Data.gov dataset relevance.
 
 ---
 
@@ -1298,9 +1298,45 @@ Internal Use → Direct Python OR in-memory MCP → DatabaseIntegration → APIs
 
 | Blocker | Impact | Status | Next Action |
 |---------|--------|--------|-------------|
-| User GO/NO-GO Decision | Blocks Data.gov integration | **AWAITING USER** | Review DATAGOV_MCP_PREFLIGHT_ANALYSIS.md and decide |
+| Manual Data Quality Validation | Blocks final GO/NO-GO decision | **IN PROGRESS** | Complete tests/DATAGOV_MANUAL_VALIDATION.md guide |
 
-**Current Status**: Pre-flight analysis complete, awaiting user decision on Data.gov MCP integration approach
+**Current Status**: Automated validation PASSED ✅ (STDIO reliable, 100% success rate, 4.95s avg latency). Now need manual assessment of Data.gov dataset quality/relevance for investigative journalism.
+
+### Automated Validation Results (2025-10-24)
+
+**Test**: `python3 tests/test_datagov_validation.py`
+
+**Results**:
+- ✅ All 11 tests PASSED (100% success rate)
+- ✅ STDIO connection: 132ms
+- ✅ Tool discovery: 4 tools (package_search, package_show, group_list, tag_list)
+- ✅ Search working: 93 datasets found for "intelligence operations"
+- ✅ Reliability: 5/5 consecutive calls succeeded
+- ✅ Average latency: 4953ms (4.95s) - under 5s threshold
+- ✅ Max latency: 8763ms (8.76s) - under 10s threshold
+- ✅ Error handling: Empty queries and invalid tools handled correctly
+
+**Conclusion**: **STDIO transport is RELIABLE and PERFORMANT**
+
+**Critical Risk #1 (STDIO Unreliable)**: ✅ MITIGATED - empirical testing confirms reliability
+
+### Manual Validation (Next Step)
+
+**Guide**: `tests/DATAGOV_MANUAL_VALIDATION.md`
+
+**What to test**:
+1. Go to https://catalog.data.gov/dataset
+2. Search 5 investigative queries (intelligence operations, JSOC, classified programs, SIGINT, FISA surveillance)
+3. Assess dataset relevance, quality, recency
+4. Report findings: HIGH/MEDIUM/LOW value
+
+**Decision criteria**:
+- HIGH value (10+ relevant datasets) → **STRONG GO**
+- MEDIUM value (5-9 relevant datasets) → **GO**
+- LOW value (<5 relevant datasets) → **MAYBE/DEFER**
+- NO value (0 relevant datasets) → **NO-GO** (skip or custom integration)
+
+**Expected time**: 20-30 minutes
 
 ---
 

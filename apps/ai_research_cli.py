@@ -59,6 +59,18 @@ async def search_source(source_id: str, research_question: str, api_keys: dict, 
         # Create integration instance
         integration = integration_class()
 
+        # Check relevance first
+        is_relevant = await integration.is_relevant(research_question)
+        if not is_relevant:
+            return {
+                "success": True,
+                "source": integration.metadata.name,
+                "total": 0,
+                "results": [],
+                "not_relevant": True,
+                "query_params": None
+            }
+
         # Get API key if needed
         api_key = None
         if integration.metadata.requires_api_key:

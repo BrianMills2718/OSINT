@@ -101,9 +101,6 @@ class DVIDSIntegration(DatabaseIntegration):
                 "to_date": None
             }
         """
-        # Check relevance first
-        if not await self.is_relevant(research_question):
-            return None
 
         prompt = f"""Generate search parameters for DVIDS.
 
