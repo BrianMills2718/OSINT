@@ -43,9 +43,12 @@ class RedditIntegration(DatabaseIntegration):
 
     Search Capabilities:
     - Keyword search across post titles and content
-    - Boolean operators (AND, OR, NOT) in search queries
+    - Simple OR operators supported (complex Boolean logic NOT supported)
     - Subreddit-specific or multi-subreddit search
     - Time-filtered results
+
+    Note: Reddit API does NOT support complex Boolean queries (AND, nested parentheses).
+    Use simple keywords (2-4 words) and let Reddit's relevance ranking work.
 
     Rate Limits:
     - Reddit API: 60 requests per minute
@@ -160,9 +163,20 @@ organized into topic-specific communities (subreddits).
 
 API Parameters:
 - query (string, required):
-    Reddit search query. Supports boolean operators:
-    AND (required terms), OR (alternatives), NOT (exclusions), quotes for exact phrases
-    Example: "JTTF OR counterterrorism" or "NSA AND whistleblower"
+    Reddit search query. Use SIMPLE KEYWORDS or simple OR operators ONLY.
+    Reddit does NOT support complex Boolean logic (nested parentheses, AND with multiple terms).
+
+    CORRECT examples:
+    - "threat intelligence" (simple keywords)
+    - "JTTF OR counterterrorism" (simple OR)
+    - "NSA whistleblower" (multiple keywords)
+
+    WRONG examples (will return 0 results):
+    - "threat AND intelligence" (AND not supported)
+    - "\"threat intelligence\" AND (contract OR procurement)" (complex nested Boolean)
+
+    Strategy: Use 2-4 relevant keywords that capture the research question.
+    Let Reddit's relevance ranking do the work instead of complex Boolean logic.
 
 - subreddits (array of strings, required):
     List of subreddit names to search (without r/ prefix).
@@ -231,7 +245,7 @@ Return JSON:
             "properties": {
                 "query": {
                     "type": "string",
-                    "description": "Reddit search query with Boolean operators"
+                    "description": "Reddit search query with simple keywords (2-4 words) or simple OR operators. NO complex Boolean logic."
                 },
                 "subreddits": {
                     "type": "array",
