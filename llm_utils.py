@@ -393,3 +393,51 @@ def reset_cost_tracking():
         "calls": [],
         "by_model": {}
     }
+
+
+# ============================================================================
+# Role-Based Model Selection (Phase 1: Stub - All use same model)
+# ============================================================================
+
+# Model role mapping (Phase 1: all use same model, Phase 2: specialize)
+MODEL_ROLES = {
+    "scoping": "gpt-5-mini",
+    "research": "gpt-5-mini",
+    "summarization": "gpt-5-mini",  # Phase 2: switch to gpt-5-nano
+    "synthesis": "gpt-5-mini",
+}
+
+
+async def acompletion_with_role(
+    role: str,
+    messages: List[Dict[str, str]],
+    **kwargs
+) -> Any:
+    """
+    Role-based LLM completion for specialized tasks.
+
+    Phase 1: All roles use same model (gpt-5-mini)
+    Phase 2: Specialize roles for cost optimization
+
+    Args:
+        role: Task role ("scoping", "research", "summarization", "synthesis")
+        messages: List of message dicts
+        **kwargs: Additional parameters
+
+    Returns:
+        Response object
+
+    Example:
+        response = await acompletion_with_role(
+            role="summarization",
+            messages=[{"role": "user", "content": "Summarize this..."}]
+        )
+    """
+    # Get model for role (defaults to gpt-5-mini if role unknown)
+    model = MODEL_ROLES.get(role, "gpt-5-mini")
+
+    # Log role-based call
+    logging.debug(f"LLM call with role={role}, model={model}")
+
+    # Delegate to standard acompletion
+    return await acompletion(model=model, messages=messages, **kwargs)

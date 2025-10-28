@@ -147,6 +147,26 @@ cost_management:
   warn_on_expensive_queries: true # Warn if query > 50% of max
 
 # ============================================================================
+# Research Flow Configuration (Supervisor/Scoping/HITL)
+# ============================================================================
+research:
+  # Feature flags (start disabled, enable after validation)
+  enable_scoping: false           # Enable ScopingAgent (query clarification + planning)
+  enable_supervisor: false        # Enable ResearchSupervisor (task decomposition + routing)
+  enable_hitl: false              # Enable Human-in-the-Loop approval
+
+  # Scoping parameters
+  max_subtasks: 5                 # Max sub-questions per research brief
+  auto_clarify_threshold: 0.7     # Confidence score (0-1) to skip clarification (higher = more clarification)
+
+  # Model roles (Phase 1: all use same model, Phase 2: specialize)
+  model_roles:
+    scoping: "gpt-5-mini"
+    research: "gpt-5-mini"
+    summarization: "gpt-5-mini"   # Phase 2: switch to gpt-5-nano for 70% cost savings
+    synthesis: "gpt-5-mini"
+
+# ============================================================================
 # Logging Configuration
 # ============================================================================
 logging:
