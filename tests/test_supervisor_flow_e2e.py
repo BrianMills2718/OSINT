@@ -10,6 +10,10 @@ import asyncio
 import sys
 sys.path.insert(0, '/home/brian/sam_gov')
 
+# Load environment variables before importing modules
+from dotenv import load_dotenv
+load_dotenv()
+
 from core.intelligent_executor import IntelligentExecutor
 
 
