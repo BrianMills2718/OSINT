@@ -14,7 +14,6 @@ class SubQuestion(BaseModel):
 
     question: str = Field(
         ...,
-        min_length=10,
         max_length=500,
         description="Specific research sub-question"
     )
@@ -42,7 +41,6 @@ class ResearchBrief(BaseModel):
 
     objective: str = Field(
         ...,
-        min_length=20,
         max_length=500,
         description="1-2 sentence research objective"
     )

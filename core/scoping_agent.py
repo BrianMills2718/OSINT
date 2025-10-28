@@ -161,7 +161,6 @@ Return valid JSON matching this schema."""
             "properties": {
                 "objective": {
                     "type": "string",
-                    "minLength": 20,
                     "maxLength": 500,
                     "description": "1-2 sentence research objective"
                 },
@@ -174,7 +173,6 @@ Return valid JSON matching this schema."""
                         "properties": {
                             "question": {
                                 "type": "string",
-                                "minLength": 10,
                                 "maxLength": 500
                             },
                             "rationale": {
