@@ -109,6 +109,49 @@ class ParallelExecutor:
 
         return result_dict
 
+    async def execute_with_sources(self,
+                                   research_question: str,
+                                   source_ids: List[str],
+                                   limit: int = 10) -> Dict:
+        """
+        Execute research using only specified sources.
+
+        Used by ResearchSupervisor for selective source routing.
+        This is a convenience wrapper around execute_all() that filters
+        to only the requested sources.
+
+        Args:
+            research_question: The user's research question
+            source_ids: List of source IDs to query (e.g., ["sam_gov", "twitter"])
+            limit: Maximum results per source
+
+        Returns:
+            Dict with results from requested sources
+
+        Example:
+            # Query only government sources
+            results = await executor.execute_with_sources(
+                "What AI contracts exist?",
+                source_ids=["sam_gov", "usajobs"],
+                limit=10
+            )
+        """
+        # Note: This method needs to be called from IntelligentExecutor
+        # which has access to the registry and API keys
+        # For now, return a placeholder - will be properly implemented
+        # when wiring everything together in Phase 1E
+
+        logging.info(
+            f"execute_with_sources called with {len(source_ids)} sources: {source_ids}"
+        )
+
+        return {
+            "research_question": research_question,
+            "source_ids": source_ids,
+            "results": {},
+            "note": "Implementation pending Phase 1E integration"
+        }
+
     async def _filter_relevant(self,
                                research_question: str,
                                databases: List[DatabaseIntegration]) -> List[DatabaseIntegration]:
