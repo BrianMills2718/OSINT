@@ -32,11 +32,9 @@ class SubQuestion(BaseModel):
         description="Source categories for routing (e.g., 'government_contracts', 'social_media')"
     )
 
-    estimated_sources: int = Field(
-        default=0,
-        ge=0,
-        description="Number of sources this subtask will query"
-    )
+    model_config = {
+        "extra": "forbid"  # additionalProperties: false
+    }
 
 
 class ResearchBrief(BaseModel):
@@ -56,24 +54,27 @@ class ResearchBrief(BaseModel):
         description="Decomposed research subtasks"
     )
 
-    constraints: Dict[str, str] = Field(
-        default_factory=dict,
+    # Note: These fields have defaults so LLM doesn't need to generate them
+    # ScopingAgent will compute estimates after brief generation
+    constraints: Optional[Dict[str, str]] = Field(
+        default=None,
         description="Research constraints (timeframe, geography, etc.)"
     )
 
-    estimated_cost: float = Field(
-        default=0.0,
+    estimated_cost: Optional[float] = Field(
+        default=None,
         ge=0.0,
         description="Estimated LLM token cost in USD"
     )
 
-    estimated_time: int = Field(
-        default=0,
+    estimated_time: Optional[int] = Field(
+        default=None,
         ge=0,
         description="Estimated execution time in seconds"
     )
 
     model_config = {
+        "extra": "forbid",  # additionalProperties: false
         "json_schema_extra": {
             "examples": [
                 {
@@ -122,3 +123,7 @@ class PlanApproval(BaseModel):
         default=None,
         description="Revised brief after incorporating feedback"
     )
+
+    model_config = {
+        "extra": "forbid"  # additionalProperties: false
+    }
