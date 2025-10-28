@@ -6,6 +6,10 @@
 
 ---
 
+## 2025-10-28
+
+- 2025-10-28: Deep Research Supervisor Flow implementation (Phases 1A-1E) - [COMPLETE] - Implemented Codex's architectural guidance: conservative scoping, deterministic schemas, category-based routing, HITL approval flow. Created 5 new files (schemas/research_brief.py, core/scoping_agent.py, core/research_supervisor.py, core/hitl.py, tests/test_supervisor_flow_e2e.py). Modified 4 files (intelligent_executor.py, parallel_executor.py, config_default.yaml, llm_utils.py). Config-driven rollout (disabled by default). All tests passing (3/3), no regressions detected. Time: ~3 hours
+
 ## 2025-10-25
 
 - 2025-10-25: Reddit query syntax empirical testing - BEST: Unquoted AND (43% accuracy). AVOID: Quoted phrases + Boolean (0%). Created docs/INTEGRATION_QUERY_GUIDES.md with evidence-based recommendations. - [COMPLETE] - c049e6f

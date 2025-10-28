@@ -34,7 +34,7 @@ from core.scoping_agent import ScopingAgent
 from core.research_supervisor import ResearchSupervisor
 from core.hitl import HumanInTheLoop
 from core.parallel_executor import ParallelExecutor
-from integrations.registry import DatabaseRegistry
+from integrations.registry import IntegrationRegistry
 
 # Try to load config, fallback to defaults
 try:
@@ -83,7 +83,7 @@ class IntelligentExecutor:
             logging.info("Initializing supervisor flow components...")
 
             # Initialize registry if not provided
-            self.registry = registry or DatabaseRegistry()
+            self.registry = registry or IntegrationRegistry()
 
             # Initialize parallel executor for supervisor
             self.parallel_executor = ParallelExecutor(max_concurrent=max_concurrent or 10)
