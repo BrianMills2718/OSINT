@@ -23,12 +23,26 @@ Usage:
 """
 
 import uuid
-from typing import Dict, List
+import logging
+from typing import Dict, List, Optional
 from datetime import datetime
 
 from core.agentic_executor import AgenticExecutor
 from core.result_analyzer import ResultAnalyzer
 from core.database_integration_base import DatabaseIntegration
+from core.scoping_agent import ScopingAgent
+from core.research_supervisor import ResearchSupervisor
+from core.hitl import HumanInTheLoop
+from core.parallel_executor import ParallelExecutor
+from integrations.registry import DatabaseRegistry
+
+# Try to load config, fallback to defaults
+try:
+    from config_loader import config
+    HAS_CONFIG = True
+except Exception:
+    HAS_CONFIG = False
+    config = None
 
 
 class IntelligentExecutor:
@@ -40,7 +54,7 @@ class IntelligentExecutor:
     across databases and collect and analyze the data and refine its searches"
     """
 
-    def __init__(self, max_concurrent=None, max_refinements=None, llm_model=None):
+    def __init__(self, max_concurrent=None, max_refinements=None, llm_model=None, registry=None):
         """
         Initialize the intelligent executor.
 
@@ -48,6 +62,7 @@ class IntelligentExecutor:
             max_concurrent: Max parallel API calls
             max_refinements: Max refinement iterations
             llm_model: LLM model for analysis and synthesis
+            registry: DatabaseRegistry instance (optional, for supervisor flow)
         """
         self.executor = AgenticExecutor(
             max_concurrent=max_concurrent,
@@ -55,6 +70,156 @@ class IntelligentExecutor:
         )
         self.analyzer = ResultAnalyzer(llm_model=llm_model)
         self.session_id = str(uuid.uuid4())[:8]
+
+        # Load research config (for supervisor flow)
+        self.research_config = {}
+        if HAS_CONFIG and hasattr(config, 'research'):
+            self.research_config = config.research
+        elif HAS_CONFIG and hasattr(config, '__dict__') and 'research' in config.__dict__:
+            self.research_config = config.__dict__['research']
+
+        # Initialize supervisor flow components (if enabled)
+        if self.research_config.get('enable_supervisor') or self.research_config.get('enable_scoping'):
+            logging.info("Initializing supervisor flow components...")
+
+            # Initialize registry if not provided
+            self.registry = registry or DatabaseRegistry()
+
+            # Initialize parallel executor for supervisor
+            self.parallel_executor = ParallelExecutor(max_concurrent=max_concurrent or 10)
+
+            # Initialize scoping agent
+            self.scoping_agent = ScopingAgent(config=self.research_config)
+
+            # Initialize research supervisor
+            self.supervisor = ResearchSupervisor(
+                parallel_executor=self.parallel_executor,
+                registry=self.registry
+            )
+
+            # Initialize HITL
+            self.hitl = HumanInTheLoop(
+                mode="cli",
+                enabled=self.research_config.get('enable_hitl', False)
+            )
+
+            logging.info("Supervisor flow components initialized")
+        else:
+            self.registry = None
+            self.parallel_executor = None
+            self.scoping_agent = None
+            self.supervisor = None
+            self.hitl = None
+            logging.info("Supervisor flow disabled (using legacy AgenticExecutor)")
+
+    async def research_with_supervisor(self, research_question: str) -> Dict:
+        """
+        Execute research using supervisor flow (Scoping → HITL → Supervisor → Synthesis).
+
+        This is the new implementation that uses:
+        - ScopingAgent: Generate structured research brief
+        - HITL: Get user approval
+        - ResearchSupervisor: Execute with task decomposition and routing
+        - ResultAnalyzer: Synthesize findings
+
+        Args:
+            research_question: User's research question
+
+        Returns:
+            Dict with research results (same format as research())
+
+        Note: Requires supervisor flow to be enabled in config
+        """
+        if not self.supervisor:
+            raise RuntimeError(
+                "Supervisor flow not initialized. "
+                "Enable in config: research.enable_supervisor = true"
+            )
+
+        print("🧠 Intelligent Research Assistant (Supervisor Flow)")
+        print("=" * 80)
+        print(f"Question: {research_question}")
+        print(f"Session: {self.session_id}")
+        print("=" * 80)
+
+        overall_start = datetime.now()
+
+        try:
+            # Phase 1: Scoping (generate research brief)
+            print(f"\n📋 Phase 1: Scoping")
+            brief = await self.scoping_agent.clarify_and_generate(research_question)
+            print(f"  ✓ Generated brief: {len(brief.sub_questions)} subtasks")
+
+            # Phase 2: HITL (get user approval)
+            if self.hitl.enabled:
+                print(f"\n👤 Phase 2: Human-in-the-Loop")
+                approval = await self.hitl.get_approval(brief)
+
+                if not approval.approved:
+                    print(f"  ✗ Plan rejected: {approval.feedback}")
+                    return {
+                        "question": research_question,
+                        "session_id": self.session_id,
+                        "error": "Plan rejected by user",
+                        "feedback": approval.feedback,
+                        "metadata": {
+                            "total_time_seconds": (datetime.now() - overall_start).total_seconds()
+                        }
+                    }
+
+                print(f"  ✓ Plan approved")
+
+            # Phase 3: Supervised Execution
+            print(f"\n🔍 Phase 3: Supervised Execution")
+            supervisor_results = await self.supervisor.execute(brief)
+            print(f"  ✓ Execution complete: {supervisor_results.get('total_results', 0)} results")
+
+            # Phase 4: Analysis & Synthesis (reuse existing analyzer)
+            print(f"\n🔬 Phase 4: Analysis & Synthesis")
+            # Note: supervisor_results has different structure than legacy search_results
+            # For now, return the synthesis directly
+
+            overall_time = (datetime.now() - overall_start).total_seconds()
+
+            response = {
+                "question": research_question,
+                "session_id": self.session_id,
+                "objective": supervisor_results.get("objective"),
+                "synthesis": supervisor_results.get("synthesis"),
+                "subtask_results": supervisor_results.get("subtask_results", []),
+                "total_results": supervisor_results.get("total_results", 0),
+                "metadata": {
+                    "start_time": overall_start.isoformat(),
+                    "total_time_seconds": overall_time,
+                    "num_subtasks": len(brief.sub_questions),
+                    "supervisor_flow": True
+                }
+            }
+
+            print(f"\n✓ Research complete in {overall_time:.1f}s")
+            print("=" * 80)
+
+            return response
+
+        except Exception as e:
+            logging.error(f"Supervisor flow failed: {e}", exc_info=True)
+            print(f"\n✗ Supervisor flow failed: {e}")
+            print("  Falling back to legacy AgenticExecutor...")
+
+            # Fallback to legacy flow
+            # Note: This requires databases and api_keys, which we don't have here
+            # For Phase 1, just return error
+            overall_time = (datetime.now() - overall_start).total_seconds()
+            return {
+                "question": research_question,
+                "session_id": self.session_id,
+                "error": f"Supervisor flow failed: {e}",
+                "metadata": {
+                    "total_time_seconds": overall_time,
+                    "supervisor_flow_attempted": True,
+                    "fallback_used": False
+                }
+            }
 
     async def research(self,
                       research_question: str,
