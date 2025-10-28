@@ -84,9 +84,8 @@ class ScopingAgent:
                 }, {
                     "role": "user",
                     "content": query
-                }],
-                max_tokens=5,
-                temperature=0.0
+                }]
+                # Note: gpt-5-mini doesn't support temperature or max_tokens
             )
 
             clarity_score_str = response.choices[0].message.content.strip()
@@ -155,7 +154,48 @@ Available source categories:
 Return valid JSON matching this schema."""
 
         # Get Pydantic schema for structured output
-        brief_schema = ResearchBrief.model_json_schema()
+        # Remove optional fields from schema that LLM generates
+        # (we'll compute estimates after generation)
+        brief_schema = {
+            "type": "object",
+            "properties": {
+                "objective": {
+                    "type": "string",
+                    "minLength": 20,
+                    "maxLength": 500,
+                    "description": "1-2 sentence research objective"
+                },
+                "sub_questions": {
+                    "type": "array",
+                    "minItems": 1,
+                    "maxItems": 10,
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "question": {
+                                "type": "string",
+                                "minLength": 10,
+                                "maxLength": 500
+                            },
+                            "rationale": {
+                                "type": "string",
+                                "maxLength": 200
+                            },
+                            "suggested_categories": {
+                                "type": "array",
+                                "minItems": 1,
+                                "maxItems": 5,
+                                "items": {"type": "string"}
+                            }
+                        },
+                        "required": ["question", "rationale", "suggested_categories"],
+                        "additionalProperties": False
+                    }
+                }
+            },
+            "required": ["objective", "sub_questions"],
+            "additionalProperties": False
+        }
 
         try:
             response = await acompletion_with_role(
@@ -171,8 +211,8 @@ Return valid JSON matching this schema."""
                         "name": "research_brief",
                         "schema": brief_schema
                     }
-                },
-                temperature=0.7
+                }
+                # Note: gpt-5-mini doesn't support temperature parameter
             )
 
             brief_data = json.loads(response.choices[0].message.content)
