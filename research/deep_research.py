@@ -219,6 +219,7 @@ class SimpleDeepResearch:
             - total_results: Total results found
         """
         self.start_time = datetime.now()
+        self.original_question = question  # Store for entity extraction context
         self._emit_progress("research_started", f"Starting deep research: {question}")
 
         # Step 1: Decompose question into initial tasks
@@ -663,13 +664,61 @@ Return tasks in priority order (most important first).
                 all_results = mcp_results + web_results
                 combined_total = len(all_results)
 
+                # Validate result relevance BEFORE accepting as successful
+                print(f"🔍 Validating relevance of {len(all_results)} results...")
+                relevance_score = await self._validate_result_relevance(
+                    task_query=task.query,
+                    research_question=self.original_question,
+                    sample_results=all_results[:10]
+                )
+                print(f"  Relevance score: {relevance_score}/10")
+
+                # If results are off-topic (score < 5), reformulate and retry
+                if combined_total >= self.min_results_per_task and relevance_score < 5:
+                    if task.retry_count < self.max_retries_per_task:
+                        task.status = TaskStatus.RETRY
+                        task.retry_count += 1
+
+                        self._emit_progress(
+                            "task_retry",
+                            f"Results off-topic (relevance {relevance_score}/10), reformulating query...",
+                            task_id=task.id,
+                            data={
+                                "relevance_score": relevance_score,
+                                "total_results": combined_total
+                            }
+                        )
+
+                        # Reformulate for relevance (not volume)
+                        task.query = await self._reformulate_for_relevance(
+                            original_query=task.query,
+                            research_question=self.original_question,
+                            results_count=combined_total
+                        )
+                        self._emit_progress(
+                            "query_reformulated",
+                            f"New query: {task.query}",
+                            task_id=task.id
+                        )
+                        continue  # Retry with new query
+                    else:
+                        # Exhausted retries
+                        task.status = TaskStatus.FAILED
+                        task.error = f"Results off-topic (relevance {relevance_score}/10) after {task.retry_count} retries"
+                        self._emit_progress("task_failed", task.error, task_id=task.id)
+                        return False
+
                 # Extract entities from results
                 print(f"🔍 Extracting entities from {len(all_results)} results...")
-                entities_found = await self._extract_entities(all_results)
+                entities_found = await self._extract_entities(
+                    all_results,
+                    research_question=self.original_question,
+                    task_query=task.query
+                )
                 print(f"✓ Found {len(entities_found)} entities: {', '.join(entities_found[:5])}{'...' if len(entities_found) > 5 else ''}")
 
-                # Check if we got meaningful results
-                if combined_total >= self.min_results_per_task:
+                # Check if we got meaningful results with sufficient relevance
+                if combined_total >= self.min_results_per_task and relevance_score >= 5:
                     # Success!
                     task.status = TaskStatus.COMPLETED
                     task.entities_found = entities_found
@@ -768,12 +817,19 @@ Return tasks in priority order (most important first).
 
         return False
 
-    async def _extract_entities(self, results: List[Dict]) -> List[str]:
+    async def _extract_entities(
+        self,
+        results: List[Dict],
+        research_question: str,
+        task_query: str
+    ) -> List[str]:
         """
         Extract entities from search results using LLM.
 
         Args:
             results: List of search results
+            research_question: Original research question (for context)
+            task_query: Task query that generated these results
 
         Returns:
             List of entity names found
@@ -792,12 +848,26 @@ Return tasks in priority order (most important first).
 
         prompt = f"""Extract key entities (people, organizations, programs, operations) from these search results.
 
+CONTEXT:
+- Original research question: "{research_question}"
+- Search query used: "{task_query}"
+
+Use the context to disambiguate acronyms and focus on entities relevant to the research question.
+
 Results:
 {results_text}
 
-Return a JSON list of entity names (3-10 entities). Focus on named entities that could be researched further.
+Return a JSON list of entity names (3-10 entities). Focus on named entities that:
+1. Are RELEVANT to the research question
+2. Could be researched further
+3. Match the domain of the research question (e.g., if researching cybersecurity contracts, focus on companies, agencies, programs in that domain)
 
-Example: ["Joint Special Operations Command", "CIA", "Kabul attack", "Operation Cyclone"]
+Examples (matching the research domain):
+- Research question about "JSOC operations" → ["Joint Special Operations Command", "CIA", "Operation Cyclone"]
+- Research question about "NSA cybersecurity contracts" → ["National Security Agency", "Palantir", "Booz Allen Hamilton", "Leidos"]
+- Research question about "FBI surveillance programs" → ["Federal Bureau of Investigation", "PRISM", "FISA Court"]
+
+DO NOT extract generic entities unrelated to the research question.
 """
 
         schema = {
@@ -843,6 +913,133 @@ Example: ["Joint Special Operations Command", "CIA", "Kabul attack", "Operation 
             source = r.get("source", "Unknown")
             sources.add(source)
         return list(sources)
+
+    async def _validate_result_relevance(
+        self,
+        task_query: str,
+        research_question: str,
+        sample_results: List[Dict]
+    ) -> int:
+        """
+        Validate that search results are actually relevant to the research question.
+
+        Args:
+            task_query: Query that generated these results
+            research_question: Original research question
+            sample_results: Sample of results to evaluate (first 10)
+
+        Returns:
+            Relevance score 0-10 (0 = completely off-topic, 10 = highly relevant)
+        """
+        if not sample_results:
+            return 0
+
+        # Build sample text from titles and snippets
+        results_text = "\n\n".join([
+            f"Title: {r.get('title', '')}\nSnippet: {r.get('snippet', r.get('description', ''))[:200]}"
+            for r in sample_results
+        ])
+
+        prompt = f"""Evaluate whether these search results are relevant to the research question.
+
+Original Research Question: "{research_question}"
+Search Query Used: "{task_query}"
+
+Sample Results:
+{results_text}
+
+Score the relevance of these results on a scale of 0-10:
+- 10: Highly relevant - directly answers the research question
+- 7-9: Relevant - related to the topic but may be indirect
+- 4-6: Somewhat relevant - mentions key terms but not focused on the topic
+- 1-3: Barely relevant - only tangentially related
+- 0: Completely off-topic - wrong domain or subject matter entirely
+
+IMPORTANT:
+- If the results are about a DIFFERENT entity with the same acronym (e.g., "Naval Support Activity" when asked about "National Security Agency"), score 0-2 (wrong entity).
+- If the results are in the wrong domain (e.g., military logistics when asked about cybersecurity contracts), score 0-3.
+
+Return the relevance score and a brief reason.
+"""
+
+        schema = {
+            "type": "object",
+            "properties": {
+                "relevance_score": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 10,
+                    "description": "Relevance score 0-10"
+                },
+                "reason": {
+                    "type": "string",
+                    "description": "Brief explanation of the score"
+                }
+            },
+            "required": ["relevance_score", "reason"],
+            "additionalProperties": False
+        }
+
+        try:
+            response = await acompletion(
+                model=config.get_model("analysis"),
+                messages=[{"role": "user", "content": prompt}],
+                response_format={
+                    "type": "json_schema",
+                    "json_schema": {
+                        "strict": True,
+                        "name": "relevance_validation",
+                        "schema": schema
+                    }
+                }
+            )
+
+            result = json.loads(response.choices[0].message.content)
+            score = result.get("relevance_score", 0)
+            reason = result.get("reason", "")
+
+            logging.info(f"Result relevance: {score}/10 - {reason}")
+            return score
+
+        except Exception as e:
+            logging.error(f"Relevance validation failed: {type(e).__name__}: {str(e)}")
+            # On error, assume relevant (don't want to fail good results due to validation error)
+            return 7
+
+    async def _reformulate_for_relevance(
+        self,
+        original_query: str,
+        research_question: str,
+        results_count: int
+    ) -> str:
+        """Reformulate query to get MORE RELEVANT results."""
+        prompt = f"""The search query returned results that are OFF-TOPIC for the research question.
+
+Original Research Question: "{research_question}"
+Current Query: "{original_query}"
+Results Found: {results_count} (but not relevant)
+
+Reformulate the query to find results that are DIRECTLY RELEVANT to the research question.
+
+Guidelines:
+- Add SPECIFIC terms from the research question to disambiguate
+- If the research question mentions a specific entity (e.g., "NSA"), clarify which one (e.g., "National Security Agency" not "Naval Support Activity")
+- Focus on the core topic (e.g., if researching "cybersecurity contracts", include both terms)
+- Remove generic terms that cause topic drift
+
+Examples:
+- Research: "NSA cybersecurity contracts" / Current: "NSA contracts" → "National Security Agency cybersecurity contracts"
+- Research: "JSOC operations Iraq" / Current: "JSOC" → "Joint Special Operations Command Iraq operations"
+
+Return ONLY the new query text.
+"""
+
+        response = await acompletion(
+            model=config.get_model("query_generation"),
+            messages=[{"role": "user", "content": prompt}]
+        )
+
+        return response.choices[0].message.content.strip().strip('"')
 
     async def _reformulate_query_simple(self, original_query: str, results_count: int) -> str:
         """Reformulate query when it returns insufficient results."""
