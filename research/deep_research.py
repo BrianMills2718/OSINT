@@ -672,7 +672,7 @@ Return a JSON list of tool names (e.g., "search_dvids"). Include only sources li
                     "description": "Brief explanation of why these sources were selected"
                 }
             },
-            "required": ["sources"],
+            "required": ["sources", "reason"],
             "additionalProperties": False
         }
 
