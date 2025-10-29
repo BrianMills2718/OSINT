@@ -170,6 +170,27 @@ class SimpleDeepResearch:
             {"name": "search_discord", "server": social_mcp.mcp, "api_key_name": None},
         ]
 
+        # Human-friendly labels and descriptions for each MCP tool
+        self.tool_name_to_display = {
+            "search_sam": "SAM.gov",
+            "search_dvids": "DVIDS",
+            "search_usajobs": "USAJobs",
+            "search_clearancejobs": "ClearanceJobs",
+            "search_twitter": "Twitter",
+            "search_reddit": "Reddit",
+            "search_discord": "Discord"
+        }
+        self.tool_display_to_name = {v: k for k, v in self.tool_name_to_display.items()}
+        self.tool_descriptions = {
+            "search_sam": "U.S. federal contracting opportunities and solicitations.",
+            "search_dvids": "Military multimedia library (photos, videos, B-roll, news releases).",
+            "search_usajobs": "Official U.S. federal civilian job listings.",
+            "search_clearancejobs": "Private-sector jobs requiring security clearances.",
+            "search_twitter": "Social media posts and announcements (public chatter).",
+            "search_reddit": "Community and OSINT discussions.",
+            "search_discord": "OSINT community server archives."
+        }
+
     def _emit_progress(self, event: str, message: str, task_id: Optional[int] = None, data: Optional[Dict] = None):
         """Emit progress update for live streaming."""
         progress = ResearchProgress(
@@ -615,27 +636,141 @@ Return tasks in priority order (most important first).
 
         return False  # Don't skip
 
+    async def _select_relevant_sources(self, query: str) -> List[str]:
+        """
+        Use a single LLM call to choose the most relevant MCP sources for this task.
+
+        Returns:
+            List of MCP tool names (e.g., ["search_dvids", "search_sam"])
+        """
+        options_text = "\n".join([
+            f"- {self.tool_name_to_display[tool['name']]} ({tool['name']}): {self.tool_descriptions[tool['name']]}"
+            for tool in self.mcp_tools
+        ])
+
+        prompt = f"""Select which MCP sources should be queried for this research subtask.
+
+Original research question: "{self.original_question}"
+Task query: "{query}"
+
+Available sources:
+{options_text}
+
+Return a JSON list of tool names (e.g., "search_dvids"). Include only sources likely to provide meaningful evidence for this task."""
+
+        schema = {
+            "type": "object",
+            "properties": {
+                "sources": {
+                    "type": "array",
+                    "items": {"type": "string"},
+                    "minItems": 0,
+                    "maxItems": len(self.mcp_tools)
+                },
+                "reason": {
+                    "type": "string",
+                    "description": "Brief explanation of why these sources were selected"
+                }
+            },
+            "required": ["sources"],
+            "additionalProperties": False
+        }
+
+        try:
+            response = await acompletion(
+                model=config.get_model("analysis"),
+                messages=[{"role": "user", "content": prompt}],
+                response_format={
+                    "type": "json_schema",
+                    "json_schema": {
+                        "strict": True,
+                        "name": "source_selection",
+                        "schema": schema
+                    }
+                }
+            )
+
+            result = json.loads(response.choices[0].message.content)
+            selected_sources = result.get("sources", [])
+            reason = result.get("reason", "")
+
+            # Keep only valid MCP tool names
+            valid_sources = [
+                source for source in selected_sources
+                if source in self.tool_name_to_display
+            ]
+
+            # Always include critical sources (e.g., SAM.gov for contract queries)
+            critical_sources = self._identify_critical_sources(self.original_question)
+            for critical in critical_sources:
+                tool_name = self.tool_display_to_name.get(critical)
+                if tool_name and tool_name not in valid_sources:
+                    valid_sources.append(tool_name)
+
+            if reason:
+                logging.info(f"Source selection rationale: {reason}")
+
+            return valid_sources
+
+        except Exception as e:
+            logging.error(f"Source selection failed: {type(e).__name__}: {str(e)}")
+            # Fallback: return all MCP tools (downstream filtering will still apply)
+            return [tool["name"] for tool in self.mcp_tools]
+
     async def _search_mcp_tools(self, query: str, limit: int = 10) -> List[Dict]:
         """
         Search using MCP tools (government + social sources).
 
+        Uses LLM to intelligently select relevant sources for each query.
+
         Returns:
             List of results with standardized format
         """
-        # Pre-filter sources (skip irrelevant ones BEFORE searching)
+        # Use LLM to select relevant sources for this query
+        selected_tool_names = await self._select_relevant_sources(query)
+
+        if selected_tool_names:
+            candidate_tools = [
+                tool for tool in self.mcp_tools
+                if tool["name"] in selected_tool_names
+            ]
+            skipped_by_llm = [
+                self.tool_name_to_display[tool["name"]]
+                for tool in self.mcp_tools
+                if tool["name"] not in selected_tool_names
+            ]
+            if skipped_by_llm:
+                print(f"⊘ LLM skipped sources: {', '.join(skipped_by_llm)}")
+        else:
+            candidate_tools = list(self.mcp_tools)
+
+        # Apply lightweight keyword-based skipping as an additional guardrail
+        skip_keyword_names = set()
+        for tool in candidate_tools:
+            if self._should_skip_source(tool["name"], query):
+                skip_keyword_names.add(tool["name"])
+
         filtered_tools = [
-            tool for tool in self.mcp_tools
-            if not self._should_skip_source(tool["name"], query)
+            tool for tool in candidate_tools
+            if tool["name"] not in skip_keyword_names
         ]
 
-        # Log skipped sources
-        skipped_count = len(self.mcp_tools) - len(filtered_tools)
-        if skipped_count > 0:
-            skipped_names = [t["name"] for t in self.mcp_tools if self._should_skip_source(t["name"], query)]
-            print(f"⊘ Skipping {skipped_count} irrelevant sources: {', '.join(skipped_names)}")
+        if skip_keyword_names:
+            skipped_display = [self.tool_name_to_display[name] for name in skip_keyword_names]
+            print(f"⊘ Skipping keyword-irrelevant sources: {', '.join(skipped_display)}")
+
+        # If all sources were filtered out, revert to the LLM-selected set to avoid empty searches
+        if not filtered_tools and candidate_tools:
+            filtered_tools = candidate_tools
+            print("ℹ️  Reinstating LLM-selected sources (keyword filtering removed all options).")
+
+        if not filtered_tools:
+            print("⊘ No MCP sources selected for this task. Skipping MCP search.")
+            return []
 
         # Emit progress: starting MCP tool searches
-        print(f"🔍 Searching {len(filtered_tools)} databases via MCP tools...")
+        display_names = [self.tool_name_to_display[tool["name"]] for tool in filtered_tools]
+        print(f"🔍 Searching {len(filtered_tools)} MCP sources: {', '.join(display_names)}")
 
         # Identify critical sources for this research question
         critical_sources = self._identify_critical_sources(self.original_question)
