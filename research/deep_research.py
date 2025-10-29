@@ -587,6 +587,34 @@ Return tasks in priority order (most important first).
         # Should never reach here, but return empty if all retries exhausted
         return []
 
+    def _should_skip_source(self, tool_name: str, query: str) -> bool:
+        """
+        Determine if a source should be skipped for this query.
+
+        Args:
+            tool_name: Name of the MCP tool
+            query: Current task query
+
+        Returns:
+            True if source should be skipped (not relevant)
+        """
+        query_lower = query.lower()
+        research_lower = self.original_question.lower()
+
+        # Skip ClearanceJobs for non-job queries
+        if tool_name == "search_clearancejobs":
+            job_keywords = ["job", "position", "hiring", "employment", "career", "clearance", "security officer"]
+            if not any(kw in query_lower or kw in research_lower for kw in job_keywords):
+                return True  # Skip - not a job query
+
+        # Skip Discord for definitional/informational queries
+        if tool_name == "search_discord":
+            definitional_keywords = ["what is", "what are", "definition", "explain", "describe", "overview"]
+            if any(kw in query_lower or kw in research_lower for kw in definitional_keywords):
+                return True  # Skip - Discord is not authoritative for definitions
+
+        return False  # Don't skip
+
     async def _search_mcp_tools(self, query: str, limit: int = 10) -> List[Dict]:
         """
         Search using MCP tools (government + social sources).
@@ -594,8 +622,20 @@ Return tasks in priority order (most important first).
         Returns:
             List of results with standardized format
         """
+        # Pre-filter sources (skip irrelevant ones BEFORE searching)
+        filtered_tools = [
+            tool for tool in self.mcp_tools
+            if not self._should_skip_source(tool["name"], query)
+        ]
+
+        # Log skipped sources
+        skipped_count = len(self.mcp_tools) - len(filtered_tools)
+        if skipped_count > 0:
+            skipped_names = [t["name"] for t in self.mcp_tools if self._should_skip_source(t["name"], query)]
+            print(f"⊘ Skipping {skipped_count} irrelevant sources: {', '.join(skipped_names)}")
+
         # Emit progress: starting MCP tool searches
-        print(f"🔍 Searching {len(self.mcp_tools)} databases via MCP tools...")
+        print(f"🔍 Searching {len(filtered_tools)} databases via MCP tools...")
 
         # Identify critical sources for this research question
         critical_sources = self._identify_critical_sources(self.original_question)
@@ -662,9 +702,9 @@ Return tasks in priority order (most important first).
                     "error": str(e)
                 }
 
-        # Call all MCP tools in parallel
+        # Call filtered MCP tools in parallel (skip irrelevant sources)
         mcp_results = await asyncio.gather(*[
-            call_mcp_tool(tool) for tool in self.mcp_tools
+            call_mcp_tool(tool) for tool in filtered_tools
         ])
 
         # Combine results and track per-source counts
