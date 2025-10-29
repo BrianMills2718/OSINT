@@ -1764,6 +1764,242 @@ response = requests.get(endpoint, params=params, headers=headers, timeout=dvids_
 
 ---
 
+## DEEP RESEARCH FIXES 1-2 IMPLEMENTATION [COMPLETE] ✅ + FIXES 3 & TIMEOUT [IN PROGRESS]
+
+**Status**: Fixes 1-2 VALIDATED ✅ | Fixes 3 & Timeout IN PROGRESS (2025-10-29)
+**Context**: Codex identified 3 critical issues in Deep Research, 2 now validated
+**Priority**: HIGH (production readiness blocker)
+**Total Time**: Fixes 1-2: ~2 hours | Fixes 3 & Timeout: ~75-90 minutes (estimated)
+
+### Background
+
+**Original Issues** (from /tmp/deep_research_critique.md):
+1. Entity extraction confused acronyms (NSA → "Naval Support Activity" instead of "National Security Agency")
+2. No relevance validation (accepted off-topic results, produced "confidently wrong" reports)
+3. No critical source detection (SAM.gov failures silent, user blind to missing data)
+
+**Codex Recommendation**: Implement all 3 fixes + add per-task timeout before production rollout
+
+---
+
+### Fix 1: Entity Extraction Context [COMPLETE] ✅
+
+**Status**: IMPLEMENTED and VALIDATED with positive test
+**File**: `research/deep_research.py` (lines 137-225)
+**Actual Time**: 45 minutes
+
+**Implementation**:
+- Added `research_question` and `task_query` parameters to `_extract_entities()` method
+- Updated prompt to include original research question context
+- Added explicit examples for disambiguating acronyms
+
+**Evidence of Success** (from /tmp/deep_research_validation_complete.md):
+- **Negative test (NSA)**: System would have extracted "National Security Agency" if sources existed
+- **Positive test (DVIDS)**: Extracted correct entities:
+  - "Defense Visual Information Distribution Service (DVIDS)" ✅
+  - "Defense Media Activity (DMA)" ✅
+  - NOT "Naval Support Activity" or other military logistics entities
+
+---
+
+### Fix 2: Relevance Validation [COMPLETE] ✅
+
+**Status**: IMPLEMENTED and VALIDATED with both negative and positive tests
+**File**: `research/deep_research.py` (lines 234-324, 326-359, 667-709)
+**Actual Time**: 1 hour
+
+**Implementation**:
+- Added `_validate_result_relevance()` method with 0-10 scoring system
+- Added `_reformulate_for_relevance()` method for relevance-focused query reformulation
+- Integrated into task execution: tasks fail if relevance < 5/10 after retries
+- Separate reformulation path for relevance vs volume issues
+
+**Evidence of Success**:
+- **Negative test (NSA)**: All tasks correctly rejected (relevance 0-2/10) ✅
+- **Positive test (DVIDS)**:
+  - Task 0: Relevance 5/10 → PASS ✅
+  - Task 1: Relevance 8/10 → PASS ✅
+  - Tasks 2-3: Relevance 0-2/10 → Correctly FAILED (no relevant content for those subtasks)
+- **Report Quality**: Accurate synthesis based only on successful tasks (99 results from 2 tasks)
+
+---
+
+### Fix 3: Critical Source Detection [IN PROGRESS]
+
+**Status**: CLAIMED BY: AGENT1 (2025-10-29)
+**File**: `research/deep_research.py` (new methods to add)
+**Estimated Time**: 30-45 minutes
+**Priority**: HIGH (user experience blocker)
+
+**Implementation Plan** (approved by Codex):
+
+**1. Add `_identify_critical_sources()` method**:
+```python
+def _identify_critical_sources(self, research_question: str) -> List[str]:
+    """Identify which sources are critical for this research question using keyword rules."""
+    q_lower = research_question.lower()
+    critical = []
+
+    if any(kw in q_lower for kw in ["contract", "award", "procurement", "solicitation"]):
+        critical.append("sam")
+    if any(kw in q_lower for kw in ["dvids", "defense", "military", "dod"]):
+        critical.append("dvids")
+    if any(kw in q_lower for kw in ["job", "position", "hiring", "employment"]):
+        critical.append("usajobs")
+
+    return critical
+```
+
+**Why keyword rules**: Deterministic, no LLM cost, easy to explain in logs
+
+**2. Track source results in `_search_mcp_tools()`**:
+- Return per-source result counts (not just combined results)
+- Enable detection of which sources returned 0 results
+
+**3. Emit warnings in 4 channels** (approved by Codex):
+- **Console** (`print()`) - immediate CLI feedback
+- **Logging** (`logging.warning()`) - captured in logs
+- **Progress events** (`_emit_progress()`) - Streamlit UI visibility
+- **Final report** (synthesis includes limitations section) - permanent record
+
+**4. Add limitations to `_synthesize_report()`**:
+```python
+# After synthesis, append source limitations
+if critical_source_failures:
+    report += "\n\n## Research Limitations\n\n"
+    report += "The following critical sources were unavailable:\n"
+    for source in critical_source_failures:
+        report += f"- {source}: Rate limited or unavailable\n"
+```
+
+---
+
+### Per-Task Timeout [IN PROGRESS]
+
+**Status**: CLAIMED BY: AGENT1 (2025-10-29)
+**File**: `research/deep_research.py` (_execute_batch method)
+**Estimated Time**: 15 minutes
+**Priority**: MEDIUM (defensive coding, no urgent blocker)
+
+**Implementation Plan** (approved by Codex):
+
+**Timeout Value**: 180 seconds (3 minutes) to cover all retries
+- 50s per attempt × 3 attempts = 150s worst case
+- +20% buffer = 180s total
+
+**Why 180s not 90s**: Must wrap entire task (all retries), not per attempt
+
+**Implementation**:
+```python
+# In _execute_batch() method, wrap task execution
+task_executions = [
+    asyncio.wait_for(
+        self._execute_task_with_retry(task),
+        timeout=180  # 3 minutes for all retry attempts
+    )
+    for task in tasks
+]
+results = await asyncio.gather(*task_executions, return_exceptions=True)
+
+# Handle timeout exceptions
+for task, result in zip(tasks, results):
+    if isinstance(result, asyncio.TimeoutError):
+        task.status = TaskStatus.FAILED
+        task.error = f"Task timed out after 180 seconds"
+        self._emit_progress("task_failed", task.error, task_id=task.id)
+```
+
+**Add to config_default.yaml**:
+```yaml
+research:
+  task_timeout_seconds: 180  # 3 minutes per task (covers all retries)
+```
+
+---
+
+### Validation Plan
+
+**After implementing Fixes 3 & Timeout**:
+
+1. **Commit validated Fixes 1-2** (research/deep_research.py staged)
+   ```bash
+   git status  # Verify only deep_research.py modified
+   git add research/deep_research.py
+   git commit -m "feat(deep-research): Add entity context + relevance validation (Fixes 1-2)
+
+   - Add research_question and task_query context to entity extraction
+   - Implement 0-10 relevance scoring with threshold of 5/10
+   - Add relevance-focused query reformulation (separate from volume reformulation)
+   - Tasks now fail if relevance < 5 after retries (prevents confidently wrong answers)
+
+   Evidence:
+   - Negative test (NSA): All tasks correctly rejected (relevance 0-2/10)
+   - Positive test (DVIDS): 2/4 tasks passed (relevance 5/10, 8/10), accurate report generated
+
+   Remaining work: Fix 3 (critical source warnings), per-task timeout"
+   ```
+
+2. **Implement Fix 3 + Timeout** (~75-90 min total)
+
+3. **Test with NSA query** (verify Fix 3 warnings visible):
+   ```bash
+   python3 -c "
+   import asyncio
+   from research.deep_research import SimpleDeepResearch
+   from dotenv import load_dotenv
+
+   load_dotenv()
+
+   async def test():
+       engine = SimpleDeepResearch()
+       result = await engine.research('What cybersecurity contracts has the NSA awarded?')
+       print(result['report'])
+
+   asyncio.run(test())
+   " 2>&1 | tee /tmp/deep_research_fix3_test.log
+   ```
+
+4. **Verify warnings in 4 channels**:
+   - Console: Should see "WARNING: SAM.gov returned 0 results" during execution
+   - Logs: `grep "SAM.gov" research.log` should show warning
+   - Progress events: Streamlit would display warning (test in UI)
+   - Report: Final report should include "Research Limitations" section
+
+5. **Commit Fix 3 + Timeout**:
+   ```bash
+   git add research/deep_research.py config_default.yaml
+   git commit -m "feat(deep-research): Add critical source detection + per-task timeout (Fixes 3 + timeout)
+
+   - Add keyword-based critical source detection (SAM, DVIDS, USAJobs)
+   - Emit warnings in 4 channels (console, logs, progress, report)
+   - Add 180s per-task timeout wrapping all retries
+   - Include source limitations in synthesis report
+
+   Evidence:
+   - NSA test shows SAM.gov warning in all 4 channels
+   - Timeout prevents runaway tasks (no hangs observed but defensive)
+
+   Status: Deep Research ready for production rollout"
+   ```
+
+---
+
+### Production Readiness Assessment
+
+**After Fixes 3 & Timeout Complete**:
+
+| Fix | Status | Evidence | Blocker? |
+|-----|--------|----------|----------|
+| Fix 1 (Entity Context) | ✅ VALIDATED | DVIDS test extracted correct entities | NO |
+| Fix 2 (Relevance Validation) | ✅ VALIDATED | NSA test rejected off-topic, DVIDS test passed | NO |
+| Fix 3 (Critical Source Warnings) | ⏳ IN PROGRESS | Not yet implemented | YES |
+| Per-Task Timeout | ⏳ IN PROGRESS | Not yet implemented | NO (defensive only) |
+
+**Estimated Remaining Work**: 75-90 minutes
+**Recommendation**: Enable deep-research after Fix 3 complete (timeout can follow)
+
+---
+
 ## IMMEDIATE BLOCKERS
 
 | Blocker | Impact | Status | Next Action |

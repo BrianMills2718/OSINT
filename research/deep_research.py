@@ -149,6 +149,7 @@ class SimpleDeepResearch:
         self.entity_graph: Dict[str, List[str]] = {}  # entity -> related entities
         self.results_by_task: Dict[int, Dict] = {}
         self.start_time: Optional[datetime] = None
+        self.critical_source_failures: List[str] = []  # Track failed critical sources
 
         # Load API keys from environment
         self.api_keys = {
@@ -194,6 +195,33 @@ class SimpleDeepResearch:
 
         elapsed = (datetime.now() - self.start_time).total_seconds() / 60
         return elapsed >= self.max_time_minutes
+
+    def _identify_critical_sources(self, research_question: str) -> List[str]:
+        """
+        Identify which sources are critical for this research question using keyword rules.
+
+        Args:
+            research_question: Original research question
+
+        Returns:
+            List of critical source IDs (e.g., ["sam", "dvids", "usajobs"])
+        """
+        q_lower = research_question.lower()
+        critical = []
+
+        # SAM.gov for contract/procurement queries
+        if any(kw in q_lower for kw in ["contract", "award", "procurement", "solicitation"]):
+            critical.append("SAM.gov")
+
+        # DVIDS for military/DoD queries
+        if any(kw in q_lower for kw in ["dvids", "defense", "military", "dod"]):
+            critical.append("DVIDS")
+
+        # USAJobs for jobs/employment queries
+        if any(kw in q_lower for kw in ["job", "position", "hiring", "employment"]):
+            critical.append("USAJobs")
+
+        return critical
 
     async def research(self, question: str) -> Dict:
         """
@@ -284,15 +312,33 @@ class SimpleDeepResearch:
                 task.status = TaskStatus.IN_PROGRESS
                 self._emit_progress("task_started", f"Executing: {task.query}", task_id=task.id)
 
-            # Execute batch in parallel
+            # Execute batch in parallel with per-task timeout (180s = 3 minutes covers all retries)
+            # Timeout wraps entire task execution including all retry attempts
+            task_timeout = 180  # 3 minutes per task (50s per attempt × 3 attempts + buffer)
             results = await asyncio.gather(*[
-                self._execute_task_with_retry(task)
+                asyncio.wait_for(
+                    self._execute_task_with_retry(task),
+                    timeout=task_timeout
+                )
                 for task in batch
             ], return_exceptions=True)
 
             # Process results
             for task, success_or_exception in zip(batch, results):
-                # Handle exceptions
+                # Handle timeout exceptions
+                if isinstance(success_or_exception, asyncio.TimeoutError):
+                    error_msg = f"Task timed out after {task_timeout} seconds"
+                    self._emit_progress(
+                        "task_timeout",
+                        error_msg,
+                        task_id=task.id
+                    )
+                    task.status = TaskStatus.FAILED
+                    task.error = error_msg
+                    self.failed_tasks.append(task)
+                    continue
+
+                # Handle other exceptions
                 if isinstance(success_or_exception, Exception):
                     self._emit_progress(
                         "task_exception",
@@ -551,6 +597,9 @@ Return tasks in priority order (most important first).
         # Emit progress: starting MCP tool searches
         print(f"🔍 Searching {len(self.mcp_tools)} databases via MCP tools...")
 
+        # Identify critical sources for this research question
+        critical_sources = self._identify_critical_sources(self.original_question)
+
         all_results = []
         sources_count = {}
 
@@ -631,6 +680,30 @@ Return tasks in priority order (most important first).
             else:
                 # Log failed sources
                 print(f"  ✗ {tool_result['tool']}: Failed - {tool_result.get('error', 'Unknown error')}")
+
+        # Check for critical source failures (Fix 3)
+        for critical_source in critical_sources:
+            source_result_count = sources_count.get(critical_source, 0)
+            if source_result_count == 0:
+                # Critical source returned 0 results - emit warnings in 4 channels
+                warning_msg = f"WARNING: {critical_source} returned 0 results (rate limited or unavailable)"
+
+                # Channel 1: Console (print)
+                print(f"\n⚠️  {warning_msg}")
+
+                # Channel 2: Logging (warning level)
+                logging.warning(warning_msg)
+
+                # Channel 3: Progress events (for Streamlit UI)
+                self._emit_progress(
+                    "critical_source_failure",
+                    warning_msg,
+                    data={"source": critical_source, "research_question": self.original_question}
+                )
+
+                # Channel 4: Track for synthesis report (will be added to report limitations section)
+                if critical_source not in self.critical_source_failures:
+                    self.critical_source_failures.append(critical_source)
 
         # Log summary with per-source breakdown
         print(f"\n✓ MCP tools complete: {len(all_results)} total results from {len(sources_count)} sources")
@@ -1212,7 +1285,18 @@ Make the report insightful and well-structured. Focus on connections and relatio
             messages=[{"role": "user", "content": prompt}]
         )
 
-        return response.choices[0].message.content
+        report = response.choices[0].message.content
+
+        # Add limitations section if critical sources failed (Fix 3 - Channel 4)
+        if self.critical_source_failures:
+            report += "\n\n## Research Limitations\n\n"
+            report += "The following critical sources were unavailable during this research:\n\n"
+            for source in self.critical_source_failures:
+                report += f"- **{source}**: Returned 0 results (rate limited or unavailable)\n"
+            report += "\n**Impact**: This research may be incomplete due to missing data from these authoritative sources. "
+            report += "Results should be verified against these sources when they become available.\n"
+
+        return report
 
 
 # Example usage
