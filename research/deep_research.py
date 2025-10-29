@@ -746,8 +746,9 @@ Return tasks in priority order (most important first).
                 )
                 print(f"  Relevance score: {relevance_score}/10")
 
-                # If results are off-topic (score < 5), reformulate and retry
-                if combined_total >= self.min_results_per_task and relevance_score < 5:
+                # If results are off-topic (score < 3), reformulate and retry
+                # Lowered from 5 to 3 to match success threshold (consistent retry logic)
+                if combined_total >= self.min_results_per_task and relevance_score < 3:
                     if task.retry_count < self.max_retries_per_task:
                         task.status = TaskStatus.RETRY
                         task.retry_count += 1
@@ -791,7 +792,9 @@ Return tasks in priority order (most important first).
                 print(f"✓ Found {len(entities_found)} entities: {', '.join(entities_found[:5])}{'...' if len(entities_found) > 5 else ''}")
 
                 # Check if we got meaningful results with sufficient relevance
-                if combined_total >= self.min_results_per_task and relevance_score >= 5:
+                # Lowered threshold from 5 to 3 based on CLI testing (Fix: relevance too aggressive)
+                # 3/10 = "somewhat relevant, worth including" vs previous 5/10 rejecting 75% of valid tasks
+                if combined_total >= self.min_results_per_task and relevance_score >= 3:
                     # Success!
                     task.status = TaskStatus.COMPLETED
                     task.entities_found = entities_found
