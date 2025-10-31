@@ -1,0 +1,261 @@
+{
+  "test_metadata": {
+    "test_suite": "comprehensive_timing_gemini",
+    "model": "gemini/gemini-2.5-flash-lite",
+    "timestamp": "2025-10-03T12:05:49.772510",
+    "total_basic_tests": 10,
+    "total_component_tests": 7
+  },
+  "basic_timing": {
+    "analysis": {
+      "total_tests": 10,
+      "successful_tests": 10,
+      "failed_tests": 0,
+      "success_rate": 1.0,
+      "timing_analysis": {
+        "min_duration": 0.38721323013305664,
+        "max_duration": 1.5244204998016357,
+        "average_duration": 0.7718557596206665,
+        "median_duration": 0.4851231575012207
+      },
+      "response_analysis": {
+        "min_length": 8,
+        "max_length": 1735,
+        "average_length": 469.4
+      },
+      "test_timestamp": "2025-10-03T12:04:38.762288",
+      "model": "gemini/gemini-2.5-flash-lite"
+    },
+    "results": [
+      {
+        "description": "Simple math",
+        "prompt": "What is 2+2?",
+        "duration_seconds": 0.7591617107391357,
+        "success": true,
+        "response_length": 9,
+        "response_preview": "2 + 2 = 4",
+        "timestamp": "2025-10-03T12:04:21.801767"
+      },
+      {
+        "description": "Basic code generation",
+        "prompt": "Write a hello world function in Python.",
+        "duration_seconds": 1.5109522342681885,
+        "success": true,
+        "response_length": 1661,
+        "response_preview": "```python\ndef hello_world():\n  \"\"\"\n  This function prints the classic \"Hello, World!\" message to the console.\n  \"\"\"\n  print(\"Hello, World!\")\n\n# To call the function and see the output:\nhello_world() \n...",
+        "timestamp": "2025-10-03T12:04:24.312825"
+      },
+      {
+        "description": "Simple explanation",
+        "prompt": "Explain what a variable is in programming in one sentence.",
+        "duration_seconds": 0.47957682609558105,
+        "success": true,
+        "response_length": 121,
+        "response_preview": "A variable is a named container in programming that holds a value which can be changed during the execution of a program.",
+        "timestamp": "2025-10-03T12:04:25.792505"
+      },
+      {
+        "description": "Simple list",
+        "prompt": "List 3 colors.",
+        "duration_seconds": 0.47191858291625977,
+        "success": true,
+        "response_length": 46,
+        "response_preview": "Here are 3 colors:\n\n1.  Red\n2.  Blue\n3.  Green",
+        "timestamp": "2025-10-03T12:04:27.264541"
+      },
+      {
+        "description": "Basic function",
+        "prompt": "Write a function that adds two numbers.",
+        "duration_seconds": 1.5244204998016357,
+        "success": true,
+        "response_length": 1735,
+        "response_preview": "```python\ndef add_numbers(num1, num2):\n  \"\"\"\n  This function takes two numbers as input and returns their sum.\n\n  Args:\n    num1: The first number.\n    num2: The second number.\n\n  Returns:\n    The sum...",
+        "timestamp": "2025-10-03T12:04:29.789070"
+      },
+      {
+        "description": "Factual question",
+        "prompt": "What is the capital of France?",
+        "duration_seconds": 0.38721323013305664,
+        "success": true,
+        "response_length": 35,
+        "response_preview": "The capital of France is **Paris**.",
+        "timestamp": "2025-10-03T12:04:31.176389"
+      },
+      {
+        "description": "Simple counting",
+        "prompt": "Count from 1 to 5.",
+        "duration_seconds": 0.4613792896270752,
+        "success": true,
+        "response_length": 13,
+        "response_preview": "1, 2, 3, 4, 5",
+        "timestamp": "2025-10-03T12:04:32.637871"
+      },
+      {
+        "description": "Minimal code",
+        "prompt": "Write 'Hello World' in a code comment.",
+        "duration_seconds": 1.1636431217193604,
+        "success": true,
+        "response_length": 1039,
+        "response_preview": "There are several ways to write 'Hello World' in a code comment, depending on the programming language you're using. Here are a few common examples:\n\n**Python:**\n\n```python\n# Hello World\n```\n\n**JavaSc...",
+        "timestamp": "2025-10-03T12:04:34.801574"
+      },
+      {
+        "description": "Yes/no question",
+        "prompt": "True or false: Python is a programming language.",
+        "duration_seconds": 0.49066948890686035,
+        "success": true,
+        "response_length": 8,
+        "response_preview": "**True**",
+        "timestamp": "2025-10-03T12:04:36.292320"
+      },
+      {
+        "description": "One-liner code",
+        "prompt": "Write one line of Python that prints 'test'.",
+        "duration_seconds": 0.4696226119995117,
+        "success": true,
+        "response_length": 27,
+        "response_preview": "```python\nprint('test')\n```",
+        "timestamp": "2025-10-03T12:04:37.762044"
+      }
+    ]
+  },
+  "component_timing": {
+    "analysis": {
+      "total_tests": 7,
+      "successful_tests": 7,
+      "failed_tests": 0,
+      "success_rate": 1.0,
+      "overall_timing": {
+        "min_duration": 4.281569004058838,
+        "max_duration": 12.668108701705933,
+        "average_duration": 8.143887111118861,
+        "median_duration": 7.800516843795776
+      },
+      "code_generation": {
+        "min_lines": 127,
+        "max_lines": 302,
+        "average_lines": 229
+      },
+      "by_complexity": {
+        "Low": {
+          "count": 2,
+          "avg_duration": 7.688350439071655,
+          "max_duration": 10.8405179977417,
+          "avg_lines": 185
+        },
+        "Medium": {
+          "count": 3,
+          "avg_duration": 8.250064849853516,
+          "max_duration": 12.668108701705933,
+          "avg_lines": 236.33333333333334
+        },
+        "High": {
+          "count": 2,
+          "avg_duration": 8.440157175064087,
+          "max_duration": 10.349599361419678,
+          "avg_lines": 262
+        }
+      },
+      "test_timestamp": "2025-10-03T12:05:49.771105",
+      "model": "gemini/gemini-2.5-flash-lite"
+    },
+    "results": [
+      {
+        "description": "Simple Store Component",
+        "expected_complexity": "Low",
+        "prompt_length": 944,
+        "duration_seconds": 10.8405179977417,
+        "success": true,
+        "response_length": 13475,
+        "estimated_code_lines": 243,
+        "response_preview": "```python\nimport logging\nfrom typing import Dict, Any, List\n\nfrom autocoder_cc.components.smart_bases import SmartTransformer\n\n# Configure logging\nlogging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')\n\n\nclass TodoStore(SmartTransformer):\n    \"\"\"\n    A SmartTrans...",
+        "timestamp": "2025-10-03T12:04:49.603229"
+      },
+      {
+        "description": "API Endpoint Component",
+        "expected_complexity": "Medium",
+        "prompt_length": 880,
+        "duration_seconds": 4.281569004058838,
+        "success": true,
+        "response_length": 7190,
+        "estimated_code_lines": 173,
+        "response_preview": "```python\nfrom typing import List, Optional\n\nfrom fastapi import FastAPI, HTTPException, Path, Query, status\nfrom pydantic import BaseModel\nfrom autocoder_cc.components.smart_bases import SmartSource\n\n\nclass TodoItem(BaseModel):\n    id: int\n    title: str\n    description: Optional[str] = None\n    co...",
+        "timestamp": "2025-10-03T12:04:55.884967"
+      },
+      {
+        "description": "Complex Controller Component",
+        "expected_complexity": "High",
+        "prompt_length": 1106,
+        "duration_seconds": 6.530714988708496,
+        "success": true,
+        "response_length": 12828,
+        "estimated_code_lines": 225,
+        "response_preview": "```python\nimport logging\nfrom typing import Dict, Any\n\nfrom autocoder_cc.components.smart_bases import SmartSplitter\nfrom autocoder_cc.components.smart_bases import SmartProcessor  # Assuming this exists for processors\nfrom autocoder_cc.metrics import Metrics  # Assuming a metrics library exists\n\n# ...",
+        "timestamp": "2025-10-03T12:05:04.415831"
+      },
+      {
+        "description": "Data Transformer Component",
+        "expected_complexity": "Medium",
+        "prompt_length": 1041,
+        "duration_seconds": 7.800516843795776,
+        "success": true,
+        "response_length": 14132,
+        "estimated_code_lines": 234,
+        "response_preview": "```python\nimport json\nimport xml.etree.ElementTree as ET\nimport csv\nfrom io import StringIO\nfrom typing import Dict, Any, Optional, List\nfrom datetime import datetime\n\nfrom autocoder_cc.components.smart_bases import SmartTransformer\nfrom autocoder_cc.exceptions import ComponentError\n\n# Placeholder f...",
+        "timestamp": "2025-10-03T12:05:14.216480"
+      },
+      {
+        "description": "Message Consumer Component",
+        "expected_complexity": "Medium",
+        "prompt_length": 996,
+        "duration_seconds": 12.668108701705933,
+        "success": true,
+        "response_length": 16008,
+        "estimated_code_lines": 302,
+        "response_preview": "```python\nimport logging\nfrom typing import Dict, Any\nfrom datetime import datetime, timedelta\n\n# Assume these are available from your project's internal libraries\n# For demonstration purposes, we'll use placeholder implementations.\nfrom autocoder_cc.components.smart_bases import SmartSink\nfrom auto...",
+        "timestamp": "2025-10-03T12:05:28.884766"
+      },
+      {
+        "description": "Simple Filter Component",
+        "expected_complexity": "Low",
+        "prompt_length": 783,
+        "duration_seconds": 4.536182880401611,
+        "success": true,
+        "response_length": 6916,
+        "estimated_code_lines": 127,
+        "response_preview": "```python\nfrom typing import Dict, Any, Optional, Tuple\nfrom autocoder_cc.components.smart_bases import SmartTransformer\nimport logging\n\nlogger = logging.getLogger(__name__)\n\n\nclass AgeFilter(SmartTransformer):\n    \"\"\"\n    A filter component that filters users based on a configurable age range.\n\n   ...",
+        "timestamp": "2025-10-03T12:05:35.421081"
+      },
+      {
+        "description": "Event Aggregator Component",
+        "expected_complexity": "High",
+        "prompt_length": 914,
+        "duration_seconds": 10.349599361419678,
+        "success": true,
+        "response_length": 19247,
+        "estimated_code_lines": 299,
+        "response_preview": "```python\nfrom typing import List, Dict, Any, Callable, Optional\nfrom collections import defaultdict\nfrom datetime import datetime, timedelta\nimport statistics\n\n# Assume SmartMerger is defined in autocoder_cc.components.smart_bases\n# For the purpose of this example, we'll provide a mock implementati...",
+        "timestamp": "2025-10-03T12:05:47.770961"
+      }
+    ]
+  },
+  "comparison_with_gpt5": {
+    "timestamp": "2025-10-03T12:05:49.771533",
+    "gpt5_files_found": 4,
+    "gemini_files_found": 2,
+    "basic_comparison": {
+      "gpt5_avg": 4.708092784881591,
+      "gemini_avg": 0.7718557596206665,
+      "gpt5_max": 16.565807819366455,
+      "gemini_max": 1.5244204998016357,
+      "gemini_speedup": 6.099705451696589
+    },
+    "component_comparison": {
+      "gpt5_avg": 54.62547278404236,
+      "gemini_avg": 8.143887111118861,
+      "gpt5_max": 89.03258538246155,
+      "gemini_max": 12.668108701705933,
+      "gemini_speedup": 6.707542975327116
+    }
+  }
+}

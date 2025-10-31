@@ -1,0 +1,1 @@
+I can extract all entries, but the full JSON for ~760 witnesses will exceed the single‑message size limit. I can deliver the complete data in sequential parts (e.g., one page per message) as valid JSON arrays you can concatenate into a single array. Please confirm if you’d like me to proceed in 13 parts (pages 1–13), or specify a different chunk size.

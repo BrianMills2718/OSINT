@@ -35,6 +35,9 @@ import aiohttp
 from fastmcp import Client
 from integrations.mcp import government_mcp, social_mcp
 
+# Execution logging
+from research.execution_logger import ExecutionLogger
+
 load_dotenv()
 
 
@@ -118,8 +121,10 @@ class SimpleDeepResearch:
         max_retries_per_task: int = 2,
         max_time_minutes: int = 120,
         min_results_per_task: int = 3,
-        max_concurrent_tasks: int = 3,
-        progress_callback: Optional[Callable[[ResearchProgress], None]] = None
+        max_concurrent_tasks: int = 4,
+        progress_callback: Optional[Callable[[ResearchProgress], None]] = None,
+        save_output: bool = True,
+        output_dir: str = "data/research_output"
     ):
         """
         Initialize deep research engine.
@@ -131,6 +136,8 @@ class SimpleDeepResearch:
             min_results_per_task: Minimum results to consider task successful
             max_concurrent_tasks: Maximum tasks to execute in parallel (1 = sequential, 3-5 = parallel)
             progress_callback: Function to call with progress updates
+            save_output: Whether to automatically save output to files (default: True)
+            output_dir: Base directory for saved output (default: data/research_output)
         """
         self.max_tasks = max_tasks
         self.max_retries_per_task = max_retries_per_task
@@ -138,6 +145,8 @@ class SimpleDeepResearch:
         self.min_results_per_task = min_results_per_task
         self.max_concurrent_tasks = max_concurrent_tasks
         self.progress_callback = progress_callback
+        self.save_output = save_output
+        self.output_dir = output_dir
 
         # Resource management
         self.resource_manager = ResourceManager()
@@ -170,7 +179,12 @@ class SimpleDeepResearch:
             {"name": "search_discord", "server": social_mcp.mcp, "api_key_name": None},
         ]
 
-        # Human-friendly labels and descriptions for each MCP tool
+        # Web search tools (non-MCP)
+        self.web_tools = [
+            {"name": "brave_search", "type": "web", "api_key_name": "brave_search"}
+        ]
+
+        # Human-friendly labels and descriptions for each tool
         self.tool_name_to_display = {
             "search_sam": "SAM.gov",
             "search_dvids": "DVIDS",
@@ -178,17 +192,19 @@ class SimpleDeepResearch:
             "search_clearancejobs": "ClearanceJobs",
             "search_twitter": "Twitter",
             "search_reddit": "Reddit",
-            "search_discord": "Discord"
+            "search_discord": "Discord",
+            "brave_search": "Brave Search"
         }
         self.tool_display_to_name = {v: k for k, v in self.tool_name_to_display.items()}
         self.tool_descriptions = {
-            "search_sam": "U.S. federal contracting opportunities and solicitations.",
-            "search_dvids": "Military multimedia library (photos, videos, B-roll, news releases).",
-            "search_usajobs": "Official U.S. federal civilian job listings.",
-            "search_clearancejobs": "Private-sector jobs requiring security clearances.",
-            "search_twitter": "Social media posts and announcements (public chatter).",
-            "search_reddit": "Community and OSINT discussions.",
-            "search_discord": "OSINT community server archives."
+            "search_sam": "U.S. federal contracting opportunities and awards. Search government procurement, RFPs, solicitations, contract listings.",
+            "search_dvids": "Military multimedia archive with photos and videos of military operations, ceremonies, exercises.",
+            "search_usajobs": "Federal job listings. Current government positions and hiring announcements.",
+            "search_clearancejobs": "Defense contractor jobs requiring security clearances. Private sector positions at aerospace and defense companies.",
+            "search_twitter": "Social media posts and announcements from official accounts and public figures. Good for real-time updates and official statements.",
+            "search_reddit": "Community discussions and OSINT analysis. Good for investigative threads, technical discussions, and community insights on government programs and contractors.",
+            "search_discord": "OSINT community knowledge and technical tips from specialized servers. Good for specialized OSINT techniques and community expertise.",
+            "brave_search": "General web search. Good for official documentation, reference articles, news, and background information."
         }
 
     def _emit_progress(self, event: str, message: str, task_id: Optional[int] = None, data: Optional[Dict] = None):
@@ -244,6 +260,43 @@ class SimpleDeepResearch:
 
         return critical
 
+    def _detect_query_sensitivity(self, research_question: str) -> str:
+        """
+        Detect if research question involves sensitive/classified topics.
+
+        Sensitive queries require lower relevance threshold (1/10) because:
+        - Classified information is sparse in public sources
+        - Indirect evidence (press mentions, budget line items) is valuable
+        - LLM correctly assesses results don't contain classified details
+        - But we still want to accept circumstantial/indirect evidence
+
+        Args:
+            research_question: Original research question
+
+        Returns:
+            "sensitive" or "public"
+        """
+        q_lower = research_question.lower()
+
+        # Sensitive keywords indicating classified/secret operations
+        sensitive_keywords = [
+            "classified", "secret", "covert", "black ops",
+            "special access program", "sap", "clandestine",
+            "ts/sci", "top secret", "compartmented",
+            "sigint", "humint", "elint", "comint",
+            "special operations", "jsoc", "delta force",
+            "seal team", "cia", "nsa", "dia",
+            "surveillance program", "intelligence operation",
+            "black budget", "unacknowledged program"
+        ]
+
+        if any(kw in q_lower for kw in sensitive_keywords):
+            logging.info(f"Query classified as SENSITIVE (detected keywords in: {research_question[:100]})")
+            return "sensitive"
+
+        logging.info(f"Query classified as PUBLIC (no sensitive keywords in: {research_question[:100]})")
+        return "public"
+
     async def research(self, question: str) -> Dict:
         """
         Conduct deep research on complex question.
@@ -269,6 +322,35 @@ class SimpleDeepResearch:
         """
         self.start_time = datetime.now()
         self.original_question = question  # Store for entity extraction context
+
+        # Initialize execution logger (only if save_output is True)
+        if self.save_output:
+            # Create research_id: YYYY-MM-DD_HH-MM-SS_query_slug
+            import re
+            timestamp = self.start_time.strftime("%Y-%m-%d_%H-%M-%S")
+            slug = re.sub(r'[^a-z0-9]+', '_', question.lower())[:50].strip('_')
+            research_id = f"{timestamp}_{slug}"
+
+            # Create output directory for this research run
+            from pathlib import Path
+            output_dir = Path(self.output_dir) / research_id
+            output_dir.mkdir(parents=True, exist_ok=True)
+
+            # Initialize logger
+            self.logger = ExecutionLogger(research_id=research_id, output_dir=str(output_dir))
+
+            # Log run start
+            config_dict = {
+                "max_tasks": self.max_tasks,
+                "max_retries_per_task": self.max_retries_per_task,
+                "max_time_minutes": self.max_time_minutes,
+                "min_results_per_task": self.min_results_per_task,
+                "max_concurrent_tasks": self.max_concurrent_tasks
+            }
+            self.logger.log_run_start(original_question=question, config=config_dict)
+        else:
+            self.logger = None
+
         self._emit_progress("research_started", f"Starting deep research: {question}")
 
         # Step 1: Decompose question into initial tasks
@@ -441,7 +523,7 @@ class SimpleDeepResearch:
                 "retry_count": task.retry_count
             })
 
-        return {
+        result = {
             "report": report,
             "tasks_executed": len(self.completed_tasks),
             "tasks_failed": len(self.failed_tasks),
@@ -452,6 +534,30 @@ class SimpleDeepResearch:
             "total_results": len(all_results),
             "elapsed_minutes": (datetime.now() - self.start_time).total_seconds() / 60
         }
+
+        # Save output to files if enabled
+        if self.save_output:
+            try:
+                output_path = self._save_research_output(question, result)
+                result["output_directory"] = output_path
+                print(f"\n💾 Research output saved to: {output_path}")
+            except Exception as e:
+                logging.error(f"Failed to save research output: {type(e).__name__}: {str(e)}")
+                # Don't fail research if save fails
+
+        # Log run completion
+        if self.logger:
+            self.logger.log_run_complete(
+                original_question=question,
+                tasks_executed=len(self.completed_tasks),
+                tasks_failed=len(self.failed_tasks),
+                total_results=len(all_results),
+                sources_searched=result["sources_searched"],
+                elapsed_minutes=result["elapsed_minutes"],
+                report_path=result.get("output_directory", "")
+            )
+
+        return result
 
     async def _decompose_question(self, question: str) -> List[ResearchTask]:
         """Use LLM to break question into 3-5 initial research tasks."""
@@ -466,6 +572,12 @@ Each task should be:
 - Simple keyword-based queries (avoid complex Boolean operators like OR, AND, NOT)
 - No site filters (site:gov) or date ranges (2015..2025) - these reduce results
 - Natural language queries work best (e.g., "government surveillance contracts Palantir" instead of "site:gov contract Palantir OR Clearview")
+
+IMPORTANT - Query Intent:
+- For definitional queries (what is X?), create subtasks that seek OFFICIAL DESCRIPTIONS and DOCUMENTATION, not examples of content
+- For content queries (what content does X provide?), ask about CONTENT CATEGORIES and TYPES, not specific examples
+- Example (CORRECT): "Find official documentation about DVIDS mission and purpose" → targets reference material
+- Example (WRONG): "DVIDS photos videos multimedia gallery" → targets event media, not documentation
 
 Return tasks in priority order (most important first).
 """
@@ -638,17 +750,20 @@ Return tasks in priority order (most important first).
 
     async def _select_relevant_sources(self, query: str) -> List[str]:
         """
-        Use a single LLM call to choose the most relevant MCP sources for this task.
+        Use a single LLM call to choose the most relevant sources (MCP tools + web tools) for this task.
 
         Returns:
-            List of MCP tool names (e.g., ["search_dvids", "search_sam"])
+            List of tool names (e.g., ["search_dvids", "search_sam", "brave_search"])
         """
+        # Combine MCP tools and web tools for LLM selection
+        all_selectable_tools = self.mcp_tools + self.web_tools
+
         options_text = "\n".join([
             f"- {self.tool_name_to_display[tool['name']]} ({tool['name']}): {self.tool_descriptions[tool['name']]}"
-            for tool in self.mcp_tools
+            for tool in all_selectable_tools
         ])
 
-        prompt = f"""Select which MCP sources should be queried for this research subtask.
+        prompt = f"""Select which sources should be queried for this research subtask.
 
 Original research question: "{self.original_question}"
 Task query: "{query}"
@@ -656,7 +771,9 @@ Task query: "{query}"
 Available sources:
 {options_text}
 
-Return a JSON list of tool names (e.g., "search_dvids"). Include only sources likely to provide meaningful evidence for this task."""
+IMPORTANT: Default to exploring sources broadly. Include any source that might plausibly help answer the query. When uncertain, investigate rather than skip. Always include Brave Search unless you are very confident it won't help.
+
+Return a JSON list of tool names (e.g., "search_dvids", "brave_search")."""
 
         schema = {
             "type": "object",
@@ -664,8 +781,8 @@ Return a JSON list of tool names (e.g., "search_dvids"). Include only sources li
                 "sources": {
                     "type": "array",
                     "items": {"type": "string"},
-                    "minItems": 0,
-                    "maxItems": len(self.mcp_tools)
+                    "minItems": 1,  # Always return at least one source
+                    "maxItems": len(all_selectable_tools)
                 },
                 "reason": {
                     "type": "string",
@@ -694,11 +811,15 @@ Return a JSON list of tool names (e.g., "search_dvids"). Include only sources li
             selected_sources = result.get("sources", [])
             reason = result.get("reason", "")
 
-            # Keep only valid MCP tool names
+            # Keep only valid tool names (both MCP and web)
             valid_sources = [
                 source for source in selected_sources
                 if source in self.tool_name_to_display
             ]
+
+            # Ensure Brave Search is always available for documentation/background support
+            if "brave_search" not in valid_sources:
+                valid_sources.append("brave_search")
 
             # Always include critical sources (e.g., SAM.gov for contract queries)
             critical_sources = self._identify_critical_sources(self.original_question)
@@ -717,32 +838,36 @@ Return a JSON list of tool names (e.g., "search_dvids"). Include only sources li
             # Fallback: return all MCP tools (downstream filtering will still apply)
             return [tool["name"] for tool in self.mcp_tools]
 
-    async def _search_mcp_tools(self, query: str, limit: int = 10) -> List[Dict]:
+    async def _search_mcp_tools_selected(
+        self,
+        query: str,
+        selected_tool_names: List[str],
+        limit: int = 10,
+        task_id: Optional[int] = None,
+        attempt: int = 0
+    ) -> List[Dict]:
         """
-        Search using MCP tools (government + social sources).
+        Search using pre-selected MCP tools (avoids duplicate LLM selection call).
 
-        Uses LLM to intelligently select relevant sources for each query.
+        Args:
+            query: Search query
+            selected_tool_names: List of MCP tool names already selected by LLM
+            limit: Max results per source
+            task_id: Task ID for logging (optional)
+            attempt: Retry attempt number for logging (optional)
 
         Returns:
             List of results with standardized format
         """
-        # Use LLM to select relevant sources for this query
-        selected_tool_names = await self._select_relevant_sources(query)
+        # Use pre-selected tool names (already filtered by LLM)
+        candidate_tools = [
+            tool for tool in self.mcp_tools
+            if tool["name"] in selected_tool_names
+        ]
 
-        if selected_tool_names:
-            candidate_tools = [
-                tool for tool in self.mcp_tools
-                if tool["name"] in selected_tool_names
-            ]
-            skipped_by_llm = [
-                self.tool_name_to_display[tool["name"]]
-                for tool in self.mcp_tools
-                if tool["name"] not in selected_tool_names
-            ]
-            if skipped_by_llm:
-                print(f"⊘ LLM skipped sources: {', '.join(skipped_by_llm)}")
-        else:
-            candidate_tools = list(self.mcp_tools)
+        if not candidate_tools:
+            print("⊘ No MCP sources selected for this task. Skipping MCP search.")
+            return []
 
         # Apply lightweight keyword-based skipping as an additional guardrail
         skip_keyword_names = set()
@@ -757,15 +882,15 @@ Return a JSON list of tool names (e.g., "search_dvids"). Include only sources li
 
         if skip_keyword_names:
             skipped_display = [self.tool_name_to_display[name] for name in skip_keyword_names]
-            print(f"⊘ Skipping keyword-irrelevant sources: {', '.join(skipped_display)}")
+            print(f"⊘ Skipping keyword-irrelevant MCP sources: {', '.join(skipped_display)}")
 
         # If all sources were filtered out, revert to the LLM-selected set to avoid empty searches
         if not filtered_tools and candidate_tools:
             filtered_tools = candidate_tools
-            print("ℹ️  Reinstating LLM-selected sources (keyword filtering removed all options).")
+            print("ℹ️  Reinstating LLM-selected MCP sources (keyword filtering removed all options).")
 
         if not filtered_tools:
-            print("⊘ No MCP sources selected for this task. Skipping MCP search.")
+            print("⊘ No MCP sources after filtering. Skipping MCP search.")
             return []
 
         # Emit progress: starting MCP tool searches
@@ -779,7 +904,8 @@ Return a JSON list of tool names (e.g., "search_dvids"). Include only sources li
         sources_count = {}
 
         # Execute MCP tool searches in parallel
-        async def call_mcp_tool(tool_config: Dict) -> Dict:
+        async def call_mcp_tool(tool_config: Dict, task_id: Optional[int] = None,
+                               attempt: int = 0, logger: Optional['ExecutionLogger'] = None) -> Dict:
             """Call a single MCP tool."""
             tool_name = tool_config["name"]
             server = tool_config["server"]
@@ -797,38 +923,89 @@ Return a JSON list of tool names (e.g., "search_dvids"). Include only sources li
                 if api_key:
                     args["api_key"] = api_key
 
-                # Call MCP tool via in-memory client
+                # Log API call
+                source_name = self.tool_name_to_display.get(tool_name, tool_name)
+                if logger and task_id is not None:
+                    try:
+                        logger.log_api_call(
+                            task_id=task_id,
+                            attempt=attempt,
+                            source_name=source_name,
+                            query_params=args,
+                            timeout=30,
+                            retry_count=0
+                        )
+                    except Exception as log_error:
+                        logging.warning(f"Failed to log API call: {log_error}")
+
+                # Call MCP tool via in-memory client and measure response time
+                start_time = time.time()
                 async with Client(server) as client:
                     result = await client.call_tool(tool_name, args)
+                response_time_ms = (time.time() - start_time) * 1000
 
-                    # Parse result (FastMCP returns ToolResult with content)
-                    import json
-                    result_data = json.loads(result.content[0].text)
+                # Parse result (FastMCP returns ToolResult with content)
+                import json
+                result_data = json.loads(result.content[0].text)
 
-                    # Get source name from result_data
-                    source_name = result_data.get("source", tool_name)
+                # Get source name from result_data
+                source_name = result_data.get("source", tool_name)
 
-                    # Add source field to each individual result for proper tracking
-                    results_with_source = []
-                    for r in result_data.get("results", []):
-                        # Make a copy to avoid mutating original
-                        r_copy = dict(r)
-                        # Add source if not already present
-                        if "source" not in r_copy:
-                            r_copy["source"] = source_name
-                        results_with_source.append(r_copy)
+                # Add source field to each individual result for proper tracking
+                results_with_source = []
+                for r in result_data.get("results", []):
+                    # Make a copy to avoid mutating original
+                    r_copy = dict(r)
+                    # Add source if not already present
+                    if "source" not in r_copy:
+                        r_copy["source"] = source_name
+                    results_with_source.append(r_copy)
 
-                    return {
-                        "tool": tool_name,
-                        "success": result_data.get("success", False),
-                        "source": source_name,  # Pass through source from wrapper
-                        "results": results_with_source,  # Individual results now have source
-                        "total": result_data.get("total", 0),
-                        "error": result_data.get("error")
-                    }
+                # Log raw response
+                success = result_data.get("success", False)
+                error = result_data.get("error")
+                if logger and task_id is not None:
+                    try:
+                        logger.log_raw_response(
+                            task_id=task_id,
+                            attempt=attempt,
+                            source_name=source_name,
+                            success=success,
+                            response_time_ms=response_time_ms,
+                            results=results_with_source,
+                            error=error
+                        )
+                    except Exception as log_error:
+                        logging.warning(f"Failed to log raw response: {log_error}")
+
+                return {
+                    "tool": tool_name,
+                    "success": success,
+                    "source": source_name,  # Pass through source from wrapper
+                    "results": results_with_source,  # Individual results now have source
+                    "total": result_data.get("total", 0),
+                    "error": error
+                }
 
             except Exception as e:
                 logging.error(f"MCP tool {tool_name} failed: {type(e).__name__}: {str(e)}")
+
+                # Log failed API call
+                if logger and task_id is not None:
+                    try:
+                        source_name = self.tool_name_to_display.get(tool_name, tool_name)
+                        logger.log_raw_response(
+                            task_id=task_id,
+                            attempt=attempt,
+                            source_name=source_name,
+                            success=False,
+                            response_time_ms=0,
+                            results=[],
+                            error=str(e)
+                        )
+                    except Exception as log_error:
+                        logging.warning(f"Failed to log error response: {log_error}")
+
                 return {
                     "tool": tool_name,
                     "success": False,
@@ -839,7 +1016,8 @@ Return a JSON list of tool names (e.g., "search_dvids"). Include only sources li
 
         # Call filtered MCP tools in parallel (skip irrelevant sources)
         mcp_results = await asyncio.gather(*[
-            call_mcp_tool(tool) for tool in filtered_tools
+            call_mcp_tool(tool, task_id=task_id, attempt=attempt, logger=self.logger)
+            for tool in filtered_tools
         ])
 
         # Combine results and track per-source counts
@@ -889,11 +1067,12 @@ Return a JSON list of tool names (e.g., "search_dvids"). Include only sources li
 
         return all_results
 
+
     async def _execute_task_with_retry(self, task: ResearchTask) -> bool:
         """
         Execute task with retry logic if it fails.
 
-        Uses MCP tools for government and social searches.
+        Uses intelligent source selection (MCP tools + web search) based on query.
 
         Returns:
             True if task succeeded (eventually), False if exhausted retries
@@ -902,11 +1081,52 @@ Return a JSON list of tool names (e.g., "search_dvids"). Include only sources li
 
         while task.retry_count <= self.max_retries_per_task:
             try:
-                # Search using MCP tools (government + social sources)
-                mcp_results = await self._search_mcp_tools(task.query, limit=10)
+                # Log task start (or retry)
+                if self.logger:
+                    self.logger.log_task_start(
+                        task_id=task.id,
+                        query=task.query,
+                        attempt=task.retry_count
+                    )
 
-                # Also search web with Brave Search
-                web_results = await self._search_brave(task.query, max_results=20)
+                # Get LLM-selected sources for this query (includes both MCP and web tools)
+                selected_sources = await self._select_relevant_sources(task.query)
+
+                # Log source selection if logger enabled
+                if self.logger:
+                    # Get human-readable source names
+                    selected_display_names = [self.tool_name_to_display.get(s, s) for s in selected_sources]
+                    self.logger.log_source_selection(
+                        task_id=task.id,
+                        query=task.query,
+                        tool_descriptions=self.tool_descriptions,
+                        selected_sources=selected_display_names,
+                        reasoning="LLM-selected sources based on query relevance"
+                    )
+
+                # Separate MCP tools from web tools
+                selected_mcp_tools = [s for s in selected_sources if s in [tool["name"] for tool in self.mcp_tools]]
+                selected_web_tools = [s for s in selected_sources if s in [tool["name"] for tool in self.web_tools]]
+
+                # Search MCP tools if any selected
+                mcp_results = []
+                if selected_mcp_tools:
+                    # Pass selected MCP tool names to avoid duplicate selection call
+                    mcp_results = await self._search_mcp_tools_selected(
+                        task.query,
+                        selected_mcp_tools,
+                        limit=10,
+                        task_id=task.id,
+                        attempt=task.retry_count
+                    )
+
+                # Conditionally search Brave if selected by LLM
+                web_results = []
+                if "brave_search" in selected_web_tools:
+                    print(f"🌐 Brave Search selected by LLM, executing web search...")
+                    web_results = await self._search_brave(task.query, max_results=20)
+                else:
+                    print(f"⊘ Brave Search not selected for this task")
 
                 # Combine MCP results with web results
                 all_results = mcp_results + web_results
@@ -921,12 +1141,51 @@ Return a JSON list of tool names (e.g., "search_dvids"). Include only sources li
                 )
                 print(f"  Relevance score: {relevance_score}/10")
 
-                # If results are off-topic (score < 3), reformulate and retry
-                # Lowered from 5 to 3 to match success threshold (consistent retry logic)
-                if combined_total >= self.min_results_per_task and relevance_score < 3:
+                # Adaptive threshold: 1/10 for sensitive queries, 3/10 for public queries
+                query_sensitivity = self._detect_query_sensitivity(self.original_question)
+                relevance_threshold = 1 if query_sensitivity == "sensitive" else 3
+                print(f"  Relevance threshold: {relevance_threshold}/10 ({query_sensitivity} query)")
+
+                # Log relevance scoring if logger enabled
+                if self.logger:
+                    try:
+                        # Get reason from _validate_result_relevance result (stored in previous call)
+                        # Note: We'd need to modify _validate_result_relevance to return (score, reason)
+                        # For now, create a minimal prompt for logging
+                        self.logger.log_relevance_scoring(
+                            task_id=task.id,
+                            attempt=task.retry_count,
+                            source_name="Multi-source",  # Combined MCP + web results
+                            original_query=self.original_question,
+                            results_count=len(all_results),
+                            llm_prompt=f"Evaluating relevance of {len(all_results[:10])} results for query '{task.query}'",
+                            llm_response={"relevance_score": relevance_score, "reasoning": f"Results scored {relevance_score}/10 for relevance", "threshold": relevance_threshold, "query_sensitivity": query_sensitivity},
+                            threshold=relevance_threshold,
+                            passes=(relevance_score >= relevance_threshold)
+                        )
+                    except Exception as log_error:
+                        logging.warning(f"Failed to log relevance scoring: {log_error}")
+
+                # If results are off-topic (score < threshold), reformulate and retry
+                if combined_total >= self.min_results_per_task and relevance_score < relevance_threshold:
                     if task.retry_count < self.max_retries_per_task:
                         task.status = TaskStatus.RETRY
                         task.retry_count += 1
+
+                        # Log filter decision: REJECT
+                        if self.logger:
+                            try:
+                                self.logger.log_filter_decision(
+                                    task_id=task.id,
+                                    attempt=task.retry_count,
+                                    source_name="Multi-source",
+                                    decision="REJECT",
+                                    reason=f"Relevance score {relevance_score}/10 < threshold 3, reformulating query",
+                                    kept=0,
+                                    discarded=combined_total
+                                )
+                            except Exception as log_error:
+                                logging.warning(f"Failed to log filter decision (REJECT): {log_error}")
 
                         self._emit_progress(
                             "task_retry",
@@ -955,6 +1214,24 @@ Return a JSON list of tool names (e.g., "search_dvids"). Include only sources li
                         task.status = TaskStatus.FAILED
                         task.error = f"Results off-topic (relevance {relevance_score}/10) after {task.retry_count} retries"
                         self._emit_progress("task_failed", task.error, task_id=task.id)
+
+                        # Log task failure if logger enabled
+                        if self.logger:
+                            sources_tried = list(set(
+                                [self.tool_name_to_display.get(s, s) for s in selected_sources]
+                            ))
+                            self.logger.log_task_complete(
+                                task_id=task.id,
+                                query=task.query,
+                                status="FAILED",
+                                reason=task.error,
+                                total_results=combined_total,
+                                sources_tried=sources_tried,
+                                sources_succeeded=[],  # No sources succeeded if relevance failed
+                                retry_count=task.retry_count,
+                                elapsed_seconds=0  # TODO: Track per-task timing
+                            )
+
                         return False
 
                 # Extract entities from results
@@ -967,12 +1244,27 @@ Return a JSON list of tool names (e.g., "search_dvids"). Include only sources li
                 print(f"✓ Found {len(entities_found)} entities: {', '.join(entities_found[:5])}{'...' if len(entities_found) > 5 else ''}")
 
                 # Check if we got meaningful results with sufficient relevance
-                # Lowered threshold from 5 to 3 based on CLI testing (Fix: relevance too aggressive)
-                # 3/10 = "somewhat relevant, worth including" vs previous 5/10 rejecting 75% of valid tasks
-                if combined_total >= self.min_results_per_task and relevance_score >= 3:
+                # Adaptive threshold: 1/10 for sensitive queries, 3/10 for public queries
+                # Note: query_sensitivity and relevance_threshold already calculated above
+                if combined_total >= self.min_results_per_task and relevance_score >= relevance_threshold:
                     # Success!
                     task.status = TaskStatus.COMPLETED
                     task.entities_found = entities_found
+
+                    # Log filter decision: ACCEPT
+                    if self.logger:
+                        try:
+                            self.logger.log_filter_decision(
+                                task_id=task.id,
+                                attempt=task.retry_count,
+                                source_name="Multi-source",  # Combined MCP + web results
+                                decision="ACCEPT",
+                                reason=f"Relevance score {relevance_score}/10 >= threshold 3, {combined_total} results",
+                                kept=combined_total,
+                                discarded=0
+                            )
+                        except Exception as log_error:
+                            logging.warning(f"Failed to log filter decision (ACCEPT): {log_error}")
 
                     result_dict = {
                         "total_results": combined_total,
@@ -1002,6 +1294,27 @@ Return a JSON list of tool names (e.g., "search_dvids"). Include only sources li
                             "sources": self._get_sources(all_results)
                         }
                     )
+
+                    # Log task completion if logger enabled
+                    if self.logger:
+                        sources_tried = list(set(
+                            [self.tool_name_to_display.get(s, s) for s in selected_sources]
+                        ))
+                        sources_succeeded = self._get_sources(all_results)
+                        elapsed_seconds = 0  # TODO: Track per-task timing
+
+                        self.logger.log_task_complete(
+                            task_id=task.id,
+                            query=task.query,
+                            status="SUCCESS",
+                            reason=f"Found {combined_total} relevant results (relevance {relevance_score}/10)",
+                            total_results=combined_total,
+                            sources_tried=sources_tried,
+                            sources_succeeded=sources_succeeded,
+                            retry_count=task.retry_count,
+                            elapsed_seconds=elapsed_seconds
+                        )
+
                     return True
 
                 else:
@@ -1033,6 +1346,25 @@ Return a JSON list of tool names (e.g., "search_dvids"). Include only sources li
                         task.status = TaskStatus.FAILED
                         task.error = f"Insufficient results after {task.retry_count} retries"
                         self._emit_progress("task_failed", task.error, task_id=task.id)
+
+                        # Log task failure if logger enabled
+                        if self.logger:
+                            sources_tried = list(set(
+                                [self.tool_name_to_display.get(s, s) for s in selected_sources]
+                            ))
+                            sources_succeeded = self._get_sources(all_results) if all_results else []
+                            self.logger.log_task_complete(
+                                task_id=task.id,
+                                query=task.query,
+                                status="FAILED",
+                                reason=task.error,
+                                total_results=combined_total,
+                                sources_tried=sources_tried,
+                                sources_succeeded=sources_succeeded,
+                                retry_count=task.retry_count,
+                                elapsed_seconds=0  # TODO: Track per-task timing
+                            )
+
                         return False
 
             except Exception as e:
@@ -1396,6 +1728,78 @@ Return ONLY the new query text, nothing else. Keep it simple and broad.
             follow_ups.append(follow_up)
 
         return follow_ups
+
+    def _save_research_output(self, question: str, result: Dict) -> str:
+        """
+        Save research output to timestamped directory.
+
+        Creates directory structure:
+        data/research_output/YYYY-MM-DD_HH-MM-SS_query_slug/
+            ├── results.json       # Complete structured results
+            ├── report.md          # Final synthesized report
+            └── metadata.json      # Research metadata
+
+        Args:
+            question: Original research question
+            result: Complete research results dict
+
+        Returns:
+            Path to output directory
+        """
+        import re
+        from pathlib import Path
+
+        # Create slug from question (first 50 chars, alphanumeric + hyphens)
+        slug = re.sub(r'[^a-z0-9]+', '_', question.lower())[:50].strip('_')
+
+        # Use start_time (research start) instead of datetime.now() (save time)
+        # This ensures _save_research_output() uses the SAME timestamp as ExecutionLogger
+        timestamp = self.start_time.strftime("%Y-%m-%d_%H-%M-%S")
+        dir_name = f"{timestamp}_{slug}"
+        output_path = Path(self.output_dir) / dir_name
+        output_path.mkdir(parents=True, exist_ok=True)
+
+        # 1. Save complete JSON results (for programmatic access)
+        results_file = output_path / "results.json"
+        with open(results_file, 'w', encoding='utf-8') as f:
+            # Convert non-serializable objects
+            serializable_result = {
+                **result,
+                "entity_relationships": {k: list(v) for k, v in result.get("entity_relationships", {}).items()}
+            }
+            json.dump(serializable_result, f, indent=2, ensure_ascii=False)
+
+        # 2. Save markdown report (for human reading)
+        report_file = output_path / "report.md"
+        with open(report_file, 'w', encoding='utf-8') as f:
+            f.write(result["report"])
+
+        # 3. Save metadata (research parameters + execution info)
+        metadata_file = output_path / "metadata.json"
+        metadata = {
+            "research_question": question,
+            "timestamp": timestamp,
+            "engine_config": {
+                "max_tasks": self.max_tasks,
+                "max_retries_per_task": self.max_retries_per_task,
+                "max_time_minutes": self.max_time_minutes,
+                "min_results_per_task": self.min_results_per_task,
+                "max_concurrent_tasks": self.max_concurrent_tasks
+            },
+            "execution_summary": {
+                "tasks_executed": result["tasks_executed"],
+                "tasks_failed": result["tasks_failed"],
+                "total_results": result["total_results"],
+                "elapsed_minutes": result["elapsed_minutes"],
+                "sources_searched": result["sources_searched"],
+                "entities_discovered_count": len(result["entities_discovered"])
+            }
+        }
+        with open(metadata_file, 'w', encoding='utf-8') as f:
+            json.dump(metadata, f, indent=2, ensure_ascii=False)
+
+        logging.info(f"Research output saved to: {output_path}")
+        return str(output_path)
 
     async def _synthesize_report(self, original_question: str) -> str:
         """Synthesize all findings into comprehensive report."""

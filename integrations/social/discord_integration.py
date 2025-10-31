@@ -236,6 +236,37 @@ Return JSON:
                 response_time_ms=response_time_ms
             )
 
+    def _sanitize_json(self, text: str) -> str:
+        """
+        Sanitize JSON text to fix common syntax errors in Discord exports.
+
+        Discord export files sometimes contain malformed JSON with trailing commas,
+        invalid control characters, and other syntax errors. This method applies
+        comprehensive defensive sanitization:
+        - Removes trailing commas before closing braces/brackets
+        - Removes invalid control characters (U+0000 to U+001F, U+007F to U+009F)
+        - Preserves valid JSON structure
+
+        Args:
+            text: Raw JSON text from Discord export file
+
+        Returns:
+            Sanitized JSON text safe for json.load()
+        """
+        # Step 1: Remove trailing commas before } or ]
+        # Pattern: comma followed by optional whitespace followed by } or ]
+        # Example: {"key": "value",} → {"key": "value"}
+        # Example: ["item1", "item2",] → ["item1", "item2"]
+        text = re.sub(r',(\s*[}\]])', r'\1', text)
+
+        # Step 2: Remove invalid control characters
+        # JSON spec allows only: tab (\t), newline (\n), carriage return (\r)
+        # Remove all other control characters (U+0000 to U+001F except \t\n\r, and U+007F to U+009F)
+        # These can cause "Expecting ',' delimiter" errors if present in strings
+        text = re.sub(r'[\x00-\x08\x0B\x0C\x0E-\x1F\x7F-\x9F]', '', text)
+
+        return text
+
     def _extract_keywords(self, text: str) -> List[str]:
         """
         Extract keywords from research question.
@@ -288,7 +319,17 @@ Return JSON:
         for export_file in export_files:
             try:
                 with open(export_file, 'r', encoding='utf-8') as f:
-                    data = json.load(f)
+                    raw_content = f.read()
+                    # Sanitize JSON before parsing (fixes trailing commas and control chars)
+                    sanitized_content = self._sanitize_json(raw_content)
+
+                    # Try lenient parsing first (strict=False tolerates more syntax issues)
+                    try:
+                        decoder = json.JSONDecoder(strict=False)
+                        data = decoder.decode(sanitized_content)
+                    except json.JSONDecodeError:
+                        # Fallback to standard parser (will raise if still invalid)
+                        data = json.loads(sanitized_content)
 
                 guild = data.get("guild", {})
                 channel = data.get("channel", {})

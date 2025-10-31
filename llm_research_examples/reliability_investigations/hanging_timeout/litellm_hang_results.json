@@ -1,0 +1,21 @@
+{
+  "isolated_litellm": {
+    "success": false,
+    "duration": 6.111202716827393,
+    "error": "'NoneType' object is not subscriptable"
+  },
+  "unified_provider": {
+    "success": true,
+    "duration": 1.1113228797912598,
+    "content": "unified test"
+  },
+  "system_context": {
+    "success": false,
+    "duration": 0.41439008712768555,
+    "error": "'NoneType' object is not subscriptable"
+  },
+  "clean_loop": {
+    "success": true,
+    "content": null
+  }
+}

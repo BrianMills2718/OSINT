@@ -117,9 +117,11 @@ API Parameters:
     - Complex Boolean: Any query with 2+ Boolean operators
 
     STRATEGY:
-    - PREFER: Simple 1-2 keywords (e.g., "intelligence" or "intelligence analyst")
+    - PREFER: Single broad keyword (e.g., "cybersecurity" OR "analyst") for maximum results
+    - ALLOW: Two keywords (space-separated) ONLY if single keyword is too broad (e.g., "intelligence analyst" when "analyst" alone would include non-intelligence roles)
     - ALLOW: Single Boolean operator if needed (AND/OR/NOT)
-    - AVOID: Complexity - USAJobs API breaks with complex queries
+    - AVOID: Multi-word queries that are too restrictive (e.g., "cybersecurity analyst" returns only 1 result, while "cybersecurity" returns 44)
+    - AVOID: Location filters unless explicitly requested (DC-area jobs include MD/VA)
 
     See docs/INTEGRATION_QUERY_GUIDES.md for detailed empirical test results.
 
