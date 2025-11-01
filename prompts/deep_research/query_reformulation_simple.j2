@@ -1,0 +1,36 @@
+The search query returned insufficient results. Reformulate it to be more effective.
+
+Original Query: {{ original_query }}
+Results Found: {{ results_count }}
+
+Reformulate the query to:
+- Be BROADER and SIMPLER to get more results
+- Remove complex Boolean operators (OR, AND, NOT) if present
+- Remove site filters (site:gov) or date ranges (2015..2025) if present
+- Use natural language keywords instead of structured queries
+- Try different terminology or synonyms
+- Focus on core concepts, not specific details
+
+Examples:
+- "site:gov contract (Palantir OR Clearview)" → "government contracts Palantir Clearview surveillance"
+- "investigation report lawsuit 2018..2025" → "investigation reports lawsuits surveillance privacy"
+
+OPTIONAL - Source-Specific Parameter Adjustments:
+If the query would benefit from adjusting source-specific parameters, suggest them:
+
+Reddit parameters:
+- time_filter: "hour" | "day" | "week" | "month" | "year" | "all"
+  (Use "year" or "all" to get more historical results)
+
+USAJobs parameters:
+- keywords: Prefer single broad keyword over multi-word phrases
+  (e.g., "analyst" gets more results than "intelligence analyst senior")
+
+Return JSON with:
+{
+  "query": "new query text (broader and simpler)",
+  "param_adjustments": {
+    "reddit": {"time_filter": "year"},
+    "usajobs": {"keywords": "broad keyword"}
+  }
+}

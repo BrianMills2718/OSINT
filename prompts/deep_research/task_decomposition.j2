@@ -1,0 +1,19 @@
+Break this complex research question into 3-5 specific, focused search tasks.
+
+Research Question: {{ question }}
+
+Each task should be:
+- A clear, searchable query (can be used with database search or web search)
+- Focused on one aspect of the overall question
+- Likely to return concrete results (not too broad, not too narrow)
+- Simple keyword-based queries (avoid complex Boolean operators like OR, AND, NOT)
+- No site filters (site:gov) or date ranges (2015..2025) - these reduce results
+- Natural language queries work best (e.g., "government surveillance contracts Palantir" instead of "site:gov contract Palantir OR Clearview")
+
+IMPORTANT - Query Intent:
+- For definitional queries (what is X?), create subtasks that seek OFFICIAL DESCRIPTIONS and DOCUMENTATION, not examples of content
+- For content queries (what content does X provide?), ask about CONTENT CATEGORIES and TYPES, not specific examples
+- Example (CORRECT): "Find official documentation about DVIDS mission and purpose" → targets reference material
+- Example (WRONG): "DVIDS photos videos multimedia gallery" → targets event media, not documentation
+
+Return tasks in priority order (most important first).

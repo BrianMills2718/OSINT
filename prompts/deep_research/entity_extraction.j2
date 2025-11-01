@@ -1,0 +1,22 @@
+Extract key entities (people, organizations, programs, operations) from these search results.
+
+CONTEXT:
+- Original research question: "{{ research_question }}"
+- Search query used: "{{ task_query }}"
+
+Use the context to disambiguate acronyms and focus on entities relevant to the research question.
+
+Results:
+{{ results_text }}
+
+Return a JSON list of entity names (3-10 entities). Focus on named entities that:
+1. Are RELEVANT to the research question
+2. Could be researched further
+3. Match the domain of the research question (e.g., if researching cybersecurity contracts, focus on companies, agencies, programs in that domain)
+
+Examples (matching the research domain):
+- Research question about "JSOC operations" → ["Joint Special Operations Command", "CIA", "Operation Cyclone"]
+- Research question about "NSA cybersecurity contracts" → ["National Security Agency", "Palantir", "Booz Allen Hamilton", "Leidos"]
+- Research question about "FBI surveillance programs" → ["Federal Bureau of Investigation", "PRISM", "FISA Court"]
+
+DO NOT extract generic entities unrelated to the research question.

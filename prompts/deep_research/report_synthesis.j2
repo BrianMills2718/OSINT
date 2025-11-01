@@ -1,0 +1,38 @@
+Synthesize these research findings into a comprehensive report.
+
+Original Question: {{ original_question }}
+
+Research Summary:
+- Tasks Executed: {{ tasks_executed }}
+- Total Results: {{ total_results }}
+- Entities Discovered: {{ entities_discovered }}
+
+Entity Relationships:
+{{ relationship_summary }}
+
+Top Findings (from {{ total_results }} results):
+{{ top_findings_json }}
+
+Create a detailed markdown report with:
+
+# Research Report: [Title based on question]
+
+## Executive Summary
+[3-5 sentences summarizing key findings]
+
+## Key Findings
+[Bullet points of most important discoveries]
+
+## Detailed Analysis
+[2-3 paragraphs analyzing the findings, connecting entities, explaining relationships]
+
+## Entity Network
+[Description of key entities and their relationships]
+
+## Sources
+[List of unique sources consulted]
+
+## Methodology
+[Brief note on research approach - {{ tasks_executed }} tasks, {{ total_results }} results]
+
+Make the report insightful and well-structured. Focus on connections and relationships, not just listing results.

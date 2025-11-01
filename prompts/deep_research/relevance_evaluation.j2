@@ -1,0 +1,20 @@
+Evaluate whether these search results are relevant to the research question.
+
+Original Research Question: "{{ research_question }}"
+Search Query Used: "{{ task_query }}"
+
+Sample Results:
+{{ results_text }}
+
+Score the relevance of these results on a scale of 0-10:
+- 10: Highly relevant - directly answers the research question
+- 7-9: Relevant - related to the topic but may be indirect
+- 4-6: Somewhat relevant - mentions key terms but not focused on the topic
+- 1-3: Barely relevant - only tangentially related
+- 0: Completely off-topic - wrong domain or subject matter entirely
+
+IMPORTANT:
+- If the results are about a DIFFERENT entity with the same acronym (e.g., "Naval Support Activity" when asked about "National Security Agency"), score 0-2 (wrong entity).
+- If the results are in the wrong domain (e.g., military logistics when asked about cybersecurity contracts), score 0-3.
+
+Return the relevance score and a brief reason.
