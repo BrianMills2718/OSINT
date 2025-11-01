@@ -11,6 +11,7 @@ from typing import Dict, Optional
 from datetime import datetime
 import requests
 from llm_utils import acompletion
+from core.prompt_loader import render_prompt
 
 from core.database_integration_base import (
     DatabaseIntegration,
@@ -69,7 +70,7 @@ class USAJobsIntegration(DatabaseIntegration):
         """
         return True
 
-    async def generate_query(self, research_question: str) -> Optional[Dict]:
+    async def generate_query(self, research_question: str, param_hints: Optional[Dict] = None) -> Optional[Dict]:
         """
         Generate USAJobs query parameters using LLM.
 
@@ -78,6 +79,8 @@ class USAJobsIntegration(DatabaseIntegration):
 
         Args:
             research_question: The user's research question
+            param_hints: Optional parameter hints to override LLM-generated values
+                (e.g., {"keywords": "cybersecurity"} to use broad single keyword)
 
         Returns:
             Dict with query parameters, or None if not relevant
@@ -92,68 +95,10 @@ class USAJobsIntegration(DatabaseIntegration):
             }
         """
 
-        prompt = f"""Generate search parameters for USAJobs.
-
-USAJobs provides: Official U.S. federal government job listings across all agencies and departments.
-
-API Parameters:
-- keywords (string, required):
-    Search query syntax (empirically tested 2025-10-25):
-
-    BEST SYNTAX (most results):
-    - Single keyword: intelligence
-    - Two keywords (space): intelligence analyst
-
-    WORKING (single Boolean operator only):
-    - Simple AND: intelligence AND analyst
-    - Simple OR: intelligence OR security
-    - Simple NOT: intelligence NOT classified
-
-    FORBIDDEN (returns 0 results):
-    - Three or more keywords: intelligence analyst senior
-    - Multiple OR terms: intelligence OR security OR analyst
-    - Parentheses grouping: (intelligence OR security) AND analyst
-    - Mixed syntax: "intelligence analyst" OR cybersecurity
-    - Complex Boolean: Any query with 2+ Boolean operators
-
-    STRATEGY:
-    - PREFER: Single broad keyword (e.g., "cybersecurity" OR "analyst") for maximum results
-    - ALLOW: Two keywords (space-separated) ONLY if single keyword is too broad (e.g., "intelligence analyst" when "analyst" alone would include non-intelligence roles)
-    - ALLOW: Single Boolean operator if needed (AND/OR/NOT)
-    - AVOID: Multi-word queries that are too restrictive (e.g., "cybersecurity analyst" returns only 1 result, while "cybersecurity" returns 44)
-    - AVOID: Location filters unless explicitly requested (DC-area jobs include MD/VA)
-
-    See docs/INTEGRATION_QUERY_GUIDES.md for detailed empirical test results.
-
-- location (string or null, optional):
-    Geographic location (e.g., "Washington, DC", "California", "Remote")
-
-- organization (string or null, optional):
-    Federal agency or organization name (e.g., "Department of Defense", "FBI", "NASA")
-
-- pay_grade_low (integer or null, optional):
-    Minimum GS (General Schedule) pay grade. Range: 1-15
-    Reference: GS-1 to GS-4 = Entry level, GS-5 to GS-9 = Junior, GS-10 to GS-12 = Mid-level, GS-13 to GS-15 = Senior
-
-- pay_grade_high (integer or null, optional):
-    Maximum GS pay grade. Range: 1-15
-
-Research Question: {research_question}
-
-Decide whether USAJobs is relevant for this question.
-Job listings reveal what federal agencies are actively hiring for, which can provide insight into government programs and priorities.
-
-Return JSON:
-{{
-  "relevant": boolean,
-  "keywords": string,
-  "location": string | null,
-  "organization": string | null,
-  "pay_grade_low": integer | null,
-  "pay_grade_high": integer | null,
-  "reasoning": string
-}}
-"""
+        prompt = render_prompt(
+            "integrations/usajobs_query_generation.j2",
+            research_question=research_question
+        )
 
         schema = {
             "type": "object",
@@ -206,13 +151,20 @@ Return JSON:
         # if not result["relevant"]:
         #     return None
 
-        return {
+        # Build query params from LLM result
+        query_params = {
             "keywords": result["keywords"],
             "location": result["location"],
             "organization": result["organization"],
             "pay_grade_low": result["pay_grade_low"],
             "pay_grade_high": result["pay_grade_high"]
         }
+
+        # Merge param_hints if provided (hints override LLM values)
+        if param_hints:
+            query_params.update(param_hints)
+
+        return query_params
 
     async def execute_search(self,
                            query_params: Dict,

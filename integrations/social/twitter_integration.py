@@ -10,6 +10,7 @@ import asyncio
 from typing import Dict, Optional
 from datetime import datetime
 from llm_utils import acompletion
+from core.prompt_loader import render_prompt
 
 from core.database_integration_base import (
     DatabaseIntegration,
@@ -127,57 +128,10 @@ class TwitterIntegration(DatabaseIntegration):
             }
 
         # Full research question - use LLM
-        prompt = f"""Generate search parameters for Twitter.
-
-Twitter provides: Real-time social media posts and public discussions.
-
-API Parameters:
-- query (string, required):
-    Twitter search query. Supports boolean operators:
-    OR (alternatives), AND (required terms), NOT (exclusions), quotes for exact phrases
-    Example: "JTTF OR counterterrorism" or "FBI AND hiring"
-
-- search_type (enum, required):
-    Search filter type. Valid options:
-    "Latest" = Most recent tweets
-    "Top" = Most popular/engaging tweets
-    "Media" = Tweets with images/videos
-    "People" = User profiles (for finding accounts, not tweets)
-
-- max_pages (integer, required):
-    Number of result pages to fetch. Range: 1-5
-    Each page contains approximately 20 tweets.
-
-Research Question: {research_question}
-
-Decide whether Twitter is relevant for this question.
-
-Twitter is useful for:
-- Public discourse and opinions on government programs, policies, leaks
-- Breaking news, whistleblower revelations, investigative journalism
-- Official government accounts and announcements
-- Activism, protests, social movements
-- Expert commentary from journalists, researchers, former officials
-- Real-time reactions to events
-
-Twitter is NOT useful for:
-- Structured data like contracts, jobs, procurement
-- Historical documents or archives
-- Formal government records
-
-If the question involves public discussion, news, leaks, or social/political topics,
-Twitter is HIGHLY RELEVANT. Only mark as not relevant if it's purely about
-structured government data (contracts, jobs, etc.).
-
-Return JSON:
-{{
-  "relevant": boolean,
-  "query": string,
-  "search_type": "Latest" | "Top" | "Media" | "People",
-  "max_pages": integer,
-  "reasoning": string
-}}
-"""
+        prompt = render_prompt(
+            "integrations/twitter_query_generation.j2",
+            research_question=research_question
+        )
 
         schema = {
             "type": "object",

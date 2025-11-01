@@ -16,6 +16,7 @@ from core.database_integration_base import (
     DatabaseCategory,
     QueryResult
 )
+from core.prompt_loader import render_prompt
 # Lazy import - only load Playwright when actually searching
 # from integrations.government.clearancejobs_playwright import search_clearancejobs
 from llm_utils import acompletion
@@ -78,38 +79,10 @@ class ClearanceJobsIntegration(DatabaseIntegration):
             }
         """
 
-        prompt = f"""Generate search parameters for ClearanceJobs.
-
-ClearanceJobs provides: Security clearance job postings requiring TS/SCI, Secret, Top Secret, and other government clearances.
-
-API Parameters:
-- keywords (string, required):
-    Search terms for job titles and descriptions.
-
-    IMPORTANT Query Effectiveness Notes:
-    - ClearanceJobs search works best with focused, specific queries
-    - Very long queries (many comma-separated terms or excessive ORs) tend to return ALL jobs instead of filtering
-    - Balance specificity vs breadth: use enough terms to capture the role, but not so many that the search breaks
-    - Good approach: Core job title/role + 1-2 key qualifications OR synonyms
-    - Example good queries:
-      * "cybersecurity analyst" (simple, specific)
-      * "SIGINT OR signals intelligence analyst" (synonyms for same concept)
-      * "penetration tester OR ethical hacker" (common role synonyms)
-    - Example overly broad queries that may fail:
-      * "cyber, security, analyst, engineer, SIEM, Splunk, TS/SCI, ..." (too many terms)
-      * Long lists of every possible synonym and tool
-
-Research Question: {research_question}
-
-Generate a focused, effective search query that will actually filter results.
-Consider: What is the core role or skill being searched? What are the 1-2 most important synonyms or qualifications?
-
-Return JSON:
-{{
-  "keywords": string,
-  "reasoning": string
-}}
-"""
+        prompt = render_prompt(
+            "integrations/clearancejobs_query_generation.j2",
+            research_question=research_question
+        )
 
         schema = {
             "type": "object",

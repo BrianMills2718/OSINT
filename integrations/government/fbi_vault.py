@@ -19,6 +19,7 @@ from functools import partial
 # from bs4 import BeautifulSoup  # Imported only when needed
 
 from llm_utils import acompletion
+from core.prompt_loader import render_prompt
 
 from core.database_integration_base import (
     DatabaseIntegration,
@@ -91,25 +92,10 @@ class FBIVaultIntegration(DatabaseIntegration):
             }
         """
 
-        prompt = f"""Generate search parameters for FBI Vault.
-
-FBI Vault provides: FBI FOIA document releases - investigation files, memos, reports, and declassified materials.
-
-API Parameters:
-- query (string, required):
-    Search terms for documents.
-
-Research Question: {research_question}
-
-Decide whether FBI Vault is relevant for this question.
-
-Return JSON:
-{{
-  "relevant": boolean,
-  "query": string,
-  "reasoning": string
-}}
-"""
+        prompt = render_prompt(
+            "integrations/fbi_vault_query_generation.j2",
+            research_question=research_question
+        )
 
         schema = {
             "type": "object",

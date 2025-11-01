@@ -24,6 +24,7 @@ from core.database_integration_base import (
     DatabaseCategory,
     QueryResult
 )
+from core.prompt_loader import render_prompt
 
 
 class DiscordIntegration(DatabaseIntegration):
@@ -104,29 +105,10 @@ class DiscordIntegration(DatabaseIntegration):
         import json
 
         # Use LLM to extract key search terms/phrases
-        prompt = f"""Generate search parameters for Discord.
-
-Discord provides: Community discussions from OSINT/intelligence servers (Bellingcat, Project OWL, etc.).
-Content type: Informal discussions, breaking news reactions, expert analysis, geopolitical commentary.
-NOT: Job listings, contracts, official government documents, formal reports.
-
-API Parameters:
-- keywords (array of strings, required):
-    Key search terms or phrases for topic-based discussions (NOT contracts/jobs).
-    Messages matching ANY keyword will be returned (OR search).
-    Use synonyms and related terms to broaden the search.
-    Preserve multi-word concepts as single terms (e.g., "domestic terrorism", not separate words).
-    Range: 3-8 terms recommended (synonyms and related concepts).
-
-Research Question: {research_question}
-
-Extract terms that would appear in INFORMAL DISCUSSIONS about this topic (not contract/job keywords).
-
-Return JSON:
-{{
-  "terms": array of strings
-}}
-"""
+        prompt = render_prompt(
+            "integrations/discord_query_generation.j2",
+            research_question=research_question
+        )
 
         try:
             schema = {

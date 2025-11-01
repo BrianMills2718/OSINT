@@ -11,6 +11,7 @@ from typing import Dict, Optional
 from datetime import datetime
 import requests
 from llm_utils import acompletion
+from core.prompt_loader import render_prompt
 
 from core.database_integration_base import (
     DatabaseIntegration,
@@ -109,87 +110,10 @@ class FederalRegisterIntegration(DatabaseIntegration):
             }
         """
 
-        prompt = f"""You are a search query generator for FederalRegister.gov, the official U.S. Federal Register.
-
-Research Question: {research_question}
-
-Generate search parameters for the Federal Register API:
-- term: Search term for document titles/text (string, keep focused)
-- document_types: Types of documents (array from: "RULE" (final rule), "PRORULE" (proposed rule), "NOTICE" (notice), "PRESDOCU" (presidential document), or empty array for all)
-- agencies: Agency slugs if specific agencies mentioned (array of strings like ["environmental-protection-agency", "homeland-security-department"], or empty array)
-- date_range_days: How many days back to search (integer 1-730, default 180 for 6 months)
-
-Guidelines:
-- term: Use domain-specific keywords, avoid generic terms
-- document_types: Common combinations:
-  * [] (empty) = all types
-  * ["RULE"] = final rules only
-  * ["PRORULE"] = proposed rules only
-  * ["RULE", "PRORULE"] = all rules
-  * ["NOTICE"] = notices only
-- agencies: Use Federal Register agency slugs. Common ones:
-  * environmental-protection-agency (EPA)
-  * homeland-security-department (DHS)
-  * defense-department (DoD)
-  * health-and-human-services-department (HHS)
-  * food-and-drug-administration (FDA)
-  * securities-and-exchange-commission (SEC)
-  * federal-trade-commission (FTC)
-  * Only specify if question explicitly mentions the agency
-- date_range_days: Use 90 for "recent", 180 for default, 365 for "past year", 730 for maximum
-
-If this question is not about federal regulations or government policy, return relevant: false.
-
-Return JSON with these exact fields. Use empty arrays for optional list fields.
-
-Example 1:
-Question: "What are recent EPA cybersecurity regulations?"
-Response:
-{{
-  "relevant": true,
-  "term": "cybersecurity",
-  "document_types": ["RULE"],
-  "agencies": ["environmental-protection-agency"],
-  "date_range_days": 90,
-  "reasoning": "EPA final rules on cybersecurity in last 90 days"
-}}
-
-Example 2:
-Question: "Proposed rules about artificial intelligence"
-Response:
-{{
-  "relevant": true,
-  "term": "artificial intelligence",
-  "document_types": ["PRORULE"],
-  "agencies": [],
-  "date_range_days": 180,
-  "reasoning": "Proposed rules on AI across all agencies"
-}}
-
-Example 3:
-Question: "DHS notices about domestic extremism"
-Response:
-{{
-  "relevant": true,
-  "term": "domestic extremism",
-  "document_types": ["NOTICE"],
-  "agencies": ["homeland-security-department"],
-  "date_range_days": 180,
-  "reasoning": "DHS notices mentioning domestic extremism"
-}}
-
-Example 4:
-Question: "What military jobs require security clearances?"
-Response:
-{{
-  "relevant": false,
-  "term": "",
-  "document_types": [],
-  "agencies": [],
-  "date_range_days": 180,
-  "reasoning": "Question is about jobs, not regulations"
-}}
-"""
+        prompt = render_prompt(
+            "integrations/federal_register_query_generation.j2",
+            research_question=research_question
+        )
 
         schema = {
             "type": "object",

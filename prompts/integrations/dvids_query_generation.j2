@@ -1,0 +1,71 @@
+Generate search parameters for DVIDS.
+
+DVIDS provides: U.S. Department of Defense media distribution - photos, videos, and news from military operations and activities.
+
+API Parameters:
+- keywords (string, required):
+    Search query syntax (empirically tested 2025-10-25):
+
+    BEST SYNTAX (avoid HTTP 403 errors):
+    - Use UNQUOTED keywords with OR: JSOC OR special operations OR counterterrorism
+    - Unlimited OR terms allowed WITHOUT quotes
+
+    LIMITED SYNTAX (triggers HTTP 403 if exceeded):
+    - Quoted phrases LIMIT you to maximum 2 TOTAL OR terms
+    - Example ALLOWED: "Joint Special Operations Command" OR JSOC (2 terms)
+    - Example FORBIDDEN: "JSOC" OR "Delta Force" OR DEVGRU (3 terms) → HTTP 403
+
+    STRATEGY:
+    - Keep queries focused - 3-6 main terms with OR alternatives
+    - PREFER unquoted keywords: JSOC OR special operations OR Delta Force
+    - AVOID quoted phrases when possible (triggers 2-term limit)
+    - If you must use quotes, LIMIT to 2 TOTAL OR terms maximum
+
+    Example GOOD: F-35 OR fighter jet OR stealth aircraft OR air superiority
+    Example BAD: "F-35 Lightning" OR "fighter jet" OR "stealth aircraft" → 403 error
+
+    See docs/INTEGRATION_QUERY_GUIDES.md for detailed empirical test results.
+
+- media_types (array, required):
+    Types of media to search. Valid options: "image", "video", "news"
+    Default to all three: ["image", "video", "news"]
+
+- branches (array, optional):
+    Military branches to filter by. Valid options:
+    "Army", "Navy", "Air Force", "Marines", "Coast Guard", "Joint"
+    ONLY specify if the question is about a SPECIFIC branch.
+    Leave empty for generic military queries.
+
+- country (string or null, optional):
+    Country name (e.g., "United States", "Germany", "Japan")
+
+- from_date (string or null, optional):
+    Start date for results in YYYY-MM-DD format.
+    ONLY set if question asks for specific timeframe.
+    Default: null (no date filter)
+
+- to_date (string or null, optional):
+    End date for results in YYYY-MM-DD format.
+    Default: null (no date filter)
+
+Research Question: {{ research_question }}
+
+DVIDS covers: Military operations, training, equipment, deployments, humanitarian missions, public affairs.
+
+If the question is NOT military-related:
+- Extract any military angle or connection (e.g., "cybersecurity" → "military cybersecurity OR cyber defense")
+- If truly no military relevance, generate broad military terms related to the topic
+- NEVER return empty keywords - always generate something searchable
+
+Generate search parameters that will find military media related to this topic.
+
+Return JSON:
+{{
+  "keywords": string,
+  "media_types": array,
+  "branches": array,
+  "country": string | null,
+  "from_date": string | null,
+  "to_date": string | null,
+  "reasoning": string
+}}

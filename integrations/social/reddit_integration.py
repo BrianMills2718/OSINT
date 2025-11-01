@@ -123,7 +123,7 @@ class RedditIntegration(DatabaseIntegration):
 
         return True
 
-    async def generate_query(self, research_question: str) -> Optional[Dict]:
+    async def generate_query(self, research_question: str, param_hints: Optional[Dict] = None) -> Optional[Dict]:
         """
         Generate Reddit search parameters using LLM.
 
@@ -132,6 +132,8 @@ class RedditIntegration(DatabaseIntegration):
 
         Args:
             research_question: The user's research question
+            param_hints: Optional parameter hints to override LLM-generated values
+                (e.g., {"time_filter": "year"} to expand time range)
 
         Returns:
             Dict with query parameters, or None if not relevant
@@ -150,13 +152,17 @@ class RedditIntegration(DatabaseIntegration):
         # If research_question is just 1-3 words, treat as keyword search
         if len(research_question.split()) <= 3:
             # Simple keyword, use directly without LLM
-            return {
+            query_params = {
                 "query": research_question,
                 "subreddits": ["Intelligence", "natsec", "OSINT"],  # Default intelligence subreddits
                 "sort": "relevance",
                 "time_filter": "month",
                 "reasoning": f"Keyword search for: {research_question}"
             }
+            # Merge param_hints if provided (hints override defaults)
+            if param_hints:
+                query_params.update(param_hints)
+            return query_params
 
         # Full research question - use LLM
         prompt = f"""Generate search parameters for Reddit.
@@ -293,13 +299,20 @@ Return JSON:
 
         result = json.loads(response.choices[0].message.content)
 
-        return {
+        # Build query params from LLM result
+        query_params = {
             "query": result["query"],
             "subreddits": result["subreddits"],
             "sort": result["sort"],
             "time_filter": result["time_filter"],
             "reasoning": result["reasoning"]
         }
+
+        # Merge param_hints if provided (hints override LLM values)
+        if param_hints:
+            query_params.update(param_hints)
+
+        return query_params
 
     async def execute_search(self,
                            query_params: Dict,

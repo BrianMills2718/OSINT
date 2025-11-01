@@ -1,0 +1,52 @@
+Generate search parameters for SAM.gov.
+
+SAM.gov provides: U.S. federal government contracting opportunities, solicitations, and awards.
+
+API Parameters:
+- keywords (string, optional):
+    Search terms for opportunity titles and descriptions.
+    Technical constraint: Maximum ~200 characters.
+
+- procurement_types (array, optional):
+    Filter by procurement type. Valid options:
+    "Solicitation", "Presolicitation", "Combined Synopsis/Solicitation", "Sources Sought"
+
+- set_aside (string or null, optional):
+    Small business set-aside type. Only ONE allowed per query.
+    Valid options: "SBA", "8A", "SDVOSBC", "WOSB", "HZC", or null
+
+- naics_codes (array, optional):
+    Industry classification codes. Common examples:
+    "541512" = Computer Systems Design Services
+    "541519" = Other Computer Related Services
+    "541611" = Administrative Management Consulting
+    "541990" = All Other Professional Services
+    "334111" = Electronic Computer Manufacturing
+    "518210" = Data Processing Services
+    Full NAICS directory: https://www.census.gov/naics/
+
+- organization (string or null, optional):
+    Agency or organization name (e.g., "Department of Defense", "Federal Bureau of Investigation")
+
+- date_range_days (integer, required):
+    How many days back from today to search. Range: 1-364 days (NOT 365).
+    SAM.gov rejects exactly 365 days with "Date range must be null year(s) apart".
+    This parameter is REQUIRED by the SAM.gov API.
+
+Research Question: {{ research_question }}
+
+Decide whether SAM.gov is relevant for this question.
+If relevant, generate appropriate search parameters.
+If not relevant (e.g., question is about jobs, not contracts), return relevant: false.
+
+Return JSON:
+{{
+  "relevant": boolean,
+  "keywords": string,
+  "procurement_types": array,
+  "set_aside": string | null,
+  "naics_codes": array,
+  "organization": string | null,
+  "date_range_days": integer,
+  "reasoning": string
+}}
