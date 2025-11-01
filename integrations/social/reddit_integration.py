@@ -22,6 +22,7 @@ from core.database_integration_base import (
 from core.api_request_tracker import log_request
 from config_loader import config
 from llm_utils import acompletion
+from core.prompt_loader import render_prompt
 
 # Load environment variables
 load_dotenv()
@@ -165,91 +166,10 @@ class RedditIntegration(DatabaseIntegration):
             return query_params
 
         # Full research question - use LLM
-        prompt = f"""Generate search parameters for Reddit.
-
-Reddit provides: Community discussions, news sharing, expert commentary, and public discourse
-organized into topic-specific communities (subreddits).
-
-API Parameters:
-- query (string, required):
-    Reddit search query syntax (empirically tested 2025-10-25):
-
-    BEST SYNTAX (43% accuracy):
-    - Use UNQUOTED keywords with AND: threat intelligence AND contract
-
-    WORKING (15% accuracy):
-    - Simple keywords: threat intelligence contract
-    - Simple OR: JTTF OR counterterrorism
-
-    AVOID (0% accuracy - breaks queries):
-    - Quoted phrases with Boolean: "threat intelligence" AND contract
-    - Parentheses for grouping: (contract OR procurement)
-    - Nested queries: "threat intelligence" AND (contract OR procurement)
-
-    Strategy: Use 2-3 unquoted keywords with AND for best results.
-    Reddit's search uses fuzzy matching - even best syntax only achieves ~40% accuracy.
-
-- subreddits (array of strings, required):
-    List of subreddit names to search (without r/ prefix).
-    Choose relevant communities based on the research topic.
-
-    Available subreddits by category:
-
-    Government & Politics: politics, NeutralPolitics, Ask_Politics, PoliticalDiscussion, geopolitics
-
-    Intelligence & Security: Intelligence, natsec, NSA, CIA, FBI, military, SpecOpsArchive, security
-
-    OSINT & Journalism: OSINT, geospatial, journalism, Whistleblowers, Leaks
-
-    Specific Conflicts: UkrainianConflict, syriancivilwar, MiddleEastNews, afghanistan
-
-    General News: news, worldnews, neutralnews
-
-    Choose 2-5 most relevant subreddits.
-
-- sort (enum, required):
-    Sort order. Valid options:
-    "relevance" = Most relevant to search query (recommended)
-    "hot" = Currently trending discussions
-    "top" = Highest scoring posts
-    "new" = Most recent posts
-    "comments" = Most commented discussions
-
-- time_filter (enum, required):
-    Time range to search. Valid options:
-    "hour", "day", "week", "month", "year", "all"
-    Choose based on whether you need recent or historical discussions.
-
-Research Question: {research_question}
-
-Decide whether Reddit is relevant for this question.
-
-Reddit is useful for:
-- Public discourse and opinions on government programs, policies, leaks
-- Community discussions on intelligence, security, geopolitics
-- Expert commentary from intelligence community members (often anonymous)
-- News discussions and reactions to events
-- OSINT research and techniques
-- Investigative journalism discussions
-- Whistleblower revelations and leaks
-
-Reddit is NOT useful for:
-- Structured data like contracts, jobs, procurement
-- Official government records
-- Formal documentation
-
-If the question involves public discussion, intelligence topics, security, geopolitics,
-or investigative journalism, Reddit is HIGHLY RELEVANT.
-
-Return JSON:
-{{
-  "query": string,
-  "subreddits": array of strings,
-  "sort": "relevance" | "hot" | "top" | "new" | "comments",
-  "time_filter": "hour" | "day" | "week" | "month" | "year" | "all",
-  "reasoning": string
-}}
-"""
+        prompt = render_prompt(
+            "integrations/reddit_query_generation.j2",
+            research_question=research_question
+        )
 
         schema = {
             "type": "object",
