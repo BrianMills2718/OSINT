@@ -1,0 +1,37 @@
+The search query returned results that are OFF-TOPIC for the research question.
+
+Original Research Question: "{{ research_question }}"
+Current Query: "{{ original_query }}"
+Results Found: {{ results_count }} (but not relevant)
+
+Reformulate the query to find results that are DIRECTLY RELEVANT to the research question.
+
+Guidelines:
+- Add SPECIFIC terms from the research question to disambiguate
+- If the research question mentions a specific entity (e.g., "NSA"), clarify which one (e.g., "National Security Agency" not "Naval Support Activity")
+- Focus on the core topic (e.g., if researching "cybersecurity contracts", include both terms)
+- Remove generic terms that cause topic drift
+
+Examples:
+- Research: "NSA cybersecurity contracts" / Current: "NSA contracts" → "National Security Agency cybersecurity contracts"
+- Research: "JSOC operations Iraq" / Current: "JSOC" → "Joint Special Operations Command Iraq operations"
+
+OPTIONAL - Source-Specific Parameter Adjustments:
+If the query would benefit from adjusting source-specific parameters, suggest them:
+
+Reddit parameters:
+- time_filter: "hour" | "day" | "week" | "month" | "year" | "all"
+  (Use "year" or "all" if searching for historical/comprehensive content)
+
+USAJobs parameters:
+- keywords: Prefer single broad keyword over multi-word phrases
+  (e.g., "cybersecurity" gets more results than "cybersecurity analyst")
+
+Return JSON with:
+{
+  "query": "new query text",
+  "param_adjustments": {
+    "reddit": {"time_filter": "year"},
+    "usajobs": {"keywords": "broad keyword"}
+  }
+}

@@ -18,9 +18,9 @@ import sys
 import os
 import logging
 import time
-from typing import List, Dict, Optional, Callable
+from typing import List, Dict, Optional, Callable, Any
 from datetime import datetime
-from dataclasses import dataclass, asdict
+from dataclasses import dataclass, asdict, field
 from enum import Enum
 
 # Add parent directory to path
@@ -37,6 +37,9 @@ from integrations.mcp import government_mcp, social_mcp
 
 # Execution logging
 from research.execution_logger import ExecutionLogger
+
+# Jinja2 prompts
+from core.prompt_loader import render_prompt
 
 load_dotenv()
 
@@ -85,10 +88,13 @@ class ResearchTask:
     results: Optional[Dict] = None
     error: Optional[str] = None
     entities_found: List[str] = None
+    param_adjustments: Dict[str, Dict] = field(default_factory=dict)
 
     def __post_init__(self):
         if self.entities_found is None:
             self.entities_found = []
+        if self.param_adjustments is None:
+            self.param_adjustments = {}
 
 
 @dataclass
@@ -844,7 +850,8 @@ Return a JSON list of tool names (e.g., "search_dvids", "brave_search")."""
         selected_tool_names: List[str],
         limit: int = 10,
         task_id: Optional[int] = None,
-        attempt: int = 0
+        attempt: int = 0,
+        param_adjustments: Optional[Dict[str, Dict]] = None
     ) -> List[Dict]:
         """
         Search using pre-selected MCP tools (avoids duplicate LLM selection call).
@@ -922,6 +929,16 @@ Return a JSON list of tool names (e.g., "search_dvids", "brave_search")."""
                 }
                 if api_key:
                     args["api_key"] = api_key
+
+                # Add param_hints if available for this tool (Phase 4)
+                if param_adjustments:
+                    # Map source keys to tool names
+                    source_map = {"reddit": "search_reddit", "usajobs": "search_usajobs"}
+                    # Find matching hints for this tool
+                    for source_key, tool_name_key in source_map.items():
+                        if tool_name == tool_name_key and source_key in param_adjustments:
+                            args["param_hints"] = param_adjustments[source_key]
+                            break
 
                 # Log API call
                 source_name = self.tool_name_to_display.get(tool_name, tool_name)
@@ -1117,7 +1134,8 @@ Return a JSON list of tool names (e.g., "search_dvids", "brave_search")."""
                         selected_mcp_tools,
                         limit=10,
                         task_id=task.id,
-                        attempt=task.retry_count
+                        attempt=task.retry_count,
+                        param_adjustments=task.param_adjustments
                     )
 
                 # Conditionally search Brave if selected by LLM
@@ -1198,11 +1216,14 @@ Return a JSON list of tool names (e.g., "search_dvids", "brave_search")."""
                         )
 
                         # Reformulate for relevance (not volume)
-                        task.query = await self._reformulate_for_relevance(
+                        reformulation = await self._reformulate_for_relevance(
                             original_query=task.query,
                             research_question=self.original_question,
                             results_count=combined_total
                         )
+                        task.query = reformulation["query"]
+                        task.param_adjustments = reformulation.get("param_adjustments", {})
+                        # TODO (Phase 4): Pass task.param_adjustments to MCP tools
                         self._emit_progress(
                             "query_reformulated",
                             f"New query: {task.query}",
@@ -1335,7 +1356,10 @@ Return a JSON list of tool names (e.g., "search_dvids", "brave_search")."""
                         )
 
                         # Reformulate query
-                        task.query = await self._reformulate_query_simple(task.query, combined_total)
+                        reformulation = await self._reformulate_query_simple(task.query, combined_total)
+                        task.query = reformulation["query"]
+                        task.param_adjustments = reformulation.get("param_adjustments", {})
+                        # TODO (Phase 4): Pass task.param_adjustments to MCP tools
                         self._emit_progress(
                             "query_reformulated",
                             f"New query: {task.query}",
@@ -1594,38 +1618,77 @@ Return the relevance score and a brief reason.
         original_query: str,
         research_question: str,
         results_count: int
-    ) -> str:
-        """Reformulate query to get MORE RELEVANT results."""
-        prompt = f"""The search query returned results that are OFF-TOPIC for the research question.
+    ) -> Dict[str, Any]:
+        """
+        Reformulate query to get MORE RELEVANT results.
 
-Original Research Question: "{research_question}"
-Current Query: "{original_query}"
-Results Found: {results_count} (but not relevant)
+        Returns Dict with:
+        - query: New query text
+        - param_adjustments: Dict of source-specific parameter hints (e.g., {"reddit": {"time_filter": "year"}})
+        """
+        prompt = render_prompt(
+            "deep_research/query_reformulation_relevance.j2",
+            research_question=research_question,
+            original_query=original_query,
+            results_count=results_count
+        )
 
-Reformulate the query to find results that are DIRECTLY RELEVANT to the research question.
-
-Guidelines:
-- Add SPECIFIC terms from the research question to disambiguate
-- If the research question mentions a specific entity (e.g., "NSA"), clarify which one (e.g., "National Security Agency" not "Naval Support Activity")
-- Focus on the core topic (e.g., if researching "cybersecurity contracts", include both terms)
-- Remove generic terms that cause topic drift
-
-Examples:
-- Research: "NSA cybersecurity contracts" / Current: "NSA contracts" → "National Security Agency cybersecurity contracts"
-- Research: "JSOC operations Iraq" / Current: "JSOC" → "Joint Special Operations Command Iraq operations"
-
-Return ONLY the new query text.
-"""
+        schema = {
+            "type": "object",
+            "properties": {
+                "query": {
+                    "type": "string",
+                    "description": "Reformulated query text"
+                },
+                "param_adjustments": {
+                    "type": "object",
+                    "description": "Source-specific parameter hints",
+                    "properties": {
+                        "reddit": {
+                            "type": "object",
+                            "properties": {
+                                "time_filter": {
+                                    "type": "string",
+                                    "enum": ["hour", "day", "week", "month", "year", "all"]
+                                }
+                            }
+                        },
+                        "usajobs": {
+                            "type": "object",
+                            "properties": {
+                                "keywords": {"type": "string"}
+                            }
+                        }
+                    }
+                }
+            },
+            "required": ["query", "param_adjustments"],
+            "additionalProperties": False
+        }
 
         response = await acompletion(
             model=config.get_model("query_generation"),
-            messages=[{"role": "user", "content": prompt}]
+            messages=[{"role": "user", "content": prompt}],
+            response_format={
+                "type": "json_schema",
+                "json_schema": {
+                    "strict": True,
+                    "name": "query_reformulation_relevance",
+                    "schema": schema
+                }
+            }
         )
 
-        return response.choices[0].message.content.strip().strip('"')
+        return json.loads(response.choices[0].message.content)
 
-    async def _reformulate_query_simple(self, original_query: str, results_count: int) -> str:
-        """Reformulate query when it returns insufficient results."""
+    async def _reformulate_query_simple(self, original_query: str, results_count: int) -> Dict[str, Any]:
+        """
+        Reformulate query when it returns insufficient results.
+
+        Returns Dict with:
+        - query: New query text
+        - param_adjustments: Dict of source-specific parameter hints
+        """
         prompt = f"""The search query returned insufficient results. Reformulate it to be more effective.
 
 Original Query: {original_query}
@@ -1643,15 +1706,74 @@ Examples:
 - "site:gov contract (Palantir OR Clearview)" → "government contracts Palantir Clearview surveillance"
 - "investigation report lawsuit 2018..2025" → "investigation reports lawsuits surveillance privacy"
 
-Return ONLY the new query text, nothing else. Keep it simple and broad.
+OPTIONAL - Source-Specific Parameter Adjustments:
+If the query would benefit from adjusting source-specific parameters, suggest them:
+
+Reddit parameters:
+- time_filter: "hour" | "day" | "week" | "month" | "year" | "all"
+  (Use "year" or "all" to get more historical results)
+
+USAJobs parameters:
+- keywords: Prefer single broad keyword over multi-word phrases
+  (e.g., "analyst" gets more results than "intelligence analyst senior")
+
+Return JSON with:
+{{
+  "query": "new query text (broader and simpler)",
+  "param_adjustments": {{
+    "reddit": {{"time_filter": "year"}},
+    "usajobs": {{"keywords": "broad keyword"}}
+  }}
+}}
 """
+
+        schema = {
+            "type": "object",
+            "properties": {
+                "query": {
+                    "type": "string",
+                    "description": "Reformulated query text (broader and simpler)"
+                },
+                "param_adjustments": {
+                    "type": "object",
+                    "description": "Source-specific parameter hints",
+                    "properties": {
+                        "reddit": {
+                            "type": "object",
+                            "properties": {
+                                "time_filter": {
+                                    "type": "string",
+                                    "enum": ["hour", "day", "week", "month", "year", "all"]
+                                }
+                            }
+                        },
+                        "usajobs": {
+                            "type": "object",
+                            "properties": {
+                                "keywords": {"type": "string"}
+                            }
+                        }
+                    }
+                }
+            },
+            "required": ["query", "param_adjustments"],
+            "additionalProperties": False
+        }
 
         response = await acompletion(
             model=config.get_model("query_generation"),
-            messages=[{"role": "user", "content": prompt}]
+            messages=[{"role": "user", "content": prompt}],
+            response_format={
+                "type": "json_schema",
+                "json_schema": {
+                    "strict": True,
+                    "name": "query_reformulation_simple",
+                    "schema": schema
+                }
+            }
         )
 
-        return response.choices[0].message.content.strip().strip('"')
+        return json.loads(response.choices[0].message.content)
 
     async def _update_entity_graph(self, entities: List[str]):
         """
