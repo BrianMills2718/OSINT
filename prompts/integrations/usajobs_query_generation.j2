@@ -50,7 +50,8 @@ Decide whether USAJobs is relevant for this question.
 Job listings reveal what federal agencies are actively hiring for, which can provide insight into government programs and priorities.
 
 Return JSON:
-{{
+{% raw %}
+{
   "relevant": boolean,
   "keywords": string,
   "location": string | null,
@@ -58,4 +59,5 @@ Return JSON:
   "pay_grade_low": integer | null,
   "pay_grade_high": integer | null,
   "reasoning": string
-}}
+}
+{% endraw %}

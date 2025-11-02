@@ -263,7 +263,8 @@ async def search_dvids(
 async def search_usajobs(
     research_question: str,
     api_key: Optional[str] = None,
-    limit: int = 10
+    limit: int = 10,
+    param_hints: Optional[Dict] = None
 ) -> dict:
     """Search USAJobs for federal government job listings.
 
@@ -278,6 +279,8 @@ async def search_usajobs(
             jobs in Washington DC")
         api_key: USAJobs API key (optional, uses USAJOBS_API_KEY env var if not provided)
         limit: Maximum number of results to return (default: 10, max: 500)
+        param_hints: Optional parameter hints to override LLM-generated values
+            (e.g., {"keywords": "cybersecurity"} to use broad single keyword)
 
     Returns:
         dict: Search results with structure:
@@ -322,8 +325,8 @@ async def search_usajobs(
     # Create integration instance
     integration = USAJobsIntegration()
 
-    # Generate query parameters using LLM
-    query_params = await integration.generate_query(research_question)
+    # Generate query parameters using LLM (with optional hints)
+    query_params = await integration.generate_query(research_question, param_hints=param_hints)
 
     if query_params is None:
         return {

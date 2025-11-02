@@ -40,7 +40,8 @@ If relevant, generate appropriate search parameters.
 If not relevant (e.g., question is about jobs, not contracts), return relevant: false.
 
 Return JSON:
-{{
+{% raw %}
+{
   "relevant": boolean,
   "keywords": string,
   "procurement_types": array,
@@ -49,4 +50,5 @@ Return JSON:
   "organization": string | null,
   "date_range_days": integer,
   "reasoning": string
-}}
+}
+{% endraw %}

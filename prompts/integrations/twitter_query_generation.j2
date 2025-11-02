@@ -41,10 +41,12 @@ Twitter is HIGHLY RELEVANT. Only mark as not relevant if it's purely about
 structured government data (contracts, jobs, etc.).
 
 Return JSON:
-{{
+{% raw %}
+{
   "relevant": boolean,
   "query": string,
   "search_type": "Latest" | "Top" | "Media" | "People",
   "max_pages": integer,
   "reasoning": string
-}}
+}
+{% endraw %}

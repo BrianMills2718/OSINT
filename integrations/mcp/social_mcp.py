@@ -368,7 +368,8 @@ async def search_discord(
 @mcp.tool
 async def search_reddit(
     research_question: str,
-    limit: int = 25
+    limit: int = 25,
+    param_hints: Optional[Dict] = None
 ) -> dict:
     """Search Reddit for community discussions, expert commentary, and news reactions.
 
@@ -386,6 +387,8 @@ async def search_reddit(
         research_question: Natural language query (e.g., "NSA surveillance
             program discussions" or "intelligence community whistleblower reactions")
         limit: Maximum number of results to return (default: 25, max: 100)
+        param_hints: Optional parameter hints to override LLM-generated values
+            (e.g., {"time_filter": "year"} to expand time range)
 
     Returns:
         dict: Search results with structure:
@@ -435,8 +438,8 @@ async def search_reddit(
     # Create integration instance
     integration = RedditIntegration()
 
-    # Generate query parameters using LLM
-    query_params = await integration.generate_query(research_question)
+    # Generate query parameters using LLM (with optional hints)
+    query_params = await integration.generate_query(research_question, param_hints=param_hints)
 
     if query_params is None:
         return {

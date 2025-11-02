@@ -11,8 +11,10 @@ Research Question: {{ research_question }}
 Decide whether FBI Vault is relevant for this question.
 
 Return JSON:
-{{
+{% raw %}
+{
   "relevant": boolean,
   "query": string,
   "reasoning": string
-}}
+}
+{% endraw %}

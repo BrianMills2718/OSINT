@@ -60,7 +60,8 @@ If the question is NOT military-related:
 Generate search parameters that will find military media related to this topic.
 
 Return JSON:
-{{
+{% raw %}
+{
   "keywords": string,
   "media_types": array,
   "branches": array,
@@ -68,4 +69,5 @@ Return JSON:
   "from_date": string | null,
   "to_date": string | null,
   "reasoning": string
-}}
+}
+{% endraw %}

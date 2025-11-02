@@ -34,47 +34,47 @@ Return JSON with these exact fields. Use empty arrays for optional list fields.
 Example 1:
 Question: "What are recent EPA cybersecurity regulations?"
 Response:
-{{
+{% raw %}{
   "relevant": true,
   "term": "cybersecurity",
   "document_types": ["RULE"],
   "agencies": ["environmental-protection-agency"],
   "date_range_days": 90,
   "reasoning": "EPA final rules on cybersecurity in last 90 days"
-}}
+}{% endraw %}
 
 Example 2:
 Question: "Proposed rules about artificial intelligence"
 Response:
-{{
+{% raw %}{
   "relevant": true,
   "term": "artificial intelligence",
   "document_types": ["PRORULE"],
   "agencies": [],
   "date_range_days": 180,
   "reasoning": "Proposed rules on AI across all agencies"
-}}
+}{% endraw %}
 
 Example 3:
 Question: "DHS notices about domestic extremism"
 Response:
-{{
+{% raw %}{
   "relevant": true,
   "term": "domestic extremism",
   "document_types": ["NOTICE"],
   "agencies": ["homeland-security-department"],
   "date_range_days": 180,
   "reasoning": "DHS notices mentioning domestic extremism"
-}}
+}{% endraw %}
 
 Example 4:
 Question: "What military jobs require security clearances?"
 Response:
-{{
+{% raw %}{
   "relevant": false,
   "term": "",
   "document_types": [],
   "agencies": [],
   "date_range_days": 180,
   "reasoning": "Question is about jobs, not regulations"
-}}
+}{% endraw %}

@@ -112,7 +112,11 @@ See: INVESTIGATIVE_PLATFORM_VISION.md (75 pages)
 ```
 sam_gov/
 ├── CLAUDE.md, STATUS.md, PATTERNS.md
-├── core/                    # Research engines
+├── prompts/                 # Jinja2 LLM prompt templates
+│   ├── __init__.py          # Template environment
+│   ├── deep_research/       # Deep research prompts (.j2)
+│   └── integrations/        # Integration prompts (.j2)
+├── core/                    # Research engines + prompt_loader.py
 ├── integrations/            # Data source adapters
 │   ├── government/          # SAM, DVIDS, USAJobs, ClearanceJobs
 │   └── social/              # Twitter, Reddit, Discord
@@ -209,6 +213,38 @@ response = await acompletion(
 
 **NEVER**: Call litellm directly, use max_tokens/max_output_tokens (breaks gpt-5)
 
+### LLM Prompts with JSON Examples
+
+**ALWAYS use Jinja2 templates** for prompts containing JSON examples.
+
+**Pattern**:
+```python
+from core.prompt_loader import render_prompt
+
+prompt = render_prompt(
+    "deep_research/query_reformulation.j2",
+    research_question=question,
+    original_query=query,
+    results_count=count
+)
+```
+
+**Template Location**: `prompts/<module>/<prompt_name>.j2`
+
+**Key Benefits**:
+- NO `{{` `}}` escaping needed (JSON examples are literal)
+- Prompts version-controlled separately from code
+- Easy to edit without touching Python
+- Templates are testable and parseable
+
+**Reference**:
+- docs/FSTRING_JSON_METHODOLOGY.md (comprehensive guide)
+- docs/JINJA2_MIGRATION_INVESTIGATION.md (migration details)
+
+**NEVER**:
+- Use f-strings with `{{` `}}` escaping for JSON examples
+- Mix JSON structure literals with Python f-string variables
+
 ### Database Integration
 
 **Copy from**: `integrations/government/sam_integration.py`
@@ -268,6 +304,8 @@ ALL must be true:
 ## ESSENTIAL TOOLS
 
 **Keep** (complex/critical):
+- prompts/ directory + all .j2 templates
+- core/prompt_loader.py (Jinja2 infrastructure)
 - tests/test_all_four_databases.py
 - tests/test_verification.py
 - llm_utils.py, config_loader.py
@@ -303,158 +341,95 @@ pip list | grep playwright
 
 # CLAUDE.md - Temporary Section (Updated as Tasks Complete)
 
-**Last Updated**: 2025-10-31 (Adaptive Parameter Refinement)
-**Current Phase**: CLI Optimization - Source Validation & Adaptive Intelligence
-**Current Focus**: Implementing adaptive parameter refinement for retry loop
-**Status**: 7/8 validation tests running (baseline capture), USAJobs fixed (1→21 results)
+**Last Updated**: 2025-11-01 (Jinja2 Migration COMPLETE)
+**Current Phase**: Ready for Next Task
+**Current Focus**: Jinja2 migration completed successfully, validation tests running
+**Status**: ✅ All integration & deep_research prompts migrated to Jinja2 templates
 
 ---
 
-## SESSION SUMMARY - ADAPTIVE PARAMETER REFINEMENT
+## SESSION SUMMARY - JINJA2 TEMPLATE MIGRATION ✅ COMPLETE
 
-**Goal**: Enable LLM to adapt source-specific parameters (not just query text) based on result feedback
-**Philosophy**: "Nothing should be hardcoded, the LLM should respond flexibly and intelligently" (user requirement)
-**Estimated Work**: 2-3 hours
-**Rollback Strategy**: Git commits (no feature flags), revert if validation fails
+**Status**: COMPLETE - All integration and deep research prompts migrated to Jinja2 templates
+**Commits**: 4 commits (d745eb0, 8ef2738, 763c601, a254df4)
+**Time**: ~2 hours (Session 2 + Session 3)
+**Documentation**: JINJA2_MIGRATION_COMPLETE.md
 
-**Key Changes Planned**:
-1. Extend retry loop reformulation to return `{query: str, param_adjustments: Dict}`
-2. Pass parameter hints through MCP wrapper to integrations
-3. Update RedditIntegration to adapt `time_filter` (month→year if low results)
-4. Update USAJobsIntegration to adapt `keywords` structure (multi-word→single word if low results)
-5. Test with validation queries, compare against baseline
+**What Was Done**:
+1. ✅ Created 6 deep_research templates in `prompts/deep_research/`
+2. ✅ Created 10 integration templates in `prompts/integrations/`
+3. ✅ Migrated `research/deep_research.py` to use `render_prompt()`
+4. ✅ Migrated all 10 integration files to use `render_prompt()`
+5. ✅ Fixed Reddit integration (missed by automated script)
+6. ✅ Verified 0 escaped braces remaining in code
+7. ✅ Regression test passing (2 tasks, 75 results, 0 failures)
 
-**Architecture**:
-- Existing: Retry loop reformulates query TEXT only (lines 543-605, 1071-1352 in deep_research.py)
-- Gap: Can't adapt Reddit's `time_filter` or USAJobs' `keywords` parameter structure
-- Solution: LLM suggests both new query + parameter adjustments, integrations apply hints
+**Benefits Achieved**:
+- Eliminated all `{{` `}}` escaping in Python code
+- Reduced deep_research.py prompt code by ~79% (175 lines → 37 lines)
+- Prompts now version-controlled separately from code
+- Unified template syntax across all integrations
 
----
+**Files Migrated**:
+- **Deep Research** (7 prompts): task_decomposition, source_selection, entity_extraction, relevance_evaluation, query_reformulation_simple, report_synthesis
+- **Integrations** (10 files): usajobs, clearancejobs, dvids, federal_register, sam, fbi_vault, twitter, discord, brave_search, reddit
 
-## COMPLETED THIS SESSION
-
-**[PASS] USAJobs Low Results Fixed** (integrations/government/usajobs_integration.py:119-124)
-- Problem: LLM generated overly restrictive multi-word keywords ("cybersecurity analyst" → 1 result)
-- Solution: Updated prompt to prefer single broad keywords ("cybersecurity" → 44 results)
-- Evidence: Direct API test showed 21x improvement (1 → 21 results)
-- Location: USAJobs integration prompt lines 119-124
-
-**[IDENTIFIED AS NOT A BUG] Reddit Low Results** (integrations/social/reddit_integration.py)
-- Found docs/INTEGRATION_QUERY_GUIDES.md documenting 40-45% accuracy limitation
-- Direct testing + user manual verification: Sparse results legitimate (1-3 results reflect actual Reddit content)
-- Root cause: time_filter too restrictive (month vs year) + legitimately sparse content
-- Next step: Implement adaptive parameter refinement to let LLM adjust time_filter based on results
-
-**[IN PROGRESS] Validation Suite Baseline Capture**
-- 7/8 validation tests running in background (Tests 2-8, see system reminders)
-- Capturing baseline results before implementing adaptive parameter refinement
-- Key tests for comparison: Test 3 (USAJobs), Test 6 (Reddit)
+**Validation**:
+- [PASS] All imports resolve
+- [PASS] All 16 templates exist
+- [PASS] 0 escaped braces in code
+- [PASS] Regression test (75 results, 0 failures)
 
 ---
 
-## IMPLEMENTATION PLAN - ADAPTIVE PARAMETER REFINEMENT
-
-**Phase 1: Commit Baseline** (5 min)
-```bash
-git add -A
-git commit -m "Baseline before adaptive parameter refinement"
-```
-
-**Phase 2: Modify Reformulation Methods** (45 min)
-- Location: research/deep_research.py lines 543-605
-- Change: `_reformulate_for_relevance()` and `_reformulate_query_simple()` return Dict instead of str
-- New return format:
-  ```python
-  {
-      "query": "new query text",
-      "param_adjustments": {
-          "reddit": {"time_filter": "year"},
-          "usajobs": {"keywords": "cybersecurity"}
-      }
-  }
-  ```
-- Update LLM prompts to include source-specific parameter guidance
-
-**Phase 3: Update Retry Loop Call Sites** (30 min)
-- Location: research/deep_research.py lines 1152, 1289
-- Unpack reformulation response: `result["query"]`, `result["param_adjustments"]`
-- Pass param_adjustments to MCP tool calls
-
-**Phase 4: Extend MCP Wrapper** (30 min)
-- Location: integrations/mcp/database_tools.py
-- Add optional `param_hints` argument to search tool
-- Pass hints to `integration.generate_query(question, param_hints=...)`
-
-**Phase 5: Update Reddit Integration** (20 min)
-- Location: integrations/social/reddit_integration.py
-- Accept `param_hints` in `generate_query(question, param_hints=None)`
-- If hints provided, merge with LLM-generated params (hints take precedence)
-
-**Phase 6: Update USAJobs Integration** (25 min)
-- Location: integrations/government/usajobs_integration.py
-- Accept `param_hints` in `generate_query(question, param_hints=None)`
-- If hints provided, merge with LLM-generated params
-
-**Phase 7: Test & Validate** (30 min)
-- Rerun Test 6 (Reddit) and Test 3 (USAJobs) with adaptive refinement
-- Compare against baseline captured in Phase 1
-- Check if LLM successfully adapts parameters on retry
-
-**Phase 8: Commit or Revert**
-- If validation passes: `git commit -m "feat: Add adaptive parameter refinement"`
-- If validation fails: `git revert HEAD`
-
-**Total: ~2.5-3 hours**
-
----
-
-## FILES TO MODIFY
-
-1. `/home/brian/sam_gov/research/deep_research.py` - Reformulation methods + retry loop
-2. `/home/brian/sam_gov/integrations/mcp/database_tools.py` - MCP wrapper
-3. `/home/brian/sam_gov/integrations/social/reddit_integration.py` - Accept param hints
-4. `/home/brian/sam_gov/integrations/government/usajobs_integration.py` - Accept param hints
-
----
-
-## VALIDATION TESTS RUNNING (BASELINE)
+## VALIDATION TESTS RUNNING (BACKGROUND)
 
 **Test 2/8**: DVIDS - Military exercises (bash b8114b)
-**Test 3/8**: USAJobs - Cybersecurity jobs (bash 68f553) ← KEY TEST
+**Test 3/8**: USAJobs - Cybersecurity jobs (bash 68f553)
 **Test 4/8**: ClearanceJobs - TS/SCI jobs (bash c4789a)
 **Test 5/8**: Twitter - Cybersecurity announcements (bash 9a8aa2)
-**Test 6/8**: Reddit - Palantir discussion (bash 310233) ← KEY TEST
+**Test 6/8**: Reddit - Palantir discussion (bash 310233)
 **Test 7/8**: Discord - OSINT techniques (bash 848476)
 **Test 8/8**: Brave Search - DVIDS definition (bash 1a9483)
 
-Waiting for completion to capture baseline results before implementing changes.
+Status: Running to verify no regressions from Jinja2 migration
+
+---
+
+## NEXT STEPS (USER TO DECIDE)
+
+**Option 1**: Check validation test results and verify no regressions
+**Option 2**: Continue with previous plan (adaptive parameter refinement)
+**Option 3**: Different task entirely
+
+**Note**: CLAUDE.md TEMPORARY was previously planning adaptive parameter refinement, but Jinja2 migration took priority and is now complete.
 
 ---
 
 ## CHECKPOINT QUESTIONS (Answer Every 15 Min)
 
-**Last Checkpoint**: 2025-10-31 (Before adaptive parameter implementation)
+**Last Checkpoint**: 2025-11-01 (Jinja2 migration complete)
 
 **Questions**:
 1. What have I **proven** with command output?
-   - Answer: USAJobs fix works (21x improvement verified). Reddit low results are legitimate per documentation. 7 validation tests currently running to establish baseline.
+   - Answer: All 10 integrations migrated to Jinja2. All templates created. Reddit import successful. Regression test passing (2 tasks, 75 results, 0 failures). 0 escaped braces remaining.
 
 2. What am I **assuming** without evidence?
-   - Answer: Adaptive parameter refinement will improve Reddit/USAJobs results. Baseline tests will complete successfully. No regressions will occur from extending reformulation methods.
+   - Answer: Background validation tests (2-8) will complete successfully without regressions.
 
 3. What would break if I'm wrong?
-   - Answer: LLM might generate invalid parameter adjustments. Integration param_hints logic might conflict with LLM-generated params. Baseline tests might reveal other issues requiring fixes first.
+   - Answer: Template syntax errors could cause query generation failures. Missing variables in templates could cause runtime errors.
 
 4. What **haven't I tested** yet?
-   - Answer: Adaptive parameter refinement implementation. End-to-end flow with param_hints. LLM's ability to suggest valid parameter adjustments.
+   - Answer: Full validation suite against migrated templates (tests 2-8 still running).
 
-**Next checkpoint**: After baseline tests complete + Phase 1 commit
+**Next checkpoint**: After validation tests complete
 
 ---
 
 ## IMMEDIATE BLOCKERS
 
-None. Waiting for baseline validation tests to complete (~5 min remaining).
+None. Jinja2 migration complete. Validation tests running in background.
 
 ---
 
