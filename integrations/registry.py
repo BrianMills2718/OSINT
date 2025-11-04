@@ -9,6 +9,7 @@ from integrations.government.sam_integration import SAMIntegration
 from integrations.government.dvids_integration import DVIDSIntegration
 from integrations.government.usajobs_integration import USAJobsIntegration
 from integrations.government.fbi_vault import FBIVaultIntegration
+from integrations.government.federal_register import FederalRegisterIntegration
 
 # ClearanceJobs integration requires Playwright (optional dependency)
 try:
@@ -67,6 +68,7 @@ class IntegrationRegistry:
         if CLEARANCEJOBS_AVAILABLE:
             self._try_register("clearancejobs", ClearanceJobsIntegration)
         self._try_register("fbi_vault", FBIVaultIntegration)
+        self._try_register("federal_register", FederalRegisterIntegration)
 
         # Social media sources
         self._try_register("discord", DiscordIntegration)

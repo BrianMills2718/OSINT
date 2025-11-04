@@ -26,6 +26,12 @@ from typing import List, Dict, Any, Optional
 import logging
 from datetime import datetime
 
+# Suppress LiteLLM's async logging worker timeout errors
+# These occur when our task timeouts cancel tasks before LiteLLM's logging completes
+# This is harmless (logging is best-effort) but clutters error logs
+# See: issues_to_address_techdebt_do_not_delete_or_archive.md - "LiteLLM Async Logging Worker Timeout"
+logging.getLogger('LiteLLM').setLevel(logging.CRITICAL)
+
 # Import config (will use default if config.yaml doesn't exist)
 try:
     from config_loader import config

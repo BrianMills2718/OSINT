@@ -239,11 +239,21 @@ class USAJobsIntegration(DatabaseIntegration):
             jobs = search_result.get("SearchResultItems", [])
             total = search_result.get("SearchResultCount", len(jobs))
 
-            # Extract job details from nested structure
+            # Extract job details from nested structure and normalize field names
             results = []
             for item in jobs[:limit]:
                 matched_obj = item.get("MatchedObjectDescriptor", {})
-                results.append(matched_obj)
+
+                # Add normalized fields for compatibility with other integrations
+                # Keep raw fields for specialized consumers
+                normalized = {
+                    **matched_obj,  # Keep all raw fields
+                    "title": matched_obj.get("PositionTitle", ""),
+                    "description": (matched_obj.get("QualificationSummary", "") or "")[:500],  # Limit to 500 chars
+                    "snippet": (matched_obj.get("QualificationSummary", "") or "")[:200]  # Shorter snippet
+                }
+
+                results.append(normalized)
 
             # Mask API key in headers for logging
             log_headers = headers.copy()
