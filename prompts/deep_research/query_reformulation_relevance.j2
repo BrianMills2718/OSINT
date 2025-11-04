@@ -4,17 +4,19 @@ Original Research Question: "{{ research_question }}"
 Current Query: "{{ original_query }}"
 Results Found: {{ results_count }} (but not relevant)
 
-Reformulate the query to find results that are DIRECTLY RELEVANT to the research question.
+Reformulate the query to be more specific while PRESERVING the original query's intent.
 
 Guidelines:
-- Add SPECIFIC terms from the research question to disambiguate
+- PRESERVE the core intent of "{{ original_query }}" (this is a specific subtask, not the full research question)
+- ADD specific context from the research question to clarify the domain/focus
+- If the original query is very generic (e.g., "official documentation"), add domain-specific terms (e.g., "cybersecurity clearance documentation")
 - If the research question mentions a specific entity (e.g., "NSA"), clarify which one (e.g., "National Security Agency" not "Naval Support Activity")
-- Focus on the core topic (e.g., if researching "cybersecurity contracts", include both terms)
 - Remove generic terms that cause topic drift
 
 Examples:
-- Research: "NSA cybersecurity contracts" / Current: "NSA contracts" → "National Security Agency cybersecurity contracts"
-- Research: "JSOC operations Iraq" / Current: "JSOC" → "Joint Special Operations Command Iraq operations"
+- Research: "NSA cybersecurity contracts" / Current: "NSA contracts" → "National Security Agency cybersecurity contracts" (preserved "contracts", added "National Security Agency" clarity)
+- Research: "JSOC operations Iraq" / Current: "JSOC" → "Joint Special Operations Command Iraq operations" (preserved entity, added full name + context)
+- Research: "cybersecurity jobs for cleared professionals" / Current: "official documentation" → "security clearance requirements official documentation" (preserved "official documentation" intent, added clearance context)
 
 OPTIONAL - Source-Specific Parameter Adjustments:
 If the query would benefit from adjusting source-specific parameters, suggest them:
