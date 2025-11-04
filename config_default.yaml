@@ -127,6 +127,27 @@ databases:
     timeout: 10
 
 # ============================================================================
+# Rate Limiting Strategies (Per-Source)
+# ============================================================================
+# Configure how different sources handle rate limits
+rate_limiting:
+  # Circuit breaker sources (skip after first 429)
+  # These sources are known to have long-lasting rate limits (minutes to hours)
+  # Once rate-limited, they will be skipped for remaining tasks in the session
+  circuit_breaker_sources:
+    - "SAM.gov"           # Known long rate limits (hours)
+
+  # Sources that should never be skipped (always retry)
+  # These sources are too critical to skip even if rate-limited
+  critical_always_retry:
+    - "USAJobs"           # Federal jobs - too important to skip
+
+  # Global circuit breaker timeout (minutes to keep source blocked)
+  # After this time, rate-limited sources may be retried
+  # Note: SAM.gov rate limits typically outlast research sessions
+  circuit_breaker_cooldown_minutes: 60
+
+# ============================================================================
 # Provider Fallback (LiteLLM Feature)
 # ============================================================================
 # If primary model fails, automatically try fallback models

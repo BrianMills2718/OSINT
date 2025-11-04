@@ -242,6 +242,41 @@ class Config:
         return db_config.get("enabled", True)
 
     # ========================================================================
+    # Rate Limiting Configuration
+    # ========================================================================
+
+    def get_rate_limit_config(self, source_name: str) -> Dict[str, Any]:
+        """
+        Get rate limiting configuration for a specific source.
+
+        Args:
+            source_name: Display name of the source (e.g., "SAM.gov", "USAJobs")
+
+        Returns:
+            Dict with:
+                - use_circuit_breaker (bool): Whether to skip source after 429
+                - cooldown_minutes (int): Minutes to keep source blocked
+                - is_critical (bool): Whether source should never be skipped
+
+        Example:
+            >>> config.get_rate_limit_config("SAM.gov")
+            {"use_circuit_breaker": True, "cooldown_minutes": 60, "is_critical": False}
+
+            >>> config.get_rate_limit_config("USAJobs")
+            {"use_circuit_breaker": False, "cooldown_minutes": 60, "is_critical": True}
+        """
+        rate_config = self._config.get("rate_limiting", {})
+        circuit_breaker_sources = rate_config.get("circuit_breaker_sources", ["SAM.gov"])
+        critical_sources = rate_config.get("critical_always_retry", ["USAJobs"])
+        cooldown = rate_config.get("circuit_breaker_cooldown_minutes", 60)
+
+        return {
+            "use_circuit_breaker": source_name in circuit_breaker_sources,
+            "cooldown_minutes": cooldown,
+            "is_critical": source_name in critical_sources
+        }
+
+    # ========================================================================
     # Provider Fallback (LiteLLM Feature)
     # ========================================================================
 

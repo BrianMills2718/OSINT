@@ -18,7 +18,7 @@ import sys
 import os
 import logging
 import time
-from typing import List, Dict, Optional, Callable, Any
+from typing import List, Dict, Optional, Callable, Any, Tuple
 from datetime import datetime
 from dataclasses import dataclass, asdict, field
 from enum import Enum
@@ -165,6 +165,7 @@ class SimpleDeepResearch:
         self.results_by_task: Dict[int, Dict] = {}
         self.start_time: Optional[datetime] = None
         self.critical_source_failures: List[str] = []  # Track failed critical sources
+        self.rate_limited_sources: set = set()  # Track rate-limited sources (circuit breaker)
 
         # Load API keys from environment
         self.api_keys = {
@@ -855,6 +856,17 @@ class SimpleDeepResearch:
             print("⊘ No MCP sources selected for this task. Skipping MCP search.")
             return []
 
+        # Circuit breaker: Skip rate-limited sources
+        skip_rate_limited_names = set()
+        for tool in candidate_tools:
+            source_display_name = self.tool_name_to_display.get(tool["name"], tool["name"])
+            if source_display_name in self.rate_limited_sources:
+                skip_rate_limited_names.add(tool["name"])
+
+        if skip_rate_limited_names:
+            skipped_display = [self.tool_name_to_display[name] for name in skip_rate_limited_names]
+            print(f"⊘ Skipping rate-limited sources (circuit breaker): {', '.join(skipped_display)}")
+
         # Apply lightweight keyword-based skipping as an additional guardrail
         skip_keyword_names = set()
         for tool in candidate_tools:
@@ -863,7 +875,7 @@ class SimpleDeepResearch:
 
         filtered_tools = [
             tool for tool in candidate_tools
-            if tool["name"] not in skip_keyword_names
+            if tool["name"] not in skip_keyword_names and tool["name"] not in skip_rate_limited_names
         ]
 
         if skip_keyword_names:
@@ -871,9 +883,16 @@ class SimpleDeepResearch:
             print(f"⊘ Skipping keyword-irrelevant MCP sources: {', '.join(skipped_display)}")
 
         # If all sources were filtered out, revert to the LLM-selected set to avoid empty searches
+        # BUT don't reinstate rate-limited sources (circuit breaker is permanent)
         if not filtered_tools and candidate_tools:
-            filtered_tools = candidate_tools
-            print("ℹ️  Reinstating LLM-selected MCP sources (keyword filtering removed all options).")
+            filtered_tools = [
+                tool for tool in candidate_tools
+                if tool["name"] not in skip_rate_limited_names
+            ]
+            if filtered_tools:
+                print("ℹ️  Reinstating LLM-selected MCP sources (keyword filtering removed all options).")
+            else:
+                print("ℹ️  All sources are rate-limited (circuit breaker active).")
 
         if not filtered_tools:
             print("⊘ No MCP sources after filtering. Skipping MCP search.")
@@ -973,6 +992,22 @@ class SimpleDeepResearch:
                         )
                     except Exception as log_error:
                         logging.warning(f"Failed to log raw response: {log_error}")
+
+                # Circuit breaker: Detect 429 rate limits and check config before adding
+                if error and ("429" in str(error) or "rate limit" in str(error).lower()):
+                    rate_config = config.get_rate_limit_config(source_name)
+
+                    if rate_config["use_circuit_breaker"]:
+                        if not rate_config["is_critical"]:
+                            self.rate_limited_sources.add(source_name)
+                            logging.warning(f"⚠️  {source_name} rate limited - added to circuit breaker")
+                            print(f"⚠️  {source_name} rate limited - skipping for remaining tasks")
+                        else:
+                            logging.warning(f"⚠️  {source_name} rate limited but CRITICAL - will continue retrying")
+                            print(f"⚠️  {source_name} rate limited (CRITICAL - continuing retries)")
+                    else:
+                        logging.info(f"ℹ️  {source_name} rate limited (no circuit breaker configured - will retry)")
+                        print(f"ℹ️  {source_name} rate limited (will retry)")
 
                 return {
                     "tool": tool_name,
@@ -1131,12 +1166,13 @@ class SimpleDeepResearch:
 
                 # Validate result relevance BEFORE accepting as successful
                 print(f"🔍 Validating relevance of {len(all_results)} results...")
-                relevance_score = await self._validate_result_relevance(
+                relevance_score, relevance_reason = await self._validate_result_relevance(
                     task_query=task.query,
                     research_question=self.original_question,
                     sample_results=all_results[:10]
                 )
                 print(f"  Relevance score: {relevance_score}/10")
+                print(f"  Reason: {relevance_reason}")
 
                 # Adaptive threshold: 1/10 for sensitive queries, 3/10 for public queries
                 query_sensitivity = self._detect_query_sensitivity(self.original_question)
@@ -1146,9 +1182,7 @@ class SimpleDeepResearch:
                 # Log relevance scoring if logger enabled
                 if self.logger:
                     try:
-                        # Get reason from _validate_result_relevance result (stored in previous call)
-                        # Note: We'd need to modify _validate_result_relevance to return (score, reason)
-                        # For now, create a minimal prompt for logging
+                        # Use actual LLM reasoning (not generic f-string)
                         self.logger.log_relevance_scoring(
                             task_id=task.id,
                             attempt=task.retry_count,
@@ -1156,7 +1190,7 @@ class SimpleDeepResearch:
                             original_query=self.original_question,
                             results_count=len(all_results),
                             llm_prompt=f"Evaluating relevance of {len(all_results[:10])} results for query '{task.query}'",
-                            llm_response={"relevance_score": relevance_score, "reasoning": f"Results scored {relevance_score}/10 for relevance", "threshold": relevance_threshold, "query_sensitivity": query_sensitivity},
+                            llm_response={"relevance_score": relevance_score, "reasoning": relevance_reason, "threshold": relevance_threshold, "query_sensitivity": query_sensitivity},
                             threshold=relevance_threshold,
                             passes=(relevance_score >= relevance_threshold)
                         )
@@ -1488,7 +1522,7 @@ class SimpleDeepResearch:
         task_query: str,
         research_question: str,
         sample_results: List[Dict]
-    ) -> int:
+    ) -> Tuple[int, str]:
         """
         Validate that search results are actually relevant to the research question.
 
@@ -1498,10 +1532,12 @@ class SimpleDeepResearch:
             sample_results: Sample of results to evaluate (first 10)
 
         Returns:
-            Relevance score 0-10 (0 = completely off-topic, 10 = highly relevant)
+            Tuple of (relevance_score, reason):
+            - relevance_score: 0-10 (0 = completely off-topic, 10 = highly relevant)
+            - reason: LLM's explanation for the score
         """
         if not sample_results:
-            return 0
+            return (0, "No results to evaluate")
 
         # Build sample text from titles and snippets
         results_text = "\n\n".join([
@@ -1553,12 +1589,12 @@ class SimpleDeepResearch:
             reason = result.get("reason", "")
 
             logging.info(f"Result relevance: {score}/10 - {reason}")
-            return score
+            return (score, reason)
 
         except Exception as e:
             logging.error(f"Relevance validation failed: {type(e).__name__}: {str(e)}")
             # On error, assume relevant (don't want to fail good results due to validation error)
-            return 7
+            return (7, f"Error during validation: {type(e).__name__}")
 
     async def _reformulate_for_relevance(
         self,
@@ -1598,15 +1634,21 @@ class SimpleDeepResearch:
                                     "type": "string",
                                     "enum": ["hour", "day", "week", "month", "year", "all"]
                                 }
-                            }
+                            },
+                            "required": ["time_filter"],
+                            "additionalProperties": False
                         },
                         "usajobs": {
                             "type": "object",
                             "properties": {
                                 "keywords": {"type": "string"}
-                            }
+                            },
+                            "required": ["keywords"],
+                            "additionalProperties": False
                         }
-                    }
+                    },
+                    "required": ["reddit", "usajobs"],
+                    "additionalProperties": False
                 }
             },
             "required": ["query", "param_adjustments"],
@@ -1660,15 +1702,21 @@ class SimpleDeepResearch:
                                     "type": "string",
                                     "enum": ["hour", "day", "week", "month", "year", "all"]
                                 }
-                            }
+                            },
+                            "required": ["time_filter"],
+                            "additionalProperties": False
                         },
                         "usajobs": {
                             "type": "object",
                             "properties": {
                                 "keywords": {"type": "string"}
-                            }
+                            },
+                            "required": ["keywords"],
+                            "additionalProperties": False
                         }
-                    }
+                    },
+                    "required": ["reddit", "usajobs"],
+                    "additionalProperties": False
                 }
             },
             "required": ["query", "param_adjustments"],
