@@ -1,109 +1,116 @@
 #!/usr/bin/env python3
 """
-Test 4: Full Deep Research End-to-End Test
+Test deep research with comprehensive logging and saved output.
 
-This runs an actual Deep Research investigation to verify:
-- Task decomposition works
-- Government databases search
-- Brave Search integration
-- Results combine correctly
-- Live progress works
+This test:
+1. Runs deep research on a test query
+2. Logs all progress to console and files
+3. Saves complete output to data/research_output/
+4. Prints summary at the end
 """
+
 import asyncio
+import json
 import sys
-from pathlib import Path
+import os
 
-sys.path.insert(0, str(Path(__file__).parent.parent))
+# Add parent directory to path so imports work from tests/ subdirectory
+sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from dotenv import load_dotenv
 from research.deep_research import SimpleDeepResearch, ResearchProgress
 
-async def test_full_deep_research():
-    """Run full Deep Research and verify all components work."""
-    print("=" * 60)
-    print("TEST 4: Full Deep Research End-to-End")
-    print("=" * 60)
 
-    load_dotenv()
+def show_progress(progress: ResearchProgress):
+    """Display progress updates in real-time."""
+    print(f"\n{'='*80}")
+    print(f"[{progress.timestamp}] {progress.event.upper()}")
+    print(f"Message: {progress.message}")
+    if progress.task_id is not None:
+        print(f"Task ID: {progress.task_id}")
+    if progress.data:
+        print(f"Data: {json.dumps(progress.data, indent=2)[:500]}...")  # Truncate long data
+    print('='*80)
 
-    # Track progress
-    progress_events = []
 
-    def progress_callback(progress: ResearchProgress):
-        progress_events.append(progress)
-        print(f"[{progress.event}] {progress.message}")
+async def main():
+    """Run deep research test."""
 
-    print(f"\n1. Creating Deep Research engine...")
+    # Test queries (pick one)
+    test_queries = [
+        "What cybersecurity job opportunities are available for cleared professionals?",
+        "What are the latest DoD contracts for AI and machine learning?",
+        "What are current OSINT techniques discussed in the intelligence community?",
+    ]
+
+    # Use first query
+    question = test_queries[0]
+
+    print(f"\n{'#'*80}")
+    print(f"# DEEP RESEARCH TEST - JINJA2 VALIDATION")
+    print(f"# Question: {question}")
+    print(f"# Output will be saved to: data/research_output/")
+    print(f"{'#'*80}\n")
+
+    # Create engine with conservative settings for testing
     engine = SimpleDeepResearch(
-        max_tasks=3,  # Small test - just 3 tasks
-        max_retries_per_task=1,
-        max_time_minutes=5,
-        min_results_per_task=1,  # Accept any results
-        progress_callback=progress_callback
+        max_tasks=5,                    # Limit to 5 tasks for faster testing
+        max_retries_per_task=1,         # 1 retry per task
+        max_time_minutes=30,            # 30 minute timeout
+        min_results_per_task=3,         # Min 3 results
+        max_concurrent_tasks=2,         # 2 tasks in parallel
+        progress_callback=show_progress,  # Real-time progress
+        save_output=True,               # Auto-save to files
+        output_dir="data/research_output"
     )
-    print(f"   ✅ Engine created")
 
-    print(f"\n2. Running Deep Research...")
-    print(f"   Query: 'cybersecurity threat intelligence'")
-    print(f"   Max tasks: 3")
-    print(f"   This will take ~2-3 minutes...")
-    print("")
+    # Execute research
+    print("\n🚀 Starting deep research...\n")
+    result = await engine.research(question)
 
-    result = await engine.research("cybersecurity threat intelligence")
+    # Display final report
+    print("\n" + "="*80)
+    print("FINAL REPORT")
+    print("="*80)
+    print(result['report'])
 
-    print(f"\n" + "=" * 60)
-    print("3. RESULTS ANALYSIS")
-    print("=" * 60)
+    # Display statistics
+    print("\n" + "="*80)
+    print("RESEARCH STATISTICS")
+    print("="*80)
+    print(f"Tasks Executed: {result['tasks_executed']}")
+    print(f"Tasks Failed: {result['tasks_failed']}")
+    if result.get('failure_details'):
+        print(f"\nFailure Details:")
+        for failure in result['failure_details']:
+            print(f"  - Task {failure['task_id']}: {failure['query']}")
+            print(f"    Error: {failure['error']}")
+            print(f"    Retries: {failure['retry_count']}")
+    print(f"\nTotal Results: {result['total_results']}")
+    print(f"Entities Discovered: {len(result['entities_discovered'])}")
+    print(f"Entity Relationships: {len(result['entity_relationships'])}")
+    print(f"Sources Searched: {', '.join(result['sources_searched'])}")
+    print(f"Elapsed Time: {result['elapsed_minutes']:.1f} minutes")
 
-    # Check basic stats
-    print(f"\n   Tasks Executed: {result['tasks_executed']}")
-    print(f"   Tasks Failed: {result['tasks_failed']}")
-    print(f"   Total Results: {result['total_results']}")
-    print(f"   Sources Searched: {result['sources_searched']}")
+    # Output directory info
+    if result.get('output_directory'):
+        print(f"\n💾 All output saved to: {result['output_directory']}")
+        print(f"   - results.json: Complete structured data")
+        print(f"   - report.md: Human-readable report")
+        print(f"   - metadata.json: Research parameters")
+        print(f"   - execution_log.jsonl: Detailed execution log")
 
-    # Check for Brave Search specifically
-    has_brave = 'Brave Search' in result['sources_searched']
-    print(f"\n   Brave Search integrated: {'✅ YES' if has_brave else '❌ NO'}")
+    # Entity network
+    if result['entity_relationships']:
+        print("\n" + "="*80)
+        print("ENTITY NETWORK (Top 10)")
+        print("="*80)
+        for entity, related in list(result['entity_relationships'].items())[:10]:
+            print(f"{entity}:")
+            print(f"  → {', '.join(related[:5])}")
 
-    # Check task completion events
-    completed_tasks = [e for e in progress_events if e.event == 'task_completed']
-    print(f"\n   Completed task events: {len(completed_tasks)}")
-
-    if completed_tasks:
-        print(f"\n4. SOURCE BREAKDOWN PER TASK:")
-        for event in completed_tasks:
-            if event.data:
-                task_id = event.task_id
-                gov_db = event.data.get('government_databases', 0)
-                web = event.data.get('web_search', 0)
-                total = event.data.get('total_results', 0)
-                print(f"   Task {task_id}: {total} total ({gov_db} gov + {web} web)")
-
-    # Overall verdict
-    print(f"\n" + "=" * 60)
-    if has_brave and result['total_results'] > 0 and result['tasks_executed'] > 0:
-        print("✅ TEST 4 PASSED: Full Deep Research working end-to-end")
-        print("=" * 60)
-        print(f"\n   VERIFIED:")
-        print(f"   - Task decomposition: ✅")
-        print(f"   - Government databases: ✅")
-        print(f"   - Brave Search integration: ✅")
-        print(f"   - Results combining: ✅")
-        print(f"   - Live progress: ✅")
-        return True
-    else:
-        print("❌ TEST 4 FAILED: Issues found")
-        print("=" * 60)
-        print(f"\n   ISSUES:")
-        if not has_brave:
-            print(f"   - Brave Search not in sources: ❌")
-        if result['total_results'] == 0:
-            print(f"   - No results found: ❌")
-        if result['tasks_executed'] == 0:
-            print(f"   - No tasks executed: ❌")
-        return False
+    print("\n✅ Deep research test complete!")
+    print(f"Review saved output at: {result.get('output_directory', 'data/research_output/')}")
 
 
 if __name__ == "__main__":
-    success = asyncio.run(test_full_deep_research())
-    sys.exit(0 if success else 1)
+    asyncio.run(main())

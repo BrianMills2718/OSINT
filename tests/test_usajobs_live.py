@@ -5,13 +5,18 @@ Test USAJobs integration with live API.
 
 import asyncio
 import os
+import sys
+from pathlib import Path
 from dotenv import load_dotenv
+
+# Add parent directory to path
+sys.path.insert(0, str(Path(__file__).parent.parent))
 
 # Load environment
 load_dotenv()
 
 # Test imports
-from integrations.usajobs_integration import USAJobsIntegration
+from integrations.government.usajobs_integration import USAJobsIntegration
 
 
 async def main():
@@ -55,6 +60,26 @@ async def main():
                 print(f"    Organization: {first.get('OrganizationName', 'N/A')}")
                 print(f"    Location: {first.get('PositionLocationDisplay', 'N/A')[:60]}...")
                 print(f"    Grade: {first.get('JobGrade', [{}])[0].get('Code', 'N/A') if first.get('JobGrade') else 'N/A'}")
+
+                # Test field normalization (added for deep_research compatibility)
+                print(f"\n  Field Normalization Test:")
+                has_title = 'title' in first
+                has_description = 'description' in first
+                has_snippet = 'snippet' in first
+                has_raw_position_title = 'PositionTitle' in first
+
+                print(f"    ✓ Normalized 'title' field: {has_title}")
+                print(f"    ✓ Normalized 'description' field: {has_description}")
+                print(f"    ✓ Normalized 'snippet' field: {has_snippet}")
+                print(f"    ✓ Raw 'PositionTitle' preserved: {has_raw_position_title}")
+
+                if has_title and has_description and has_snippet and has_raw_position_title:
+                    print(f"    ✅ All required fields present (normalized + raw)")
+                    print(f"    Title value: {first.get('title', '')[:60]}...")
+                    print(f"    Description length: {len(first.get('description', ''))} chars")
+                    print(f"    Snippet length: {len(first.get('snippet', ''))} chars")
+                else:
+                    print(f"    ❌ MISSING FIELDS - normalization may be broken!")
         else:
             print(f"✗ Search failed: {result.error}")
     else:

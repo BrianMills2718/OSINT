@@ -141,6 +141,201 @@ File "/mount/src/osint/integrations/government/clearancejobs_playwright.py", lin
 
 ## Low Priority
 
+### Configuration Hardcoding - No Centralized Config System
+**Discovered**: 2025-11-02
+**Severity**: Low (tech debt, doesn't block functionality)
+**Status**: Not started
+
+**Issue**: Critical configuration values hardcoded in Python files instead of centralized config
+
+**Hardcoded Values**:
+1. **Deep Research Engine** (`research/deep_research.py` lines 126-130):
+   - `max_tasks: int = 15`
+   - `max_retries_per_task: int = 2`
+   - `max_time_minutes: int = 120`
+   - `min_results_per_task: int = 3`
+   - `max_concurrent_tasks: int = 4`
+
+2. **SAM.gov Rate Limiting** (`integrations/government/sam_integration.py` line 246):
+   - `retry_delays = [2, 4, 8]  # Exponential backoff`
+
+3. **Deep Research Timeouts** (`research/deep_research.py` line 426):
+   - `task_timeout = 180  # 3 minutes per task`
+
+**What Exists But Unused**:
+- `config_default.yaml` has comprehensive configuration structure
+- Includes: LLM models, timeouts, database settings, cost management
+- **NOT CURRENTLY USED** by deep_research.py or integrations
+
+**Impact**:
+- Hard to tune performance without editing code
+- Different environments (dev/prod) require code changes
+- No single source of truth for limits/timeouts
+- Violates separation of concerns
+
+**Recommended Fix**:
+1. Create `config.yaml` (or use `config_default.yaml`)
+2. Add deep research section:
+   ```yaml
+   deep_research:
+     max_tasks: 15
+     max_retries_per_task: 2
+     max_time_minutes: 120
+     min_results_per_task: 3
+     max_concurrent_tasks: 4
+     task_timeout_seconds: 180
+
+   rate_limiting:
+     sam_gov_retry_delays: [2, 4, 8]
+     brave_search_delay: 1.0
+   ```
+3. Update `research/deep_research.py` to load from config
+4. Update all integrations to use centralized retry/timeout config
+
+**Files**:
+- `config_default.yaml` (exists, comprehensive but unused)
+- `research/deep_research.py` (hardcoded params)
+- `integrations/government/sam_integration.py` (hardcoded retries)
+
+**Priority**: Low - system works, but should fix before scaling/deployment
+
+---
+
+### LiteLLM Async Logging Worker Timeout
+**Discovered**: 2025-11-02
+**Resolved**: 2025-11-02
+**Severity**: Low (non-critical, appears in logs but doesn't affect functionality)
+**Status**: ✅ **RESOLVED**
+
+**Symptoms**:
+```
+LiteLLM:ERROR: logging_worker.py:73 - LoggingWorker error:
+Traceback (most recent call last):
+  File "/usr/lib/python3.12/asyncio/tasks.py", line 520, in wait_for
+    return await fut
+           ^^^^^^^^^
+asyncio.exceptions.CancelledError
+...
+TimeoutError
+```
+
+**Context**:
+- Appears during deep research execution when tasks timeout
+- LiteLLM version: 1.74.14
+- Our code uses `asyncio.wait_for()` with 180s timeout per task
+
+**Root Cause** (CONFIRMED):
+LiteLLM's logging worker has a race condition between task cancellation and logging completion:
+
+1. **Our code** (`research/deep_research.py:427-433`):
+   ```python
+   results = await asyncio.gather(*[
+       asyncio.wait_for(
+           self._execute_task_with_retry(task),
+           timeout=180  # 3-minute timeout
+       )
+       for task in batch
+   ], return_exceptions=True)
+   ```
+
+2. **LiteLLM's logging worker** (`.venv/.../logging_worker.py:68-73`):
+   ```python
+   await asyncio.wait_for(
+       task["context"].run(asyncio.create_task, task["coroutine"]),
+       timeout=self.timeout  # 20 seconds
+   )
+   ```
+
+3. **The race**:
+   - When our 180s timeout fires → parent task gets cancelled → `CancelledError`
+   - LiteLLM's logging worker is still processing the logging coroutine
+   - The `CancelledError` propagates to logging worker's `asyncio.wait_for()`
+   - This causes `TimeoutError` in logging worker exception handler (line 73)
+
+**Why it's harmless**:
+- LiteLLM logging worker catches and logs the exception (line 72-73)
+- Exception handler uses `pass` - no crash, just error log
+- Task cancellation is handled properly (line 76: `task_done()`)
+- Research continues normally
+
+**Impact**:
+- **Functional**: None - logging is best-effort by design
+- **Logs**: Scary-looking stack traces clutter error output
+- **Debugging**: Makes real errors harder to spot in logs
+
+**Tested Solutions**:
+1. ✓ **Disable telemetry**: `litellm.telemetry = False` - Still occurs
+2. ✓ **Suppress debug**: `litellm.suppress_debug_info = True` - Still occurs
+3. ✗ **Suppress logging worker errors** - No config option exists
+4. ✗ **Increase timeout** - Would slow down research unnecessarily
+
+**Available Fixes**:
+
+**Option 1: Suppress LiteLLM logging errors** (Easiest)
+```python
+# In llm_utils.py or research/deep_research.py
+import logging
+logging.getLogger('LiteLLM').setLevel(logging.CRITICAL)  # Only show critical errors
+```
+**Pros**: Simple, one-line fix
+**Cons**: Might hide real LiteLLM errors
+
+**Option 2: Increase logging worker timeout** (Not recommended)
+```python
+# Before any LiteLLM calls
+import litellm
+litellm.GLOBAL_LOGGING_WORKER.timeout = 300  # Match our task timeout
+```
+**Pros**: Prevents timeout race
+**Cons**: Logging worker could block for 5 minutes (bad design)
+
+**Option 3: Disable async logging callbacks** (Nuclear option)
+```python
+litellm.telemetry = False
+litellm.turn_off_message_logging = True
+```
+**Pros**: Completely prevents logging worker from running
+**Cons**: Lose all LiteLLM telemetry/logging features
+
+**Option 4: Wait for LiteLLM fix** (Long-term)
+- File issue on LiteLLM GitHub
+- Request better cancellation handling in logging worker
+- Upgrade when fixed
+
+**Recommended Fix**: Option 1 (suppress LiteLLM logging errors)
+- Minimal code change
+- Preserves functionality
+- Cleans up logs
+- Can be reverted easily if needed
+
+**Implementation Applied**:
+```python
+# llm_utils.py lines 29-33
+# Suppress LiteLLM's async logging worker timeout errors
+# These occur when our task timeouts cancel tasks before LiteLLM's logging completes
+# This is harmless (logging is best-effort) but clutters error logs
+logging.getLogger('LiteLLM').setLevel(logging.CRITICAL)
+```
+
+**Verification**:
+```bash
+$ python3 -c "import llm_utils; import logging; print(logging.getLogger('LiteLLM').level)"
+50  # CRITICAL level (suppresses ERROR logs)
+```
+
+**Result**:
+- ✅ LiteLLM ERROR logs suppressed
+- ✅ Log output cleaned up
+- ✅ Functionality preserved
+- ✅ CRITICAL errors (if any) still shown
+
+**Files Modified**:
+- `llm_utils.py:29-33` (fix applied)
+- `research/deep_research.py:427-433` (our timeout logic - unchanged)
+- `.venv/lib/python3.12/site-packages/litellm/litellm_core_utils/logging_worker.py:68-73` (LiteLLM race condition - unchanged)
+
+---
+
 ### Enhanced Entity Extraction (crest_kg) - Performance Too Slow
 **Discovered**: 2025-10-24
 **Severity**: Low (optional feature, current simple extraction works)

@@ -70,3 +70,4 @@ experiments/**/*.jsonl
 *_articles/
 *_articles_extracted/
 /archive/
+image.png
