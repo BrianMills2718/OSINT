@@ -89,12 +89,15 @@ class ResearchTask:
     error: Optional[str] = None
     entities_found: List[str] = None
     param_adjustments: Dict[str, Dict] = field(default_factory=dict)
+    accumulated_results: List[Dict] = field(default_factory=list)  # Priority 2: Accumulate results across attempts
 
     def __post_init__(self):
         if self.entities_found is None:
             self.entities_found = []
         if self.param_adjustments is None:
             self.param_adjustments = {}
+        if self.accumulated_results is None:
+            self.accumulated_results = []
 
 
 @dataclass
@@ -240,69 +243,6 @@ class SimpleDeepResearch:
         elapsed = (datetime.now() - self.start_time).total_seconds() / 60
         return elapsed >= self.max_time_minutes
 
-    def _identify_critical_sources(self, research_question: str) -> List[str]:
-        """
-        Identify which sources are critical for this research question using keyword rules.
-
-        Args:
-            research_question: Original research question
-
-        Returns:
-            List of critical source IDs (e.g., ["sam", "dvids", "usajobs"])
-        """
-        q_lower = research_question.lower()
-        critical = []
-
-        # SAM.gov for contract/procurement queries
-        if any(kw in q_lower for kw in ["contract", "award", "procurement", "solicitation"]):
-            critical.append("SAM.gov")
-
-        # DVIDS for military/DoD queries
-        if any(kw in q_lower for kw in ["dvids", "defense", "military", "dod"]):
-            critical.append("DVIDS")
-
-        # USAJobs for jobs/employment queries
-        if any(kw in q_lower for kw in ["job", "position", "hiring", "employment"]):
-            critical.append("USAJobs")
-
-        return critical
-
-    def _detect_query_sensitivity(self, research_question: str) -> str:
-        """
-        Detect if research question involves sensitive/classified topics.
-
-        Sensitive queries require lower relevance threshold (1/10) because:
-        - Classified information is sparse in public sources
-        - Indirect evidence (press mentions, budget line items) is valuable
-        - LLM correctly assesses results don't contain classified details
-        - But we still want to accept circumstantial/indirect evidence
-
-        Args:
-            research_question: Original research question
-
-        Returns:
-            "sensitive" or "public"
-        """
-        q_lower = research_question.lower()
-
-        # Sensitive keywords indicating classified/secret operations
-        sensitive_keywords = [
-            "classified", "secret", "covert", "black ops",
-            "special access program", "sap", "clandestine",
-            "ts/sci", "top secret", "compartmented",
-            "sigint", "humint", "elint", "comint",
-            "special operations", "jsoc", "delta force",
-            "seal team", "cia", "nsa", "dia",
-            "surveillance program", "intelligence operation",
-            "black budget", "unacknowledged program"
-        ]
-
-        if any(kw in q_lower for kw in sensitive_keywords):
-            logging.info(f"Query classified as SENSITIVE (detected keywords in: {research_question[:100]})")
-            return "sensitive"
-
-        logging.info(f"Query classified as PUBLIC (no sensitive keywords in: {research_question[:100]})")
-        return "public"
 
     async def research(self, question: str) -> Dict:
         """
@@ -711,40 +651,14 @@ class SimpleDeepResearch:
         # Should never reach here, but return empty if all retries exhausted
         return []
 
-    def _should_skip_source(self, tool_name: str, query: str) -> bool:
-        """
-        Determine if a source should be skipped for this query.
-
-        Args:
-            tool_name: Name of the MCP tool
-            query: Current task query
-
-        Returns:
-            True if source should be skipped (not relevant)
-        """
-        query_lower = query.lower()
-        research_lower = self.original_question.lower()
-
-        # Skip ClearanceJobs for non-job queries
-        if tool_name == "search_clearancejobs":
-            job_keywords = ["job", "position", "hiring", "employment", "career", "clearance", "security officer"]
-            if not any(kw in query_lower or kw in research_lower for kw in job_keywords):
-                return True  # Skip - not a job query
-
-        # Skip Discord for definitional/informational queries
-        if tool_name == "search_discord":
-            definitional_keywords = ["what is", "what are", "definition", "explain", "describe", "overview"]
-            if any(kw in query_lower or kw in research_lower for kw in definitional_keywords):
-                return True  # Skip - Discord is not authoritative for definitions
-
-        return False  # Don't skip
-
-    async def _select_relevant_sources(self, query: str) -> List[str]:
+    async def _select_relevant_sources(self, query: str) -> Tuple[List[str], str]:
         """
         Use a single LLM call to choose the most relevant sources (MCP tools + web tools) for this task.
 
         Returns:
-            List of tool names (e.g., ["search_dvids", "search_sam", "brave_search"])
+            Tuple of (selected_sources, reason):
+            - selected_sources: List of tool names (e.g., ["search_dvids", "search_sam", "brave_search"])
+            - reason: LLM's explanation for why these sources were selected
         """
         # Combine MCP tools and web tools for LLM selection
         all_selectable_tools = self.mcp_tools + self.web_tools
@@ -803,26 +717,15 @@ class SimpleDeepResearch:
                 if source in self.tool_name_to_display
             ]
 
-            # Ensure Brave Search is always available for documentation/background support
-            if "brave_search" not in valid_sources:
-                valid_sources.append("brave_search")
-
-            # Always include critical sources (e.g., SAM.gov for contract queries)
-            critical_sources = self._identify_critical_sources(self.original_question)
-            for critical in critical_sources:
-                tool_name = self.tool_display_to_name.get(critical)
-                if tool_name and tool_name not in valid_sources:
-                    valid_sources.append(tool_name)
-
             if reason:
                 logging.info(f"Source selection rationale: {reason}")
 
-            return valid_sources
+            return (valid_sources, reason)
 
         except Exception as e:
             logging.error(f"Source selection failed: {type(e).__name__}: {str(e)}")
             # Fallback: return all MCP tools (downstream filtering will still apply)
-            return [tool["name"] for tool in self.mcp_tools]
+            return ([tool["name"] for tool in self.mcp_tools], f"Error during source selection: {type(e).__name__}")
 
     async def _search_mcp_tools_selected(
         self,
@@ -867,32 +770,11 @@ class SimpleDeepResearch:
             skipped_display = [self.tool_name_to_display[name] for name in skip_rate_limited_names]
             print(f"⊘ Skipping rate-limited sources (circuit breaker): {', '.join(skipped_display)}")
 
-        # Apply lightweight keyword-based skipping as an additional guardrail
-        skip_keyword_names = set()
-        for tool in candidate_tools:
-            if self._should_skip_source(tool["name"], query):
-                skip_keyword_names.add(tool["name"])
-
+        # Filter tools to only those not rate-limited
         filtered_tools = [
             tool for tool in candidate_tools
-            if tool["name"] not in skip_keyword_names and tool["name"] not in skip_rate_limited_names
+            if tool["name"] not in skip_rate_limited_names
         ]
-
-        if skip_keyword_names:
-            skipped_display = [self.tool_name_to_display[name] for name in skip_keyword_names]
-            print(f"⊘ Skipping keyword-irrelevant MCP sources: {', '.join(skipped_display)}")
-
-        # If all sources were filtered out, revert to the LLM-selected set to avoid empty searches
-        # BUT don't reinstate rate-limited sources (circuit breaker is permanent)
-        if not filtered_tools and candidate_tools:
-            filtered_tools = [
-                tool for tool in candidate_tools
-                if tool["name"] not in skip_rate_limited_names
-            ]
-            if filtered_tools:
-                print("ℹ️  Reinstating LLM-selected MCP sources (keyword filtering removed all options).")
-            else:
-                print("ℹ️  All sources are rate-limited (circuit breaker active).")
 
         if not filtered_tools:
             print("⊘ No MCP sources after filtering. Skipping MCP search.")
@@ -901,9 +783,6 @@ class SimpleDeepResearch:
         # Emit progress: starting MCP tool searches
         display_names = [self.tool_name_to_display[tool["name"]] for tool in filtered_tools]
         print(f"🔍 Searching {len(filtered_tools)} MCP sources: {', '.join(display_names)}")
-
-        # Identify critical sources for this research question
-        critical_sources = self._identify_critical_sources(self.original_question)
 
         all_results = []
         sources_count = {}
@@ -1065,30 +944,6 @@ class SimpleDeepResearch:
                 # Log failed sources
                 print(f"  ✗ {tool_result['tool']}: Failed - {tool_result.get('error', 'Unknown error')}")
 
-        # Check for critical source failures (Fix 3)
-        for critical_source in critical_sources:
-            source_result_count = sources_count.get(critical_source, 0)
-            if source_result_count == 0:
-                # Critical source returned 0 results - emit warnings in 4 channels
-                warning_msg = f"WARNING: {critical_source} returned 0 results (rate limited or unavailable)"
-
-                # Channel 1: Console (print)
-                print(f"\n⚠️  {warning_msg}")
-
-                # Channel 2: Logging (warning level)
-                logging.warning(warning_msg)
-
-                # Channel 3: Progress events (for Streamlit UI)
-                self._emit_progress(
-                    "critical_source_failure",
-                    warning_msg,
-                    data={"source": critical_source, "research_question": self.original_question}
-                )
-
-                # Channel 4: Track for synthesis report (will be added to report limitations section)
-                if critical_source not in self.critical_source_failures:
-                    self.critical_source_failures.append(critical_source)
-
         # Log summary with per-source breakdown
         print(f"\n✓ MCP tools complete: {len(all_results)} total results from {len(sources_count)} sources")
         if sources_count:
@@ -1121,7 +976,7 @@ class SimpleDeepResearch:
                     )
 
                 # Get LLM-selected sources for this query (includes both MCP and web tools)
-                selected_sources = await self._select_relevant_sources(task.query)
+                selected_sources, source_selection_reason = await self._select_relevant_sources(task.query)
 
                 # Log source selection if logger enabled
                 if self.logger:
@@ -1132,7 +987,7 @@ class SimpleDeepResearch:
                         query=task.query,
                         tool_descriptions=self.tool_descriptions,
                         selected_sources=selected_display_names,
-                        reasoning="LLM-selected sources based on query relevance"
+                        reasoning=source_selection_reason
                     )
 
                 # Separate MCP tools from web tools
@@ -1164,22 +1019,34 @@ class SimpleDeepResearch:
                 all_results = mcp_results + web_results
                 combined_total = len(all_results)
 
-                # Validate result relevance BEFORE accepting as successful
+                # Validate result relevance, filter to relevant results, decide if continue
+                # LLM makes 3 decisions: ACCEPT/REJECT, which indices to keep, continue searching?
                 print(f"🔍 Validating relevance of {len(all_results)} results...")
-                relevance_score, relevance_reason = await self._validate_result_relevance(
+                should_accept, relevance_reason, relevant_indices, should_continue = await self._validate_result_relevance(
                     task_query=task.query,
                     research_question=self.original_question,
                     sample_results=all_results[:10]
                 )
-                print(f"  Relevance score: {relevance_score}/10")
+                decision_str = "ACCEPT" if should_accept else "REJECT"
+                continue_str = "CONTINUE" if should_continue else "STOP"
+                print(f"  Decision: {decision_str}")
                 print(f"  Reason: {relevance_reason}")
+                print(f"  Filtered: {len(relevant_indices)}/{len(all_results[:10])} results kept")
+                print(f"  Continuation: {continue_str}")
 
-                # Adaptive threshold: 1/10 for sensitive queries, 3/10 for public queries
-                query_sensitivity = self._detect_query_sensitivity(self.original_question)
-                relevance_threshold = 1 if query_sensitivity == "sensitive" else 3
-                print(f"  Relevance threshold: {relevance_threshold}/10 ({query_sensitivity} query)")
+                # Filter results to only keep relevant ones (per-result filtering)
+                if should_accept and relevant_indices:
+                    # Keep only the results LLM marked as relevant
+                    filtered_results = [all_results[i] for i in relevant_indices if i < len(all_results)]
+                    discarded_count = len(all_results) - len(filtered_results)
+                    print(f"  ✓ Kept {len(filtered_results)} relevant results, discarded {discarded_count} junk results")
+                else:
+                    # REJECT: discard all results
+                    filtered_results = []
+                    discarded_count = len(all_results)
+                    print(f"  ✗ Discarded all {discarded_count} results (off-topic)")
 
-                # Log relevance scoring if logger enabled
+                # Log relevance decision if logger enabled
                 if self.logger:
                     try:
                         # Use actual LLM reasoning (not generic f-string)
@@ -1190,121 +1057,103 @@ class SimpleDeepResearch:
                             original_query=self.original_question,
                             results_count=len(all_results),
                             llm_prompt=f"Evaluating relevance of {len(all_results[:10])} results for query '{task.query}'",
-                            llm_response={"relevance_score": relevance_score, "reasoning": relevance_reason, "threshold": relevance_threshold, "query_sensitivity": query_sensitivity},
-                            threshold=relevance_threshold,
-                            passes=(relevance_score >= relevance_threshold)
+                            llm_response={
+                                "decision": decision_str,
+                                "reasoning": relevance_reason,
+                                "relevant_indices": relevant_indices,
+                                "continue_searching": should_continue
+                            },
+                            threshold=None,  # No threshold anymore
+                            passes=should_accept
                         )
                     except Exception as log_error:
                         logging.warning(f"Failed to log relevance scoring: {log_error}")
 
-                # If results are off-topic (score < threshold), reformulate and retry
-                if combined_total >= self.min_results_per_task and relevance_score < relevance_threshold:
-                    if task.retry_count < self.max_retries_per_task:
-                        task.status = TaskStatus.RETRY
-                        task.retry_count += 1
+                # LLM continuation decision: should we search for more?
+                # Continue if: LLM says continue AND we have retries left
+                # Stop if: LLM says stop OR no retries left
+                if should_continue and task.retry_count < self.max_retries_per_task:
+                    # LLM wants more results - reformulate and retry
+                    task.status = TaskStatus.RETRY
+                    task.retry_count += 1
 
-                        # Log filter decision: REJECT
-                        if self.logger:
-                            try:
-                                self.logger.log_filter_decision(
-                                    task_id=task.id,
-                                    attempt=task.retry_count,
-                                    source_name="Multi-source",
-                                    decision="REJECT",
-                                    reason=f"Relevance score {relevance_score}/10 < threshold 3, reformulating query",
-                                    kept=0,
-                                    discarded=combined_total
-                                )
-                            except Exception as log_error:
-                                logging.warning(f"Failed to log filter decision (REJECT): {log_error}")
-
-                        self._emit_progress(
-                            "task_retry",
-                            f"Results off-topic (relevance {relevance_score}/10), reformulating query...",
-                            task_id=task.id,
-                            data={
-                                "relevance_score": relevance_score,
-                                "total_results": combined_total
-                            }
-                        )
-
-                        # Reformulate for relevance (not volume)
-                        reformulation = await self._reformulate_for_relevance(
-                            original_query=task.query,
-                            research_question=self.original_question,
-                            results_count=combined_total
-                        )
-                        task.query = reformulation["query"]
-                        task.param_adjustments = reformulation.get("param_adjustments", {})
-                        # TODO (Phase 4): Pass task.param_adjustments to MCP tools
-                        self._emit_progress(
-                            "query_reformulated",
-                            f"New query: {task.query}",
-                            task_id=task.id
-                        )
-                        continue  # Retry with new query
-                    else:
-                        # Exhausted retries
-                        task.status = TaskStatus.FAILED
-                        task.error = f"Results off-topic (relevance {relevance_score}/10) after {task.retry_count} retries"
-                        self._emit_progress("task_failed", task.error, task_id=task.id)
-
-                        # Log task failure if logger enabled
-                        if self.logger:
-                            sources_tried = list(set(
-                                [self.tool_name_to_display.get(s, s) for s in selected_sources]
-                            ))
-                            self.logger.log_task_complete(
-                                task_id=task.id,
-                                query=task.query,
-                                status="FAILED",
-                                reason=task.error,
-                                total_results=combined_total,
-                                sources_tried=sources_tried,
-                                sources_succeeded=[],  # No sources succeeded if relevance failed
-                                retry_count=task.retry_count,
-                                elapsed_seconds=0  # TODO: Track per-task timing
-                            )
-
-                        return False
-
-                # Extract entities from results
-                print(f"🔍 Extracting entities from {len(all_results)} results...")
-                entities_found = await self._extract_entities(
-                    all_results,
-                    research_question=self.original_question,
-                    task_query=task.query
-                )
-                print(f"✓ Found {len(entities_found)} entities: {', '.join(entities_found[:5])}{'...' if len(entities_found) > 5 else ''}")
-
-                # Check if we got meaningful results with sufficient relevance
-                # Adaptive threshold: 1/10 for sensitive queries, 3/10 for public queries
-                # Note: query_sensitivity and relevance_threshold already calculated above
-                if combined_total >= self.min_results_per_task and relevance_score >= relevance_threshold:
-                    # Success!
-                    task.status = TaskStatus.COMPLETED
-                    task.entities_found = entities_found
-
-                    # Log filter decision: ACCEPT
+                    # Log filter decision
                     if self.logger:
                         try:
                             self.logger.log_filter_decision(
                                 task_id=task.id,
                                 attempt=task.retry_count,
-                                source_name="Multi-source",  # Combined MCP + web results
-                                decision="ACCEPT",
-                                reason=f"Relevance score {relevance_score}/10 >= threshold 3, {combined_total} results",
-                                kept=combined_total,
-                                discarded=0
+                                source_name="Multi-source",
+                                decision="CONTINUE",
+                                reason=f"LLM decided to continue searching: {relevance_reason}",
+                                kept=len(filtered_results),
+                                discarded=discarded_count
                             )
                         except Exception as log_error:
-                            logging.warning(f"Failed to log filter decision (ACCEPT): {log_error}")
+                            logging.warning(f"Failed to log filter decision: {log_error}")
 
+                    self._emit_progress(
+                        "task_retry",
+                        f"LLM wants more results (found {len(filtered_results)}, continuing search)...",
+                        task_id=task.id,
+                        data={
+                            "decision": decision_str,
+                            "continue": should_continue,
+                            "kept_results": len(filtered_results),
+                            "total_results": combined_total
+                        }
+                    )
+
+                    # Reformulate query to find more results
+                    reformulation = await self._reformulate_for_relevance(
+                        original_query=task.query,
+                        research_question=self.original_question,
+                        results_count=len(filtered_results)
+                    )
+                    task.query = reformulation["query"]
+                    task.param_adjustments = reformulation.get("param_adjustments", {})
+
+                    self._emit_progress(
+                        "query_reformulated",
+                        f"New query: {task.query}",
+                        task_id=task.id
+                    )
+                    continue  # Retry with new query
+
+                # LLM says stop OR no retries left - finalize task
+                # SUCCESS: LLM accepted results AND we have filtered results
+                if should_accept and filtered_results:
+                    print(f"🔍 Extracting entities from {len(filtered_results)} filtered results...")
+                    entities_found = await self._extract_entities(
+                        filtered_results,
+                        research_question=self.original_question,
+                        task_query=task.query
+                    )
+                    print(f"✓ Found {len(entities_found)} entities: {', '.join(entities_found[:5])}{'...' if len(entities_found) > 5 else ''}")
+                    task.status = TaskStatus.COMPLETED
+                    task.entities_found = entities_found
+
+                    # Log filter decision: STOP (with results)
+                    if self.logger:
+                        try:
+                            self.logger.log_filter_decision(
+                                task_id=task.id,
+                                attempt=task.retry_count,
+                                source_name="Multi-source",
+                                decision="STOP_SUCCESS",
+                                reason=f"LLM decided to stop: {relevance_reason}",
+                                kept=len(filtered_results),
+                                discarded=discarded_count
+                            )
+                        except Exception as log_error:
+                            logging.warning(f"Failed to log filter decision: {log_error}")
+
+                    # Store FILTERED results (not all_results!)
                     result_dict = {
-                        "total_results": combined_total,
-                        "results": all_results,
+                        "total_results": len(filtered_results),
+                        "results": filtered_results,  # Only filtered results
                         "entities_discovered": entities_found,
-                        "sources": self._get_sources(all_results)
+                        "sources": self._get_sources(filtered_results)
                     }
 
                     task.results = result_dict
@@ -1318,14 +1167,14 @@ class SimpleDeepResearch:
 
                     self._emit_progress(
                         "task_completed",
-                        f"Found {combined_total} results ({len(mcp_results)} MCP tools + {len(web_results)} web)",
+                        f"Task complete: {len(filtered_results)} relevant results (discarded {discarded_count} junk)",
                         task_id=task.id,
                         data={
-                            "total_results": combined_total,
-                            "mcp_results": len(mcp_results),
-                            "web_results": len(web_results),
+                            "total_results": len(filtered_results),
+                            "kept": len(filtered_results),
+                            "discarded": discarded_count,
                             "entities": entities_found,
-                            "sources": self._get_sources(all_results)
+                            "sources": self._get_sources(filtered_results)
                         }
                     )
 
@@ -1334,15 +1183,15 @@ class SimpleDeepResearch:
                         sources_tried = list(set(
                             [self.tool_name_to_display.get(s, s) for s in selected_sources]
                         ))
-                        sources_succeeded = self._get_sources(all_results)
+                        sources_succeeded = self._get_sources(filtered_results)
                         elapsed_seconds = 0  # TODO: Track per-task timing
 
                         self.logger.log_task_complete(
                             task_id=task.id,
                             query=task.query,
                             status="SUCCESS",
-                            reason=f"Found {combined_total} relevant results (relevance {relevance_score}/10)",
-                            total_results=combined_total,
+                            reason=f"Found {len(filtered_results)} relevant results: {relevance_reason}",
+                            total_results=len(filtered_results),
                             sources_tried=sources_tried,
                             sources_succeeded=sources_succeeded,
                             retry_count=task.retry_count,
@@ -1352,57 +1201,32 @@ class SimpleDeepResearch:
                     return True
 
                 else:
-                    # Insufficient results - retry with reformulated query
-                    if task.retry_count < self.max_retries_per_task:
-                        task.status = TaskStatus.RETRY
-                        task.retry_count += 1
-
-                        self._emit_progress(
-                            "task_retry",
-                            f"Only {combined_total} results ({len(mcp_results)} MCP + {len(web_results)} web), reformulating query...",
-                            task_id=task.id,
-                            data={
-                                "total_results": combined_total,
-                                "mcp_results": len(mcp_results),
-                                "web_results": len(web_results)
-                            }
-                        )
-
-                        # Reformulate query
-                        reformulation = await self._reformulate_query_simple(task.query, combined_total)
-                        task.query = reformulation["query"]
-                        task.param_adjustments = reformulation.get("param_adjustments", {})
-                        # TODO (Phase 4): Pass task.param_adjustments to MCP tools
-                        self._emit_progress(
-                            "query_reformulated",
-                            f"New query: {task.query}",
-                            task_id=task.id
-                        )
+                    # FAILURE: Either REJECT decision OR no filtered results
+                    task.status = TaskStatus.FAILED
+                    if not should_accept:
+                        task.error = f"LLM rejected all results: {relevance_reason}"
                     else:
-                        # Exhausted retries
-                        task.status = TaskStatus.FAILED
-                        task.error = f"Insufficient results after {task.retry_count} retries"
-                        self._emit_progress("task_failed", task.error, task_id=task.id)
+                        task.error = f"No relevant results found after {task.retry_count} attempts"
+                    self._emit_progress("task_failed", task.error, task_id=task.id)
 
-                        # Log task failure if logger enabled
-                        if self.logger:
-                            sources_tried = list(set(
-                                [self.tool_name_to_display.get(s, s) for s in selected_sources]
-                            ))
-                            sources_succeeded = self._get_sources(all_results) if all_results else []
-                            self.logger.log_task_complete(
-                                task_id=task.id,
-                                query=task.query,
-                                status="FAILED",
-                                reason=task.error,
-                                total_results=combined_total,
-                                sources_tried=sources_tried,
-                                sources_succeeded=sources_succeeded,
-                                retry_count=task.retry_count,
-                                elapsed_seconds=0  # TODO: Track per-task timing
-                            )
+                    # Log task failure
+                    if self.logger:
+                        sources_tried = list(set(
+                            [self.tool_name_to_display.get(s, s) for s in selected_sources]
+                        ))
+                        self.logger.log_task_complete(
+                            task_id=task.id,
+                            query=task.query,
+                            status="FAILED",
+                            reason=task.error,
+                            total_results=0,
+                            sources_tried=sources_tried,
+                            sources_succeeded=[],
+                            retry_count=task.retry_count,
+                            elapsed_seconds=0
+                        )
 
-                        return False
+                    return False
 
             except Exception as e:
                 # Execution error - capture full traceback for debugging
@@ -1522,9 +1346,11 @@ class SimpleDeepResearch:
         task_query: str,
         research_question: str,
         sample_results: List[Dict]
-    ) -> Tuple[int, str]:
+    ) -> Tuple[bool, str, List[int], bool]:
         """
-        Validate that search results are actually relevant to the research question.
+        Validate result relevance, filter to best results, and decide if more searching needed.
+
+        LLM makes THREE decisions: ACCEPT/REJECT, which indices to keep, continue searching?
 
         Args:
             task_query: Query that generated these results
@@ -1532,17 +1358,19 @@ class SimpleDeepResearch:
             sample_results: Sample of results to evaluate (first 10)
 
         Returns:
-            Tuple of (relevance_score, reason):
-            - relevance_score: 0-10 (0 = completely off-topic, 10 = highly relevant)
-            - reason: LLM's explanation for the score
+            Tuple of (should_accept, reason, relevant_indices, should_continue):
+            - should_accept: True to ACCEPT results, False to REJECT
+            - reason: LLM's explanation for accept/reject decision
+            - relevant_indices: List of result indices to keep (e.g., [0, 2, 5])
+            - should_continue: True to search for more results, False to stop
         """
         if not sample_results:
-            return (0, "No results to evaluate")
+            return (False, "No results to evaluate", [], False)
 
-        # Build sample text from titles and snippets
+        # Build numbered sample text (Result #0, Result #1, etc.)
         results_text = "\n\n".join([
-            f"Title: {r.get('title', '')}\nSnippet: {r.get('snippet', r.get('description', ''))[:200]}"
-            for r in sample_results
+            f"Result #{i}:\nTitle: {r.get('title', '')}\nSnippet: {r.get('snippet', r.get('description', ''))[:200]}"
+            for i, r in enumerate(sample_results)
         ])
 
         prompt = render_prompt(
@@ -1555,18 +1383,30 @@ class SimpleDeepResearch:
         schema = {
             "type": "object",
             "properties": {
-                "relevance_score": {
-                    "type": "integer",
-                    "minimum": 0,
-                    "maximum": 10,
-                    "description": "Relevance score 0-10"
+                "decision": {
+                    "type": "string",
+                    "enum": ["ACCEPT", "REJECT"],
+                    "description": "Decision: ACCEPT if any results relevant, REJECT if all off-topic"
                 },
                 "reason": {
                     "type": "string",
-                    "description": "Brief explanation of the score"
+                    "description": "Brief explanation of accept/reject decision"
+                },
+                "relevant_indices": {
+                    "type": "array",
+                    "items": {"type": "integer"},
+                    "description": "List of result indices to keep (e.g., [0, 2, 5]). Empty list if REJECT."
+                },
+                "continue_searching": {
+                    "type": "boolean",
+                    "description": "true = search for more results, false = sufficient coverage"
+                },
+                "continuation_reason": {
+                    "type": "string",
+                    "description": "Brief explanation of why to continue or stop searching"
                 }
             },
-            "required": ["relevance_score", "reason"],
+            "required": ["decision", "reason", "relevant_indices", "continue_searching", "continuation_reason"],
             "additionalProperties": False
         }
 
@@ -1585,16 +1425,26 @@ class SimpleDeepResearch:
             )
 
             result = json.loads(response.choices[0].message.content)
-            score = result.get("relevance_score", 0)
+            decision = result.get("decision", "REJECT")
             reason = result.get("reason", "")
+            relevant_indices = result.get("relevant_indices", [])
+            should_continue = result.get("continue_searching", True)
+            continuation_reason = result.get("continuation_reason", "")
 
-            logging.info(f"Result relevance: {score}/10 - {reason}")
-            return (score, reason)
+            should_accept = (decision == "ACCEPT")
+
+            logging.info(f"Result relevance: {decision} - {reason}")
+            logging.info(f"Filtered indices: {relevant_indices} ({len(relevant_indices)} results kept)")
+            logging.info(f"Continue searching: {should_continue} - {continuation_reason}")
+
+            return (should_accept, reason, relevant_indices, should_continue)
 
         except Exception as e:
             logging.error(f"Relevance validation failed: {type(e).__name__}: {str(e)}")
-            # On error, assume relevant (don't want to fail good results due to validation error)
-            return (7, f"Error during validation: {type(e).__name__}")
+            # On error, assume relevant and keep all results (don't want to fail good results)
+            # But still allow continuation to try finding better results
+            all_indices = list(range(len(sample_results)))
+            return (True, f"Error during validation: {type(e).__name__}", all_indices, True)
 
     async def _reformulate_for_relevance(
         self,
