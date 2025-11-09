@@ -1123,15 +1123,8 @@ class SimpleDeepResearch:
                 # LLM says stop OR no retries left - finalize task
                 # SUCCESS: LLM accepted results AND we have filtered results
                 if should_accept and filtered_results:
-                    print(f"🔍 Extracting entities from {len(filtered_results)} filtered results...")
-                    entities_found = await self._extract_entities(
-                        filtered_results,
-                        research_question=self.original_question,
-                        task_query=task.query
-                    )
-                    print(f"✓ Found {len(entities_found)} entities: {', '.join(entities_found[:5])}{'...' if len(entities_found) > 5 else ''}")
+                    # Priority 2: Don't extract entities here, will do at end from accumulated results
                     task.status = TaskStatus.COMPLETED
-                    task.entities_found = entities_found
 
                     # Log filter decision: STOP (with results)
                     if self.logger:
@@ -1148,11 +1141,15 @@ class SimpleDeepResearch:
                         except Exception as log_error:
                             logging.warning(f"Failed to log filter decision: {log_error}")
 
-                    # Store FILTERED results (not all_results!)
+                    # Priority 2: Accumulate filtered results across attempts
+                    task.accumulated_results.extend(filtered_results)
+
+                    # Store current batch in task.results (backward compatibility)
                     result_dict = {
                         "total_results": len(filtered_results),
-                        "results": filtered_results,  # Only filtered results
-                        "entities_discovered": entities_found,
+                        "results": filtered_results,  # Current batch only
+                        "accumulated_count": len(task.accumulated_results),  # Total accumulated
+                        "entities_discovered": [],  # Will be extracted at end from accumulated
                         "sources": self._get_sources(filtered_results)
                     }
 
@@ -1162,8 +1159,8 @@ class SimpleDeepResearch:
                     async with self.resource_manager.results_lock:
                         self.results_by_task[task.id] = result_dict
 
-                    # Update entity graph (with lock for concurrent safety)
-                    await self._update_entity_graph(entities_found)
+                    # Priority 2: Entity extraction moved to end of task (after retry loop)
+                    # Will extract from accumulated_results, not current batch
 
                     self._emit_progress(
                         "task_completed",
@@ -1173,7 +1170,7 @@ class SimpleDeepResearch:
                             "total_results": len(filtered_results),
                             "kept": len(filtered_results),
                             "discarded": discarded_count,
-                            "entities": entities_found,
+                            "accumulated_count": len(task.accumulated_results),
                             "sources": self._get_sources(filtered_results)
                         }
                     )
@@ -1197,6 +1194,20 @@ class SimpleDeepResearch:
                             retry_count=task.retry_count,
                             elapsed_seconds=elapsed_seconds
                         )
+
+                    # Priority 2: Extract entities from ALL accumulated results (not just current batch)
+                    if task.accumulated_results:
+                        print(f"🔍 Extracting entities from {len(task.accumulated_results)} accumulated results...")
+                        entities_found = await self._extract_entities(
+                            task.accumulated_results,
+                            research_question=self.original_question,
+                            task_query=task.query
+                        )
+                        task.entities_found = entities_found
+                        print(f"✓ Found {len(entities_found)} entities: {', '.join(entities_found[:5])}{'...' if len(entities_found) > 5 else ''}")
+
+                        # Update entity graph with found entities
+                        await self._update_entity_graph(entities_found)
 
                     return True
 

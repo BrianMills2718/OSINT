@@ -341,10 +341,155 @@ pip list | grep playwright
 
 # CLAUDE.md - Temporary Section (Updated as Tasks Complete)
 
-**Last Updated**: 2025-11-04 (Query Reformulation Prompt - COMPLETE)
-**Current Phase**: Deep Research Quality Improvements - ALL TASKS COMPLETE
-**Current Focus**: All improvements complete and tested
-**Status**: ✅ Task #1 COMPLETE | ✅ Task #2 COMPLETE | ✅ Task #3 COMPLETE & INTEGRATED
+**Last Updated**: 2025-11-06 (Priority 2 COMPLETE - Cross-Attempt Accumulation)
+**Current Phase**: Priority 2 Testing (Result Accumulation & End-of-Task Entity Extraction)
+**Current Focus**: Testing result accumulation and entity extraction from accumulated results
+**Status**: ✅ Priority 1 COMMITTED (0eb3ff3) | ✅ Priority 2 IMPLEMENTED (Testing)
+
+---
+
+## CURRENT TASK: Result Filtering & Accumulation Implementation
+
+### Priority 1: Per-Result Filtering ✅ COMPLETE (Committed: 0eb3ff3)
+
+**Implementation Status**:
+1. ✅ **Template Updated** (`prompts/deep_research/relevance_evaluation.j2`)
+   - 3-part decision structure (ACCEPT/REJECT, filtering indices, continuation)
+   - Numbered results (Result #0, #1, etc.)
+   - Combined schema with examples
+
+2. ✅ **Validation Method Updated** (`_validate_result_relevance()`)
+   - Returns 4-tuple: `(should_accept, reason, relevant_indices, should_continue)`
+   - Numbered results in prompt
+   - Parses all 4 fields from LLM response
+
+3. ✅ **Control Flow Updated** (`_execute_task_with_retry()`)
+   - Unpacks 4 values from validation
+   - Filters results using relevant_indices
+   - Uses continuation decision for retry logic
+   - Stores only filtered results
+
+4. ✅ **CRITICAL BUG FIXED** (Commit 0eb3ff3 - Lines 1125 & 1203-1209)
+   - **Was**: `if filtered_results:` (missing should_accept check)
+   - **Now**: `if should_accept and filtered_results:` (honors LLM decision)
+   - **Impact**: Tasks now correctly fail on REJECT decisions
+   - **Testing**: Logic verification passed all 4 scenarios
+   - **Status**: Committed and ready for production
+
+### Background - Investigation Complete ✅
+
+**Three independent features identified** (Codex approved):
+1. ✅ **Per-Result Filtering**: COMPLETE - LLM identifies which specific results (by index) to keep
+2. ⏭️ **Cross-Attempt Accumulation**: NEXT - Results build up across retries (not overwritten)
+3. ✅ **Continuation Decision**: COMPLETE - LLM decides whether to search for more (independent of filtering)
+
+**Key Investigation Findings**:
+- **Context pollution confirmed**: System keeps ALL results when LLM says ACCEPT (2 relevant + 8 junk → all 10 stored)
+- **No accumulation**: `task.results` stores final batch only, earlier successes discarded on retry
+- **Binary decision flaw**: ACCEPT/REJECT is batch-level, doesn't filter individual results
+- **Combined LLM call**: Can merge all 3 decisions into single call (saves 2 LLM calls per task)
+
+**Cost Analysis**:
+- Current: 7 LLM calls max per task (1 source + 3×(1 relevance + 1 entity))
+- Proposed: 5 LLM calls max per task (1 source + 3×1 combined + 1 entity at end)
+- **Savings**: 2 fewer calls per task
+
+### Implementation Plan (Priority Order - Codex Approved)
+
+#### Priority 1: Per-Result Filtering 🚧 IN PROGRESS
+**Goal**: Stop context pollution - only relevant results stored
+
+**Tasks**:
+1. ✅ Update `prompts/deep_research/relevance_evaluation.j2`
+   - ✅ Add THREE-part structure (decision, filtering, continuation)
+   - ✅ Add `relevant_indices` field to response format
+   - ✅ Add examples showing index selection
+   - ⏭️ NEXT: Update Python code to number results
+
+2. `research/deep_research.py` - `_validate_result_relevance()` method (line 1319-1399)
+   - [ ] Number results in `results_text` (line 1344-1347): `Result #0:`, `Result #1:`...
+   - [ ] Update return signature: `-> Tuple[bool, str, List[int], bool]`
+   - [ ] Update schema to include `relevant_indices` and `continue_searching` (line 1356-1371)
+   - [ ] Parse new fields from LLM response (line 1387-1390)
+   - [ ] Return 4-tuple: `(should_accept, reason, relevant_indices, should_continue)`
+
+3. `research/deep_research.py` - `_execute_task_with_retry()` method (line 1054-1236)
+   - [ ] Update call site (line ~1122): unpack 4 values from `_validate_result_relevance()`
+   - [ ] Filter `all_results` using `relevant_indices` (before line 1153)
+   - [ ] Update REJECT branch (line 1150): use `should_continue` instead of hardcoded retry
+   - [ ] Update ACCEPT branch (line 1231): use `should_continue` to decide if done
+   - [ ] Update logging: show kept vs discarded counts (line 1139, 1155)
+
+**Impact**: Junk results excluded immediately, cleaner entity extraction/synthesis
+
+#### Priority 2: Cross-Attempt Accumulation ✅ IMPLEMENTED (Testing)
+**Goal**: Preserve results across retries
+
+**Tasks**:
+1. ✅ `research/deep_research.py` - ResearchTask dataclass (line 92)
+   - ✅ Added `accumulated_results: List[Dict] = field(default_factory=list)`
+   - ✅ Updated `__post_init__()` to initialize if None
+
+2. ✅ `research/deep_research.py` - `_execute_task_with_retry()` storage (lines 1144-1154)
+   - ✅ Changed from overwrite to extend: `task.accumulated_results.extend(filtered_results)`
+   - ✅ Keep `task.results = filtered_results` for backward compatibility
+   - ✅ Store accumulated count in task metadata (`accumulated_count` field)
+
+3. ✅ `research/deep_research.py` - Entity extraction timing (lines 1198-1211)
+   - ✅ Removed per-attempt entity extraction from success branch (line 1126-1132)
+   - ✅ Moved to END of task (after all retries exhausted or success)
+   - ✅ Extract from `task.accumulated_results` instead of `filtered_results`
+   - ✅ Update entity graph once with complete context
+
+4. ⏭️ NEXT: Testing & Validation
+   - [ ] Test result accumulation across retry attempts
+   - [ ] Verify entity extraction operates on accumulated results
+   - [ ] Test CONTINUE case (accumulates + continues searching)
+   - [ ] Update `_synthesize_report()` to use `task.accumulated_results`
+
+**Impact**: Earlier successes preserved, entity extraction on full context, better synthesis quality
+
+#### Priority 3: Continuation Decision
+**Goal**: LLM controls when to stop searching
+
+**Tasks**:
+1. ✅ Update `prompts/deep_research/relevance_evaluation.j2`
+   - ✅ Already done in Priority 1 (combined schema)
+
+2. `research/deep_research.py` - Control flow (line 1050-1200)
+   - [ ] REJECT branch (line 1050-1119): Check `should_continue` instead of hardcoded retry count
+   - [ ] ACCEPT branch (line 1131-1200): Check `should_continue` to decide if task complete
+   - [ ] Logic: `if should_continue and task.retry_count < max_retries` → reformulate
+   - [ ] Logic: `if not should_continue or task.retry_count >= max_retries` → mark complete/failed
+
+**Impact**: LLM decides continuation (can accumulate even after ACCEPT, or stop early)
+
+### Combined LLM Call Schema (Final Design)
+
+```json
+{
+  "decision": "ACCEPT" | "REJECT",
+  "reason": "why accept/reject this batch",
+  "relevant_indices": [0, 2, 5],
+  "continue_searching": true | false,
+  "continuation_reason": "why continue/stop searching"
+}
+```
+
+**Prompt Structure**:
+- Present numbered results (Result #0, #1, #2...)
+- Ask LLM to evaluate relevance AND select indices AND decide continuation
+- Single unified decision covering all three concerns
+
+### Success Criteria
+
+- [ ] Context pollution eliminated (only relevant results stored)
+- [ ] Cross-attempt accumulation functional (results build up, not overwritten)
+- [ ] LLM controls continuation independently of filtering
+- [ ] Entity extraction on accumulated filtered results only
+- [ ] Synthesis uses accumulated filtered results only
+- [ ] Backward compatible with execution logger
+- [ ] Test: "What classified programs does the CIA run?" accepts sparse evidence
 
 ---
 
