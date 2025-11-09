@@ -44,12 +44,20 @@ async def search_clearancejobs(
             }
 
         async with async_playwright() as p:
-            # Launch browser
-            browser = await p.chromium.launch(headless=headless)
-            page = await browser.new_page()
+            # Launch browser with anti-bot measures
+            browser = await p.chromium.launch(
+                headless=headless,
+                args=['--disable-blink-features=AutomationControlled']
+            )
+            context = await browser.new_context(
+                user_agent='Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+            )
+            page = await context.new_page()
 
-            # Step 1: Navigate to ClearanceJobs
-            await page.goto('https://www.clearancejobs.com/jobs', timeout=30000)
+            # Step 1: Navigate to ClearanceJobs with increased timeout and wait for DOM
+            await page.goto('https://www.clearancejobs.com/jobs',
+                          timeout=60000,
+                          wait_until='domcontentloaded')
 
             # Step 2: Fill search input
             await page.fill(
