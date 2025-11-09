@@ -144,10 +144,10 @@ class ClearanceJobsIntegration(DatabaseIntegration):
         start_time = datetime.now()
 
         try:
-            # Lazy import - only import Playwright when actually executing
-            from integrations.government.clearancejobs_playwright import search_clearancejobs
+            # Lazy import - use the FIXED scraper (not the broken one)
+            from integrations.government.clearancejobs_playwright_fixed import search_clearancejobs
 
-            # Call existing Playwright scraper
+            # Call FIXED Playwright scraper with increased timeout and better selectors
             result = await search_clearancejobs(
                 keywords=query_params.get("keywords", ""),
                 limit=limit,

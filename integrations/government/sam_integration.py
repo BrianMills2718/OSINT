@@ -104,7 +104,11 @@ class SAMIntegration(DatabaseIntegration):
         schema = {
             "type": "object",
             "properties": {
-                                "keywords": {
+                                "relevant": {
+                    "type": "boolean",
+                    "description": "Whether SAM.gov is relevant for this research question"
+                },
+                "keywords": {
                     "type": "string",
                     "description": "Search keywords for opportunity titles and descriptions"
                 },
@@ -137,7 +141,7 @@ class SAMIntegration(DatabaseIntegration):
                     "description": "Brief explanation of the query strategy"
                 }
             },
-            "required": ["keywords", "procurement_types", "set_aside", "naics_codes", "organization", "date_range_days", "reasoning"],
+            "required": ["relevant", "keywords", "procurement_types", "set_aside", "naics_codes", "organization", "date_range_days", "reasoning"],
             "additionalProperties": False
         }
 
@@ -156,9 +160,9 @@ class SAMIntegration(DatabaseIntegration):
 
         result = json.loads(response.choices[0].message.content)
 
-        # RELEVANCE FILTER REMOVED - Always generate query
-        # if not result["relevant"]:
-        #     return None
+        # RELEVANCE FILTER RESTORED - Skip SAM for job-only queries
+        if not result["relevant"]:
+            return None
 
         return {
             "keywords": result["keywords"],
