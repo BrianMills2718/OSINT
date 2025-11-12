@@ -1023,43 +1023,6 @@ class SimpleDeepResearch:
         return all_results
 
 
-    def _sample_diverse_results(
-        self,
-        results: List[Dict],
-        max_per_source: int = 3,
-        max_total: int = 20
-    ) -> List[Dict]:
-        """
-        Sample results to ensure diversity across sources.
-
-        Ensures LLM sees results from ALL sources, not just the first source that returned results.
-
-        Args:
-            results: Full list of results from all sources
-            max_per_source: Max results to sample from each source (default: 3)
-            max_total: Max total results to return (default: 20)
-
-        Returns:
-            Sampled results with diversity across sources
-        """
-        if not results:
-            return []
-
-        # Group results by source
-        by_source = {}
-        for r in results:
-            source = r.get('source', 'Unknown')
-            if source not in by_source:
-                by_source[source] = []
-            by_source[source].append(r)
-
-        # Sample first max_per_source results from each source
-        sampled = []
-        for source_results in by_source.values():
-            sampled.extend(source_results[:max_per_source])
-
-        # Limit to max_total results
-        return sampled[:max_total]
 
     async def _execute_task_with_retry(self, task: ResearchTask) -> bool:
         """
@@ -1149,6 +1112,10 @@ class SimpleDeepResearch:
                     filtered_results = [all_results[i] for i in relevant_indices if i < len(all_results)]
                     discarded_count = len(all_results) - len(filtered_results)
                     print(f"  ✓ Kept {len(filtered_results)} relevant results, discarded {discarded_count} junk results")
+
+                    # ACCUMULATE IMMEDIATELY (whether CONTINUE or STOP) - fixes accumulation bug
+                    task.accumulated_results.extend(filtered_results)
+                    print(f"  📊 Total accumulated so far: {len(task.accumulated_results)} results")
                 else:
                     # REJECT: discard all results
                     filtered_results = []
@@ -1165,7 +1132,7 @@ class SimpleDeepResearch:
                             source_name="Multi-source",  # Combined MCP + web results
                             original_query=self.original_question,
                             results_count=len(all_results),
-                            llm_prompt=f"Evaluating relevance of {len(all_results[:10])} results for query '{task.query}'",
+                            llm_prompt=f"Evaluating relevance of {len(all_results)} results for query '{task.query}'",
                             llm_response={
                                 "decision": decision_str,
                                 "reasoning": relevance_reason,
@@ -1293,8 +1260,8 @@ class SimpleDeepResearch:
                     continue  # Retry with new query
 
                 # LLM says stop OR no retries left - finalize task
-                # SUCCESS: LLM accepted results AND we have filtered results
-                if should_accept and filtered_results:
+                # SUCCESS: We have accumulated results from at least one attempt
+                if task.accumulated_results:
                     # Priority 2: Don't extract entities here, will do at end from accumulated results
                     task.status = TaskStatus.COMPLETED
 
@@ -1307,22 +1274,19 @@ class SimpleDeepResearch:
                                 source_name="Multi-source",
                                 decision="STOP_SUCCESS",
                                 reason=f"LLM decided to stop: {relevance_reason}",
-                                kept=len(filtered_results),
+                                kept=len(filtered_results) if filtered_results else 0,
                                 discarded=discarded_count
                             )
                         except Exception as log_error:
                             logging.warning(f"Failed to log filter decision: {log_error}")
 
-                    # Priority 2: Accumulate filtered results across attempts
-                    task.accumulated_results.extend(filtered_results)
-
-                    # Store current batch in task.results (backward compatibility)
+                    # Use ALL accumulated results (not just last batch)
                     result_dict = {
-                        "total_results": len(filtered_results),
-                        "results": filtered_results,  # Current batch only
-                        "accumulated_count": len(task.accumulated_results),  # Total accumulated
+                        "total_results": len(task.accumulated_results),
+                        "results": task.accumulated_results,  # All accumulated results across retries
+                        "accumulated_count": len(task.accumulated_results),
                         "entities_discovered": [],  # Will be extracted at end from accumulated
-                        "sources": self._get_sources(filtered_results)
+                        "sources": self._get_sources(task.accumulated_results)
                     }
 
                     task.results = result_dict
@@ -1360,14 +1324,14 @@ class SimpleDeepResearch:
 
                     self._emit_progress(
                         "task_completed",
-                        f"Task complete: {len(filtered_results)} relevant results (discarded {discarded_count} junk)",
+                        f"Task complete: {len(task.accumulated_results)} total results accumulated (across {task.retry_count + 1} attempts)",
                         task_id=task.id,
                         data={
-                            "total_results": len(filtered_results),
-                            "kept": len(filtered_results),
+                            "total_results": len(task.accumulated_results),
+                            "kept": len(task.accumulated_results),
                             "discarded": discarded_count,
                             "accumulated_count": len(task.accumulated_results),
-                            "sources": self._get_sources(filtered_results)
+                            "sources": self._get_sources(task.accumulated_results)
                         }
                     )
 
@@ -1376,15 +1340,15 @@ class SimpleDeepResearch:
                         sources_tried = list(set(
                             [self.tool_name_to_display.get(s, s) for s in selected_sources]
                         ))
-                        sources_succeeded = self._get_sources(filtered_results)
+                        sources_succeeded = self._get_sources(task.accumulated_results)
                         elapsed_seconds = 0  # TODO: Track per-task timing
 
                         self.logger.log_task_complete(
                             task_id=task.id,
                             query=task.query,
                             status="SUCCESS",
-                            reason=f"Found {len(filtered_results)} relevant results: {relevance_reason}",
-                            total_results=len(filtered_results),
+                            reason=f"Accumulated {len(task.accumulated_results)} relevant results across {task.retry_count + 1} attempts: {relevance_reason}",
+                            total_results=len(task.accumulated_results),
                             sources_tried=sources_tried,
                             sources_succeeded=sources_succeeded,
                             retry_count=task.retry_count,
@@ -1477,8 +1441,8 @@ class SimpleDeepResearch:
         if not results:
             return []
 
-        # Sample up to 10 results for entity extraction
-        sample = results[:10]
+        # Use ALL results for entity extraction (LLM has 1M token context, will prioritize most important)
+        sample = results
 
         # Build prompt with result titles and snippets
         results_text = "\n\n".join([
@@ -2023,7 +1987,7 @@ class SimpleDeepResearch:
         for task_id, result in self.results_by_task.items():
             task = next((t for t in self.completed_tasks if t.id == task_id), None)
             if task:
-                for r in result.get('results', [])[:5]:  # Top 5 from each task
+                for r in result.get('results', []):  # Send ALL results to synthesis (no sampling)
                     all_results.append({
                         'task_query': task.query,
                         'title': r.get('title', ''),
@@ -2032,10 +1996,10 @@ class SimpleDeepResearch:
                         'url': r.get('url', '')
                     })
 
-        # Compile entity relationships
+        # Compile entity relationships (send ALL to synthesis - LLM has 1M token context)
         relationship_summary = []
-        for entity, related in list(self.entity_graph.items())[:10]:  # Top 10
-            relationship_summary.append(f"- {entity}: connected to {', '.join(related[:3])}")
+        for entity, related in list(self.entity_graph.items()):  # All entities
+            relationship_summary.append(f"- {entity}: connected to {', '.join(related)}")  # All relationships
 
         # Task 2A Fix: Use actual total_results from results_by_task instead of len(all_results[:20])
         actual_total_results = sum(r.get('total_results', 0) for r in self.results_by_task.values())
@@ -2067,7 +2031,7 @@ class SimpleDeepResearch:
             total_results=actual_total_results,
             entities_discovered=len(self.entity_graph),
             relationship_summary=chr(10).join(relationship_summary),
-            top_findings_json=json.dumps(all_results[:20], indent=2),
+            top_findings_json=json.dumps(all_results, indent=2),  # Send ALL findings to synthesis
             integrations_used=integrations_used,
             websites_found=websites_found,
             task_diagnostics=task_diagnostics
