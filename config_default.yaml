@@ -20,33 +20,33 @@
 
 llm:
   # Default model for all operations (can be overridden per-operation)
-  default_model: "gpt-5-mini"
+  default_model: "gemini/gemini-2.5-flash"
 
   # Operation-specific model configurations
   # Each can have: model, temperature, max_tokens
 
   query_generation:
-    model: "gpt-5-mini"           # Model for generating database queries
+    model: "gemini/gemini-2.5-flash"  # Model for generating database queries
     temperature: 0.7              # Balanced creativity/precision
     max_tokens: 500               # Queries are typically short
 
   refinement:
-    model: "gpt-5-mini"           # Model for refining poor queries
+    model: "gemini/gemini-2.5-flash"  # Model for refining poor queries
     temperature: 0.8              # Slightly more creative for alternatives
     max_tokens: 500
 
   analysis:
-    model: "gpt-5-mini"           # Model for analyzing results
+    model: "gemini/gemini-2.5-flash"  # Model for analyzing results
     temperature: 0.3              # More deterministic for analysis
     max_tokens: 1500              # Analysis can be detailed
 
   synthesis:
-    model: "gpt-5-mini"           # Model for synthesizing final answers
+    model: "gemini/gemini-2.5-flash"  # Model for synthesizing final answers
     temperature: 0.5              # Balanced for coherent narratives
     max_tokens: 2000              # Final answers can be long
 
   code_generation:
-    model: "gpt-5-mini"           # Model for generating analysis code
+    model: "gemini/gemini-2.5-flash"  # Model for generating analysis code
     temperature: 0.2              # Very deterministic for code
     max_tokens: 1000              # Code is typically concise
 
@@ -151,13 +151,12 @@ rate_limiting:
 # Provider Fallback (LiteLLM Feature)
 # ============================================================================
 # If primary model fails, automatically try fallback models
-# This provides resilience across providers
+# This provides resilience when Gemini has 503 overload errors
 provider_fallback:
-  enabled: false                  # Disabled by default (set true to enable)
+  enabled: true                   # Enabled for Gemini fallback chain
   fallback_models:
-    - "gpt-4o-mini"               # Fallback to GPT-4o-mini
-    - "claude-3-5-sonnet-20241022"  # Then try Claude
-    - "gemini/gemini-2.0-flash-exp" # Then Gemini
+    - "gemini/gemini-2.5-flash-lite"  # Fallback 1: Lighter Gemini model
+    - "gemini/gemini-2.0-flash-exp"   # Fallback 2: Older stable Gemini
 
 # ============================================================================
 # Cost Management
@@ -182,10 +181,10 @@ research:
 
   # Model roles (Phase 1: all use same model, Phase 2: specialize)
   model_roles:
-    scoping: "gpt-5-mini"
-    research: "gpt-5-mini"
-    summarization: "gpt-5-mini"   # Phase 2: switch to gpt-5-nano for 70% cost savings
-    synthesis: "gpt-5-mini"
+    scoping: "gemini/gemini-2.5-flash"
+    research: "gemini/gemini-2.5-flash"
+    summarization: "gemini/gemini-2.5-flash"  # Phase 2: consider lighter model for cost savings
+    synthesis: "gemini/gemini-2.5-flash"
 
 # ============================================================================
 # Logging Configuration

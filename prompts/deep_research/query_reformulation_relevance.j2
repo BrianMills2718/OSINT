@@ -18,6 +18,22 @@ Examples:
 - Research: "JSOC operations Iraq" / Current: "JSOC" → "Joint Special Operations Command Iraq operations" (preserved entity, added full name + context)
 - Research: "cybersecurity jobs for cleared professionals" / Current: "official documentation" → "security clearance requirements official documentation" (preserved "official documentation" intent, added clearance context)
 
+{% if sources_with_errors or sources_with_zero_results or sources_with_low_quality %}
+SOURCE DIAGNOSTICS (to help you decide if param hints will help):
+{% if sources_with_errors %}
+- Sources with ERRORS: {{ sources_with_errors|join(', ') }}
+  ⚠️ Do NOT adjust params for these - infrastructure issues (rate limits, timeouts, auth), not query issues
+{% endif %}
+{% if sources_with_zero_results %}
+- Sources with ZERO results: {{ sources_with_zero_results|join(', ') }}
+  ✓ Consider param hints to broaden search (e.g., Reddit time_filter → "year", USAJobs keywords → broader terms)
+{% endif %}
+{% if sources_with_low_quality %}
+- Sources with LOW QUALITY results: {{ sources_with_low_quality|join(', ') }}
+  ✓ Consider param hints to change search strategy (results returned but all rejected as irrelevant)
+{% endif %}
+
+{% endif %}
 OPTIONAL - Source-Specific Parameter Adjustments:
 If the query would benefit from adjusting source-specific parameters, suggest them:
 

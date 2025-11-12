@@ -1,33 +1,60 @@
-Evaluate whether these search results are relevant to the research question.
+Evaluate these search results for relevance, filter to the best ones, and decide if more searching is needed.
 
 Original Research Question: "{{ research_question }}"
 Search Query Used: "{{ task_query }}"
 
-Sample Results:
+Search Results (numbered):
 {{ results_text }}
 
-Score the relevance of these results on a scale of 0-10:
-- 10: Highly relevant - directly answers the research question
-- 7-9: Relevant - related to the topic but may be indirect
-- 4-6: Somewhat relevant - mentions key terms but not focused on the topic
-- 1-3: Barely relevant - only tangentially related
-- 0: Completely off-topic - wrong domain or subject matter entirely
+Your task has THREE parts:
 
-IMPORTANT - Partial Relevance Scoring:
-Score based on the PERCENTAGE of relevant results in the sample:
-- 80-100% relevant results: Score 8-10
-- 60-80% relevant results: Score 6-8
-- 40-60% relevant results: Score 4-6
-- 20-40% relevant results: Score 2-4
-- 0-20% relevant results: Score 0-2
+1. **DECISION**: Should we ACCEPT or REJECT these results as a batch?
+   - ACCEPT if ANY results are relevant (even if only a few)
+   - REJECT only if ALL results are completely off-topic
+
+2. **FILTERING**: Which specific results should we keep? (Return their numbers)
+   - List the indices of RELEVANT results only (e.g., [0, 2, 5])
+   - Exclude off-topic, duplicate, or low-quality results
+   - If REJECT, return empty list []
+
+3. **CONTINUATION**: Should we search for MORE results?
+   - true = reformulate query and search again (want more coverage)
+   - false = sufficient results found, stop searching this task
+
+Guidelines:
+
+ACCEPT + Filter + Continue:
+- Found some relevant results BUT want more coverage
+- Example: 2 FOIA docs found → Keep [0, 1], continue searching for more
+
+ACCEPT + Filter + Stop:
+- Found sufficient high-quality results
+- Example: 8 relevant results → Keep [0,1,2,3,4,5,6,7], stop (enough coverage)
+
+REJECT + Empty + Continue:
+- All results off-topic, reformulate query
+- Example: Wrong entity (Naval Support vs NSA) → Keep [], continue with better query
+
+Special cases:
+- Classified/sensitive topics: Accept indirect evidence (leaks, FOIA, budget items)
+- Sparse topics: Accept best available evidence even if limited
+- Mixed batches: Keep only relevant results, may continue for more
 
 Examples:
-- If 7 out of 10 results are on-topic (70%): Score 6-7, not 0
-- If 3 out of 10 results are relevant (30%): Score 2-3, not 0
-- If ALL 10 results are off-topic (0%): Score 0
+- Question: "What classified CIA programs exist?" + Results: 2 FOIA docs + 8 procurement notices
+  → ACCEPT, keep [0,1], continue=true (those 2 are valuable, want more)
 
-IMPORTANT - Entity/Domain Mismatches:
-- If the results are about a DIFFERENT entity with the same acronym (e.g., "Naval Support Activity" when asked about "National Security Agency"), score 0-2 (wrong entity).
-- If the results are in the wrong domain (e.g., military logistics when asked about cybersecurity contracts), score 0-3.
+- Question: "NSA cybersecurity programs" + Results: All about Naval Support Activity
+  → REJECT, keep [], continue=true (wrong entity, reformulate)
 
-Return the relevance score and a brief reason.
+- Question: "Palantir government contracts" + Results: 10 relevant contracts
+  → ACCEPT, keep [0,1,2,3,4,5,6,7,8,9], continue=false (sufficient coverage)
+
+Return your decision in this format:
+{
+  "decision": "ACCEPT" or "REJECT",
+  "reason": "brief explanation",
+  "relevant_indices": [list of numbers],
+  "continue_searching": true or false,
+  "continuation_reason": "why continue/stop"
+}

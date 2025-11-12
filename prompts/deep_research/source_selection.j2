@@ -6,6 +6,15 @@ Task query: "{{ query }}"
 Available sources:
 {{ options_text }}
 
-IMPORTANT: Default to exploring sources broadly. Include any source that might plausibly help answer the query. When uncertain, investigate rather than skip. Always include Brave Search unless you are very confident it won't help.
+Guidelines:
+- Consider what type of information each source specializes in
+- For each source you select, explain what specific information it might provide for this query
+- When uncertain, it's better to include a source than to exclude it
+- Aim for 3-6 sources that best match the query's needs
+- Consider both specialized sources (SAM.gov, DVIDS, USAJobs, ClearanceJobs) and general sources (Twitter, Reddit, Discord, Brave Search)
 
-Return a JSON list of tool names (e.g., "search_dvids", "brave_search").
+Return a JSON object with:
+{
+  "sources": ["tool_name1", "tool_name2", ...],
+  "reason": "Brief explanation of why these sources were selected"
+}

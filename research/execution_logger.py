@@ -273,6 +273,45 @@ class ExecutionLogger:
             "results_discarded": discarded
         })
 
+    def log_reformulation(self, task_id: int, attempt: int, trigger_reason: str,
+                         original_query: str, new_query: str,
+                         param_adjustments: Dict[str, Any],
+                         sources_with_errors: List[str],
+                         sources_with_zero_results: List[str],
+                         sources_with_low_quality: List[str]):
+        """
+        Log query reformulation with context about WHY it happened.
+
+        This enables post-hoc analysis of retry patterns to validate
+        whether param_hints are worth implementing for specific sources.
+
+        Args:
+            task_id: Task ID
+            attempt: Attempt/retry number
+            trigger_reason: Why reformulation happened ("continue_searching", "api_error", "zero_results", "off_topic")
+            original_query: Query before reformulation
+            new_query: Query after reformulation
+            param_adjustments: Source-specific parameter hints (e.g., {"reddit": {"time_filter": "year"}})
+            sources_with_errors: Sources that returned errors (429, 503, auth) - hints won't help
+            sources_with_zero_results: Sources that returned success but 0 results - hints might help
+            sources_with_low_quality: Sources that returned results but LLM rejected - hints might help
+        """
+        self._write_entry(task_id, "reformulation", {
+            "attempt": attempt,
+            "trigger_reason": trigger_reason,
+            "original_query": original_query,
+            "new_query": new_query,
+            "param_adjustments": param_adjustments,
+            "sources_with_errors": sources_with_errors,
+            "sources_with_zero_results": sources_with_zero_results,
+            "sources_with_low_quality": sources_with_low_quality,
+            # Metrics for Phase 0 analysis
+            "has_param_adjustments": bool(param_adjustments),
+            "error_sources_count": len(sources_with_errors),
+            "zero_result_sources_count": len(sources_with_zero_results),
+            "low_quality_sources_count": len(sources_with_low_quality)
+        })
+
     def log_task_complete(self, task_id: int, query: str, status: str, reason: str,
                          total_results: int, sources_tried: List[str],
                          sources_succeeded: List[str], retry_count: int,

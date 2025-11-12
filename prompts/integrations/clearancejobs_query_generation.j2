@@ -6,11 +6,24 @@ API Parameters:
 - keywords (string, required):
     Search terms for job titles and descriptions.
 
+    CRITICAL: ClearanceJobs Limitation - NO Company Filtering
+    - ClearanceJobs CANNOT filter by specific companies (e.g., "Northrop Grumman", "Lockheed Martin")
+    - If the research question mentions company names, IGNORE them in the keywords
+    - Focus ONLY on: job role/type + clearance level keywords
+    - The LLM will filter for specific companies AFTER results are returned
+
+    Example Query Transformation:
+    - Question: "Northrop Grumman cybersecurity jobs requiring TS/SCI polygraph"
+    - WRONG keywords: "Northrop Grumman cybersecurity TS/SCI polygraph" (too specific, returns nothing)
+    - RIGHT keywords: "cybersecurity" (broad enough to return diverse results)
+
     IMPORTANT Query Effectiveness Notes:
     - ClearanceJobs search works best with focused, specific queries
     - Very long queries (many comma-separated terms or excessive ORs) tend to return ALL jobs instead of filtering
     - Balance specificity vs breadth: use enough terms to capture the role, but not so many that the search breaks
     - Good approach: Core job title/role + 1-2 key qualifications OR synonyms
+    - DO NOT include: Company names, specific clearance levels (TS/SCI, Secret, etc.), location names
+    - DO include: Job role/type, technical skills if critical to the role
     - Example good queries:
       * "cybersecurity analyst" (simple, specific)
       * "SIGINT OR signals intelligence analyst" (synonyms for same concept)
@@ -18,6 +31,9 @@ API Parameters:
     - Example overly broad queries that may fail:
       * "cyber, security, analyst, engineer, SIEM, Splunk, TS/SCI, ..." (too many terms)
       * Long lists of every possible synonym and tool
+    - Example queries to AVOID (too specific, include company/clearance):
+      * "Northrop Grumman cybersecurity TS/SCI" (company name causes zero results)
+      * "Secret clearance software engineer" (clearance level is extracted later, not searched)
 
 Research Question: {{ research_question }}
 

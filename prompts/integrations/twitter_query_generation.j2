@@ -21,7 +21,7 @@ API Parameters:
 
 Research Question: {{ research_question }}
 
-Decide whether Twitter is relevant for this question.
+Generate an effective Twitter search query for this research question.
 
 Twitter is useful for:
 - Public discourse and opinions on government programs, policies, leaks
@@ -31,22 +31,19 @@ Twitter is useful for:
 - Expert commentary from journalists, researchers, former officials
 - Real-time reactions to events
 
-Twitter is NOT useful for:
-- Structured data like contracts, jobs, procurement
-- Historical documents or archives
-- Formal government records
-
-If the question involves public discussion, news, leaks, or social/political topics,
-Twitter is HIGHLY RELEVANT. Only mark as not relevant if it's purely about
-structured government data (contracts, jobs, etc.).
+Create a search query that will find relevant tweets by:
+- Using boolean operators (OR for alternatives, AND for required terms)
+- Choosing the appropriate search_type (Latest for breaking news, Top for popular discussions)
+- Setting max_pages based on how much context you need (1-3 pages typical)
 
 Return JSON:
 {% raw %}
 {
-  "relevant": boolean,
   "query": string,
   "search_type": "Latest" | "Top" | "Media" | "People",
   "max_pages": integer,
   "reasoning": string
 }
 {% endraw %}
+
+The "reasoning" field should explain your query strategy - why you chose these specific search terms, operators, and search_type to find relevant tweets.

@@ -126,7 +126,8 @@ async def search_clearancejobs(
                     if (rejectBtn) rejectBtn.click();
 
                     // Get total count from the page header "Viewing 1-20 of 1,555"
-                    const viewingText = document.body.textContent.match(/Viewing\\s+\\d+\\s*-\\s*\\d+\\s+of\\s+([\\d,]+)/);
+                    const viewingPattern = new RegExp('Viewing\\\\s+\\\\d+\\\\s*-\\\\s*\\\\d+\\\\s+of\\\\s+([\\\\d,]+)');
+                    const viewingText = document.body.textContent.match(viewingPattern);
                     const total = viewingText ? parseInt(viewingText[1].replace(/,/g, '')) : 0;
 
                     // Get all job cards
@@ -139,20 +140,47 @@ async def search_clearancejobs(
                         const location = card.querySelector('.job-search-list-item-desktop__location');
                         const description = card.querySelector('.job-search-list-item-desktop__description');
 
-                        // Parse footer text for clearance and updated date
+                        // Parse footer AND title for clearance (some jobs only list it in title)
                         const footerText = card.querySelector('.job-search-list-item-desktop__footer')?.textContent || '';
+                        const titleText = titleLink?.textContent?.trim() || '';
 
-                        // Extract clearance - check in priority order
+                        // Normalize text: lowercase + replace all punctuation/whitespace variants with single space
+                        const normalizeText = (text) => {
+                            // Unicode dashes: em dash (2013), en dash (2014), horizontal bar (2015)
+                            // Plus regular dash, forward slash, backslash
+                            // Note: Dash must be at start or end of character class to avoid range interpretation
+                            const dashPattern = new RegExp('[\\u2013\\u2014\\u2015/\\\\\\\\-]', 'g');
+                            const spacePattern = new RegExp('\\\\s+', 'g');
+                            return text.toLowerCase()
+                                .replace(dashPattern, ' ')  // Replace dashes/slashes with space
+                                .replace(spacePattern, ' ')  // Collapse multiple spaces
+                                .trim();
+                        };
+
+                        const searchText = normalizeText(footerText + ' ' + titleText);
+
+                        // Extract clearance - check in priority order (most specific first)
+                        // Note: Normalization converts "TS/SCI w/ MD Poly" → "ts sci w md poly"
+                        // so we check for "ts sci" + "poly" anywhere in text (not exact "with poly")
                         let clearance = '';
-                        if (footerText.includes('TS/SCI')) clearance = 'TS/SCI';
-                        else if (footerText.includes('Top Secret')) clearance = 'Top Secret';
-                        else if (footerText.includes('Secret') && !footerText.includes('Top')) clearance = 'Secret';
-                        else if (footerText.includes('Public Trust')) clearance = 'Public Trust';
-                        else if (footerText.includes('Confidential')) clearance = 'Confidential';
-                        else if (footerText.includes('None')) clearance = 'None';
+                        const hasTsSci = searchText.includes('ts sci');
+                        const hasPoly = searchText.includes('poly');
+
+                        if (hasTsSci && hasPoly) clearance = 'TS/SCI with Poly';
+                        else if (hasTsSci) clearance = 'TS/SCI';
+                        else if (searchText.includes('top secret') && hasPoly) clearance = 'Top Secret with Poly';
+                        else if (searchText.includes('top secret')) clearance = 'Top Secret';
+                        else if (searchText.includes('secret') && !searchText.includes('top') && hasPoly) clearance = 'Secret with Poly';
+                        else if (searchText.includes('secret') && !searchText.includes('top')) clearance = 'Secret';
+                        else if (searchText.includes('public trust')) clearance = 'Public Trust';
+                        else if (searchText.includes('confidential')) clearance = 'Confidential';
+                        else if (searchText.includes('q clearance')) clearance = 'Q Clearance';
+                        else if (searchText.includes('l clearance')) clearance = 'L Clearance';
+                        else if (searchText.includes('clearance') && searchText.includes('none')) clearance = 'None';
 
                         // Extract updated date
-                        const updatedMatch = footerText.match(/Updated\\s+(Today|Yesterday|\\d+\\s+days?\\s+ago)/i);
+                        const updatedPattern = new RegExp('Updated\\\\s+(Today|Yesterday|\\\\d+\\\\s+days?\\\\s+ago)', 'i');
+                        const updatedMatch = footerText.match(updatedPattern);
                         const updated = updatedMatch ? updatedMatch[0] : '';
 
                         return {

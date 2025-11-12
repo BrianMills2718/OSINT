@@ -362,9 +362,9 @@ class SimpleDeepResearch:
                 task.status = TaskStatus.IN_PROGRESS
                 self._emit_progress("task_started", f"Executing: {task.query}", task_id=task.id)
 
-            # Execute batch in parallel with per-task timeout (180s = 3 minutes covers all retries)
+            # Priority 3: Increase timeout from 180s to 300s (5 minutes per task)
             # Timeout wraps entire task execution including all retry attempts
-            task_timeout = 180  # 3 minutes per task (50s per attempt × 3 attempts + buffer)
+            task_timeout = 300  # 5 minutes per task (50s per attempt × 3 attempts + 2min buffer)
             results = await asyncio.gather(*[
                 asyncio.wait_for(
                     self._execute_task_with_retry(task),
@@ -404,6 +404,33 @@ class SimpleDeepResearch:
 
                 if success:
                     self.completed_tasks.append(task)
+
+                    # Gap #4 Fix: Entity extraction OUTSIDE timeout boundary with error handling
+                    # Extract from accumulated results (all retries combined)
+                    # Wrapped in try/except so entity extraction errors don't retroactively fail the task
+                    if task.accumulated_results:
+                        try:
+                            print(f"🔍 Extracting entities from {len(task.accumulated_results)} accumulated results...")
+                            entities_found = await self._extract_entities(
+                                task.accumulated_results,
+                                research_question=self.original_question,
+                                task_query=task.query
+                            )
+                            task.entities_found = entities_found
+                            print(f"✓ Found {len(entities_found)} entities: {', '.join(entities_found[:5])}{'...' if len(entities_found) > 5 else ''}")
+
+                            # Update entity graph with found entities
+                            await self._update_entity_graph(entities_found)
+                        except Exception as entity_error:
+                            # Log error but don't fail task - entity extraction is non-critical
+                            import traceback
+                            logging.error(
+                                f"Entity extraction failed for task {task.id}: {type(entity_error).__name__}: {str(entity_error)}\n"
+                                f"Traceback: {traceback.format_exc()}"
+                            )
+                            print(f"⚠️  Entity extraction failed (non-critical): {type(entity_error).__name__}: {str(entity_error)}")
+                            # Task remains COMPLETED despite entity extraction failure
+                            task.entities_found = []  # Empty list instead of None
 
                     # Check if we should create follow-up tasks
                     # NOTE: Codex fix - check TOTAL workload, not just completed tasks
@@ -458,7 +485,10 @@ class SimpleDeepResearch:
 
         all_entities = set()
         for task in self.completed_tasks:
-            all_entities.update(task.entities_found)
+            # Codex Fix: Normalize entity names to lowercase before adding (same as entity_graph)
+            # This prevents "Federal Government" and "Federal government" from appearing as separate entities
+            normalized = [e.strip().lower() for e in task.entities_found if e.strip()]
+            all_entities.update(normalized)
 
         # Compile failure details for debugging
         failure_details = []
@@ -719,6 +749,7 @@ class SimpleDeepResearch:
 
             if reason:
                 logging.info(f"Source selection rationale: {reason}")
+                print(f"📋 Source selection reasoning: {reason}")
 
             return (valid_sources, reason)
 
@@ -954,6 +985,44 @@ class SimpleDeepResearch:
         return all_results
 
 
+    def _sample_diverse_results(
+        self,
+        results: List[Dict],
+        max_per_source: int = 3,
+        max_total: int = 20
+    ) -> List[Dict]:
+        """
+        Sample results to ensure diversity across sources.
+
+        Ensures LLM sees results from ALL sources, not just the first source that returned results.
+
+        Args:
+            results: Full list of results from all sources
+            max_per_source: Max results to sample from each source (default: 3)
+            max_total: Max total results to return (default: 20)
+
+        Returns:
+            Sampled results with diversity across sources
+        """
+        if not results:
+            return []
+
+        # Group results by source
+        by_source = {}
+        for r in results:
+            source = r.get('source', 'Unknown')
+            if source not in by_source:
+                by_source[source] = []
+            by_source[source].append(r)
+
+        # Sample first max_per_source results from each source
+        sampled = []
+        for source_results in by_source.values():
+            sampled.extend(source_results[:max_per_source])
+
+        # Limit to max_total results
+        return sampled[:max_total]
+
     async def _execute_task_with_retry(self, task: ResearchTask) -> bool:
         """
         Execute task with retry logic if it fails.
@@ -1021,18 +1090,20 @@ class SimpleDeepResearch:
 
                 # Validate result relevance, filter to relevant results, decide if continue
                 # LLM makes 3 decisions: ACCEPT/REJECT, which indices to keep, continue searching?
+                # Gemini 2.5 Flash has 65K token context - evaluate ALL results, no sampling needed
                 print(f"🔍 Validating relevance of {len(all_results)} results...")
-                should_accept, relevance_reason, relevant_indices, should_continue = await self._validate_result_relevance(
+                should_accept, relevance_reason, relevant_indices, should_continue, continuation_reason = await self._validate_result_relevance(
                     task_query=task.query,
                     research_question=self.original_question,
-                    sample_results=all_results[:10]
+                    sample_results=all_results  # Send ALL results to LLM
                 )
                 decision_str = "ACCEPT" if should_accept else "REJECT"
                 continue_str = "CONTINUE" if should_continue else "STOP"
                 print(f"  Decision: {decision_str}")
                 print(f"  Reason: {relevance_reason}")
-                print(f"  Filtered: {len(relevant_indices)}/{len(all_results[:10])} results kept")
+                print(f"  Filtered: {len(relevant_indices)}/{len(all_results)} results kept")
                 print(f"  Continuation: {continue_str}")
+                print(f"  Continuation Reason: {continuation_reason}")
 
                 # Filter results to only keep relevant ones (per-result filtering)
                 if should_accept and relevant_indices:
@@ -1061,7 +1132,8 @@ class SimpleDeepResearch:
                                 "decision": decision_str,
                                 "reasoning": relevance_reason,
                                 "relevant_indices": relevant_indices,
-                                "continue_searching": should_continue
+                                "continue_searching": should_continue,
+                                "continuation_reason": continuation_reason
                             },
                             threshold=None,  # No threshold anymore
                             passes=should_accept
@@ -1104,14 +1176,76 @@ class SimpleDeepResearch:
                         }
                     )
 
+                    # Phase 0: Collect source context BEFORE reformulation (for instrumentation)
+                    # This enables data-driven decision on whether param_hints are worth implementing
+                    sources_with_errors = []
+                    sources_with_zero_results = []
+                    sources_with_low_quality = []
+
+                    for source in selected_sources:
+                        source_display = self.tool_name_to_display.get(source, source)
+                        source_results = [r for r in all_results if r.get('source') == source_display]
+
+                        if not source_results:
+                            # Check if error or just no results
+                            # mcp_results is from _search_mcp_tools_selected() - check if this source failed
+                            if source in selected_mcp_tools:
+                                # Find this source in mcp_results (parallel gather results)
+                                # Guard against missing 'tool' key (can happen with malformed MCP responses)
+                                source_failed = any(
+                                    tool_result.get("tool") == source and not tool_result.get("success", False)
+                                    for tool_result in mcp_results
+                                    if isinstance(tool_result, dict)  # Ensure it's a dict
+                                )
+                                if source_failed:
+                                    sources_with_errors.append(source_display)
+                                else:
+                                    sources_with_zero_results.append(source_display)
+                            else:
+                                # Web search returned zero results
+                                sources_with_zero_results.append(source_display)
+                        else:
+                            # Check if any results from this source were kept
+                            source_has_kept_results = any(
+                                i in relevant_indices
+                                for i, r in enumerate(all_results)
+                                if r.get('source') == source_display
+                            )
+                            if not source_has_kept_results:
+                                sources_with_low_quality.append(source_display)
+
                     # Reformulate query to find more results
                     reformulation = await self._reformulate_for_relevance(
                         original_query=task.query,
                         research_question=self.original_question,
-                        results_count=len(filtered_results)
+                        results_count=len(filtered_results),
+                        sources_with_errors=sources_with_errors,
+                        sources_with_zero_results=sources_with_zero_results,
+                        sources_with_low_quality=sources_with_low_quality
                     )
-                    task.query = reformulation["query"]
-                    task.param_adjustments = reformulation.get("param_adjustments", {})
+                    new_query = reformulation["query"]
+                    new_param_adjustments = reformulation.get("param_adjustments", {})
+
+                    # Phase 0: Log reformulation with full source context (for instrumentation)
+                    if self.logger:
+                        try:
+                            self.logger.log_reformulation(
+                                task_id=task.id,
+                                attempt=task.retry_count,
+                                trigger_reason="continue_searching",  # LLM decided to continue
+                                original_query=task.query,
+                                new_query=new_query,
+                                param_adjustments=new_param_adjustments,
+                                sources_with_errors=sources_with_errors,
+                                sources_with_zero_results=sources_with_zero_results,
+                                sources_with_low_quality=sources_with_low_quality
+                            )
+                        except Exception as log_error:
+                            logging.warning(f"Failed to log reformulation: {log_error}")
+
+                    # Update task with new query and params
+                    task.query = new_query
+                    task.param_adjustments = new_param_adjustments
 
                     self._emit_progress(
                         "query_reformulated",
@@ -1159,6 +1293,30 @@ class SimpleDeepResearch:
                     async with self.resource_manager.results_lock:
                         self.results_by_task[task.id] = result_dict
 
+                    # Gap #1 Fix: Flush ACCUMULATED results to disk immediately (survive timeout cancellation)
+                    # Write full accumulated_results (all retries combined) not just current batch
+                    if self.logger:
+                        from pathlib import Path
+                        raw_path = Path(self.logger.output_dir) / "raw"
+                        raw_path.mkdir(exist_ok=True)
+                        raw_file = raw_path / f"task_{task.id}_results.json"
+
+                        # Gap #1: Write accumulated_results instead of just result_dict
+                        accumulated_dict = {
+                            "total_results": len(task.accumulated_results),
+                            "results": task.accumulated_results,  # All attempts combined
+                            "accumulated_count": len(task.accumulated_results),
+                            "entities_discovered": [],  # Will be extracted at end
+                            "sources": self._get_sources(task.accumulated_results)
+                        }
+
+                        try:
+                            with open(raw_file, 'w', encoding='utf-8') as f:
+                                json.dump(accumulated_dict, f, indent=2, ensure_ascii=False)
+                            logging.info(f"Task {task.id} accumulated results ({len(task.accumulated_results)} total) persisted to {raw_file}")
+                        except Exception as persist_error:
+                            logging.warning(f"Failed to persist task {task.id} results: {persist_error}")
+
                     # Priority 2: Entity extraction moved to end of task (after retry loop)
                     # Will extract from accumulated_results, not current batch
 
@@ -1195,19 +1353,8 @@ class SimpleDeepResearch:
                             elapsed_seconds=elapsed_seconds
                         )
 
-                    # Priority 2: Extract entities from ALL accumulated results (not just current batch)
-                    if task.accumulated_results:
-                        print(f"🔍 Extracting entities from {len(task.accumulated_results)} accumulated results...")
-                        entities_found = await self._extract_entities(
-                            task.accumulated_results,
-                            research_question=self.original_question,
-                            task_query=task.query
-                        )
-                        task.entities_found = entities_found
-                        print(f"✓ Found {len(entities_found)} entities: {', '.join(entities_found[:5])}{'...' if len(entities_found) > 5 else ''}")
-
-                        # Update entity graph with found entities
-                        await self._update_entity_graph(entities_found)
+                    # Priority 3: Entity extraction moved OUTSIDE timeout boundary
+                    # Now happens after asyncio.wait_for() completes (lines 408-421)
 
                     return True
 
@@ -1366,7 +1513,7 @@ class SimpleDeepResearch:
         Args:
             task_query: Query that generated these results
             research_question: Original research question
-            sample_results: Sample of results to evaluate (first 10)
+            sample_results: All results to evaluate (Gemini 2.5 Flash has 65K token context)
 
         Returns:
             Tuple of (should_accept, reason, relevant_indices, should_continue):
@@ -1448,23 +1595,34 @@ class SimpleDeepResearch:
             logging.info(f"Filtered indices: {relevant_indices} ({len(relevant_indices)} results kept)")
             logging.info(f"Continue searching: {should_continue} - {continuation_reason}")
 
-            return (should_accept, reason, relevant_indices, should_continue)
+            return (should_accept, reason, relevant_indices, should_continue, continuation_reason)
 
         except Exception as e:
             logging.error(f"Relevance validation failed: {type(e).__name__}: {str(e)}")
             # On error, assume relevant and keep all results (don't want to fail good results)
             # But still allow continuation to try finding better results
             all_indices = list(range(len(sample_results)))
-            return (True, f"Error during validation: {type(e).__name__}", all_indices, True)
+            return (True, f"Error during validation: {type(e).__name__}", all_indices, True, "Error during validation")
 
     async def _reformulate_for_relevance(
         self,
         original_query: str,
         research_question: str,
-        results_count: int
+        results_count: int,
+        sources_with_errors: Optional[List[str]] = None,
+        sources_with_zero_results: Optional[List[str]] = None,
+        sources_with_low_quality: Optional[List[str]] = None
     ) -> Dict[str, Any]:
         """
         Reformulate query to get MORE RELEVANT results.
+
+        Args:
+            original_query: Current query
+            research_question: Original research question
+            results_count: Number of results found
+            sources_with_errors: Sources that returned errors (API failures - hints won't help)
+            sources_with_zero_results: Sources with zero results (hints might help)
+            sources_with_low_quality: Sources with low quality results (hints might help)
 
         Returns Dict with:
         - query: New query text
@@ -1474,7 +1632,10 @@ class SimpleDeepResearch:
             "deep_research/query_reformulation_relevance.j2",
             research_question=research_question,
             original_query=original_query,
-            results_count=results_count
+            results_count=results_count,
+            sources_with_errors=sources_with_errors or [],
+            sources_with_zero_results=sources_with_zero_results or [],
+            sources_with_low_quality=sources_with_low_quality or []
         )
 
         schema = {
@@ -1604,15 +1765,20 @@ class SimpleDeepResearch:
         Update entity relationship graph.
 
         Uses ResourceManager lock to prevent concurrent modification races.
+        Normalizes entity names to lowercase to prevent case-variant duplicates.
         """
         async with self.resource_manager.entity_graph_lock:
+            # Codex Fix #3: Normalize entity names to lowercase to prevent duplicates
+            # Convert "2210 Series" and "2210 series" to the same key
+            normalized_entities = [e.strip().lower() for e in entities if e.strip()]
+
             # For now, simple co-occurrence tracking
             # TODO: Use LLM to extract actual relationships
-            for i, entity1 in enumerate(entities):
+            for i, entity1 in enumerate(normalized_entities):
                 if entity1 not in self.entity_graph:
                     self.entity_graph[entity1] = []
 
-                for entity2 in entities[i+1:]:
+                for entity2 in normalized_entities[i+1:]:
                     if entity2 not in self.entity_graph[entity1]:
                         self.entity_graph[entity1].append(entity2)
                         self._emit_progress(
@@ -1705,15 +1871,78 @@ class SimpleDeepResearch:
         output_path = Path(self.output_dir) / dir_name
         output_path.mkdir(parents=True, exist_ok=True)
 
-        # 1. Save complete JSON results (for programmatic access)
+        # Priority 2 Fix: Load and aggregate raw task result files (survive timeout)
+        # 1. Check for raw task files in output directory
+        raw_path = output_path / "raw"
+        aggregated_results_by_task = {}
+
+        if raw_path.exists():
+            for raw_file in sorted(raw_path.glob("task_*.json")):
+                try:
+                    task_id = int(raw_file.stem.split("_")[1])
+                    with open(raw_file, 'r', encoding='utf-8') as f:
+                        aggregated_results_by_task[task_id] = json.load(f)
+                    logging.info(f"Loaded raw task file: {raw_file.name}")
+                except Exception as e:
+                    logging.warning(f"Failed to load raw task file {raw_file.name}: {e}")
+
+        # 2. Merge with results_by_task from memory (in case some tasks didn't write raw files)
+        for task_id, result_dict in self.results_by_task.items():
+            if task_id not in aggregated_results_by_task:
+                aggregated_results_by_task[task_id] = result_dict
+
+        # 3. Update result dict to use aggregated data
+        aggregated_total = sum(
+            r.get('total_results', 0) for r in aggregated_results_by_task.values()
+        )
+        aggregated_results_list = []
+        for r in aggregated_results_by_task.values():
+            aggregated_results_list.extend(r.get('results', []))
+
+        # Codex Fix: Deduplicate results by (url, title) to avoid inflated counts
+        seen = set()
+        deduplicated_results_list = []
+        for result_item in aggregated_results_list:
+            # Create unique key from URL and title (both normalized)
+            url = (result_item.get('url') or '').strip().lower()
+            title = (result_item.get('title') or '').strip().lower()
+            key = (url, title)
+
+            # Skip if we've seen this combination before
+            if key not in seen and (url or title):  # At least one must be non-empty
+                seen.add(key)
+                deduplicated_results_list.append(result_item)
+
+        # Log deduplication stats (Codex Fix #2: Add console output for visibility)
+        duplicates_removed = len(aggregated_results_list) - len(deduplicated_results_list)
+        if duplicates_removed > 0:
+            logging.info(f"Deduplication: Removed {duplicates_removed} duplicate results ({len(aggregated_results_list)} → {len(deduplicated_results_list)})")
+            print(f"\n📊 Deduplication: Removed {duplicates_removed} duplicates ({len(aggregated_results_list)} → {len(deduplicated_results_list)} unique results)")
+
+        # Use deduplicated list for counts and output
+        aggregated_results_list = deduplicated_results_list
+        aggregated_total = len(deduplicated_results_list)
+
+        # Gap #2 Fix: Update BOTH result_to_save AND the incoming result dict
+        # This ensures CLI output matches results.json counts
+        result["total_results"] = aggregated_total  # Sync in-memory with disk (deduplicated count)
+        result["results_by_task"] = aggregated_results_by_task  # Add aggregated data
+        result["duplicates_removed"] = duplicates_removed  # Codex Fix #2: Add dedup stats visibility
+        result["results_before_dedup"] = len(aggregated_results_list) + duplicates_removed
+
+        # Update result dict with aggregated counts
+        result_to_save = {
+            **result,
+            "total_results": aggregated_total,
+            "results_by_task": aggregated_results_by_task,
+            "results": aggregated_results_list,  # Gap #3 Fix: Add flat results array for easy iteration
+            "entity_relationships": {k: list(v) for k, v in result.get("entity_relationships", {}).items()}
+        }
+
+        # 4. Save complete JSON results (for programmatic access)
         results_file = output_path / "results.json"
         with open(results_file, 'w', encoding='utf-8') as f:
-            # Convert non-serializable objects
-            serializable_result = {
-                **result,
-                "entity_relationships": {k: list(v) for k, v in result.get("entity_relationships", {}).items()}
-            }
-            json.dump(serializable_result, f, indent=2, ensure_ascii=False)
+            json.dump(result_to_save, f, indent=2, ensure_ascii=False)
 
         # 2. Save markdown report (for human reading)
         report_file = output_path / "report.md"
@@ -1738,7 +1967,9 @@ class SimpleDeepResearch:
                 "total_results": result["total_results"],
                 "elapsed_minutes": result["elapsed_minutes"],
                 "sources_searched": result["sources_searched"],
-                "entities_discovered_count": len(result["entities_discovered"])
+                "entities_discovered_count": len(result["entities_discovered"]),
+                "duplicates_removed": duplicates_removed,
+                "results_before_dedup": len(aggregated_results_list) + duplicates_removed
             }
         }
         with open(metadata_file, 'w', encoding='utf-8') as f:

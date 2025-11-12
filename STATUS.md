@@ -10,23 +10,137 @@
 
 ---
 
+## Deep Research - Result Accumulation & Entity Extraction Fixes (2025-11-10)
+
+**Status**: ✅ ALL GAPS FIXED & VALIDATED (E2E Testing Complete)
+**Scope**: Raw file accumulation, result consistency, flat results array, entity extraction error handling
+
+### Gap Fixes Summary
+
+**All 4 gaps identified by Codex have been fixed, tested, and validated:**
+
+1. ✅ **Gap #1: Raw File Accumulation** - Raw files now write ALL accumulated results across retry attempts, not just the last batch
+2. ✅ **Gap #2: Result Consistency** - In-memory results now match disk aggregation (added `results_by_task` field)
+3. ✅ **Gap #3: Flat Results Array** - Added flat `results` array to results.json for easy consumption
+4. ✅ **Gap #4: Entity Extraction Error Handling** - Wrapped in try/except, errors don't retroactively fail completed tasks
+
+### E2E Validation Results (2025-11-10)
+
+**Test**: `tests/test_all_gaps_e2e.py`
+**Query**: "What are federal cybersecurity jobs?"
+**Configuration**: max_tasks=2, max_retries=2, timeout=5min
+
+**Results Summary**:
+- **Tasks**: 3/4 completed (75% success rate), 1 timed out
+- **Results**: 12 total results across 3 completed tasks
+- **Entities**: 25 entities extracted (agencies, job titles, clearance levels)
+- **Duration**: ~5 minutes
+- **Exit Code**: 0 (all validation checks passed)
+
+**Per-Gap Validation**:
+- ✅ Gap #1: All raw files have `accumulated_count` field with accumulated results
+- ✅ Gap #2: In-memory count (12) matches disk count (12), `results_by_task` field present
+- ✅ Gap #3: results.json has both flat `results` array (12 items) and structured `results_by_task` (3 tasks)
+- ✅ Gap #4: At least 1 task completed (3 completed), entity extraction ran without breaking tasks (25 entities found)
+
+### Pytest Integration (2025-11-10)
+
+**Test Files Created**:
+- `tests/test_gap1_raw_file_accumulation.py` - Validates raw file accumulation across retries
+- `tests/test_gap4_entity_extraction_error.py` - Validates entity extraction error handling
+
+**Test Status**: ✅ Both tests passing (converted from standalone scripts to pytest format)
+- Added `@pytest.mark.integration` and `@pytest.mark.asyncio` decorators
+- Integrated with pytest test suite for CI/CD pipeline
+- Runtime: ~9 seconds each
+
+### Component Status
+
+| Fix | Status | Evidence | Test File |
+|-----|--------|----------|-----------|
+| Raw file accumulation (Gap #1) | [PASS] | Raw files contain all accumulated results across retries, `accumulated_count` field present | test_gap1_raw_file_accumulation.py |
+| Result consistency (Gap #2) | [PASS] | In-memory count matches disk count, `results_by_task` field added | test_all_gaps_e2e.py |
+| Flat results array (Gap #3) | [PASS] | results.json has flat `results` array + structured `results_by_task` | test_all_gaps_e2e.py |
+| Entity extraction errors (Gap #4) | [PASS] | Wrapped in try/except, errors logged but don't fail tasks, empty list instead of None | test_gap4_entity_extraction_error.py |
+
+### Implementation Details
+
+**Gap #1 Fix** (research/deep_research.py:1189-1211):
+- Changed from overwrite to extend: `task.accumulated_results.extend(filtered_results)`
+- Raw files now write `accumulated_results` instead of `results`
+- Added `accumulated_count` field to track total across retries
+
+**Gap #2 Fix** (research/deep_research.py:1776-1791):
+- Added `results_by_task` field to final result dict
+- Contains structured results grouped by task ID
+- In-memory result now matches disk aggregation
+
+**Gap #3 Fix** (research/deep_research.py:1776-1791):
+- Added flat `results` array alongside `results_by_task`
+- Easy consumption for downstream tools
+- Both formats present in results.json
+
+**Gap #4 Fix** (research/deep_research.py:408-433):
+- Entity extraction wrapped in try/except with full traceback logging
+- Task status remains COMPLETED even if entity extraction fails
+- Sets `task.entities_found = []` instead of leaving as None
+
+### Codex Review (2025-11-10)
+
+**Confirmed**:
+1. ✅ All 4 gaps fixed in research/deep_research.py
+2. ✅ E2E test validates all fixes working together
+3. ✅ 75% success rate (3/4 tasks) is acceptable for production
+4. ✅ Pytest integration complete for Gap #1 and Gap #4 tests
+5. ✅ Ready for production use
+
+**Recommendations Implemented**:
+- ✅ Converted ad hoc tests to pytest format
+- ✅ Added `@pytest.mark.integration` markers for CI filtering
+- ✅ Confirmed timeout behavior doesn't lose partial data (raw files written immediately after each ACCEPT)
+
+### Files Modified
+
+**Core Implementation**:
+- research/deep_research.py (4 fixes implemented):
+  - Lines 408-433: Gap #4 (entity extraction error handling)
+  - Lines 1189-1211: Gap #1 (raw file accumulation)
+  - Lines 1776-1791: Gap #2 & #3 (result consistency + flat array)
+
+**Test Suite**:
+- tests/test_gap1_raw_file_accumulation.py (pytest format)
+- tests/test_gap4_entity_extraction_error.py (pytest format)
+- tests/test_all_gaps_e2e.py (E2E validation)
+
+**Documentation**:
+- CLAUDE.md updated with validation results and Gemini 2.5 Flash testing
+- STATUS.md updated with this section
+
+### Next Actions
+
+1. ✅ Update config_default.yaml to use Gemini 2.5 Flash (validation complete)
+2. Monitor production runs for entity extraction error frequency
+3. Consider adjusting timeout if 75% success rate too low (currently acceptable)
+
+---
+
 ## Deep Research - Priority 1 Fixes (2025-10-30)
 
-**Status**: ✅ VALIDATED  
+**Status**: ✅ VALIDATED (ARCHIVED - See Result Accumulation Fixes section above for latest)
 **Scope**: Execution logging, adaptive relevance thresholds, Discord export sanitization, increased parallelism
 
 ### Validation Highlights
 
-- **Query 1** – Lockheed classified contracts  
-  - Tasks: 3/5 succeeded (baseline 0/4)  
-  - Results: 118 total  
-  - Runtime: 6.9 minutes  
+- **Query 1** – Lockheed classified contracts
+  - Tasks: 3/5 succeeded (baseline 0/4)
+  - Results: 118 total
+  - Runtime: 6.9 minutes
   - Notes: Adaptive threshold accepted 1/10 relevance scores; SAM.gov handled as optional
 
-- **Query 2** – JSOC operations in Syria (6 months)  
-  - Tasks: 5/5 succeeded (baseline timed out)  
-  - Results: 166 total, 24 entities  
-  - Runtime: 5.3 minutes (baseline >10 minutes timeout)  
+- **Query 2** – JSOC operations in Syria (6 months)
+  - Tasks: 5/5 succeeded (baseline timed out)
+  - Results: 166 total, 24 entities
+  - Runtime: 5.3 minutes (baseline >10 minutes timeout)
   - Notes: 4-task parallel batches completed without timeouts; Discord warnings limited to 9 known corrupt exports
 
 ### Component Status
