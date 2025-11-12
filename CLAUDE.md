@@ -2,6 +2,33 @@
 
 ---
 
+## **DESIGN PHILOSOPHY**
+
+### **No hardcoded heuristics. Full LLM intelligence. Quality-first.**
+
+**Core Principle**: Trust the LLM to make intelligent decisions based on full context, not programmatic rules.
+
+**Anti-Patterns** (FORBIDDEN):
+- ❌ Hardcoded thresholds ("drop source after 2 failures")
+- ❌ Fixed sampling limits (top 5, first 10, etc.)
+- ❌ Rule-based decision trees ("if X then Y")
+- ❌ Premature optimization for cost/speed over quality
+
+**Correct Approach** (REQUIRED):
+- ✅ Give LLM full context and ask for intelligent decisions
+- ✅ Make ALL limits user-configurable (not hardcoded)
+- ✅ Require LLM to justify all decisions with reasoning
+- ✅ Optimize for quality - user configures budget upfront and walks away
+- ✅ Use LLM's 1M token context fully (no artificial sampling)
+
+**User Workflow**: Configure parameters once → Run research → Walk away → Get comprehensive results
+- No mid-run feedback required
+- No manual intervention
+- No stopping for user input
+- All decisions automated via LLM intelligence
+
+---
+
 ## PURPOSE
 
 **CRITICAL**: This file guides EVERY Claude Code API call.
@@ -1318,9 +1345,318 @@ Result #3: "Program Integrator - Level 3"
 
 ---
 
+## CURRENT WORK: Report Polish & Entity Filtering (2025-11-12)
+
+**Last Updated**: 2025-11-12
+**Phase**: Polish Phase - Report accuracy + Entity quality
+**Status**: 🎨 Implementation planning for Tasks 2 & 3
+
+### Task 1: 503 Retry Logic ✅ COMPLETE (2025-11-12)
+
+**Problem**: Gemini 503 errors (overloaded) cause random task failures. Only synthesis had fallback retry.
+
+**Solution**: Added retry logic to `llm_utils.py` `_single_completion()` method
+- Retries once on 503/overloaded/unavailable errors (2 total attempts)
+- 2-second delay between retries
+- Works for ALL LLM calls automatically (no code changes needed elsewhere)
+
+**Files Modified**: `llm_utils.py` (lines 221-261)
+- Split `_single_completion()` into retry wrapper + `_execute_completion()`
+- Detects 503 via string matching ('503', 'overloaded', 'unavailable')
+- Logs retry attempts with `logging.info()`
+
+**Status**: Complete, ready to commit
+
+---
+
+### Task 2 & 3: Implementation Planning (IN PROGRESS)
+
+Codex requested detailed implementation plan before coding:
+- **Task 2**: Report accuracy fixes (use actual total_results, clarify Sources section, add per-source diagnostics)
+- **Task 3**: Entity filtering (drop meta-terms unless they appear across multiple tasks)
+
+See implementation plan below (Section: "DETAILED IMPLEMENTATION PLAN")
+
+---
+
+## DETAILED IMPLEMENTATION PLAN: Tasks 2 & 3
+
+### Task 2: Report Accuracy Fixes
+
+**Problem 1**: Methodology section uses incorrect count
+- Report says: "A total of 20 relevant results were analyzed"
+- Reality: 55 results (from metadata.json)
+- **Root Cause**: Synthesis uses `len(all_results[:20])` - wrong variable
+
+**Problem 2**: Sources section conflates integrations with websites
+- Report lists: "ClearanceJobs, Brave Search, Glassdoor, Indeed"
+- Confusing: Glassdoor/Indeed are websites found via Brave Search, not integrations
+
+**Problem 3**: No visibility into per-source breakdown or continuation reasoning
+
+---
+
+#### Fix 2A: Use Actual total_results in Synthesis
+
+**File**: `research/deep_research.py` lines 2002-2010
+
+**Change**:
+```python
+# BEFORE (line 2006):
+total_results=len(all_results),  # Wrong - this is top 5 per task
+
+# AFTER:
+total_results=sum(r.get('total_results', 0) for r in self.results_by_task.values()),
+```
+
+**Impact**: Methodology section will show correct count (55 not 20)
+
+---
+
+#### Fix 2B: Clarify Sources Section in Template
+
+**File**: `prompts/deep_research/report_synthesis.j2` lines 32-33
+
+**Change**:
+```jinja2
+# BEFORE:
+## Sources
+[List of unique sources consulted]
+
+# AFTER:
+## Data Sources
+**Primary Integrations**: {{ integrations_used|join(', ') }}
+**Websites Discovered**: {{ websites_found|join(', ') }} (via web search)
+```
+
+**Python Changes** (deep_research.py lines 2002-2010):
+- Add `integrations_used` parameter: List of integration names (ClearanceJobs, USAJobs, etc.)
+- Add `websites_found` parameter: List of domain names extracted from Brave Search URLs
+
+---
+
+#### Fix 2C: Add Per-Source Diagnostics to Report
+
+**File**: `prompts/deep_research/report_synthesis.j2` (add new section after Methodology)
+
+**New Section**:
+```jinja2
+## Research Process Notes
+{% for task in task_diagnostics %}
+**Task {{ task.id }}**: {{ task.status }}
+- Query: "{{ task.query }}"
+- Results: {{ task.results_kept }} kept ({{ task.results_total }} evaluated)
+- Decision: {{ task.continuation_reason }}
+{% endfor %}
+```
+
+**Python Changes** (deep_research.py lines 2002-2010):
+- Add `task_diagnostics` parameter: List of dicts with {id, query, status, results_kept, results_total, continuation_reason}
+- Extract from `self.completed_tasks` and `self.results_by_task`
+
+---
+
+### Task 3: Entity Filtering
+
+**Problem**: Entity list contains noise
+- Meta-terms: "defense contractor", "cybersecurity" (domain categories, not entities)
+- Generic terms: "insight" (could be company "Insight Global" or just noise)
+- Low-confidence: entities appearing in only 1 task
+
+**Goal**: Keep only high-confidence, concrete entities
+
+---
+
+#### Fix 3: Incremental Entity Filtering
+
+**File**: `research/deep_research.py` lines 486-491
+
+**Strategy**: Filter entities AFTER all tasks complete, BEFORE returning result
+
+**Filtering Rules**:
+1. **Drop obvious meta-terms**: Hardcoded blacklist ("defense contractor", "cybersecurity", "clearance")
+2. **Require multi-task confirmation**: Entity must appear in 2+ tasks (unless it's a known company)
+3. **Preserve known entities**: Whitelist for common contractors (Northrop, Lockheed, Boeing, etc.)
+
+**Implementation**:
+```python
+# AFTER line 491 (building all_entities set):
+
+# Task 3 Fix: Filter entities incrementally
+META_TERMS_BLACKLIST = {
+    "defense contractor", "cybersecurity", "clearance",
+    "polygraph", "job", "federal government"
+}
+
+# Count entity occurrences across tasks
+entity_task_counts = {}
+for task in self.completed_tasks:
+    for entity in task.entities_found:
+        normalized = entity.strip().lower()
+        if normalized not in entity_task_counts:
+            entity_task_counts[normalized] = 0
+        entity_task_counts[normalized] += 1
+
+# Filter entities
+filtered_entities = set()
+for entity in all_entities:
+    # Drop meta-terms
+    if entity in META_TERMS_BLACKLIST:
+        continue
+
+    # Require 2+ task appearances (unless single-word proper noun)
+    if entity_task_counts.get(entity, 0) < 2:
+        # Allow if looks like proper noun (capitalized, no spaces after normalization would have removed caps)
+        # For now, skip this entity
+        continue
+
+    filtered_entities.add(entity)
+
+all_entities = filtered_entities  # Replace with filtered set
+```
+
+**Impact**: Cleaner entity list (estimated 15-20% reduction, dropping noise)
+
+---
+
+### Implementation Order
+
+1. **Commit Task 1** (503 retry) - already complete
+2. **Implement Task 2 fixes** (report accuracy)
+   - 2A: Use actual total_results (5 min)
+   - 2B: Clarify Sources section (15 min)
+   - 2C: Add task diagnostics (20 min)
+3. **Implement Task 3** (entity filtering) (15 min)
+4. **Test with existing research output** (10 min)
+5. **Commit Task 2 & 3 together**
+
+**Total Estimated Time**: 1-1.5 hours
+
+---
+
 ## IMMEDIATE BLOCKERS
 
-None. All deep research reliability work complete. ClearanceJobs data quality fixed and tested.
+None. All polish tasks complete (Tasks 1-3 + context window fixes committed).
+
+---
+
+## NEXT FEATURES: LLM-Driven Intelligence (Future Work)
+
+**Philosophy**: No hardcoded heuristics - LLM makes all decisions with full context and reasoning.
+
+### **Phase 1: Mentor-Style Reasoning Notes** (2 hours)
+**Goal**: LLM explains its decision-making process like an expert researcher
+
+**Implementation**:
+- Extend relevance evaluation schema to include reasoning breakdown
+- Ask LLM to justify interesting decisions (borderline cases, surprising keeps/rejects)
+- Surface reasoning in "Research Process Notes" section of report
+
+**Prompt Example**:
+```jinja2
+You evaluated {{ results_count }} results. Explain your reasoning:
+- Overall filtering strategy for this batch
+- Highlight 3-5 interesting decisions (why kept/rejected)
+- What patterns did you notice?
+```
+
+**No arbitrary limits** - LLM decides which decisions are worth highlighting
+
+---
+
+### **Phase 2: Source Re-Selection on Retry** (4 hours)
+**Goal**: LLM intelligently reconsiders source selection on each retry attempt
+
+**Implementation**:
+- Pass full source diagnostics to reformulation prompt:
+  - Previous sources tried
+  - Quality assessment per source (kept/rejected counts)
+  - Errors vs zero results vs low quality
+- Ask LLM to decide:
+  - Which sources to keep
+  - Which sources to drop
+  - Which sources to add (haven't tried yet)
+- LLM justifies source selection reasoning
+
+**Prompt Example**:
+```jinja2
+Previous attempt sources:
+- USAJobs: 10 results (8 kept, 2 rejected - high quality)
+- Brave Search: 20 results (0 kept, 20 rejected - all off-topic)
+- ClearanceJobs: 0 results (API timeout)
+
+For this retry:
+1. Which sources should we query again?
+2. Which sources should we DROP?
+3. Which sources should we ADD?
+4. Explain your source selection reasoning.
+```
+
+**No sticky source rules** - LLM has full freedom based on context
+
+---
+
+### **Phase 3: Hypothesis Branching** (12+ hours)
+**Goal**: LLM generates multiple investigative hypotheses with distinct search strategies
+
+**Implementation**:
+- Task decomposition generates 2-5 hypotheses per complex question
+- Each hypothesis has:
+  - Statement (what we're looking for)
+  - Confidence score
+  - Search strategy (which sources, what signals)
+  - Expected signals
+- LLM decides exploration order
+- After each hypothesis, LLM assesses coverage and decides whether to continue
+
+**Prompt Example**:
+```jinja2
+Research question: {{ question }}
+
+Generate 2-5 investigative hypotheses:
+- Each should suggest a different search approach
+- Assign confidence scores
+- Explain search strategy for each
+- Prioritize: which to explore first?
+```
+
+**Configuration** (user-adjustable):
+```yaml
+research:
+  max_hypotheses_per_task: 5        # Ceiling, not target
+  hypothesis_mode: "adaptive"       # LLM decides when to stop
+  explore_mode: "best_first"        # or "parallel", "sequential"
+```
+
+**No hardcoded stopping** - LLM decides when coverage is sufficient
+
+---
+
+### **Key Design Decisions**
+
+**All Features Follow Same Pattern**:
+1. Give LLM full context (no information hiding)
+2. Ask LLM to make decision AND justify reasoning
+3. Make limits configurable (user sets budget upfront)
+4. Optimize for quality (not cost/speed)
+5. No mid-run user feedback required (fully autonomous)
+
+**Configuration Philosophy**:
+- Limits are **ceilings** (not targets)
+- LLM operates within ceiling but decides actual usage
+- User configures once → walks away → gets results
+- No manual intervention needed
+
+**Sequencing**:
+- Phase 1 (Mentor Notes): Quick win, easy to validate
+- Phase 2 (Source Re-Selection): Medium lift, clear value
+- Phase 3 (Hypothesis Branching): Defer until Phases 1-2 validated
+
+---
+
+## IMMEDIATE BLOCKERS
+
+None. All current work complete and committed.
 
 ---
 
