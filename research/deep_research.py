@@ -490,6 +490,44 @@ class SimpleDeepResearch:
             normalized = [e.strip().lower() for e in task.entities_found if e.strip()]
             all_entities.update(normalized)
 
+        # Task 3: Filter entities incrementally (blacklist + multi-task confirmation)
+        META_TERMS_BLACKLIST = {
+            "defense contractor", "cybersecurity", "clearance",
+            "polygraph", "job", "federal government", "security clearance",
+            "government", "contractor", "defense"
+        }
+
+        # Count entity occurrences across tasks
+        entity_task_counts = {}
+        for task in self.completed_tasks:
+            task_entities = set(e.strip().lower() for e in task.entities_found if e.strip())
+            for entity in task_entities:
+                if entity not in entity_task_counts:
+                    entity_task_counts[entity] = 0
+                entity_task_counts[entity] += 1
+
+        # Filter entities
+        filtered_entities = set()
+        for entity in all_entities:
+            # Drop meta-terms
+            if entity in META_TERMS_BLACKLIST:
+                continue
+
+            # Require 2+ task appearances (unless only 1 task completed)
+            min_task_threshold = 2 if len(self.completed_tasks) > 1 else 1
+            if entity_task_counts.get(entity, 0) < min_task_threshold:
+                continue
+
+            filtered_entities.add(entity)
+
+        # Log filtering stats
+        entities_filtered_out = len(all_entities) - len(filtered_entities)
+        if entities_filtered_out > 0:
+            logging.info(f"Entity filtering: Removed {entities_filtered_out} entities ({len(all_entities)} → {len(filtered_entities)})")
+            print(f"🔍 Entity filtering: Removed {entities_filtered_out} low-confidence entities ({len(all_entities)} → {len(filtered_entities)} kept)")
+
+        all_entities = filtered_entities  # Replace with filtered set
+
         # Compile failure details for debugging
         failure_details = []
         for task in self.failed_tasks:
@@ -1999,14 +2037,40 @@ class SimpleDeepResearch:
         for entity, related in list(self.entity_graph.items())[:10]:  # Top 10
             relationship_summary.append(f"- {entity}: connected to {', '.join(related[:3])}")
 
+        # Task 2A Fix: Use actual total_results from results_by_task instead of len(all_results[:20])
+        actual_total_results = sum(r.get('total_results', 0) for r in self.results_by_task.values())
+
+        # Task 2B: Separate integrations from discovered websites
+        all_sources = list(set(r.get('source', 'Unknown') for r in all_results))
+        integration_names = list(self.tool_name_to_display.values())
+
+        integrations_used = [s for s in all_sources if s in integration_names]
+        websites_found = [s for s in all_sources if s not in integration_names and s != 'Unknown']
+
+        # Task 2C: Collect task diagnostics (continuation reasoning)
+        task_diagnostics = []
+        for task in self.completed_tasks:
+            task_result = self.results_by_task.get(task.id, {})
+            task_diagnostics.append({
+                "id": task.id,
+                "query": task.query,
+                "status": "COMPLETED",
+                "results_kept": task_result.get('total_results', 0),
+                "results_total": task.accumulated_results and len(task.accumulated_results) or 0,
+                "continuation_reason": "Task completed successfully"  # Placeholder - real reason not stored yet
+            })
+
         prompt = render_prompt(
             "deep_research/report_synthesis.j2",
             original_question=original_question,
             tasks_executed=len(self.completed_tasks),
-            total_results=len(all_results),
+            total_results=actual_total_results,
             entities_discovered=len(self.entity_graph),
             relationship_summary=chr(10).join(relationship_summary),
-            top_findings_json=json.dumps(all_results[:20], indent=2)
+            top_findings_json=json.dumps(all_results[:20], indent=2),
+            integrations_used=integrations_used,
+            websites_found=websites_found,
+            task_diagnostics=task_diagnostics
         )
 
         response = await acompletion(

@@ -29,10 +29,19 @@ Create a detailed markdown report with:
 ## Entity Network
 [Description of key entities and their relationships]
 
-## Sources
-[List of unique sources consulted]
+## Data Sources
+**Primary Integrations**: {% if integrations_used %}{{ integrations_used|join(', ') }}{% else %}None{% endif %}
+{% if websites_found %}**Websites Discovered**: {{ websites_found|join(', ') }} (via web search){% endif %}
+
+## Research Process Notes
+{% for task in task_diagnostics %}
+**Task {{ task.id }}**: {{ task.status }}
+- Query: "{{ task.query }}"
+- Results: {{ task.results_kept }} kept ({{ task.results_total }} evaluated)
+- Decision: {{ task.continuation_reason }}
+{% endfor %}
 
 ## Methodology
-[Brief note on research approach - {{ tasks_executed }} tasks, {{ total_results }} results]
+A total of {{ total_results }} relevant results were analyzed across {{ tasks_executed }} research tasks, leading to the discovery of {{ entities_discovered }} distinct entities and their interrelationships. The findings were synthesized to provide a comprehensive overview of the topic.
 
 Make the report insightful and well-structured. Focus on connections and relationships, not just listing results.
