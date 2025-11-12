@@ -228,6 +228,48 @@ class UnifiedLLM:
         Execute a single completion attempt with the specified model.
 
         Internal method used by acompletion for retries/fallback.
+
+        Retries once on transient 503 errors (model overloaded) to provide
+        minimal resilience without requiring provider fallback.
+        """
+
+        # Retry configuration for transient 503 errors
+        max_retries = 1  # 2 total attempts (1 initial + 1 retry)
+        retry_delay = 2  # seconds
+
+        last_error = None
+
+        for attempt in range(max_retries + 1):
+            try:
+                return await cls._execute_completion(model, messages, response_format, **kwargs)
+            except Exception as e:
+                last_error = e
+
+                # Check if this is a retryable 503 error
+                error_str = str(e).lower()
+                is_503 = '503' in error_str or 'overloaded' in error_str or 'unavailable' in error_str
+
+                if is_503 and attempt < max_retries:
+                    logging.info(f"Model {model} returned 503 (overloaded), retrying in {retry_delay}s...")
+                    await asyncio.sleep(retry_delay)
+                    continue
+
+                # Non-503 error or final attempt - propagate
+                raise
+
+        # Should never reach here, but just in case
+        raise last_error
+
+    @classmethod
+    async def _execute_completion(cls,
+                                   model: str,
+                                   messages: List[Dict[str, str]],
+                                   response_format: Optional[Dict] = None,
+                                   **kwargs) -> Any:
+        """
+        Execute the actual LLM API call without retry logic.
+
+        Internal method - use _single_completion for automatic 503 retry.
         """
 
         if cls.is_responses_api_model(model):
