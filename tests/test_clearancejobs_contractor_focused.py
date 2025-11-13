@@ -5,6 +5,11 @@ ClearanceJobs Contractor-Focused Validation Test
 This test uses contractor-focused queries to ensure LLM selects ClearanceJobs
 (not USAJobs) and validates clearance extraction with real contractor job data.
 
+NOTE: This test uses a contractor-specific query INTENTIONALLY to validate
+ClearanceJobs integration behavior with focused queries. The default deep
+research flow uses neutral queries (see test_gemini_deep_research.py).
+The contractor bias here is test-specific, not a system-wide default.
+
 Query designed to select ClearanceJobs:
 - Mentions defense contractors (Northrop Grumman, Lockheed Martin, etc.)
 - Mentions TS/SCI + polygraph clearance requirements

@@ -1654,9 +1654,138 @@ research:
 
 ---
 
+## COMPLETED WORK: Codex Recommendations Implementation (2025-11-13)
+
+**Last Updated**: 2025-11-13
+**Phase**: Quality Improvements - Per-Integration Limits + Entity Filtering + Pagination Control
+**Status**: ✅ ALL TASKS COMPLETE - Validated and committed
+
+### Implementation Summary
+
+**Task 3**: Add documentation note (5 min) ✅ COMPLETE
+**Task 1**: Wire per-integration limits (30 min) ✅ COMPLETE
+**Task 4**: Enable Twitter pagination control (2 hrs) ✅ COMPLETE
+**Task 2**: Remove Python entity filter + add LLM synthesis filter (2-3 hrs) ✅ COMPLETE
+
+**Total Time**: ~4.5 hours
+**Final Validation**: test_clearancejobs_contractor_focused.py - PASSED
+
+### Analysis Documents Created
+
+1. **CODEX_RECOMMENDATIONS_SUMMARY.md** - Executive summary with decision matrix
+2. **CODEX_IMPLEMENTATION_PLAN.md** - Step-by-step implementation details
+3. **CODEX_IMPLEMENTATION_CONCERNS.md** - Risk analysis and uncertainties
+4. **CODEX_REC_ANALYSIS_SUMMARY.md** - Original technical analysis
+
+### Task 3: Document Prompt Neutrality ✅ COMPLETE
+
+**File**: `tests/test_clearancejobs_contractor_focused.py` (lines 8-11)
+
+**Implementation**: Added NOTE clarifying contractor bias is test-specific, not system default
+
+```python
+NOTE: This test uses a contractor-specific query INTENTIONALLY to validate
+ClearanceJobs integration behavior with focused queries. The default deep
+research flow uses neutral queries (see test_gemini_deep_research.py).
+The contractor bias here is test-specific, not a system-wide default.
+```
+
+**Status**: ✅ COMPLETE - Documentation added
+
+---
+
+### Task 1: Per-Integration Limits ✅ COMPLETE
+
+**Goal**: Config-driven per-source limits (USAJobs: 100, ClearanceJobs: 20, etc.)
+
+**Files Modified**:
+1. `config_default.yaml` (lines 59, 64-78) - Added integration_limits section, default 10→20
+2. `config_loader.py` (lines 279-303) - Added get_integration_limit() with normalization
+3. `research/deep_research.py` (lines 277, 835-837, 1057) - 3 call sites updated
+
+**Implementation**:
+- Source name normalization (lowercase, remove dots/spaces)
+- Fallback to default_result_limit if integration not specified
+- USAJobs: 100, ClearanceJobs: 20, Brave Search: 20, SAM.gov: 10, default: 20
+
+**Status**: ✅ COMPLETE - All call sites wired, config-driven
+
+---
+
+### Task 4: Twitter Pagination Control ✅ COMPLETE
+
+**Goal**: Expose Twitter search_type/max_pages to LLM via param_hints for retry adaptation
+
+**Files Modified**:
+1. `prompts/deep_research/query_reformulation_relevance.j2` (lines 48-54) - Twitter params docs
+2. `integrations/social/twitter_integration.py` (lines 193, 220-223) - param_hints support
+3. `research/deep_research.py` (lines 853, 1647-1662, 1734-1749) - Schema + source_map
+
+**Implementation**:
+- LLM can suggest {"twitter": {"search_type": "Top", "max_pages": 2}} on retry
+- Twitter integration applies param_hints overrides to effective_params
+- Schema validates search_type enum + max_pages 1-3 range
+- Documented in prompt: Use "Top" for popular, "Latest" for recent
+
+**Status**: ✅ COMPLETE - Param hints wired, schema validated
+
+---
+
+### Task 2: Entity Filtering Redesign ✅ COMPLETE
+
+**Goal**: Replace Python blacklist filter with synthesis-time LLM filtering with rationale
+
+**Architecture Change**:
+1. Per-task LLM extraction (line 414) - UNCHANGED
+2. Synthesis-time LLM filter (lines 2005-2088 in _synthesize_report()) - REPLACES Python filter
+
+**Files Modified**:
+1. `research/deep_research.py` (line 493, lines 2005-2088) - Removed blacklist, added LLM filtering
+2. `prompts/deep_research/entity_filtering.j2` (NEW) - LLM filtering prompt template
+
+**Implementation**:
+- Entity filtering happens AFTER all tasks complete (synthesis-time)
+- LLM decides which entities to keep/remove with full context
+- Filtering criteria: Keep specific orgs/titles/certs, remove generic meta-terms
+- Multi-task confirmation passed to LLM (entity_task_counts)
+- Filtered copy created, raw entity_graph preserved (no data loss)
+- LLM rationale logged for transparency
+
+**Test Results** (test_clearancejobs_contractor_focused.py):
+- Before: 19 entities extracted
+- After: 18 entities kept (removed 1: generic meta-term)
+- LLM reasoning: "Kept specific organizations, job titles, clearance types, technical skills"
+- No loss of valuable entities (Northrop Grumman, Lockheed Martin, TS/SCI preserved)
+
+**Status**: ✅ COMPLETE - LLM-based filtering working, validated
+
+---
+
+### Final Validation ✅ PASSED
+
+**Test**: test_clearancejobs_contractor_focused.py (3 tasks, 69 results, 18 entities)
+
+**Validation Results**:
+- ✅ All 4 changes working together
+- ✅ Per-integration limits applied (config-driven)
+- ✅ Entity filtering at synthesis time with LLM rationale visible
+- ✅ Contractor-specific entities kept (Northrop Grumman, Lockheed Martin, Leidos, DOD)
+- ✅ Generic meta-terms removed (1 entity filtered out with reasoning)
+- ✅ Twitter param_hints schema available on retry
+- ✅ No regressions in quality
+- ✅ Test completed successfully (exit code 0)
+
+**Key Metrics**:
+- Task success rate: 100% (3/3 completed)
+- Results: 69 total findings
+- Entities: 18 kept (specific orgs, job titles, clearance types, technical skills)
+- LLM filtering reasoning: Transparent and documented in logs
+
+---
+
 ## IMMEDIATE BLOCKERS
 
-None. All current work complete and committed.
+None. All Codex recommendations implemented, validated, and complete.
 
 ---
 

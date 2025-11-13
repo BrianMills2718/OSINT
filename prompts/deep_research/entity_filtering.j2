@@ -1,0 +1,45 @@
+You are filtering entities extracted during a research investigation.
+
+CONTEXT:
+- Research Question: "{{ research_question }}"
+- Total Tasks Completed: {{ tasks_completed }}
+- Total Entities Extracted: {{ total_entities }}
+
+EXTRACTED ENTITIES (with task occurrence counts):
+{{ entities_with_counts }}
+
+YOUR TASK:
+Filter out low-value entities while preserving important ones.
+
+FILTERING CRITERIA:
+
+KEEP entities that are:
+- Specific organizations, agencies, or companies (e.g., "NSA", "Lockheed Martin", "FBI")
+- Specific job titles or roles (e.g., "IT Specialist (Cybersecurity)", "Special Agent")
+- Specific technical terms or certifications (e.g., "TS/SCI", "CISSP", "2210 Series")
+- Specific locations, programs, or initiatives (e.g., "Fort Meade", "Cyber Command")
+- Entities appearing in MULTIPLE tasks (higher confidence - cross-task confirmation)
+
+REMOVE entities that are:
+- Generic/meta terms about the research domain (e.g., "cybersecurity", "job", "federal government", "defense contractor")
+- Overly broad categories (e.g., "government", "contractor", "clearance")
+- Query keywords rephrased (e.g., if query is about "cybersecurity jobs", remove "cybersecurity" and "job")
+- Entities appearing in only 1 task (unless {{ tasks_completed }} == 1)
+
+EXAMPLES:
+
+Research: "What defense contractor jobs require TS/SCI clearance?"
+KEEP: ["Northrop Grumman", "Lockheed Martin", "TS/SCI with Poly", "Fort Meade", "Special Agent"]
+REMOVE: ["defense contractor", "clearance", "job", "cybersecurity", "government"]
+
+Research: "What are NSA cybersecurity job series?"
+KEEP: ["NSA", "IT Specialist (Cybersecurity)", "2210 Series", "Fort Meade", "CISSP"]
+REMOVE: ["cybersecurity", "job series", "federal government", "information security"]
+
+IMPORTANT:
+- Prefer specificity over generality
+- Keep entities that provide investigative leads (names, places, programs)
+- Remove entities that are just rephrased query terms
+- Multi-task entities (appearing in 2+ tasks) have higher value - keep them unless they're clearly generic
+
+Return JSON with filtered entities and reasoning.

@@ -276,6 +276,32 @@ class Config:
             "is_critical": source_name in critical_sources
         }
 
+    def get_integration_limit(self, integration_name: str) -> int:
+        """
+        Get result limit for specific integration.
+
+        Args:
+            integration_name: Name of integration (e.g., 'usajobs', 'clearancejobs', 'twitter')
+
+        Returns:
+            Result limit for this integration, or default_result_limit if not specified
+
+        Example:
+            >>> config.get_integration_limit('usajobs')
+            100  # USAJobs has override
+
+            >>> config.get_integration_limit('twitter')
+            20  # Twitter has override
+
+            >>> config.get_integration_limit('some_new_integration')
+            20  # Falls back to default_result_limit
+        """
+        integration_limits = self._config.get('integration_limits', {})
+        return integration_limits.get(
+            integration_name.lower(),
+            self.default_result_limit
+        )
+
     # ========================================================================
     # Provider Fallback (LiteLLM Feature)
     # ========================================================================

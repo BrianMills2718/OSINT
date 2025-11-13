@@ -56,9 +56,25 @@ llm:
 execution:
   max_concurrent: 10              # Max parallel API calls (balance speed/rate limits)
   max_refinements: 2              # Max query refinement iterations
-  default_result_limit: 10        # Default results per database
+  default_result_limit: 20        # Default results per database (increased from 10 per Codex recommendation)
   enable_adaptive_analysis: true  # Enable Ditto-style code generation
   enable_auto_refinement: true    # Enable automatic query refinement
+
+# ============================================================================
+# Per-Integration Result Limits
+# ============================================================================
+# Override default_result_limit for specific integrations
+# Higher limits for sources with high-quality data or large API capacity
+integration_limits:
+  clearancejobs: 20      # 20 jobs per call (Playwright scraping)
+  usajobs: 100           # USAJobs API supports 100 results/page
+  brave_search: 20       # Free tier limit
+  sam: 10                # SAM.gov can be slow, keep lower
+  dvids: 50              # DVIDS API max is 50
+  twitter: 20            # Default Twitter limit
+  reddit: 20             # Default Reddit limit
+  discord: 20            # Default Discord limit
+  # Default: use execution.default_result_limit if integration not listed
 
 # ============================================================================
 # Timeout Configuration (all in seconds)

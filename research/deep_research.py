@@ -490,43 +490,7 @@ class SimpleDeepResearch:
             normalized = [e.strip().lower() for e in task.entities_found if e.strip()]
             all_entities.update(normalized)
 
-        # Task 3: Filter entities incrementally (blacklist + multi-task confirmation)
-        META_TERMS_BLACKLIST = {
-            "defense contractor", "cybersecurity", "clearance",
-            "polygraph", "job", "federal government", "security clearance",
-            "government", "contractor", "defense"
-        }
-
-        # Count entity occurrences across tasks
-        entity_task_counts = {}
-        for task in self.completed_tasks:
-            task_entities = set(e.strip().lower() for e in task.entities_found if e.strip())
-            for entity in task_entities:
-                if entity not in entity_task_counts:
-                    entity_task_counts[entity] = 0
-                entity_task_counts[entity] += 1
-
-        # Filter entities
-        filtered_entities = set()
-        for entity in all_entities:
-            # Drop meta-terms
-            if entity in META_TERMS_BLACKLIST:
-                continue
-
-            # Require 2+ task appearances (unless only 1 task completed)
-            min_task_threshold = 2 if len(self.completed_tasks) > 1 else 1
-            if entity_task_counts.get(entity, 0) < min_task_threshold:
-                continue
-
-            filtered_entities.add(entity)
-
-        # Log filtering stats
-        entities_filtered_out = len(all_entities) - len(filtered_entities)
-        if entities_filtered_out > 0:
-            logging.info(f"Entity filtering: Removed {entities_filtered_out} entities ({len(all_entities)} → {len(filtered_entities)})")
-            print(f"🔍 Entity filtering: Removed {entities_filtered_out} low-confidence entities ({len(all_entities)} → {len(filtered_entities)} kept)")
-
-        all_entities = filtered_entities  # Replace with filtered set
+        # Task 2: Entity filtering moved to LLM-based synthesis (removed Python blacklist)
 
         # Compile failure details for debugging
         failure_details = []
@@ -868,18 +832,26 @@ class SimpleDeepResearch:
                 # Get API key if needed
                 api_key = self.api_keys.get(api_key_name) if api_key_name else None
 
+                # Get per-integration limit (Task 1: Per-Integration Limits)
+                source_name = self.tool_name_to_display.get(tool_name, tool_name)
+                integration_limit = config.get_integration_limit(source_name.lower().replace('.', '').replace(' ', ''))
+
                 # Build tool arguments
                 args = {
                     "research_question": query,
-                    "limit": limit
+                    "limit": integration_limit  # Use per-integration limit instead of hardcoded
                 }
                 if api_key:
                     args["api_key"] = api_key
 
-                # Add param_hints if available for this tool (Phase 4)
+                # Add param_hints if available for this tool (Task 4: Twitter pagination control)
                 if param_adjustments:
                     # Map source keys to tool names
-                    source_map = {"reddit": "search_reddit", "usajobs": "search_usajobs"}
+                    source_map = {
+                        "reddit": "search_reddit",
+                        "usajobs": "search_usajobs",
+                        "twitter": "search_twitter"  # Task 4: Added Twitter pagination control
+                    }
                     # Find matching hints for this tool
                     for source_key, tool_name_key in source_map.items():
                         if tool_name == tool_name_key and source_key in param_adjustments:
@@ -1068,10 +1040,11 @@ class SimpleDeepResearch:
                 mcp_results = []
                 if selected_mcp_tools:
                     # Pass selected MCP tool names to avoid duplicate selection call
+                    # Use default limit (will be overridden per-tool in _search_mcp_tools_selected)
                     mcp_results = await self._search_mcp_tools_selected(
                         task.query,
                         selected_mcp_tools,
-                        limit=10,
+                        limit=config.default_result_limit,
                         task_id=task.id,
                         attempt=task.retry_count,
                         param_adjustments=task.param_adjustments
@@ -1081,7 +1054,8 @@ class SimpleDeepResearch:
                 web_results = []
                 if "brave_search" in selected_web_tools:
                     print(f"🌐 Brave Search selected by LLM, executing web search...")
-                    web_results = await self._search_brave(task.query, max_results=20)
+                    brave_limit = config.get_integration_limit('bravesearch')  # Task 1: Use per-integration limit
+                    web_results = await self._search_brave(task.query, max_results=brave_limit)
                 else:
                     print(f"⊘ Brave Search not selected for this task")
 
@@ -1669,9 +1643,25 @@ class SimpleDeepResearch:
                             },
                             "required": ["keywords"],
                             "additionalProperties": False
+                        },
+                        "twitter": {
+                            "type": "object",
+                            "properties": {
+                                "search_type": {
+                                    "type": "string",
+                                    "enum": ["Latest", "Top", "People", "Photos", "Videos"]
+                                },
+                                "max_pages": {
+                                    "type": "integer",
+                                    "minimum": 1,
+                                    "maximum": 3
+                                }
+                            },
+                            "required": ["search_type", "max_pages"],
+                            "additionalProperties": False
                         }
                     },
-                    "required": ["reddit", "usajobs"],
+                    "required": ["reddit", "usajobs", "twitter"],
                     "additionalProperties": False
                 }
             },
@@ -1737,9 +1727,25 @@ class SimpleDeepResearch:
                             },
                             "required": ["keywords"],
                             "additionalProperties": False
+                        },
+                        "twitter": {
+                            "type": "object",
+                            "properties": {
+                                "search_type": {
+                                    "type": "string",
+                                    "enum": ["Latest", "Top", "People", "Photos", "Videos"]
+                                },
+                                "max_pages": {
+                                    "type": "integer",
+                                    "minimum": 1,
+                                    "maximum": 3
+                                }
+                            },
+                            "required": ["search_type", "max_pages"],
+                            "additionalProperties": False
                         }
                     },
-                    "required": ["reddit", "usajobs"],
+                    "required": ["reddit", "usajobs", "twitter"],
                     "additionalProperties": False
                 }
             },
@@ -1996,9 +2002,89 @@ class SimpleDeepResearch:
                         'url': r.get('url', '')
                     })
 
-        # Compile entity relationships (send ALL to synthesis - LLM has 1M token context)
+        # Task 2: LLM-based entity filtering (replaces Python blacklist)
+        # Count entity occurrences across tasks for filtering
+        entity_task_counts = {}
+        for task in self.completed_tasks:
+            task_entities = set(e.strip().lower() for e in task.entities_found if e.strip())
+            for entity in task_entities:
+                entity_task_counts[entity] = entity_task_counts.get(entity, 0) + 1
+
+        # Format entities with counts for LLM filtering
+        entities_with_counts = "\n".join([
+            f"- {entity} (appeared in {count} task{'s' if count > 1 else ''})"
+            for entity, count in sorted(entity_task_counts.items(), key=lambda x: x[1], reverse=True)
+        ])
+
+        # Call LLM to filter entities
+        all_entities_list = list(self.entity_graph.keys())
+        if all_entities_list:
+            try:
+                print(f"🔍 Filtering {len(all_entities_list)} entities using LLM...")
+                entity_filter_prompt = render_prompt(
+                    "deep_research/entity_filtering.j2",
+                    research_question=self.original_question,
+                    tasks_completed=len(self.completed_tasks),
+                    total_entities=len(all_entities_list),
+                    entities_with_counts=entities_with_counts
+                )
+
+                entity_filter_schema = {
+                    "type": "object",
+                    "properties": {
+                        "filtered_entities": {
+                            "type": "array",
+                            "items": {"type": "string"},
+                            "description": "List of entities to KEEP (exclude low-value/generic ones)"
+                        },
+                        "reasoning": {
+                            "type": "string",
+                            "description": "Brief explanation of filtering decisions"
+                        }
+                    },
+                    "required": ["filtered_entities", "reasoning"],
+                    "additionalProperties": False
+                }
+
+                entity_filter_response = await acompletion(
+                    model=config.get_model("analysis"),
+                    messages=[{"role": "user", "content": entity_filter_prompt}],
+                    response_format={
+                        "type": "json_schema",
+                        "json_schema": {
+                            "strict": True,
+                            "name": "entity_filtering",
+                            "schema": entity_filter_schema
+                        }
+                    }
+                )
+
+                filter_result = json.loads(entity_filter_response.choices[0].message.content)
+                filtered_entity_names = set(e.lower() for e in filter_result.get("filtered_entities", []))
+                filter_reasoning = filter_result.get("reasoning", "")
+
+                # Update entity_graph to only include filtered entities
+                filtered_entity_graph = {
+                    entity: related
+                    for entity, related in self.entity_graph.items()
+                    if entity.lower() in filtered_entity_names
+                }
+
+                entities_filtered_out = len(self.entity_graph) - len(filtered_entity_graph)
+                print(f"✓ Entity filtering: Removed {entities_filtered_out} entities ({len(self.entity_graph)} → {len(filtered_entity_graph)} kept)")
+                print(f"  Reasoning: {filter_reasoning}")
+
+                # Replace entity graph with filtered version
+                self.entity_graph = filtered_entity_graph
+
+            except Exception as e:
+                logging.error(f"Entity filtering failed: {type(e).__name__}: {str(e)}")
+                print(f"⚠️  Entity filtering failed (using all entities): {type(e).__name__}")
+                # On error, keep all entities (don't want to lose valid data)
+
+        # Compile entity relationships (send filtered entities to synthesis)
         relationship_summary = []
-        for entity, related in list(self.entity_graph.items()):  # All entities
+        for entity, related in list(self.entity_graph.items()):  # Filtered entities only
             relationship_summary.append(f"- {entity}: connected to {', '.join(related)}")  # All relationships
 
         # Task 2A Fix: Use actual total_results from results_by_task instead of len(all_results[:20])

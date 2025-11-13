@@ -45,11 +45,20 @@ USAJobs parameters:
 - keywords: Prefer single broad keyword over multi-word phrases
   (e.g., "cybersecurity" gets more results than "cybersecurity analyst")
 
+Twitter parameters:
+- search_type: "Latest" | "Top" | "People" | "Photos" | "Videos"
+  (Use "Top" for authoritative/popular tweets, "Latest" for recent/timely)
+- max_pages: 1-3 (Number of result pages to fetch, more pages = more results but slower)
+  (Increase if zero/low results, decrease if getting too many off-topic results)
+
+IMPORTANT: Only suggest Twitter params for low quality/zero results, NOT for errors (rate limits, timeouts).
+
 Return JSON with:
 {
   "query": "new query text",
   "param_adjustments": {
     "reddit": {"time_filter": "year"},
-    "usajobs": {"keywords": "broad keyword"}
+    "usajobs": {"keywords": "broad keyword"},
+    "twitter": {"search_type": "Top", "max_pages": 2}
   }
 }

@@ -189,7 +189,8 @@ class TwitterIntegration(DatabaseIntegration):
     async def execute_search(self,
                            query_params: Dict,
                            api_key: Optional[str] = None,
-                           limit: int = 10) -> QueryResult:
+                           limit: int = 10,
+                           param_hints: Optional[Dict] = None) -> QueryResult:
         """
         Execute Twitter search with generated parameters.
 
@@ -197,6 +198,8 @@ class TwitterIntegration(DatabaseIntegration):
             query_params: Parameters from generate_query()
             api_key: RapidAPI key (required)
             limit: Maximum number of results to return
+            param_hints: Optional parameter overrides from LLM reformulation
+                        (e.g., {"search_type": "Top", "max_pages": 3})
 
         Returns:
             QueryResult with standardized format
@@ -214,15 +217,20 @@ class TwitterIntegration(DatabaseIntegration):
             )
 
         try:
+            # Apply param_hints overrides (Task 4: Twitter pagination control)
+            effective_params = query_params.copy()
+            if param_hints:
+                effective_params.update(param_hints)
+
             # Prepare step plan for api_client
             step_plan = {
                 "endpoint": "search.php",
                 "params": {
-                    "query": query_params.get("query", ""),
-                    "search_type": query_params.get("search_type", "Latest")
+                    "query": effective_params.get("query", ""),
+                    "search_type": effective_params.get("search_type", "Latest")
                 },
-                "max_pages": query_params.get("max_pages", 2),
-                "reason": query_params.get("reasoning", "Twitter search")
+                "max_pages": effective_params.get("max_pages", 2),
+                "reason": effective_params.get("reasoning", "Twitter search")
             }
 
             # Execute search using api_client (synchronous, so wrap in thread)
