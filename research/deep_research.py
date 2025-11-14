@@ -1020,8 +1020,16 @@ class SimpleDeepResearch:
                         attempt=task.retry_count
                     )
 
-                # Get LLM-selected sources for this query (includes both MCP and web tools)
-                selected_sources, source_selection_reason = await self._select_relevant_sources(task.query)
+                # Phase 2: Check if LLM provided source adjustments on previous retry
+                adjusted_sources = task.param_adjustments.get("_adjusted_sources")
+                if adjusted_sources:
+                    # Use LLM-adjusted sources (skip source selection LLM call)
+                    selected_sources = adjusted_sources
+                    source_selection_reason = f"Phase 2: Using LLM-adjusted sources from previous retry"
+                    print(f"📋 Phase 2: Using adjusted sources: {', '.join([self.tool_name_to_display.get(s, s) for s in selected_sources])}")
+                else:
+                    # Get LLM-selected sources for this query (includes both MCP and web tools)
+                    selected_sources, source_selection_reason = await self._select_relevant_sources(task.query)
 
                 # Log source selection if logger enabled
                 if self.logger:
@@ -1215,17 +1223,91 @@ class SimpleDeepResearch:
                             if not source_has_kept_results:
                                 sources_with_low_quality.append(source_display)
 
+                    # Phase 2: Build source performance data for LLM source re-selection
+                    source_performance = []
+                    for source in selected_sources:
+                        source_display = self.tool_name_to_display.get(source, source)
+                        source_results = [r for r in all_results if r.get('source') == source_display]
+                        kept_indices = [i for i, r in enumerate(all_results) if r.get('source') == source_display and i in relevant_indices]
+
+                        # Categorize source status
+                        if source_display in sources_with_errors:
+                            status = "error"
+                            error_type = "API failure, rate limit, or timeout"
+                        elif not source_results:
+                            status = "zero_results"
+                            error_type = None
+                        elif not kept_indices:
+                            status = "low_quality"
+                            error_type = None
+                        else:
+                            status = "success"
+                            error_type = None
+
+                        quality_rate = int((len(kept_indices) / len(source_results) * 100)) if source_results else 0
+
+                        source_performance.append({
+                            "name": source_display,
+                            "status": status,
+                            "results_returned": len(source_results),
+                            "results_kept": len(kept_indices),
+                            "quality_rate": quality_rate,
+                            "error_type": error_type
+                        })
+
+                    # Get available sources (all tools minus rate-limited ones)
+                    available_sources = [
+                        self.tool_name_to_display[tool["name"]]
+                        for tool in (self.mcp_tools + self.web_tools)
+                        if self.tool_name_to_display.get(tool["name"], tool["name"]) not in self.rate_limited_sources
+                    ]
+
                     # Reformulate query to find more results
                     reformulation = await self._reformulate_for_relevance(
                         original_query=task.query,
                         research_question=self.original_question,
                         results_count=len(filtered_results),
-                        sources_with_errors=sources_with_errors,
-                        sources_with_zero_results=sources_with_zero_results,
-                        sources_with_low_quality=sources_with_low_quality
+                        source_performance=source_performance,
+                        available_sources=available_sources
                     )
                     new_query = reformulation["query"]
                     new_param_adjustments = reformulation.get("param_adjustments", {})
+
+                    # Phase 2: Apply source re-selection if LLM provided adjustments
+                    source_adjustments = reformulation.get("source_adjustments")
+                    if source_adjustments:
+                        # Log source adjustments
+                        keep_sources = source_adjustments.get("keep", [])
+                        drop_sources = source_adjustments.get("drop", [])
+                        add_sources = source_adjustments.get("add", [])
+                        reasoning = source_adjustments.get("reasoning", "")
+
+                        print(f"📋 Source re-selection:")
+                        print(f"  Keep: {', '.join(keep_sources) if keep_sources else 'none'}")
+                        print(f"  Drop: {', '.join(drop_sources) if drop_sources else 'none'}")
+                        print(f"  Add: {', '.join(add_sources) if add_sources else 'none'}")
+                        print(f"  Reasoning: {reasoning}")
+
+                        # Apply source adjustments for next retry
+                        # Convert display names back to tool names for next source selection
+                        adjusted_sources = []
+
+                        # Add "keep" sources
+                        for display_name in keep_sources:
+                            tool_name = self.tool_display_to_name.get(display_name)
+                            if tool_name:
+                                adjusted_sources.append(tool_name)
+
+                        # Add "add" sources
+                        for display_name in add_sources:
+                            tool_name = self.tool_display_to_name.get(display_name)
+                            if tool_name and tool_name not in adjusted_sources:
+                                adjusted_sources.append(tool_name)
+
+                        # Override selected_sources for next retry (skip LLM source selection)
+                        # Store adjusted sources in task metadata for next iteration
+                        task.param_adjustments["_adjusted_sources"] = adjusted_sources
+                        logging.info(f"Phase 2: Source re-selection applied - next retry will use: {[self.tool_name_to_display.get(s, s) for s in adjusted_sources]}")
 
                     # Phase 0: Log reformulation with full source context (for instrumentation)
                     if self.logger:
@@ -1640,33 +1722,33 @@ class SimpleDeepResearch:
         original_query: str,
         research_question: str,
         results_count: int,
-        sources_with_errors: Optional[List[str]] = None,
-        sources_with_zero_results: Optional[List[str]] = None,
-        sources_with_low_quality: Optional[List[str]] = None
+        source_performance: Optional[List[Dict]] = None,
+        available_sources: Optional[List[str]] = None
     ) -> Dict[str, Any]:
         """
         Reformulate query to get MORE RELEVANT results.
+
+        Phase 2: LLM intelligently re-selects sources based on performance.
 
         Args:
             original_query: Current query
             research_question: Original research question
             results_count: Number of results found
-            sources_with_errors: Sources that returned errors (API failures - hints won't help)
-            sources_with_zero_results: Sources with zero results (hints might help)
-            sources_with_low_quality: Sources with low quality results (hints might help)
+            source_performance: List of dicts with source performance data (name, status, results_returned, results_kept, quality_rate, error_type)
+            available_sources: List of available source names (all sources minus rate-limited)
 
         Returns Dict with:
         - query: New query text
         - param_adjustments: Dict of source-specific parameter hints (e.g., {"reddit": {"time_filter": "year"}})
+        - source_adjustments: (Optional) Dict with keep/drop/add lists for source re-selection
         """
         prompt = render_prompt(
             "deep_research/query_reformulation_relevance.j2",
             research_question=research_question,
             original_query=original_query,
             results_count=results_count,
-            sources_with_errors=sources_with_errors or [],
-            sources_with_zero_results=sources_with_zero_results or [],
-            sources_with_low_quality=sources_with_low_quality or []
+            source_performance=source_performance or [],
+            available_sources=available_sources or []
         )
 
         schema = {
@@ -1675,6 +1757,33 @@ class SimpleDeepResearch:
                 "query": {
                     "type": "string",
                     "description": "Reformulated query text"
+                },
+                "source_adjustments": {
+                    "type": "object",
+                    "description": "Phase 2: Optional source re-selection based on performance",
+                    "properties": {
+                        "keep": {
+                            "type": "array",
+                            "items": {"type": "string"},
+                            "description": "Sources that performed well (high quality, keep querying)"
+                        },
+                        "drop": {
+                            "type": "array",
+                            "items": {"type": "string"},
+                            "description": "Sources with poor performance (0% quality, errors, off-topic - stop querying)"
+                        },
+                        "add": {
+                            "type": "array",
+                            "items": {"type": "string"},
+                            "description": "Sources not yet tried that might perform better"
+                        },
+                        "reasoning": {
+                            "type": "string",
+                            "description": "Why you made these source selection decisions"
+                        }
+                    },
+                    "required": ["keep", "drop", "add", "reasoning"],
+                    "additionalProperties": False
                 },
                 "param_adjustments": {
                     "type": "object",
