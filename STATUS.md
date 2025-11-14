@@ -1,12 +1,168 @@
 # STATUS.md - Component Status Tracker
 
-**Last Updated**: 2025-10-30 (Deep Research Priority 1 Fixes Validated)
-**Current Phase**: Deep Research Brave Search Integration - COMPLETE ✅
+**Last Updated**: 2025-11-13 (Codex Quality Improvements - All Tasks Complete)
+**Current Phase**: Deep Research Quality Polish - COMPLETE ✅
+**Previous Phase**: Deep Research Brave Search Integration - COMPLETE ✅
 **Previous Phase**: MCP Integration (Phase 2: Deep Research Integration) - COMPLETE ✅
 **Previous Phase**: MCP Integration (Phase 1: Wrappers) - COMPLETE ✅
 **Previous Phase**: Phase 1.5 (Adaptive Search & Knowledge Graph) - Week 1 COMPLETE ✅
 **Previous Phase**: Phase 1 (Boolean Monitoring MVP) - 100% COMPLETE + **DEPLOYED IN PRODUCTION** ✅
 **Previous Phase**: Phase 0 (Foundation) - 100% COMPLETE
+
+---
+
+## Codex Quality Improvements (2025-11-13)
+
+**Status**: ✅ ALL 4 TASKS COMPLETE & VALIDATED
+**Scope**: Per-integration limits, LLM entity filtering, Twitter pagination control, documentation clarity
+
+### Implementation Summary
+
+**All 4 Codex recommendations successfully implemented and validated:**
+
+1. ✅ **Task 1: Per-Integration Result Limits** - Config-driven limits (USAJobs: 100, ClearanceJobs: 20, etc.)
+2. ✅ **Task 2: LLM Entity Filtering** - Replaced Python blacklist with synthesis-time LLM filtering
+3. ✅ **Task 3: Documentation Clarity** - Added NOTE clarifying test-specific query bias
+4. ✅ **Task 4: Twitter Pagination Control** - LLM can adjust search_type/max_pages on retry
+
+### Task 1: Per-Integration Limits ✅
+
+**Goal**: Let config file set different result limits per source to leverage API capabilities
+
+**Files Modified**:
+- `config_default.yaml` (lines 59, 64-78): Added integration_limits section, default 10→20
+- `config_loader.py` (lines 279-303): Added get_integration_limit() with source name normalization
+- `research/deep_research.py` (lines 277, 835-837, 1057): 3 call sites updated to use config values
+
+**Implementation**:
+- Source name normalization (lowercase, remove dots/spaces) for robust matching
+- Fallback to default_result_limit if integration not configured
+- Limits: USAJobs: 100, ClearanceJobs: 20, Brave: 20, SAM.gov: 10, default: 20
+
+**Benefit**: USAJobs now returns up to 100 results per task (was capped at 10), leverages API pagination
+
+### Task 2: LLM Entity Filtering ✅
+
+**Goal**: Replace rigid Python blacklist with intelligent LLM-based filtering at synthesis time
+
+**Architecture Change**:
+- Per-task LLM extraction (line 414) - UNCHANGED (still extracts entities per task)
+- Synthesis-time LLM filter (lines 2005-2088 in _synthesize_report()) - REPLACES Python blacklist
+
+**Files Modified**:
+- `research/deep_research.py` (line 493, lines 2005-2088): Removed META_TERMS_BLACKLIST, added LLM filtering
+- `prompts/deep_research/entity_filtering.j2` (NEW): LLM filtering criteria with examples
+
+**Implementation**:
+- Entity filtering happens AFTER all tasks complete (synthesis-time, not per-task)
+- LLM decides which entities to keep/remove with full context and reasoning
+- Filtering criteria: Keep specific orgs/titles/certs, remove generic meta-terms
+- Multi-task confirmation passed to LLM (entity_task_counts for cross-validation)
+- Filtered copy created, raw entity_graph preserved (no data loss)
+- LLM rationale logged for transparency
+
+**Test Results** (test_clearancejobs_contractor_focused.py):
+- Before: 19 entities extracted
+- After: 18 entities kept (removed 1 generic meta-term)
+- LLM reasoning: "Kept specific organizations (Northrop Grumman, Lockheed Martin, Leidos, DOD), job titles, clearance types (TS/SCI, polygraph), technical skills (ethical hacking, penetration testing, AI-driven threat detection)"
+- No loss of valuable entities
+
+**Benefit**: Context-aware filtering adapts to query domain, eliminates noise without losing signal
+
+### Task 3: Documentation Clarity ✅
+
+**Goal**: Clarify that contractor bias in test file is intentional, not system default
+
+**File Modified**: `tests/test_clearancejobs_contractor_focused.py` (lines 8-11)
+
+**Implementation**: Added NOTE to docstring:
+```python
+NOTE: This test uses a contractor-specific query INTENTIONALLY to validate
+ClearanceJobs integration behavior with focused queries. The default deep
+research flow uses neutral queries (see test_gemini_deep_research.py).
+The contractor bias here is test-specific, not a system-wide default.
+```
+
+**Benefit**: Prevents misunderstanding that system defaults to contractor-biased queries
+
+### Task 4: Twitter Pagination Control ✅
+
+**Goal**: Expose Twitter search_type/max_pages to LLM via param_hints for intelligent retry adaptation
+
+**Files Modified**:
+- `prompts/deep_research/query_reformulation_relevance.j2` (lines 48-54): Documented Twitter parameters
+- `integrations/social/twitter_integration.py` (lines 193, 220-223): Added param_hints support
+- `research/deep_research.py` (lines 853, 1647-1662, 1734-1749): Added Twitter to schema + source_map
+
+**Implementation**:
+- LLM can suggest `{"twitter": {"search_type": "Top", "max_pages": 2}}` on retry
+- Twitter integration applies param_hints overrides to effective_params
+- Schema validates search_type enum (Latest/Top/People/Photos/Videos) + max_pages 1-3 range
+- Documented in prompt: Use "Top" for authoritative/popular tweets, "Latest" for recent/timely
+
+**Benefit**: LLM can adapt Twitter search strategy on retry (e.g., switch from Latest to Top for authoritative sources)
+
+### Final Validation ✅ PASSED
+
+**Test**: test_clearancejobs_contractor_focused.py (3 tasks, 69 results, 18 entities)
+
+**Validation Results**:
+- ✅ All 4 changes working together harmoniously
+- ✅ Per-integration limits applied (config-driven, no hardcoded values)
+- ✅ Entity filtering at synthesis time with LLM rationale visible in logs
+- ✅ Contractor-specific entities kept (Northrop Grumman, Lockheed Martin, Leidos, DOD)
+- ✅ Generic meta-terms removed (1 entity filtered with reasoning)
+- ✅ Twitter param_hints schema available (ready for retry adaptation)
+- ✅ No regressions in quality
+- ✅ Test completed successfully (exit code 0)
+
+**Key Metrics**:
+- Task success rate: 100% (3/3 completed)
+- Results: 69 total findings
+- Entities: 18 kept after LLM filtering (specific orgs, job titles, clearance types, technical skills)
+- LLM filtering reasoning: Transparent and documented in logs
+
+### Files Modified
+
+**Configuration**:
+- config_default.yaml (added integration_limits section)
+
+**Core Infrastructure**:
+- config_loader.py (added get_integration_limit() helper)
+- research/deep_research.py (3 limit call sites + LLM entity filtering + Twitter schema)
+- integrations/social/twitter_integration.py (param_hints support)
+
+**Prompts**:
+- prompts/deep_research/query_reformulation_relevance.j2 (Twitter params documented)
+- prompts/deep_research/entity_filtering.j2(NEW - LLM filtering criteria)
+
+**Tests**:
+- tests/test_clearancejobs_contractor_focused.py (documentation NOTE added)
+
+### Documentation
+
+**Analysis Documents Created** (archived in docs/active/):
+1. CODEX_RECOMMENDATIONS_SUMMARY.md - Executive summary with decision matrix
+2. CODEX_IMPLEMENTATION_PLAN.md - Step-by-step implementation details
+3. CODEX_IMPLEMENTATION_CONCERNS.md - Risk analysis and uncertainties
+4. CODEX_REC_ANALYSIS_SUMMARY.md - Original technical analysis
+
+**Updated**:
+- CLAUDE.md (marked all tasks COMPLETE with implementation details)
+- STATUS.md (this section)
+
+### Benefits
+
+**Configuration Flexibility**: Per-integration limits now set via config (not hardcoded in code)
+**Entity Quality**: LLM filtering adapts to domain context (not rigid blacklist rules)
+**Retry Intelligence**: LLM can adjust Twitter search strategy based on previous attempt results
+**Transparency**: All filtering decisions logged with LLM reasoning
+
+### Next Actions
+
+1. Monitor production runs for entity filtering quality (compare before/after)
+2. Analyze param_hints usage in execution logs (effectiveness measurement)
+3. Consider expanding param_hints to other integrations (Reddit, USAJobs) if Twitter proves valuable
 
 ---
 
