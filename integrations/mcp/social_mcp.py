@@ -67,7 +67,8 @@ mcp = FastMCP(
 async def search_twitter(
     research_question: str,
     api_key: Optional[str] = None,
-    limit: int = 20
+    limit: int = 20,
+    param_hints: Optional[Dict] = None
 ) -> dict:
     """Search Twitter for tweets and social media discussions.
 
@@ -83,6 +84,8 @@ async def search_twitter(
             operations" or "NSA whistleblower revelations")
         api_key: RapidAPI key (optional, uses RAPIDAPI_KEY env var if not provided)
         limit: Maximum number of results to return (default: 20, max: 100)
+        param_hints: Optional parameter hints to override LLM-generated values
+            (e.g., {"search_type": "Top", "max_pages": 2})
 
     Returns:
         dict: Search results with structure:
@@ -144,8 +147,8 @@ async def search_twitter(
             "error": "Research question not relevant for Twitter"
         }
 
-    # Execute search
-    result = await integration.execute_search(query_params, api_key, limit)
+    # Execute search (with optional param_hints)
+    result = await integration.execute_search(query_params, api_key, limit, param_hints)
 
     # Convert QueryResult to dict
     return {
