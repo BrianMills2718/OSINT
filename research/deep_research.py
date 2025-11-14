@@ -90,6 +90,7 @@ class ResearchTask:
     entities_found: List[str] = None
     param_adjustments: Dict[str, Dict] = field(default_factory=dict)
     accumulated_results: List[Dict] = field(default_factory=list)  # Priority 2: Accumulate results across attempts
+    reasoning_notes: List[Dict] = field(default_factory=list)  # Phase 1: Store LLM reasoning breakdowns
 
     def __post_init__(self):
         if self.entities_found is None:
@@ -98,6 +99,8 @@ class ResearchTask:
             self.param_adjustments = {}
         if self.accumulated_results is None:
             self.accumulated_results = []
+        if self.reasoning_notes is None:
+            self.reasoning_notes = []
 
 
 @dataclass
@@ -1067,7 +1070,7 @@ class SimpleDeepResearch:
                 # LLM makes 3 decisions: ACCEPT/REJECT, which indices to keep, continue searching?
                 # Gemini 2.5 Flash has 65K token context - evaluate ALL results, no sampling needed
                 print(f"🔍 Validating relevance of {len(all_results)} results...")
-                should_accept, relevance_reason, relevant_indices, should_continue, continuation_reason = await self._validate_result_relevance(
+                should_accept, relevance_reason, relevant_indices, should_continue, continuation_reason, reasoning_breakdown = await self._validate_result_relevance(
                     task_query=task.query,
                     research_question=self.original_question,
                     sample_results=all_results  # Send ALL results to LLM
@@ -1079,6 +1082,25 @@ class SimpleDeepResearch:
                 print(f"  Filtered: {len(relevant_indices)}/{len(all_results)} results kept")
                 print(f"  Continuation: {continue_str}")
                 print(f"  Continuation Reason: {continuation_reason}")
+
+                # Phase 1: Store LLM reasoning breakdown for transparency
+                if reasoning_breakdown:
+                    task.reasoning_notes.append({
+                        "attempt": task.retry_count,
+                        "query": task.query,
+                        "results_evaluated": len(all_results),
+                        "decision": decision_str,
+                        "reasoning_breakdown": reasoning_breakdown
+                    })
+                    # Log interesting decisions for visibility
+                    interesting = reasoning_breakdown.get("interesting_decisions", [])
+                    if interesting:
+                        print(f"  💡 Interesting decisions: {len(interesting)} highlighted")
+                        for decision_note in interesting[:3]:  # Show first 3
+                            action = decision_note.get("action", "unknown")
+                            idx = decision_note.get("result_index", -1)
+                            reasoning = decision_note.get("reasoning", "")
+                            print(f"     • Result #{idx} ({action}): {reasoning[:80]}{'...' if len(reasoning) > 80 else ''}")
 
                 # Filter results to only keep relevant ones (per-result filtering)
                 if should_accept and relevant_indices:
@@ -1480,11 +1502,11 @@ class SimpleDeepResearch:
         task_query: str,
         research_question: str,
         sample_results: List[Dict]
-    ) -> Tuple[bool, str, List[int], bool]:
+    ) -> Tuple[bool, str, List[int], bool, Dict]:
         """
         Validate result relevance, filter to best results, and decide if more searching needed.
 
-        LLM makes THREE decisions: ACCEPT/REJECT, which indices to keep, continue searching?
+        LLM makes FOUR parts: ACCEPT/REJECT, which indices to keep, continue searching?, reasoning breakdown
 
         Args:
             task_query: Query that generated these results
@@ -1492,14 +1514,15 @@ class SimpleDeepResearch:
             sample_results: All results to evaluate (Gemini 2.5 Flash has 65K token context)
 
         Returns:
-            Tuple of (should_accept, reason, relevant_indices, should_continue):
+            Tuple of (should_accept, reason, relevant_indices, should_continue, reasoning_breakdown):
             - should_accept: True to ACCEPT results, False to REJECT
             - reason: LLM's explanation for accept/reject decision
             - relevant_indices: List of result indices to keep (e.g., [0, 2, 5])
             - should_continue: True to search for more results, False to stop
+            - reasoning_breakdown: Dict with filtering_strategy, interesting_decisions, patterns_noticed
         """
         if not sample_results:
-            return (False, "No results to evaluate", [], False)
+            return (False, "No results to evaluate", [], False, {})
 
         # Build numbered sample text (Result #0, Result #1, etc.)
         results_text = "\n\n".join([
@@ -1538,9 +1561,40 @@ class SimpleDeepResearch:
                 "continuation_reason": {
                     "type": "string",
                     "description": "Brief explanation of why to continue or stop searching"
+                },
+                "reasoning_breakdown": {
+                    "type": "object",
+                    "properties": {
+                        "filtering_strategy": {
+                            "type": "string",
+                            "description": "Overall approach to filtering this batch"
+                        },
+                        "interesting_decisions": {
+                            "type": "array",
+                            "items": {
+                                "type": "object",
+                                "properties": {
+                                    "result_index": {"type": "integer"},
+                                    "action": {
+                                        "type": "string",
+                                        "enum": ["kept", "rejected"]
+                                    },
+                                    "reasoning": {"type": "string"}
+                                },
+                                "required": ["result_index", "action", "reasoning"],
+                                "additionalProperties": False
+                            }
+                        },
+                        "patterns_noticed": {
+                            "type": "string",
+                            "description": "Patterns or trends observed across results"
+                        }
+                    },
+                    "required": ["filtering_strategy", "interesting_decisions", "patterns_noticed"],
+                    "additionalProperties": False
                 }
             },
-            "required": ["decision", "reason", "relevant_indices", "continue_searching", "continuation_reason"],
+            "required": ["decision", "reason", "relevant_indices", "continue_searching", "continuation_reason", "reasoning_breakdown"],
             "additionalProperties": False
         }
 
@@ -1564,6 +1618,7 @@ class SimpleDeepResearch:
             relevant_indices = result.get("relevant_indices", [])
             should_continue = result.get("continue_searching", True)
             continuation_reason = result.get("continuation_reason", "")
+            reasoning_breakdown = result.get("reasoning_breakdown", {})
 
             should_accept = (decision == "ACCEPT")
 
@@ -1571,14 +1626,14 @@ class SimpleDeepResearch:
             logging.info(f"Filtered indices: {relevant_indices} ({len(relevant_indices)} results kept)")
             logging.info(f"Continue searching: {should_continue} - {continuation_reason}")
 
-            return (should_accept, reason, relevant_indices, should_continue, continuation_reason)
+            return (should_accept, reason, relevant_indices, should_continue, continuation_reason, reasoning_breakdown)
 
         except Exception as e:
             logging.error(f"Relevance validation failed: {type(e).__name__}: {str(e)}")
             # On error, assume relevant and keep all results (don't want to fail good results)
             # But still allow continuation to try finding better results
             all_indices = list(range(len(sample_results)))
-            return (True, f"Error during validation: {type(e).__name__}", all_indices, True, "Error during validation")
+            return (True, f"Error during validation: {type(e).__name__}", all_indices, True, "Error during validation", {})
 
     async def _reformulate_for_relevance(
         self,
@@ -2097,7 +2152,7 @@ class SimpleDeepResearch:
         integrations_used = [s for s in all_sources if s in integration_names]
         websites_found = [s for s in all_sources if s not in integration_names and s != 'Unknown']
 
-        # Task 2C: Collect task diagnostics (continuation reasoning)
+        # Phase 1: Collect task diagnostics WITH reasoning notes
         task_diagnostics = []
         for task in self.completed_tasks:
             task_result = self.results_by_task.get(task.id, {})
@@ -2107,7 +2162,8 @@ class SimpleDeepResearch:
                 "status": "COMPLETED",
                 "results_kept": task_result.get('total_results', 0),
                 "results_total": task.accumulated_results and len(task.accumulated_results) or 0,
-                "continuation_reason": "Task completed successfully"  # Placeholder - real reason not stored yet
+                "continuation_reason": "Task completed successfully",
+                "reasoning_notes": task.reasoning_notes  # Phase 1: Include LLM reasoning breakdowns
             })
 
         prompt = render_prompt(

@@ -39,6 +39,24 @@ Create a detailed markdown report with:
 - Query: "{{ task.query }}"
 - Results: {{ task.results_kept }} kept ({{ task.results_total }} evaluated)
 - Decision: {{ task.continuation_reason }}
+{% if task.reasoning_notes %}
+
+*LLM Decision-Making Process*:
+{% for note in task.reasoning_notes %}
+  - **Attempt {{ note.attempt }}**: Evaluated {{ note.results_evaluated }} results ({{ note.decision }})
+    - **Filtering Strategy**: {{ note.reasoning_breakdown.filtering_strategy }}
+    {% if note.reasoning_breakdown.interesting_decisions %}
+    - **Interesting Decisions**:
+      {% for decision in note.reasoning_breakdown.interesting_decisions[:5] %}
+      - Result #{{ decision.result_index }} ({{ decision.action }}): {{ decision.reasoning }}
+      {% endfor %}
+    {% endif %}
+    {% if note.reasoning_breakdown.patterns_noticed %}
+    - **Patterns Noticed**: {{ note.reasoning_breakdown.patterns_noticed }}
+    {% endif %}
+{% endfor %}
+{% endif %}
+
 {% endfor %}
 
 ## Methodology

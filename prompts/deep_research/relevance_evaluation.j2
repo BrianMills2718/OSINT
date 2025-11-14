@@ -50,11 +50,27 @@ Examples:
 - Question: "Palantir government contracts" + Results: 10 relevant contracts
   → ACCEPT, keep [0,1,2,3,4,5,6,7,8,9], continue=false (sufficient coverage)
 
+4. **REASONING BREAKDOWN**: Explain your decision-making process like an expert researcher
+   - Highlight 3-5 interesting decisions (borderline cases, surprising keeps/rejects)
+   - Describe your overall filtering strategy for this batch
+   - Identify patterns you noticed across results
+
 Return your decision in this format:
 {
   "decision": "ACCEPT" or "REJECT",
   "reason": "brief explanation",
   "relevant_indices": [list of numbers],
   "continue_searching": true or false,
-  "continuation_reason": "why continue/stop"
+  "continuation_reason": "why continue/stop",
+  "reasoning_breakdown": {
+    "filtering_strategy": "Your overall approach to filtering this batch",
+    "interesting_decisions": [
+      {
+        "result_index": 0,
+        "action": "kept" or "rejected",
+        "reasoning": "Why this specific decision was interesting or borderline"
+      }
+    ],
+    "patterns_noticed": "Patterns or trends you observed across the results"
+  }
 }

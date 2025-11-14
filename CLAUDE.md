@@ -368,14 +368,182 @@ pip list | grep playwright
 
 # CLAUDE.md - Temporary Section (Updated as Tasks Complete)
 
-**Last Updated**: 2025-11-10 (Deep Research Reliability - All Gaps Fixed & Validated)
-**Current Phase**: Deep Research Engine Stabilization - COMPLETE
-**Current Focus**: All 4 implementation gaps fixed, tested, and validated via E2E + pytest
-**Status**: ✅ All Gaps Fixed | ✅ E2E Validation Passed | ✅ Pytest Tests Added
+**Last Updated**: 2025-11-14 (Phase 1: Mentor-Style Reasoning Notes - COMPLETE & VALIDATED)
+**Current Phase**: LLM-Driven Intelligence Features
+**Current Focus**: Phase 1 complete - awaiting user direction for next phase
+**Status**: ✅ Phase 1 COMPLETE - All steps validated, ready for Phase 2 or other features
 
 ---
 
-## COMPLETED WORK: All 4 Implementation Gaps Fixed & Validated
+## IMMEDIATE BLOCKERS
+
+None. Phase 1 (Mentor-Style Reasoning Notes) complete and validated.
+
+---
+
+## NEXT STEPS
+
+Phase 1 is complete. Recommended options:
+
+**Option 1: Phase 2 - Source Re-Selection on Retry** (4 hours estimated)
+- LLM intelligently reconsiders source selection on retry attempts
+- Pass full source diagnostics (quality, errors, zero results)
+- LLM decides which sources to keep/drop/add with justification
+
+**Option 2: Other LLM-Driven Features**
+- Hypothesis Branching (Phase 3)
+- Additional transparency features
+- User-specified priorities
+
+**Option 3: Integration Work**
+- Add new data sources
+- Improve existing integrations
+- Platform infrastructure
+
+Awaiting user direction.
+
+---
+
+## COMPLETED WORK: Phase 1 - Mentor-Style Reasoning Notes (2025-11-13 to 2025-11-14)
+
+**Goal**: LLM explains its decision-making process like an expert researcher
+
+**Status**: ✅ COMPLETE & VALIDATED
+
+**Validation Results** (2025-11-14):
+- Test query: "What federal cybersecurity job opportunities are available?"
+- 4/4 tasks completed successfully with reasoning captured
+- Report quality: EXCELLENT - insightful filtering strategies, specific decision examples, actionable patterns
+- Report length: Well-balanced (~30 lines per task, not bloated)
+- All success criteria met
+
+**Why This Matters**:
+- **Transparency**: Users understand WHY the LLM made specific filtering choices
+- **Trust**: Reasoning builds confidence in automated decisions
+- **Education**: Users learn investigative research best practices from LLM
+- **Design Philosophy**: "No hardcoded heuristics. Full LLM intelligence."
+
+### Implementation Status
+
+**Step 1: Extend Relevance Evaluation Schema** ✅ COMPLETE
+- File: `prompts/deep_research/relevance_evaluation.j2`
+- Added `reasoning_breakdown` field to response schema with 3 parts:
+  - `filtering_strategy`: Overall approach description
+  - `interesting_decisions`: List of 3-5 notable decisions with result_index, action, reasoning
+  - `patterns_noticed`: Patterns observed across results
+
+**Step 2: Update Python to Capture Reasoning** ✅ COMPLETE
+- File: `research/deep_research.py`
+- Updated `ResearchTask` dataclass: Added `reasoning_notes` field (line 103)
+- Modified `_validate_result_relevance()` method:
+  - Return signature extended to 6-tuple (includes `reasoning_breakdown`)
+  - Schema extended with full reasoning_breakdown structure
+  - Parsing extracts and returns reasoning_breakdown
+- Updated call site (line 1073): Captures 6th return value
+- Storage and logging (lines 1086-1103): Stores reasoning in task.reasoning_notes, logs interesting decisions
+- Updated `_synthesize_report()` (line 2166): Passes reasoning_notes in task_diagnostics
+
+**Step 3: Update Report Template** ✅ COMPLETE
+- File: `prompts/deep_research/report_synthesis.j2`
+- Updated "Research Process Notes" section (lines 36-60)
+- Displays LLM reasoning for each task:
+  - Filtering strategy
+  - Interesting decisions (first 5 shown with result index, action, reasoning)
+  - Patterns noticed
+- Template iterates through task.reasoning_notes to show reasoning per attempt
+
+**Step 4: Test with Real Query** ✅ COMPLETE
+- Test: "What federal cybersecurity job opportunities are available?"
+- Results: 4 tasks completed, 177 results total, 17 entities extracted
+- "Research Process Notes" section appears in final report with LLM reasoning
+- Reasoning quality: **EXCELLENT** - insightful, educational, transparent
+- Report sections include:
+  - Filtering strategy per task (clear methodology)
+  - Interesting decisions with specific examples (4-5 per task)
+  - Patterns noticed (actionable insights like "IT Cybersecurity Specialist frequently appears")
+- Report length: Well-balanced, reasoning adds ~30 lines per task (not bloated)
+- **Success Criteria**: ✅ ALL PASSED
+
+### Example Output (What User Will See)
+
+```markdown
+## Research Process Notes
+
+### Task 0: Federal cybersecurity job series
+**Filtering Strategy**: Prioritized official OPM documentation over blog posts, as official sources have higher authority for job classifications.
+
+**Interesting Decisions**:
+- **Kept** (Result #3): GS-2210 job series documentation despite generic title - reasoning: Official federal classification system, directly answers query
+- **Rejected** (Result #7): "Top 10 cybersecurity skills" blog post (4/10) - generic career advice, not job-specific
+- **Borderline** (Result #5): USAJobs posting for IT Specialist (7/10) - kept because shows real-world application of job series
+
+**Patterns Noticed**: USAJobs results consistently scored higher (avg 8/10) than Brave Search (avg 6/10), suggesting official job databases have better signal for this query type.
+```
+
+### Schema Changes
+
+**New Field in relevance_evaluation.j2**:
+```json
+{
+  "decision": "ACCEPT" | "REJECT",
+  "reason": "why accept/reject this batch",
+  "relevant_indices": [0, 2, 5],
+  "continue_searching": true | false,
+  "continuation_reason": "why continue/stop",
+  "reasoning_breakdown": {
+    "filtering_strategy": "Overall approach to filtering this batch",
+    "interesting_decisions": [
+      {"result_index": 3, "action": "kept", "reasoning": "Why this decision was interesting"},
+      {"result_index": 7, "action": "rejected", "reasoning": "Why this decision was interesting"}
+    ],
+    "patterns_noticed": "Patterns observed across results (quality trends, source differences, etc.)"
+  }
+}
+```
+
+### Success Criteria
+
+- [x] LLM generates insightful reasoning for each task
+- [x] "Research Process Notes" section appears in final report
+- [x] Reasoning is educational and transparent (not just restating decisions)
+- [x] Report length doesn't bloat (3-5 highlights per task, ~30 lines per task)
+- [x] Users can understand WHY specific results were kept/rejected
+- [x] Patterns noticed provide actionable insights (e.g., "IT Specialist roles frequently classified as GS-2210 series")
+
+### Design Principles
+
+**No Hardcoded Limits**:
+- LLM decides which decisions are "interesting" (no fixed number)
+- LLM decides what patterns are worth mentioning
+- LLM decides level of detail based on result diversity
+
+**Full Context**:
+- LLM sees all results with their scores
+- LLM sees research question and task query
+- LLM sees which sources provided which results
+
+**Quality Over Brevity**:
+- Trust LLM to be concise (it knows what's useful)
+- Better to have insightful reasoning than arbitrary limits
+- Users configure max_tasks upfront, walk away, get comprehensive results
+
+### Files to Modify
+
+1. `prompts/deep_research/relevance_evaluation.j2` - Add reasoning_breakdown to schema
+2. `research/deep_research.py` - Parse and store reasoning in task metadata
+3. `prompts/deep_research/report_synthesis.j2` - Add Research Process Notes section
+
+### Estimated Time: 2 hours
+
+**Breakdown**:
+- Schema extension: 30 min
+- Python integration: 30 min
+- Template update: 30 min
+- Testing + validation: 30 min
+
+---
+
+## COMPLETED WORK: Codex Quality Improvements (2025-11-13)
 
 ### Summary (2025-11-10)
 
