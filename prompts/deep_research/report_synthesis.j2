@@ -20,6 +20,31 @@ Create a detailed markdown report with:
 ## Executive Summary
 [3-5 sentences summarizing key findings]
 
+{% if hypotheses_by_task %}
+## Suggested Investigative Angles
+
+This research explored multiple investigative hypotheses for each subtask. Below are the pathways the LLM identified as promising:
+
+{% for task_id, hypothesis_data in hypotheses_by_task.items() %}
+**Task {{ task_id }}**: {{ task_queries.get(task_id, 'Unknown task') }}
+
+{% for hypothesis in hypothesis_data.hypotheses %}
+- **Hypothesis {{ hypothesis.id }}** ({{ hypothesis.confidence }}% confidence, Priority {{ hypothesis.exploration_priority }}):
+  - *Statement*: {{ hypothesis.statement }}
+  - *Reasoning*: {{ hypothesis.confidence_reasoning }}
+  - *Search Strategy*:
+    - Sources: {{ hypothesis.search_strategy.sources|join(', ') }}
+    - Key Signals: {{ hypothesis.search_strategy.signals|join(', ') }}
+    - Expected Entities: {{ hypothesis.search_strategy.expected_entities|join(', ') }}
+  - *Priority Reasoning*: {{ hypothesis.priority_reasoning }}
+
+{% endfor %}
+
+*Coverage Assessment*: {{ hypothesis_data.coverage_assessment }}
+
+{% endfor %}
+{% endif %}
+
 ## Key Findings
 [Bullet points of most important discoveries]
 

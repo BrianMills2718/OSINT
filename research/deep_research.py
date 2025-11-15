@@ -91,6 +91,7 @@ class ResearchTask:
     param_adjustments: Dict[str, Dict] = field(default_factory=dict)
     accumulated_results: List[Dict] = field(default_factory=list)  # Priority 2: Accumulate results across attempts
     reasoning_notes: List[Dict] = field(default_factory=list)  # Phase 1: Store LLM reasoning breakdowns
+    hypotheses: Optional[Dict] = None  # Phase 3A: Store generated investigative hypotheses
 
     def __post_init__(self):
         if self.entities_found is None:
@@ -172,6 +173,11 @@ class SimpleDeepResearch:
         self.start_time: Optional[datetime] = None
         self.critical_source_failures: List[str] = []  # Track failed critical sources
         self.rate_limited_sources: set = set()  # Track rate-limited sources (circuit breaker)
+
+        # Hypothesis branching configuration (Phase 3A)
+        raw_config = config.get_raw_config()
+        self.hypothesis_branching_enabled = raw_config.get("research", {}).get("hypothesis_branching", {}).get("enabled", False)
+        self.max_hypotheses_per_task = raw_config.get("research", {}).get("hypothesis_branching", {}).get("max_hypotheses_per_task", 5)
 
         # Load API keys from environment
         self.api_keys = {
@@ -595,6 +601,22 @@ class SimpleDeepResearch:
             tasks.append(task)
             self._emit_progress("task_created", f"Task {i}: {task.query}", task_id=i)
 
+        # Phase 3A: Generate hypotheses if enabled
+        if self.hypothesis_branching_enabled:
+            print(f"\n🔬 Hypothesis branching enabled - generating investigative hypotheses for {len(tasks)} tasks...")
+            for task in tasks:
+                try:
+                    hypotheses_result = await self._generate_hypotheses(
+                        task_query=task.query,
+                        research_question=question
+                    )
+                    task.hypotheses = hypotheses_result
+                    print(f"   ✓ Task {task.id}: Generated {len(hypotheses_result['hypotheses'])} hypothesis/hypotheses")
+                except Exception as e:
+                    print(f"   ⚠️  Task {task.id}: Hypothesis generation failed - {type(e).__name__}: {e}")
+                    # Continue without hypotheses - don't fail task creation
+                    task.hypotheses = None
+
         return tasks
 
     async def _generate_hypotheses(self, task_query: str, research_question: str) -> Dict[str, Any]:
@@ -620,7 +642,8 @@ class SimpleDeepResearch:
             "deep_research/hypothesis_generation.j2",
             research_question=research_question,
             task_query=task_query,
-            available_sources=available_sources
+            available_sources=available_sources,
+            max_hypotheses=self.max_hypotheses_per_task
         )
 
         # Define JSON schema for hypothesis structure
@@ -629,6 +652,8 @@ class SimpleDeepResearch:
             "properties": {
                 "hypotheses": {
                     "type": "array",
+                    "minItems": 1,
+                    "maxItems": self.max_hypotheses_per_task,
                     "items": {
                         "type": "object",
                         "properties": {
@@ -2250,7 +2275,9 @@ class SimpleDeepResearch:
                 "max_retries_per_task": self.max_retries_per_task,
                 "max_time_minutes": self.max_time_minutes,
                 "min_results_per_task": self.min_results_per_task,
-                "max_concurrent_tasks": self.max_concurrent_tasks
+                "max_concurrent_tasks": self.max_concurrent_tasks,
+                "hypothesis_branching_enabled": self.hypothesis_branching_enabled,
+                "max_hypotheses_per_task": self.max_hypotheses_per_task
             },
             "execution_summary": {
                 "tasks_executed": result["tasks_executed"],
@@ -2263,6 +2290,17 @@ class SimpleDeepResearch:
                 "results_before_dedup": len(aggregated_results_list) + duplicates_removed
             }
         }
+
+        # Phase 3A: Add hypotheses if generated
+        if self.hypothesis_branching_enabled:
+            hypotheses_by_task = {}
+            for task in (self.completed_tasks + self.failed_tasks):
+                if task.hypotheses:
+                    hypotheses_by_task[task.id] = task.hypotheses
+
+            if hypotheses_by_task:
+                metadata["hypotheses_by_task"] = hypotheses_by_task
+
         with open(metadata_file, 'w', encoding='utf-8') as f:
             json.dump(metadata, f, indent=2, ensure_ascii=False)
 
@@ -2394,6 +2432,15 @@ class SimpleDeepResearch:
                 "reasoning_notes": task.reasoning_notes  # Phase 1: Include LLM reasoning breakdowns
             })
 
+        # Phase 3A: Collect hypotheses if enabled
+        hypotheses_by_task = {}
+        task_queries = {}
+        if self.hypothesis_branching_enabled:
+            for task in (self.completed_tasks + self.failed_tasks):
+                task_queries[task.id] = task.query
+                if task.hypotheses:
+                    hypotheses_by_task[task.id] = task.hypotheses
+
         prompt = render_prompt(
             "deep_research/report_synthesis.j2",
             original_question=original_question,
@@ -2404,7 +2451,9 @@ class SimpleDeepResearch:
             top_findings_json=json.dumps(all_results, indent=2),  # Send ALL findings to synthesis
             integrations_used=integrations_used,
             websites_found=websites_found,
-            task_diagnostics=task_diagnostics
+            task_diagnostics=task_diagnostics,
+            hypotheses_by_task=hypotheses_by_task,  # Phase 3A
+            task_queries=task_queries  # Phase 3A
         )
 
         response = await acompletion(

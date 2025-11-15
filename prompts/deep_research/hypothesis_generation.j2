@@ -28,15 +28,15 @@ You are an investigative researcher planning a comprehensive investigation.
 
 ## YOUR TASK: Generate Investigative Hypotheses
 
-Generate **1-5 investigative hypotheses** for this subtask. Each hypothesis represents a different angle of investigation.
+Generate **1-{{ max_hypotheses }} investigative hypotheses** for this subtask. Each hypothesis represents a different angle of investigation.
 
-**IMPORTANT**: Adapt the number of hypotheses to query complexity:
+**IMPORTANT**: Adapt the number of hypotheses to query complexity (up to {{ max_hypotheses }} maximum):
 - **Simple queries** (1 obvious pathway): Generate 1-2 hypotheses
   - Example: "GS-2210 job series official documentation" → 1 hypothesis (official sources)
 - **Factual queries** (multiple known pathways): Generate 2-3 hypotheses
   - Example: "federal cybersecurity job opportunities" → 2 hypotheses (official postings, social discussions)
-- **Speculative/complex queries** (many possible angles): Generate 3-5 hypotheses
-  - Example: "NSA classified intelligence programs" → 4-5 hypotheses (official leaks, whistleblowers, technical research, court filings, contractor disclosures)
+- **Speculative/complex queries** (many possible angles): Generate 3-{{ max_hypotheses }} hypotheses
+  - Example: "NSA classified intelligence programs" → 4-{{ max_hypotheses }} hypotheses (official leaks, whistleblowers, technical research, court filings, contractor disclosures)
 
 ---
 

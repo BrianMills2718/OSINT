@@ -368,39 +368,102 @@ pip list | grep playwright
 
 # CLAUDE.md - Temporary Section (Updated as Tasks Complete)
 
-**Last Updated**: 2025-11-14 (Phase 2: Source Re-Selection - COMPLETE)
-**Current Phase**: LLM-Driven Intelligence Features
-**Current Focus**: Phase 1 & 2 complete - ready for Phase 3 or other features
-**Status**: ✅ Phase 1 & 2 COMPLETE - Validated and committed
+**Last Updated**: 2025-11-15 (Phase 3A: Hypothesis Branching Integration - COMPLETE)
+**Current Phase**: Phase 3A - Hypothesis Branching
+**Current Focus**: Validation complete - feature ready for production testing
+**Status**: ✅ Phase 3A COMPLETE - All integration steps done, tests passing
 
 ---
 
-## IMMEDIATE BLOCKERS
+## PHASE 3A COMPLETE: Hypothesis Branching Integration ✅
 
-None. Phase 1 (Mentor-Style Reasoning Notes) and Phase 2 (Source Re-Selection) both complete.
+**Status**: All 4 Codex issues resolved, integration validated
+
+**What Works Now**:
+- ✅ Config reading in workflow (`hypothesis_branching.enabled` triggers generation)
+- ✅ `hypotheses` field in `ResearchTask` dataclass (storage implemented)
+- ✅ Call to `_generate_hypotheses()` in task execution flow (after decomposition)
+- ✅ Hypothesis persistence in metadata/reports (hypotheses_by_task in metadata.json)
+- ✅ Report template displays "Suggested Investigative Angles" section
+- ✅ Integration tests: enabled mode generates hypotheses, disabled mode unchanged
+- ✅ max_hypotheses_per_task config enforced (passed to template + schema)
+- ✅ metadata/report validation working (uses output_directory not output_path)
+
+**Validation Evidence** (2025-11-15):
+- Test query: "What is the GS-2210 job series?"
+- Hypothesis generation: 7 hypotheses across 3 tasks (adaptive count 1-3)
+- LLM quality: 65-95% confidence, high source diversity
+- Metadata: hypotheses_by_task present in metadata.json
+- Report: "Suggested Investigative Angles" section present with all details
+- Backward compatibility: Disabled mode test shows traditional workflow unchanged
 
 ---
 
-## NEXT STEPS
+## COMPLETED WORK: Phase 3A Integration (2025-11-15)
 
-Phases 1 & 2 complete. Recommended options:
+All 6 integration steps completed successfully.
 
-**Option 1: Phase 3 - Hypothesis Branching** (12+ hours estimated)
-- LLM generates multiple investigative hypotheses
-- Each hypothesis has distinct search strategy
-- LLM decides exploration order and coverage
+### Step 1: Wire Config Reading ✅ COMPLETE
+- File: `research/deep_research.py` (lines 177-180)
+- Uses `config.get_raw_config()` to read hypothesis_branching section
+- Reads `enabled` flag and `max_hypotheses_per_task` ceiling
 
-**Option 2: Test Phase 2 with Real Query**
-- Validate source re-selection with "cybersecurity jobs" query
-- Verify LLM makes intelligent keep/drop/add decisions
-- Confirm adjusted sources applied correctly on retry
+### Step 2: Add Hypotheses Storage ✅ COMPLETE
+- File: `research/deep_research.py` (line 94)
+- Added `hypotheses: Optional[Dict] = None` field to ResearchTask dataclass
 
-**Option 3: Other Priorities**
-- Additional transparency features
-- Integration improvements
-- Platform infrastructure
+### Step 3: Call Hypothesis Generation ✅ COMPLETE
+- File: `research/deep_research.py` (lines 603-618)
+- Calls `_generate_hypotheses()` after task decomposition when enabled
+- Error handling: continues without hypotheses if generation fails
+- Console logging: Shows "🔬 Hypothesis branching enabled..." message
 
-Awaiting user direction.
+### Step 4: Persist in Metadata ✅ COMPLETE
+- Files: `research/deep_research.py` (lines 2275-2276, 2290-2298)
+- Config parameters added to metadata engine_config
+- Hypotheses stored in metadata["hypotheses_by_task"] when enabled
+
+### Step 5: Display in Report ✅ COMPLETE
+- Files:
+  - `prompts/deep_research/report_synthesis.j2` (lines 23-46)
+  - `research/deep_research.py` (lines 2431-2452)
+- Template section "Suggested Investigative Angles" added
+- Synthesis passes hypotheses_by_task and task_queries to template
+- Displays hypothesis details: statement, confidence, search strategy, priority
+
+### Step 6: Integration Testing ✅ COMPLETE
+- Files:
+  - `tests/test_phase3a_integration.py` (disabled mode validation)
+  - `tests/test_phase3a_enabled_mode.py` (enabled mode validation)
+- Both tests passing with correct behavior
+- Metadata/report validation fixed (uses output_directory not output_path)
+
+### Critical Fixes Applied (Codex Recommendations):
+1. **Fix #1**: Test key corrected (output_path → output_directory)
+2. **Fix #2**: max_hypotheses_per_task wired to template and schema
+3. **Fix #3**: Template uses {{ max_hypotheses }} variable (not hardcoded 1-5)
+4. **Fix #4**: Enabled mode validated with real research run
+
+---
+
+## SUCCESS CRITERIA ✅ ALL PASSED
+
+- [x] Config `hypothesis_branching.enabled: true` triggers hypothesis generation
+- [x] Config `hypothesis_branching.enabled: false` uses traditional workflow (no overhead)
+- [x] Hypotheses appear in final report "Suggested Investigative Angles" section
+- [x] Hypotheses stored in metadata.json (per-task)
+- [x] LLM generates 1-max_hypotheses based on query complexity (adaptive)
+- [x] max_hypotheses_per_task config enforced (passed to template + schema)
+- [x] Traditional workflow completely unchanged when disabled
+
+---
+
+## NEXT STEPS AFTER PHASE 3A
+
+Ready to commit all changes. After commit, user can:
+1. **Test with production queries** to validate real-world usefulness
+2. **Collect feedback** on hypothesis quality and coverage assessment
+3. **Decide next phase**: Keep as planning aid, or proceed to Phase 3B (full execution)
 
 ---
 
