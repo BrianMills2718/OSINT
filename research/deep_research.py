@@ -597,6 +597,125 @@ class SimpleDeepResearch:
 
         return tasks
 
+    async def _generate_hypotheses(self, task_query: str, research_question: str) -> Dict[str, Any]:
+        """
+        Generate 1-5 investigative hypotheses for a research subtask.
+
+        Phase 3A: Foundation - Hypothesis generation only (no execution yet)
+
+        Args:
+            task_query: The specific subtask query to generate hypotheses for
+            research_question: The original user research question (for context)
+
+        Returns:
+            Dict containing:
+                - hypotheses: List of hypothesis objects (1-5 items)
+                - coverage_assessment: Why this set provides sufficient coverage
+        """
+        # Get available sources for hypothesis generation
+        available_sources = self._get_available_source_names()
+
+        # Render hypothesis generation prompt
+        prompt = render_prompt(
+            "deep_research/hypothesis_generation.j2",
+            research_question=research_question,
+            task_query=task_query,
+            available_sources=available_sources
+        )
+
+        # Define JSON schema for hypothesis structure
+        schema = {
+            "type": "object",
+            "properties": {
+                "hypotheses": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "id": {"type": "integer", "description": "Hypothesis ID (1, 2, 3, ...)"},
+                            "statement": {"type": "string", "description": "What this hypothesis is looking for (1-2 sentences)"},
+                            "confidence": {"type": "integer", "minimum": 0, "maximum": 100, "description": "Confidence this pathway will yield results (0-100%)"},
+                            "confidence_reasoning": {"type": "string", "description": "Why this confidence level (1 sentence)"},
+                            "search_strategy": {
+                                "type": "object",
+                                "properties": {
+                                    "sources": {
+                                        "type": "array",
+                                        "items": {"type": "string"},
+                                        "description": "List of database integration names to query"
+                                    },
+                                    "signals": {
+                                        "type": "array",
+                                        "items": {"type": "string"},
+                                        "description": "Keywords/patterns that indicate relevance"
+                                    },
+                                    "expected_entities": {
+                                        "type": "array",
+                                        "items": {"type": "string"},
+                                        "description": "Organizations/people/programs/technologies expected if hypothesis succeeds"
+                                    }
+                                },
+                                "required": ["sources", "signals", "expected_entities"],
+                                "additionalProperties": False
+                            },
+                            "exploration_priority": {"type": "integer", "minimum": 1, "description": "Order to explore (1=first, 2=second, etc.)"},
+                            "priority_reasoning": {"type": "string", "description": "Why this exploration order (1 sentence)"}
+                        },
+                        "required": ["id", "statement", "confidence", "confidence_reasoning", "search_strategy", "exploration_priority", "priority_reasoning"],
+                        "additionalProperties": False
+                    },
+                    "minItems": 1,
+                    "maxItems": 5
+                },
+                "coverage_assessment": {
+                    "type": "string",
+                    "description": "Why this set of hypotheses provides sufficient coverage"
+                }
+            },
+            "required": ["hypotheses", "coverage_assessment"],
+            "additionalProperties": False
+        }
+
+        # Call LLM with hypothesis generation prompt
+        response = await acompletion(
+            model=config.get_model("task_decomposition"),  # Use same model as task decomposition
+            messages=[{"role": "user", "content": prompt}],
+            response_format={
+                "type": "json_schema",
+                "json_schema": {
+                    "strict": True,
+                    "name": "hypothesis_generation",
+                    "schema": schema
+                }
+            }
+        )
+
+        # Parse response
+        result = json.loads(response.choices[0].message.content)
+
+        # Log hypothesis generation
+        hypothesis_count = len(result["hypotheses"])
+        print(f"\n🔬 Generated {hypothesis_count} investigative hypothesis/hypotheses:")
+        for hyp in result["hypotheses"]:
+            print(f"   Hypothesis {hyp['id']}: {hyp['statement']}")
+            print(f"   → Confidence: {hyp['confidence']}% - {hyp['confidence_reasoning']}")
+            print(f"   → Priority: {hyp['exploration_priority']} - {hyp['priority_reasoning']}")
+            print(f"   → Sources: {', '.join(hyp['search_strategy']['sources'])}")
+            print()
+
+        print(f"📊 Coverage Assessment: {result['coverage_assessment']}\n")
+
+        return result
+
+    def _get_available_source_names(self) -> List[str]:
+        """Get list of available database integration display names for hypothesis generation."""
+        # Map MCP tool names to display names (used in prompts)
+        display_names = []
+        for tool_name in self.tool_name_to_display.values():
+            if tool_name not in display_names:
+                display_names.append(tool_name)
+        return sorted(display_names)
+
     async def _search_brave(self, query: str, max_results: int = 20) -> List[Dict]:
         """
         Search open web using Brave Search API.

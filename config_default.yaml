@@ -202,6 +202,32 @@ research:
     summarization: "gemini/gemini-2.5-flash"  # Phase 2: consider lighter model for cost savings
     synthesis: "gemini/gemini-2.5-flash"
 
+  # ============================================================================
+  # Phase 3: Hypothesis Branching Configuration
+  # ============================================================================
+  # IMPORTANT: Hypothesis branching increases LLM cost by 3-3.75x vs traditional task decomposition
+  # Enable only if you prioritize quality over cost and have budget for comprehensive exploration
+  hypothesis_branching:
+    enabled: false                # FEATURE TOGGLE: Set true to enable hypothesis branching (Phase 3A foundation only)
+                                  # Default: false (use traditional task decomposition)
+                                  # When enabled: Each task generates 1-5 investigative hypotheses
+
+    max_hypotheses_per_task: 5   # CEILING (not target) - LLM decides actual count (1-5)
+                                  # Simple queries: 1-2 hypotheses
+                                  # Factual queries: 2-3 hypotheses
+                                  # Speculative queries: 3-5 hypotheses
+                                  # Higher value = more comprehensive coverage but higher cost
+
+    # COST WARNING: Phase 3A (hypothesis generation) adds ~1 LLM call per task
+    # Current cost per task: ~2-4 LLM calls (source selection, relevance evaluation, entity extraction)
+    # With Phase 3A enabled: ~3-5 LLM calls per task (adds hypothesis generation)
+    # Cost increase: ~25-50% vs traditional approach
+    #
+    # Phase 3B-3D (not yet implemented) would add additional costs:
+    # - Hypothesis execution: Per-hypothesis query generation
+    # - Coverage assessment: LLM decides when to stop exploring
+    # - Total Phase 3 cost: 3-3.75x traditional approach (documented in investigation)
+
 # ============================================================================
 # Logging Configuration
 # ============================================================================

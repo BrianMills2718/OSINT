@@ -1,0 +1,302 @@
+{#
+Hypothesis Generation Prompt - Phase 3A: Foundation
+Generates 1-5 investigative hypotheses for a research subtask
+
+Input Variables:
+- research_question: The original user research question
+- task_query: The specific subtask query
+- available_sources: List of available database integrations
+
+Design Philosophy:
+- LLM decides hypothesis count (1-5 based on query complexity)
+- No hardcoded thresholds (confidence is reasoning-based)
+- Full context provided (all available sources shown)
+#}
+
+You are an investigative researcher planning a comprehensive investigation.
+
+# RESEARCH QUESTION
+{{ research_question }}
+
+# SUBTASK TO EXPLORE
+{{ task_query }}
+
+# AVAILABLE DATA SOURCES
+{{ available_sources|join(', ') }}
+
+---
+
+## YOUR TASK: Generate Investigative Hypotheses
+
+Generate **1-5 investigative hypotheses** for this subtask. Each hypothesis represents a different angle of investigation.
+
+**IMPORTANT**: Adapt the number of hypotheses to query complexity:
+- **Simple queries** (1 obvious pathway): Generate 1-2 hypotheses
+  - Example: "GS-2210 job series official documentation" → 1 hypothesis (official sources)
+- **Factual queries** (multiple known pathways): Generate 2-3 hypotheses
+  - Example: "federal cybersecurity job opportunities" → 2 hypotheses (official postings, social discussions)
+- **Speculative/complex queries** (many possible angles): Generate 3-5 hypotheses
+  - Example: "NSA classified intelligence programs" → 4-5 hypotheses (official leaks, whistleblowers, technical research, court filings, contractor disclosures)
+
+---
+
+## HYPOTHESIS STRUCTURE
+
+For each hypothesis, provide:
+
+### 1. Statement (Required)
+What are you looking for with this hypothesis?
+- Be specific: What information pathway does this hypothesis explore?
+- 1-2 sentences maximum
+- Example: "Official government job postings contain structured listings for cybersecurity roles with clearance requirements"
+
+### 2. Confidence (Required)
+How confident are you this pathway will yield results? (0-100%)
+- **High confidence (70-100%)**: Well-established sources, factual queries, official documentation
+- **Medium confidence (40-69%)**: Informal sources, social discussions, secondary analysis
+- **Low confidence (0-39%)**: Speculative pathways, niche sources, requires luck
+
+**Reasoning**: Explain why this confidence level (1 sentence)
+- Example: "90% confidence - official job boards are primary source for federal employment"
+
+### 3. Search Strategy (Required)
+
+**Sources** (list of database names):
+- Which integrations to query for this hypothesis?
+- Prioritize: List most-likely-to-succeed sources first
+- Example: ["USAJobs", "ClearanceJobs"] for official job listings
+
+**Signals** (list of keywords/patterns):
+- What keywords, phrases, or patterns indicate relevance?
+- Be specific: Not just "cybersecurity" but "GS-2210", "IT Cybersecurity Specialist", "TS/SCI clearance"
+- Example: ["GS-2210 series", "cybersecurity specialist", "TS/SCI", "Fort Meade", "NSA"]
+
+**Expected Entities** (list of organizations/people/programs/technologies):
+- What specific entities do you expect to find if this hypothesis succeeds?
+- Organizations: NSA, FBI, CISA, Lockheed Martin, etc.
+- People: Edward Snowden, William Binney, etc.
+- Programs: PRISM, XKEYSCORE, ECHELON, etc.
+- Technologies: DOUBLEPULSAR, EternalBlue, etc.
+- Example: ["NSA", "FBI Cyber Division", "CISA", "GS-2210"]
+
+### 4. Exploration Priority (Required)
+In what order should this hypothesis be explored? (1 = first, 2 = second, etc.)
+- **Priority 1**: Highest confidence × highest expected value
+- **Priority 2-3**: Medium confidence or medium value
+- **Priority 4-5**: Lower confidence, but might provide unique insights
+
+**Priority Reasoning**: Explain why this exploration order (1 sentence)
+- Example: "Priority 1 - official sources have highest success rate for job queries"
+
+---
+
+## GUIDELINES FOR HYPOTHESIS GENERATION
+
+### Diversity (CRITICAL)
+- Each hypothesis should explore a **DIFFERENT** investigative angle
+- ❌ BAD: "Official job postings", "Government job listings", "Federal employment opportunities" (all the same)
+- ✅ GOOD: "Official job postings", "Social media hiring discussions", "Contractor career pages" (distinct pathways)
+
+### Source Selection Strategy
+- **Official queries** (jobs, documentation, regulations): Prioritize government databases (USAJobs, SAM.gov)
+- **Social queries** (discussions, opinions, trends): Prioritize social media (Twitter, Reddit, Discord)
+- **Research queries** (analysis, investigations, leaks): Mix sources (Brave Search for archives, Discord for communities, Twitter for whistleblowers)
+
+### Confidence Calibration
+- **Don't artificially inflate confidence**: If a pathway is uncertain, mark it 30-50%
+- **High confidence requires**: Well-established source + clear signals + factual query type
+- **Low confidence is OK**: Speculative hypotheses can be valuable if they explore unique angles
+
+### Expected Entities
+- Be specific: Not "government agencies" but "NSA, FBI, CISA"
+- Include variety: Organizations, people, programs, technologies, clearance levels, job titles
+- These are **guidance** (not strict requirements): Results can be valuable even if they don't match expected entities
+
+---
+
+## OUTPUT FORMAT (JSON)
+
+Return a JSON object with this structure:
+
+```json
+{
+  "hypotheses": [
+    {
+      "id": 1,
+      "statement": "One-sentence description of what this hypothesis is looking for",
+      "confidence": 85,
+      "confidence_reasoning": "Why this confidence level (1 sentence)",
+      "search_strategy": {
+        "sources": ["USAJobs", "ClearanceJobs"],
+        "signals": ["GS-2210", "cybersecurity specialist", "TS/SCI clearance"],
+        "expected_entities": ["NSA", "FBI", "CISA", "GS-2210"]
+      },
+      "exploration_priority": 1,
+      "priority_reasoning": "Why explore this first/second/etc (1 sentence)"
+    },
+    {
+      "id": 2,
+      "statement": "...",
+      "confidence": 60,
+      "confidence_reasoning": "...",
+      "search_strategy": {
+        "sources": ["Twitter", "Reddit"],
+        "signals": ["#FedJobs", "hiring freeze", "clearance process"],
+        "expected_entities": ["USAJOBS", "security clearance", "OPM"]
+      },
+      "exploration_priority": 2,
+      "priority_reasoning": "..."
+    }
+  ],
+  "coverage_assessment": "One sentence explaining why this set of hypotheses provides sufficient coverage for the subtask"
+}
+```
+
+---
+
+## EXAMPLES
+
+### Example 1: Simple Query (1 hypothesis sufficient)
+
+**RESEARCH QUESTION**: "What is the GS-2210 job series?"
+**SUBTASK**: "GS-2210 job series official documentation"
+
+**OUTPUT**:
+```json
+{
+  "hypotheses": [
+    {
+      "id": 1,
+      "statement": "Official OPM documentation defines the GS-2210 job series with position classification standards",
+      "confidence": 95,
+      "confidence_reasoning": "OPM is the authoritative source for federal job series definitions",
+      "search_strategy": {
+        "sources": ["Brave Search", "USAJobs"],
+        "signals": ["GS-2210", "position classification", "OPM.gov", "Information Technology Management"],
+        "expected_entities": ["OPM", "GS-2210", "Information Technology Management"]
+      },
+      "exploration_priority": 1,
+      "priority_reasoning": "Only one obvious pathway - official government documentation"
+    }
+  ],
+  "coverage_assessment": "Single hypothesis covers the only relevant pathway for this straightforward factual query"
+}
+```
+
+### Example 2: Factual Query (2-3 hypotheses)
+
+**RESEARCH QUESTION**: "What cybersecurity job opportunities are available for cleared professionals?"
+**SUBTASK**: "Federal cybersecurity jobs requiring clearances"
+
+**OUTPUT**:
+```json
+{
+  "hypotheses": [
+    {
+      "id": 1,
+      "statement": "Official federal job boards list cybersecurity positions with clearance requirements",
+      "confidence": 90,
+      "confidence_reasoning": "USAJobs and ClearanceJobs are primary sources for cleared federal positions",
+      "search_strategy": {
+        "sources": ["USAJobs", "ClearanceJobs"],
+        "signals": ["GS-2210", "cybersecurity specialist", "TS/SCI", "Top Secret clearance", "Fort Meade"],
+        "expected_entities": ["NSA", "FBI", "CISA", "DHS", "TS/SCI", "GS-2210"]
+      },
+      "exploration_priority": 1,
+      "priority_reasoning": "Highest confidence and most direct pathway to structured job listings"
+    },
+    {
+      "id": 2,
+      "statement": "Federal employees and contractors discuss hiring trends, application tips, and clearance processes on social media",
+      "confidence": 60,
+      "confidence_reasoning": "Social media provides context and insider knowledge but results are less structured",
+      "search_strategy": {
+        "sources": ["Twitter", "Reddit"],
+        "signals": ["#FedJobs", "#Clearance", "r/fednews", "hiring freeze", "clearance backlog", "poly interview"],
+        "expected_entities": ["DCSA", "security clearance", "polygraph", "SF-86"]
+      },
+      "exploration_priority": 2,
+      "priority_reasoning": "Secondary pathway providing application context and community insights"
+    }
+  ],
+  "coverage_assessment": "Two hypotheses cover official listings (primary) and community discussions (context), sufficient for job opportunity query"
+}
+```
+
+### Example 3: Speculative Query (4-5 hypotheses)
+
+**RESEARCH QUESTION**: "What classified intelligence programs does the NSA operate?"
+**SUBTASK**: "NSA classified programs disclosed publicly"
+
+**OUTPUT**:
+```json
+{
+  "hypotheses": [
+    {
+      "id": 1,
+      "statement": "Official government documents, FOIA releases, and court filings have disclosed NSA program names and capabilities",
+      "confidence": 75,
+      "confidence_reasoning": "Snowden leaks and subsequent FOIA releases made many programs public record",
+      "search_strategy": {
+        "sources": ["Brave Search", "Discord"],
+        "signals": ["FOIA", "declassified", "court filing", "NSA.gov", "EFF lawsuit", "ACLU"],
+        "expected_entities": ["PRISM", "XKEYSCORE", "MYSTIC", "ECHELON", "STELLARWIND"]
+      },
+      "exploration_priority": 1,
+      "priority_reasoning": "Most authoritative pathway - official disclosures have highest credibility"
+    },
+    {
+      "id": 2,
+      "statement": "Whistleblowers and former NSA employees disclosed program details through testimony and media interviews",
+      "confidence": 70,
+      "confidence_reasoning": "Multiple verified whistleblowers have provided detailed program information",
+      "search_strategy": {
+        "sources": ["Brave Search", "Twitter", "Reddit"],
+        "signals": ["Edward Snowden", "William Binney", "Thomas Drake", "whistleblower", "Congressional testimony"],
+        "expected_entities": ["Edward Snowden", "William Binney", "Thomas Drake", "STELLARWIND", "ThinThread"]
+      },
+      "exploration_priority": 2,
+      "priority_reasoning": "High-value secondary source - whistleblower testimony provides operational details"
+    },
+    {
+      "id": 3,
+      "statement": "Security researchers reverse-engineered NSA tools and infrastructure leaked by Shadow Brokers and other groups",
+      "confidence": 50,
+      "confidence_reasoning": "Technical analysis reveals program names but attribution to NSA requires inference",
+      "search_strategy": {
+        "sources": ["Discord", "Twitter", "Brave Search"],
+        "signals": ["Shadow Brokers", "Equation Group", "DOUBLEPULSAR", "EternalBlue", "malware analysis"],
+        "expected_entities": ["Equation Group", "DOUBLEPULSAR", "EternalBlue", "ETERNALROMANCE", "TAO"]
+      },
+      "exploration_priority": 3,
+      "priority_reasoning": "Technical pathway provides unique insights but requires expertise to interpret"
+    },
+    {
+      "id": 4,
+      "statement": "Investigative journalists published exposés based on leaked documents and insider sources",
+      "confidence": 65,
+      "confidence_reasoning": "Major publications like Guardian, Washington Post published program details",
+      "search_strategy": {
+        "sources": ["Brave Search"],
+        "signals": ["Guardian NSA", "Washington Post Snowden", "investigative reporting", "classified documents"],
+        "expected_entities": ["Glenn Greenwald", "Barton Gellman", "Guardian", "Washington Post"]
+      },
+      "exploration_priority": 4,
+      "priority_reasoning": "Journalism provides narrative context but often overlaps with whistleblower pathway"
+    }
+  ],
+  "coverage_assessment": "Four hypotheses cover official disclosures, whistleblowers, technical research, and journalism - comprehensive coverage of all known pathways for classified program information"
+}
+```
+
+---
+
+## FINAL REMINDERS
+
+1. **Adapt hypothesis count**: 1-2 for simple, 2-3 for factual, 3-5 for speculative
+2. **Ensure diversity**: Each hypothesis explores a DIFFERENT angle
+3. **Be honest with confidence**: Don't inflate - low confidence is acceptable if pathway is valuable
+4. **Explain reasoning**: Every confidence score and priority needs 1-sentence justification
+5. **Expected entities are guidance**: Results can be valuable even if entities don't match
+
+Generate your hypotheses now.
