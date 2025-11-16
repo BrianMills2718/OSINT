@@ -43,6 +43,21 @@ This research explored multiple investigative hypotheses for each subtask. Below
 *Coverage Assessment*: {{ hypothesis_data.coverage_assessment }}
 
 {% endfor %}
+{% if hypothesis_execution_summary %}
+
+## Hypothesis Execution Results
+
+Summary of executed hypotheses from this run (mode: execution):
+
+{% for task_id, runs in hypothesis_execution_summary.items() %}
+**Task {{ task_id }}**: {{ task_queries.get(task_id, 'Unknown task') }}
+
+{% for run in runs %}
+- Hypothesis {{ run.hypothesis_id }} → {{ run.results_count }} results (Sources: {{ run.sources|join(', ') }})
+{% endfor %}
+
+{% endfor %}
+{% endif %}
 {% endif %}
 
 ## Key Findings

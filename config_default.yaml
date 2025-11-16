@@ -208,9 +208,14 @@ research:
   # IMPORTANT: Hypothesis branching increases LLM cost by 3-3.75x vs traditional task decomposition
   # Enable only if you prioritize quality over cost and have budget for comprehensive exploration
   hypothesis_branching:
-    enabled: false                # FEATURE TOGGLE: Set true to enable hypothesis branching (Phase 3A foundation only)
-                                  # Default: false (use traditional task decomposition)
-                                  # When enabled: Each task generates 1-5 investigative hypotheses
+    mode: "off"                   # OPERATION MODE: "off" | "planning" | "execution"
+                                  # - off: Traditional task decomposition (no hypotheses)
+                                  # - planning: Generate hypotheses but don't execute (Phase 3A - shows in report only)
+                                  # - execution: Generate AND execute hypotheses (Phase 3B - runs searches)
+                                  # Default: "off" (traditional task decomposition)
+
+    # DEPRECATED: Use "mode" instead
+    # enabled: false              # Legacy config - auto-upgrades to mode: "planning" | "off"
 
     max_hypotheses_per_task: 5   # CEILING (not target) - LLM decides actual count (1-5)
                                   # Simple queries: 1-2 hypotheses
@@ -218,15 +223,15 @@ research:
                                   # Speculative queries: 3-5 hypotheses
                                   # Higher value = more comprehensive coverage but higher cost
 
-    # COST WARNING: Phase 3A (hypothesis generation) adds ~1 LLM call per task
-    # Current cost per task: ~2-4 LLM calls (source selection, relevance evaluation, entity extraction)
-    # With Phase 3A enabled: ~3-5 LLM calls per task (adds hypothesis generation)
-    # Cost increase: ~25-50% vs traditional approach
+    # COST BREAKDOWN BY MODE:
+    # - mode: "off" → 0 additional cost (baseline)
+    # - mode: "planning" → +1 LLM call per task (~25-50% increase)
+    # - mode: "execution" → +1 generation + N query gen calls per task (~3-3.75x baseline)
     #
-    # Phase 3B-3D (not yet implemented) would add additional costs:
-    # - Hypothesis execution: Per-hypothesis query generation
-    # - Coverage assessment: LLM decides when to stop exploring
-    # - Total Phase 3 cost: 3-3.75x traditional approach (documented in investigation)
+    # Phase 3B (execution mode) costs:
+    # - Hypothesis generation: 1 LLM call per task
+    # - Query generation: 1 LLM call per hypothesis (up to max_hypotheses_per_task)
+    # - Total Phase 3B cost: 3-3.75x traditional approach (documented in investigation)
 
 # ============================================================================
 # Logging Configuration

@@ -92,6 +92,7 @@ class ResearchTask:
     accumulated_results: List[Dict] = field(default_factory=list)  # Priority 2: Accumulate results across attempts
     reasoning_notes: List[Dict] = field(default_factory=list)  # Phase 1: Store LLM reasoning breakdowns
     hypotheses: Optional[Dict] = None  # Phase 3A: Store generated investigative hypotheses
+    hypothesis_runs: List[Dict] = field(default_factory=list)  # Phase 3B: Per-hypothesis execution summaries
 
     def __post_init__(self):
         if self.entities_found is None:
@@ -174,10 +175,24 @@ class SimpleDeepResearch:
         self.critical_source_failures: List[str] = []  # Track failed critical sources
         self.rate_limited_sources: set = set()  # Track rate-limited sources (circuit breaker)
 
-        # Hypothesis branching configuration (Phase 3A)
+        # Hypothesis branching configuration (Phase 3A/3B)
         raw_config = config.get_raw_config()
-        self.hypothesis_branching_enabled = raw_config.get("research", {}).get("hypothesis_branching", {}).get("enabled", False)
-        self.max_hypotheses_per_task = raw_config.get("research", {}).get("hypothesis_branching", {}).get("max_hypotheses_per_task", 5)
+        hyp_config = raw_config.get("research", {}).get("hypothesis_branching", {})
+
+        # Handle legacy "enabled: true" (Phase 3A) with auto-upgrade
+        if "enabled" in hyp_config and "mode" not in hyp_config:
+            if hyp_config["enabled"]:
+                self.hypothesis_mode = "planning"  # Legacy behavior preserved
+                logging.warning("⚠️  hypothesis_branching.enabled is deprecated, use mode: 'planning' instead")
+            else:
+                self.hypothesis_mode = "off"
+        else:
+            # New "mode" config (Phase 3B)
+            self.hypothesis_mode = hyp_config.get("mode", "off")  # off | planning | execution
+
+        # Backward compatibility: set hypothesis_branching_enabled for existing code
+        self.hypothesis_branching_enabled = self.hypothesis_mode in ("planning", "execution")
+        self.max_hypotheses_per_task = hyp_config.get("max_hypotheses_per_task", 5)
 
         # Load API keys from environment
         self.api_keys = {
@@ -215,6 +230,12 @@ class SimpleDeepResearch:
             "brave_search": "Brave Search"
         }
         self.tool_display_to_name = {v: k for k, v in self.tool_name_to_display.items()}
+
+        # Build reverse source map: display name → tool name (Phase 3B)
+        self.display_to_tool_map = {
+            display: tool_name
+            for tool_name, display in self.tool_name_to_display.items()
+        }
         self.tool_descriptions = {
             "search_sam": "U.S. federal contracting opportunities and awards. Search government procurement, RFPs, solicitations, contract listings.",
             "search_dvids": "Military multimedia archive with photos and videos of military operations, ceremonies, exercises.",
@@ -731,6 +752,330 @@ class SimpleDeepResearch:
         print(f"📊 Coverage Assessment: {result['coverage_assessment']}\n")
 
         return result
+
+    def _map_hypothesis_sources(self, hypothesis: Dict) -> List[str]:
+        """
+        Map hypothesis source display names to MCP tool names (Phase 3B).
+
+        Args:
+            hypothesis: Hypothesis dict with search_strategy.sources (display names)
+
+        Returns:
+            List of MCP tool names (e.g., ["search_usajobs", "search_twitter"])
+
+        Logs errors for unknown sources and skips them.
+        """
+        display_sources = hypothesis.get("search_strategy", {}).get("sources", [])
+        tool_names = []
+
+        for display_name in display_sources:
+            tool_name = self.display_to_tool_map.get(display_name)
+            if tool_name:
+                tool_names.append(tool_name)
+            else:
+                logging.warning(f"⚠️  Hypothesis {hypothesis.get('id', '?')} specified unknown source '{display_name}' - skipping")
+
+        return tool_names
+
+    def _deduplicate_with_attribution(self, results: List[Dict], hypothesis_id: int) -> List[Dict]:
+        """
+        Deduplicate results with multi-attribution tracking (Phase 3B).
+
+        Results from hypotheses may duplicate existing task results.
+        Multi-tag duplicates with hypothesis_ids=[1,2,3] to show validation.
+
+        Args:
+            results: New results from hypothesis execution
+            hypothesis_id: Current hypothesis ID (for tagging)
+
+        Returns:
+            Deduplicated results with multi-attribution tags
+        """
+        # For each new result, check if URL already exists in task.accumulated_results
+        # If exists: Add hypothesis_id to existing result's hypothesis_ids array
+        # If new: Tag with hypothesis_id field
+
+        deduplicated = []
+        for result in results:
+            url = result.get("url")
+            if not url:
+                # No URL to deduplicate on, keep as-is
+                result["hypothesis_id"] = hypothesis_id
+                deduplicated.append(result)
+                continue
+
+            # Check for duplicate URL in current batch
+            existing = None
+            for r in deduplicated:
+                if r.get("url") == url:
+                    existing = r
+                    break
+
+            if existing:
+                # Duplicate within batch - add to hypothesis_ids
+                if "hypothesis_ids" not in existing:
+                    # Convert single hypothesis_id to array
+                    existing["hypothesis_ids"] = [existing.pop("hypothesis_id", hypothesis_id), hypothesis_id]
+                elif hypothesis_id not in existing["hypothesis_ids"]:
+                    existing["hypothesis_ids"].append(hypothesis_id)
+            else:
+                # New result - tag with hypothesis_id
+                result["hypothesis_id"] = hypothesis_id
+                deduplicated.append(result)
+
+        return deduplicated
+
+    async def _generate_hypothesis_query(
+        self,
+        hypothesis: Dict,
+        source_tool_name: str,
+        research_question: str,
+        task_query: str
+    ) -> Optional[str]:
+        """
+        Generate source-specific query for hypothesis execution (Phase 3B).
+
+        Args:
+            hypothesis: Hypothesis dict with statement, confidence, search_strategy
+            source_tool_name: MCP tool name (e.g., "search_usajobs")
+            research_question: Original research question
+            task_query: Task query this hypothesis belongs to
+
+        Returns:
+            Query string optimized for this source, or None on error
+        """
+        source_display_name = self.tool_name_to_display.get(source_tool_name, source_tool_name)
+
+        # Render prompt with hypothesis context
+        prompt = render_prompt(
+            "deep_research/hypothesis_query_generation.j2",
+            hypothesis_statement=hypothesis["statement"],
+            research_question=research_question,
+            task_query=task_query,
+            hypothesis_confidence=hypothesis["confidence"],
+            hypothesis_sources=hypothesis["search_strategy"]["sources"],
+            hypothesis_signals=hypothesis["search_strategy"]["signals"],
+            hypothesis_entities=hypothesis["search_strategy"]["expected_entities"],
+            source_display_name=source_display_name
+        )
+
+        # Define JSON schema for query generation
+        schema = {
+            "type": "object",
+            "properties": {
+                "query": {
+                    "type": "string",
+                    "description": "The optimized search query string"
+                },
+                "reasoning": {
+                    "type": "string",
+                    "description": "1-2 sentences explaining why this query will test the hypothesis"
+                }
+            },
+            "required": ["query", "reasoning"],
+            "additionalProperties": False
+        }
+
+        try:
+            # Call LLM to generate query
+            response = await acompletion(
+                model=config.get_model("query_generation"),
+                messages=[{"role": "user", "content": prompt}],
+                response_format={
+                    "type": "json_schema",
+                    "json_schema": {
+                        "name": "hypothesis_query",
+                        "strict": True,
+                        "schema": schema
+                    }
+                }
+            )
+
+            result = json.loads(response.choices[0].message.content)
+            logging.info(f"🔍 Hypothesis {hypothesis['id']} → {source_display_name}: '{result['query']}' ({result['reasoning']})")
+            return result["query"]
+
+        except Exception as e:
+            logging.error(f"❌ Hypothesis {hypothesis['id']} query generation failed for {source_display_name}: {type(e).__name__}: {e}")
+            return None
+
+    async def _execute_hypothesis(
+        self,
+        hypothesis: Dict,
+        task: ResearchTask,
+        research_question: str
+    ) -> List[Dict]:
+        """
+        Execute a single hypothesis with its search strategy (Phase 3B).
+
+        Args:
+            hypothesis: Hypothesis dict with id, statement, search_strategy
+            task: Parent task this hypothesis belongs to
+            research_question: Original research question
+
+        Returns:
+            List of results with hypothesis_id tagging
+        """
+        hypothesis_id = hypothesis["id"]
+        print(f"\n🔬 Executing Hypothesis {hypothesis_id}: {hypothesis['statement']}")
+
+        # Map hypothesis sources (display names → tool names)
+        source_tool_names = self._map_hypothesis_sources(hypothesis)
+        if not source_tool_names:
+            logging.warning(f"⚠️  Hypothesis {hypothesis_id}: No valid sources to search")
+            return []
+
+        # Generate queries for each source
+        all_results = []
+        for tool_name in source_tool_names:
+            try:
+                # Generate source-specific query
+                query = await self._generate_hypothesis_query(
+                    hypothesis=hypothesis,
+                    source_tool_name=tool_name,
+                    research_question=research_question,
+                    task_query=task.query
+                )
+
+                if not query:
+                    continue  # Query generation failed, skip this source
+
+                # Execute search (single-shot, no retries)
+                source_display = self.tool_name_to_display.get(tool_name, tool_name)
+                print(f"   🔍 Searching {source_display}: '{query}'")
+
+                # Use existing search infrastructure
+                # Get limit from config
+                limit = config.get_integration_limit(source_display)
+
+                # Execute MCP search
+                if tool_name in [t["name"] for t in self.mcp_tools]:
+                    mcp_tool = next(t for t in self.mcp_tools if t["name"] == tool_name)
+                    api_key = self.api_keys.get(mcp_tool["api_key_name"]) if mcp_tool.get("api_key_name") else None
+
+                    # Call MCP tool
+                    tool_result = await call_mcp_tool(
+                        mcp_tool["server"],
+                        tool_name,
+                        {"query": query, "limit": limit},
+                        api_key
+                    )
+
+                    if tool_result.get("success"):
+                        results = tool_result.get("results", [])
+                        print(f"   ✓ {source_display}: {len(results)} results")
+                        all_results.extend(results)
+                    else:
+                        print(f"   ⚠️  {source_display}: {tool_result.get('error', 'Unknown error')}")
+                elif tool_name == "brave_search":
+                    # Web search (non-MCP)
+                    results = await self._search_brave(query, max_results=limit)
+                    print(f"   ✓ {source_display}: {len(results)} results")
+                    all_results.extend(results)
+
+            except Exception as e:
+                logging.error(f"❌ Hypothesis {hypothesis_id} search failed for {source_display}: {type(e).__name__}: {e}")
+                continue  # Continue with other sources
+
+        # Deduplicate results with hypothesis tagging
+        deduplicated = self._deduplicate_with_attribution(all_results, hypothesis_id)
+        print(f"   📊 Hypothesis {hypothesis_id}: {len(deduplicated)} unique results")
+
+        # Record execution summary for reporting/metadata
+        try:
+            task.hypothesis_runs.append({
+                "hypothesis_id": hypothesis_id,
+                "statement": hypothesis.get("statement", ""),
+                "results_count": len(deduplicated),
+                "sources": [self.tool_name_to_display.get(s, s) for s in source_tool_names]
+            })
+        except Exception as e:
+            logging.warning(f"Failed to record hypothesis run summary for {hypothesis_id}: {e}")
+
+        return deduplicated
+
+    async def _execute_hypotheses(
+        self,
+        task: ResearchTask,
+        research_question: str
+    ) -> List[Dict]:
+        """
+        Execute all hypotheses for a task in parallel (Phase 3B).
+
+        Args:
+            task: Task with hypotheses to execute
+            research_question: Original research question
+
+        Returns:
+            Combined deduplicated results from all hypotheses
+        """
+        if not task.hypotheses or not task.hypotheses.get("hypotheses"):
+            return []
+
+        hypotheses = task.hypotheses["hypotheses"]
+        print(f"\n🚀 Executing {len(hypotheses)} hypothesis/hypotheses in parallel...")
+
+        # Execute all hypotheses in parallel
+        hypothesis_tasks = [
+            self._execute_hypothesis(hyp, task, research_question)
+            for hyp in hypotheses
+        ]
+
+        try:
+            results_by_hypothesis = await asyncio.gather(*hypothesis_tasks, return_exceptions=True)
+
+            # Combine all results, filtering out exceptions
+            all_results = []
+            for i, result in enumerate(results_by_hypothesis):
+                if isinstance(result, Exception):
+                    logging.error(f"❌ Hypothesis {i+1} execution failed: {type(result).__name__}: {result}")
+                else:
+                    all_results.extend(result)
+
+            # Cross-hypothesis deduplication (results may appear across hypotheses)
+            # This is already handled by _deduplicate_with_attribution in _execute_hypothesis
+            # But we need to deduplicate across hypotheses too
+            deduplicated = []
+            url_map = {}  # url -> result with hypothesis_ids
+
+            for result in all_results:
+                url = result.get("url")
+                if not url:
+                    deduplicated.append(result)
+                    continue
+
+                if url in url_map:
+                    # Merge hypothesis attribution
+                    existing = url_map[url]
+                    if "hypothesis_ids" in existing:
+                        # Already multi-attributed
+                        if "hypothesis_id" in result:
+                            if result["hypothesis_id"] not in existing["hypothesis_ids"]:
+                                existing["hypothesis_ids"].append(result["hypothesis_id"])
+                        elif "hypothesis_ids" in result:
+                            for hid in result["hypothesis_ids"]:
+                                if hid not in existing["hypothesis_ids"]:
+                                    existing["hypothesis_ids"].append(hid)
+                    else:
+                        # Convert to multi-attribution
+                        existing["hypothesis_ids"] = [existing.pop("hypothesis_id")]
+                        if "hypothesis_id" in result:
+                            if result["hypothesis_id"] not in existing["hypothesis_ids"]:
+                                existing["hypothesis_ids"].append(result["hypothesis_id"])
+                        elif "hypothesis_ids" in result:
+                            for hid in result["hypothesis_ids"]:
+                                if hid not in existing["hypothesis_ids"]:
+                                    existing["hypothesis_ids"].append(hid)
+                else:
+                    url_map[url] = result
+                    deduplicated.append(result)
+
+            print(f"\n✅ Hypothesis execution complete: {len(deduplicated)} total unique results")
+            return deduplicated
+
+        except Exception as e:
+            logging.error(f"❌ Hypothesis execution failed: {type(e).__name__}: {e}")
+            return []
 
     def _get_available_source_names(self) -> List[str]:
         """Get list of available database integration display names for hypothesis generation."""
@@ -1484,6 +1829,27 @@ class SimpleDeepResearch:
                 # LLM says stop OR no retries left - finalize task
                 # SUCCESS: We have accumulated results from at least one attempt
                 if task.accumulated_results:
+                    # Phase 3B: Execute hypotheses if mode is "execution"
+                    if self.hypothesis_mode == "execution" and task.hypotheses:
+                        print(f"\n🔬 Phase 3B: Executing hypotheses for Task {task.id}...")
+                        try:
+                            hypothesis_results = await self._execute_hypotheses(
+                                task=task,
+                                research_question=self.original_question
+                            )
+
+                            if hypothesis_results:
+                                print(f"   ✓ Hypothesis execution added {len(hypothesis_results)} results")
+                                # Add hypothesis results to accumulated results
+                                task.accumulated_results.extend(hypothesis_results)
+                            else:
+                                print(f"   ⚠️  No hypothesis results found")
+
+                        except Exception as hyp_error:
+                            # Log but don't fail task - hypothesis execution is supplementary
+                            logging.error(f"❌ Hypothesis execution failed for Task {task.id}: {type(hyp_error).__name__}: {hyp_error}")
+                            print(f"   ⚠️  Hypothesis execution failed, continuing with normal results")
+
                     # Priority 2: Don't extract entities here, will do at end from accumulated results
                     task.status = TaskStatus.COMPLETED
 
@@ -2206,6 +2572,11 @@ class SimpleDeepResearch:
         for task_id, result_dict in self.results_by_task.items():
             if task_id not in aggregated_results_by_task:
                 aggregated_results_by_task[task_id] = result_dict
+            else:
+                # Merge new results (e.g., hypotheses) with raw file contents
+                merged_results = aggregated_results_by_task[task_id].get("results", []) + result_dict.get("results", [])
+                aggregated_results_by_task[task_id]["results"] = merged_results
+                aggregated_results_by_task[task_id]["total_results"] = len(merged_results)
 
         # 3. Update result dict to use aggregated data
         aggregated_total = sum(
@@ -2216,7 +2587,7 @@ class SimpleDeepResearch:
             aggregated_results_list.extend(r.get('results', []))
 
         # Codex Fix: Deduplicate results by (url, title) to avoid inflated counts
-        seen = set()
+        seen = {}
         deduplicated_results_list = []
         for result_item in aggregated_results_list:
             # Create unique key from URL and title (both normalized)
@@ -2224,9 +2595,22 @@ class SimpleDeepResearch:
             title = (result_item.get('title') or '').strip().lower()
             key = (url, title)
 
-            # Skip if we've seen this combination before
-            if key not in seen and (url or title):  # At least one must be non-empty
-                seen.add(key)
+            # Merge attribution if duplicate encountered
+            if (url or title) and key in seen:
+                existing = seen[key]
+                # Normalize attribution fields
+                attrs = set()
+                for res in (existing, result_item):
+                    if "hypothesis_ids" in res:
+                        attrs.update(res.get("hypothesis_ids") or [])
+                    if "hypothesis_id" in res:
+                        attrs.add(res["hypothesis_id"])
+                if attrs:
+                    existing["hypothesis_ids"] = sorted(list(attrs))
+                    existing.pop("hypothesis_id", None)
+            else:
+                if url or title:
+                    seen[key] = result_item
                 deduplicated_results_list.append(result_item)
 
         # Log deduplication stats (Codex Fix #2: Add console output for visibility)
@@ -2247,12 +2631,23 @@ class SimpleDeepResearch:
         result["results_before_dedup"] = len(aggregated_results_list) + duplicates_removed
 
         # Update result dict with aggregated counts
+        # Phase 3B: collect hypotheses + execution summaries for persistence
+        hypotheses_by_task = {}
+        hypothesis_execution_summary = {}
+        for task in (self.completed_tasks + self.failed_tasks):
+            if task.hypotheses:
+                hypotheses_by_task[task.id] = task.hypotheses
+            if task.hypothesis_runs:
+                hypothesis_execution_summary[task.id] = task.hypothesis_runs
+
         result_to_save = {
             **result,
             "total_results": aggregated_total,
             "results_by_task": aggregated_results_by_task,
             "results": aggregated_results_list,  # Gap #3 Fix: Add flat results array for easy iteration
-            "entity_relationships": {k: list(v) for k, v in result.get("entity_relationships", {}).items()}
+            "entity_relationships": {k: list(v) for k, v in result.get("entity_relationships", {}).items()},
+            "hypotheses_by_task": hypotheses_by_task,
+            "hypothesis_execution_summary": hypothesis_execution_summary
         }
 
         # 4. Save complete JSON results (for programmatic access)
@@ -2277,6 +2672,7 @@ class SimpleDeepResearch:
                 "min_results_per_task": self.min_results_per_task,
                 "max_concurrent_tasks": self.max_concurrent_tasks,
                 "hypothesis_branching_enabled": self.hypothesis_branching_enabled,
+                "hypothesis_mode": getattr(self, "hypothesis_mode", "off"),
                 "max_hypotheses_per_task": self.max_hypotheses_per_task
             },
             "execution_summary": {
@@ -2291,15 +2687,20 @@ class SimpleDeepResearch:
             }
         }
 
-        # Phase 3A: Add hypotheses if generated
+        # Phase 3A/B: Add hypotheses and execution summaries if generated
         if self.hypothesis_branching_enabled:
             hypotheses_by_task = {}
+            hypothesis_execution_summary = {}
             for task in (self.completed_tasks + self.failed_tasks):
                 if task.hypotheses:
                     hypotheses_by_task[task.id] = task.hypotheses
+                if task.hypothesis_runs:
+                    hypothesis_execution_summary[task.id] = task.hypothesis_runs
 
             if hypotheses_by_task:
                 metadata["hypotheses_by_task"] = hypotheses_by_task
+            if hypothesis_execution_summary:
+                metadata["hypothesis_execution_summary"] = hypothesis_execution_summary
 
         with open(metadata_file, 'w', encoding='utf-8') as f:
             json.dump(metadata, f, indent=2, ensure_ascii=False)
@@ -2432,14 +2833,17 @@ class SimpleDeepResearch:
                 "reasoning_notes": task.reasoning_notes  # Phase 1: Include LLM reasoning breakdowns
             })
 
-        # Phase 3A: Collect hypotheses if enabled
+        # Phase 3A/B: Collect hypotheses if enabled
         hypotheses_by_task = {}
         task_queries = {}
+        hypothesis_execution_summary = {}
         if self.hypothesis_branching_enabled:
             for task in (self.completed_tasks + self.failed_tasks):
                 task_queries[task.id] = task.query
                 if task.hypotheses:
                     hypotheses_by_task[task.id] = task.hypotheses
+                if task.hypothesis_runs:
+                    hypothesis_execution_summary[task.id] = task.hypothesis_runs
 
         prompt = render_prompt(
             "deep_research/report_synthesis.j2",
@@ -2453,7 +2857,8 @@ class SimpleDeepResearch:
             websites_found=websites_found,
             task_diagnostics=task_diagnostics,
             hypotheses_by_task=hypotheses_by_task,  # Phase 3A
-            task_queries=task_queries  # Phase 3A
+            task_queries=task_queries,  # Phase 3A
+            hypothesis_execution_summary=hypothesis_execution_summary  # Phase 3B
         )
 
         response = await acompletion(
