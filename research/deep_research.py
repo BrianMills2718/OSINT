@@ -3351,6 +3351,12 @@ class SimpleDeepResearch:
             if len(timeline) >= 5:
                 break
 
+        # Persist evidence snapshots into result for saving and downstream use
+        result["key_documents"] = key_documents
+        result["source_counts"] = source_counts
+        result["hypothesis_findings"] = hypothesis_findings
+        result["timeline"] = timeline
+
         prompt = render_prompt(
             "deep_research/report_synthesis.j2",
             original_question=original_question,
