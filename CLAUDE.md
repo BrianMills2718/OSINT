@@ -368,10 +368,62 @@ pip list | grep playwright
 
 # CLAUDE.md - Temporary Section (Updated as Tasks Complete)
 
-**Last Updated**: 2025-11-15 (Phase 3C: COMPLETE - All 6 Steps Implemented and Committed)
-**Current Phase**: Phase 3 Complete (3A/3B/3C)
-**Current Focus**: Ready for user validation
-**Status**: ✅ Phase 3C COMPLETE - Sequential execution with adaptive coverage assessment
+**Last Updated**: 2025-11-15
+**Current Phase**: Phase 3C Bug Fixes
+**Current Focus**: Fix AttributeErrors preventing Phase 3C from running
+**Status**: ✅ 3 critical bugs fixed (Commit e8fa4e0), MCP tool integration issue remains (pre-existing)
+
+---
+
+## CURRENT WORK: Phase 3C Bug Fixes (2025-11-15)
+
+**Found 3 critical bugs during minimal E2E test**:
+
+1. ✅ **FIXED** - AttributeError: `'SimpleDeepResearch' object has no attribute 'config'`
+   - Location: research/deep_research.py:1204
+   - Fix: Changed `self.config` → `config` (module-level import)
+
+2. ✅ **FIXED** - AttributeError: `'ResearchTask' object has no attribute 'metadata'`
+   - Location: research/deep_research.py:96 (ResearchTask dataclass)
+   - Fix: Added `metadata: Dict[str, Any] = field(default_factory=dict)`
+
+3. ✅ **FIXED** - AttributeError: `'Config' object has no attribute 'get_llm_model'`
+   - Location: research/deep_research.py:1205
+   - Fix: Changed `config.get_llm_model("analysis")` → `config.get_model("analysis")`
+
+**Commit**: e8fa4e0 - "Fix: Phase 3C AttributeErrors - config method and metadata field"
+
+**Known Issue** (Pre-existing, not Phase 3C specific):
+- MCP tool integration broken (`call_mcp_tool` is not defined)
+- Affects: USAJobs, SAM.gov, ClearanceJobs, Reddit, Discord
+- Brave Search and Twitter working (don't use MCP)
+- Test continued despite errors and collected 176 total results
+
+**Validation Status**:
+- Sequential execution: ✅ Working (coverage assessment triggered)
+- Config defaults: ✅ Correct (coverage_mode: false by default)
+- Delta metrics: ✅ Calculated correctly
+- Coverage decisions: ✅ Stored in task.metadata
+- Telemetry: ✅ Fallback logic executed
+- Report template: ⏳ Pending full test completion
+
+**Next Steps**:
+- Run test with MCP integration fixed OR
+- Run with Brave Search only to validate full Phase 3C path
+
+---
+
+## COMPLETED WORK
+
+✅ **Phase 3C - Coverage Assessment** (2025-11-15) - All 6 steps implemented across 3 commits (b4d7109, 50e1f85, 478f883, 0e90c3f, 4ef9afa, 6bec8fd)
+✅ **Phase 3B - Hypothesis Execution** (2025-11-15) - Parallel hypothesis execution with attribution
+✅ **Phase 3A - Hypothesis Generation** (2025-11-15) - LLM generates investigative hypotheses
+✅ **Phase 2 - Source Re-Selection** (2025-11-14) - LLM adjusts sources on retry based on performance
+✅ **Phase 1 - Mentor-Style Reasoning** (2025-11-13) - LLM explains filtering decisions
+✅ **Codex Quality Improvements** (2025-11-13) - Per-integration limits, entity filtering, Twitter pagination
+✅ **Jinja2 Prompt Migration** (2025-11-12) - All prompts migrated from f-strings to templates
+✅ **Per-Result Filtering** (2025-11-09) - LLM selects specific results to keep by index
+✅ **Cross-Attempt Accumulation** (2025-11-09) - Results build up across retries
 
 ---
 
