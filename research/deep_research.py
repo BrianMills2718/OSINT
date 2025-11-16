@@ -1074,13 +1074,172 @@ class SimpleDeepResearch:
 
         return deduplicated
 
+    async def _assess_coverage(
+        self,
+        task: ResearchTask,
+        research_question: str,
+        start_time: float
+    ) -> Dict:
+        """
+        LLM-driven coverage assessment (Phase 3C).
+
+        Decides whether to continue executing hypotheses or stop based on:
+        - Incremental gain (new vs duplicate results)
+        - Coverage gaps (unexplored angles)
+        - Information sufficiency (total results/entities)
+        - Resource budget (time/hypotheses remaining)
+        - Hypothesis quality (remaining hypotheses)
+
+        Args:
+            task: Task with executed hypotheses so far
+            research_question: Original research question
+            start_time: Task start timestamp (for time budget tracking)
+
+        Returns:
+            Dict with LLM coverage decision:
+            {
+                "decision": "continue" | "stop",
+                "rationale": str,
+                "coverage_score": int (0-100),
+                "incremental_gain_last": float,
+                "gaps_identified": List[str],
+                "confidence": int (0-100)
+            }
+        """
+        from core.prompt_loader import render_prompt
+
+        # Prepare hypothesis execution summary
+        hypotheses_all = task.hypotheses.get("hypotheses", [])
+        executed_count = len(task.hypothesis_runs)
+
+        # Build executed hypotheses with delta metrics
+        hypotheses_executed = []
+        for run in task.hypothesis_runs:
+            hypotheses_executed.append({
+                "hypothesis_id": run["hypothesis_id"],
+                "statement": run["statement"],
+                "priority": run.get("priority", "N/A"),
+                "confidence": run.get("confidence", "N/A"),
+                "delta_metrics": run["delta_metrics"],
+                "sources": run["sources"]
+            })
+
+        # Build remaining hypotheses list
+        executed_ids = {run["hypothesis_id"] for run in task.hypothesis_runs}
+        hypotheses_remaining = []
+        for hyp in hypotheses_all:
+            hyp_id = hyp.get("id", "unknown")
+            if hyp_id not in executed_ids:
+                hypotheses_remaining.append({
+                    "id": hyp_id,
+                    "statement": hyp.get("statement", ""),
+                    "exploration_priority": hyp.get("exploration_priority", "N/A"),
+                    "confidence": hyp.get("confidence", "N/A")
+                })
+
+        # Calculate time elapsed
+        time_elapsed_seconds = int(time.time() - start_time)
+
+        # Render coverage assessment prompt
+        prompt = render_prompt(
+            "deep_research/coverage_assessment.j2",
+            research_question=research_question,
+            task_query=task.query,
+            task_id=task.id,
+            hypotheses_executed=hypotheses_executed,
+            executed_count=executed_count,
+            total_hypotheses=len(hypotheses_all),
+            hypotheses_remaining=hypotheses_remaining,
+            task_total_results=len(task.accumulated_results),
+            task_total_entities=len(task.entities_found) if task.entities_found else 0,
+            time_elapsed_seconds=time_elapsed_seconds,
+            max_time_seconds=self.max_time_per_task_seconds,
+            max_hypotheses=self.max_hypotheses_to_execute
+        )
+
+        # Define schema for coverage decision
+        schema = {
+            "type": "object",
+            "properties": {
+                "decision": {
+                    "type": "string",
+                    "enum": ["continue", "stop"],
+                    "description": "Whether to continue executing hypotheses or stop"
+                },
+                "rationale": {
+                    "type": "string",
+                    "description": "2-3 sentences explaining the decision based on decision criteria"
+                },
+                "coverage_score": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 100,
+                    "description": "Assessment of current coverage completeness (0=no coverage, 100=comprehensive)"
+                },
+                "incremental_gain_last": {
+                    "type": "number",
+                    "minimum": 0.0,
+                    "maximum": 100.0,
+                    "description": "Percentage of new results from most recent hypothesis"
+                },
+                "gaps_identified": {
+                    "type": "array",
+                    "items": {"type": "string"},
+                    "description": "Brief descriptions of remaining gaps (1-3 items if decision is continue)"
+                },
+                "confidence": {
+                    "type": "integer",
+                    "minimum": 0,
+                    "maximum": 100,
+                    "description": "Confidence in this decision (0=uncertain, 100=very confident)"
+                }
+            },
+            "required": ["decision", "rationale", "coverage_score", "incremental_gain_last", "gaps_identified", "confidence"],
+            "additionalProperties": False
+        }
+
+        # Call LLM for coverage assessment
+        try:
+            response = await acompletion(
+                model=self.config.get_llm_model("analysis"),
+                messages=[{"role": "user", "content": prompt}],
+                response_format={"type": "json_schema", "json_schema": {"name": "coverage_decision", "strict": True, "schema": schema}}
+            )
+
+            decision = json.loads(response.choices[0].message.content)
+
+            # Log coverage decision
+            logging.info(f"📊 Coverage assessment (Task {task.id}):")
+            logging.info(f"   Decision: {decision['decision'].upper()} (confidence: {decision['confidence']}%)")
+            logging.info(f"   Coverage score: {decision['coverage_score']}%")
+            logging.info(f"   Incremental gain (last): {decision['incremental_gain_last']}%")
+            logging.info(f"   Rationale: {decision['rationale']}")
+
+            return decision
+
+        except Exception as e:
+            logging.error(f"❌ Coverage assessment failed: {type(e).__name__}: {e}")
+            # Fallback: continue if under hard ceilings
+            return {
+                "decision": "continue" if (executed_count < self.max_hypotheses_to_execute and time_elapsed_seconds < self.max_time_per_task_seconds) else "stop",
+                "rationale": f"Coverage assessment failed ({type(e).__name__}), defaulting based on hard ceilings",
+                "coverage_score": 50,
+                "incremental_gain_last": 0.0,
+                "gaps_identified": ["Coverage assessment error - using fallback logic"],
+                "confidence": 0
+            }
+
     async def _execute_hypotheses(
         self,
         task: ResearchTask,
         research_question: str
     ) -> List[Dict]:
         """
-        Execute all hypotheses for a task in parallel (Phase 3B).
+        Execute hypotheses for a task.
+
+        Mode behavior:
+        - coverage_mode: false → Parallel execution (Phase 3B)
+        - coverage_mode: true → Sequential with adaptive stopping (Phase 3C)
 
         Args:
             task: Task with hypotheses to execute
@@ -1093,6 +1252,32 @@ class SimpleDeepResearch:
             return []
 
         hypotheses = task.hypotheses["hypotheses"]
+
+        # Phase 3C: Sequential execution with coverage assessment
+        if self.coverage_mode:
+            return await self._execute_hypotheses_sequential(task, research_question, hypotheses)
+
+        # Phase 3B: Parallel execution (backward compatible)
+        else:
+            return await self._execute_hypotheses_parallel(task, research_question, hypotheses)
+
+    async def _execute_hypotheses_parallel(
+        self,
+        task: ResearchTask,
+        research_question: str,
+        hypotheses: List[Dict]
+    ) -> List[Dict]:
+        """
+        Execute all hypotheses in parallel (Phase 3B - default).
+
+        Args:
+            task: Task with hypotheses
+            research_question: Original research question
+            hypotheses: List of hypotheses to execute
+
+        Returns:
+            Combined deduplicated results from all hypotheses
+        """
         print(f"\n🚀 Executing {len(hypotheses)} hypothesis/hypotheses in parallel...")
 
         # Execute all hypotheses in parallel
@@ -1156,6 +1341,117 @@ class SimpleDeepResearch:
         except Exception as e:
             logging.error(f"❌ Hypothesis execution failed: {type(e).__name__}: {e}")
             return []
+
+    async def _execute_hypotheses_sequential(
+        self,
+        task: ResearchTask,
+        research_question: str,
+        hypotheses: List[Dict]
+    ) -> List[Dict]:
+        """
+        Execute hypotheses sequentially with coverage-based stopping (Phase 3C).
+
+        Args:
+            task: Task with hypotheses
+            research_question: Original research question
+            hypotheses: List of hypotheses to execute (sorted by priority)
+
+        Returns:
+            Combined deduplicated results from executed hypotheses
+        """
+        print(f"\n🔄 Executing hypotheses sequentially with coverage assessment...")
+        print(f"   Max hypotheses: {self.max_hypotheses_to_execute}")
+        print(f"   Time budget: {self.max_time_per_task_seconds}s")
+
+        start_time = time.time()
+        all_results = []
+        url_map = {}  # For cross-hypothesis deduplication
+        coverage_decisions = []  # Store all coverage decisions
+
+        for i, hypothesis in enumerate(hypotheses):
+            # Check hard ceilings BEFORE executing
+            executed_count = len(task.hypothesis_runs)
+            time_elapsed = int(time.time() - start_time)
+
+            if executed_count >= self.max_hypotheses_to_execute:
+                print(f"\n⏹️  Stopping: Reached hypothesis ceiling ({self.max_hypotheses_to_execute})")
+                break
+
+            if time_elapsed >= self.max_time_per_task_seconds:
+                print(f"\n⏹️  Stopping: Time budget exhausted ({self.max_time_per_task_seconds}s)")
+                break
+
+            # Execute hypothesis
+            print(f"\n📍 Hypothesis {i+1}/{len(hypotheses)}: {hypothesis.get('statement', 'unknown')[:80]}...")
+
+            try:
+                hypothesis_results = await self._execute_hypothesis(hypothesis, task, research_question)
+
+                # Cross-hypothesis deduplication
+                for result in hypothesis_results:
+                    url = result.get("url")
+                    if not url:
+                        all_results.append(result)
+                        continue
+
+                    if url in url_map:
+                        # Merge attribution (same logic as parallel mode)
+                        existing = url_map[url]
+                        if "hypothesis_ids" in existing:
+                            if "hypothesis_id" in result and result["hypothesis_id"] not in existing["hypothesis_ids"]:
+                                existing["hypothesis_ids"].append(result["hypothesis_id"])
+                            elif "hypothesis_ids" in result:
+                                for hid in result["hypothesis_ids"]:
+                                    if hid not in existing["hypothesis_ids"]:
+                                        existing["hypothesis_ids"].append(hid)
+                        else:
+                            existing["hypothesis_ids"] = [existing.pop("hypothesis_id")]
+                            if "hypothesis_id" in result and result["hypothesis_id"] not in existing["hypothesis_ids"]:
+                                existing["hypothesis_ids"].append(result["hypothesis_id"])
+                            elif "hypothesis_ids" in result:
+                                for hid in result["hypothesis_ids"]:
+                                    if hid not in existing["hypothesis_ids"]:
+                                        existing["hypothesis_ids"].append(hid)
+                    else:
+                        url_map[url] = result
+                        all_results.append(result)
+
+                print(f"   Results: {len(hypothesis_results)} from hypothesis ({len(all_results)} total unique)")
+
+            except Exception as e:
+                logging.error(f"❌ Hypothesis {i+1} execution failed: {type(e).__name__}: {e}")
+                continue
+
+            # Skip coverage assessment for first hypothesis (need baseline)
+            if i == 0:
+                print(f"   Coverage: Skipping assessment (establishing baseline)")
+                continue
+
+            # Coverage assessment (Phase 3C)
+            try:
+                decision = await self._assess_coverage(task, research_question, start_time)
+                coverage_decisions.append(decision)
+
+                if decision["decision"] == "stop":
+                    print(f"\n✋ Coverage assessment: STOP")
+                    print(f"   Rationale: {decision['rationale']}")
+                    print(f"   Coverage score: {decision['coverage_score']}%")
+                    print(f"   Hypotheses executed: {executed_count + 1}/{len(hypotheses)}")
+                    break
+                else:
+                    print(f"   Coverage assessment: CONTINUE")
+                    print(f"   Coverage score: {decision['coverage_score']}%")
+
+            except Exception as e:
+                logging.error(f"❌ Coverage assessment failed: {type(e).__name__}: {e}")
+                # Continue execution on assessment error (don't block progress)
+
+        # Store coverage decisions in task metadata for reporting
+        if coverage_decisions:
+            task.metadata["coverage_decisions"] = coverage_decisions
+
+        print(f"\n✅ Sequential execution complete: {len(all_results)} total unique results")
+        return all_results
 
     def _get_available_source_names(self) -> List[str]:
         """Get list of available database integration display names for hypothesis generation."""

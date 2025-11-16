@@ -368,10 +368,10 @@ pip list | grep playwright
 
 # CLAUDE.md - Temporary Section (Updated as Tasks Complete)
 
-**Last Updated**: 2025-11-15 (Phase 3C: Coverage Assessment - Starting Implementation)
+**Last Updated**: 2025-11-15 (Phase 3C: Steps 1-3 COMPLETE - Proceeding with Step 4)
 **Current Phase**: Phase 3C - Adaptive Coverage Assessment
-**Current Focus**: Sequential execution with LLM-driven stopping criteria
-**Status**: 🚧 Phase 3B E2E VALIDATED - Starting Phase 3C implementation
+**Current Focus**: Sequential execution mode with coverage checks
+**Status**: 🚧 Phase 3C 50% COMPLETE - Steps 1-3 committed, Step 4 in progress
 
 ---
 
@@ -381,27 +381,32 @@ pip list | grep playwright
 
 **Implementation Plan** (8-10 hours):
 
-**Step 1: Data Plumbing** (~3 hours) - IN PROGRESS
-- Add `_compute_hypothesis_delta()` method to calculate new vs duplicate results/entities
-- Extend `ResearchTask.hypothesis_runs` to store delta metrics per hypothesis
-- Track cumulative coverage across sequential hypothesis execution
+**Step 1: Data Plumbing** (~3 hours) ✅ COMPLETE (Commit b4d7109)
+- ✅ Added `_compute_hypothesis_delta()` method (lines 828-896 in research/deep_research.py)
+- ✅ Method calculates new vs duplicate results/entities per hypothesis
+- ✅ Delta metrics stored in `task.hypothesis_runs` (line 1065)
+- ✅ Integration point at line 1055 in `_execute_hypothesis()`
 
-**Step 2: Config Layer** (~1 hour)
-- Add `coverage_mode: bool` flag (default: false for backward compat)
-- Add minimal config knobs:
-  - `max_hypotheses_to_execute`: Hard ceiling (never exceed)
-  - `max_time_per_task_seconds`: Time budget per task
-- Let LLM decide incremental gain threshold (no hardcoded %)
+**Step 2: Config Layer** (~1 hour) ✅ COMPLETE (Commit b4d7109)
+- ✅ Added `coverage_mode: false` flag (default preserves Phase 3B parallel)
+- ✅ Added minimal config knobs in config_default.yaml (lines 236-264):
+  - `max_hypotheses_to_execute: 5` (hard ceiling)
+  - `max_time_per_task_seconds: 180` (time budget)
+- ✅ Config reading in deep_research.py (lines 197-200)
+- ✅ LLM decides incremental gain threshold (no hardcoded %)
 
-**Step 3: Coverage Assessment Prompt** (~1 hour)
-- Create `prompts/deep_research/coverage_assessment.j2`
-- Schema: `{decision: "continue"|"stop", rationale: "...", coverage_score: 0-100, gaps_identified: [...]}`
-- Multi-signal inputs: new results %, new entities %, time budget, executed hypotheses
+**Step 3: Coverage Assessment Prompt** (~1 hour) ✅ COMPLETE (Commit 50e1f85)
+- ✅ Created `prompts/deep_research/coverage_assessment.j2` template (94 lines)
+- ✅ Schema: `{decision: "continue"|"stop", rationale, coverage_score, incremental_gain_last, gaps_identified, confidence}`
+- ✅ Multi-signal inputs: new results %, new entities %, time budget, executed/remaining hypotheses
+- ✅ 5 decision criteria documented (incremental gain, coverage gaps, information sufficiency, resource budget, hypothesis quality)
 
-**Step 4: Sequential Execution Mode** (~2 hours)
-- Add conditional in `_execute_hypotheses()`: if coverage_mode → sequential, else parallel
-- Sequential loop: execute → assess coverage → decide continue/stop
-- Preserve parallel execution as default (opt-in to sequential via coverage_mode)
+**Step 4: Sequential Execution Mode** (~2 hours) 🚧 IN PROGRESS
+- [ ] Add `_assess_coverage()` method to call LLM with coverage_assessment.j2
+- [ ] Modify `_execute_hypotheses()`: if coverage_mode → sequential loop, else parallel
+- [ ] Sequential loop: execute hypothesis → assess coverage → decide continue/stop
+- [ ] Track time budget and hypothesis ceiling
+- [ ] Preserve parallel execution as default (backward compatible)
 
 **Step 5: Telemetry & Reporting** (~1 hour)
 - Add execution_log.jsonl events: `coverage_assessment_started`, `coverage_stopped_early`, `coverage_skipped_hypotheses`
