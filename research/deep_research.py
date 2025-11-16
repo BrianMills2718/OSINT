@@ -3242,6 +3242,19 @@ class SimpleDeepResearch:
                 "reasoning_notes": task.reasoning_notes  # Phase 1: Include LLM reasoning breakdowns
             })
 
+        # Sanity metrics: lightweight counts to spot regressions quickly
+        sanity_metrics = []
+        for task in self.completed_tasks:
+            task_result = self.results_by_task.get(task.id, {})
+            hypo_runs = getattr(task, "hypothesis_runs", []) or []
+            sanity_metrics.append({
+                "id": task.id,
+                "query": task.query,
+                "total_results": task_result.get('total_results', 0),
+                "hypotheses_executed": len(hypo_runs),
+                "hypothesis_result_counts": [run.get("results_count", 0) for run in hypo_runs]
+            })
+
         # Phase 3A/B/C: Collect hypotheses and coverage decisions if enabled
         hypotheses_by_task = {}
         task_queries = {}
@@ -3272,7 +3285,8 @@ class SimpleDeepResearch:
             hypotheses_by_task=hypotheses_by_task,  # Phase 3A
             task_queries=task_queries,  # Phase 3A
             hypothesis_execution_summary=hypothesis_execution_summary,  # Phase 3B
-            coverage_decisions_by_task=coverage_decisions_by_task  # Phase 3C
+            coverage_decisions_by_task=coverage_decisions_by_task,  # Phase 3C
+            sanity_metrics=sanity_metrics  # Sanity checks
         )
 
         response = await acompletion(

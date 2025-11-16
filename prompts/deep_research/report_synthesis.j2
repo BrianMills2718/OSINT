@@ -122,6 +122,15 @@ Summary of executed hypotheses from this run (mode: execution):
 
 {% endfor %}
 
+{% if sanity_metrics %}
+## Sanity Metrics
+
+Quick checks to spot regressions:
+{% for m in sanity_metrics %}
+- **Task {{ m.id }}**: {{ m.total_results }} results, {{ m.hypotheses_executed }} hypotheses executed{% if m.hypothesis_result_counts %} (per-hyp results: {{ m.hypothesis_result_counts|join(', ') }}){% endif %}
+{% endfor %}
+{% endif %}
+
 ## Methodology
 A total of {{ total_results }} relevant results were analyzed across {{ tasks_executed }} research tasks, leading to the discovery of {{ entities_discovered }} distinct entities and their interrelationships. The findings were synthesized to provide a comprehensive overview of the topic.
 
