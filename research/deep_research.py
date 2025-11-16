@@ -3302,7 +3302,8 @@ class SimpleDeepResearch:
                         samples.append({
                             "title": item.get("title", "") or item.get("snippet", "")[:80],
                             "url": item.get("url", ""),
-                            "source": item.get("source", "Unknown")
+                            "source": item.get("source", "Unknown"),
+                            "date": item.get("date")
                         })
                 hypothesis_findings.append({
                     "hypothesis_id": hid,
@@ -3318,7 +3319,8 @@ class SimpleDeepResearch:
                 key_documents.append({
                     "title": item.get("title", "") or item.get("snippet", "")[:80],
                     "url": item.get("url", ""),
-                    "source": item.get("source", "Unknown")
+                    "source": item.get("source", "Unknown"),
+                    "date": item.get("date")
                 })
             if len(key_documents) >= 5:
                 break

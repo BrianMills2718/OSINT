@@ -23,7 +23,7 @@ Create a detailed markdown report with:
 {% if key_documents %}
 ## Key Documents & Links
 {% for doc in key_documents %}
-- [{{ doc.title }}]({{ doc.url }}) — {{ doc.source }}
+- [{{ doc.title }}]({{ doc.url }}) — {{ doc.source }}{% if doc.date %} ({{ doc.date }}){% endif %}
 {% endfor %}
 {% endif %}
 
@@ -40,7 +40,7 @@ Create a detailed markdown report with:
 - Hypothesis {{ hf.hypothesis_id }}: {{ hf.statement }}
   - Results: {{ hf.total_results }}
   {% if hf.sample_results %}- Sample links:{% for s in hf.sample_results %}
-    - [{{ s.title }}]({{ s.url }}) ({{ s.source }}){% endfor %}{% endif %}
+    - [{{ s.title }}]({{ s.url }}) ({{ s.source }}){% if s.date %} ({{ s.date }}){% endif %}{% endfor %}{% endif %}
 {% endfor %}
 {% endif %}
 
