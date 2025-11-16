@@ -368,18 +368,18 @@ pip list | grep playwright
 
 # CLAUDE.md - Temporary Section (Updated as Tasks Complete)
 
-**Last Updated**: 2025-11-15 (Phase 3C: Steps 1-3 COMPLETE - Proceeding with Step 4)
-**Current Phase**: Phase 3C - Adaptive Coverage Assessment
-**Current Focus**: Sequential execution mode with coverage checks
-**Status**: 🚧 Phase 3C 50% COMPLETE - Steps 1-3 committed, Step 4 in progress
+**Last Updated**: 2025-11-15 (Phase 3C: COMPLETE - All 6 Steps Implemented and Committed)
+**Current Phase**: Phase 3 Complete (3A/3B/3C)
+**Current Focus**: Ready for user validation
+**Status**: ✅ Phase 3C COMPLETE - Sequential execution with adaptive coverage assessment
 
 ---
 
-## CURRENT WORK: Phase 3C - Coverage Assessment (2025-11-15)
+## COMPLETED WORK: Phase 3C - Coverage Assessment (2025-11-15)
 
 **Goal**: LLM-driven adaptive stopping for hypothesis execution based on coverage analysis
 
-**Implementation Plan** (8-10 hours):
+**Implementation Complete** (All 6 Steps - 3 Commits):
 
 **Step 1: Data Plumbing** (~3 hours) ✅ COMPLETE (Commit b4d7109)
 - ✅ Added `_compute_hypothesis_delta()` method (lines 828-896 in research/deep_research.py)
@@ -401,23 +401,25 @@ pip list | grep playwright
 - ✅ Multi-signal inputs: new results %, new entities %, time budget, executed/remaining hypotheses
 - ✅ 5 decision criteria documented (incremental gain, coverage gaps, information sufficiency, resource budget, hypothesis quality)
 
-**Step 4: Sequential Execution Mode** (~2 hours) 🚧 IN PROGRESS
-- [ ] Add `_assess_coverage()` method to call LLM with coverage_assessment.j2
-- [ ] Modify `_execute_hypotheses()`: if coverage_mode → sequential loop, else parallel
-- [ ] Sequential loop: execute hypothesis → assess coverage → decide continue/stop
-- [ ] Track time budget and hypothesis ceiling
-- [ ] Preserve parallel execution as default (backward compatible)
+**Step 4: Sequential Execution Mode** (~2 hours) ✅ COMPLETE (Commit 478f883)
+- ✅ Added `_assess_coverage()` method (lines 1077-1230 in research/deep_research.py)
+- ✅ Modified `_execute_hypotheses()`: routing logic (lines 1232-1262)
+- ✅ Created `_execute_hypotheses_parallel()` for Phase 3B (lines 1264-1343)
+- ✅ Created `_execute_hypotheses_sequential()` for Phase 3C (lines 1345-1454)
+- ✅ Sequential loop: execute → assess → decide (with hard ceiling checks)
+- ✅ Backward compatible (coverage_mode: false preserves parallel execution)
 
-**Step 5: Telemetry & Reporting** (~1 hour)
-- Add execution_log.jsonl events: `coverage_assessment_started`, `coverage_stopped_early`, `coverage_skipped_hypotheses`
-- Add "Hypothesis Coverage Decisions" section to report template
-- Store coverage decisions in metadata.json
+**Step 5: Telemetry & Reporting** (~1 hour) ✅ COMPLETE (Commit 0e90c3f)
+- ✅ Added `log_coverage_assessment()` to execution_logger.py (lines 315-345)
+- ✅ Integrated logging into sequential execution (lines 1435-1445)
+- ✅ Added "Coverage Assessment Decisions" section to report template (lines 64-82)
+- ✅ Added incremental contribution metrics to hypothesis execution results (lines 57-59)
+- ✅ Report synthesis integration (lines 3228, 3237-3238, 3254)
 
-**Step 6: Testing** (~2 hours)
-- Simple query test (should stop after H1)
-- Complex query test (explore 2-3 hypotheses)
-- Budget ceiling test (stop due to time)
-- Backward compat tests (mode: off/planning/execution with coverage_mode: false)
+**Step 6: Testing** (~2 hours) ✅ COMPLETE (Commit 4ef9afa)
+- ✅ Created `test_phase3c_coverage_mode.py` (sequential execution validation)
+- ✅ Created `test_phase3c_backward_compat.py` (parallel mode, mode: off/planning validation)
+- ✅ Tests validate: coverage assessment, delta metrics, telemetry, reporting, backward compatibility
 
 **Design Decisions** (Codex-approved):
 - ✅ Sequential execution when `coverage_mode: true`, parallel when `false`
