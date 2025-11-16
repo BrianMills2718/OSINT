@@ -3228,6 +3228,12 @@ class SimpleDeepResearch:
         integrations_used = [s for s in all_sources if s in integration_names]
         websites_found = [s for s in all_sources if s not in integration_names and s != 'Unknown']
 
+        # Coverage snapshot: per-source result counts
+        source_counts = {}
+        for r in all_results:
+            source = r.get('source', 'Unknown')
+            source_counts[source] = source_counts.get(source, 0) + 1
+
         # Phase 1: Collect task diagnostics WITH reasoning notes
         task_diagnostics = []
         for task in self.completed_tasks:
@@ -3260,16 +3266,74 @@ class SimpleDeepResearch:
         task_queries = {}
         hypothesis_execution_summary = {}
         coverage_decisions_by_task = {}  # Phase 3C
+        hypothesis_id_to_statement = {}
         if self.hypothesis_branching_enabled:
             for task in (self.completed_tasks + self.failed_tasks):
                 task_queries[task.id] = task.query
                 if task.hypotheses:
                     hypotheses_by_task[task.id] = task.hypotheses
+                    for hyp in task.hypotheses.get("hypotheses", []):
+                        hypothesis_id_to_statement[hyp.get("id")] = hyp.get("statement", "")
                 if task.hypothesis_runs:
                     hypothesis_execution_summary[task.id] = task.hypothesis_runs
                 # Phase 3C: Collect coverage decisions
                 if hasattr(task, 'metadata') and 'coverage_decisions' in task.metadata:
                     coverage_decisions_by_task[task.id] = task.metadata['coverage_decisions']
+
+        # Build hypothesis findings: counts and sample links per hypothesis_id
+        hypothesis_findings = []
+        if hypothesis_id_to_statement:
+            results_by_hypothesis = {}
+            for r in all_results:
+                hyp_ids = []
+                if "hypothesis_ids" in r:
+                    hyp_ids.extend(r.get("hypothesis_ids", []))
+                if "hypothesis_id" in r:
+                    hyp_ids.append(r.get("hypothesis_id"))
+                if not hyp_ids:
+                    continue
+                for hid in hyp_ids:
+                    results_by_hypothesis.setdefault(hid, []).append(r)
+
+            for hid, res_list in results_by_hypothesis.items():
+                samples = []
+                for item in res_list[:3]:
+                    if item.get("url"):
+                        samples.append({
+                            "title": item.get("title", "") or item.get("snippet", "")[:80],
+                            "url": item.get("url", ""),
+                            "source": item.get("source", "Unknown")
+                        })
+                hypothesis_findings.append({
+                    "hypothesis_id": hid,
+                    "statement": hypothesis_id_to_statement.get(hid, ""),
+                    "total_results": len(res_list),
+                    "sample_results": samples
+                })
+
+        # Key documents: top results with URLs for quick access
+        key_documents = []
+        for item in all_results:
+            if item.get("url"):
+                key_documents.append({
+                    "title": item.get("title", "") or item.get("snippet", "")[:80],
+                    "url": item.get("url", ""),
+                    "source": item.get("source", "Unknown")
+                })
+            if len(key_documents) >= 5:
+                break
+
+        # Basic timeline from dated items (if any)
+        timeline = []
+        for item in all_results:
+            if item.get("date") and item.get("url"):
+                timeline.append({
+                    "date": item.get("date"),
+                    "title": item.get("title", "") or item.get("snippet", "")[:80],
+                    "url": item.get("url", "")
+                })
+            if len(timeline) >= 5:
+                break
 
         prompt = render_prompt(
             "deep_research/report_synthesis.j2",
@@ -3286,7 +3350,11 @@ class SimpleDeepResearch:
             task_queries=task_queries,  # Phase 3A
             hypothesis_execution_summary=hypothesis_execution_summary,  # Phase 3B
             coverage_decisions_by_task=coverage_decisions_by_task,  # Phase 3C
-            sanity_metrics=sanity_metrics  # Sanity checks
+            sanity_metrics=sanity_metrics,  # Sanity checks
+            source_counts=source_counts,  # Coverage snapshot
+            hypothesis_findings=hypothesis_findings,
+            key_documents=key_documents,
+            timeline=timeline
         )
 
         response = await acompletion(

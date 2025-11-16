@@ -20,6 +20,38 @@ Create a detailed markdown report with:
 ## Executive Summary
 [3-5 sentences summarizing key findings]
 
+{% if key_documents %}
+## Key Documents & Links
+{% for doc in key_documents %}
+- [{{ doc.title }}]({{ doc.url }}) — {{ doc.source }}
+{% endfor %}
+{% endif %}
+
+{% if timeline %}
+## Timeline (Key Publications/Events)
+{% for item in timeline %}
+- {{ item.date }}: [{{ item.title }}]({{ item.url }})
+{% endfor %}
+{% endif %}
+
+{% if hypothesis_findings %}
+## Findings by Angle
+{% for hf in hypothesis_findings %}
+- Hypothesis {{ hf.hypothesis_id }}: {{ hf.statement }}
+  - Results: {{ hf.total_results }}
+  {% if hf.sample_results %}- Sample links:{% for s in hf.sample_results %}
+    - [{{ s.title }}]({{ s.url }}) ({{ s.source }}){% endfor %}{% endif %}
+{% endfor %}
+{% endif %}
+
+{% if source_counts %}
+## Coverage Snapshot
+- Per-source results:
+{% for source, count in source_counts.items() %}
+  - {{ source }}: {{ count }}
+{% endfor %}
+{% endif %}
+
 {% if hypotheses_by_task %}
 ## Suggested Investigative Angles
 
