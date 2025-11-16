@@ -3043,6 +3043,11 @@ class SimpleDeepResearch:
         # Phase 3B: collect hypotheses + execution summaries for persistence
         hypotheses_by_task = {}
         hypothesis_execution_summary = {}
+        # Phase 3C+ evidence snapshots
+        key_documents = result.get("key_documents", [])
+        source_counts_out = result.get("source_counts", {})
+        hypothesis_findings_out = result.get("hypothesis_findings", [])
+        timeline_out = result.get("timeline", [])
         for task in (self.completed_tasks + self.failed_tasks):
             if task.hypotheses:
                 hypotheses_by_task[task.id] = task.hypotheses
@@ -3056,7 +3061,11 @@ class SimpleDeepResearch:
             "results": aggregated_results_list,  # Gap #3 Fix: Add flat results array for easy iteration
             "entity_relationships": {k: list(v) for k, v in result.get("entity_relationships", {}).items()},
             "hypotheses_by_task": hypotheses_by_task,
-            "hypothesis_execution_summary": hypothesis_execution_summary
+            "hypothesis_execution_summary": hypothesis_execution_summary,
+            "key_documents": key_documents,
+            "source_counts": source_counts_out,
+            "hypothesis_findings": hypothesis_findings_out,
+            "timeline": timeline_out
         }
 
         # 4. Save complete JSON results (for programmatic access)
