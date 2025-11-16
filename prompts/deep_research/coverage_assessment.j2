@@ -1,0 +1,94 @@
+You are a research coverage analyst. After executing a hypothesis, you must decide whether to continue exploring additional hypotheses or stop because sufficient coverage has been achieved.
+
+**RESEARCH CONTEXT**:
+- Research Question: {{ research_question }}
+- Task Query: {{ task_query }}
+- Task ID: {{ task_id }}
+
+**HYPOTHESES EXECUTED SO FAR** ({{ executed_count }}/{{ total_hypotheses }} executed):
+{% for hyp in hypotheses_executed %}
+**Hypothesis {{ hyp.hypothesis_id }}** (Priority {{ hyp.priority }}, Confidence {{ hyp.confidence }}%):
+- Statement: {{ hyp.statement }}
+- Results: {{ hyp.delta_metrics.results_new }} new + {{ hyp.delta_metrics.results_duplicate }} duplicate = {{ hyp.delta_metrics.total_results }} total
+- Entities: {{ hyp.delta_metrics.entities_new }} new + {{ hyp.delta_metrics.entities_duplicate }} duplicate = {{ hyp.delta_metrics.total_entities }} total
+- Sources Used: {{ hyp.sources|join(', ') }}
+{% if hyp.delta_metrics.total_results > 0 %}
+- Incremental Gain: {{ (hyp.delta_metrics.results_new / hyp.delta_metrics.total_results * 100)|round(1) }}% new results
+{% else %}
+- Incremental Gain: 0% (no results found)
+{% endif %}
+{% endfor %}
+
+**CUMULATIVE TASK PROGRESS**:
+- Total Results Accumulated: {{ task_total_results }}
+- Total Entities Discovered: {{ task_total_entities }}
+- Hypotheses Executed: {{ executed_count }}/{{ total_hypotheses }}
+- Time Elapsed: {{ time_elapsed_seconds }}s / {{ max_time_seconds }}s ({{ (time_elapsed_seconds / max_time_seconds * 100)|round(0) }}% of budget)
+
+**HYPOTHESES REMAINING** ({{ total_hypotheses - executed_count }} not yet executed):
+{% for hyp in hypotheses_remaining %}
+- Hypothesis {{ hyp.id }}: {{ hyp.statement }} (Priority {{ hyp.exploration_priority }}, Confidence {{ hyp.confidence }}%)
+{% endfor %}
+
+**HARD CONSTRAINTS** (LLM cannot override these):
+- Maximum Hypotheses: {{ max_hypotheses }} ({{ max_hypotheses - executed_count }} execution slots remaining)
+- Maximum Time: {{ max_time_seconds }}s ({{ max_time_seconds - time_elapsed_seconds }}s remaining)
+
+**YOUR TASK**:
+Decide whether to continue executing hypotheses or stop here.
+
+**DECISION CRITERIA** (consider all factors, no hardcoded thresholds):
+
+1. **Incremental Gain**: Are recent hypotheses adding significant new information?
+   - Look at results_new percentage for last 1-2 hypotheses
+   - Diminishing returns suggest stopping
+   - If last hypothesis found <20% new results, consider stopping
+
+2. **Coverage Gaps**: Are there important angles not yet explored?
+   - Review remaining hypotheses - do they target different sources/approaches?
+   - If remaining hypotheses are redundant with what's been explored, consider stopping
+   - If remaining hypotheses target unexplored high-value sources, consider continuing
+
+3. **Information Sufficiency**: Has the research question been adequately answered?
+   - {{ task_total_results }} total results - is this sufficient for the query?
+   - {{ task_total_entities }} entities discovered - does this suggest comprehensive coverage?
+
+4. **Resource Budget**: Is there enough time/capacity to continue?
+   - Time remaining: {{ max_time_seconds - time_elapsed_seconds }}s
+   - Hypothesis slots remaining: {{ max_hypotheses - executed_count }}
+
+5. **Hypothesis Quality**: Are remaining hypotheses likely to add value?
+   - Lower priority/confidence hypotheses may have diminishing returns
+   - If top priorities already executed with good results, consider stopping
+
+**OUTPUT REQUIREMENTS**:
+Return a JSON object with these fields:
+
+{
+  "decision": "continue" | "stop",
+  "rationale": "2-3 sentences explaining your decision based on the criteria above",
+  "coverage_score": 0-100,  // Your assessment of current coverage completeness (0=no coverage, 100=comprehensive)
+  "incremental_gain_last": 0.0-100.0,  // Percentage of new results from most recent hypothesis
+  "gaps_identified": [
+    "Brief description of remaining gaps (if decision: continue)",
+    "List 1-3 specific information needs not yet addressed"
+  ],
+  "confidence": 0-100  // How confident are you in this decision (0=uncertain, 100=very confident)
+}
+
+**DECISION GUIDANCE**:
+- **Continue** if:
+  - Last hypothesis showed >20% new results AND time/slots remaining
+  - Significant coverage gaps remain AND high-priority hypotheses not yet executed
+  - Total results <30 AND top-priority hypotheses remain
+
+- **Stop** if:
+  - Last 1-2 hypotheses showed <20% new results (diminishing returns)
+  - Coverage score >70 AND no critical gaps identified
+  - Total results >50 AND recent hypotheses mostly duplicates
+  - Time budget <25% remaining (not enough for additional hypotheses)
+  - Only low-priority hypotheses remain AND coverage score >60
+
+**REMEMBER**: You're optimizing for quality, not cost. Don't stop prematurely just to save LLM calls. But DO stop when continuing would yield mostly duplicate information.
+
+Now make your decision:
