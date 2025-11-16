@@ -3043,6 +3043,11 @@ class SimpleDeepResearch:
         # Phase 3B: collect hypotheses + execution summaries for persistence
         hypotheses_by_task = {}
         hypothesis_execution_summary = {}
+        # Ensure evidence snapshots are in the result dict for persistence
+        result["key_documents"] = key_documents
+        result["source_counts"] = source_counts
+        result["hypothesis_findings"] = hypothesis_findings
+        result["timeline"] = timeline
         # Phase 3C+ evidence snapshots
         key_documents = result.get("key_documents", [])
         source_counts_out = result.get("source_counts", {})
