@@ -93,6 +93,7 @@ class ResearchTask:
     reasoning_notes: List[Dict] = field(default_factory=list)  # Phase 1: Store LLM reasoning breakdowns
     hypotheses: Optional[Dict] = None  # Phase 3A: Store generated investigative hypotheses
     hypothesis_runs: List[Dict] = field(default_factory=list)  # Phase 3B: Per-hypothesis execution summaries
+    metadata: Dict[str, Any] = field(default_factory=dict)  # Phase 3C: Store coverage decisions and other metadata
 
     def __post_init__(self):
         if self.entities_found is None:
@@ -1201,7 +1202,7 @@ class SimpleDeepResearch:
         # Call LLM for coverage assessment
         try:
             response = await acompletion(
-                model=self.config.get_llm_model("analysis"),
+                model=config.get_model("analysis"),
                 messages=[{"role": "user", "content": prompt}],
                 response_format={"type": "json_schema", "json_schema": {"name": "coverage_decision", "strict": True, "schema": schema}}
             )
