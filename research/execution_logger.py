@@ -312,6 +312,38 @@ class ExecutionLogger:
             "low_quality_sources_count": len(sources_with_low_quality)
         })
 
+    def log_coverage_assessment(self, task_id: int, hypothesis_id: str,
+                               executed_count: int, total_hypotheses: int,
+                               coverage_decision: Dict[str, Any],
+                               time_elapsed_seconds: int, time_budget_seconds: int):
+        """
+        Log LLM coverage assessment for hypothesis execution (Phase 3C).
+
+        Args:
+            task_id: Task ID
+            hypothesis_id: ID of hypothesis just executed
+            executed_count: Number of hypotheses executed so far
+            total_hypotheses: Total hypotheses available
+            coverage_decision: LLM decision with {decision, rationale, coverage_score, incremental_gain_last, gaps_identified, confidence}
+            time_elapsed_seconds: Time spent on hypothesis execution so far
+            time_budget_seconds: Total time budget for task
+        """
+        self._write_entry(task_id, "coverage_assessment", {
+            "hypothesis_id": hypothesis_id,
+            "executed_count": executed_count,
+            "total_hypotheses": total_hypotheses,
+            "decision": coverage_decision["decision"],
+            "rationale": coverage_decision["rationale"],
+            "coverage_score": coverage_decision["coverage_score"],
+            "incremental_gain_last": coverage_decision["incremental_gain_last"],
+            "gaps_identified": coverage_decision["gaps_identified"],
+            "confidence": coverage_decision["confidence"],
+            "time_elapsed_seconds": time_elapsed_seconds,
+            "time_budget_seconds": time_budget_seconds,
+            "time_remaining_seconds": time_budget_seconds - time_elapsed_seconds,
+            "hypotheses_remaining": total_hypotheses - executed_count
+        })
+
     def log_task_complete(self, task_id: int, query: str, status: str, reason: str,
                          total_results: int, sources_tried: List[str],
                          sources_succeeded: List[str], retry_count: int,

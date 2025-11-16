@@ -1432,6 +1432,18 @@ class SimpleDeepResearch:
                 decision = await self._assess_coverage(task, research_question, start_time)
                 coverage_decisions.append(decision)
 
+                # Log coverage decision to execution log
+                if self.logger:
+                    self.logger.log_coverage_assessment(
+                        task_id=task.id,
+                        hypothesis_id=hypothesis.get("id", "unknown"),
+                        executed_count=len(task.hypothesis_runs),
+                        total_hypotheses=len(hypotheses),
+                        coverage_decision=decision,
+                        time_elapsed_seconds=int(time.time() - start_time),
+                        time_budget_seconds=self.max_time_per_task_seconds
+                    )
+
                 if decision["decision"] == "stop":
                     print(f"\n✋ Coverage assessment: STOP")
                     print(f"   Rationale: {decision['rationale']}")
@@ -3209,10 +3221,11 @@ class SimpleDeepResearch:
                 "reasoning_notes": task.reasoning_notes  # Phase 1: Include LLM reasoning breakdowns
             })
 
-        # Phase 3A/B: Collect hypotheses if enabled
+        # Phase 3A/B/C: Collect hypotheses and coverage decisions if enabled
         hypotheses_by_task = {}
         task_queries = {}
         hypothesis_execution_summary = {}
+        coverage_decisions_by_task = {}  # Phase 3C
         if self.hypothesis_branching_enabled:
             for task in (self.completed_tasks + self.failed_tasks):
                 task_queries[task.id] = task.query
@@ -3220,6 +3233,9 @@ class SimpleDeepResearch:
                     hypotheses_by_task[task.id] = task.hypotheses
                 if task.hypothesis_runs:
                     hypothesis_execution_summary[task.id] = task.hypothesis_runs
+                # Phase 3C: Collect coverage decisions
+                if hasattr(task, 'metadata') and 'coverage_decisions' in task.metadata:
+                    coverage_decisions_by_task[task.id] = task.metadata['coverage_decisions']
 
         prompt = render_prompt(
             "deep_research/report_synthesis.j2",
@@ -3234,7 +3250,8 @@ class SimpleDeepResearch:
             task_diagnostics=task_diagnostics,
             hypotheses_by_task=hypotheses_by_task,  # Phase 3A
             task_queries=task_queries,  # Phase 3A
-            hypothesis_execution_summary=hypothesis_execution_summary  # Phase 3B
+            hypothesis_execution_summary=hypothesis_execution_summary,  # Phase 3B
+            coverage_decisions_by_task=coverage_decisions_by_task  # Phase 3C
         )
 
         response = await acompletion(

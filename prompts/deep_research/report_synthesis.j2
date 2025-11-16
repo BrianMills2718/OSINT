@@ -54,9 +54,32 @@ Summary of executed hypotheses from this run (mode: execution):
 
 {% for run in runs %}
 - Hypothesis {{ run.hypothesis_id }} → {{ run.results_count }} results (Sources: {{ run.sources|join(', ') }})
+  {% if run.delta_metrics %}
+  - Incremental Contribution: {{ run.delta_metrics.results_new }} new + {{ run.delta_metrics.results_duplicate }} duplicate ({{ (run.delta_metrics.results_new / run.delta_metrics.total_results * 100)|round(1) if run.delta_metrics.total_results > 0 else 0 }}% new)
+  {% endif %}
 {% endfor %}
 
 {% endfor %}
+
+{% if coverage_decisions_by_task %}
+## Coverage Assessment Decisions
+
+{% for task_id, decisions in coverage_decisions_by_task.items() %}
+**Task {{ task_id }}**: {{ task_queries.get(task_id, 'Unknown task') }}
+
+{% for decision in decisions %}
+- **After Hypothesis {{ decision.hypothesis_id }}** ({{ decision.executed_count }}/{{ decision.total_hypotheses }} executed):
+  - **Decision**: {{ decision.decision|upper }} ({{ decision.confidence }}% confidence)
+  - **Coverage Score**: {{ decision.coverage_score }}%
+  - **Incremental Gain**: {{ decision.incremental_gain_last }}% new results from last hypothesis
+  - **Rationale**: {{ decision.rationale }}
+  {% if decision.gaps_identified %}
+  - **Gaps Identified**: {{ decision.gaps_identified|join('; ') }}
+  {% endif %}
+{% endfor %}
+
+{% endfor %}
+{% endif %}
 {% endif %}
 {% endif %}
 
