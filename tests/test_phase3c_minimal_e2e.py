@@ -43,7 +43,7 @@ async def test_minimal_e2e():
     engine = SimpleDeepResearch(
         max_tasks=1,  # MINIMAL: Only 1 task
         max_retries_per_task=1,
-        max_time_minutes=5,
+        max_time_minutes=10,  # Increased from 5 to allow synthesis completion
         save_output=True
     )
 

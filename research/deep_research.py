@@ -1027,14 +1027,15 @@ class SimpleDeepResearch:
                 # Execute MCP search
                 if tool_name in [t["name"] for t in self.mcp_tools]:
                     mcp_tool = next(t for t in self.mcp_tools if t["name"] == tool_name)
-                    api_key = self.api_keys.get(mcp_tool["api_key_name"]) if mcp_tool.get("api_key_name") else None
 
-                    # Call MCP tool
-                    tool_result = await call_mcp_tool(
-                        mcp_tool["server"],
-                        tool_name,
-                        {"query": query, "limit": limit},
-                        api_key
+                    # Call MCP tool using class method
+                    tool_result = await self._call_mcp_tool(
+                        tool_config=mcp_tool,
+                        query=query,
+                        param_adjustments=None,  # No param hints in direct hypothesis execution
+                        task_id=task.id,
+                        attempt=0,
+                        logger=self.logger
                     )
 
                     if tool_result.get("success"):
@@ -1641,6 +1642,170 @@ class SimpleDeepResearch:
             # Fallback: return all MCP tools (downstream filtering will still apply)
             return ([tool["name"] for tool in self.mcp_tools], f"Error during source selection: {type(e).__name__}")
 
+    async def _call_mcp_tool(
+        self,
+        tool_config: Dict,
+        query: str,
+        param_adjustments: Optional[Dict[str, Dict]] = None,
+        task_id: Optional[int] = None,
+        attempt: int = 0,
+        logger: Optional['ExecutionLogger'] = None
+    ) -> Dict:
+        """
+        Call a single MCP tool (extracted as class method for reuse).
+
+        Args:
+            tool_config: MCP tool configuration dict with 'name', 'server', 'api_key_name'
+            query: Search query
+            param_adjustments: Optional param hints for source-specific adjustments
+            task_id: Task ID for logging
+            attempt: Retry attempt number
+            logger: Execution logger instance
+
+        Returns:
+            Dict with 'success', 'results', 'source', 'total', 'error' keys
+        """
+        tool_name = tool_config["name"]
+        server = tool_config["server"]
+        api_key_name = tool_config["api_key_name"]
+
+        try:
+            # Get API key if needed
+            api_key = self.api_keys.get(api_key_name) if api_key_name else None
+
+            # Get per-integration limit (Task 1: Per-Integration Limits)
+            source_name = self.tool_name_to_display.get(tool_name, tool_name)
+            integration_limit = config.get_integration_limit(source_name.lower().replace('.', '').replace(' ', ''))
+
+            # Build tool arguments
+            args = {
+                "research_question": query,
+                "limit": integration_limit  # Use per-integration limit instead of hardcoded
+            }
+            if api_key:
+                args["api_key"] = api_key
+
+            # Add param_hints if available for this tool (Task 4: Twitter pagination control)
+            if param_adjustments:
+                # Map source keys to tool names
+                source_map = {
+                    "reddit": "search_reddit",
+                    "usajobs": "search_usajobs",
+                    "twitter": "search_twitter"  # Task 4: Added Twitter pagination control
+                }
+                # Find matching hints for this tool
+                for source_key, tool_name_key in source_map.items():
+                    if tool_name == tool_name_key and source_key in param_adjustments:
+                        args["param_hints"] = param_adjustments[source_key]
+                        break
+
+            # Log API call
+            source_name = self.tool_name_to_display.get(tool_name, tool_name)
+            if logger and task_id is not None:
+                try:
+                    logger.log_api_call(
+                        task_id=task_id,
+                        attempt=attempt,
+                        source_name=source_name,
+                        query_params=args,
+                        timeout=30,
+                        retry_count=0
+                    )
+                except Exception as log_error:
+                    logging.warning(f"Failed to log API call: {log_error}")
+
+            # Call MCP tool via in-memory client and measure response time
+            start_time = time.time()
+            async with Client(server) as client:
+                result = await client.call_tool(tool_name, args)
+            response_time_ms = (time.time() - start_time) * 1000
+
+            # Parse result (FastMCP returns ToolResult with content)
+            import json
+            result_data = json.loads(result.content[0].text)
+
+            # Get source name from result_data
+            source_name = result_data.get("source", tool_name)
+
+            # Add source field to each individual result for proper tracking
+            results_with_source = []
+            for r in result_data.get("results", []):
+                # Make a copy to avoid mutating original
+                r_copy = dict(r)
+                # Add source if not already present
+                if "source" not in r_copy:
+                    r_copy["source"] = source_name
+                results_with_source.append(r_copy)
+
+            # Log raw response
+            success = result_data.get("success", False)
+            error = result_data.get("error")
+            if logger and task_id is not None:
+                try:
+                    logger.log_raw_response(
+                        task_id=task_id,
+                        attempt=attempt,
+                        source_name=source_name,
+                        success=success,
+                        response_time_ms=response_time_ms,
+                        results=results_with_source,
+                        error=error
+                    )
+                except Exception as log_error:
+                    logging.warning(f"Failed to log raw response: {log_error}")
+
+            # Circuit breaker: Detect 429 rate limits and check config before adding
+            if error and ("429" in str(error) or "rate limit" in str(error).lower()):
+                rate_config = config.get_rate_limit_config(source_name)
+
+                if rate_config["use_circuit_breaker"]:
+                    if not rate_config["is_critical"]:
+                        self.rate_limited_sources.add(source_name)
+                        logging.warning(f"⚠️  {source_name} rate limited - added to circuit breaker")
+                        print(f"⚠️  {source_name} rate limited - skipping for remaining tasks")
+                    else:
+                        logging.warning(f"⚠️  {source_name} rate limited but CRITICAL - will continue retrying")
+                        print(f"⚠️  {source_name} rate limited (CRITICAL - continuing retries)")
+                else:
+                    logging.info(f"ℹ️  {source_name} rate limited (no circuit breaker configured - will retry)")
+                    print(f"ℹ️  {source_name} rate limited (will retry)")
+
+            return {
+                "tool": tool_name,
+                "success": success,
+                "source": source_name,  # Pass through source from wrapper
+                "results": results_with_source,  # Individual results now have source
+                "total": result_data.get("total", 0),
+                "error": error
+            }
+
+        except Exception as e:
+            logging.error(f"MCP tool {tool_name} failed: {type(e).__name__}: {str(e)}")
+
+            # Log failed API call
+            if logger and task_id is not None:
+                try:
+                    source_name = self.tool_name_to_display.get(tool_name, tool_name)
+                    logger.log_raw_response(
+                        task_id=task_id,
+                        attempt=attempt,
+                        source_name=source_name,
+                        success=False,
+                        response_time_ms=0,
+                        results=[],
+                        error=str(e)
+                    )
+                except Exception as log_error:
+                    logging.warning(f"Failed to log error response: {log_error}")
+
+            return {
+                "tool": tool_name,
+                "success": False,
+                "results": [],
+                "total": 0,
+                "error": str(e)
+            }
+
     async def _search_mcp_tools_selected(
         self,
         query: str,
@@ -1701,154 +1866,9 @@ class SimpleDeepResearch:
         all_results = []
         sources_count = {}
 
-        # Execute MCP tool searches in parallel
-        async def call_mcp_tool(tool_config: Dict, task_id: Optional[int] = None,
-                               attempt: int = 0, logger: Optional['ExecutionLogger'] = None) -> Dict:
-            """Call a single MCP tool."""
-            tool_name = tool_config["name"]
-            server = tool_config["server"]
-            api_key_name = tool_config["api_key_name"]
-
-            try:
-                # Get API key if needed
-                api_key = self.api_keys.get(api_key_name) if api_key_name else None
-
-                # Get per-integration limit (Task 1: Per-Integration Limits)
-                source_name = self.tool_name_to_display.get(tool_name, tool_name)
-                integration_limit = config.get_integration_limit(source_name.lower().replace('.', '').replace(' ', ''))
-
-                # Build tool arguments
-                args = {
-                    "research_question": query,
-                    "limit": integration_limit  # Use per-integration limit instead of hardcoded
-                }
-                if api_key:
-                    args["api_key"] = api_key
-
-                # Add param_hints if available for this tool (Task 4: Twitter pagination control)
-                if param_adjustments:
-                    # Map source keys to tool names
-                    source_map = {
-                        "reddit": "search_reddit",
-                        "usajobs": "search_usajobs",
-                        "twitter": "search_twitter"  # Task 4: Added Twitter pagination control
-                    }
-                    # Find matching hints for this tool
-                    for source_key, tool_name_key in source_map.items():
-                        if tool_name == tool_name_key and source_key in param_adjustments:
-                            args["param_hints"] = param_adjustments[source_key]
-                            break
-
-                # Log API call
-                source_name = self.tool_name_to_display.get(tool_name, tool_name)
-                if logger and task_id is not None:
-                    try:
-                        logger.log_api_call(
-                            task_id=task_id,
-                            attempt=attempt,
-                            source_name=source_name,
-                            query_params=args,
-                            timeout=30,
-                            retry_count=0
-                        )
-                    except Exception as log_error:
-                        logging.warning(f"Failed to log API call: {log_error}")
-
-                # Call MCP tool via in-memory client and measure response time
-                start_time = time.time()
-                async with Client(server) as client:
-                    result = await client.call_tool(tool_name, args)
-                response_time_ms = (time.time() - start_time) * 1000
-
-                # Parse result (FastMCP returns ToolResult with content)
-                import json
-                result_data = json.loads(result.content[0].text)
-
-                # Get source name from result_data
-                source_name = result_data.get("source", tool_name)
-
-                # Add source field to each individual result for proper tracking
-                results_with_source = []
-                for r in result_data.get("results", []):
-                    # Make a copy to avoid mutating original
-                    r_copy = dict(r)
-                    # Add source if not already present
-                    if "source" not in r_copy:
-                        r_copy["source"] = source_name
-                    results_with_source.append(r_copy)
-
-                # Log raw response
-                success = result_data.get("success", False)
-                error = result_data.get("error")
-                if logger and task_id is not None:
-                    try:
-                        logger.log_raw_response(
-                            task_id=task_id,
-                            attempt=attempt,
-                            source_name=source_name,
-                            success=success,
-                            response_time_ms=response_time_ms,
-                            results=results_with_source,
-                            error=error
-                        )
-                    except Exception as log_error:
-                        logging.warning(f"Failed to log raw response: {log_error}")
-
-                # Circuit breaker: Detect 429 rate limits and check config before adding
-                if error and ("429" in str(error) or "rate limit" in str(error).lower()):
-                    rate_config = config.get_rate_limit_config(source_name)
-
-                    if rate_config["use_circuit_breaker"]:
-                        if not rate_config["is_critical"]:
-                            self.rate_limited_sources.add(source_name)
-                            logging.warning(f"⚠️  {source_name} rate limited - added to circuit breaker")
-                            print(f"⚠️  {source_name} rate limited - skipping for remaining tasks")
-                        else:
-                            logging.warning(f"⚠️  {source_name} rate limited but CRITICAL - will continue retrying")
-                            print(f"⚠️  {source_name} rate limited (CRITICAL - continuing retries)")
-                    else:
-                        logging.info(f"ℹ️  {source_name} rate limited (no circuit breaker configured - will retry)")
-                        print(f"ℹ️  {source_name} rate limited (will retry)")
-
-                return {
-                    "tool": tool_name,
-                    "success": success,
-                    "source": source_name,  # Pass through source from wrapper
-                    "results": results_with_source,  # Individual results now have source
-                    "total": result_data.get("total", 0),
-                    "error": error
-                }
-
-            except Exception as e:
-                logging.error(f"MCP tool {tool_name} failed: {type(e).__name__}: {str(e)}")
-
-                # Log failed API call
-                if logger and task_id is not None:
-                    try:
-                        source_name = self.tool_name_to_display.get(tool_name, tool_name)
-                        logger.log_raw_response(
-                            task_id=task_id,
-                            attempt=attempt,
-                            source_name=source_name,
-                            success=False,
-                            response_time_ms=0,
-                            results=[],
-                            error=str(e)
-                        )
-                    except Exception as log_error:
-                        logging.warning(f"Failed to log error response: {log_error}")
-
-                return {
-                    "tool": tool_name,
-                    "success": False,
-                    "results": [],
-                    "total": 0,
-                    "error": str(e)
-                }
-
-        # Call filtered MCP tools in parallel (skip irrelevant sources)
+        # Call filtered MCP tools in parallel (skip irrelevant sources) using class method
         mcp_results = await asyncio.gather(*[
-            call_mcp_tool(tool, task_id=task_id, attempt=attempt, logger=self.logger)
+            self._call_mcp_tool(tool, query, param_adjustments, task_id=task_id, attempt=attempt, logger=self.logger)
             for tool in filtered_tools
         ])
 
