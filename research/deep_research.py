@@ -3379,15 +3379,19 @@ class SimpleDeepResearch:
             timeline=timeline
         )
 
-        response = await acompletion(
-            model=config.get_model("synthesis"),  # Use best model for synthesis
-            messages=[{"role": "user", "content": prompt}]
-        )
-
-        report = response.choices[0].message.content
+        report = None
+        try:
+            response = await acompletion(
+                model=config.get_model("synthesis"),  # Use best model for synthesis
+                messages=[{"role": "user", "content": prompt}]
+            )
+            report = response.choices[0].message.content
+        except Exception as e:
+            logging.error(f"Synthesis failed: {type(e).__name__}: {e}")
+            report = f"# Research Report\n\nFailed to synthesize final report.\n\nError: {type(e).__name__}: {e}\n\n## Raw Statistics\n\n- Tasks Executed: {len(self.completed_tasks)}\n- Tasks Failed: {len(self.failed_tasks)}\n"
 
         # Add limitations section if critical sources failed (Fix 3 - Channel 4)
-        if self.critical_source_failures:
+        if self.critical_source_failures and report:
             report += "\n\n## Research Limitations\n\n"
             report += "The following critical sources were unavailable during this research:\n\n"
             for source in self.critical_source_failures:
