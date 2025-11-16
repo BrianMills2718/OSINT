@@ -3326,7 +3326,7 @@ class SimpleDeepResearch:
                     "sample_results": samples
                 })
 
-        # Key documents: top results with URLs for quick access
+        # Key documents: top results with URLs for quick access (default to empty safe values)
         key_documents = []
         for item in all_results:
             if item.get("url"):
@@ -3351,11 +3351,11 @@ class SimpleDeepResearch:
             if len(timeline) >= 5:
                 break
 
-        # Persist evidence snapshots into result for saving and downstream use
-        result["key_documents"] = key_documents
-        result["source_counts"] = source_counts
-        result["hypothesis_findings"] = hypothesis_findings
-        result["timeline"] = timeline
+        # Persist evidence snapshots into result for saving and downstream use (always set defaults)
+        result["key_documents"] = key_documents or []
+        result["source_counts"] = source_counts or {}
+        result["hypothesis_findings"] = hypothesis_findings or []
+        result["timeline"] = timeline or []
 
         prompt = render_prompt(
             "deep_research/report_synthesis.j2",
