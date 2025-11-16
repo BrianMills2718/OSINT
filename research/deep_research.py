@@ -194,6 +194,11 @@ class SimpleDeepResearch:
         self.hypothesis_branching_enabled = self.hypothesis_mode in ("planning", "execution")
         self.max_hypotheses_per_task = hyp_config.get("max_hypotheses_per_task", 5)
 
+        # Phase 3C: Coverage assessment configuration
+        self.coverage_mode = hyp_config.get("coverage_mode", False)
+        self.max_hypotheses_to_execute = hyp_config.get("max_hypotheses_to_execute", 5)
+        self.max_time_per_task_seconds = hyp_config.get("max_time_per_task_seconds", 180)
+
         # Load API keys from environment
         self.api_keys = {
             "sam": os.getenv("SAM_GOV_API_KEY"),
@@ -825,6 +830,76 @@ class SimpleDeepResearch:
 
         return deduplicated
 
+    def _compute_hypothesis_delta(
+        self,
+        task: ResearchTask,
+        hypothesis: Dict,
+        hypothesis_results: List[Dict]
+    ) -> Dict[str, int]:
+        """
+        Compute delta metrics for a hypothesis execution (Phase 3C).
+
+        Calculates how many new vs duplicate results/entities were discovered
+        by this hypothesis compared to what was already found in the task.
+
+        Args:
+            task: Research task containing accumulated results/entities
+            hypothesis: Hypothesis dict with id and statement
+            hypothesis_results: Results from this hypothesis execution
+
+        Returns:
+            Dict with delta metrics:
+            {
+                "results_new": int,        # Results not in task.accumulated_results
+                "results_duplicate": int,  # Results already in task.accumulated_results
+                "entities_new": int,       # Entities not in task.entities_found
+                "entities_duplicate": int, # Entities already in task.entities_found
+                "total_results": int,      # Total results from this hypothesis
+                "total_entities": int      # Total entities from this hypothesis
+            }
+        """
+        # Build set of existing URLs for O(1) lookup
+        existing_urls = set()
+        for result in task.accumulated_results:
+            url = result.get("url")
+            if url:
+                existing_urls.add(url)
+
+        # Count new vs duplicate results
+        results_new = 0
+        results_duplicate = 0
+        for result in hypothesis_results:
+            url = result.get("url")
+            if url:
+                if url in existing_urls:
+                    results_duplicate += 1
+                else:
+                    results_new += 1
+            else:
+                # No URL to check, count as new
+                results_new += 1
+
+        # Extract entities from hypothesis results
+        hypothesis_entities = set()
+        for result in hypothesis_results:
+            # If result has entities field, use it
+            if "entities" in result and isinstance(result["entities"], list):
+                hypothesis_entities.update(result["entities"])
+
+        # Count new vs duplicate entities
+        existing_entities = set(task.entities_found) if task.entities_found else set()
+        entities_new = len(hypothesis_entities - existing_entities)
+        entities_duplicate = len(hypothesis_entities & existing_entities)
+
+        return {
+            "results_new": results_new,
+            "results_duplicate": results_duplicate,
+            "entities_new": entities_new,
+            "entities_duplicate": entities_duplicate,
+            "total_results": len(hypothesis_results),
+            "total_entities": len(hypothesis_entities)
+        }
+
     async def _generate_hypothesis_query(
         self,
         hypothesis: Dict,
@@ -981,13 +1056,18 @@ class SimpleDeepResearch:
         deduplicated = self._deduplicate_with_attribution(all_results, hypothesis_id)
         print(f"   📊 Hypothesis {hypothesis_id}: {len(deduplicated)} unique results")
 
+        # Compute delta metrics for coverage assessment (Phase 3C)
+        delta_metrics = self._compute_hypothesis_delta(task, hypothesis, deduplicated)
+
         # Record execution summary for reporting/metadata
         try:
             task.hypothesis_runs.append({
                 "hypothesis_id": hypothesis_id,
                 "statement": hypothesis.get("statement", ""),
                 "results_count": len(deduplicated),
-                "sources": [self.tool_name_to_display.get(s, s) for s in source_tool_names]
+                "sources": [self.tool_name_to_display.get(s, s) for s in source_tool_names],
+                # Phase 3C: Add delta metrics
+                "delta_metrics": delta_metrics
             })
         except Exception as e:
             logging.warning(f"Failed to record hypothesis run summary for {hypothesis_id}: {e}")

@@ -233,6 +233,36 @@ research:
     # - Query generation: 1 LLM call per hypothesis (up to max_hypotheses_per_task)
     # - Total Phase 3B cost: 3-3.75x traditional approach (documented in investigation)
 
+    # ============================================================================
+    # Phase 3C: Coverage Assessment Configuration
+    # ============================================================================
+    # Adaptive stopping based on coverage analysis (Phase 3C)
+    # Only applies when mode: "execution"
+
+    coverage_mode: false            # EXECUTION STRATEGY: false | true
+                                     # - false: Parallel execution, all hypotheses run (Phase 3B - faster)
+                                     # - true: Sequential execution with adaptive stopping (Phase 3C - adaptive)
+                                     # Default: false (parallel, backward compatible)
+
+    max_hypotheses_to_execute: 5     # HARD CEILING: Maximum hypotheses to execute (never exceed)
+                                     # Same as max_hypotheses_per_task unless you want different limit for execution
+                                     # LLM can stop early but will never exceed this limit
+
+    max_time_per_task_seconds: 180   # TIME BUDGET: Maximum time to spend on hypothesis execution per task
+                                     # Default: 180 seconds (3 minutes)
+                                     # LLM can stop early but execution will halt at this limit
+
+    # Phase 3C (coverage_mode: true) behavior:
+    # - Executes hypotheses sequentially (one-by-one, not parallel)
+    # - After each hypothesis, LLM assesses coverage based on:
+    #   * New vs duplicate results percentage
+    #   * New vs duplicate entities discovered
+    #   * Time budget remaining
+    #   * Hard ceiling on max hypotheses
+    # - LLM decides: continue (explore next hypothesis) or stop (sufficient coverage)
+    # - Stops early if LLM determines coverage is sufficient, saving time and LLM calls
+    # - Falls back to all hypotheses if LLM keeps saying "continue" (respects hard ceilings)
+
 # ============================================================================
 # Logging Configuration
 # ============================================================================
