@@ -558,7 +558,26 @@ class SimpleDeepResearch:
                 print(f"\n💾 Research output saved to: {output_path}")
             except Exception as e:
                 logging.error(f"Failed to save research output: {type(e).__name__}: {str(e)}")
-                # Don't fail research if save fails
+                # Attempt a minimal fallback save to preserve artifacts
+                try:
+                    from pathlib import Path
+                    import json as _json
+                    slug = "fallback_" + datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
+                    output_path = Path(self.output_dir) / slug
+                    output_path.mkdir(parents=True, exist_ok=True)
+                    # Minimal report
+                    report_file = output_path / "report.md"
+                    report_file.write_text(result.get("report", "Report unavailable due to save error."), encoding="utf-8")
+                    # Minimal results
+                    results_file = output_path / "results.json"
+                    _json.dump(result, results_file.open("w", encoding="utf-8"), indent=2, ensure_ascii=False)
+                    # Minimal metadata
+                    metadata_file = output_path / "metadata.json"
+                    _json.dump({"error": f"{type(e).__name__}: {str(e)}", "research_question": question}, metadata_file.open("w", encoding="utf-8"), indent=2, ensure_ascii=False)
+                    result["output_directory"] = str(output_path)
+                    print(f"\n⚠️  Partial output saved to: {output_path}")
+                except Exception as fallback_error:
+                    logging.error(f"Fallback save failed: {type(fallback_error).__name__}: {fallback_error}")
 
         # Log run completion
         if self.logger:
