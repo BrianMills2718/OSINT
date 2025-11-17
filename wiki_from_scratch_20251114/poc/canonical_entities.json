@@ -1,0 +1,2751 @@
+{
+  "canonical_entities": [
+    {
+      "canonical_id": "CANON_E1",
+      "canonical_name": "Bellingcat",
+      "entity_type": "organization",
+      "source_entities": [
+        {
+          "report_id": "report1_bellingcat_mh17_origin",
+          "entity_id": "E1",
+          "name": "Bellingcat"
+        },
+        {
+          "report_id": "report1_bellingcat_mh17_origin",
+          "entity_id": "E2",
+          "name": "Bellingcat MH17 investigation team"
+        },
+        {
+          "report_id": "report2_bellingcat_gru_disinformation",
+          "entity_id": "E20",
+          "name": "Bellingcat"
+        },
+        {
+          "report_id": "report3_bellingcat_fsb_elbrus",
+          "entity_id": "E14",
+          "name": "Bellingcat Investigation Team"
+        }
+      ],
+      "all_aliases": [
+        "Bellingcat Investigation Team",
+        "Bellingcat MH17 investigation team",
+        "Bellingcat MH17 team",
+        "Bellingcat Investigation"
+      ]
+    },
+    {
+      "canonical_id": "CANON_E2",
+      "canonical_name": "Timmi Allen",
+      "entity_type": "person",
+      "source_entities": [
+        {
+          "report_id": "report1_bellingcat_mh17_origin",
+          "entity_id": "E3",
+          "name": "Timmi Allen"
+        }
+      ],
+      "all_aliases": []
+    },
+    {
+      "canonical_id": "CANON_E3",
+      "canonical_name": "Andrew Haggard",
+      "entity_type": "person",
+      "source_entities": [
+        {
+          "report_id": "report1_bellingcat_mh17_origin",
+          "entity_id": "E4",
+          "name": "Andrew Haggard"
+        }
+      ],
+      "all_aliases": []
+    },
+    {
+      "canonical_id": "CANON_E4",
+      "canonical_name": "Eliot Higgins",
+      "entity_type": "person",
+      "source_entities": [
+        {
+          "report_id": "report1_bellingcat_mh17_origin",
+          "entity_id": "E5",
+          "name": "Eliot Higgins"
+        },
+        {
+          "report_id": "report2_bellingcat_gru_disinformation",
+          "entity_id": "E14",
+          "name": "Eliot Higgins"
+        }
+      ],
+      "all_aliases": [
+        "Higgins"
+      ]
+    },
+    {
+      "canonical_id": "CANON_E5",
+      "canonical_name": "Veli-Pekka Kivimaki",
+      "entity_type": "person",
+      "source_entities": [
+        {
+          "report_id": "report1_bellingcat_mh17_origin",
+          "entity_id": "E6",
+          "name": "Veli-Pekka Kivimaki"
+        }
+      ],
+      "all_aliases": [
+        "Veli-Pekka Kivim\u0000e4ki",
+        "Veli-Pekka Kivim\u00195ki"
+      ]
+    },
+    {
+      "canonical_id": "CANON_E6",
+      "canonical_name": "Iggy Ostanin",
+      "entity_type": "person",
+      "source_entities": [
+        {
+          "report_id": "report1_bellingcat_mh17_origin",
+          "entity_id": "E7",
+          "name": "Iggy Ostanin"
+        }
+      ],
+      "all_aliases": []
+    },
+    {
+      "canonical_id": "CANON_E7",
+      "canonical_name": "Aric Toler",
+      "entity_type": "person",
+      "source_entities": [
+        {
+          "report_id": "report1_bellingcat_mh17_origin",
+          "entity_id": "E8",
+          "name": "Aric Toler"
+        }
+      ],
+      "all_aliases": []
+    },
+    {
+      "canonical_id": "CANON_E8",
+      "canonical_name": "Paris Match",
+      "entity_type": "organization",
+      "source_entities": [
+        {
+          "report_id": "report1_bellingcat_mh17_origin",
+          "entity_id": "E9",
+          "name": "Paris Match"
+        }
+      ],
+      "all_aliases": [
+        "Paris Match magazine"
+      ]
+    },
+    {
+      "canonical_id": "CANON_E9",
+      "canonical_name": "Storyful",
+      "entity_type": "organization",
+      "source_entities": [
+        {
+          "report_id": "report1_bellingcat_mh17_origin",
+          "entity_id": "E10",
+          "name": "Storyful"
+        }
+      ],
+      "all_aliases": []
+    },
+    {
+      "canonical_id": "CANON_E10",
+      "canonical_name": "Twitter",
+      "entity_type": "organization",
+      "source_entities": [
+        {
+          "report_id": "report1_bellingcat_mh17_origin",
+          "entity_id": "E11",
+          "name": "Twitter"
+        },
+        {
+          "report_id": "report2_bellingcat_gru_disinformation",
+          "entity_id": "E33",
+          "name": "Twitter"
+        }
+      ],
+      "all_aliases": [
+        "Twitter post",
+        "Twitter posts",
+        "the Bonanza Media twitter account"
+      ]
+    },
+    {
+      "canonical_id": "CANON_E11",
+      "canonical_name": "VKontakte",
+      "entity_type": "organization",
+      "source_entities": [
+        {
+          "report_id": "report1_bellingcat_mh17_origin",
+          "entity_id": "E12",
+          "name": "VKontakte"
+        }
+      ],
+      "all_aliases": [
+        "VK",
+        "VKontakte page",
+        "Overheard in Torez"
+      ]
+    },
+    {
+      "canonical_id": "CANON_E12",
+      "canonical_name": "YouTube",
+      "entity_type": "organization",
+      "source_entities": [
+        {
+          "report_id": "report1_bellingcat_mh17_origin",
+          "entity_id": "E13",
+          "name": "YouTube"
+        }
+      ],
+      "all_aliases": []
+    },
+    {
+      "canonical_id": "CANON_E13",
+      "canonical_name": "Instagram",
+      "entity_type": "organization",
+      "source_entities": [
+        {
+          "report_id": "report1_bellingcat_mh17_origin",
+          "entity_id": "E14",
+          "name": "Instagram"
+        }
+      ],
+      "all_aliases": []
+    },
+    {
+      "canonical_id": "CANON_E14",
+      "canonical_name": "Odnoklassniki",
+      "entity_type": "organization",
+      "source_entities": [
+        {
+          "report_id": "report1_bellingcat_mh17_origin",
+          "entity_id": "E15",
+          "name": "Odnoklassniki"
+        }
+      ],
+      "all_aliases": []
+    },
+    {
+      "canonical_id": "CANON_E15",
+      "canonical_name": "The Guardian",
+      "entity_type": "organization",
+      "source_entities": [
+        {
+          "report_id": "report1_bellingcat_mh17_origin",
+          "entity_id": "E16",
+          "name": "The Guardian"
+        }
+      ],
+      "all_aliases": [
+        "Guardian"
+      ]
+    },
+    {
+      "canonical_id": "CANON_E16",
+      "canonical_name": "BuzzFeed",
+      "entity_type": "organization",
+      "source_entities": [
+        {
+          "report_id": "report1_bellingcat_mh17_origin",
+          "entity_id": "E17",
+          "name": "BuzzFeed"
+        }
+      ],
+      "all_aliases": [
+        "Buzzfeed"
+      ]
+    },
+    {
+      "canonical_id": "CANON_E17",
+      "canonical_name": "Associated Press",
+      "entity_type": "organization",
+      "source_entities": [
+        {
+          "report_id": "report1_bellingcat_mh17_origin",
+          "entity_id": "E18",
+          "name": "Associated Press"
+        }
+      ],
+      "all_aliases": [
+        "AP"
+      ]
+    },
+    {
+      "canonical_id": "CANON_E18",
+      "canonical_name": "Russian Ministry of Defence",
+      "entity_type": "organization",
+      "source_entities": [
+        {
+          "report_id": "report1_bellingcat_mh17_origin",
+          "entity_id": "E19",
+          "name": "Russian Ministry of Defence"
+        },
+        {
+          "report_id": "report2_bellingcat_gru_disinformation",
+          "entity_id": "E24",
+          "name": "Russia's Ministry of Defence"
+        }
+      ],
+      "all_aliases": [
+        "Russian Ministry of Defense",
+        "Ministry of Defence"
+      ]
+    },
+    {
+      "canonical_id": "CANON_E19",
+      "canonical_name": "Ukrainian Ministry of Interior",
+      "entity_type": "organization",
+      "source_entities": [
+        {
+          "report_id": "report1_bellingcat_mh17_origin",
+          "entity_id": "E20",
+          "name": "Ukrainian Ministry of Interior"
+        }
+      ],
+      "all_aliases": [
+        "Ministry of Interior (Ukraine)"
+      ]
+    },
+    {
+      "canonical_id": "CANON_E20",
+      "canonical_name": "Malaysia Airlines",
+      "entity_type": "organization",
+      "source_entities": [
+        {
+          "report_id": "report1_bellingcat_mh17_origin",
+          "entity_id": "E21",
+          "name": "Malaysia Airlines"
+        }
+      ],
+      "all_aliases": []
+    },
+    {
+      "canonical_id": "CANON_E21",
+      "canonical_name": "Malaysia Airlines Flight 17 (MH17)",
+      "entity_type": "event",
+      "source_entities": [
+        {
+          "report_id": "report1_bellingcat_mh17_origin",
+          "entity_id": "E22",
+          "name": "Malaysia Airlines Flight 17"
+        },
+        {
+          "report_id": "report2_bellingcat_gru_disinformation",
+          "entity_id": "E56",
+          "name": "MH17 downing"
+        },
+        {
+          "report_id": "report3_bellingcat_fsb_elbrus",
+          "entity_id": "E30",
+          "name": "MH17 downing"
+        }
+      ],
+      "all_aliases": [
+        "MH17",
+        "Flight MH17",
+        "downing of MH17",
+        "downing of flight MH17",
+        "the downing of MH17"
+      ]
+    },
+    {
+      "canonical_id": "CANON_E22",
+      "canonical_name": "Buk missile system",
+      "entity_type": "concept",
+      "source_entities": [
+        {
+          "report_id": "report1_bellingcat_mh17_origin",
+          "entity_id": "E23",
+          "name": "Buk missile system"
+        },
+        {
+          "report_id": "report2_bellingcat_gru_disinformation",
+          "entity_id": "E51",
+          "name": "Buk missile launcher"
+        },
+        {
+          "report_id": "report3_bellingcat_fsb_elbrus",
+          "entity_id": "E67",
+          "name": "BUK missile"
+        },
+        {
+          "report_id": "report1_bellingcat_mh17_origin",
+          "entity_id": "E25",
+          "name": "SA-11 surface-to-air missile"
+        }
+      ],
+      "all_aliases": [
+        "Buk missile launcher",
+        "Buk",
+        "Buk system",
+        "Buk missile launcher filmed on July 17",
+        "SA-11",
+        "SA-11 surface-to-air missile",
+        "BUK missile",
+        "Russian BUK missile"
+      ]
+    },
+    {
+      "canonical_id": "CANON_E23",
+      "canonical_name": "Buk M-1",
+      "entity_type": "concept",
+      "source_entities": [
+        {
+          "report_id": "report1_bellingcat_mh17_origin",
+          "entity_id": "E24",
+          "name": "Buk M-1"
+        }
+      ],
+      "all_aliases": [
+        "Buk M1",
+        "Buk M-1 surface-to-air system"
+      ]
+    },
+    {
+      "canonical_id": "CANON_E24",
+      "canonical_name": "Buk 3\u0000d72",
+      "entity_type": "concept",
+      "source_entities": [
+        {
+          "report_id": "report1_bellingcat_mh17_origin",
+          "entity_id": "E26",
+          "name": "Buk 3\u0000d72"
+        }
+      ],
+      "all_aliases": [
+        "Buk 3x2",
+        "Buk 3\u0000d72 (middle number obscured)",
+        "3\u0000d72"
+      ]
+    },
+    {
+      "canonical_id": "CANON_E25",
+      "canonical_name": "Buk 312",
+      "entity_type": "concept",
+      "source_entities": [
+        {
+          "report_id": "report1_bellingcat_mh17_origin",
+          "entity_id": "E27",
+          "name": "Buk 312"
+        }
+      ],
+      "all_aliases": [
+        "Buk 312 filmed in Ukraine"
+      ]
+    },
+    {
+      "canonical_id": "CANON_E26",
+      "canonical_name": "53rd Anti-Aircraft Missile Brigade",
+      "entity_type": "unit",
+      "source_entities": [
+        {
+          "report_id": "report1_bellingcat_mh17_origin",
+          "entity_id": "E28",
+          "name": "53rd Anti-Aircraft Missile Brigade"
+        },
+        {
+          "report_id": "report2_bellingcat_gru_disinformation",
+          "entity_id": "E50",
+          "name": "53rd Anti-Aircraft Missile Brigade"
+        }
+      ],
+      "all_aliases": [
+        "53rd Anti-Aircraft Brigade",
+        "53rd Brigade",
+        "53rd Brigade (Kursk)"
+      ]
+    },
+    {
+      "canonical_id": "CANON_E27",
+      "canonical_name": "Kursk",
+      "entity_type": "location",
+      "source_entities": [
+        {
+          "report_id": "report1_bellingcat_mh17_origin",
+          "entity_id": "E29",
+          "name": "Kursk"
+        }
+      ],
+      "all_aliases": []
+    },
+    {
+      "canonical_id": "CANON_E28",
+      "canonical_name": "H21 motorway",
+      "entity_type": "location",
+      "source_entities": [
+        {
+          "report_id": "report1_bellingcat_mh17_origin",
+          "entity_id": "E30",
+          "name": "H21 motorway"
+        }
+      ],
+      "all_aliases": [
+        "H21"
+      ]
+    },
+    {
+      "canonical_id": "CANON_E29",
+      "canonical_name": "Donetsk (Ukraine)",
+      "entity_type": "location",
+      "source_entities": [
+        {
+          "report_id": "report1_bellingcat_mh17_origin",
+          "entity_id": "E31",
+          "name": "Donetsk (Ukraine)"
+        }
+      ],
+      "all_aliases": [
+        "Donetsk"
+      ]
+    },
+    {
+      "canonical_id": "CANON_E30",
+      "canonical_name": "Shakhtostroiteley Boulevard",
+      "entity_type": "location",
+      "source_entities": [
+        {
+          "report_id": "report1_bellingcat_mh17_origin",
+          "entity_id": "E32",
+          "name": "Shakhtostroiteley Boulevard"
+        }
+      ],
+      "all_aliases": [
+        "Shakhtostroiteley Blvd"
+      ]
+    },
+    {
+      "canonical_id": "CANON_E31",
+      "canonical_name": "Ilych Avenue",
+      "entity_type": "location",
+      "source_entities": [
+        {
+          "report_id": "report1_bellingcat_mh17_origin",
+          "entity_id": "E33",
+          "name": "Ilych Avenue"
+        }
+      ],
+      "all_aliases": [
+        "Ilych Ave"
+      ]
+    },
+    {
+      "canonical_id": "CANON_E32",
+      "canonical_name": "Makiivka",
+      "entity_type": "location",
+      "source_entities": [
+        {
+          "report_id": "report1_bellingcat_mh17_origin",
+          "entity_id": "E34",
+          "name": "Makiivka"
+        }
+      ],
+      "all_aliases": [
+        "Makiivka (Makiyivka)"
+      ]
+    },
+    {
+      "canonical_id": "CANON_E33",
+      "canonical_name": "Zuhres",
+      "entity_type": "location",
+      "source_entities": [
+        {
+          "report_id": "report1_bellingcat_mh17_origin",
+          "entity_id": "E35",
+          "name": "Zuhres"
+        }
+      ],
+      "all_aliases": [
+        "Zuhres (Zugres)"
+      ]
+    },
+    {
+      "canonical_id": "CANON_E34",
+      "canonical_name": "Shakhtarsk",
+      "entity_type": "location",
+      "source_entities": [
+        {
+          "report_id": "report1_bellingcat_mh17_origin",
+          "entity_id": "E36",
+          "name": "Shakhtarsk"
+        }
+      ],
+      "all_aliases": []
+    },
+    {
+      "canonical_id": "CANON_E35",
+      "canonical_name": "Torez",
+      "entity_type": "location",
+      "source_entities": [
+        {
+          "report_id": "report1_bellingcat_mh17_origin",
+          "entity_id": "E37",
+          "name": "Torez"
+        }
+      ],
+      "all_aliases": []
+    },
+    {
+      "canonical_id": "CANON_E36",
+      "canonical_name": "Snizhne",
+      "entity_type": "location",
+      "source_entities": [
+        {
+          "report_id": "report1_bellingcat_mh17_origin",
+          "entity_id": "E38",
+          "name": "Snizhne"
+        }
+      ],
+      "all_aliases": [
+        "Snizhne (Snezhnoye)"
+      ]
+    },
+    {
+      "canonical_id": "CANON_E37",
+      "canonical_name": "13a Karapetyan Street",
+      "entity_type": "location",
+      "source_entities": [
+        {
+          "report_id": "report1_bellingcat_mh17_origin",
+          "entity_id": "E39",
+          "name": "13a Karapetyan Street"
+        }
+      ],
+      "all_aliases": [
+        "13a Karapetyan St"
+      ]
+    },
+    {
+      "canonical_id": "CANON_E38",
+      "canonical_name": "Luhansk (location)",
+      "entity_type": "location",
+      "source_entities": [
+        {
+          "report_id": "report1_bellingcat_mh17_origin",
+          "entity_id": "E40",
+          "name": "Luhansk"
+        }
+      ],
+      "all_aliases": [
+        "Luhansk (separatist-held area)"
+      ]
+    },
+    {
+      "canonical_id": "CANON_E39",
+      "canonical_name": "Krasnoarmeysk",
+      "entity_type": "location",
+      "source_entities": [
+        {
+          "report_id": "report1_bellingcat_mh17_origin",
+          "entity_id": "E41",
+          "name": "Krasnoarmeysk"
+        }
+      ],
+      "all_aliases": [
+        "Krasnoarmeysk (as referenced by Russian MoD)"
+      ]
+    },
+    {
+      "canonical_id": "CANON_E40",
+      "canonical_name": "34 Dnepropetrovsk Street",
+      "entity_type": "location",
+      "source_entities": [
+        {
+          "report_id": "report1_bellingcat_mh17_origin",
+          "entity_id": "E42",
+          "name": "34 Dnepropetrovsk Street"
+        }
+      ],
+      "all_aliases": [
+        "34 Dnepropetrovsk St"
+      ]
+    },
+    {
+      "canonical_id": "CANON_E41",
+      "canonical_name": "Stary Oskol",
+      "entity_type": "location",
+      "source_entities": [
+        {
+          "report_id": "report1_bellingcat_mh17_origin",
+          "entity_id": "E43",
+          "name": "Stary Oskol"
+        }
+      ],
+      "all_aliases": [
+        "Stary Oskol (Staryy Oskol)"
+      ]
+    },
+    {
+      "canonical_id": "CANON_E42",
+      "canonical_name": "Millerovo",
+      "entity_type": "location",
+      "source_entities": [
+        {
+          "report_id": "report1_bellingcat_mh17_origin",
+          "entity_id": "E44",
+          "name": "Millerovo"
+        }
+      ],
+      "all_aliases": []
+    },
+    {
+      "canonical_id": "CANON_E43",
+      "canonical_name": "Alexeyevka",
+      "entity_type": "location",
+      "source_entities": [
+        {
+          "report_id": "report1_bellingcat_mh17_origin",
+          "entity_id": "E45",
+          "name": "Alexeyevka"
+        }
+      ],
+      "all_aliases": [
+        "Alexeevka",
+        "Alexeyevka (Alexeevka)"
+      ]
+    },
+    {
+      "canonical_id": "CANON_E44",
+      "canonical_name": "Olkhovatka",
+      "entity_type": "location",
+      "source_entities": [
+        {
+          "report_id": "report1_bellingcat_mh17_origin",
+          "entity_id": "E46",
+          "name": "Olkhovatka"
+        }
+      ],
+      "all_aliases": []
+    },
+    {
+      "canonical_id": "CANON_E45",
+      "canonical_name": "Fedoseyevka",
+      "entity_type": "location",
+      "source_entities": [
+        {
+          "report_id": "report1_bellingcat_mh17_origin",
+          "entity_id": "E47",
+          "name": "Fedoseyevka"
+        }
+      ],
+      "all_aliases": [
+        "Fedeseyevka",
+        "Fedoseyevka video"
+      ]
+    },
+    {
+      "canonical_id": "CANON_E46",
+      "canonical_name": "Kamensk-Shakhtinsky",
+      "entity_type": "location",
+      "source_entities": [
+        {
+          "report_id": "report1_bellingcat_mh17_origin",
+          "entity_id": "E48",
+          "name": "Kamensk-Shakhtinsky"
+        }
+      ],
+      "all_aliases": [
+        "Kamensk-Shakhtinsky (Kamensk-Shakhtinskiy)"
+      ]
+    },
+    {
+      "canonical_id": "CANON_E47",
+      "canonical_name": "Donetsk (Russia)",
+      "entity_type": "location",
+      "source_entities": [
+        {
+          "report_id": "report1_bellingcat_mh17_origin",
+          "entity_id": "E49",
+          "name": "Donetsk (Russia)"
+        },
+        {
+          "report_id": "report2_bellingcat_gru_disinformation",
+          "entity_id": "E47",
+          "name": "Donetsk (Russia)"
+        }
+      ],
+      "all_aliases": [
+        "Donetsk (not to be confused with Donetsk in Ukraine)",
+        "Donetsk border town"
+      ]
+    },
+    {
+      "canonical_id": "CANON_E48",
+      "canonical_name": "Vasily Ilyin",
+      "entity_type": "person",
+      "source_entities": [
+        {
+          "report_id": "report1_bellingcat_mh17_origin",
+          "entity_id": "E50",
+          "name": "Vasily Ilyin"
+        }
+      ],
+      "all_aliases": []
+    },
+    {
+      "canonical_id": "CANON_E49",
+      "canonical_name": "Ivan Krasnoproshin",
+      "entity_type": "person",
+      "source_entities": [
+        {
+          "report_id": "report1_bellingcat_mh17_origin",
+          "entity_id": "E51",
+          "name": "Ivan Krasnoproshin"
+        }
+      ],
+      "all_aliases": []
+    },
+    {
+      "canonical_id": "CANON_E50",
+      "canonical_name": "Sanya Reznikov",
+      "entity_type": "person",
+      "source_entities": [
+        {
+          "report_id": "report1_bellingcat_mh17_origin",
+          "entity_id": "E52",
+          "name": "Sanya Reznikov"
+        }
+      ],
+      "all_aliases": [
+        "Sanya Reznikov (profile)"
+      ]
+    },
+    {
+      "canonical_id": "CANON_E51",
+      "canonical_name": "BT80",
+      "entity_type": "concept",
+      "source_entities": [
+        {
+          "report_id": "report1_bellingcat_mh17_origin",
+          "entity_id": "E53",
+          "name": "BT80"
+        }
+      ],
+      "all_aliases": [
+        "BT-80",
+        "BT80 with the number 993"
+      ]
+    },
+    {
+      "canonical_id": "CANON_E52",
+      "canonical_name": "Overheard in Torez (VK page)",
+      "entity_type": "organization",
+      "source_entities": [
+        {
+          "report_id": "report1_bellingcat_mh17_origin",
+          "entity_id": "E54",
+          "name": "Overheard in Torez (VK page)"
+        }
+      ],
+      "all_aliases": [
+        "Overheard in Torez",
+        "\"Overheard in Torez\" VKontakte page"
+      ]
+    },
+    {
+      "canonical_id": "CANON_E53",
+      "canonical_name": "side skirt fingerprint",
+      "entity_type": "concept",
+      "source_entities": [
+        {
+          "report_id": "report1_bellingcat_mh17_origin",
+          "entity_id": "E55",
+          "name": "side skirt fingerprint"
+        }
+      ],
+      "all_aliases": [
+        "side skirt profile",
+        "side skirt damage fingerprint"
+      ]
+    },
+    {
+      "canonical_id": "CANON_E54",
+      "canonical_name": "M21 motorway",
+      "entity_type": "location",
+      "source_entities": [
+        {
+          "report_id": "report1_bellingcat_mh17_origin",
+          "entity_id": "E56",
+          "name": "M21 motorway"
+        }
+      ],
+      "all_aliases": [
+        "M21"
+      ]
+    },
+    {
+      "canonical_id": "CANON_E55",
+      "canonical_name": "Yana Yerlashova",
+      "entity_type": "person",
+      "source_entities": [
+        {
+          "report_id": "report2_bellingcat_gru_disinformation",
+          "entity_id": "E1",
+          "name": "Yana Yerlashova"
+        }
+      ],
+      "all_aliases": [
+        "Yerlashova",
+        "Yana"
+      ]
+    },
+    {
+      "canonical_id": "CANON_E56",
+      "canonical_name": "Max van der Werff",
+      "entity_type": "person",
+      "source_entities": [
+        {
+          "report_id": "report2_bellingcat_gru_disinformation",
+          "entity_id": "E2",
+          "name": "Max van der Werff"
+        }
+      ],
+      "all_aliases": [
+        "van der Werff",
+        "Max",
+        "Van der Werff"
+      ]
+    },
+    {
+      "canonical_id": "CANON_E57",
+      "canonical_name": "Mahathir Mohamad",
+      "entity_type": "person",
+      "source_entities": [
+        {
+          "report_id": "report2_bellingcat_gru_disinformation",
+          "entity_id": "E3",
+          "name": "Mahathir Mohamad"
+        }
+      ],
+      "all_aliases": [
+        "Mahathir"
+      ]
+    },
+    {
+      "canonical_id": "CANON_E58",
+      "canonical_name": "Oleg Pulatov",
+      "entity_type": "person",
+      "source_entities": [
+        {
+          "report_id": "report2_bellingcat_gru_disinformation",
+          "entity_id": "E4",
+          "name": "Oleg Pulatov"
+        }
+      ],
+      "all_aliases": [
+        "Pulatov"
+      ]
+    },
+    {
+      "canonical_id": "CANON_E59",
+      "canonical_name": "Sergey Chebanov",
+      "entity_type": "person",
+      "source_entities": [
+        {
+          "report_id": "report2_bellingcat_gru_disinformation",
+          "entity_id": "E5",
+          "name": "Sergey Chebanov"
+        }
+      ],
+      "all_aliases": [
+        "Col. Sergey Chebanov",
+        "Col. Chebanov",
+        "Chebanov"
+      ]
+    },
+    {
+      "canonical_id": "CANON_E60",
+      "canonical_name": "Vitaliy Biryukov",
+      "entity_type": "person",
+      "source_entities": [
+        {
+          "report_id": "report2_bellingcat_gru_disinformation",
+          "entity_id": "E6",
+          "name": "Vitaliy Biryukov"
+        }
+      ],
+      "all_aliases": [
+        "Biryukov",
+        "Vitaliy"
+      ]
+    },
+    {
+      "canonical_id": "CANON_E61",
+      "canonical_name": "Andrey Ilchenko",
+      "entity_type": "person",
+      "source_entities": [
+        {
+          "report_id": "report2_bellingcat_gru_disinformation",
+          "entity_id": "E7",
+          "name": "Andrey Ilchenko"
+        }
+      ],
+      "all_aliases": [
+        "Gen. Ilchenko",
+        "Maj. General Andrey Ilchenko",
+        "Ilchenko"
+      ]
+    },
+    {
+      "canonical_id": "CANON_E62",
+      "canonical_name": "Igor Kostyukov",
+      "entity_type": "person",
+      "source_entities": [
+        {
+          "report_id": "report2_bellingcat_gru_disinformation",
+          "entity_id": "E8",
+          "name": "Igor Kostyukov"
+        }
+      ],
+      "all_aliases": [
+        "Kostyukov",
+        "GRU's current chief Igor Kostyukov"
+      ]
+    },
+    {
+      "canonical_id": "CANON_E63",
+      "canonical_name": "Anna Soroka",
+      "entity_type": "person",
+      "source_entities": [
+        {
+          "report_id": "report2_bellingcat_gru_disinformation",
+          "entity_id": "E9",
+          "name": "Anna Soroka"
+        }
+      ],
+      "all_aliases": [
+        "Soroka",
+        "Anna"
+      ]
+    },
+    {
+      "canonical_id": "CANON_E64",
+      "canonical_name": "Eric van de Beek",
+      "entity_type": "person",
+      "source_entities": [
+        {
+          "report_id": "report2_bellingcat_gru_disinformation",
+          "entity_id": "E10",
+          "name": "Eric van de Beek"
+        }
+      ],
+      "all_aliases": [
+        "Van de Beek",
+        "Eric"
+      ]
+    },
+    {
+      "canonical_id": "CANON_E65",
+      "canonical_name": "Elena Plotnikova",
+      "entity_type": "person",
+      "source_entities": [
+        {
+          "report_id": "report2_bellingcat_gru_disinformation",
+          "entity_id": "E11",
+          "name": "Elena Plotnikova"
+        }
+      ],
+      "all_aliases": [
+        "Plotnikova",
+        "Elena"
+      ]
+    },
+    {
+      "canonical_id": "CANON_E66",
+      "canonical_name": "Theo Russell",
+      "entity_type": "person",
+      "source_entities": [
+        {
+          "report_id": "report2_bellingcat_gru_disinformation",
+          "entity_id": "E12",
+          "name": "Theo Russell"
+        }
+      ],
+      "all_aliases": [
+        "Russell",
+        "Theo"
+      ]
+    },
+    {
+      "canonical_id": "CANON_E67",
+      "canonical_name": "Tatyana Egorova",
+      "entity_type": "person",
+      "source_entities": [
+        {
+          "report_id": "report2_bellingcat_gru_disinformation",
+          "entity_id": "E13",
+          "name": "Tatyana Egorova"
+        }
+      ],
+      "all_aliases": [
+        "Egorova",
+        "Tatyana"
+      ]
+    },
+    {
+      "canonical_id": "CANON_E68",
+      "canonical_name": "Julian Assange",
+      "entity_type": "person",
+      "source_entities": [
+        {
+          "report_id": "report2_bellingcat_gru_disinformation",
+          "entity_id": "E15",
+          "name": "Julian Assange"
+        }
+      ],
+      "all_aliases": [
+        "Assange"
+      ]
+    },
+    {
+      "canonical_id": "CANON_E69",
+      "canonical_name": "Bonanza Media",
+      "entity_type": "organization",
+      "source_entities": [
+        {
+          "report_id": "report2_bellingcat_gru_disinformation",
+          "entity_id": "E16",
+          "name": "Bonanza Media"
+        }
+      ],
+      "all_aliases": [
+        "Bonanza",
+        "Bonanza Media project",
+        "Bonanza Media Twitter account"
+      ]
+    },
+    {
+      "canonical_id": "CANON_E70",
+      "canonical_name": "Main Intelligence Directorate (GRU)",
+      "entity_type": "organization",
+      "source_entities": [
+        {
+          "report_id": "report2_bellingcat_gru_disinformation",
+          "entity_id": "E17",
+          "name": "Main Intelligence Directorate (GRU)"
+        },
+        {
+          "report_id": "report3_bellingcat_fsb_elbrus",
+          "entity_id": "E21",
+          "name": "GRU (Main Directorate of the General Staff of the Armed Forces of the Russian Federation)"
+        }
+      ],
+      "all_aliases": [
+        "GRU",
+        "Russia's military intelligence",
+        "Russian military intelligence",
+        "Main Intelligence Directorate",
+        "military intelligence (GRU)"
+      ]
+    },
+    {
+      "canonical_id": "CANON_E71",
+      "canonical_name": "GRU cyber warfare division",
+      "entity_type": "unit",
+      "source_entities": [
+        {
+          "report_id": "report2_bellingcat_gru_disinformation",
+          "entity_id": "E18",
+          "name": "GRU cyber warfare division"
+        }
+      ],
+      "all_aliases": [
+        "cyber warfare division",
+        "GRU's cyber warfare division"
+      ]
+    },
+    {
+      "canonical_id": "CANON_E72",
+      "canonical_name": "Joint Investigation Team (JIT)",
+      "entity_type": "organization",
+      "source_entities": [
+        {
+          "report_id": "report2_bellingcat_gru_disinformation",
+          "entity_id": "E19",
+          "name": "Joint Investigation Team (JIT)"
+        },
+        {
+          "report_id": "report3_bellingcat_fsb_elbrus",
+          "entity_id": "E22",
+          "name": "Joint Investigation Team (JIT)"
+        }
+      ],
+      "all_aliases": [
+        "JIT",
+        "MH17 Joint Investigation Team",
+        "the official Dutch-led MH17 Joint Investigation Team",
+        "Joint Investigation Team into MH17"
+      ]
+    },
+    {
+      "canonical_id": "CANON_E73",
+      "canonical_name": "RT (Russia Today)",
+      "entity_type": "organization",
+      "source_entities": [
+        {
+          "report_id": "report2_bellingcat_gru_disinformation",
+          "entity_id": "E21",
+          "name": "RT (Russia Today)"
+        }
+      ],
+      "all_aliases": [
+        "RT",
+        "Russia's state-run outlet RT"
+      ]
+    },
+    {
+      "canonical_id": "CANON_E74",
+      "canonical_name": "Donetsk People's Republic (DPR)",
+      "entity_type": "organization",
+      "source_entities": [
+        {
+          "report_id": "report2_bellingcat_gru_disinformation",
+          "entity_id": "E22",
+          "name": "Donetsk People's Republic"
+        },
+        {
+          "report_id": "report3_bellingcat_fsb_elbrus",
+          "entity_id": "E28",
+          "name": "Donetsk People's Republic (DPR)"
+        }
+      ],
+      "all_aliases": [
+        "DNR",
+        "Donetsk People's Republic (DNR)",
+        "Donetsk people's republic",
+        "Donetsk"
+      ]
+    },
+    {
+      "canonical_id": "CANON_E75",
+      "canonical_name": "Luhansk People's Republic (LNR)",
+      "entity_type": "organization",
+      "source_entities": [
+        {
+          "report_id": "report2_bellingcat_gru_disinformation",
+          "entity_id": "E23",
+          "name": "Luhansk People's Republic"
+        },
+        {
+          "report_id": "report3_bellingcat_fsb_elbrus",
+          "entity_id": "E27",
+          "name": "Luhansk People's Republic (LNR)"
+        }
+      ],
+      "all_aliases": [
+        "LNR",
+        "Lugansk People's Republic",
+        "Luhansk People's Republic (LNR)",
+        "self-declared Luhansk People's Republic"
+      ]
+    },
+    {
+      "canonical_id": "CANON_E76",
+      "canonical_name": "Zvezda (TV network)",
+      "entity_type": "organization",
+      "source_entities": [
+        {
+          "report_id": "report2_bellingcat_gru_disinformation",
+          "entity_id": "E25",
+          "name": "Zvezda (TV network)"
+        }
+      ],
+      "all_aliases": [
+        "Zvezda"
+      ]
+    },
+    {
+      "canonical_id": "CANON_E77",
+      "canonical_name": "Global Rights for Peaceful People",
+      "entity_type": "organization",
+      "source_entities": [
+        {
+          "report_id": "report2_bellingcat_gru_disinformation",
+          "entity_id": "E26",
+          "name": "Global Rights for Peaceful People"
+        }
+      ],
+      "all_aliases": [
+        "Global Rights for Peaceful People"
+      ]
+    },
+    {
+      "canonical_id": "CANON_E78",
+      "canonical_name": "Federal Security Service of the Russian Federation (FSB)",
+      "entity_type": "organization",
+      "source_entities": [
+        {
+          "report_id": "report2_bellingcat_gru_disinformation",
+          "entity_id": "E27",
+          "name": "Federal Security Service"
+        },
+        {
+          "report_id": "report3_bellingcat_fsb_elbrus",
+          "entity_id": "E17",
+          "name": "Federal Security Service of the Russian Federation (FSB)"
+        }
+      ],
+      "all_aliases": [
+        "FSB",
+        "the FSB",
+        "Russian FSB",
+        "Federal Security Service"
+      ]
+    },
+    {
+      "canonical_id": "CANON_E79",
+      "canonical_name": "Presidential Administration of Russia",
+      "entity_type": "organization",
+      "source_entities": [
+        {
+          "report_id": "report2_bellingcat_gru_disinformation",
+          "entity_id": "E28",
+          "name": "Presidential Administration of Russia"
+        }
+      ],
+      "all_aliases": [
+        "AP",
+        "Russia's Presidential Administration",
+        "the AP (Russia's Presidential Administration)"
+      ]
+    },
+    {
+      "canonical_id": "CANON_E80",
+      "canonical_name": "NRC Handelsblad",
+      "entity_type": "organization",
+      "source_entities": [
+        {
+          "report_id": "report2_bellingcat_gru_disinformation",
+          "entity_id": "E29",
+          "name": "NRC Handelsblad"
+        }
+      ],
+      "all_aliases": [
+        "NRC",
+        "Dutch NRC"
+      ]
+    },
+    {
+      "canonical_id": "CANON_E81",
+      "canonical_name": "Elsevier",
+      "entity_type": "organization",
+      "source_entities": [
+        {
+          "report_id": "report2_bellingcat_gru_disinformation",
+          "entity_id": "E30",
+          "name": "Elsevier"
+        }
+      ],
+      "all_aliases": [
+        "Elsevier magazine",
+        "the Dutch Elsevier magazine"
+      ]
+    },
+    {
+      "canonical_id": "CANON_E82",
+      "canonical_name": "WikiLeaks",
+      "entity_type": "organization",
+      "source_entities": [
+        {
+          "report_id": "report2_bellingcat_gru_disinformation",
+          "entity_id": "E31",
+          "name": "WikiLeaks"
+        }
+      ],
+      "all_aliases": [
+        "WikiLeaks"
+      ]
+    },
+    {
+      "canonical_id": "CANON_E83",
+      "canonical_name": "Patreon",
+      "entity_type": "organization",
+      "source_entities": [
+        {
+          "report_id": "report2_bellingcat_gru_disinformation",
+          "entity_id": "E32",
+          "name": "Patreon"
+        }
+      ],
+      "all_aliases": [
+        "Patreon"
+      ]
+    },
+    {
+      "canonical_id": "CANON_E84",
+      "canonical_name": "REALITYcheck",
+      "entity_type": "concept",
+      "source_entities": [
+        {
+          "report_id": "report2_bellingcat_gru_disinformation",
+          "entity_id": "E34",
+          "name": "REALITYcheck"
+        }
+      ],
+      "all_aliases": [
+        "REALITYcheck (video series)"
+      ]
+    },
+    {
+      "canonical_id": "CANON_E85",
+      "canonical_name": "Covid-19 disinformation",
+      "entity_type": "concept",
+      "source_entities": [
+        {
+          "report_id": "report2_bellingcat_gru_disinformation",
+          "entity_id": "E35",
+          "name": "Covid-19 disinformation"
+        }
+      ],
+      "all_aliases": [
+        "Covid-19 disinformation",
+        "coronavirus disinformation"
+      ]
+    },
+    {
+      "canonical_id": "CANON_E86",
+      "canonical_name": "Donbas",
+      "entity_type": "location",
+      "source_entities": [
+        {
+          "report_id": "report2_bellingcat_gru_disinformation",
+          "entity_id": "E36",
+          "name": "Donbas"
+        },
+        {
+          "report_id": "report3_bellingcat_fsb_elbrus",
+          "entity_id": "E41",
+          "name": "Donbass"
+        }
+      ],
+      "all_aliases": [
+        "Donbas Region",
+        "the Donbas",
+        "Donbass",
+        "the Donbass"
+      ]
+    },
+    {
+      "canonical_id": "CANON_E87",
+      "canonical_name": "Malaysia (country)",
+      "entity_type": "location",
+      "source_entities": [
+        {
+          "report_id": "report2_bellingcat_gru_disinformation",
+          "entity_id": "E37",
+          "name": "Malaysia"
+        }
+      ],
+      "all_aliases": [
+        "Malaysia"
+      ]
+    },
+    {
+      "canonical_id": "CANON_E88",
+      "canonical_name": "Netherlands",
+      "entity_type": "location",
+      "source_entities": [
+        {
+          "report_id": "report2_bellingcat_gru_disinformation",
+          "entity_id": "E38",
+          "name": "Netherlands"
+        }
+      ],
+      "all_aliases": [
+        "the Netherlands",
+        "Netherlands"
+      ]
+    },
+    {
+      "canonical_id": "CANON_E89",
+      "canonical_name": "United Kingdom",
+      "entity_type": "location",
+      "source_entities": [
+        {
+          "report_id": "report2_bellingcat_gru_disinformation",
+          "entity_id": "E39",
+          "name": "United Kingdom"
+        }
+      ],
+      "all_aliases": [
+        "U.K.",
+        "United Kingdom"
+      ]
+    },
+    {
+      "canonical_id": "CANON_E90",
+      "canonical_name": "Russia",
+      "entity_type": "location",
+      "source_entities": [
+        {
+          "report_id": "report2_bellingcat_gru_disinformation",
+          "entity_id": "E40",
+          "name": "Russia"
+        },
+        {
+          "report_id": "report3_bellingcat_fsb_elbrus",
+          "entity_id": "E39",
+          "name": "Russia"
+        }
+      ],
+      "all_aliases": [
+        "Russian",
+        "Russian Federation"
+      ]
+    },
+    {
+      "canonical_id": "CANON_E91",
+      "canonical_name": "Ukraine",
+      "entity_type": "location",
+      "source_entities": [
+        {
+          "report_id": "report2_bellingcat_gru_disinformation",
+          "entity_id": "E41",
+          "name": "Ukraine"
+        },
+        {
+          "report_id": "report3_bellingcat_fsb_elbrus",
+          "entity_id": "E40",
+          "name": "Ukraine"
+        }
+      ],
+      "all_aliases": [
+        "Ukraine"
+      ]
+    },
+    {
+      "canonical_id": "CANON_E92",
+      "canonical_name": "Hague District Court",
+      "entity_type": "location",
+      "source_entities": [
+        {
+          "report_id": "report2_bellingcat_gru_disinformation",
+          "entity_id": "E42",
+          "name": "Hague District Court"
+        }
+      ],
+      "all_aliases": [
+        "Hague District Court",
+        "the Hague District Court",
+        "Hague"
+      ]
+    },
+    {
+      "canonical_id": "CANON_E93",
+      "canonical_name": "The Hague",
+      "entity_type": "location",
+      "source_entities": [
+        {
+          "report_id": "report2_bellingcat_gru_disinformation",
+          "entity_id": "E43",
+          "name": "The Hague"
+        }
+      ],
+      "all_aliases": [
+        "Hague",
+        "The Hague"
+      ]
+    },
+    {
+      "canonical_id": "CANON_E94",
+      "canonical_name": "Rostov-on-Don",
+      "entity_type": "location",
+      "source_entities": [
+        {
+          "report_id": "report2_bellingcat_gru_disinformation",
+          "entity_id": "E44",
+          "name": "Rostov-on-Don"
+        },
+        {
+          "report_id": "report3_bellingcat_fsb_elbrus",
+          "entity_id": "E42",
+          "name": "Rostov-on-Don"
+        }
+      ],
+      "all_aliases": [
+        "Rostov",
+        "Rostov-on-Don"
+      ]
+    },
+    {
+      "canonical_id": "CANON_E95",
+      "canonical_name": "Platov Airport",
+      "entity_type": "location",
+      "source_entities": [
+        {
+          "report_id": "report2_bellingcat_gru_disinformation",
+          "entity_id": "E45",
+          "name": "Platov Airport"
+        }
+      ],
+      "all_aliases": [
+        "Rostov's Platov airport",
+        "Platov airport"
+      ]
+    },
+    {
+      "canonical_id": "CANON_E96",
+      "canonical_name": "Sheremetyevo Airport",
+      "entity_type": "location",
+      "source_entities": [
+        {
+          "report_id": "report2_bellingcat_gru_disinformation",
+          "entity_id": "E46",
+          "name": "Sheremetyevo Airport"
+        }
+      ],
+      "all_aliases": [
+        "Sheremetyevo"
+      ]
+    },
+    {
+      "canonical_id": "CANON_E97",
+      "canonical_name": "Shchelkovo",
+      "entity_type": "location",
+      "source_entities": [
+        {
+          "report_id": "report2_bellingcat_gru_disinformation",
+          "entity_id": "E48",
+          "name": "Shchelkovo"
+        }
+      ],
+      "all_aliases": [
+        "Shchelkovo",
+        "the village of Shchelkovo"
+      ]
+    },
+    {
+      "canonical_id": "CANON_E98",
+      "canonical_name": "Khoroshevskoe Shosse 76B (GRU headquarters)",
+      "entity_type": "location",
+      "source_entities": [
+        {
+          "report_id": "report2_bellingcat_gru_disinformation",
+          "entity_id": "E49",
+          "name": "Khoroshevskoe Shosse 76B"
+        }
+      ],
+      "all_aliases": [
+        "Khoroshevskoe Shosse 76B",
+        "GRU headquarters at Khoroshevskoe Shosse 76B"
+      ]
+    },
+    {
+      "canonical_id": "CANON_E99",
+      "canonical_name": "Russia's Military Intelligence Academy",
+      "entity_type": "organization",
+      "source_entities": [
+        {
+          "report_id": "report2_bellingcat_gru_disinformation",
+          "entity_id": "E52",
+          "name": "Russia's Military Intelligence Academy"
+        }
+      ],
+      "all_aliases": [
+        "Military Intelligence Academy",
+        "Russia's Military Intelligence Academy"
+      ]
+    },
+    {
+      "canonical_id": "CANON_E100",
+      "canonical_name": "Donetsk People's Republic Ministry of Information",
+      "entity_type": "organization",
+      "source_entities": [
+        {
+          "report_id": "report2_bellingcat_gru_disinformation",
+          "entity_id": "E53",
+          "name": "Donetsk People's Republic Ministry of Information"
+        }
+      ],
+      "all_aliases": [
+        "DNR's Ministry of Information",
+        "Donetsk People's Republic's Ministry of Information"
+      ]
+    },
+    {
+      "canonical_id": "CANON_E101",
+      "canonical_name": "Egorova Leaks",
+      "entity_type": "event",
+      "source_entities": [
+        {
+          "report_id": "report2_bellingcat_gru_disinformation",
+          "entity_id": "E54",
+          "name": "Egorova Leaks"
+        }
+      ],
+      "all_aliases": [
+        "the Egorova Leaks",
+        "Egorova leak"
+      ]
+    },
+    {
+      "canonical_id": "CANON_E102",
+      "canonical_name": "#BonanzaLeaks",
+      "entity_type": "event",
+      "source_entities": [
+        {
+          "report_id": "report2_bellingcat_gru_disinformation",
+          "entity_id": "E55",
+          "name": "#BonanzaLeaks"
+        }
+      ],
+      "all_aliases": [
+        "BonanzaLeaks",
+        "#BonanzaLeaks"
+      ]
+    },
+    {
+      "canonical_id": "CANON_E103",
+      "canonical_name": "Russian state media",
+      "entity_type": "organization",
+      "source_entities": [
+        {
+          "report_id": "report2_bellingcat_gru_disinformation",
+          "entity_id": "E57",
+          "name": "Russian state media"
+        }
+      ],
+      "all_aliases": [
+        "Russian state media",
+        "Russian state outlets"
+      ]
+    },
+    {
+      "canonical_id": "CANON_E104",
+      "canonical_name": "Dutch donors",
+      "entity_type": "organization",
+      "source_entities": [
+        {
+          "report_id": "report2_bellingcat_gru_disinformation",
+          "entity_id": "E58",
+          "name": "Dutch donors"
+        }
+      ],
+      "all_aliases": [
+        "Dutch donors"
+      ]
+    },
+    {
+      "canonical_id": "CANON_E105",
+      "canonical_name": "Hague (public screening) 23 October 2019",
+      "entity_type": "event",
+      "source_entities": [
+        {
+          "report_id": "report2_bellingcat_gru_disinformation",
+          "entity_id": "E59",
+          "name": "Hague (public screening) 23 October 2019"
+        }
+      ],
+      "all_aliases": [
+        "public screening in the Hague",
+        "Hague screening 23 October 2019"
+      ]
+    },
+    {
+      "canonical_id": "CANON_E106",
+      "canonical_name": "Hack of JIT documents (Malaysia office)",
+      "entity_type": "event",
+      "source_entities": [
+        {
+          "report_id": "report2_bellingcat_gru_disinformation",
+          "entity_id": "E60",
+          "name": "Hack of JIT documents (Malaysia office)"
+        }
+      ],
+      "all_aliases": [
+        "hack of JIT member country's office",
+        "hack of Malaysian JIT office"
+      ]
+    },
+    {
+      "canonical_id": "CANON_E107",
+      "canonical_name": "Valeriy Shaytanov",
+      "entity_type": "person",
+      "source_entities": [
+        {
+          "report_id": "report3_bellingcat_fsb_elbrus",
+          "entity_id": "E1",
+          "name": "Valeriy Shaytanov"
+        }
+      ],
+      "all_aliases": [
+        "Lt. General Valeriy Shaytanov",
+        "Shaytanov"
+      ]
+    },
+    {
+      "canonical_id": "CANON_E108",
+      "canonical_name": "Igor Anatolyevich Egorov",
+      "entity_type": "person",
+      "source_entities": [
+        {
+          "report_id": "report3_bellingcat_fsb_elbrus",
+          "entity_id": "E2",
+          "name": "Igor Anatolyevich Egorov"
+        }
+      ],
+      "all_aliases": [
+        "Col. Igor Egorov",
+        "Colonel Igor Egorov",
+        "Igor Egorov",
+        "Col. Egorov",
+        "Egorov",
+        "Elbrus (alleged alias)"
+      ]
+    },
+    {
+      "canonical_id": "CANON_E109",
+      "canonical_name": "Adam Osmayev",
+      "entity_type": "person",
+      "source_entities": [
+        {
+          "report_id": "report3_bellingcat_fsb_elbrus",
+          "entity_id": "E3",
+          "name": "Adam Osmayev"
+        }
+      ],
+      "all_aliases": [
+        "Adam Osmaev",
+        "Osmaev",
+        "Osmaev (alternate spelling)"
+      ]
+    },
+    {
+      "canonical_id": "CANON_E110",
+      "canonical_name": "Boris Rozhin",
+      "entity_type": "person",
+      "source_entities": [
+        {
+          "report_id": "report3_bellingcat_fsb_elbrus",
+          "entity_id": "E4",
+          "name": "Boris Rozhin"
+        }
+      ],
+      "all_aliases": [
+        "Colonel Cassad",
+        "Rozhin"
+      ]
+    },
+    {
+      "canonical_id": "CANON_E111",
+      "canonical_name": "Oleg Ivannikov",
+      "entity_type": "person",
+      "source_entities": [
+        {
+          "report_id": "report3_bellingcat_fsb_elbrus",
+          "entity_id": "E5",
+          "name": "Oleg Ivannikov"
+        }
+      ],
+      "all_aliases": [
+        "Andrey Ivanovich",
+        "Andrey Ivanovich Laptev",
+        "Orion",
+        "Col. Ivannikov",
+        "Ivannikov"
+      ]
+    },
+    {
+      "canonical_id": "CANON_E112",
+      "canonical_name": "Ramzan Kadyrov",
+      "entity_type": "person",
+      "source_entities": [
+        {
+          "report_id": "report3_bellingcat_fsb_elbrus",
+          "entity_id": "E6",
+          "name": "Ramzan Kadyrov"
+        }
+      ],
+      "all_aliases": [
+        "Kadyrov"
+      ]
+    },
+    {
+      "canonical_id": "CANON_E113",
+      "canonical_name": "Vladimir Putin",
+      "entity_type": "person",
+      "source_entities": [
+        {
+          "report_id": "report3_bellingcat_fsb_elbrus",
+          "entity_id": "E7",
+          "name": "Vladimir Putin"
+        }
+      ],
+      "all_aliases": [
+        "Putin"
+      ]
+    },
+    {
+      "canonical_id": "CANON_E114",
+      "canonical_name": "Nadiya Savchenko",
+      "entity_type": "person",
+      "source_entities": [
+        {
+          "report_id": "report3_bellingcat_fsb_elbrus",
+          "entity_id": "E8",
+          "name": "Nadiya Savchenko"
+        }
+      ],
+      "all_aliases": [
+        "Nadia Savchenko",
+        "Savchenko"
+      ]
+    },
+    {
+      "canonical_id": "CANON_E115",
+      "canonical_name": "Amina Okueva",
+      "entity_type": "person",
+      "source_entities": [
+        {
+          "report_id": "report3_bellingcat_fsb_elbrus",
+          "entity_id": "E9",
+          "name": "Amina Okueva"
+        }
+      ],
+      "all_aliases": [
+        "Amina Okueva (Chechen-Ukrainian)"
+      ]
+    },
+    {
+      "canonical_id": "CANON_E116",
+      "canonical_name": "Vadim Krasikov",
+      "entity_type": "person",
+      "source_entities": [
+        {
+          "report_id": "report3_bellingcat_fsb_elbrus",
+          "entity_id": "E10",
+          "name": "Vadim Krasikov"
+        }
+      ],
+      "all_aliases": [
+        "Krasikov"
+      ]
+    },
+    {
+      "canonical_id": "CANON_E117",
+      "canonical_name": "Zelimkhan Khangoshvili",
+      "entity_type": "person",
+      "source_entities": [
+        {
+          "report_id": "report3_bellingcat_fsb_elbrus",
+          "entity_id": "E11",
+          "name": "Zelimkhan Khangoshvili"
+        }
+      ],
+      "all_aliases": [
+        "Khangoshvili",
+        "Zelimkhan Khangoshvili (Khangoshvili)"
+      ]
+    },
+    {
+      "canonical_id": "CANON_E118",
+      "canonical_name": "King Abdullah II of Jordan",
+      "entity_type": "person",
+      "source_entities": [
+        {
+          "report_id": "report3_bellingcat_fsb_elbrus",
+          "entity_id": "E12",
+          "name": "King Abdullah II of Jordan"
+        }
+      ],
+      "all_aliases": [
+        "King Abdullah II",
+        "Abdullah II"
+      ]
+    },
+    {
+      "canonical_id": "CANON_E119",
+      "canonical_name": "Delfin (nom-de-guerre)",
+      "entity_type": "person",
+      "source_entities": [
+        {
+          "report_id": "report3_bellingcat_fsb_elbrus",
+          "entity_id": "E13",
+          "name": "Delfin (nom-de-guerre)"
+        }
+      ],
+      "all_aliases": [
+        "Delfin"
+      ]
+    },
+    {
+      "canonical_id": "CANON_E120",
+      "canonical_name": "The Insider",
+      "entity_type": "organization",
+      "source_entities": [
+        {
+          "report_id": "report3_bellingcat_fsb_elbrus",
+          "entity_id": "E15",
+          "name": "The Insider"
+        }
+      ],
+      "all_aliases": [
+        "The Insider (news outlet)"
+      ]
+    },
+    {
+      "canonical_id": "CANON_E121",
+      "canonical_name": "Security Service of Ukraine (SBU)",
+      "entity_type": "organization",
+      "source_entities": [
+        {
+          "report_id": "report3_bellingcat_fsb_elbrus",
+          "entity_id": "E16",
+          "name": "Security Service of Ukraine (SBU)"
+        }
+      ],
+      "all_aliases": [
+        "SBU",
+        "Ukraine's security service"
+      ]
+    },
+    {
+      "canonical_id": "CANON_E122",
+      "canonical_name": "KGB",
+      "entity_type": "organization",
+      "source_entities": [
+        {
+          "report_id": "report3_bellingcat_fsb_elbrus",
+          "entity_id": "E18",
+          "name": "KGB"
+        }
+      ],
+      "all_aliases": [
+        "KGB"
+      ]
+    },
+    {
+      "canonical_id": "CANON_E123",
+      "canonical_name": "Vympel",
+      "entity_type": "unit",
+      "source_entities": [
+        {
+          "report_id": "report3_bellingcat_fsb_elbrus",
+          "entity_id": "E19",
+          "name": "Vympel"
+        }
+      ],
+      "all_aliases": [
+        "Vympel Spetsnaz",
+        "Vympel Spetznaz",
+        "Vympel Spetsnaz unit",
+        "Vympel Veteran Association (related)"
+      ]
+    },
+    {
+      "canonical_id": "CANON_E124",
+      "canonical_name": "Department V (FSB)",
+      "entity_type": "unit",
+      "source_entities": [
+        {
+          "report_id": "report3_bellingcat_fsb_elbrus",
+          "entity_id": "E20",
+          "name": "Department V (FSB)"
+        }
+      ],
+      "all_aliases": [
+        "Department V",
+        "Department-V",
+        "FSB Department V",
+        "Vympel / Department-V"
+      ]
+    },
+    {
+      "canonical_id": "CANON_E125",
+      "canonical_name": "Vympel Veteran Association",
+      "entity_type": "organization",
+      "source_entities": [
+        {
+          "report_id": "report3_bellingcat_fsb_elbrus",
+          "entity_id": "E23",
+          "name": "Vympel Veteran Association"
+        }
+      ],
+      "all_aliases": [
+        "Vympel Veteran Association"
+      ]
+    },
+    {
+      "canonical_id": "CANON_E126",
+      "canonical_name": "Novaya Gazeta",
+      "entity_type": "organization",
+      "source_entities": [
+        {
+          "report_id": "report3_bellingcat_fsb_elbrus",
+          "entity_id": "E24",
+          "name": "Novaya Gazeta"
+        }
+      ],
+      "all_aliases": [
+        "Novaya Gazeta"
+      ]
+    },
+    {
+      "canonical_id": "CANON_E127",
+      "canonical_name": "Meduza",
+      "entity_type": "organization",
+      "source_entities": [
+        {
+          "report_id": "report3_bellingcat_fsb_elbrus",
+          "entity_id": "E25",
+          "name": "Meduza"
+        }
+      ],
+      "all_aliases": [
+        "Meduza"
+      ]
+    },
+    {
+      "canonical_id": "CANON_E128",
+      "canonical_name": "Der Spiegel",
+      "entity_type": "organization",
+      "source_entities": [
+        {
+          "report_id": "report3_bellingcat_fsb_elbrus",
+          "entity_id": "E26",
+          "name": "Der Spiegel"
+        }
+      ],
+      "all_aliases": [
+        "Der Spiegel"
+      ]
+    },
+    {
+      "canonical_id": "CANON_E129",
+      "canonical_name": "South Ossetia",
+      "entity_type": "location",
+      "source_entities": [
+        {
+          "report_id": "report3_bellingcat_fsb_elbrus",
+          "entity_id": "E29",
+          "name": "South Ossetia"
+        }
+      ],
+      "all_aliases": [
+        "South Ossetia",
+        "Russia-backed breakaway territory of South Ossetia"
+      ]
+    },
+    {
+      "canonical_id": "CANON_E130",
+      "canonical_name": "Annexation of Crimea (2014)",
+      "entity_type": "event",
+      "source_entities": [
+        {
+          "report_id": "report3_bellingcat_fsb_elbrus",
+          "entity_id": "E31",
+          "name": "Annexation of Crimea (2014)"
+        }
+      ],
+      "all_aliases": [
+        "annexation of Crimea",
+        "Crimea annexation 2014",
+        "Crimea events"
+      ]
+    },
+    {
+      "canonical_id": "CANON_E131",
+      "canonical_name": "Berlin assassination of Zelimkhan Khangoshvili",
+      "entity_type": "event",
+      "source_entities": [
+        {
+          "report_id": "report3_bellingcat_fsb_elbrus",
+          "entity_id": "E32",
+          "name": "Berlin assassination of Zelimkhan Khangoshvili"
+        }
+      ],
+      "all_aliases": [
+        "Khangoshvili assassination",
+        "Khangoshvili killing in Berlin",
+        "assassination of Zelimkhan Khangoshvili"
+      ]
+    },
+    {
+      "canonical_id": "CANON_E132",
+      "canonical_name": "Second Chechen War",
+      "entity_type": "event",
+      "source_entities": [
+        {
+          "report_id": "report3_bellingcat_fsb_elbrus",
+          "entity_id": "E33",
+          "name": "Second Chechen War"
+        }
+      ],
+      "all_aliases": [
+        "Second Chechen War"
+      ]
+    },
+    {
+      "canonical_id": "CANON_E133",
+      "canonical_name": "Russo-Georgian War (2008)",
+      "entity_type": "event",
+      "source_entities": [
+        {
+          "report_id": "report3_bellingcat_fsb_elbrus",
+          "entity_id": "E34",
+          "name": "Russo-Georgian War (2008)"
+        }
+      ],
+      "all_aliases": [
+        "Georgian-Russian War in 2008",
+        "2008 Russo-Georgian War"
+      ]
+    },
+    {
+      "canonical_id": "CANON_E134",
+      "canonical_name": "War in Eastern Ukraine / Donbass (2014-2015)",
+      "entity_type": "event",
+      "source_entities": [
+        {
+          "report_id": "report3_bellingcat_fsb_elbrus",
+          "entity_id": "E35",
+          "name": "War in Eastern Ukraine / Donbass (2014-2015)"
+        }
+      ],
+      "all_aliases": [
+        "War in Eastern Ukraine",
+        "Donbass conflict",
+        "Donbas war",
+        "2014 war"
+      ]
+    },
+    {
+      "canonical_id": "CANON_E135",
+      "canonical_name": "G\u0000e4nsemarkt Passage shopping mall",
+      "entity_type": "location",
+      "source_entities": [
+        {
+          "report_id": "report3_bellingcat_fsb_elbrus",
+          "entity_id": "E36",
+          "name": "G\u0000e4nsemarkt Passage shopping mall"
+        }
+      ],
+      "all_aliases": [
+        "G\u0000e4nsemarkt Passage",
+        "G\u0000e4nsemarkt Passage shopping mall",
+        "Gaensemarkt Passage"
+      ]
+    },
+    {
+      "canonical_id": "CANON_E136",
+      "canonical_name": "Hamburg",
+      "entity_type": "location",
+      "source_entities": [
+        {
+          "report_id": "report3_bellingcat_fsb_elbrus",
+          "entity_id": "E37",
+          "name": "Hamburg"
+        }
+      ],
+      "all_aliases": [
+        "Hamburg, Germany",
+        "Hamburg"
+      ]
+    },
+    {
+      "canonical_id": "CANON_E137",
+      "canonical_name": "Germany",
+      "entity_type": "location",
+      "source_entities": [
+        {
+          "report_id": "report3_bellingcat_fsb_elbrus",
+          "entity_id": "E38",
+          "name": "Germany"
+        }
+      ],
+      "all_aliases": [
+        "Germany",
+        "Federal Republic of Germany"
+      ]
+    },
+    {
+      "canonical_id": "CANON_E138",
+      "canonical_name": "Simferopol",
+      "entity_type": "location",
+      "source_entities": [
+        {
+          "report_id": "report3_bellingcat_fsb_elbrus",
+          "entity_id": "E43",
+          "name": "Simferopol"
+        }
+      ],
+      "all_aliases": [
+        "Simferopol"
+      ]
+    },
+    {
+      "canonical_id": "CANON_E139",
+      "canonical_name": "Krasnodar",
+      "entity_type": "location",
+      "source_entities": [
+        {
+          "report_id": "report3_bellingcat_fsb_elbrus",
+          "entity_id": "E44",
+          "name": "Krasnodar"
+        }
+      ],
+      "all_aliases": [
+        "Krasnodar"
+      ]
+    },
+    {
+      "canonical_id": "CANON_E140",
+      "canonical_name": "Moscow",
+      "entity_type": "location",
+      "source_entities": [
+        {
+          "report_id": "report3_bellingcat_fsb_elbrus",
+          "entity_id": "E45",
+          "name": "Moscow"
+        }
+      ],
+      "all_aliases": [
+        "Moscow"
+      ]
+    },
+    {
+      "canonical_id": "CANON_E141",
+      "canonical_name": "Crimea",
+      "entity_type": "location",
+      "source_entities": [
+        {
+          "report_id": "report3_bellingcat_fsb_elbrus",
+          "entity_id": "E46",
+          "name": "Crimea"
+        }
+      ],
+      "all_aliases": [
+        "Crimea"
+      ]
+    },
+    {
+      "canonical_id": "CANON_E142",
+      "canonical_name": "Caucasus",
+      "entity_type": "location",
+      "source_entities": [
+        {
+          "report_id": "report3_bellingcat_fsb_elbrus",
+          "entity_id": "E47",
+          "name": "Caucasus"
+        }
+      ],
+      "all_aliases": [
+        "the Caucasus",
+        "Caucasus region"
+      ]
+    },
+    {
+      "canonical_id": "CANON_E143",
+      "canonical_name": "Georgia",
+      "entity_type": "location",
+      "source_entities": [
+        {
+          "report_id": "report3_bellingcat_fsb_elbrus",
+          "entity_id": "E48",
+          "name": "Georgia"
+        }
+      ],
+      "all_aliases": [
+        "Georgia"
+      ]
+    },
+    {
+      "canonical_id": "CANON_E144",
+      "canonical_name": "Krasnodon",
+      "entity_type": "location",
+      "source_entities": [
+        {
+          "report_id": "report3_bellingcat_fsb_elbrus",
+          "entity_id": "E49",
+          "name": "Krasnodon"
+        }
+      ],
+      "all_aliases": [
+        "Krasnodon"
+      ]
+    },
+    {
+      "canonical_id": "CANON_E145",
+      "canonical_name": "Hamburg G\u0000e4nsemarkt trip, February 2020",
+      "entity_type": "event",
+      "source_entities": [
+        {
+          "report_id": "report3_bellingcat_fsb_elbrus",
+          "entity_id": "E50",
+          "name": "Hamburg G\u0000e4nsemarkt trip, February 2020"
+        }
+      ],
+      "all_aliases": [
+        "Hamburg meet-up February 2020",
+        "Hamburg trip 10-12 February 2020"
+      ]
+    },
+    {
+      "canonical_id": "CANON_E146",
+      "canonical_name": "Croatia trips by Egorov (2019)",
+      "entity_type": "event",
+      "source_entities": [
+        {
+          "report_id": "report3_bellingcat_fsb_elbrus",
+          "entity_id": "E51",
+          "name": "Croatia trips by Egorov (2019)"
+        }
+      ],
+      "all_aliases": [
+        "Egorov travel to Croatia",
+        "Croatia meet-ups 2019"
+      ]
+    },
+    {
+      "canonical_id": "CANON_E147",
+      "canonical_name": "Montenegro failed coup (2016)",
+      "entity_type": "event",
+      "source_entities": [
+        {
+          "report_id": "report3_bellingcat_fsb_elbrus",
+          "entity_id": "E52",
+          "name": "Montenegro failed coup (2016)"
+        }
+      ],
+      "all_aliases": [
+        "failed coup in Montenegro",
+        "2016 Montenegro coup attempt"
+      ]
+    },
+    {
+      "canonical_id": "CANON_E148",
+      "canonical_name": "Tivat",
+      "entity_type": "location",
+      "source_entities": [
+        {
+          "report_id": "report3_bellingcat_fsb_elbrus",
+          "entity_id": "E53",
+          "name": "Tivat"
+        }
+      ],
+      "all_aliases": [
+        "Tivat, Montenegro",
+        "Tivat"
+      ]
+    },
+    {
+      "canonical_id": "CANON_E149",
+      "canonical_name": "Tel Aviv",
+      "entity_type": "location",
+      "source_entities": [
+        {
+          "report_id": "report3_bellingcat_fsb_elbrus",
+          "entity_id": "E54",
+          "name": "Tel Aviv"
+        }
+      ],
+      "all_aliases": [
+        "Tel Aviv"
+      ]
+    },
+    {
+      "canonical_id": "CANON_E150",
+      "canonical_name": "Singapore",
+      "entity_type": "location",
+      "source_entities": [
+        {
+          "report_id": "report3_bellingcat_fsb_elbrus",
+          "entity_id": "E55",
+          "name": "Singapore"
+        }
+      ],
+      "all_aliases": [
+        "Singapore"
+      ]
+    },
+    {
+      "canonical_id": "CANON_E151",
+      "canonical_name": "Amman",
+      "entity_type": "location",
+      "source_entities": [
+        {
+          "report_id": "report3_bellingcat_fsb_elbrus",
+          "entity_id": "E56",
+          "name": "Amman"
+        }
+      ],
+      "all_aliases": [
+        "Amman, Jordan",
+        "Amman"
+      ]
+    },
+    {
+      "canonical_id": "CANON_E152",
+      "canonical_name": "France",
+      "entity_type": "location",
+      "source_entities": [
+        {
+          "report_id": "report3_bellingcat_fsb_elbrus",
+          "entity_id": "E57",
+          "name": "France"
+        }
+      ],
+      "all_aliases": [
+        "France"
+      ]
+    },
+    {
+      "canonical_id": "CANON_E153",
+      "canonical_name": "Schengen Area",
+      "entity_type": "location",
+      "source_entities": [
+        {
+          "report_id": "report3_bellingcat_fsb_elbrus",
+          "entity_id": "E58",
+          "name": "Schengen Area"
+        }
+      ],
+      "all_aliases": [
+        "Schengen area",
+        "Schengen"
+      ]
+    },
+    {
+      "canonical_id": "CANON_E154",
+      "canonical_name": "Frankfurt",
+      "entity_type": "location",
+      "source_entities": [
+        {
+          "report_id": "report3_bellingcat_fsb_elbrus",
+          "entity_id": "E59",
+          "name": "Frankfurt"
+        }
+      ],
+      "all_aliases": [
+        "Frankfurt"
+      ]
+    },
+    {
+      "canonical_id": "CANON_E155",
+      "canonical_name": "Munich",
+      "entity_type": "location",
+      "source_entities": [
+        {
+          "report_id": "report3_bellingcat_fsb_elbrus",
+          "entity_id": "E60",
+          "name": "Munich"
+        }
+      ],
+      "all_aliases": [
+        "Munich"
+      ]
+    },
+    {
+      "canonical_id": "CANON_E156",
+      "canonical_name": "Paris",
+      "entity_type": "location",
+      "source_entities": [
+        {
+          "report_id": "report3_bellingcat_fsb_elbrus",
+          "entity_id": "E61",
+          "name": "Paris"
+        }
+      ],
+      "all_aliases": [
+        "Paris"
+      ]
+    },
+    {
+      "canonical_id": "CANON_E157",
+      "canonical_name": "Berlin",
+      "entity_type": "location",
+      "source_entities": [
+        {
+          "report_id": "report3_bellingcat_fsb_elbrus",
+          "entity_id": "E62",
+          "name": "Berlin"
+        }
+      ],
+      "all_aliases": [
+        "Berlin"
+      ]
+    },
+    {
+      "canonical_id": "CANON_E158",
+      "canonical_name": "Kyiv",
+      "entity_type": "location",
+      "source_entities": [
+        {
+          "report_id": "report3_bellingcat_fsb_elbrus",
+          "entity_id": "E63",
+          "name": "Kyiv"
+        }
+      ],
+      "all_aliases": [
+        "Kyiv",
+        "Kiev",
+        "Kyiv, Ukraine"
+      ]
+    },
+    {
+      "canonical_id": "CANON_E159",
+      "canonical_name": "Center for Specialized Equipment",
+      "entity_type": "organization",
+      "source_entities": [
+        {
+          "report_id": "report3_bellingcat_fsb_elbrus",
+          "entity_id": "E64",
+          "name": "Cente for Specialized Equipment"
+        }
+      ],
+      "all_aliases": [
+        "Cente for Specialized Equipment",
+        "Center for Specialized Equipment (as spelled)"
+      ]
+    },
+    {
+      "canonical_id": "CANON_E160",
+      "canonical_name": "Schengen police",
+      "entity_type": "organization",
+      "source_entities": [
+        {
+          "report_id": "report3_bellingcat_fsb_elbrus",
+          "entity_id": "E65",
+          "name": "Schengen police"
+        }
+      ],
+      "all_aliases": [
+        "Schengen police"
+      ]
+    },
+    {
+      "canonical_id": "CANON_E161",
+      "canonical_name": "Coronavirus crisis / COVID-19 pandemic",
+      "entity_type": "concept",
+      "source_entities": [
+        {
+          "report_id": "report3_bellingcat_fsb_elbrus",
+          "entity_id": "E66",
+          "name": "Coronavirus crisis / COVID-19 pandemic"
+        }
+      ],
+      "all_aliases": [
+        "coronavirus crisis",
+        "COVID-19 pandemic",
+        "coronavirus"
+      ]
+    },
+    {
+      "canonical_id": "CANON_E162",
+      "canonical_name": "Extrajudicial / extraterritorial assassinations",
+      "entity_type": "concept",
+      "source_entities": [
+        {
+          "report_id": "report3_bellingcat_fsb_elbrus",
+          "entity_id": "E68",
+          "name": "Extrajudicial / extraterritorial assassinations"
+        }
+      ],
+      "all_aliases": [
+        "extraterritorial assassination",
+        "extraterritorial eliminations",
+        "exraterritorial assassination operations"
+      ]
+    },
+    {
+      "canonical_id": "CANON_E163",
+      "canonical_name": "kurator (Russian special service supervisor)",
+      "entity_type": "concept",
+      "source_entities": [
+        {
+          "report_id": "report3_bellingcat_fsb_elbrus",
+          "entity_id": "E69",
+          "name": "kurator (Russian special service supervisor)"
+        }
+      ],
+      "all_aliases": [
+        "kurator",
+        "kurator (Russian special service parlance)"
+      ]
+    },
+    {
+      "canonical_id": "CANON_E164",
+      "canonical_name": "Operational security tradecraft (double-booking flights)",
+      "entity_type": "concept",
+      "source_entities": [
+        {
+          "report_id": "report3_bellingcat_fsb_elbrus",
+          "entity_id": "E70",
+          "name": "Operational security tradecraft (double-booking flights)"
+        }
+      ],
+      "all_aliases": [
+        "operational security trade-craft",
+        "double-booking flights decoy"
+      ]
+    },
+    {
+      "canonical_id": "CANON_E165",
+      "canonical_name": "Delfin and Elbrus attempted consolidation (Nov 2014)",
+      "entity_type": "event",
+      "source_entities": [
+        {
+          "report_id": "report3_bellingcat_fsb_elbrus",
+          "entity_id": "E71",
+          "name": "Delfin and Elbrus attempted consolidation (Nov 2014)"
+        }
+      ],
+      "all_aliases": [
+        "Delfin and Elbrus failed consolidation November 2014",
+        "Nov 2014 LNR consolidation attempt"
+      ]
+    },
+    {
+      "canonical_id": "CANON_E166",
+      "canonical_name": "Croatia",
+      "entity_type": "location",
+      "source_entities": [
+        {
+          "report_id": "report3_bellingcat_fsb_elbrus",
+          "entity_id": "E72",
+          "name": "Croatia"
+        }
+      ],
+      "all_aliases": [
+        "Croatia"
+      ]
+    },
+    {
+      "canonical_id": "CANON_E167",
+      "canonical_name": "France (visa issuance) (event)",
+      "entity_type": "event",
+      "source_entities": [
+        {
+          "report_id": "report3_bellingcat_fsb_elbrus",
+          "entity_id": "E73",
+          "name": "France (visa issuance)"
+        }
+      ],
+      "all_aliases": [
+        "French visa issuance December 2016",
+        "France visa 2016"
+      ]
+    },
+    {
+      "canonical_id": "CANON_E168",
+      "canonical_name": "Center for Specialized Equipment (company) liquidation",
+      "entity_type": "event",
+      "source_entities": [
+        {
+          "report_id": "report3_bellingcat_fsb_elbrus",
+          "entity_id": "E74",
+          "name": "Cente for Specialized Equipment (company) liquidation"
+        }
+      ],
+      "all_aliases": [
+        "company liquidation Cente for Specialized Equipment"
+      ]
+    }
+  ],
+  "metadata": {
+    "total_canonical_entities": 168,
+    "cross_report_entities": 17,
+    "canonicalization_timestamp": "2025-11-17T12:09:04.535859+00:00"
+  }
+}

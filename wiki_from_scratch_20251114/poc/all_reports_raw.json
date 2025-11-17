@@ -1,0 +1,3031 @@
+{
+  "reports": [
+    {
+      "entities": [
+        {
+          "entity_id": "E1",
+          "canonical_name": "Bellingcat",
+          "entity_type": "organization",
+          "aliases": [
+            "Bellingcat Investigation Team",
+            "Bellingcat MH17 investigation team"
+          ],
+          "mentions": [
+            {
+              "snippet": "This report analyses evidence from open sources, in particular social media, relating to the Buk missile launcher filmed and photographed in eastern Ukraine on July 17th ... The Bellingcat MH17 investigation team believes ...",
+              "context": "Authoring investigative organization responsible for the analysis and conclusions in the report; repeated as 'Bellingcat MH17 investigation team'."
+            },
+            {
+              "snippet": "It is the opinion of the Bellingcat MH17 investigation team that there is undeniable evidence ...",
+              "context": "Expresses the organization's conclusions about the Buk launcher and its movements."
+            }
+          ]
+        },
+        {
+          "entity_id": "E2",
+          "canonical_name": "Bellingcat MH17 investigation team",
+          "entity_type": "organization",
+          "aliases": [
+            "Bellingcat Investigation Team",
+            "Bellingcat MH17 team"
+          ],
+          "mentions": [
+            {
+              "snippet": "The Bellingcat MH17 investigation team also believes that many of the unresolved questions about the downing of MH17 will be answered by the official investigation ...",
+              "context": "Specific team within Bellingcat credited as the authoring investigative unit and source of the report's analysis and opinions."
+            }
+          ]
+        },
+        {
+          "entity_id": "E3",
+          "canonical_name": "Timmi Allen",
+          "entity_type": "person",
+          "aliases": [],
+          "mentions": [
+            {
+              "snippet": "Authors: Bellingcat Investigation Team (Timmi Allen, Andrew Haggard, Eliot Higgins, Veli-Pekka Kivimaki, Iggy Ostanin, Aric Toler)",
+              "context": "Listed as one of the named authors of the report."
+            }
+          ]
+        },
+        {
+          "entity_id": "E4",
+          "canonical_name": "Andrew Haggard",
+          "entity_type": "person",
+          "aliases": [],
+          "mentions": [
+            {
+              "snippet": "Authors: Bellingcat Investigation Team (Timmi Allen, Andrew Haggard, Eliot Higgins, Veli-Pekka Kivimaki, Iggy Ostanin, Aric Toler)",
+              "context": "Listed as one of the named authors of the report."
+            }
+          ]
+        },
+        {
+          "entity_id": "E5",
+          "canonical_name": "Eliot Higgins",
+          "entity_type": "person",
+          "aliases": [],
+          "mentions": [
+            {
+              "snippet": "Authors: Bellingcat Investigation Team (Timmi Allen, Andrew Haggard, Eliot Higgins, Veli-Pekka Kivimaki, Iggy Ostanin, Aric Toler)",
+              "context": "Listed as one of the named authors of the report; prominent Bellingcat investigator."
+            }
+          ]
+        },
+        {
+          "entity_id": "E6",
+          "canonical_name": "Veli-Pekka Kivimaki",
+          "entity_type": "person",
+          "aliases": [
+            "Veli-Pekka Kivimäki"
+          ],
+          "mentions": [
+            {
+              "snippet": "Authors: Bellingcat Investigation Team (Timmi Allen, Andrew Haggard, Eliot Higgins, Veli-Pekka Kivimaki, Iggy Ostanin, Aric Toler)",
+              "context": "Listed as one of the named authors of the report."
+            }
+          ]
+        },
+        {
+          "entity_id": "E7",
+          "canonical_name": "Iggy Ostanin",
+          "entity_type": "person",
+          "aliases": [],
+          "mentions": [
+            {
+              "snippet": "Authors: Bellingcat Investigation Team (Timmi Allen, Andrew Haggard, Eliot Higgins, Veli-Pekka Kivimaki, Iggy Ostanin, Aric Toler)",
+              "context": "Listed as one of the named authors of the report."
+            }
+          ]
+        },
+        {
+          "entity_id": "E8",
+          "canonical_name": "Aric Toler",
+          "entity_type": "person",
+          "aliases": [],
+          "mentions": [
+            {
+              "snippet": "Authors: Bellingcat Investigation Team (Timmi Allen, Andrew Haggard, Eliot Higgins, Veli-Pekka Kivimaki, Iggy Ostanin, Aric Toler)",
+              "context": "Listed as one of the named authors of the report."
+            }
+          ]
+        },
+        {
+          "entity_id": "E9",
+          "canonical_name": "Paris Match",
+          "entity_type": "organization",
+          "aliases": [
+            "Paris Match magazine"
+          ],
+          "mentions": [
+            {
+              "snippet": "On July 25th, the weekly magazine Paris Match published a photograph of a Buk missile launcher being transported on a low-loader truck through the separatist-controlled city of Donetsk.",
+              "context": "News magazine that published a key photograph used to link the Buk in Ukraine to other evidence."
+            },
+            {
+              "snippet": "Inquiries by Storyful with Paris Match established that the photograph was taken at 'about 11 am on the morning of July 17.'",
+              "context": "Source of timing information for the Paris Match photograph after inquiries by Storyful."
+            }
+          ]
+        },
+        {
+          "entity_id": "E10",
+          "canonical_name": "Storyful",
+          "entity_type": "organization",
+          "aliases": [],
+          "mentions": [
+            {
+              "snippet": "Inquiries by Storyful with Paris Match established that the photograph was taken at 'about 11 am on the morning of July 17.'",
+              "context": "Media verification organization that queried Paris Match about the photograph's timing."
+            }
+          ]
+        },
+        {
+          "entity_id": "E11",
+          "canonical_name": "Twitter",
+          "entity_type": "organization",
+          "aliases": [
+            "Twitter post",
+            "Twitter posts"
+          ],
+          "mentions": [
+            {
+              "snippet": "A Twitter post from 12:32PM (local time) on July 17 reports the sighting of a Buk at the intersection of Shakhtostroiteley Boulevard and Ilych Avenue ...",
+              "context": "Social media platform used for eyewitness reports and posts referenced to time and location sightings."
+            },
+            {
+              "snippet": "Three tweets that describe the missile launcher and an accompanying convoy travelling through Torez were posted at 12:07pm, 12:15pm, and 12:26pm local time.",
+              "context": "Source of local eyewitness timing on the Buk convoy movement."
+            }
+          ]
+        },
+        {
+          "entity_id": "E12",
+          "canonical_name": "VKontakte",
+          "entity_type": "organization",
+          "aliases": [
+            "VK",
+            "VKontakte page",
+            "Overheard in Torez"
+          ],
+          "mentions": [
+            {
+              "snippet": "The Bellingcat MH17 investigation team has been unable to find any earlier example of the photograph being shared than a post made by a user of the Russian social media site VKontakte (VK) at 8:09pm (Kyiv time) on July 17th.",
+              "context": "Russian social network where a key photograph was posted; used for timeline reconstruction."
+            },
+            {
+              "snippet": "The investigation team suspects that the image was originally posted in the 'Overheard in Torez' VKontakte page, but has since been deleted.",
+              "context": "Reference to a specific VK page suspected as the original source for an image."
+            }
+          ]
+        },
+        {
+          "entity_id": "E13",
+          "canonical_name": "YouTube",
+          "entity_type": "organization",
+          "aliases": [],
+          "mentions": [
+            {
+              "snippet": "On July 17th a video was uploaded to YouTube showing the Buk photographed in Donetsk travelling through the town of Zuhres ...",
+              "context": "Video-hosting platform used to host videos that show the Buk's movements and permit geolocation of recordings."
+            },
+            {
+              "snippet": "A photograph and video posted on Twitter and YouTube showed a Buk missile launcher in the town of Snizhne.",
+              "context": "Source of imagery used to geolocate the Buk in Snizhne and other towns."
+            }
+          ]
+        },
+        {
+          "entity_id": "E14",
+          "canonical_name": "Instagram",
+          "entity_type": "organization",
+          "aliases": [],
+          "mentions": [
+            {
+              "snippet": "The Bellingcat MH17 investigation team has collected 16 videos posted on social media sites including VKontakte, YouTube, Instagram, and Odnoklassniki that show the 53rd Brigade's convoy ...",
+              "context": "Named as one of the social media platforms where convoy videos were posted."
+            }
+          ]
+        },
+        {
+          "entity_id": "E15",
+          "canonical_name": "Odnoklassniki",
+          "entity_type": "organization",
+          "aliases": [],
+          "mentions": [
+            {
+              "snippet": "The Bellingcat MH17 investigation team has collected 16 videos posted on social media sites including VKontakte, YouTube, Instagram, and Odnoklassniki that show the 53rd Brigade's convoy ...",
+              "context": "Russian social media platform cited as a source of convoy videos."
+            }
+          ]
+        },
+        {
+          "entity_id": "E16",
+          "canonical_name": "The Guardian",
+          "entity_type": "organization",
+          "aliases": [
+            "Guardian"
+          ],
+          "mentions": [
+            {
+              "snippet": "Journalists from the Guardian and Buzzfeed visited Torez on July 22nd and interviewed locals who confirmed both the time and route the Buk missile launcher took through Torez on the way to Snizhne along the H21 motorway.",
+              "context": "News organization whose journalists conducted on-the-ground reporting confirming convoy eyewitness accounts."
+            }
+          ]
+        },
+        {
+          "entity_id": "E17",
+          "canonical_name": "BuzzFeed",
+          "entity_type": "organization",
+          "aliases": [
+            "Buzzfeed"
+          ],
+          "mentions": [
+            {
+              "snippet": "Journalists from the Guardian and Buzzfeed visited Torez on July 22nd and interviewed locals ...",
+              "context": "News organization whose journalists visited Torez and corroborated eyewitness reports."
+            }
+          ]
+        },
+        {
+          "entity_id": "E18",
+          "canonical_name": "Associated Press",
+          "entity_type": "organization",
+          "aliases": [
+            "AP"
+          ],
+          "mentions": [
+            {
+              "snippet": "The AP reported on August 25th that 'On July 17, AP reporters in the town of Snizhne saw a tracked launcher with four SA-11 surface-to-air missiles parked on a street.'",
+              "context": "News agency reporting on an eyewitness AP sighting of a Buk launcher in Snizhne and linking it temporally to MH17."
+            }
+          ]
+        },
+        {
+          "entity_id": "E19",
+          "canonical_name": "Russian Ministry of Defence",
+          "entity_type": "organization",
+          "aliases": [
+            "Russian Ministry of Defense",
+            "Ministry of Defence"
+          ],
+          "mentions": [
+            {
+              "snippet": "The Russian Ministry of Defence claimed in a press conference on July 21 that this video was in fact filmed in Ukrainian government-controlled territory ...",
+              "context": "Official Russian government body that made a public statement contesting the video's location and authenticity."
+            }
+          ]
+        },
+        {
+          "entity_id": "E20",
+          "canonical_name": "Ukrainian Ministry of Interior",
+          "entity_type": "organization",
+          "aliases": [
+            "Ministry of Interior (Ukraine)"
+          ],
+          "mentions": [
+            {
+              "snippet": "The final video was posted online by the Ukrainian Ministry of Interior on July 18.",
+              "context": "Ukrainian government body that published video evidence showing the Buk launcher in Luhansk area."
+            }
+          ]
+        },
+        {
+          "entity_id": "E21",
+          "canonical_name": "Malaysia Airlines",
+          "entity_type": "organization",
+          "aliases": [],
+          "mentions": [
+            {
+              "snippet": "This report analyses evidence ... relating to the Buk missile launcher filmed and photographed in eastern Ukraine on July 17th that many have linked to the downing of Malaysia Airlines Flight 17.",
+              "context": "Airline operator of Flight MH17 referenced in connection to the downing event."
+            }
+          ]
+        },
+        {
+          "entity_id": "E22",
+          "canonical_name": "Malaysia Airlines Flight 17",
+          "entity_type": "event",
+          "aliases": [
+            "MH17",
+            "Flight MH17",
+            "downing of MH17"
+          ],
+          "mentions": [
+            {
+              "snippet": "This report analyses evidence ... relating to the Buk missile launcher filmed and photographed in eastern Ukraine on July 17th that many have linked to the downing of Malaysia Airlines Flight 17.",
+              "context": "Central event in the report: the July 17, 2014 shootdown of Malaysia Airlines Flight 17 over eastern Ukraine."
+            },
+            {
+              "snippet": "Three hours prior to the time MH17 was downed was 1:20pm local time, supporting the time indicated by the shadows in the Snizhne photograph.",
+              "context": "Used as temporal anchor for establishing the Buk's location relative to the MH17 downing."
+            }
+          ]
+        },
+        {
+          "entity_id": "E23",
+          "canonical_name": "Buk missile system",
+          "entity_type": "concept",
+          "aliases": [
+            "Buk missile launcher",
+            "Buk",
+            "Buk system",
+            "Buk missile launcher filmed on July 17"
+          ],
+          "mentions": [
+            {
+              "snippet": "This report analyses evidence from open sources ... relating to the Buk missile launcher filmed and photographed in eastern Ukraine on July 17th ...",
+              "context": "Primary weapons system investigated; central technical subject of the report's tracking and forensic comparison."
+            },
+            {
+              "snippet": "The Buk missile system was unloaded in Snizhne and was then transported on the same low-loader truck to separatist-controlled Luhansk, now missing at least one missile.",
+              "context": "Describes movements and changes to the Buk system across locations on July 17–18."
+            }
+          ]
+        },
+        {
+          "entity_id": "E24",
+          "canonical_name": "Buk M-1",
+          "entity_type": "concept",
+          "aliases": [
+            "Buk M1",
+            "Buk M-1 surface-to-air system"
+          ],
+          "mentions": [
+            {
+              "snippet": "The bulky missile system is also known as a Buk M-1.",
+              "context": "Alternative designation of the Buk system referenced by AP eyewitnesses in Snizhne."
+            }
+          ]
+        },
+        {
+          "entity_id": "E25",
+          "canonical_name": "SA-11 surface-to-air missile",
+          "entity_type": "concept",
+          "aliases": [
+            "SA-11"
+          ],
+          "mentions": [
+            {
+              "snippet": "AP reporters in the town of Snizhne saw a tracked launcher with four SA-11 surface-to-air missiles parked on a street.",
+              "context": "Weapon type (NATO designation) associated with the Buk system as observed in Snizhne."
+            }
+          ]
+        },
+        {
+          "entity_id": "E26",
+          "canonical_name": "Buk 3×2",
+          "entity_type": "concept",
+          "aliases": [
+            "Buk 3x2",
+            "Buk 3×2 (middle number obscured)",
+            "3×2"
+          ],
+          "mentions": [
+            {
+              "snippet": "The Bellingcat MH17 investigation team refers to this Buk as 'Buk 3×2' as the middle number appears to have been worn off.",
+              "context": "Specific vehicle identifier used by Bellingcat to track and compare the suspect Buk across videos and photographs."
+            },
+            {
+              "snippet": "It appears in 8 of the 16 videos showing the convoy travelling between June 23rd and June 25th ... the vehicle seen in the convoy ... is the same vehicle.",
+              "context": "Used to link the Buk seen in Russia to the Buk seen in eastern Ukraine on July 17."
+            }
+          ]
+        },
+        {
+          "entity_id": "E27",
+          "canonical_name": "Buk 312",
+          "entity_type": "concept",
+          "aliases": [
+            "Buk 312 filmed in Ukraine"
+          ],
+          "mentions": [
+            {
+              "snippet": "Many of the other photographs are clearly not matches for the Paris Match Buk, including Buk 312 filmed in Ukraine.",
+              "context": "Another identified Buk vehicle used as a negative comparison when matching side skirt fingerprints and markings."
+            }
+          ]
+        },
+        {
+          "entity_id": "E28",
+          "canonical_name": "53rd Anti-Aircraft Missile Brigade",
+          "entity_type": "unit",
+          "aliases": [
+            "53rd Anti-Aircraft Brigade",
+            "53rd Brigade",
+            "53rd Brigade (Kursk)"
+          ],
+          "mentions": [
+            {
+              "snippet": "It is the opinion of the Bellingcat MH17 investigation team that the same Buk was part of a convoy travelling from the 53rd Anti-Aircraft Missile Brigade in Kursk to near the Ukrainian border as part of a training exercise between June 22nd and July 25th ...",
+              "context": "Russian military unit identified as the origin of the convoy that included the suspect Buk."
+            },
+            {
+              "snippet": "The Bellingcat MH17 investigation team has collected 16 videos posted on social media sites ... that show the 53rd Brigade's convoy moving from Kursk on June 23rd to Millerovo on June 25th.",
+              "context": "Linking social media evidence to the brigade's convoy movements."
+            }
+          ]
+        },
+        {
+          "entity_id": "E29",
+          "canonical_name": "Kursk",
+          "entity_type": "location",
+          "aliases": [],
+          "mentions": [
+            {
+              "snippet": "The Bellingcat MH17 investigation team refers to this Buk as 'Buk 3×2' ... travelling through Russia towards to the Ukrainian border in late June 2014.",
+              "context": "City in Russia where the 53rd Anti-Aircraft Missile Brigade is based and origin point of the June convoy."
+            },
+            {
+              "snippet": "Some of these vehicles returned to the 53rd Anti-Aircraft Missile Brigade base in Kursk and joined the July 19th convoy from the base ...",
+              "context": "Referenced as the site of the brigade base and convoys' origin/return point."
+            }
+          ]
+        },
+        {
+          "entity_id": "E30",
+          "canonical_name": "H21 motorway",
+          "entity_type": "location",
+          "aliases": [
+            "H21"
+          ],
+          "mentions": [
+            {
+              "snippet": "The location of the photograph was precisely located, showing an eastward direction of travel along the H21 motorway.",
+              "context": "Major road used to map the Buk's route through Donetsk region, linking towns mentioned in the convoy route."
+            },
+            {
+              "snippet": "The Buk missile launcher took through Torez on the way to Snizhne along the H21 motorway.",
+              "context": "Used to substantiate the route of the Buk from Donetsk through Torez to Snizhne."
+            }
+          ]
+        },
+        {
+          "entity_id": "E31",
+          "canonical_name": "Donetsk (Ukraine)",
+          "entity_type": "location",
+          "aliases": [
+            "Donetsk"
+          ],
+          "mentions": [
+            {
+              "snippet": "On July 25th, the weekly magazine Paris Match published a photograph of a Buk missile launcher being transported on a low-loader truck through the separatist-controlled city of Donetsk.",
+              "context": "City in eastern Ukraine where a Paris Match photograph placed the Buk on July 17."
+            }
+          ]
+        },
+        {
+          "entity_id": "E32",
+          "canonical_name": "Shakhtostroiteley Boulevard",
+          "entity_type": "location",
+          "aliases": [
+            "Shakhtostroiteley Blvd"
+          ],
+          "mentions": [
+            {
+              "snippet": "A Twitter post from 12:32PM (local time) on July 17 reports the sighting of a Buk at the intersection of Shakhtostroiteley Boulevard and Ilych Avenue heading east in the direction of Makiivka.",
+              "context": "Street intersection in Donetsk used as a specific geolocation reported on Twitter for the Buk sighting."
+            }
+          ]
+        },
+        {
+          "entity_id": "E33",
+          "canonical_name": "Ilych Avenue",
+          "entity_type": "location",
+          "aliases": [
+            "Ilych Ave"
+          ],
+          "mentions": [
+            {
+              "snippet": "A Twitter post from 12:32PM (local time) on July 17 reports the sighting of a Buk at the intersection of Shakhtostroiteley Boulevard and Ilych Avenue heading east in the direction of Makiivka.",
+              "context": "Street intersection in Donetsk cited in a Twitter sighting of the Buk on July 17."
+            }
+          ]
+        },
+        {
+          "entity_id": "E34",
+          "canonical_name": "Makiivka",
+          "entity_type": "location",
+          "aliases": [
+            "Makiivka (Makiyivka)"
+          ],
+          "mentions": [
+            {
+              "snippet": "A Twitter post from 12:32PM ... heading east in the direction of Makiivka.",
+              "context": "Town east of Donetsk mentioned as on the Buk's eastward route; later referenced as a town where the low-loader was photographed in August."
+            },
+            {
+              "snippet": "On August 6th 2014, a photographed was shared online showing the low-loader truck carrying a military vehicle through the town of Makiivka, just east of Donetsk.",
+              "context": "Location where the same low-loader was observed again after July 17."
+            }
+          ]
+        },
+        {
+          "entity_id": "E35",
+          "canonical_name": "Zuhres",
+          "entity_type": "location",
+          "aliases": [
+            "Zuhres (Zugres)"
+          ],
+          "mentions": [
+            {
+              "snippet": "On July 17th a video was uploaded to YouTube showing the Buk photographed in Donetsk travelling through the town of Zuhres, approximately 36 kilometers east along H21 ...",
+              "context": "Town on the H21 route where video evidence placed the Buk continuing eastwards from Donetsk."
+            }
+          ]
+        },
+        {
+          "entity_id": "E36",
+          "canonical_name": "Shakhtarsk",
+          "entity_type": "location",
+          "aliases": [],
+          "mentions": [
+            {
+              "snippet": "A tweet posted at 12:41PM (Kyiv time) reports that three tanks and a Buk covered in netting passed by Shakhtarsk, a city that lies east of Zuhres and west of Torez ...",
+              "context": "Town cited in an eyewitness tweet between Zuhres and Torez on the H21 route of the convoy."
+            }
+          ]
+        },
+        {
+          "entity_id": "E37",
+          "canonical_name": "Torez",
+          "entity_type": "location",
+          "aliases": [],
+          "mentions": [
+            {
+              "snippet": "Three tweets that describe the missile launcher and an accompanying convoy travelling through Torez were posted at 12:07pm, 12:15pm, and 12:26pm local time.",
+              "context": "Town where multiple eyewitness social media posts reported the Buk convoy passing en route to Snizhne."
+            },
+            {
+              "snippet": "The investigation team suspects that the image was originally posted in the 'Overheard in Torez' VKontakte page ...",
+              "context": "Location linked to a VKontakte page suspected as an original source for a widely shared photograph."
+            }
+          ]
+        },
+        {
+          "entity_id": "E38",
+          "canonical_name": "Snizhne",
+          "entity_type": "location",
+          "aliases": [
+            "Snizhne (Snezhnoye)"
+          ],
+          "mentions": [
+            {
+              "snippet": "A photograph and video posted on Twitter and YouTube showed a Buk missile launcher in the town of Snizhne. Unlike previous images and video, the Buk was not shown on a low-loader truck, but moving under its own power.",
+              "context": "Town where the Buk was filmed moving under its own power and where the system was reportedly unloaded prior to the MH17 downing."
+            },
+            {
+              "snippet": "The photograph was also located to 13a Karapetyan Street, less than 1 kilometer northwest of the location on the video. Based on the shadows in the photograph, the photograph was taken at approximately 1:30PM.",
+              "context": "Provides a specific geolocation and timestamp estimation for the Snizhne image."
+            }
+          ]
+        },
+        {
+          "entity_id": "E39",
+          "canonical_name": "13a Karapetyan Street",
+          "entity_type": "location",
+          "aliases": [
+            "13a Karapetyan St"
+          ],
+          "mentions": [
+            {
+              "snippet": "The photograph was also located to 13a Karapetyan Street, less than 1 kilometer northwest of the location on the video.",
+              "context": "Specific street address in Snizhne where a Buk photograph was geolocated."
+            }
+          ]
+        },
+        {
+          "entity_id": "E40",
+          "canonical_name": "Luhansk",
+          "entity_type": "location",
+          "aliases": [
+            "Luhansk (separatist-held area)"
+          ],
+          "mentions": [
+            {
+              "snippet": "Investigations by Bellingcat have shown this statement from the Russian Ministry of Defence to be untrue, and it has been possible to find the exact location in the separatist-held area of Luhansk where this video was filmed.",
+              "context": "Region where a later video showed the Buk back on a low-loader but missing a missile; Bellingcat geolocated the filming site to separatist-held Luhansk."
+            }
+          ]
+        },
+        {
+          "entity_id": "E41",
+          "canonical_name": "Krasnoarmeysk",
+          "entity_type": "location",
+          "aliases": [
+            "Krasnoarmeysk (as referenced by Russian MoD)"
+          ],
+          "mentions": [
+            {
+              "snippet": "The Russian Ministry of Defence claimed ... 'This video was made in the town of Krasnoarmeysk, as evidenced by the billboard you see in the background ... Krasnoarmeysk has been controlled by the Ukrainian military since May 11.'",
+              "context": "Town the Russian MoD asserted as the filming location (a claim disputed by Bellingcat)."
+            }
+          ]
+        },
+        {
+          "entity_id": "E42",
+          "canonical_name": "34 Dnepropetrovsk Street",
+          "entity_type": "location",
+          "aliases": [
+            "34 Dnepropetrovsk St"
+          ],
+          "mentions": [
+            {
+              "snippet": "This is clearly a fabrication. This video was made in the town of Krasnoarmeysk, as evidenced by the billboard you see in the background, advertising a car dealership at 34 Dnepropetrovsk Street.",
+              "context": "Specific street address cited by the Russian MoD as evidence for their claimed filming location in Krasnoarmeysk."
+            }
+          ]
+        },
+        {
+          "entity_id": "E43",
+          "canonical_name": "Stary Oskol",
+          "entity_type": "location",
+          "aliases": [
+            "Stary Oskol (Staryy Oskol)"
+          ],
+          "mentions": [
+            {
+              "snippet": "The Bellingcat MH17 investigation team has collected 16 videos ... that show the 53rd Brigade's convoy moving from Kursk on June 23rd to Millerovo on June 25th. ... side skirt profile with the highest correlation is Buk 3×2 filmed transported near Stary Oskol in June.",
+              "context": "Location near which Buk 3×2 was filmed in June and used for side skirt damage/fingerprint comparisons."
+            },
+            {
+              "snippet": "Footage filmed in Fedoseyevka on July 19th appears to place the convoy at its earliest point in the route, travelling through the town of Stary Oskol ...",
+              "context": "Part of the July convoy route in Russia documented by videos."
+            }
+          ]
+        },
+        {
+          "entity_id": "E44",
+          "canonical_name": "Millerovo",
+          "entity_type": "location",
+          "aliases": [],
+          "mentions": [
+            {
+              "snippet": "The Bellingcat MH17 investigation team has collected 16 videos ... that show the 53rd Brigade's convoy moving from Kursk on June 23rd to Millerovo on June 25th.",
+              "context": "Town on the convoy route between Kursk and the Ukrainian border recorded in June convoy footage."
+            }
+          ]
+        },
+        {
+          "entity_id": "E45",
+          "canonical_name": "Alexeyevka",
+          "entity_type": "location",
+          "aliases": [
+            "Alexeevka",
+            "Alexeyevka (Alexeevka)"
+          ],
+          "mentions": [
+            {
+              "snippet": "This damage is in fact visible in two videos of Buk 3×2 filmed in Russia, one in Stary Oskol showing the damage from behind, and another from Alexeyevka showing the same damage from the opposite direction.",
+              "context": "Town where one of the confirming videos of Buk 3×2's side skirt damage was filmed; also part of July convoy route (Alexeevka/Alexeevka spelling variants present)."
+            },
+            {
+              "snippet": "Footage filmed in Fedoseyevka on July 19th appears to place the convoy at its earliest point in the route, travelling through the town of Stary Oskol, then to Alexeevka southeast of Stary Oskol ...",
+              "context": "Part of the July convoy route in Russia."
+            }
+          ]
+        },
+        {
+          "entity_id": "E46",
+          "canonical_name": "Olkhovatka",
+          "entity_type": "location",
+          "aliases": [],
+          "mentions": [
+            {
+              "snippet": "the last sighting further southeast in the town of Olkhovatka on July 20th.",
+              "context": "Final documented sighting location of the July convoy route in Russia."
+            }
+          ]
+        },
+        {
+          "entity_id": "E47",
+          "canonical_name": "Fedoseyevka",
+          "entity_type": "location",
+          "aliases": [
+            "Fedeseyevka",
+            "Fedoseyevka video"
+          ],
+          "mentions": [
+            {
+              "snippet": "It was possible to link vehicles in this convoy to the 53rd Anti-Aircraft Missile Brigade with the following image taken from the Fedeseyevka video on July 20th.",
+              "context": "Named filming location (video source) used to link specific vehicles to the 53rd Brigade during the July convoy."
+            }
+          ]
+        },
+        {
+          "entity_id": "E48",
+          "canonical_name": "Kamensk-Shakhtinsky",
+          "entity_type": "location",
+          "aliases": [
+            "Kamensk-Shakhtinsky (Kamensk-Shakhtinskiy)"
+          ],
+          "mentions": [
+            {
+              "snippet": "One video from July 20th was of particular interest ... This video was posted online from the town of Kamensk-Shakhtinsky, over 300km from the location of the other videos posted on July 20th This video shows a Buk missile loader being transported through the town.",
+              "context": "Town far from other July convoy recordings where a Buk loader was filmed on M21 motorway near the Ukrainian border."
+            }
+          ]
+        },
+        {
+          "entity_id": "E49",
+          "canonical_name": "Donetsk (Russia)",
+          "entity_type": "location",
+          "aliases": [
+            "Donetsk (not to be confused with Donetsk in Ukraine)"
+          ],
+          "mentions": [
+            {
+              "snippet": "The vehicle was heading south, possibly towards the Russian border town of Donetsk (not to be confused with Donetsk in Ukraine). Donetsk has previously been identified as a crossing point for units from Russia into separatist-controlled territories in Ukraine.",
+              "context": "Reference to a Russian town named Donetsk near the border identified as a crossing point for units into separatist-held Ukraine (distinct from Ukrainian Donetsk)."
+            }
+          ]
+        },
+        {
+          "entity_id": "E50",
+          "canonical_name": "Vasily Ilyin",
+          "entity_type": "person",
+          "aliases": [],
+          "mentions": [
+            {
+              "snippet": "For example, this post by a member of the Brigade, Vasily Ilyin, on June 25, 2014 shows the numbered Buk units as well as the number plate of one of the transporters being used ...",
+              "context": "Named 53rd Brigade member whose social media post was used to link convoy vehicles to the brigade."
+            }
+          ]
+        },
+        {
+          "entity_id": "E51",
+          "canonical_name": "Ivan Krasnoproshin",
+          "entity_type": "person",
+          "aliases": [],
+          "mentions": [
+            {
+              "snippet": "Images posted to the now-deleted profile of brigade member Ivan Krasnoproshin also show vehicles that are part of the convoy.",
+              "context": "Named (now-deleted) social media profile of a brigade member that contained images of convoy vehicles."
+            }
+          ]
+        },
+        {
+          "entity_id": "E52",
+          "canonical_name": "Sanya Reznikov",
+          "entity_type": "person",
+          "aliases": [
+            "Sanya Reznikov (profile)"
+          ],
+          "mentions": [
+            {
+              "snippet": "The same vehicle appears in the photos on the VKontakte page of Sanya Reznikov, who, according to his profile, served in the 53rd Brigade from 2013 to sometime in 2014.",
+              "context": "Named individual whose VK photos were used to corroborate that specific vehicles belonged to the 53rd Brigade."
+            }
+          ]
+        },
+        {
+          "entity_id": "E53",
+          "canonical_name": "BT80",
+          "entity_type": "concept",
+          "aliases": [
+            "BT-80",
+            "BT80 with the number 993"
+          ],
+          "mentions": [
+            {
+              "snippet": "This video shows a BT80 with the number 993.",
+              "context": "Specific vehicle type/identifier observed in a July convoy video used to link vehicles to brigade personnel posts."
+            }
+          ]
+        },
+        {
+          "entity_id": "E54",
+          "canonical_name": "Overheard in Torez (VK page)",
+          "entity_type": "organization",
+          "aliases": [
+            "Overheard in Torez",
+            "\"Overheard in Torez\" VKontakte page"
+          ],
+          "mentions": [
+            {
+              "snippet": "The investigation team suspects that the image was originally posted in the 'Overheard in Torez' VKontakte page, but has since been deleted.",
+              "context": "Specific VKontakte community/page suspected as the original source of the widely-shared Torez photograph."
+            }
+          ]
+        },
+        {
+          "entity_id": "E55",
+          "canonical_name": "side skirt fingerprint",
+          "entity_type": "concept",
+          "aliases": [
+            "side skirt profile",
+            "side skirt damage fingerprint"
+          ],
+          "mentions": [
+            {
+              "snippet": "The Bellingcat MH17 investigation team compared the side skirt fingerprints of a number of Buk missile systems in Ukraine and Russia in order to find possible matches ...",
+              "context": "Forensic concept used by Bellingcat: unique damage/profile pattern on the Buk's side skirt used to match individual vehicles across photos and videos."
+            }
+          ]
+        },
+        {
+          "entity_id": "E56",
+          "canonical_name": "M21 motorway",
+          "entity_type": "location",
+          "aliases": [
+            "M21"
+          ],
+          "mentions": [
+            {
+              "snippet": "The Bellingcat MH17 investigation team was able to establish the precise location the video was filmed, establishing that the vehicle was on the M21 motorway that runs eastwards from the Ukrainian border approximately 20km away.",
+              "context": "Road where a July 20 video was filmed showing a Buk loader heading south near the Ukrainian border (Russian-side M21)."
+            }
+          ]
+        }
+      ],
+      "metadata": {
+        "report_id": "report1_bellingcat_mh17_origin",
+        "total_entities_extracted": 56,
+        "extraction_timestamp": "2025-11-17T11:53:23.497298+00:00"
+      }
+    },
+    {
+      "entities": [
+        {
+          "entity_id": "E1",
+          "canonical_name": "Yana Yerlashova",
+          "entity_type": "person",
+          "aliases": [
+            "Yerlashova",
+            "Yana"
+          ],
+          "mentions": [
+            {
+              "snippet": "Bonanza Media ... was founded in early 2019 by former RT journalist Yana Yerlashova with the help of Dutch blogger Max van der Werff",
+              "context": "Identified as Bonanza Media's founder and former RT journalist who coordinated the project's activity and exchanged communications with GRU officers."
+            },
+            {
+              "snippet": "Using two different email accounts, Yerlashova sent Col. Chebanov draft articles intended for publication on the Bonanza Media website",
+              "context": "Sent draft materials to GRU Colonel Sergey Chebanov for review/coordination prior to publication."
+            },
+            {
+              "snippet": "We made multiple attempts to reach Yana Yerlashova by telephone; she either did not answer the calls or was unreachable.",
+              "context": "Investigation attempted to contact her about Bonanza Media's relationship with the GRU but received no substantive response."
+            },
+            {
+              "snippet": "Yerlashova and the van der Werff settled down in what appears to be a makeshift studio in Russia for a promised live stream.",
+              "context": "Participated in fundraising and public outreach for Bonanza Media and planned travel to eastern Ukraine."
+            }
+          ]
+        },
+        {
+          "entity_id": "E2",
+          "canonical_name": "Max van der Werff",
+          "entity_type": "person",
+          "aliases": [
+            "van der Werff",
+            "Max",
+            "Van der Werff"
+          ],
+          "mentions": [
+            {
+              "snippet": "Bonanza Media ... was founded in early 2019 by former RT journalist Yana Yerlashova with the help of Dutch blogger Max van der Werff",
+              "context": "Co-founder/helped found Bonanza Media; obtained Dutch press credentials in May 2019 and collaborated closely with Yerlashova."
+            },
+            {
+              "snippet": "On 6 January 2020 ... Max van der Werff posted the following message on Facebook announcing a need to travel to eastern Ukraine again",
+              "context": "Publicly solicited travel and fundraising for Bonanza Media's work related to MH17."
+            },
+            {
+              "snippet": "The passport copy he emailed was that of Bonanza Media's Max van der Werff.",
+              "context": "His passport photocopy was exchanged between Bonanza and GRU officers, indicating GRU access to his identity documents."
+            },
+            {
+              "snippet": "Contacted repeatedly via Twitter, Max van der Werff refused to answer our questions",
+              "context": "Investigators attempted to question him about potential cooperation with the GRU but received no answers."
+            }
+          ]
+        },
+        {
+          "entity_id": "E3",
+          "canonical_name": "Mahathir Mohamad",
+          "entity_type": "person",
+          "aliases": [
+            "Mahathir"
+          ],
+          "mentions": [
+            {
+              "snippet": "the team crisscrossed between Malaysia (including an interview with then Malaysian Prime Minister Mahathir Mohamad)",
+              "context": "Bonanza Media conducted an interview with Malaysia's then-Prime Minister during its activities."
+            }
+          ]
+        },
+        {
+          "entity_id": "E4",
+          "canonical_name": "Oleg Pulatov",
+          "entity_type": "person",
+          "aliases": [
+            "Pulatov"
+          ],
+          "mentions": [
+            {
+              "snippet": "The defense team of Oleg Pulatov – the only legally represented suspect in the ongoing criminal trial – has already introduced in court evidence provided by Bonanza Media",
+              "context": "Named as the defendant whose defense team used Bonanza Media material in the MH17 criminal trial."
+            }
+          ]
+        },
+        {
+          "entity_id": "E5",
+          "canonical_name": "Sergey Chebanov",
+          "entity_type": "person",
+          "aliases": [
+            "Col. Sergey Chebanov",
+            "Col. Chebanov",
+            "Chebanov"
+          ],
+          "mentions": [
+            {
+              "snippet": "No later than the summer of 2019 ... Col. Sergey Chebanov – a graduate of Russia's Military Intelligence Academy ... was receiving regular updates about Bonanza's plans",
+              "context": "Identified as a senior GRU officer who coordinated regularly with Yerlashova and received Bonanza Media materials."
+            },
+            {
+              "snippet": "During most of the phone calls with Yerlashova, cell-tower data shows, he was based at the GRU headquarters at Khoroshevskoe Shosse 76B in Moscow.",
+              "context": "Phone metadata places Chebanov at GRU headquarters during communications with Bonanza personnel."
+            },
+            {
+              "snippet": "Using two different email accounts, Yerlashova sent Col. Chebanov draft articles intended for publication on the Bonanza Media website",
+              "context": "Received and reviewed Bonanza draft content and promotional materials prior to publication."
+            },
+            {
+              "snippet": "An email from 9 October 2019, sent to Col. Chebanov from an email account belonging to another GRU officer, contained two attachments, one named 'Letter to Higgins' ...",
+              "context": "Chebanov's mailbox contained correspondence referencing outreach to Bellingcat’s Higgins and invitations related to Bonanza events."
+            }
+          ]
+        },
+        {
+          "entity_id": "E6",
+          "canonical_name": "Vitaliy Biryukov",
+          "entity_type": "person",
+          "aliases": [
+            "Biryukov",
+            "Vitaliy"
+          ],
+          "mentions": [
+            {
+              "snippet": "She also emailed him a photo of the passport of Bonanza Media's camera man, RT staffer Vitaliy Biryukov, who formerly worked for Zvezda (a TV network run by the Russian Ministry of Defence).",
+              "context": "Identified as Bonanza Media's cameraman and an RT staffer whose passport copy was circulated to GRU officers."
+            }
+          ]
+        },
+        {
+          "entity_id": "E7",
+          "canonical_name": "Andrey Ilchenko",
+          "entity_type": "person",
+          "aliases": [
+            "Gen. Ilchenko",
+            "Maj. General Andrey Ilchenko",
+            "Ilchenko"
+          ],
+          "mentions": [
+            {
+              "snippet": "Shortly after receiving the two passports, Col. Chebanov called his colleague – Maj. General Andrey Ilchenko, a trusted associate of GRU's current chief Igor Kostyukov.",
+              "context": "Named as a senior GRU general who coordinated logistics and liaised with LNR contacts to arrange Bonanza Media access to Donbas."
+            },
+            {
+              "snippet": "At 12:22, Andrey Ilchenko sent a series of text messages to Anna Soroka, a self-styled deputy minister of foreign affairs of the unrecognized Lugansk People's Republic",
+              "context": "Communicated with local separatist official Anna Soroka about coordinating Bonanza Media entry and filming in LNR territory."
+            },
+            {
+              "snippet": "Ilchenko returned from Rostov-on-Don to Moscow on 19 January, and, based on several calls between him and Yerlashova the next day, the Bonanza Media team made it back by car on 20 January 2020.",
+              "context": "Physically facilitated or accompanied Bonanza Media movements near the Russia–Ukraine border and in Rostov."
+            }
+          ]
+        },
+        {
+          "entity_id": "E8",
+          "canonical_name": "Igor Kostyukov",
+          "entity_type": "person",
+          "aliases": [
+            "Kostyukov",
+            "GRU's current chief Igor Kostyukov"
+          ],
+          "mentions": [
+            {
+              "snippet": "Maj. General Andrey Ilchenko, a trusted associate of GRU's current chief Igor Kostyukov.",
+              "context": "Referenced as the GRU chief to whom Ilchenko is a trusted associate, providing hierarchy context within GRU."
+            }
+          ]
+        },
+        {
+          "entity_id": "E9",
+          "canonical_name": "Anna Soroka",
+          "entity_type": "person",
+          "aliases": [
+            "Soroka",
+            "Anna"
+          ],
+          "mentions": [
+            {
+              "snippet": "At 12:22, Andrey Ilchenko sent a series of text messages to Anna Soroka, a self-styled deputy minister of foreign affairs of the unrecognized Lugansk People's Republic in Russian-occupied eastern Ukraine.",
+              "context": "Described as a high-ranking LNR official used by GRU officers to arrange Bonanza Media access to separatist-controlled Donbas."
+            },
+            {
+              "snippet": "\"I would need to coordinate them. Who are they – from which channel are they – where are they going to show the recorded footage? Who controls them? These are the minimum questions that the FSB guys will ask.\"",
+              "context": "Her reply shows she sought clearance from FSB and Presidential Administration for allowing journalists into LNR."
+            }
+          ]
+        },
+        {
+          "entity_id": "E10",
+          "canonical_name": "Eric van de Beek",
+          "entity_type": "person",
+          "aliases": [
+            "Van de Beek",
+            "Eric"
+          ],
+          "mentions": [
+            {
+              "snippet": "On 3 May 2020 Yana Yerlashova emailed Col. Chebanov a draft article written by Bonanza Media's hired Dutch contributor Eric van de Beek.",
+              "context": "Worked as a Dutch contributor to Bonanza; his draft article was forwarded to GRU and published with edits that increased attacks on Bellingcat."
+            },
+            {
+              "snippet": "Formerly a journalist working for the Dutch Elsevier magazine, Eric van de Beek has a track record of voicing support for conspiracy theories",
+              "context": "Background context about his media history and conspiratorial views."
+            }
+          ]
+        },
+        {
+          "entity_id": "E11",
+          "canonical_name": "Elena Plotnikova",
+          "entity_type": "person",
+          "aliases": [
+            "Plotnikova",
+            "Elena"
+          ],
+          "mentions": [
+            {
+              "snippet": "The teaser, prepared by the event's UK organizer Theo Russell, was initially sent for Yerlashova's approval by a Bonanza media collaborator named Elena Plotnikova.",
+              "context": "Identified as a Netherlands-based Ukrainian pro-Kremlin activist and Bonanza collaborator involved in promotional materials."
+            },
+            {
+              "snippet": "Plotnikova is a vocal Netherlands-based Ukrainian pro-Kremlin activist and member of an opaquely funded organization called 'Global Rights for Peaceful People'.",
+              "context": "Member of Global Rights for Peaceful People and active in pro-Kremlin messaging for Bonanza."
+            }
+          ]
+        },
+        {
+          "entity_id": "E12",
+          "canonical_name": "Theo Russell",
+          "entity_type": "person",
+          "aliases": [
+            "Russell",
+            "Theo"
+          ],
+          "mentions": [
+            {
+              "snippet": "the public screening of Bonanza Media's documentary scheduled for 3 March 2020 in London. The teaser, prepared by the event's UK organizer Theo Russell, was initially sent ...",
+              "context": "Named as the UK organizer of a Bonanza Media public screening promotional teaser."
+            }
+          ]
+        },
+        {
+          "entity_id": "E13",
+          "canonical_name": "Tatyana Egorova",
+          "entity_type": "person",
+          "aliases": [
+            "Egorova",
+            "Tatyana"
+          ],
+          "mentions": [
+            {
+              "snippet": "In 2016, a leak appeared online from Tatyana Egorova, a staff member of the so-called Donetsk People's Republic's (DNR's) Ministry of Information.",
+              "context": "Her Mail.ru inbox leaks (Egorova Leaks) contained correspondence with Max van der Werff and others about MH17 messaging."
+            }
+          ]
+        },
+        {
+          "entity_id": "E14",
+          "canonical_name": "Eliot Higgins",
+          "entity_type": "person",
+          "aliases": [
+            "Higgins"
+          ],
+          "mentions": [
+            {
+              "snippet": "An email ... contained two attachments, one named 'Letter to Higgins' and the other 'Invitation to Higgins to a conference on 29 October 2019'.",
+              "context": "Reference to outreach/invitation to Higgins, the founder of Bellingcat, indicating GRU interest in engaging or targeting him."
+            }
+          ]
+        },
+        {
+          "entity_id": "E15",
+          "canonical_name": "Julian Assange",
+          "entity_type": "person",
+          "aliases": [
+            "Assange"
+          ],
+          "mentions": [
+            {
+              "snippet": "See the case of Julian Assange, WikiLeaks.",
+              "context": "Van der Werff referenced WikiLeaks/Assange as a justification for source protection when asked about document origins."
+            }
+          ]
+        },
+        {
+          "entity_id": "E16",
+          "canonical_name": "Bonanza Media",
+          "entity_type": "organization",
+          "aliases": [
+            "Bonanza",
+            "Bonanza Media project",
+            "Bonanza Media Twitter account"
+          ],
+          "mentions": [
+            {
+              "snippet": "An investigation by Bellingcat ... has discovered evidence that Bonanza Media, a self-styled independent investigative platform, is in fact a special disinformation project",
+              "context": "Central subject of the report; presented as a media project used for GRU-linked disinformation targeting the MH17 investigation."
+            },
+            {
+              "snippet": "the Bonanza Media twitter account even posted a jab at would-be Russian donors",
+              "context": "Operated social media and fundraising campaigns while presenting itself as independent."
+            },
+            {
+              "snippet": "Bonanza Media published a streak of what it said were 'leaks' from internal documents of the JIT.",
+              "context": "Published stolen JIT documents and coordinated leaks that were used in information operations."
+            },
+            {
+              "snippet": "Recently, Bonanza Media has pivoted to include disinformation around Covid-19 through a video series 'REALITYcheck'",
+              "context": "Expanded from MH17-related narratives into Covid-19 disinformation and testimonial video series."
+            }
+          ]
+        },
+        {
+          "entity_id": "E17",
+          "canonical_name": "Main Intelligence Directorate (GRU)",
+          "entity_type": "organization",
+          "aliases": [
+            "GRU",
+            "Russia's military intelligence",
+            "Russian military intelligence"
+          ],
+          "mentions": [
+            {
+              "snippet": "the Russia's military intelligence agency, best known as the GRU, was behind the initial launch and funding of the Bonanza Media project",
+              "context": "Accused of coordinating with and directing Bonanza Media as part of disinformation operations related to MH17."
+            },
+            {
+              "snippet": "The GRU received advance copies of Bonanza's publications, provided its employees illegal cross-border access into eastern Ukraine, furnished the project with confidential internal documents ... that were hacked by GRU's cyber warfare division",
+              "context": "Described as source of hacked JIT documents, logistic support, and active coordination with Bonanza."
+            }
+          ]
+        },
+        {
+          "entity_id": "E18",
+          "canonical_name": "GRU cyber warfare division",
+          "entity_type": "unit",
+          "aliases": [
+            "cyber warfare division",
+            "GRU's cyber warfare division"
+          ],
+          "mentions": [
+            {
+              "snippet": "confidential internal documents of the official Dutch-led MH17 Joint Investigation Team ... that were hacked by GRU's cyber warfare division",
+              "context": "Identified as the GRU unit that hacked JIT documents which Bonanza later published as 'leaks'."
+            }
+          ]
+        },
+        {
+          "entity_id": "E19",
+          "canonical_name": "Joint Investigation Team (JIT)",
+          "entity_type": "organization",
+          "aliases": [
+            "JIT",
+            "MH17 Joint Investigation Team",
+            "the official Dutch-led MH17 Joint Investigation Team"
+          ],
+          "mentions": [
+            {
+              "snippet": "the official Dutch-led MH17 Joint Investigation Team conducting the official criminal investigation into the deaths of 298 passengers and crew",
+              "context": "International investigative body responsible for the MH17 criminal investigation whose internal documents were leaked."
+            }
+          ]
+        },
+        {
+          "entity_id": "E20",
+          "canonical_name": "Bellingcat",
+          "entity_type": "organization",
+          "aliases": [
+            "Bellingcat Investigation Team",
+            "Bellingcat"
+          ],
+          "mentions": [
+            {
+              "snippet": "An investigation by Bellingcat and its investigative partners has discovered evidence that Bonanza Media ...",
+              "context": "Authoring investigative organization that conducted this analysis into Bonanza Media and GRU operations."
+            },
+            {
+              "snippet": "Formerly a journalist ... Eric van de Beek ... declaring on 14 April 2018 that he refuses to read any Bellingcat article.",
+              "context": "Target of criticism by Bonanza contributors; referenced as the independent investigative outlet that authored the report."
+            }
+          ]
+        },
+        {
+          "entity_id": "E21",
+          "canonical_name": "RT (Russia Today)",
+          "entity_type": "organization",
+          "aliases": [
+            "RT",
+            "Russia's state-run outlet RT"
+          ],
+          "mentions": [
+            {
+              "snippet": "Working for Russia's state-run outlet RT, Yana Yerlashova had authored documentaries critical of the Dutch-led investigation",
+              "context": "Yerlashova’s previous employer; state media outlet implicated in promoting narratives skeptical of JIT findings."
+            },
+            {
+              "snippet": "Bonanza Media's camera man, RT staffer Vitaliy Biryukov",
+              "context": "RT connection via Biryukov indicates personnel overlap between Bonanza and Russian state media."
+            }
+          ]
+        },
+        {
+          "entity_id": "E22",
+          "canonical_name": "Donetsk People's Republic",
+          "entity_type": "organization",
+          "aliases": [
+            "DNR",
+            "Donetsk People's Republic (DNR)"
+          ],
+          "mentions": [
+            {
+              "snippet": "a leak appeared online from Tatyana Egorova, a staff member of the so-called Donetsk People's Republic's (DNR's) Ministry of Information.",
+              "context": "Self-proclaimed separatist authority in eastern Ukraine whose official's email leaks contained correspondence with van der Werff."
+            }
+          ]
+        },
+        {
+          "entity_id": "E23",
+          "canonical_name": "Luhansk People's Republic",
+          "entity_type": "organization",
+          "aliases": [
+            "LNR",
+            "Lugansk People's Republic",
+            "Luhansk People's Republic (LNR)"
+          ],
+          "mentions": [
+            {
+              "snippet": "Anna Soroka, a self-styled deputy minister of foreign affairs of the unrecognized Lugansk People's Republic in Russian-occupied eastern Ukraine.",
+              "context": "Self-proclaimed LNR official who coordinated with GRU officers about Bonanza Media entering and filming in LNR territory."
+            }
+          ]
+        },
+        {
+          "entity_id": "E24",
+          "canonical_name": "Russia's Ministry of Defence",
+          "entity_type": "organization",
+          "aliases": [
+            "Russian Ministry of Defence",
+            "Ministry of Defence"
+          ],
+          "mentions": [
+            {
+              "snippet": "Zvezda (a TV network run by the Russian Ministry of Defence).",
+              "context": "Identifies Zvezda as operated by the Russian Ministry of Defence, providing a link between state military media and Bonanza personnel."
+            }
+          ]
+        },
+        {
+          "entity_id": "E25",
+          "canonical_name": "Zvezda (TV network)",
+          "entity_type": "organization",
+          "aliases": [
+            "Zvezda"
+          ],
+          "mentions": [
+            {
+              "snippet": "RT staffer Vitaliy Biryukov, who formerly worked for Zvezda (a TV network run by the Russian Ministry of Defence).",
+              "context": "Named as Biryukov's former employer, linking him to military-run media."
+            }
+          ]
+        },
+        {
+          "entity_id": "E26",
+          "canonical_name": "Global Rights for Peaceful People",
+          "entity_type": "organization",
+          "aliases": [
+            "Global Rights for Peaceful People"
+          ],
+          "mentions": [
+            {
+              "snippet": "Plotnikova is ... member of an opaquely funded organization called 'Global Rights for Peaceful People' whose main mission ... is defending the Russia-supported separatists in eastern Ukraine.",
+              "context": "Organization linked to Elena Plotnikova and pro-Kremlin advocacy related to Donbas narratives."
+            }
+          ]
+        },
+        {
+          "entity_id": "E27",
+          "canonical_name": "Federal Security Service",
+          "entity_type": "organization",
+          "aliases": [
+            "FSB",
+            "the FSB guys"
+          ],
+          "mentions": [
+            {
+              "snippet": "Who controls them? ... These are the minimum questions that the FSB guys will ask.",
+              "context": "Referenced as needing to be consulted/cleared for journalists entering LNR territory; shows FSB's role in border/control issues."
+            },
+            {
+              "snippet": "After an initial scuffle between the FSB and GRU for political and economic control over the two Russian-backed separatist territories ... by the end of 2014 the FSB had gotten the upper hand.",
+              "context": "Context about inter-agency competition between FSB and GRU over influence in separatist regions."
+            }
+          ]
+        },
+        {
+          "entity_id": "E28",
+          "canonical_name": "Presidential Administration of Russia",
+          "entity_type": "organization",
+          "aliases": [
+            "AP",
+            "Russia's Presidential Administration",
+            "the AP (Russia's Presidential Administration)"
+          ],
+          "mentions": [
+            {
+              "snippet": "We must position it all to the FSB and the AP (Russia's Presidential Administration) in such a way that they should see what's in it for them",
+              "context": "Anna Soroka recommended seeking clearance from both the FSB and the Presidential Administration, indicating Kremlin-level oversight."
+            }
+          ]
+        },
+        {
+          "entity_id": "E29",
+          "canonical_name": "NRC Handelsblad",
+          "entity_type": "organization",
+          "aliases": [
+            "NRC",
+            "Dutch NRC"
+          ],
+          "mentions": [
+            {
+              "snippet": "Asked about the origin of the documents by a Dutch NRC journalist, Van der Werff answered: 'Bonanza Media only makes statements ...'",
+              "context": "NRC is the Dutch newspaper whose journalist questioned Van der Werff about the source of the leaked JIT documents."
+            }
+          ]
+        },
+        {
+          "entity_id": "E30",
+          "canonical_name": "Elsevier",
+          "entity_type": "organization",
+          "aliases": [
+            "Elsevier magazine",
+            "the Dutch Elsevier magazine"
+          ],
+          "mentions": [
+            {
+              "snippet": "Formerly a journalist working for the Dutch Elsevier magazine, Eric van de Beek has a track record ...",
+              "context": "Provides background on Eric van de Beek's previous employer and media credentials."
+            }
+          ]
+        },
+        {
+          "entity_id": "E31",
+          "canonical_name": "WikiLeaks",
+          "entity_type": "organization",
+          "aliases": [
+            "WikiLeaks"
+          ],
+          "mentions": [
+            {
+              "snippet": "See the case of Julian Assange, WikiLeaks.",
+              "context": "Referenced by Van der Werff as precedent to justify non-disclosure of sources for leaked documents."
+            }
+          ]
+        },
+        {
+          "entity_id": "E32",
+          "canonical_name": "Patreon",
+          "entity_type": "organization",
+          "aliases": [
+            "Patreon"
+          ],
+          "mentions": [
+            {
+              "snippet": "they asked for more donations – via Patreon or directly to Van der Werff's Dutch bank account number, to be able to pay for this trip.",
+              "context": "Platform used by Bonanza to solicit donations for travel and operations."
+            }
+          ]
+        },
+        {
+          "entity_id": "E33",
+          "canonical_name": "Twitter",
+          "entity_type": "organization",
+          "aliases": [
+            "Twitter",
+            "the Bonanza Media twitter account"
+          ],
+          "mentions": [
+            {
+              "snippet": "The Bonanza Media Twitter account even posted a jab at would-be Russian donors",
+              "context": "Social media platform used for messaging and fundraising by Bonanza Media."
+            },
+            {
+              "snippet": "Contacted repeatedly via Twitter, Max van der Werff refused to answer our questions",
+              "context": "Investigators attempted to contact Bonanza personnel via Twitter."
+            }
+          ]
+        },
+        {
+          "entity_id": "E34",
+          "canonical_name": "REALITYcheck",
+          "entity_type": "concept",
+          "aliases": [
+            "REALITYcheck (video series)"
+          ],
+          "mentions": [
+            {
+              "snippet": "Recently, Bonanza Media has pivoted to include disinformation around Covid-19 through a video series 'REALITYcheck' ...",
+              "context": "Name of Bonanza Media's video series used to spread Covid-19 related disinformation and testimonials."
+            }
+          ]
+        },
+        {
+          "entity_id": "E35",
+          "canonical_name": "Covid-19 disinformation",
+          "entity_type": "concept",
+          "aliases": [
+            "Covid-19 disinformation",
+            "coronavirus disinformation"
+          ],
+          "mentions": [
+            {
+              "snippet": "Bonanza Media has pivoted away from purely MH17-linked topics towards Covid-19 disinformation.",
+              "context": "Describes the project's expansion into pandemic-related misinformation."
+            }
+          ]
+        },
+        {
+          "entity_id": "E36",
+          "canonical_name": "Donbas",
+          "entity_type": "location",
+          "aliases": [
+            "Donbas Region",
+            "the Donbas"
+          ],
+          "mentions": [
+            {
+              "snippet": "sympathetic to the Russia-supported separatists in the Donbas Region of eastern Ukraine",
+              "context": "Region where separatist authorities are located and where Bonanza carried out fieldwork and filming."
+            }
+          ]
+        },
+        {
+          "entity_id": "E37",
+          "canonical_name": "Malaysia",
+          "entity_type": "location",
+          "aliases": [
+            "Malaysia"
+          ],
+          "mentions": [
+            {
+              "snippet": "analysis ... shows they were likely to be obtained from a hack of one of the JIT member countries' offices, Malaysia.",
+              "context": "JIT member country whose office may have been hacked to obtain documents leaked by Bonanza."
+            },
+            {
+              "snippet": "the team crisscrossed between Malaysia (including an interview with then Malaysian Prime Minister Mahathir Mohamad)",
+              "context": "Country where Bonanza conducted interviews and commissioned a cybersecurity study."
+            }
+          ]
+        },
+        {
+          "entity_id": "E38",
+          "canonical_name": "Netherlands",
+          "entity_type": "location",
+          "aliases": [
+            "the Netherlands",
+            "Netherlands"
+          ],
+          "mentions": [
+            {
+              "snippet": "produced ... hosted and attended several press conferences and events in the Netherlands, the U.K. and Malaysia;",
+              "context": "Location where Bonanza held events and screenings and where much of the JIT leadership is based."
+            },
+            {
+              "snippet": "Asked about the origin of the documents by a Dutch NRC journalist",
+              "context": "Home country of investigators and media who questioned Bonanza about the leaks."
+            }
+          ]
+        },
+        {
+          "entity_id": "E39",
+          "canonical_name": "United Kingdom",
+          "entity_type": "location",
+          "aliases": [
+            "U.K.",
+            "United Kingdom"
+          ],
+          "mentions": [
+            {
+              "snippet": "produced ... hosted and attended several press conferences and events in the Netherlands, the U.K. and Malaysia;",
+              "context": "Country where Bonanza held events and screenings (example: London screening organized by Theo Russell)."
+            }
+          ]
+        },
+        {
+          "entity_id": "E40",
+          "canonical_name": "Russia",
+          "entity_type": "location",
+          "aliases": [
+            "Russian",
+            "Russia"
+          ],
+          "mentions": [
+            {
+              "snippet": "evidence that Bonanza Media ... is in fact a special disinformation project working in coordination with Russia's military intelligence.",
+              "context": "Country whose military intelligence (GRU) is implicated in coordinating the disinformation operation."
+            },
+            {
+              "snippet": "they crisscrossed between Malaysia, Russia, Russian-occupied eastern Ukraine, and the Netherlands;",
+              "context": "Country where Bonanza operated, sourced personnel, and where GRU headquarters is located."
+            }
+          ]
+        },
+        {
+          "entity_id": "E41",
+          "canonical_name": "Ukraine",
+          "entity_type": "location",
+          "aliases": [
+            "Ukraine"
+          ],
+          "mentions": [
+            {
+              "snippet": "provided its employees illegal cross-border access into eastern Ukraine",
+              "context": "Country where Bonanza sought access to film witnesses in separatist-controlled areas related to MH17 investigation."
+            }
+          ]
+        },
+        {
+          "entity_id": "E42",
+          "canonical_name": "Hague District Court",
+          "entity_type": "location",
+          "aliases": [
+            "Hague District Court",
+            "the Hague District Court",
+            "Hague"
+          ],
+          "mentions": [
+            {
+              "snippet": "timed to sow confusion just before the start of the criminal trial at the Hague District Court in early 2020.",
+              "context": "Court venue for the MH17 criminal trial where Bonanza-supplied material was relevant to defense evidence."
+            }
+          ]
+        },
+        {
+          "entity_id": "E43",
+          "canonical_name": "The Hague",
+          "entity_type": "location",
+          "aliases": [
+            "Hague",
+            "The Hague"
+          ],
+          "mentions": [
+            {
+              "snippet": "contained images and texts from an invitation to a public screening of Bonanza's documentary in the Hague, scheduled for 23 October 2019.",
+              "context": "City where Bonanza organized public screenings and outreach tied to the MH17 narrative."
+            }
+          ]
+        },
+        {
+          "entity_id": "E44",
+          "canonical_name": "Rostov-on-Don",
+          "entity_type": "location",
+          "aliases": [
+            "Rostov-on-Don",
+            "Rostov"
+          ],
+          "mentions": [
+            {
+              "snippet": "The next day – on 14 January 2020 – the Bonanza Team had arrived in Rostov-on-Don.",
+              "context": "Staging city near the Russia–Ukraine border where Bonanza and GRU contacts coordinated movements."
+            }
+          ]
+        },
+        {
+          "entity_id": "E45",
+          "canonical_name": "Platov Airport",
+          "entity_type": "location",
+          "aliases": [
+            "Rostov's Platov airport",
+            "Platov airport"
+          ],
+          "mentions": [
+            {
+              "snippet": "Ilchenko departed by plane to Rostov-on-Don, ... and switched on his phone at Rostov's Platov airport just after 4 pm.",
+              "context": "Airport where Ilchenko's phone activity was recorded during movement to Rostov-on-Don."
+            }
+          ]
+        },
+        {
+          "entity_id": "E46",
+          "canonical_name": "Sheremetyevo Airport",
+          "entity_type": "location",
+          "aliases": [
+            "Sheremetyevo"
+          ],
+          "mentions": [
+            {
+              "snippet": "On the way to Sheremetyevo airport, he stopped by a phone store – presumably to buy a new SIM card",
+              "context": "Major Moscow airport where Ilchenko bought a SIM card used in covert communications."
+            }
+          ]
+        },
+        {
+          "entity_id": "E47",
+          "canonical_name": "Donetsk (Russia)",
+          "entity_type": "location",
+          "aliases": [
+            "Donetsk (Russia)",
+            "Donetsk border town"
+          ],
+          "mentions": [
+            {
+              "snippet": "They were geolocated near the border town of Donetsk (Russia), where a major border crossing point between Russia and the Donbas lies, at about 11 am on 16 January.",
+              "context": "Specific border-area location where Bonanza and GRU-related movements were recorded en route to separatist territories."
+            }
+          ]
+        },
+        {
+          "entity_id": "E48",
+          "canonical_name": "Shchelkovo",
+          "entity_type": "location",
+          "aliases": [
+            "Shchelkovo",
+            "the village of Shchelkovo"
+          ],
+          "mentions": [
+            {
+              "snippet": "Cell phone metadata shows Ilchenko was near a SIGINT military base in the village of Shchelkovo near Moscow, where he would stay for the next two days.",
+              "context": "Location of a SIGINT military base where Ilchenko was geolocated, indicating military signals intelligence involvement."
+            }
+          ]
+        },
+        {
+          "entity_id": "E49",
+          "canonical_name": "Khoroshevskoe Shosse 76B",
+          "entity_type": "location",
+          "aliases": [
+            "Khoroshevskoe Shosse 76B",
+            "GRU headquarters at Khoroshevskoe Shosse 76B"
+          ],
+          "mentions": [
+            {
+              "snippet": "During most of the phone calls with Yerlashova, cell-tower data shows, he was based at the GRU headquarters at Khoroshevskoe Shosse 76B in Moscow.",
+              "context": "Physical address of GRU headquarters used to geolocate Chebanov and other GRU communications."
+            }
+          ]
+        },
+        {
+          "entity_id": "E50",
+          "canonical_name": "53rd Anti-Aircraft Missile Brigade",
+          "entity_type": "unit",
+          "aliases": [
+            "53rd Anti-Aircraft Missile Brigade",
+            "53rd Anti-Aircraft Brigade"
+          ],
+          "mentions": [
+            {
+              "snippet": "the Buk missile launcher that shot down MH17 belonged to, and was possibly also operated by, an active Russian military unit – the 53rd Anti-Aircraft Missile Brigade.",
+              "context": "Identified as the military unit owning/operating the Buk launcher implicated in the MH17 shootdown."
+            }
+          ]
+        },
+        {
+          "entity_id": "E51",
+          "canonical_name": "Buk missile launcher",
+          "entity_type": "concept",
+          "aliases": [
+            "Buk missile launcher",
+            "Buk missile system"
+          ],
+          "mentions": [
+            {
+              "snippet": "This can be explained by the fact that the Buk missile launcher that shot down MH17 belonged to ... the 53rd Anti-Aircraft Missile Brigade.",
+              "context": "Weapon system implicated in downing MH17 and a key investigative topic tied to GRU interest in deflection."
+            }
+          ]
+        },
+        {
+          "entity_id": "E52",
+          "canonical_name": "Russia's Military Intelligence Academy",
+          "entity_type": "organization",
+          "aliases": [
+            "Military Intelligence Academy",
+            "Russia's Military Intelligence Academy"
+          ],
+          "mentions": [
+            {
+              "snippet": "Col. Sergey Chebanov – a graduate of Russia's Military Intelligence Academy with a roster of international diplomatic postings under his belt –",
+              "context": "Institution where Chebanov was educated, establishing his official GRU credentials."
+            }
+          ]
+        },
+        {
+          "entity_id": "E53",
+          "canonical_name": "Donetsk People's Republic Ministry of Information",
+          "entity_type": "organization",
+          "aliases": [
+            "DNR's Ministry of Information",
+            "Donetsk People's Republic's Ministry of Information"
+          ],
+          "mentions": [
+            {
+              "snippet": "a leak appeared online from Tatyana Egorova, a staff member of the so-called Donetsk People's Republic's (DNR's) Ministry of Information.",
+              "context": "Office from which the 'Egorova Leaks' originated, containing correspondence with Van der Werff."
+            }
+          ]
+        },
+        {
+          "entity_id": "E54",
+          "canonical_name": "Egorova Leaks",
+          "entity_type": "event",
+          "aliases": [
+            "the Egorova Leaks",
+            "Egorova leak"
+          ],
+          "mentions": [
+            {
+              "snippet": "The Egorova Leaks include the entire inbox of the DNR official's Mail.ru account, through which she conducted official 'government' business.",
+              "context": "Leak of Tatyana Egorova's emails that documented correspondence with Max van der Werff and pro-separatist messaging efforts."
+            }
+          ]
+        },
+        {
+          "entity_id": "E55",
+          "canonical_name": "#BonanzaLeaks",
+          "entity_type": "event",
+          "aliases": [
+            "BonanzaLeaks",
+            "#BonanzaLeaks"
+          ],
+          "mentions": [
+            {
+              "snippet": "Just ten days after the Bonanza Media team returned from eastern Ukraine, the calls from their GRU contacts again started pouring in ... the Bonanza Media twitter account, using the hashtag #BonanzaLeaks, published its first 'leaked' internal JIT document",
+              "context": "Hashtag/campaign used by Bonanza to publish purported 'leaks' from JIT internal documents derived from a hack."
+            }
+          ]
+        },
+        {
+          "entity_id": "E56",
+          "canonical_name": "MH17 downing",
+          "entity_type": "event",
+          "aliases": [
+            "MH17",
+            "downing of flight MH17",
+            "the downing of MH17"
+          ],
+          "mentions": [
+            {
+              "snippet": "the downing of flight MH17 in 2014.",
+              "context": "Central international incident under investigation; the focus of Bonanza's narratives and the GRU disinformation campaign."
+            },
+            {
+              "snippet": "Bonanza Media, a special-purpose media project dedicated to publicizing alternative narratives about the causes of the crash of MH17",
+              "context": "Bonanza's core subject matter; used to challenge JIT findings."
+            }
+          ]
+        },
+        {
+          "entity_id": "E57",
+          "canonical_name": "Russian state media",
+          "entity_type": "organization",
+          "aliases": [
+            "Russian state media",
+            "Russian state outlets"
+          ],
+          "mentions": [
+            {
+              "snippet": "However, Russian state media and Kremlin officials made full use of out-of-context quotes from the leaks",
+              "context": "Describes how state-controlled media amplified Bonanza's selective presentation of leaked documents."
+            }
+          ]
+        },
+        {
+          "entity_id": "E58",
+          "canonical_name": "Dutch donors",
+          "entity_type": "organization",
+          "aliases": [
+            "Dutch donors"
+          ],
+          "mentions": [
+            {
+              "snippet": "The project raised just over $23,000 in 18 days from 67 anonymous donors, with most of the funding coming – according to Van der Werff and Yerlashova – from Dutch donors.",
+              "context": "Describes claimed geographic origin of crowdfunding support for Bonanza; treated as a named donor group in the text."
+            }
+          ]
+        },
+        {
+          "entity_id": "E59",
+          "canonical_name": "Hague (public screening) 23 October 2019",
+          "entity_type": "event",
+          "aliases": [
+            "public screening in the Hague",
+            "Hague screening 23 October 2019"
+          ],
+          "mentions": [
+            {
+              "snippet": "contained images and texts from an invitation to a public screening of Bonanza's documentary in the Hague, scheduled for 23 October 2019.",
+              "context": "Specific event organized by Bonanza to screen their documentary; referenced in GRU mailbox attachments."
+            }
+          ]
+        },
+        {
+          "entity_id": "E60",
+          "canonical_name": "Hack of JIT documents (Malaysia office)",
+          "entity_type": "event",
+          "aliases": [
+            "hack of JIT member country's office",
+            "hack of Malaysian JIT office"
+          ],
+          "mentions": [
+            {
+              "snippet": "an analysis ... shows they were likely to be obtained from a hack of one of the JIT member countries' offices, Malaysia.",
+              "context": "Describes the likely origin of the internal JIT documents leaked by Bonanza, attributed to a hack of Malaysia's JIT office."
+            }
+          ]
+        }
+      ],
+      "metadata": {
+        "report_id": "report2_bellingcat_gru_disinformation",
+        "total_entities_extracted": 60,
+        "extraction_timestamp": "2025-11-17T11:56:07.695999+00:00"
+      }
+    },
+    {
+      "entities": [
+        {
+          "entity_id": "E1",
+          "canonical_name": "Valeriy Shaytanov",
+          "entity_type": "person",
+          "aliases": [
+            "Lt. General Valeriy Shaytanov",
+            "Shaytanov"
+          ],
+          "mentions": [
+            {
+              "snippet": "On 14 April 2020, Ukraine's security service (SBU) announced the arrest of Lt. General Valeriy Shaytanov, deputy chief of the SBU's own anti-terrorist division who had played a prominent role in negotiating ceasefires and prisoner exchanges with Russia-backed militants in Eastern Ukraine.",
+              "context": "Named as an SBU deputy chief arrested in April 2020 and alleged to have been recruited by an FSB operative."
+            }
+          ]
+        },
+        {
+          "entity_id": "E2",
+          "canonical_name": "Igor Anatolyevich Egorov",
+          "entity_type": "person",
+          "aliases": [
+            "Col. Igor Egorov",
+            "Colonel Igor Egorov",
+            "Igor Egorov",
+            "Col. Egorov",
+            "Egorov",
+            "Elbrus (alleged alias)"
+          ],
+          "mentions": [
+            {
+              "snippet": "The SBU alleged the general had been recruited before the start of the 2014 war by an FSB operative, Colonel Igor Egorov, during one of the Russian's many visits to Ukraine as part of a joint Russian-Ukrainian anti-terrorism working group.",
+              "context": "Identified as an FSB colonel accused of recruiting an SBU official; central subject of the investigation and candidate for the nom-de-guerre 'Elbrus'."
+            },
+            {
+              "snippet": "In early 2019, we hypothesized that Col. Egorov may in fact be the elusive FSB kurator 'Elbrus'.",
+              "context": "Investigation's core hypothesis linking Egorov to the alias 'Elbrus' and to activities in Donbass and Crimea."
+            },
+            {
+              "snippet": "Col. Igor Egorov serves as deputy chairman of the Vympel Veteran Association.",
+              "context": "Describes Egorov's institutional ties to the Vympel veterans' group, suggesting deep links to the elite unit."
+            }
+          ]
+        },
+        {
+          "entity_id": "E3",
+          "canonical_name": "Adam Osmayev",
+          "entity_type": "person",
+          "aliases": [
+            "Adam Osmaev",
+            "Osmaev",
+            "Osmaev (alternate spelling)"
+          ],
+          "mentions": [
+            {
+              "snippet": "FSB's Col. Egorov had tasked the would-be assassin with the murder of Adam Osmayev, a Russian national and ethnic Chechen who lives in exile in Ukraine and used to lead a battalion of Chechens fighting alongside Ukrainian forces.",
+              "context": "Named as a targeted Chechen exile and former commander of a Chechen unit fighting in Ukraine; alleged target of an FSB assassination plot."
+            },
+            {
+              "snippet": "Adam Osmaev was initially charged with plotting to assassinate Chechnya's ruler Ramzan Kadyrov in 2007, and later Vladimir Putin in 2012 (he denies both charges...).",
+              "context": "Gives background on charges Russia leveled against him and his militant history."
+            }
+          ]
+        },
+        {
+          "entity_id": "E4",
+          "canonical_name": "Boris Rozhin",
+          "entity_type": "person",
+          "aliases": [
+            "Colonel Cassad",
+            "Rozhin"
+          ],
+          "mentions": [
+            {
+              "snippet": "The earliest public reference to 'Elbrus' came from the separatist blogger and war correspondent Boris Rozhin ('Colonel Cassad'), who in November 2014 first wrote about the failed attempt by two Moscow-installed military commanders – 'Delfin' and 'Elbrus'.",
+              "context": "Cited as the first public source to mention 'Elbrus' and 'Delfin' in November 2014."
+            }
+          ]
+        },
+        {
+          "entity_id": "E5",
+          "canonical_name": "Oleg Ivannikov",
+          "entity_type": "person",
+          "aliases": [
+            "Andrey Ivanovich",
+            "Andrey Ivanovich Laptev",
+            "Orion",
+            "Col. Ivannikov",
+            "Ivannikov"
+          ],
+          "mentions": [
+            {
+              "snippet": "This operative was Oleg Ivannikov, a colonel from Russian military intelligence (GRU) who had previously served – under the cover name of Andrey Ivanovich Laptev – a two-year stint as the Defense Minister of the Russia-backed breakaway territory of South Ossetia.",
+              "context": "Identified as a GRU colonel who operated under cover names and used the call sign 'Orion', presented as a GRU counterpart to the FSB 'Elbrus'."
+            },
+            {
+              "snippet": "In May 2018, Bellingcat identified and publicly disclosed the identity of one of the key Russian military supervisors ... who had operated under the cover name 'Andrey Ivanovich' and the call sign 'Orion'.",
+              "context": "Links Ivannikov to previous Bellingcat reporting exposing GRU activity in Donbass."
+            }
+          ]
+        },
+        {
+          "entity_id": "E6",
+          "canonical_name": "Ramzan Kadyrov",
+          "entity_type": "person",
+          "aliases": [
+            "Kadyrov"
+          ],
+          "mentions": [
+            {
+              "snippet": "Adam Osmaev was initially charged with plotting to assassinate Chechnya's ruler Ramzan Kadyrov in 2007...",
+              "context": "Referenced as the alleged target of an assassination plot Osmaev was accused of planning."
+            }
+          ]
+        },
+        {
+          "entity_id": "E7",
+          "canonical_name": "Vladimir Putin",
+          "entity_type": "person",
+          "aliases": [
+            "Putin"
+          ],
+          "mentions": [
+            {
+              "snippet": "Adam Osmaev was initially charged with plotting to assassinate ... and later Vladimir Putin in 2012 (he denies both charges...).",
+              "context": "Mentioned as another high-profile figure Osmaev was accused of plotting against."
+            }
+          ]
+        },
+        {
+          "entity_id": "E8",
+          "canonical_name": "Nadiya Savchenko",
+          "entity_type": "person",
+          "aliases": [
+            "Nadia Savchenko",
+            "Savchenko"
+          ],
+          "mentions": [
+            {
+              "snippet": "A March 2016 Meduza investigation into the kidnapping of the Ukrainian soldier Nadia Savchenko quotes the LNR unit commander who says he personally detained Savchenko before the artillery shelling took place.",
+              "context": "Referenced in relation to an LNR commander handing over her belongings to 'Elbrus' and to events during her detention/kidnapping."
+            }
+          ]
+        },
+        {
+          "entity_id": "E9",
+          "canonical_name": "Amina Okueva",
+          "entity_type": "person",
+          "aliases": [
+            "Amina Okueva (Chechen-Ukrainian)"
+          ],
+          "mentions": [
+            {
+              "snippet": "Osmaev was the target of two assassination attempts in Kyiv in 2017 – the second of which killed his wife and comrade-in-arms, the Chechen-Ukrainian Amina Okueva.",
+              "context": "Named as Osmaev's wife and fellow fighter who was killed in an assassination attempt in Kyiv."
+            }
+          ]
+        },
+        {
+          "entity_id": "E10",
+          "canonical_name": "Vadim Krasikov",
+          "entity_type": "person",
+          "aliases": [
+            "Krasikov"
+          ],
+          "mentions": [
+            {
+              "snippet": "Remarkably or coincidentally, Col. Egorov flew to Croatia just after Vadim Krasikov flew to Paris on route to his operation in Berlin.",
+              "context": "Referenced in temporal proximity to Egorov's travel and the Berlin assassination, implying potential linkage to the Berlin operation."
+            }
+          ]
+        },
+        {
+          "entity_id": "E11",
+          "canonical_name": "Zelimkhan Khangoshvili",
+          "entity_type": "person",
+          "aliases": [
+            "Khangoshvili",
+            "Zelimkhan Khangoshvili (Khangoshvili)"
+          ],
+          "mentions": [
+            {
+              "snippet": "In our previous investigations, we determined that the FSB used current and former members of its Vympel/Department V Spetsnaz units to carry out the extraterritorial assassination of Zelimkhan Khangoshvili in Berlin.",
+              "context": "Named as a Chechen targeted and assassinated in Berlin—used as a prior example of FSB extraterritorial killings."
+            },
+            {
+              "snippet": "Egorov returned to Moscow on 23 August 2019, immediately after Khangoshvili's assassination.",
+              "context": "Temporal link between Egorov's travel and the Berlin assassination of Khangoshvili."
+            }
+          ]
+        },
+        {
+          "entity_id": "E12",
+          "canonical_name": "King Abdullah II of Jordan",
+          "entity_type": "person",
+          "aliases": [
+            "King Abdullah II",
+            "Abdullah II"
+          ],
+          "mentions": [
+            {
+              "snippet": "A trip to Jordan's capital Amman took place 3 weeks after Jordan's King Abdullah II visited the Kremlin to discuss, among others, Russian-Jordanian military cooperation and Syria-related security issues.",
+              "context": "Referenced to provide timing/context for Egorov's travel to Amman and diplomatic ties between Jordan and Russia."
+            }
+          ]
+        },
+        {
+          "entity_id": "E13",
+          "canonical_name": "Delfin (nom-de-guerre)",
+          "entity_type": "person",
+          "aliases": [
+            "Delfin"
+          ],
+          "mentions": [
+            {
+              "snippet": "The earliest public reference to 'Elbrus' came from ... Boris Rozhin ... who in November 2014 first wrote about the failed attempt by two Moscow-installed military commanders – 'Delfin' and 'Elbrus' – to consolidate ...",
+              "context": "Named as one of two nom-de-guerre commanders involved in attempts to consolidate pro-Russian armed groups in Luhansk."
+            }
+          ]
+        },
+        {
+          "entity_id": "E14",
+          "canonical_name": "Bellingcat Investigation Team",
+          "entity_type": "organization",
+          "aliases": [
+            "Bellingcat",
+            "Bellingcat Investigation Team",
+            "Bellingcat Investigation"
+          ],
+          "mentions": [
+            {
+              "snippet": "Bellingcat and The Insider had previously identified – but had not yet publicly disclosed – Col. Igor Anatolyevich Egorov as a senior officer ...",
+              "context": "Publisher/authors of the investigation; conducted previous reporting linking Egorov to FSB activities."
+            }
+          ]
+        },
+        {
+          "entity_id": "E15",
+          "canonical_name": "The Insider",
+          "entity_type": "organization",
+          "aliases": [
+            "The Insider (news outlet)"
+          ],
+          "mentions": [
+            {
+              "snippet": "Bellingcat and The Insider had previously identified – but had not yet publicly disclosed – Col. Igor Anatolyevich Egorov as a senior officer ...",
+              "context": "Named as a media partner that had been involved in prior identification efforts."
+            }
+          ]
+        },
+        {
+          "entity_id": "E16",
+          "canonical_name": "Security Service of Ukraine (SBU)",
+          "entity_type": "organization",
+          "aliases": [
+            "SBU",
+            "Ukraine's security service"
+          ],
+          "mentions": [
+            {
+              "snippet": "On 14 April 2020, Ukraine's security service (SBU) announced the arrest of Lt. General Valeriy Shaytanov ...",
+              "context": "Identified as the Ukrainian agency that published the arrest, audio recordings, and video alleging Egorov's activities."
+            },
+            {
+              "snippet": "The SBU also published footage from apparent video surveillance of the latest meet-up between Col. Egorov and the would-be contract killer, which the SBU says took place in Hamburg, Germany, in February of this year.",
+              "context": "SBU conducted and released sting materials and geolocation evidence."
+            }
+          ]
+        },
+        {
+          "entity_id": "E17",
+          "canonical_name": "Federal Security Service of the Russian Federation (FSB)",
+          "entity_type": "organization",
+          "aliases": [
+            "FSB",
+            "Russian FSB",
+            "Federal Security Service",
+            "the FSB"
+          ],
+          "mentions": [
+            {
+              "snippet": "The SBU alleged the general had been recruited before the start of the 2014 war by an FSB operative, Colonel Igor Egorov ...",
+              "context": "Identified as the Russian security service whose operative (Egorov) is central to the allegations and extraterritorial operations."
+            },
+            {
+              "snippet": "Bellingcat and The Insider had previously identified ... as a senior officer from FSB's elite Spetznaz force known as Department V, the successor to the KGB's elite subversion and special operations unit Vympel.",
+              "context": "FSB connected to Department V and Vympel as its elite subversion force."
+            }
+          ]
+        },
+        {
+          "entity_id": "E18",
+          "canonical_name": "KGB",
+          "entity_type": "organization",
+          "aliases": [
+            "KGB"
+          ],
+          "mentions": [
+            {
+              "snippet": "The SBU's press release also alleged that Col. Egorov was a highly decorated KGB, and later FSB, officer who had received a medal for his role in annexing Crimea in 2014.",
+              "context": "Referenced as Egorov's earlier service and to explain Vympel's lineage from KGB units."
+            }
+          ]
+        },
+        {
+          "entity_id": "E19",
+          "canonical_name": "Vympel",
+          "entity_type": "unit",
+          "aliases": [
+            "Vympel Spetsnaz",
+            "Vympel Spetznaz",
+            "Vympel Spetsnaz unit",
+            "Vympel Veteran Association (related)"
+          ],
+          "mentions": [
+            {
+              "snippet": "Col. Igor Anatolyevich Egorov as a senior officer from FSB's elite Spetznaz force known as Department V, the successor to the KGB's elite subversion and special operations unit Vympel.",
+              "context": "Named as the elite KGB/FSB special operations unit linked to Egorov and 'Elbrus'."
+            },
+            {
+              "snippet": "Col. Igor Egorov serves as deputy chairman of the Vympel Veteran Association.",
+              "context": "Shows Egorov's institutional veteran ties to Vympel."
+            }
+          ]
+        },
+        {
+          "entity_id": "E20",
+          "canonical_name": "Department V (FSB)",
+          "entity_type": "unit",
+          "aliases": [
+            "Department V",
+            "Department-V",
+            "FSB Department V",
+            "Vympel / Department-V"
+          ],
+          "mentions": [
+            {
+              "snippet": "Bellingcat and The Insider had previously identified ... as a senior officer from FSB's elite Spetznaz force known as Department V, the successor to the KGB's elite subversion and special operations unit Vympel.",
+              "context": "Identifies Department V as the FSB structure succeeding Vympel and as Egorov's unit."
+            }
+          ]
+        },
+        {
+          "entity_id": "E21",
+          "canonical_name": "GRU (Main Directorate of the General Staff of the Armed Forces of the Russian Federation)",
+          "entity_type": "organization",
+          "aliases": [
+            "GRU",
+            "Russian military intelligence",
+            "Main Intelligence Directorate",
+            "military intelligence (GRU)"
+          ],
+          "mentions": [
+            {
+              "snippet": "In our previous investigations into the role of GRU undercover officers in supervising and aiding Russian and Russia-backed militants in Eastern Ukraine ...",
+              "context": "Referenced as Russian military intelligence whose operatives (like Ivannikov) have been active in Donbass and in competition with FSB."
+            }
+          ]
+        },
+        {
+          "entity_id": "E22",
+          "canonical_name": "Joint Investigation Team (JIT)",
+          "entity_type": "organization",
+          "aliases": [
+            "JIT",
+            "Joint Investigation Team into MH17"
+          ],
+          "mentions": [
+            {
+              "snippet": "Telephone intercepts recently published by the Joint Investigation Team (JIT) into the downing of MH17 provide evidence of this competition escalating into hot turf-wars ...",
+              "context": "Named as the investigative body that published intercepts related to MH17 and the activities of 'Elbrus'."
+            }
+          ]
+        },
+        {
+          "entity_id": "E23",
+          "canonical_name": "Vympel Veteran Association",
+          "entity_type": "organization",
+          "aliases": [
+            "Vympel Veteran Association"
+          ],
+          "mentions": [
+            {
+              "snippet": "Col. Igor Egorov serves as deputy chairman of the Vympel Veteran Association.",
+              "context": "An organizational tie used to support Egorov's long-term link to Vympel."
+            }
+          ]
+        },
+        {
+          "entity_id": "E24",
+          "canonical_name": "Novaya Gazeta",
+          "entity_type": "organization",
+          "aliases": [
+            "Novaya Gazeta"
+          ],
+          "mentions": [
+            {
+              "snippet": "A Novaya Gazeta investigation from February 2016 quotes local sources as describing 'Elbrus' as a senior, retired FSB officer who was based in Luhansk in 2014.",
+              "context": "Cited as a media source that reported on 'Elbrus' being an FSB officer based in Luhansk."
+            }
+          ]
+        },
+        {
+          "entity_id": "E25",
+          "canonical_name": "Meduza",
+          "entity_type": "organization",
+          "aliases": [
+            "Meduza"
+          ],
+          "mentions": [
+            {
+              "snippet": "A March 2016 Meduza investigation into the kidnapping of the Ukrainian soldier Nadia Savchenko quotes the LNR unit commander ... He then said he handed over her belongings to 'Elbrus, who called himself the FSB advisor to the LNR leadership'.",
+              "context": "Media outlet cited for reporting that 'Elbrus' presented himself as FSB advisor to LNR leadership."
+            }
+          ]
+        },
+        {
+          "entity_id": "E26",
+          "canonical_name": "Der Spiegel",
+          "entity_type": "organization",
+          "aliases": [
+            "Der Spiegel"
+          ],
+          "mentions": [
+            {
+              "snippet": "Data from a visa processing database in Russia reviewed by Der Spiegel shows that in December 2016, Egorov applied for and received a multi-entry, four-year visa issued by France ...",
+              "context": "Named as an investigative partner that reviewed and reported visa documents linked to Egorov."
+            }
+          ]
+        },
+        {
+          "entity_id": "E27",
+          "canonical_name": "Luhansk People's Republic (LNR)",
+          "entity_type": "organization",
+          "aliases": [
+            "LNR",
+            "Luhansk People's Republic",
+            "self-declared Luhansk People's Republic"
+          ],
+          "mentions": [
+            {
+              "snippet": "The earliest public reference to 'Elbrus' came from the separatist blogger ... who in November 2014 first wrote about the failed attempt by two Moscow-installed military commanders – 'Delfin' and 'Elbrus' – to consolidate the more than 20 disparate and infighting pro-Russian armed groups in the self-declared 'Luhansk People's Republic' (LNR) in eastern Ukraine.",
+              "context": "Identified as the breakaway entity in eastern Ukraine where 'Elbrus' operated and tried to consolidate armed groups."
+            }
+          ]
+        },
+        {
+          "entity_id": "E28",
+          "canonical_name": "Donetsk People's Republic (DPR)",
+          "entity_type": "organization",
+          "aliases": [
+            "Donetsk People's Republic",
+            "Donetsk people's republic",
+            "Donetsk"
+          ],
+          "mentions": [
+            {
+              "snippet": "The JIT published a number of intercepted phone calls from the days just before the downing of flight MH17, which contained conversations between militants in the self-proclaimed 'people's republics' of Donetsk and Luhansk.",
+              "context": "Named as one of the self-proclaimed entities whose militants feature in intercepts mentioning 'Elbrus'."
+            }
+          ]
+        },
+        {
+          "entity_id": "E29",
+          "canonical_name": "South Ossetia",
+          "entity_type": "location",
+          "aliases": [
+            "South Ossetia",
+            "Russia-backed breakaway territory of South Ossetia"
+          ],
+          "mentions": [
+            {
+              "snippet": "Oleg Ivannikov ... had previously served – under the cover name of Andrey Ivanovich Laptev – a two-year stint as the Defense Minister of the Russia-backed breakaway territory of South Ossetia.",
+              "context": "Referenced as the breakaway territory where Ivannikov (under cover) served in a ministerial capacity."
+            }
+          ]
+        },
+        {
+          "entity_id": "E30",
+          "canonical_name": "MH17 downing",
+          "entity_type": "event",
+          "aliases": [
+            "MH17",
+            "downing of flight MH17",
+            "the downing of MH17"
+          ],
+          "mentions": [
+            {
+              "snippet": "Telephone intercepts recently published by the Joint Investigation Team (JIT) into the downing of MH17 provide evidence of this competition escalating into hot turf-wars ...",
+              "context": "Event central to the investigation; intercepts suggest 'Elbrus' was active just before MH17 was shot down."
+            },
+            {
+              "snippet": "Given that his arrival was just prior to the tragic shoot-down of MH17 by a Russian BUK missile, such role makes Elbrus a person of interest in the MH17 investigation.",
+              "context": "Links 'Elbrus' (and by hypothesis Egorov) to timing and potential command role around MH17's shoot-down."
+            }
+          ]
+        },
+        {
+          "entity_id": "E31",
+          "canonical_name": "Annexation of Crimea (2014)",
+          "entity_type": "event",
+          "aliases": [
+            "annexation of Crimea",
+            "Crimea annexation 2014",
+            "Crimea events"
+          ],
+          "mentions": [
+            {
+              "snippet": "The SBU's press release also alleged that Col. Egorov was a highly decorated KGB, and later FSB, officer who had received a medal for his role in annexing Crimea in 2014.",
+              "context": "Used to describe Egorov's purported award and involvement in Russia's 2014 seizure of Crimea."
+            }
+          ]
+        },
+        {
+          "entity_id": "E32",
+          "canonical_name": "Berlin assassination of Zelimkhan Khangoshvili",
+          "entity_type": "event",
+          "aliases": [
+            "Khangoshvili assassination",
+            "Khangoshvili killing in Berlin",
+            "assassination of Zelimkhan Khangoshvili"
+          ],
+          "mentions": [
+            {
+              "snippet": "In our previous investigations, we determined that the FSB used current and former members of its Vympel/Department V Spetsnaz units to carry out the extraterritorial assassination of Zelimkhan Khangoshvili in Berlin.",
+              "context": "Named as a prior FSB-linked extraterritorial assassination used as precedent for alleged plots."
+            }
+          ]
+        },
+        {
+          "entity_id": "E33",
+          "canonical_name": "Second Chechen War",
+          "entity_type": "event",
+          "aliases": [
+            "Second Chechen War"
+          ],
+          "mentions": [
+            {
+              "snippet": "Russia has formally accused both Khangoshvili and Osmaev of being terrorists: Khangoshvili over supposed crimes during his participation in the Second Chechen War in the early 2000s...",
+              "context": "Historical conflict referenced to explain alleged past activities and Russian charges against the two Chechen targets."
+            }
+          ]
+        },
+        {
+          "entity_id": "E34",
+          "canonical_name": "Russo-Georgian War (2008)",
+          "entity_type": "event",
+          "aliases": [
+            "Georgian-Russian War in 2008",
+            "2008 Russo-Georgian War"
+          ],
+          "mentions": [
+            {
+              "snippet": "Khangosvili had taken part in the Second Chechen war and had formed a volunteer combat unit in the Georgian-Russian War in 2008 (although this unit never saw military action);",
+              "context": "Referenced as part of Khangoshvili's militant history."
+            }
+          ]
+        },
+        {
+          "entity_id": "E35",
+          "canonical_name": "War in Eastern Ukraine / Donbass (2014-2015)",
+          "entity_type": "event",
+          "aliases": [
+            "War in Eastern Ukraine",
+            "Donbass conflict",
+            "Donbas war",
+            "2014 war"
+          ],
+          "mentions": [
+            {
+              "snippet": "The SBU alleged the general had been recruited before the start of the 2014 war by an FSB operative ...",
+              "context": "Referenced as the broader conflict context in which operatives like Egorov and GRU agents operated."
+            },
+            {
+              "snippet": "... ethnic Chechens who fought in key battles against Russian forces and pro-Russian militants in Eastern Ukraine in 2014 and 2015.",
+              "context": "Explains the combat background of Osmaev and other Chechen fighters involved in the conflict."
+            }
+          ]
+        },
+        {
+          "entity_id": "E36",
+          "canonical_name": "Gänsemarkt Passage shopping mall",
+          "entity_type": "location",
+          "aliases": [
+            "Gänsemarkt Passage",
+            "Gänsemarkt Passage shopping mall",
+            "Gaensemarkt Passage"
+          ],
+          "mentions": [
+            {
+              "snippet": "The location of the video – which shows Egorov typing into his phone as he walks alongside the other man whose faced is blurred – can easily be geolocated to Hamburg's Gänsemarkt Passage shopping mall.",
+              "context": "Specific geolocated site in Hamburg where SBU video surveillance allegedly captured Egorov."
+            }
+          ]
+        },
+        {
+          "entity_id": "E37",
+          "canonical_name": "Hamburg",
+          "entity_type": "location",
+          "aliases": [
+            "Hamburg, Germany",
+            "Hamburg"
+          ],
+          "mentions": [
+            {
+              "snippet": "The SBU says [the meet-up] took place in Hamburg, Germany, in February of this year.",
+              "context": "City where Egorov allegedly met the would-be contract killer and where video footage was taken."
+            }
+          ]
+        },
+        {
+          "entity_id": "E38",
+          "canonical_name": "Germany",
+          "entity_type": "location",
+          "aliases": [
+            "Germany",
+            "Federal Republic of Germany"
+          ],
+          "mentions": [
+            {
+              "snippet": "It is unclear if the FSB's targeting of these two ethnic Chechens is mainly due to their earlier involvement... Khangoshvili had been shot at and targeted by bombs in Georgia and Ukraine before he was finally killed in Germany...",
+              "context": "Country where Khangoshvili was assassinated and where allegations of non-arrest of Egorov arose."
+            },
+            {
+              "snippet": "Ukrainian sources interviewed by us on condition of anonymity have claimed that Ukraine had requested Egorov's arrest during his latest visit to Hamburg but that Germany declined to detain him.",
+              "context": "Referenced in relation to law enforcement response and possible coordination over arrest decisions."
+            }
+          ]
+        },
+        {
+          "entity_id": "E39",
+          "canonical_name": "Russia",
+          "entity_type": "location",
+          "aliases": [
+            "Russian Federation",
+            "Russia"
+          ],
+          "mentions": [
+            {
+              "snippet": "The SBU alleged the general had been recruited ... by an FSB operative, Colonel Igor Egorov, during one of the Russian's many visits to Ukraine ...",
+              "context": "Country of origin for FSB, GRU and the operatives discussed, central to the geopolitical context."
+            }
+          ]
+        },
+        {
+          "entity_id": "E40",
+          "canonical_name": "Ukraine",
+          "entity_type": "location",
+          "aliases": [
+            "Ukraine",
+            "Kyiv (nation)"
+          ],
+          "mentions": [
+            {
+              "snippet": "On 14 April 2020, Ukraine's security service (SBU) announced the arrest of Lt. General Valeriy Shaytanov ...",
+              "context": "Country where the SBU is based, location of exile for several Chechens and where many incidents occurred."
+            }
+          ]
+        },
+        {
+          "entity_id": "E41",
+          "canonical_name": "Donbass",
+          "entity_type": "location",
+          "aliases": [
+            "Donbass",
+            "Donbas",
+            "the Donbass"
+          ],
+          "mentions": [
+            {
+              "snippet": "... between Moscow and the three control centers for Russia's military operations in the Donbass: Rostov, Simferopol, and Krasnodar.",
+              "context": "Region where Russian military operations and control centers are located; area of conflict."
+            }
+          ]
+        },
+        {
+          "entity_id": "E42",
+          "canonical_name": "Rostov-on-Don",
+          "entity_type": "location",
+          "aliases": [
+            "Rostov",
+            "Rostov-on-Don"
+          ],
+          "mentions": [
+            {
+              "snippet": "he had traveled extensively – under two different identities – as Igor Egorov ... between Moscow and the three control centers for Russia's military operations in the Donbass: Rostov, Simferopol, and Krasnodar.",
+              "context": "Named as one of the Russian control centers for military operations tied to operations in Donbass."
+            }
+          ]
+        },
+        {
+          "entity_id": "E43",
+          "canonical_name": "Simferopol",
+          "entity_type": "location",
+          "aliases": [
+            "Simferopol"
+          ],
+          "mentions": [
+            {
+              "snippet": "... between Moscow and the three control centers for Russia's military operations in the Donbass: Rostov, Simferopol, and Krasnodar.",
+              "context": "Listed as one of the centers used by operatives traveling for Donbass-related activities."
+            }
+          ]
+        },
+        {
+          "entity_id": "E44",
+          "canonical_name": "Krasnodar",
+          "entity_type": "location",
+          "aliases": [
+            "Krasnodar"
+          ],
+          "mentions": [
+            {
+              "snippet": "... between Moscow and the three control centers for Russia's military operations in the Donbass: Rostov, Simferopol, and Krasnodar.",
+              "context": "Listed as a travel/control center in the Donbass operational network."
+            }
+          ]
+        },
+        {
+          "entity_id": "E45",
+          "canonical_name": "Moscow",
+          "entity_type": "location",
+          "aliases": [
+            "Moscow"
+          ],
+          "mentions": [
+            {
+              "snippet": "In 2014 and 2015 had traveled extensively – under two different identities – as Igor Egorov ... between Moscow and the three control centers ...",
+              "context": "Capital city from which operatives traveled and used as a transit/origin point for operations."
+            }
+          ]
+        },
+        {
+          "entity_id": "E46",
+          "canonical_name": "Crimea",
+          "entity_type": "location",
+          "aliases": [
+            "Crimea"
+          ],
+          "mentions": [
+            {
+              "snippet": "The SBU's press release also alleged that Col. Egorov was a highly decorated KGB, and later FSB, officer who had received a medal for his role in annexing Crimea in 2014.",
+              "context": "Region tied to Egorov's alleged medal and prior operations; also referenced in militants' memory of 'Elbrus'."
+            }
+          ]
+        },
+        {
+          "entity_id": "E47",
+          "canonical_name": "Caucasus",
+          "entity_type": "location",
+          "aliases": [
+            "the Caucasus",
+            "Caucasus region"
+          ],
+          "mentions": [
+            {
+              "snippet": "'Elbrus' – the name of a dormant volcano and Europe's highest mountain located in the tempestuous Caucasus on the border with Georgia.",
+              "context": "Geographic explanation of the nom-de-guerre 'Elbrus'."
+            }
+          ]
+        },
+        {
+          "entity_id": "E48",
+          "canonical_name": "Georgia",
+          "entity_type": "location",
+          "aliases": [
+            "Georgia"
+          ],
+          "mentions": [
+            {
+              "snippet": "'Elbrus' – the name of a dormant volcano ... located in the tempestuous Caucasus on the border with Georgia.",
+              "context": "Neighbouring country to the Caucasus location of Mount Elbrus and connected to regional conflicts referenced."
+            }
+          ]
+        },
+        {
+          "entity_id": "E49",
+          "canonical_name": "Krasnodon",
+          "entity_type": "location",
+          "aliases": [
+            "Krasnodon"
+          ],
+          "mentions": [
+            {
+              "snippet": "In another post from January 2015, he wrote that 'Elbrus' was based in Luhansk, and together with 'Delfin' – based in Krasnodon – were tasked with ... creating a new joint army ...",
+              "context": "Named as the base of 'Delfin' and as a locus of pro-Russian operations."
+            }
+          ]
+        },
+        {
+          "entity_id": "E50",
+          "canonical_name": "Hamburg Gänsemarkt trip, February 2020",
+          "entity_type": "event",
+          "aliases": [
+            "Hamburg meet-up February 2020",
+            "Hamburg trip 10-12 February 2020"
+          ],
+          "mentions": [
+            {
+              "snippet": "He traveled at least 11 times to Germany – mostly to Frankfurt, Munich and Hamburg, with the latest trip to Hamburg being 10-12 February 2020. It was likely during this trip that he was secretly videotaped, as seen in the SBU press materials.",
+              "context": "Specific recent travel event during which SBU alleges Egorov was videotaped meeting a would-be assassin."
+            }
+          ]
+        },
+        {
+          "entity_id": "E51",
+          "canonical_name": "Croatia trips by Egorov (2019)",
+          "entity_type": "event",
+          "aliases": [
+            "Egorov travel to Croatia",
+            "Croatia meet-ups 2019"
+          ],
+          "mentions": [
+            {
+              "snippet": "He also frequently flew to Croatia and France – and indeed, SBU's release alleges that these two countries were also used during 2019 as meet-ups between Egorov and his two Ukrainian assets.",
+              "context": "Travel pattern used to suggest regular clandestine meet-ups across Europe."
+            }
+          ]
+        },
+        {
+          "entity_id": "E52",
+          "canonical_name": "Montenegro failed coup (2016)",
+          "entity_type": "event",
+          "aliases": [
+            "failed coup in Montenegro",
+            "2016 Montenegro coup attempt"
+          ],
+          "mentions": [
+            {
+              "snippet": "His longest stay was during a five-day trip in September 2016, one month before the failed coup in the mountainous Balkan state.",
+              "context": "Places Egorov's travel timing in proximity to the 2016 Montenegro coup attempt."
+            }
+          ]
+        },
+        {
+          "entity_id": "E53",
+          "canonical_name": "Tivat",
+          "entity_type": "location",
+          "aliases": [
+            "Tivat, Montenegro",
+            "Tivat"
+          ],
+          "mentions": [
+            {
+              "snippet": "Other notable destinations include Montenegro – with four trips to the coastal town of Tivat, none of which long enough to qualify as a vacation getaway.",
+              "context": "Specific Montenegrin town Egorov visited multiple times, highlighting suspicious travel patterns."
+            }
+          ]
+        },
+        {
+          "entity_id": "E54",
+          "canonical_name": "Tel Aviv",
+          "entity_type": "location",
+          "aliases": [
+            "Tel Aviv"
+          ],
+          "mentions": [
+            {
+              "snippet": "Outside of Europe, Egorov traveled repeatedly to Tel Aviv, and once to Singapore.",
+              "context": "Non-European travel destination that featured in Egorov's travel records."
+            }
+          ]
+        },
+        {
+          "entity_id": "E55",
+          "canonical_name": "Singapore",
+          "entity_type": "location",
+          "aliases": [
+            "Singapore"
+          ],
+          "mentions": [
+            {
+              "snippet": "Outside of Europe, Egorov traveled repeatedly to Tel Aviv, and once to Singapore.",
+              "context": "Listed as a singular non-European destination in Egorov's travel history."
+            }
+          ]
+        },
+        {
+          "entity_id": "E56",
+          "canonical_name": "Amman",
+          "entity_type": "location",
+          "aliases": [
+            "Amman, Jordan",
+            "Amman"
+          ],
+          "mentions": [
+            {
+              "snippet": "A trip to Jordan's capital Amman took place 3 weeks after Jordan's King Abdullah II visited the Kremlin ...",
+              "context": "Timing of Egorov's travel to Jordan tied to royal Kremlin visit and military cooperation talks."
+            }
+          ]
+        },
+        {
+          "entity_id": "E57",
+          "canonical_name": "France",
+          "entity_type": "location",
+          "aliases": [
+            "France"
+          ],
+          "mentions": [
+            {
+              "snippet": "Data from a visa processing database in Russia reviewed by Der Spiegel shows that in December 2016, Egorov applied for and received a multi-entry, four-year visa issued by France and valid for the Schengen area.",
+              "context": "Country that issued Egorov a multi-entry Schengen visa used for his travel across Europe."
+            }
+          ]
+        },
+        {
+          "entity_id": "E58",
+          "canonical_name": "Schengen Area",
+          "entity_type": "location",
+          "aliases": [
+            "Schengen area",
+            "Schengen"
+          ],
+          "mentions": [
+            {
+              "snippet": "Data from a visa processing database in Russia reviewed by Der Spiegel shows that in December 2016, Egorov applied for and received a multi-entry, four-year visa issued by France and valid for the Schengen area.",
+              "context": "Regional visa zone for which Egorov obtained multi-entry authorization enabling free travel in much of Europe."
+            }
+          ]
+        },
+        {
+          "entity_id": "E59",
+          "canonical_name": "Frankfurt",
+          "entity_type": "location",
+          "aliases": [
+            "Frankfurt"
+          ],
+          "mentions": [
+            {
+              "snippet": "Booking records obtained by Bellingcat show that Col. Egorov had purchased one additional plane ticket to Germany – planning to fly from Moscow to Frankfurt on 4 March 2020 and stay there until 9 March 2020.",
+              "context": "Named as a planned destination for Egorov that was later cancelled; part of the arrest/operation timeline."
+            }
+          ]
+        },
+        {
+          "entity_id": "E60",
+          "canonical_name": "Munich",
+          "entity_type": "location",
+          "aliases": [
+            "Munich"
+          ],
+          "mentions": [
+            {
+              "snippet": "He traveled at least 11 times to Germany – mostly to Frankfurt, Munich and Hamburg, with the latest trip to Hamburg being 10-12 February 2020.",
+              "context": "Listed among German cities Egorov visited frequently."
+            }
+          ]
+        },
+        {
+          "entity_id": "E61",
+          "canonical_name": "Paris",
+          "entity_type": "location",
+          "aliases": [
+            "Paris"
+          ],
+          "mentions": [
+            {
+              "snippet": "Remarkably or coincidentally, Col. Egorov flew to Croatia just after Vadim Krasikov flew to Paris on route to his operation in Berlin.",
+              "context": "Used to link temporal movements of operatives tied to the Berlin assassination."
+            }
+          ]
+        },
+        {
+          "entity_id": "E62",
+          "canonical_name": "Berlin",
+          "entity_type": "location",
+          "aliases": [
+            "Berlin"
+          ],
+          "mentions": [
+            {
+              "snippet": "In our previous investigations, we determined that the FSB used current and former members of its Vympel/Department V Spetsnaz units to carry out the extraterritorial assassination of Zelimkhan Khangoshvili in Berlin.",
+              "context": "City where a high-profile extraterritorial assassination occurred."
+            }
+          ]
+        },
+        {
+          "entity_id": "E63",
+          "canonical_name": "Kyiv",
+          "entity_type": "location",
+          "aliases": [
+            "Kyiv",
+            "Kiev",
+            "Kyiv, Ukraine"
+          ],
+          "mentions": [
+            {
+              "snippet": "Both targets had taken part in active warfare against Russian forces – Khangosvili had taken part ... while Adam Osmaev was an officer, and since February 2015, the commander ... who fought in key battles against Russian forces and pro-Russian militants in Eastern Ukraine in 2014 and 2015.",
+              "context": "Capital of Ukraine, location of assassination attempts (e.g., 2017 attempts against Osmaev) and base for exiled Chechens."
+            },
+            {
+              "snippet": "Osmaev was the target of two assassination attempts in Kyiv in 2017 – the second of which killed his wife ... Amina Okueva.",
+              "context": "Site of attempts on Osmaev's life."
+            }
+          ]
+        },
+        {
+          "entity_id": "E64",
+          "canonical_name": "Cente for Specialized Equipment",
+          "entity_type": "organization",
+          "aliases": [
+            "Cente for Specialized Equipment",
+            "Center for Specialized Equipment (as spelled)"
+          ],
+          "mentions": [
+            {
+              "snippet": "Corporate registries show him as owner and 'liquidator' of a company named 'Cente for Specialized Equipment', founded in 2012 and currently in liquidation.",
+              "context": "Commercial front company allegedly linked to Egorov used for visa/employment cover."
+            }
+          ]
+        },
+        {
+          "entity_id": "E65",
+          "canonical_name": "Schengen police",
+          "entity_type": "organization",
+          "aliases": [
+            "Schengen police"
+          ],
+          "mentions": [
+            {
+              "snippet": "A police alert record seen by our investigative partner Der Spiegel shows that no later than March 2020, French law enforcement had sent a 'track but do not arrest' alert on Egorov to Schengen police, referencing a 'cross-border criminal investigation'.",
+              "context": "Regional policing network reportedly alerted to Egorov with specific instructions not to arrest but to track."
+            }
+          ]
+        },
+        {
+          "entity_id": "E66",
+          "canonical_name": "Coronavirus crisis / COVID-19 pandemic",
+          "entity_type": "concept",
+          "aliases": [
+            "coronavirus crisis",
+            "COVID-19 pandemic",
+            "coronavirus"
+          ],
+          "mentions": [
+            {
+              "snippet": "This trip did not materialize, however, due to the impending coronavirus crisis and restrictions on movements.",
+              "context": "Cited as a reason travel and planned arrest operations were disrupted in early 2020."
+            }
+          ]
+        },
+        {
+          "entity_id": "E67",
+          "canonical_name": "BUK missile",
+          "entity_type": "concept",
+          "aliases": [
+            "BUK missile",
+            "Russian BUK missile"
+          ],
+          "mentions": [
+            {
+              "snippet": "Given that his arrival was just prior to the tragic shoot-down of MH17 by a Russian BUK missile, such role makes Elbrus a person of interest in the MH17 investigation.",
+              "context": "Weapon system implicated in MH17's downing and used to frame possible involvement of 'Elbrus'."
+            }
+          ]
+        },
+        {
+          "entity_id": "E68",
+          "canonical_name": "Extrajudicial / extraterritorial assassinations",
+          "entity_type": "concept",
+          "aliases": [
+            "extraterritorial assassination",
+            "extraterritorial eliminations",
+            "exraterritorial assassination operations"
+          ],
+          "mentions": [
+            {
+              "snippet": "The new disclosure that the FSB's Col. Egorov, also a Vympel operative, was plotting the assassination of another Chechen living in exile, suggests that these operations are part of a longer running strategy of extraterritorial eliminations.",
+              "context": "Conceptual theme of the report: use of off-shore killings by FSB-linked units against exiles."
+            }
+          ]
+        },
+        {
+          "entity_id": "E69",
+          "canonical_name": "kurator (Russian special service supervisor)",
+          "entity_type": "concept",
+          "aliases": [
+            "kurator",
+            "kurator (Russian special service parlance)"
+          ],
+          "mentions": [
+            {
+              "snippet": "In our previous investigations ... we had stumbled upon this person, who in 2014 and 2015 had traveled extensively ... one of the key Russian military supervisors (or kurator, in Russian special service parlance) in the Donbass ...",
+              "context": "Explains the role/title used in Russian services for operatives supervising proxies in Donbass, applied to 'Elbrus'/'Orion' figures."
+            }
+          ]
+        },
+        {
+          "entity_id": "E70",
+          "canonical_name": "Operational security tradecraft (double-booking flights)",
+          "entity_type": "concept",
+          "aliases": [
+            "operational security trade-craft",
+            "double-booking flights decoy"
+          ],
+          "mentions": [
+            {
+              "snippet": "Secondly, the two also mimicked each other's operational security trade-craft – both would travel from Moscow to Rostov, Simferopol or Krasnodar under their true identities, but would sometimes double-book a return flight to Moscow both under their real name and under their cover identity.",
+              "context": "Describes a described tactic allegedly used by high-value operatives (decoy double-booking) to obscure movements."
+            }
+          ]
+        },
+        {
+          "entity_id": "E71",
+          "canonical_name": "Delfin and Elbrus attempted consolidation (Nov 2014)",
+          "entity_type": "event",
+          "aliases": [
+            "Delfin and Elbrus failed consolidation November 2014",
+            "Nov 2014 LNR consolidation attempt"
+          ],
+          "mentions": [
+            {
+              "snippet": "The earliest public reference to 'Elbrus' came from the separatist blogger ... who in November 2014 first wrote about the failed attempt by two Moscow-installed military commanders – 'Delfin' and 'Elbrus' – to consolidate the more than 20 disparate and infighting pro-Russian armed groups ...",
+              "context": "Named incident where nom-de-guerre commanders attempted to reorganize pro-Russian forces in Luhansk region."
+            }
+          ]
+        },
+        {
+          "entity_id": "E72",
+          "canonical_name": "Croatia",
+          "entity_type": "location",
+          "aliases": [
+            "Croatia"
+          ],
+          "mentions": [
+            {
+              "snippet": "He also frequently flew to Croatia and France – and indeed, SBU's release alleges that these two countries were also used during 2019 as meet-ups between Egorov and his two Ukrainian assets.",
+              "context": "Country used for alleged clandestine meet-ups and frequent travel by Egorov."
+            }
+          ]
+        },
+        {
+          "entity_id": "E73",
+          "canonical_name": "France (visa issuance)",
+          "entity_type": "event",
+          "aliases": [
+            "French visa issuance December 2016",
+            "France visa 2016"
+          ],
+          "mentions": [
+            {
+              "snippet": "Data from a visa processing database in Russia reviewed by Der Spiegel shows that in December 2016, Egorov applied for and received a multi-entry, four-year visa issued by France and valid for the Schengen area.",
+              "context": "Specific administrative action enabling Egorov's freer travel across Europe."
+            }
+          ]
+        },
+        {
+          "entity_id": "E74",
+          "canonical_name": "Cente for Specialized Equipment (company) liquidation",
+          "entity_type": "event",
+          "aliases": [
+            "company liquidation Cente for Specialized Equipment"
+          ],
+          "mentions": [
+            {
+              "snippet": "Corporate registries show him as owner and 'liquidator' of a company named 'Cente for Specialized Equipment', founded in 2012 and currently in liquidation.",
+              "context": "Corporate registration detail suggesting a possible employment front used by Egorov."
+            }
+          ]
+        }
+      ],
+      "metadata": {
+        "report_id": "report3_bellingcat_fsb_elbrus",
+        "total_entities_extracted": 74,
+        "extraction_timestamp": "2025-11-17T11:58:45.799468+00:00"
+      }
+    }
+  ],
+  "summary": {
+    "total_reports": 3,
+    "total_entities_across_reports": 190,
+    "extraction_timestamp": "2025-11-17T11:58:45.800678+00:00"
+  }
+}

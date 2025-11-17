@@ -18,13 +18,16 @@ Create a detailed markdown report with:
 # Research Report: [Title based on question]
 
 ## Executive Summary
-[3-5 sentences summarizing key findings]
+[3-5 sentences summarizing the most important findings. Cite dates/quotes where possible. Make clear what was actually found vs. unsubstantiated chatter.]
 
-{% if key_documents %}
 ## Key Documents & Links
+Prioritize and label: [PRIMARY] official/archival docs (memos, directives, filings, hearings), [ANALYSIS] reputable media/think-tank/legal commentary, [LEAD] unverified/social chatter. Include dates and short quotes when known.
+{% if key_documents %}
 {% for doc in key_documents %}
 - [{{ doc.title }}]({{ doc.url }}) — {{ doc.source }}{% if doc.date %} ({{ doc.date }}){% endif %}
 {% endfor %}
+{% else %}
+- No key documents surfaced in this run.
 {% endif %}
 
 {% if timeline %}
@@ -32,16 +35,28 @@ Create a detailed markdown report with:
 {% for item in timeline %}
 - {{ item.date }}: [{{ item.title }}]({{ item.url }})
 {% endfor %}
+{% else %}
+No dated events extracted from collected sources.
 {% endif %}
 
-{% if hypothesis_findings %}
 ## Findings by Angle
+For each hypothesis/angle, state what was actually found (or if it came up empty), and list concrete links.
+{% if hypothesis_findings %}
 {% for hf in hypothesis_findings %}
 - Hypothesis {{ hf.hypothesis_id }}: {{ hf.statement }}
-  - Results: {{ hf.total_results }}
+  - Findings: {{ hf.total_results }} result(s){% if hf.total_results == 0 %} — no substantive hits, likely low-yield{% endif %}
   {% if hf.sample_results %}- Sample links:{% for s in hf.sample_results %}
     - [{{ s.title }}]({{ s.url }}) ({{ s.source }}){% if s.date %} ({{ s.date }}){% endif %}{% endfor %}{% endif %}
 {% endfor %}
+{% elif hypothesis_execution_summary %}
+{% for task_id, runs in hypothesis_execution_summary.items() %}
+- Task {{ task_id }} ({{ task_queries.get(task_id, 'Unknown task') }}):
+  {% for run in runs %}
+  - Hypothesis {{ run.hypothesis_id }}: {{ run.results_count }} result(s){% if run.results_count == 0 %} — no substantive hits{% endif %}{% if run.delta_metrics %} ({{ run.delta_metrics.results_new }} new / {{ run.delta_metrics.results_duplicate }} dup){% endif %}
+  {% endfor %}
+{% endfor %}
+{% else %}
+- No hypothesis findings were recorded in this run.
 {% endif %}
 
 {% if source_counts %}
@@ -51,6 +66,11 @@ Create a detailed markdown report with:
   - {{ source }}: {{ count }}
 {% endfor %}
 {% endif %}
+
+## Scope & Sanity Checks
+- Tasks executed: {{ tasks_executed }}; Total results after dedup: {{ total_results }}; Entities discovered: {{ entities_discovered }}
+- Coverage decisions recorded: {% if coverage_decisions_by_task %}yes ({{ coverage_decisions_by_task|length }} task(s)){% else %}no (only baseline hypotheses or timeouts){% endif %}
+{% if sanity_metrics %}- Per-task: {% for m in sanity_metrics %}[Task {{ m.id }}: {{ m.total_results }} results, {{ m.hypotheses_executed }} hypotheses]{% if not loop.last %}; {% endif %}{% endfor %}{% endif %}
 
 {% if hypotheses_by_task %}
 ## Suggested Investigative Angles
@@ -116,10 +136,10 @@ Summary of executed hypotheses from this run (mode: execution):
 {% endif %}
 
 ## Key Findings
-[Bullet points of most important discoveries]
+[Bullet points of the most important discoveries with inline source cues (e.g., date/source). Lead with primary/official documents; clearly separate social claims as leads.]
 
 ## Detailed Analysis
-[2-3 paragraphs analyzing the findings, connecting entities, explaining relationships]
+[2-3 paragraphs connecting entities, documents, and events. Include short quotes or dates where possible. Note gaps or unverified claims explicitly.]
 
 ## Entity Network
 [Description of key entities and their relationships]
@@ -157,7 +177,7 @@ Summary of executed hypotheses from this run (mode: execution):
 {% if sanity_metrics %}
 ## Sanity Metrics
 
-Quick checks to spot regressions:
+Quick checks to spot regressions (counts should match results.json):
 {% for m in sanity_metrics %}
 - **Task {{ m.id }}**: {{ m.total_results }} results, {{ m.hypotheses_executed }} hypotheses executed{% if m.hypothesis_result_counts %} (per-hyp results: {{ m.hypothesis_result_counts|join(', ') }}){% endif %}
 {% endfor %}

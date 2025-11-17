@@ -1,0 +1,474 @@
+{
+  "entities": [
+    {
+      "entity_id": "E1",
+      "canonical_name": "Operation Nightfall",
+      "entity_type": "event",
+      "aliases": [
+        "Nightfall",
+        "Operation Nightfall"
+      ],
+      "mentions": [
+        {
+          "snippet": "The FSB and GRU coordinated Operation Nightfall in Eastern Ukraine during July 2014.",
+          "char_start": 208,
+          "char_end": 292,
+          "context": "First sentence naming the event and placing it in Eastern Ukraine (July 2014); identifies the operation coordinated by FSB and GRU."
+        }
+      ]
+    },
+    {
+      "entity_id": "E2",
+      "canonical_name": "Federal Security Service",
+      "entity_type": "organization",
+      "aliases": [
+        "FSB",
+        "Federal Security Service (FSB)"
+      ],
+      "mentions": [
+        {
+          "snippet": "The FSB and GRU coordinated Operation Nightfall in Eastern Ukraine during July 2014.",
+          "char_start": 208,
+          "char_end": 292,
+          "context": "First mention of FSB as one of the agencies coordinating Operation Nightfall."
+        }
+      ]
+    },
+    {
+      "entity_id": "E3",
+      "canonical_name": "Main Intelligence Directorate",
+      "entity_type": "organization",
+      "aliases": [
+        "GRU",
+        "Main Intelligence Directorate (GRU)"
+      ],
+      "mentions": [
+        {
+          "snippet": "The FSB and GRU coordinated Operation Nightfall in Eastern Ukraine during July 2014.",
+          "char_start": 208,
+          "char_end": 292,
+          "context": "First mention of GRU as the other agency coordinating Operation Nightfall."
+        }
+      ]
+    },
+    {
+      "entity_id": "E4",
+      "canonical_name": "Colonel Igor Petrov",
+      "entity_type": "person",
+      "aliases": [
+        "Igor Petrov",
+        "Colonel Petrov",
+        "Petrov",
+        "Colonel Igor Petrov (FSB)"
+      ],
+      "mentions": [
+        {
+          "snippet": "Colonel Igor Petrov (FSB) and Major Sergei Ivanov (GRU) led the operation from Moscow, with direct support from the 53rd Anti-Aircraft Brigade based in Kursk.",
+          "char_start": 293,
+          "char_end": 451,
+          "context": "Introduced as FSB operational lead of Operation Nightfall; traveled from Moscow and coordinated with 53rd Brigade in Kursk."
+        }
+      ]
+    },
+    {
+      "entity_id": "E5",
+      "canonical_name": "Major Sergei Ivanov",
+      "entity_type": "person",
+      "aliases": [
+        "Sergei Ivanov",
+        "Major Ivanov",
+        "Ivanov",
+        "Major Sergei Ivanov (GRU)"
+      ],
+      "mentions": [
+        {
+          "snippet": "Colonel Igor Petrov (FSB) and Major Sergei Ivanov (GRU) led the operation from Moscow, with direct support from the 53rd Anti-Aircraft Brigade based in Kursk.",
+          "char_start": 293,
+          "char_end": 451,
+          "context": "Introduced as GRU lead of Operation Nightfall; traveled from Moscow and coordinated with 53rd Brigade in Kursk."
+        }
+      ]
+    },
+    {
+      "entity_id": "E6",
+      "canonical_name": "Moscow",
+      "entity_type": "location",
+      "aliases": [
+        "Moscow"
+      ],
+      "mentions": [
+        {
+          "snippet": "Colonel Igor Petrov (FSB) and Major Sergei Ivanov (GRU) led the operation from Moscow, with direct support from the 53rd Anti-Aircraft Brigade based in Kursk.",
+          "char_start": 293,
+          "char_end": 451,
+          "context": "Identified as the command location from which the operation was led."
+        }
+      ]
+    },
+    {
+      "entity_id": "E7",
+      "canonical_name": "53rd Anti-Aircraft Brigade",
+      "entity_type": "unit",
+      "aliases": [
+        "53rd Brigade",
+        "53rd Anti-Aircraft Brigade",
+        "53rd Brigade's"
+      ],
+      "mentions": [
+        {
+          "snippet": "Colonel Igor Petrov (FSB) and Major Sergei Ivanov (GRU) led the operation from Moscow, with direct support from the 53rd Anti-Aircraft Brigade based in Kursk.",
+          "char_start": 293,
+          "char_end": 451,
+          "context": "Named as the military unit providing direct support and the Buk missile system; based in Kursk."
+        }
+      ]
+    },
+    {
+      "entity_id": "E8",
+      "canonical_name": "Kursk",
+      "entity_type": "location",
+      "aliases": [
+        "Kursk"
+      ],
+      "mentions": [
+        {
+          "snippet": "Colonel Igor Petrov (FSB) and Major Sergei Ivanov (GRU) led the operation from Moscow, with direct support from the 53rd Anti-Aircraft Brigade based in Kursk.",
+          "char_start": 293,
+          "char_end": 451,
+          "context": "Named as the base location of the 53rd Anti-Aircraft Brigade and origin of the Buk missile system."
+        }
+      ]
+    },
+    {
+      "entity_id": "E9",
+      "canonical_name": "Buk missile system",
+      "entity_type": "concept",
+      "aliases": [
+        "Buk",
+        "Buk missile",
+        "Buk missile system"
+      ],
+      "mentions": [
+        {
+          "snippet": "The operation utilized a Buk missile system, which was transported from Russia to Ukraine to support separatist forces in Donetsk.",
+          "char_start": 452,
+          "char_end": 582,
+          "context": "Describes the weapon system central to the operation and its transport from Russia to Ukraine (Donetsk)."
+        }
+      ]
+    },
+    {
+      "entity_id": "E10",
+      "canonical_name": "Russia",
+      "entity_type": "location",
+      "aliases": [
+        "Russia"
+      ],
+      "mentions": [
+        {
+          "snippet": "The operation utilized a Buk missile system, which was transported from Russia to Ukraine to support separatist forces in Donetsk.",
+          "char_start": 452,
+          "char_end": 582,
+          "context": "Country of origin for the Buk missile system transport into Ukraine."
+        }
+      ]
+    },
+    {
+      "entity_id": "E11",
+      "canonical_name": "Ukraine",
+      "entity_type": "location",
+      "aliases": [
+        "Ukraine",
+        "Eastern Ukraine",
+        "Ukrainian"
+      ],
+      "mentions": [
+        {
+          "snippet": "The FSB and GRU coordinated Operation Nightfall in Eastern Ukraine during July 2014.",
+          "char_start": 208,
+          "char_end": 292,
+          "context": "Places the operation in Eastern Ukraine."
+        }
+      ]
+    },
+    {
+      "entity_id": "E12",
+      "canonical_name": "Donetsk",
+      "entity_type": "location",
+      "aliases": [
+        "Donetsk",
+        "Donetsk region"
+      ],
+      "mentions": [
+        {
+          "snippet": "The operation utilized a Buk missile system, which was transported from Russia to Ukraine to support separatist forces in Donetsk.",
+          "char_start": 452,
+          "char_end": 582,
+          "context": "Named as the operational area where the Buk was deployed to support separatists."
+        }
+      ]
+    },
+    {
+      "entity_id": "E13",
+      "canonical_name": "Lieutenant Oleg Markov",
+      "entity_type": "person",
+      "aliases": [
+        "Oleg Markov",
+        "Lieutenant Markov",
+        "Markov",
+        "Lieutenant Oleg Markov (FSB)"
+      ],
+      "mentions": [
+        {
+          "snippet": "Lieutenant Oleg Markov (FSB) and Agent Anna Volkova (FSB) provided tactical support to Colonel Petrov throughout the operation.",
+          "char_start": 1049,
+          "char_end": 1176,
+          "context": "Introduced as an FSB tactical supporter who accompanied the Buk deployment."
+        }
+      ]
+    },
+    {
+      "entity_id": "E14",
+      "canonical_name": "Agent Anna Volkova",
+      "entity_type": "person",
+      "aliases": [
+        "Anna Volkova",
+        "Agent Volkova",
+        "Volkova",
+        "Agent Anna Volkova (FSB)"
+      ],
+      "mentions": [
+        {
+          "snippet": "Lieutenant Oleg Markov (FSB) and Agent Anna Volkova (FSB) provided tactical support to Colonel Petrov throughout the operation.",
+          "char_start": 1049,
+          "char_end": 1176,
+          "context": "Introduced as an FSB agent providing tactical and intelligence support in the operation."
+        }
+      ]
+    },
+    {
+      "entity_id": "E15",
+      "canonical_name": "Captain Dmitri Sokolov",
+      "entity_type": "person",
+      "aliases": [
+        "Dmitri Sokolov",
+        "Captain Sokolov",
+        "Sokolov"
+      ],
+      "mentions": [
+        {
+          "snippet": "On the GRU side, Captain Dmitri Sokolov from Unit 29155 worked alongside Major Ivanov to coordinate military assets.",
+          "char_start": 1177,
+          "char_end": 1293,
+          "context": "Introduced as a GRU officer from Unit 29155 coordinating technical/military assets for the operation."
+        }
+      ]
+    },
+    {
+      "entity_id": "E16",
+      "canonical_name": "Unit 29155",
+      "entity_type": "unit",
+      "aliases": [
+        "Unit 29155",
+        "29155"
+      ],
+      "mentions": [
+        {
+          "snippet": "On the GRU side, Captain Dmitri Sokolov from Unit 29155 worked alongside Major Ivanov to coordinate military assets.",
+          "char_start": 1177,
+          "char_end": 1293,
+          "context": "Named as the GRU unit to which Captain Sokolov is attached; involved in coordination."
+        }
+      ]
+    },
+    {
+      "entity_id": "E17",
+      "canonical_name": "Rostov-on-Don",
+      "entity_type": "location",
+      "aliases": [
+        "Rostov-on-Don",
+        "Rostov"
+      ],
+      "mentions": [
+        {
+          "snippet": "On July 15, 2014, Colonel Igor Petrov and Major Sergei Ivanov traveled together from Moscow to Rostov-on-Don.",
+          "char_start": 1797,
+          "char_end": 1906,
+          "context": "First operational movement: Petrov and Ivanov traveled from Moscow to Rostov-on-Don; Rostov functions as forward base."
+        }
+      ]
+    },
+    {
+      "entity_id": "E18",
+      "canonical_name": "Bellingcat",
+      "entity_type": "organization",
+      "aliases": [
+        "Bellingcat"
+      ],
+      "mentions": [
+        {
+          "snippet": "Bellingcat and The Insider conducted parallel investigations into Operation Nightfall.",
+          "char_start": 3249,
+          "char_end": 3329,
+          "context": "Named as one of the investigative organizations that examined Operation Nightfall."
+        }
+      ]
+    },
+    {
+      "entity_id": "E19",
+      "canonical_name": "The Insider",
+      "entity_type": "organization",
+      "aliases": [
+        "The Insider",
+        "Insider",
+        "The Insider's"
+      ],
+      "mentions": [
+        {
+          "snippet": "Bellingcat and The Insider conducted parallel investigations into Operation Nightfall.",
+          "char_start": 3249,
+          "char_end": 3329,
+          "context": "Named as the investigative outlet that conducted parallel investigation alongside Bellingcat."
+        }
+      ]
+    },
+    {
+      "entity_id": "E20",
+      "canonical_name": "Eliot Higgins",
+      "entity_type": "person",
+      "aliases": [
+        "Eliot Higgins",
+        "Higgins"
+      ],
+      "mentions": [
+        {
+          "snippet": "Eliot Higgins led the Bellingcat investigation team, focusing on open-source intelligence analysis.",
+          "char_start": 3299,
+          "char_end": 3379,
+          "context": "Named as lead of the Bellingcat investigative team, focusing on open-source intelligence work."
+        }
+      ]
+    },
+    {
+      "entity_id": "E21",
+      "canonical_name": "Christo Grozev",
+      "entity_type": "person",
+      "aliases": [
+        "Christo Grozev",
+        "Grozev"
+      ],
+      "mentions": [
+        {
+          "snippet": "Christo Grozev directed The Insider's efforts, specializing in Russian intelligence operations.",
+          "char_start": 3345,
+          "char_end": 3410,
+          "context": "Named as director of The Insider's investigation, specializing in Russian intelligence operations."
+        }
+      ]
+    },
+    {
+      "entity_id": "E22",
+      "canonical_name": "Twitter",
+      "entity_type": "organization",
+      "aliases": [
+        "Twitter"
+      ],
+      "mentions": [
+        {
+          "snippet": "Eliot Higgins and Christo Grozev utilized social media evidence from Twitter and VKontakte to track the Buk convoy's movement from Kursk through Rostov to Donetsk.",
+          "char_start": 3382,
+          "char_end": 3545,
+          "context": "Platform used as a source of social media evidence for tracking the Buk convoy."
+        }
+      ]
+    },
+    {
+      "entity_id": "E23",
+      "canonical_name": "VKontakte",
+      "entity_type": "organization",
+      "aliases": [
+        "VKontakte",
+        "VK"
+      ],
+      "mentions": [
+        {
+          "snippet": "Eliot Higgins and Christo Grozev utilized social media evidence from Twitter and VKontakte to track the Buk convoy's movement from Kursk through Rostov to Donetsk.",
+          "char_start": 3382,
+          "char_end": 3545,
+          "context": "Social media platform used by investigators (The Insider and Bellingcat) to trace the convoy and accounts linked to units."
+        }
+      ]
+    },
+    {
+      "entity_id": "E24",
+      "canonical_name": "Test Investigation Team",
+      "entity_type": "organization",
+      "aliases": [
+        "Test Investigation Team"
+      ],
+      "mentions": [
+        {
+          "snippet": "**Authors**: Test Investigation Team",
+          "char_start": 148,
+          "char_end": 184,
+          "context": "Listed as the (synthetic) authors of the document."
+        }
+      ]
+    },
+    {
+      "entity_id": "E25",
+      "canonical_name": "Open-source intelligence",
+      "entity_type": "concept",
+      "aliases": [
+        "open-source intelligence",
+        "OSINT"
+      ],
+      "mentions": [
+        {
+          "snippet": "Eliot Higgins led the Bellingcat investigation team, focusing on open-source intelligence analysis.",
+          "char_start": 3299,
+          "char_end": 3379,
+          "context": "Describes the investigative methodology used by Bellingcat and Higgins (OSINT)."
+        }
+      ]
+    },
+    {
+      "entity_id": "E26",
+      "canonical_name": "Geotagging",
+      "entity_type": "concept",
+      "aliases": [
+        "geotagging"
+      ],
+      "mentions": [
+        {
+          "snippet": "Eliot Higgins pioneered techniques for tracking the Buk missile system through Twitter geotagging, while Christo Grozev identified key VKontakte accounts linked to the 53rd Anti-Aircraft Brigade and Unit 29155.",
+          "char_start": 5582,
+          "char_end": 5792,
+          "context": "Investigative technique (Twitter geotagging) used to track the Buk missile system movement."
+        }
+      ]
+    },
+    {
+      "entity_id": "E27",
+      "canonical_name": "Photographic evidence",
+      "entity_type": "concept",
+      "aliases": [
+        "photographic evidence",
+        "photographic"
+      ],
+      "mentions": [
+        {
+          "snippet": "Bellingcat analyzed photographic evidence, while The Insider obtained testimony from witnesses in Moscow, Kursk, and Rostov.",
+          "char_start": 3546,
+          "char_end": 3670,
+          "context": "One of the evidence collection methods used by investigators."
+        }
+      ]
+    }
+  ],
+  "metadata": {
+    "report_id": "synthetic_cooccurrence_test",
+    "total_entities_extracted": 27,
+    "extraction_timestamp": "2025-11-17T13:39:53.289147Z"
+  }
+}

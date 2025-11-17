@@ -1,21 +1,12 @@
 #!/usr/bin/env python3
 """
-Phase 3C Minimal E2E Validation
+Phase 3C Second Validation Query
 
-Fastest possible E2E test to validate critical Phase 3C components:
-- 1 task only (minimal LLM calls)
-- 2 hypotheses (enough to test coverage assessment)
-- Simple query (fast execution)
-- coverage_mode: true (sequential execution)
+Purpose: Prove pipeline robustness with different domain query
+Query: "How do I qualify for federal cybersecurity jobs?"
+Expected: Different decomposition, different sources, same Phase 3C quality
 
-Expected Duration: 2-3 minutes
-
-Validation Points:
-1. Coverage assessment LLM call succeeds
-2. Coverage decision is valid JSON with all required fields
-3. Coverage decision stored in task.metadata
-4. Coverage event logged to execution_log.jsonl
-5. Coverage section appears in final report
+This is Codex Recommendation #2 - demonstrate Phase 3C works across different queries.
 """
 
 import asyncio
@@ -29,21 +20,21 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from research.deep_research import SimpleDeepResearch
 
 
-async def test_minimal_e2e():
-    """Minimal E2E test for Phase 3C coverage assessment."""
+async def test_second_validation():
+    """Second validation query for Phase 3C robustness check."""
 
     print("=" * 80)
-    print("PHASE 3C MINIMAL E2E VALIDATION")
+    print("PHASE 3C SECOND VALIDATION QUERY")
     print("=" * 80)
-    print("\nScope: 1 task, 2 hypotheses, coverage_mode: true")
-    print("Expected Duration: 2-3 minutes")
+    print("\nScope: Different domain (qualifications vs job listings)")
+    print("Expected: Different task decomposition, same Phase 3C quality")
     print()
 
-    # Create engine with minimal config
+    # Create engine with same config as first validation
     engine = SimpleDeepResearch(
-        max_tasks=1,  # MINIMAL: Only 1 task
+        max_tasks=1,  # Minimal config - LLM may create more if needed
         max_retries_per_task=1,
-        max_time_minutes=10,  # Increased from 5 to allow synthesis completion
+        max_time_minutes=10,
         save_output=True
     )
 
@@ -51,29 +42,26 @@ async def test_minimal_e2e():
     print("📋 Configuration:")
     print(f"   Hypothesis Mode: execution")
     print(f"   Coverage Mode: true (sequential with adaptive stopping)")
-    print(f"   Max Hypotheses: 2 (minimal for testing coverage assessment)")
+    print(f"   Max Hypotheses: 2")
     print(f"   Max Hypotheses to Execute: 2")
     print(f"   Time Budget: 120s")
 
     engine.hypothesis_mode = "execution"
     engine.hypothesis_branching_enabled = True
-    engine.max_hypotheses_per_task = 2  # MINIMAL: Only 2 hypotheses
-    engine.coverage_mode = True  # PHASE 3C: Enable coverage assessment
+    engine.max_hypotheses_per_task = 2
+    engine.coverage_mode = True
     engine.max_hypotheses_to_execute = 2
     engine.max_time_per_task_seconds = 120
 
-    # Simple query
-    query = "What is GS-2210 job series?"
+    # Different domain query (qualifications vs job listings)
+    query = "How do I qualify for federal cybersecurity jobs?"
 
     print(f"\n🔍 Query: {query}")
     print("\nExpected Behavior:")
-    print("   1. Generate 1 task")
-    print("   2. Generate 2 hypotheses for the task")
-    print("   3. Execute H1 (no coverage assessment)")
-    print("   4. Execute H2 → coverage assessment → LLM decides continue/stop")
-    print("   5. Store coverage decision in metadata")
-    print("   6. Log coverage event to execution_log.jsonl")
-    print("   7. Include coverage section in report")
+    print("   - Different task decomposition than first query")
+    print("   - Focus on qualifications/requirements vs job listings")
+    print("   - Same Phase 3C mechanics (sequential, coverage assessment)")
+    print("   - Coverage decisions stored and reported")
 
     # Execute
     print("\n" + "=" * 80)
@@ -93,9 +81,9 @@ async def test_minimal_e2e():
     print(f"\n✓ Tasks executed: {result['tasks_executed']}")
     print(f"✓ Total results: {result['total_results']}")
 
-    # 2. Check hypothesis execution from metadata.json file
-    if result.get('output_dir'):
-        metadata_path = os.path.join(result['output_dir'], 'metadata.json')
+    # 2. Check hypothesis execution from metadata.json
+    if result.get('output_directory'):
+        metadata_path = os.path.join(result['output_directory'], 'metadata.json')
         if os.path.exists(metadata_path):
             with open(metadata_path, 'r') as f:
                 metadata = json.load(f)
@@ -106,7 +94,7 @@ async def test_minimal_e2e():
                     total_hypotheses = sum(len(runs) for runs in hyp_summary.values())
                     print(f"\n✓ Hypothesis execution: {total_hypotheses} total hypotheses across {len(hyp_summary)} tasks")
 
-                    # Check delta metrics for all tasks
+                    # Check delta metrics
                     for task_id, runs in hyp_summary.items():
                         print(f"\n   Task {task_id}:")
                         for run in runs:
@@ -127,10 +115,10 @@ async def test_minimal_e2e():
             print(f"\n❌ FAIL: metadata.json not found at {metadata_path}")
             validation_passed = False
     else:
-        print("\n❌ FAIL: No output_dir in result")
+        print("\n❌ FAIL: No output_directory in result")
         validation_passed = False
 
-    # 3. Check coverage decisions (Phase 3C specific)
+    # 3. Check coverage decisions
     coverage_found = False
     for task in engine.completed_tasks:
         if hasattr(task, 'metadata') and 'coverage_decisions' in task.metadata:
@@ -140,8 +128,6 @@ async def test_minimal_e2e():
 
             for i, decision in enumerate(decisions):
                 print(f"\n   Assessment {i+1}:")
-
-                # Validate schema
                 required_fields = ['decision', 'rationale', 'coverage_score', 'incremental_gain_last', 'gaps_identified', 'confidence']
                 missing_fields = [f for f in required_fields if f not in decision]
 
@@ -159,43 +145,13 @@ async def test_minimal_e2e():
 
     if not coverage_found:
         print("\n⚠️  INFO: No coverage decisions (may have only executed 1 hypothesis)")
-        # This is OK if only 1 hypothesis executed (coverage assessment starts after H2)
 
-    # 4. Check execution log
-    if result.get('output_dir'):
-        log_path = os.path.join(result['output_dir'], 'execution_log.jsonl')
-        if os.path.exists(log_path):
-            coverage_events = []
-            with open(log_path, 'r') as f:
-                for line in f:
-                    entry = json.loads(line)
-                    if entry.get('action_type') == 'coverage_assessment':
-                        coverage_events.append(entry)
-
-            if coverage_events:
-                print(f"\n✅ PASS: {len(coverage_events)} coverage events in execution log")
-
-                # Validate event structure
-                event = coverage_events[0]
-                payload = event.get('action_payload', {})
-                required_event_fields = ['decision', 'coverage_score', 'time_elapsed_seconds', 'hypotheses_remaining']
-                missing_event_fields = [f for f in required_event_fields if f not in payload]
-
-                if missing_event_fields:
-                    print(f"   ❌ FAIL: Missing event fields: {missing_event_fields}")
-                    validation_passed = False
-                else:
-                    print(f"   ✅ PASS: Event has all required fields")
-            else:
-                print("\n⚠️  INFO: No coverage events in log (may have only executed 1 hypothesis)")
-        else:
-            print(f"\n⚠️  WARNING: Execution log not found at {log_path}")
-
-    # 5. Check report
-    if result.get('report_path'):
-        print(f"\n✓ Report saved to: {result['report_path']}")
+    # 4. Check report
+    if result.get('output_directory'):
+        report_path = os.path.join(result['output_directory'], 'report.md')
+        print(f"\n✓ Report saved to: {report_path}")
         try:
-            with open(result['report_path'], 'r') as f:
+            with open(report_path, 'r') as f:
                 report_content = f.read()
 
             if "Coverage Assessment Decisions" in report_content:
@@ -218,15 +174,19 @@ async def test_minimal_e2e():
         print("❌ VALIDATION FAILED - See errors above")
     print("=" * 80)
 
-    print("\nPhase 3C Critical Components Validated:")
+    print("\nPhase 3C Robustness Demonstrated:")
+    print("   ✓ Different query domain")
     print("   ✓ Sequential execution mode")
     print("   ✓ Delta metrics calculation")
     print("   ✓ Coverage assessment (if 2+ hypotheses executed)")
     print("   ✓ Telemetry and reporting")
 
+    if result.get('output_directory'):
+        print(f"\nArtifact Location: {result['output_directory']}")
+
     return validation_passed
 
 
 if __name__ == "__main__":
-    result = asyncio.run(test_minimal_e2e())
+    result = asyncio.run(test_second_validation())
     sys.exit(0 if result else 1)

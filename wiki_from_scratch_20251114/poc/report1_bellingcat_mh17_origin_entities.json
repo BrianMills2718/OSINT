@@ -1,0 +1,844 @@
+{
+  "entities": [
+    {
+      "entity_id": "E1",
+      "canonical_name": "Bellingcat",
+      "entity_type": "organization",
+      "aliases": [
+        "Bellingcat Investigation Team",
+        "Bellingcat MH17 investigation team"
+      ],
+      "mentions": [
+        {
+          "snippet": "This report analyses evidence from open sources, in particular social media, relating to the Buk missile launcher filmed and photographed in eastern Ukraine on July 17th ... The Bellingcat MH17 investigation team believes ...",
+          "context": "Authoring investigative organization responsible for the analysis and conclusions in the report; repeated as 'Bellingcat MH17 investigation team'."
+        },
+        {
+          "snippet": "It is the opinion of the Bellingcat MH17 investigation team that there is undeniable evidence ...",
+          "context": "Expresses the organization's conclusions about the Buk launcher and its movements."
+        }
+      ]
+    },
+    {
+      "entity_id": "E2",
+      "canonical_name": "Bellingcat MH17 investigation team",
+      "entity_type": "organization",
+      "aliases": [
+        "Bellingcat Investigation Team",
+        "Bellingcat MH17 team"
+      ],
+      "mentions": [
+        {
+          "snippet": "The Bellingcat MH17 investigation team also believes that many of the unresolved questions about the downing of MH17 will be answered by the official investigation ...",
+          "context": "Specific team within Bellingcat credited as the authoring investigative unit and source of the report's analysis and opinions."
+        }
+      ]
+    },
+    {
+      "entity_id": "E3",
+      "canonical_name": "Timmi Allen",
+      "entity_type": "person",
+      "aliases": [],
+      "mentions": [
+        {
+          "snippet": "Authors: Bellingcat Investigation Team (Timmi Allen, Andrew Haggard, Eliot Higgins, Veli-Pekka Kivimaki, Iggy Ostanin, Aric Toler)",
+          "context": "Listed as one of the named authors of the report."
+        }
+      ]
+    },
+    {
+      "entity_id": "E4",
+      "canonical_name": "Andrew Haggard",
+      "entity_type": "person",
+      "aliases": [],
+      "mentions": [
+        {
+          "snippet": "Authors: Bellingcat Investigation Team (Timmi Allen, Andrew Haggard, Eliot Higgins, Veli-Pekka Kivimaki, Iggy Ostanin, Aric Toler)",
+          "context": "Listed as one of the named authors of the report."
+        }
+      ]
+    },
+    {
+      "entity_id": "E5",
+      "canonical_name": "Eliot Higgins",
+      "entity_type": "person",
+      "aliases": [],
+      "mentions": [
+        {
+          "snippet": "Authors: Bellingcat Investigation Team (Timmi Allen, Andrew Haggard, Eliot Higgins, Veli-Pekka Kivimaki, Iggy Ostanin, Aric Toler)",
+          "context": "Listed as one of the named authors of the report; prominent Bellingcat investigator."
+        }
+      ]
+    },
+    {
+      "entity_id": "E6",
+      "canonical_name": "Veli-Pekka Kivimaki",
+      "entity_type": "person",
+      "aliases": [
+        "Veli-Pekka Kivimäki"
+      ],
+      "mentions": [
+        {
+          "snippet": "Authors: Bellingcat Investigation Team (Timmi Allen, Andrew Haggard, Eliot Higgins, Veli-Pekka Kivimaki, Iggy Ostanin, Aric Toler)",
+          "context": "Listed as one of the named authors of the report."
+        }
+      ]
+    },
+    {
+      "entity_id": "E7",
+      "canonical_name": "Iggy Ostanin",
+      "entity_type": "person",
+      "aliases": [],
+      "mentions": [
+        {
+          "snippet": "Authors: Bellingcat Investigation Team (Timmi Allen, Andrew Haggard, Eliot Higgins, Veli-Pekka Kivimaki, Iggy Ostanin, Aric Toler)",
+          "context": "Listed as one of the named authors of the report."
+        }
+      ]
+    },
+    {
+      "entity_id": "E8",
+      "canonical_name": "Aric Toler",
+      "entity_type": "person",
+      "aliases": [],
+      "mentions": [
+        {
+          "snippet": "Authors: Bellingcat Investigation Team (Timmi Allen, Andrew Haggard, Eliot Higgins, Veli-Pekka Kivimaki, Iggy Ostanin, Aric Toler)",
+          "context": "Listed as one of the named authors of the report."
+        }
+      ]
+    },
+    {
+      "entity_id": "E9",
+      "canonical_name": "Paris Match",
+      "entity_type": "organization",
+      "aliases": [
+        "Paris Match magazine"
+      ],
+      "mentions": [
+        {
+          "snippet": "On July 25th, the weekly magazine Paris Match published a photograph of a Buk missile launcher being transported on a low-loader truck through the separatist-controlled city of Donetsk.",
+          "context": "News magazine that published a key photograph used to link the Buk in Ukraine to other evidence."
+        },
+        {
+          "snippet": "Inquiries by Storyful with Paris Match established that the photograph was taken at 'about 11 am on the morning of July 17.'",
+          "context": "Source of timing information for the Paris Match photograph after inquiries by Storyful."
+        }
+      ]
+    },
+    {
+      "entity_id": "E10",
+      "canonical_name": "Storyful",
+      "entity_type": "organization",
+      "aliases": [],
+      "mentions": [
+        {
+          "snippet": "Inquiries by Storyful with Paris Match established that the photograph was taken at 'about 11 am on the morning of July 17.'",
+          "context": "Media verification organization that queried Paris Match about the photograph's timing."
+        }
+      ]
+    },
+    {
+      "entity_id": "E11",
+      "canonical_name": "Twitter",
+      "entity_type": "organization",
+      "aliases": [
+        "Twitter post",
+        "Twitter posts"
+      ],
+      "mentions": [
+        {
+          "snippet": "A Twitter post from 12:32PM (local time) on July 17 reports the sighting of a Buk at the intersection of Shakhtostroiteley Boulevard and Ilych Avenue ...",
+          "context": "Social media platform used for eyewitness reports and posts referenced to time and location sightings."
+        },
+        {
+          "snippet": "Three tweets that describe the missile launcher and an accompanying convoy travelling through Torez were posted at 12:07pm, 12:15pm, and 12:26pm local time.",
+          "context": "Source of local eyewitness timing on the Buk convoy movement."
+        }
+      ]
+    },
+    {
+      "entity_id": "E12",
+      "canonical_name": "VKontakte",
+      "entity_type": "organization",
+      "aliases": [
+        "VK",
+        "VKontakte page",
+        "Overheard in Torez"
+      ],
+      "mentions": [
+        {
+          "snippet": "The Bellingcat MH17 investigation team has been unable to find any earlier example of the photograph being shared than a post made by a user of the Russian social media site VKontakte (VK) at 8:09pm (Kyiv time) on July 17th.",
+          "context": "Russian social network where a key photograph was posted; used for timeline reconstruction."
+        },
+        {
+          "snippet": "The investigation team suspects that the image was originally posted in the 'Overheard in Torez' VKontakte page, but has since been deleted.",
+          "context": "Reference to a specific VK page suspected as the original source for an image."
+        }
+      ]
+    },
+    {
+      "entity_id": "E13",
+      "canonical_name": "YouTube",
+      "entity_type": "organization",
+      "aliases": [],
+      "mentions": [
+        {
+          "snippet": "On July 17th a video was uploaded to YouTube showing the Buk photographed in Donetsk travelling through the town of Zuhres ...",
+          "context": "Video-hosting platform used to host videos that show the Buk's movements and permit geolocation of recordings."
+        },
+        {
+          "snippet": "A photograph and video posted on Twitter and YouTube showed a Buk missile launcher in the town of Snizhne.",
+          "context": "Source of imagery used to geolocate the Buk in Snizhne and other towns."
+        }
+      ]
+    },
+    {
+      "entity_id": "E14",
+      "canonical_name": "Instagram",
+      "entity_type": "organization",
+      "aliases": [],
+      "mentions": [
+        {
+          "snippet": "The Bellingcat MH17 investigation team has collected 16 videos posted on social media sites including VKontakte, YouTube, Instagram, and Odnoklassniki that show the 53rd Brigade's convoy ...",
+          "context": "Named as one of the social media platforms where convoy videos were posted."
+        }
+      ]
+    },
+    {
+      "entity_id": "E15",
+      "canonical_name": "Odnoklassniki",
+      "entity_type": "organization",
+      "aliases": [],
+      "mentions": [
+        {
+          "snippet": "The Bellingcat MH17 investigation team has collected 16 videos posted on social media sites including VKontakte, YouTube, Instagram, and Odnoklassniki that show the 53rd Brigade's convoy ...",
+          "context": "Russian social media platform cited as a source of convoy videos."
+        }
+      ]
+    },
+    {
+      "entity_id": "E16",
+      "canonical_name": "The Guardian",
+      "entity_type": "organization",
+      "aliases": [
+        "Guardian"
+      ],
+      "mentions": [
+        {
+          "snippet": "Journalists from the Guardian and Buzzfeed visited Torez on July 22nd and interviewed locals who confirmed both the time and route the Buk missile launcher took through Torez on the way to Snizhne along the H21 motorway.",
+          "context": "News organization whose journalists conducted on-the-ground reporting confirming convoy eyewitness accounts."
+        }
+      ]
+    },
+    {
+      "entity_id": "E17",
+      "canonical_name": "BuzzFeed",
+      "entity_type": "organization",
+      "aliases": [
+        "Buzzfeed"
+      ],
+      "mentions": [
+        {
+          "snippet": "Journalists from the Guardian and Buzzfeed visited Torez on July 22nd and interviewed locals ...",
+          "context": "News organization whose journalists visited Torez and corroborated eyewitness reports."
+        }
+      ]
+    },
+    {
+      "entity_id": "E18",
+      "canonical_name": "Associated Press",
+      "entity_type": "organization",
+      "aliases": [
+        "AP"
+      ],
+      "mentions": [
+        {
+          "snippet": "The AP reported on August 25th that 'On July 17, AP reporters in the town of Snizhne saw a tracked launcher with four SA-11 surface-to-air missiles parked on a street.'",
+          "context": "News agency reporting on an eyewitness AP sighting of a Buk launcher in Snizhne and linking it temporally to MH17."
+        }
+      ]
+    },
+    {
+      "entity_id": "E19",
+      "canonical_name": "Russian Ministry of Defence",
+      "entity_type": "organization",
+      "aliases": [
+        "Russian Ministry of Defense",
+        "Ministry of Defence"
+      ],
+      "mentions": [
+        {
+          "snippet": "The Russian Ministry of Defence claimed in a press conference on July 21 that this video was in fact filmed in Ukrainian government-controlled territory ...",
+          "context": "Official Russian government body that made a public statement contesting the video's location and authenticity."
+        }
+      ]
+    },
+    {
+      "entity_id": "E20",
+      "canonical_name": "Ukrainian Ministry of Interior",
+      "entity_type": "organization",
+      "aliases": [
+        "Ministry of Interior (Ukraine)"
+      ],
+      "mentions": [
+        {
+          "snippet": "The final video was posted online by the Ukrainian Ministry of Interior on July 18.",
+          "context": "Ukrainian government body that published video evidence showing the Buk launcher in Luhansk area."
+        }
+      ]
+    },
+    {
+      "entity_id": "E21",
+      "canonical_name": "Malaysia Airlines",
+      "entity_type": "organization",
+      "aliases": [],
+      "mentions": [
+        {
+          "snippet": "This report analyses evidence ... relating to the Buk missile launcher filmed and photographed in eastern Ukraine on July 17th that many have linked to the downing of Malaysia Airlines Flight 17.",
+          "context": "Airline operator of Flight MH17 referenced in connection to the downing event."
+        }
+      ]
+    },
+    {
+      "entity_id": "E22",
+      "canonical_name": "Malaysia Airlines Flight 17",
+      "entity_type": "event",
+      "aliases": [
+        "MH17",
+        "Flight MH17",
+        "downing of MH17"
+      ],
+      "mentions": [
+        {
+          "snippet": "This report analyses evidence ... relating to the Buk missile launcher filmed and photographed in eastern Ukraine on July 17th that many have linked to the downing of Malaysia Airlines Flight 17.",
+          "context": "Central event in the report: the July 17, 2014 shootdown of Malaysia Airlines Flight 17 over eastern Ukraine."
+        },
+        {
+          "snippet": "Three hours prior to the time MH17 was downed was 1:20pm local time, supporting the time indicated by the shadows in the Snizhne photograph.",
+          "context": "Used as temporal anchor for establishing the Buk's location relative to the MH17 downing."
+        }
+      ]
+    },
+    {
+      "entity_id": "E23",
+      "canonical_name": "Buk missile system",
+      "entity_type": "concept",
+      "aliases": [
+        "Buk missile launcher",
+        "Buk",
+        "Buk system",
+        "Buk missile launcher filmed on July 17"
+      ],
+      "mentions": [
+        {
+          "snippet": "This report analyses evidence from open sources ... relating to the Buk missile launcher filmed and photographed in eastern Ukraine on July 17th ...",
+          "context": "Primary weapons system investigated; central technical subject of the report's tracking and forensic comparison."
+        },
+        {
+          "snippet": "The Buk missile system was unloaded in Snizhne and was then transported on the same low-loader truck to separatist-controlled Luhansk, now missing at least one missile.",
+          "context": "Describes movements and changes to the Buk system across locations on July 17–18."
+        }
+      ]
+    },
+    {
+      "entity_id": "E24",
+      "canonical_name": "Buk M-1",
+      "entity_type": "concept",
+      "aliases": [
+        "Buk M1",
+        "Buk M-1 surface-to-air system"
+      ],
+      "mentions": [
+        {
+          "snippet": "The bulky missile system is also known as a Buk M-1.",
+          "context": "Alternative designation of the Buk system referenced by AP eyewitnesses in Snizhne."
+        }
+      ]
+    },
+    {
+      "entity_id": "E25",
+      "canonical_name": "SA-11 surface-to-air missile",
+      "entity_type": "concept",
+      "aliases": [
+        "SA-11"
+      ],
+      "mentions": [
+        {
+          "snippet": "AP reporters in the town of Snizhne saw a tracked launcher with four SA-11 surface-to-air missiles parked on a street.",
+          "context": "Weapon type (NATO designation) associated with the Buk system as observed in Snizhne."
+        }
+      ]
+    },
+    {
+      "entity_id": "E26",
+      "canonical_name": "Buk 3×2",
+      "entity_type": "concept",
+      "aliases": [
+        "Buk 3x2",
+        "Buk 3×2 (middle number obscured)",
+        "3×2"
+      ],
+      "mentions": [
+        {
+          "snippet": "The Bellingcat MH17 investigation team refers to this Buk as 'Buk 3×2' as the middle number appears to have been worn off.",
+          "context": "Specific vehicle identifier used by Bellingcat to track and compare the suspect Buk across videos and photographs."
+        },
+        {
+          "snippet": "It appears in 8 of the 16 videos showing the convoy travelling between June 23rd and June 25th ... the vehicle seen in the convoy ... is the same vehicle.",
+          "context": "Used to link the Buk seen in Russia to the Buk seen in eastern Ukraine on July 17."
+        }
+      ]
+    },
+    {
+      "entity_id": "E27",
+      "canonical_name": "Buk 312",
+      "entity_type": "concept",
+      "aliases": [
+        "Buk 312 filmed in Ukraine"
+      ],
+      "mentions": [
+        {
+          "snippet": "Many of the other photographs are clearly not matches for the Paris Match Buk, including Buk 312 filmed in Ukraine.",
+          "context": "Another identified Buk vehicle used as a negative comparison when matching side skirt fingerprints and markings."
+        }
+      ]
+    },
+    {
+      "entity_id": "E28",
+      "canonical_name": "53rd Anti-Aircraft Missile Brigade",
+      "entity_type": "unit",
+      "aliases": [
+        "53rd Anti-Aircraft Brigade",
+        "53rd Brigade",
+        "53rd Brigade (Kursk)"
+      ],
+      "mentions": [
+        {
+          "snippet": "It is the opinion of the Bellingcat MH17 investigation team that the same Buk was part of a convoy travelling from the 53rd Anti-Aircraft Missile Brigade in Kursk to near the Ukrainian border as part of a training exercise between June 22nd and July 25th ...",
+          "context": "Russian military unit identified as the origin of the convoy that included the suspect Buk."
+        },
+        {
+          "snippet": "The Bellingcat MH17 investigation team has collected 16 videos posted on social media sites ... that show the 53rd Brigade's convoy moving from Kursk on June 23rd to Millerovo on June 25th.",
+          "context": "Linking social media evidence to the brigade's convoy movements."
+        }
+      ]
+    },
+    {
+      "entity_id": "E29",
+      "canonical_name": "Kursk",
+      "entity_type": "location",
+      "aliases": [],
+      "mentions": [
+        {
+          "snippet": "The Bellingcat MH17 investigation team refers to this Buk as 'Buk 3×2' ... travelling through Russia towards to the Ukrainian border in late June 2014.",
+          "context": "City in Russia where the 53rd Anti-Aircraft Missile Brigade is based and origin point of the June convoy."
+        },
+        {
+          "snippet": "Some of these vehicles returned to the 53rd Anti-Aircraft Missile Brigade base in Kursk and joined the July 19th convoy from the base ...",
+          "context": "Referenced as the site of the brigade base and convoys' origin/return point."
+        }
+      ]
+    },
+    {
+      "entity_id": "E30",
+      "canonical_name": "H21 motorway",
+      "entity_type": "location",
+      "aliases": [
+        "H21"
+      ],
+      "mentions": [
+        {
+          "snippet": "The location of the photograph was precisely located, showing an eastward direction of travel along the H21 motorway.",
+          "context": "Major road used to map the Buk's route through Donetsk region, linking towns mentioned in the convoy route."
+        },
+        {
+          "snippet": "The Buk missile launcher took through Torez on the way to Snizhne along the H21 motorway.",
+          "context": "Used to substantiate the route of the Buk from Donetsk through Torez to Snizhne."
+        }
+      ]
+    },
+    {
+      "entity_id": "E31",
+      "canonical_name": "Donetsk (Ukraine)",
+      "entity_type": "location",
+      "aliases": [
+        "Donetsk"
+      ],
+      "mentions": [
+        {
+          "snippet": "On July 25th, the weekly magazine Paris Match published a photograph of a Buk missile launcher being transported on a low-loader truck through the separatist-controlled city of Donetsk.",
+          "context": "City in eastern Ukraine where a Paris Match photograph placed the Buk on July 17."
+        }
+      ]
+    },
+    {
+      "entity_id": "E32",
+      "canonical_name": "Shakhtostroiteley Boulevard",
+      "entity_type": "location",
+      "aliases": [
+        "Shakhtostroiteley Blvd"
+      ],
+      "mentions": [
+        {
+          "snippet": "A Twitter post from 12:32PM (local time) on July 17 reports the sighting of a Buk at the intersection of Shakhtostroiteley Boulevard and Ilych Avenue heading east in the direction of Makiivka.",
+          "context": "Street intersection in Donetsk used as a specific geolocation reported on Twitter for the Buk sighting."
+        }
+      ]
+    },
+    {
+      "entity_id": "E33",
+      "canonical_name": "Ilych Avenue",
+      "entity_type": "location",
+      "aliases": [
+        "Ilych Ave"
+      ],
+      "mentions": [
+        {
+          "snippet": "A Twitter post from 12:32PM (local time) on July 17 reports the sighting of a Buk at the intersection of Shakhtostroiteley Boulevard and Ilych Avenue heading east in the direction of Makiivka.",
+          "context": "Street intersection in Donetsk cited in a Twitter sighting of the Buk on July 17."
+        }
+      ]
+    },
+    {
+      "entity_id": "E34",
+      "canonical_name": "Makiivka",
+      "entity_type": "location",
+      "aliases": [
+        "Makiivka (Makiyivka)"
+      ],
+      "mentions": [
+        {
+          "snippet": "A Twitter post from 12:32PM ... heading east in the direction of Makiivka.",
+          "context": "Town east of Donetsk mentioned as on the Buk's eastward route; later referenced as a town where the low-loader was photographed in August."
+        },
+        {
+          "snippet": "On August 6th 2014, a photographed was shared online showing the low-loader truck carrying a military vehicle through the town of Makiivka, just east of Donetsk.",
+          "context": "Location where the same low-loader was observed again after July 17."
+        }
+      ]
+    },
+    {
+      "entity_id": "E35",
+      "canonical_name": "Zuhres",
+      "entity_type": "location",
+      "aliases": [
+        "Zuhres (Zugres)"
+      ],
+      "mentions": [
+        {
+          "snippet": "On July 17th a video was uploaded to YouTube showing the Buk photographed in Donetsk travelling through the town of Zuhres, approximately 36 kilometers east along H21 ...",
+          "context": "Town on the H21 route where video evidence placed the Buk continuing eastwards from Donetsk."
+        }
+      ]
+    },
+    {
+      "entity_id": "E36",
+      "canonical_name": "Shakhtarsk",
+      "entity_type": "location",
+      "aliases": [],
+      "mentions": [
+        {
+          "snippet": "A tweet posted at 12:41PM (Kyiv time) reports that three tanks and a Buk covered in netting passed by Shakhtarsk, a city that lies east of Zuhres and west of Torez ...",
+          "context": "Town cited in an eyewitness tweet between Zuhres and Torez on the H21 route of the convoy."
+        }
+      ]
+    },
+    {
+      "entity_id": "E37",
+      "canonical_name": "Torez",
+      "entity_type": "location",
+      "aliases": [],
+      "mentions": [
+        {
+          "snippet": "Three tweets that describe the missile launcher and an accompanying convoy travelling through Torez were posted at 12:07pm, 12:15pm, and 12:26pm local time.",
+          "context": "Town where multiple eyewitness social media posts reported the Buk convoy passing en route to Snizhne."
+        },
+        {
+          "snippet": "The investigation team suspects that the image was originally posted in the 'Overheard in Torez' VKontakte page ...",
+          "context": "Location linked to a VKontakte page suspected as an original source for a widely shared photograph."
+        }
+      ]
+    },
+    {
+      "entity_id": "E38",
+      "canonical_name": "Snizhne",
+      "entity_type": "location",
+      "aliases": [
+        "Snizhne (Snezhnoye)"
+      ],
+      "mentions": [
+        {
+          "snippet": "A photograph and video posted on Twitter and YouTube showed a Buk missile launcher in the town of Snizhne. Unlike previous images and video, the Buk was not shown on a low-loader truck, but moving under its own power.",
+          "context": "Town where the Buk was filmed moving under its own power and where the system was reportedly unloaded prior to the MH17 downing."
+        },
+        {
+          "snippet": "The photograph was also located to 13a Karapetyan Street, less than 1 kilometer northwest of the location on the video. Based on the shadows in the photograph, the photograph was taken at approximately 1:30PM.",
+          "context": "Provides a specific geolocation and timestamp estimation for the Snizhne image."
+        }
+      ]
+    },
+    {
+      "entity_id": "E39",
+      "canonical_name": "13a Karapetyan Street",
+      "entity_type": "location",
+      "aliases": [
+        "13a Karapetyan St"
+      ],
+      "mentions": [
+        {
+          "snippet": "The photograph was also located to 13a Karapetyan Street, less than 1 kilometer northwest of the location on the video.",
+          "context": "Specific street address in Snizhne where a Buk photograph was geolocated."
+        }
+      ]
+    },
+    {
+      "entity_id": "E40",
+      "canonical_name": "Luhansk",
+      "entity_type": "location",
+      "aliases": [
+        "Luhansk (separatist-held area)"
+      ],
+      "mentions": [
+        {
+          "snippet": "Investigations by Bellingcat have shown this statement from the Russian Ministry of Defence to be untrue, and it has been possible to find the exact location in the separatist-held area of Luhansk where this video was filmed.",
+          "context": "Region where a later video showed the Buk back on a low-loader but missing a missile; Bellingcat geolocated the filming site to separatist-held Luhansk."
+        }
+      ]
+    },
+    {
+      "entity_id": "E41",
+      "canonical_name": "Krasnoarmeysk",
+      "entity_type": "location",
+      "aliases": [
+        "Krasnoarmeysk (as referenced by Russian MoD)"
+      ],
+      "mentions": [
+        {
+          "snippet": "The Russian Ministry of Defence claimed ... 'This video was made in the town of Krasnoarmeysk, as evidenced by the billboard you see in the background ... Krasnoarmeysk has been controlled by the Ukrainian military since May 11.'",
+          "context": "Town the Russian MoD asserted as the filming location (a claim disputed by Bellingcat)."
+        }
+      ]
+    },
+    {
+      "entity_id": "E42",
+      "canonical_name": "34 Dnepropetrovsk Street",
+      "entity_type": "location",
+      "aliases": [
+        "34 Dnepropetrovsk St"
+      ],
+      "mentions": [
+        {
+          "snippet": "This is clearly a fabrication. This video was made in the town of Krasnoarmeysk, as evidenced by the billboard you see in the background, advertising a car dealership at 34 Dnepropetrovsk Street.",
+          "context": "Specific street address cited by the Russian MoD as evidence for their claimed filming location in Krasnoarmeysk."
+        }
+      ]
+    },
+    {
+      "entity_id": "E43",
+      "canonical_name": "Stary Oskol",
+      "entity_type": "location",
+      "aliases": [
+        "Stary Oskol (Staryy Oskol)"
+      ],
+      "mentions": [
+        {
+          "snippet": "The Bellingcat MH17 investigation team has collected 16 videos ... that show the 53rd Brigade's convoy moving from Kursk on June 23rd to Millerovo on June 25th. ... side skirt profile with the highest correlation is Buk 3×2 filmed transported near Stary Oskol in June.",
+          "context": "Location near which Buk 3×2 was filmed in June and used for side skirt damage/fingerprint comparisons."
+        },
+        {
+          "snippet": "Footage filmed in Fedoseyevka on July 19th appears to place the convoy at its earliest point in the route, travelling through the town of Stary Oskol ...",
+          "context": "Part of the July convoy route in Russia documented by videos."
+        }
+      ]
+    },
+    {
+      "entity_id": "E44",
+      "canonical_name": "Millerovo",
+      "entity_type": "location",
+      "aliases": [],
+      "mentions": [
+        {
+          "snippet": "The Bellingcat MH17 investigation team has collected 16 videos ... that show the 53rd Brigade's convoy moving from Kursk on June 23rd to Millerovo on June 25th.",
+          "context": "Town on the convoy route between Kursk and the Ukrainian border recorded in June convoy footage."
+        }
+      ]
+    },
+    {
+      "entity_id": "E45",
+      "canonical_name": "Alexeyevka",
+      "entity_type": "location",
+      "aliases": [
+        "Alexeevka",
+        "Alexeyevka (Alexeevka)"
+      ],
+      "mentions": [
+        {
+          "snippet": "This damage is in fact visible in two videos of Buk 3×2 filmed in Russia, one in Stary Oskol showing the damage from behind, and another from Alexeyevka showing the same damage from the opposite direction.",
+          "context": "Town where one of the confirming videos of Buk 3×2's side skirt damage was filmed; also part of July convoy route (Alexeevka/Alexeevka spelling variants present)."
+        },
+        {
+          "snippet": "Footage filmed in Fedoseyevka on July 19th appears to place the convoy at its earliest point in the route, travelling through the town of Stary Oskol, then to Alexeevka southeast of Stary Oskol ...",
+          "context": "Part of the July convoy route in Russia."
+        }
+      ]
+    },
+    {
+      "entity_id": "E46",
+      "canonical_name": "Olkhovatka",
+      "entity_type": "location",
+      "aliases": [],
+      "mentions": [
+        {
+          "snippet": "the last sighting further southeast in the town of Olkhovatka on July 20th.",
+          "context": "Final documented sighting location of the July convoy route in Russia."
+        }
+      ]
+    },
+    {
+      "entity_id": "E47",
+      "canonical_name": "Fedoseyevka",
+      "entity_type": "location",
+      "aliases": [
+        "Fedeseyevka",
+        "Fedoseyevka video"
+      ],
+      "mentions": [
+        {
+          "snippet": "It was possible to link vehicles in this convoy to the 53rd Anti-Aircraft Missile Brigade with the following image taken from the Fedeseyevka video on July 20th.",
+          "context": "Named filming location (video source) used to link specific vehicles to the 53rd Brigade during the July convoy."
+        }
+      ]
+    },
+    {
+      "entity_id": "E48",
+      "canonical_name": "Kamensk-Shakhtinsky",
+      "entity_type": "location",
+      "aliases": [
+        "Kamensk-Shakhtinsky (Kamensk-Shakhtinskiy)"
+      ],
+      "mentions": [
+        {
+          "snippet": "One video from July 20th was of particular interest ... This video was posted online from the town of Kamensk-Shakhtinsky, over 300km from the location of the other videos posted on July 20th This video shows a Buk missile loader being transported through the town.",
+          "context": "Town far from other July convoy recordings where a Buk loader was filmed on M21 motorway near the Ukrainian border."
+        }
+      ]
+    },
+    {
+      "entity_id": "E49",
+      "canonical_name": "Donetsk (Russia)",
+      "entity_type": "location",
+      "aliases": [
+        "Donetsk (not to be confused with Donetsk in Ukraine)"
+      ],
+      "mentions": [
+        {
+          "snippet": "The vehicle was heading south, possibly towards the Russian border town of Donetsk (not to be confused with Donetsk in Ukraine). Donetsk has previously been identified as a crossing point for units from Russia into separatist-controlled territories in Ukraine.",
+          "context": "Reference to a Russian town named Donetsk near the border identified as a crossing point for units into separatist-held Ukraine (distinct from Ukrainian Donetsk)."
+        }
+      ]
+    },
+    {
+      "entity_id": "E50",
+      "canonical_name": "Vasily Ilyin",
+      "entity_type": "person",
+      "aliases": [],
+      "mentions": [
+        {
+          "snippet": "For example, this post by a member of the Brigade, Vasily Ilyin, on June 25, 2014 shows the numbered Buk units as well as the number plate of one of the transporters being used ...",
+          "context": "Named 53rd Brigade member whose social media post was used to link convoy vehicles to the brigade."
+        }
+      ]
+    },
+    {
+      "entity_id": "E51",
+      "canonical_name": "Ivan Krasnoproshin",
+      "entity_type": "person",
+      "aliases": [],
+      "mentions": [
+        {
+          "snippet": "Images posted to the now-deleted profile of brigade member Ivan Krasnoproshin also show vehicles that are part of the convoy.",
+          "context": "Named (now-deleted) social media profile of a brigade member that contained images of convoy vehicles."
+        }
+      ]
+    },
+    {
+      "entity_id": "E52",
+      "canonical_name": "Sanya Reznikov",
+      "entity_type": "person",
+      "aliases": [
+        "Sanya Reznikov (profile)"
+      ],
+      "mentions": [
+        {
+          "snippet": "The same vehicle appears in the photos on the VKontakte page of Sanya Reznikov, who, according to his profile, served in the 53rd Brigade from 2013 to sometime in 2014.",
+          "context": "Named individual whose VK photos were used to corroborate that specific vehicles belonged to the 53rd Brigade."
+        }
+      ]
+    },
+    {
+      "entity_id": "E53",
+      "canonical_name": "BT80",
+      "entity_type": "concept",
+      "aliases": [
+        "BT-80",
+        "BT80 with the number 993"
+      ],
+      "mentions": [
+        {
+          "snippet": "This video shows a BT80 with the number 993.",
+          "context": "Specific vehicle type/identifier observed in a July convoy video used to link vehicles to brigade personnel posts."
+        }
+      ]
+    },
+    {
+      "entity_id": "E54",
+      "canonical_name": "Overheard in Torez (VK page)",
+      "entity_type": "organization",
+      "aliases": [
+        "Overheard in Torez",
+        "\"Overheard in Torez\" VKontakte page"
+      ],
+      "mentions": [
+        {
+          "snippet": "The investigation team suspects that the image was originally posted in the 'Overheard in Torez' VKontakte page, but has since been deleted.",
+          "context": "Specific VKontakte community/page suspected as the original source of the widely-shared Torez photograph."
+        }
+      ]
+    },
+    {
+      "entity_id": "E55",
+      "canonical_name": "side skirt fingerprint",
+      "entity_type": "concept",
+      "aliases": [
+        "side skirt profile",
+        "side skirt damage fingerprint"
+      ],
+      "mentions": [
+        {
+          "snippet": "The Bellingcat MH17 investigation team compared the side skirt fingerprints of a number of Buk missile systems in Ukraine and Russia in order to find possible matches ...",
+          "context": "Forensic concept used by Bellingcat: unique damage/profile pattern on the Buk's side skirt used to match individual vehicles across photos and videos."
+        }
+      ]
+    },
+    {
+      "entity_id": "E56",
+      "canonical_name": "M21 motorway",
+      "entity_type": "location",
+      "aliases": [
+        "M21"
+      ],
+      "mentions": [
+        {
+          "snippet": "The Bellingcat MH17 investigation team was able to establish the precise location the video was filmed, establishing that the vehicle was on the M21 motorway that runs eastwards from the Ukrainian border approximately 20km away.",
+          "context": "Road where a July 20 video was filmed showing a Buk loader heading south near the Ukrainian border (Russian-side M21)."
+        }
+      ]
+    }
+  ],
+  "metadata": {
+    "report_id": "report1_bellingcat_mh17_origin",
+    "total_entities_extracted": 56,
+    "extraction_timestamp": "2025-11-17T11:53:23.497298+00:00"
+  }
+}

@@ -3064,16 +3064,11 @@ class SimpleDeepResearch:
         # Phase 3B: collect hypotheses + execution summaries for persistence
         hypotheses_by_task = {}
         hypothesis_execution_summary = {}
-        # Ensure evidence snapshots are in the result dict for persistence
-        result["key_documents"] = key_documents
-        result["source_counts"] = source_counts
-        result["hypothesis_findings"] = hypothesis_findings
-        result["timeline"] = timeline
-        # Phase 3C+ evidence snapshots
-        key_documents = result.get("key_documents", [])
-        source_counts_out = result.get("source_counts", {})
-        hypothesis_findings_out = result.get("hypothesis_findings", [])
-        timeline_out = result.get("timeline", [])
+        # Phase 3C+ evidence snapshots (use safe defaults to avoid UnboundLocal errors)
+        key_documents = result.get("key_documents", []) or []
+        source_counts_out = result.get("source_counts", {}) or {}
+        hypothesis_findings_out = result.get("hypothesis_findings", []) or []
+        timeline_out = result.get("timeline", []) or []
         for task in (self.completed_tasks + self.failed_tasks):
             if task.hypotheses:
                 hypotheses_by_task[task.id] = task.hypotheses
@@ -3371,12 +3366,6 @@ class SimpleDeepResearch:
                 })
             if len(timeline) >= 5:
                 break
-
-        # Persist evidence snapshots into result for saving and downstream use (always set defaults)
-        result["key_documents"] = key_documents or []
-        result["source_counts"] = source_counts or {}
-        result["hypothesis_findings"] = hypothesis_findings or []
-        result["timeline"] = timeline or []
 
         prompt = render_prompt(
             "deep_research/report_synthesis.j2",

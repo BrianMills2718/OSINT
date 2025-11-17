@@ -1,4 +1,58 @@
-## 0. Overview
+## 0. Implementation Phasing (Ultra-Minimal Approach)
+
+**CRITICAL**: This document describes the eventual V1 system. **DO NOT build V1 directly.**
+
+Instead, use **3-stage validation approach** to avoid building the wrong thing:
+
+### Stage 1: Manual Proof (2 hours, ZERO code)
+- Run deep_research.py on investigation topic
+- Manually extract entities to spreadsheet
+- Try manual entity pivoting
+- **Decision Gate**: Is entity organization useful? GO/STOP
+- **Location**: `/home/brian/sam_gov/poc/stage1_manual_test.md`
+- **GO if**: You can name 2-3 entities where manual grouping clearly surfaced patterns you'd have missed reading inline AND you want a faster way to do this again
+- **STOP if**: Flat reading was just as effective
+
+### Stage 2: SQLite + CLI (4-6 hours, ~100 lines)
+- **Only if Stage 1 validates value**
+- 3 tables: evidence, entities, evidence_entities
+- Manual data entry (CSV import)
+- 2 CLI commands: list-entities, evidence-for-entity
+- **Decision Gate**: Is CLI useful? GO/MAINTAIN/STOP
+- **IMPORTANT**: Stage 2/3 tables must be exact prefixes of V1 schemas (use ALTER TABLE to extend, not rebuild)
+- **GO if**: You reach for the CLI during investigation (not just testing) AND at least 2-3 entities become "pivot hubs" with multiple snippets that feel genuinely useful
+- **MAINTAIN if**: CLI is useful but manual CSV import is acceptable
+- **STOP if**: CLI doesn't help vs. spreadsheet
+
+### Stage 3: LLM Extraction (4-6 hours, +50 lines)
+- **Only if Stage 2 validates automation need**
+- Add entity_extractor.py (LLM extraction)
+- Eliminate manual data entry
+- **Decision Gate**: Extraction quality good? GO/TUNE/STOP
+- **GO if**: LLM extraction quality is good enough to replace manual CSV creation (80%+ accuracy acceptable)
+- **TUNE if**: Extraction has issues but prompt adjustments can fix them
+- **STOP if**: Manual CSV creation is faster/more accurate than debugging LLM extraction
+
+### Full PoC (4-6 hours)
+- **Only if Stage 3 validates**
+- Add: leads, research_runs, sources tables
+- Add: deep_research_adapter.py
+- Add: `poc.py run` command (full automation)
+- **Expect 6-8 hours in practice** (debugging, integration)
+
+### V1 (20-25 hours)
+- **Only after Full PoC validates**
+- Add: claims, predicates, entity_aliases tables
+- Add: Multi-lead support
+- Add: Web UI (Streamlit)
+
+**See**: Section 7 (Phase 2 / Later) for full implementation roadmap
+
+---
+
+## 1. Overview
+
+**Note**: This section describes the *end-state behavior* of V1 and later phases. Early stages (Stage 1-3 + Full PoC) will implement only small slices of this.
 
 * Short description of what v1 does:
 
@@ -28,6 +82,8 @@
 ---
 
 ## 2. Core Data Model (Concepts)
+
+**Note**: This section describes the *end-state architecture*. Stage 1-3 will use minimal subsets of these tables.
 
 ### 2.1 Source
 
@@ -138,6 +194,8 @@
 
 ## 5. Core Workflows
 
+**Note**: This section describes the *end-state workflows* of V1+. Early stages will have simplified manual versions.
+
 ### 5.1 Start New Investigation (New Lead + Initial Deep Research)
 
 * You type a topic (e.g. “psychological warfare and J-2”).
@@ -159,7 +217,9 @@
   * instantiates search templates into **concrete queries**;
   * for each query: runs another `SearchRun`, ingests results, updates KG and Lead.
 
-### 5.3 Prospector Pass (Suggest New Leads)
+### 5.3 Prospector Pass (Suggest New Leads) **[Phase 1.5+]**
+
+**Status**: Phase 1.5+ feature (not part of minimal V1 build)
 
 * System periodically scans KG + evidence:
 
@@ -168,7 +228,7 @@
   * bridge entities linking multiple themes.
 * Suggests new Leads:
 
-  * “Candidate Lead: Jane R. Doe as cross-program actor. Accept?”
+  * "Candidate Lead: Jane R. Doe as cross-program actor. Accept?"
 
 ### 5.4 Browse / Query Layer for You
 
@@ -185,7 +245,9 @@
 
 ---
 
-## 6. Search Pattern System (Your Investigator Tricks)
+## 6. Search Pattern System (Your Investigator Tricks) **[Phase 1.5+]**
+
+**Status**: Phase 1.5+ feature (not part of minimal V1 build)
 
 * A small set of **template types**:
 
@@ -271,13 +333,13 @@
    * Clear tables, clear flows; no Kafka, no streaming, no NLI in v1.
    * Easy to extend later (more entity types, better extraction, ranking, "truthiness", etc.).
 
-7. **Automation-first design**
+7. **Automation-ready design**
 
-   * The system attaches evidence to leads automatically (based on lead filters)
-   * Runs pattern-based expansions automatically (triggered by new entities, stale leads, budget thresholds)
-   * Builds timelines/summaries without mandatory manual review
-   * User configures parameters once (lead filters, patterns, budgets) → system runs autonomously
-   * Human review is *optional niceties* for later versions, not required for v1 to function
+   * V1 architecture is designed so that later phases *can* attach evidence automatically, run pattern-based expansions, etc.
+   * Initial V1 may keep these workflows manual (Stage 1-3 validation will determine what to automate)
+   * User configures parameters once (lead filters, patterns, budgets) → system can run autonomously in later phases
+   * Human review is *optional enhancement* for later versions, not required for core functionality
+   * **Note**: Full automation features (lead_filters_json, SearchPattern auto-execution, Prospector) are Phase 1.5+, not minimal V1
 
 ---
 
@@ -353,6 +415,8 @@ Everything else (truth scores, NLI, fancy streaming, ontology, etc.) is v2+.
 
 
 ### 2. Core mental model: Leads, runs, and the graph
+
+**Note**: This section describes the *conceptual architecture* that guides all phases. Stage 1-3 implement subsets.
 
 #### 2.1 Lead = your “case file”
 
@@ -519,6 +583,8 @@ That’s the mental model:
 
 ### 3. Minimal data model for v1
 
+**Note**: Full schema shown here. Stage 1-3 use minimal subsets (see Section 0 for phasing).
+
 #### 3.1 Leads
 
 ```text
@@ -530,11 +596,12 @@ Lead
 - created_at
 - updated_at
 
-# Automation: how this lead auto-collects evidence
+# Automation (Phase 1.5+): how this lead auto-collects evidence
 - lead_filters_json    # JSON with entities, keywords, domains, time ranges
-                       # used to auto-attach new Evidence to this lead
+                       # used to auto-attach new Evidence to this lead (Phase 1.5+ feature)
                        # Example: {"entities": ["E123"], "keywords": ["J-2", "psyops"],
                        #           "domains": [".mil", ".gov"], "mode": "auto_attach"}
+                       # Status: Phase 1.5+ (not part of minimal V1 build)
 ```
 
 1 row per "case file / notebook".
@@ -637,7 +704,7 @@ Claim
 - run_id
 - evidence_id        # FK → Evidence (NULL allowed for future/manual claims)
 - subject_entity_id  # FK → Entity
-- predicate          # string ID; e.g. "held_role", "part_of", "mentioned_with"
+- predicate_id       # FK → Predicate(id); e.g. "held_role", "part_of", "mentioned_with"
 - object_entity_id   # FK → Entity, nullable
 - object_literal     # text or simple value if no entity (e.g. a year)
 - extraction_method  # "llm_heuristic_v1" | "manual"
@@ -734,6 +801,8 @@ Now later you can:
 
 
 ### 4. Ingestion & annotation pipeline (v1)
+
+**Note**: This section describes the *end-state ingestion flow*. Early stages will use simplified manual/semi-automated versions.
 
 #### 4.1 From user action to ResearchRun
 
@@ -980,6 +1049,8 @@ Even if you skip this at first, the pipeline is set up so you can add review lat
 
 
 ### 5. Query & exploration UX (v1)
+
+**Note**: This section describes the *end-state UX*. Early stages will have minimal CLI or manual workflows.
 
 #### 5.1 Main entry points
 
@@ -1230,6 +1301,8 @@ This is enough in v1 to start behaving like a human investigator:
 
 
 ### 6. How this actually mimics an expert investigator
+
+**Note**: This section describes the *end-state investigative workflows*. Early stages will validate these patterns manually before automating.
 
 Think of v1 as “a brain with good habits” rather than just “run an agent and dump a PDF”.
 

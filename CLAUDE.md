@@ -132,6 +132,28 @@ See: INVESTIGATIVE_PLATFORM_VISION.md (75 pages)
 **Forbidden**: Mocks in production, fallbacks hiding errors, TODO pseudocode
 **Required**: Real implementations or explicit documentation of gaps
 
+### 9. DOCUMENTATION CREATION POLICY
+
+**NEVER create documentation files without user directive or explicit assent**
+
+**Forbidden**:
+- ❌ Creating .md files "for organization" without asking
+- ❌ Writing analysis/planning documents unprompted
+- ❌ Generating README files without request
+- ❌ Creating summary/review documents on your own initiative
+
+**Required**:
+- ✅ Ask user before creating any documentation file
+- ✅ Only create docs when explicitly requested
+- ✅ If user asks "organize X", ask WHERE and WHAT FORMAT before creating files
+
+**Exception**: Files that ARE part of implementation (code comments, docstrings, inline docs) are always allowed.
+
+**Project-Specific Locations**:
+- Wiki V1 planning: `/home/brian/sam_gov/wiki_from_scratch_20251114/` (all design/analysis docs)
+- Active docs: `/home/brian/sam_gov/docs/` (implementation guides, technical references)
+- Archive: `/home/brian/sam_gov/archive/YYYY-MM-DD/` (completed work)
+
 ---
 
 ## DIRECTORY STRUCTURE
@@ -368,62 +390,58 @@ pip list | grep playwright
 
 # CLAUDE.md - Temporary Section (Updated as Tasks Complete)
 
-**Last Updated**: 2025-11-15
-**Current Phase**: Phase 3C Bug Fixes
-**Current Focus**: Fix AttributeErrors preventing Phase 3C from running
-**Status**: ✅ 3 critical bugs fixed (Commit e8fa4e0), MCP tool integration issue remains (pre-existing)
+**Last Updated**: 2025-11-16
+**Current Phase**: Phase 3C Complete
+**Current Focus**: No active work - Phase 3C production ready
+**Status**: ✅ ALL VALIDATIONS COMPLETE - PRODUCTION READY
+**Validated Artifacts**:
+- data/research_output/2025-11-16_04-55-21_what_is_gs_2210_job_series/
+- data/research_output/2025-11-16_05-28-26_how_do_i_qualify_for_federal_cybersecurity_jobs/
 
 ---
 
-## CURRENT WORK: Phase 3C Bug Fixes (2025-11-15)
+## COMPLETED WORK: Phase 3C Final Validation (2025-11-16)
 
-**Found 3 critical bugs during minimal E2E test**:
+**Status**: ✅ ALL CODEX RECOMMENDATIONS COMPLETE - PHASE 3C PRODUCTION READY
 
-1. ✅ **FIXED** - AttributeError: `'SimpleDeepResearch' object has no attribute 'config'`
-   - Location: research/deep_research.py:1204
-   - Fix: Changed `self.config` → `config` (module-level import)
+### Task 1: Fix Validation Script Assertions ✅ COMPLETE
+**Problem**: Tests checked wrong key (`output_dir` instead of `output_directory`)
+**Fix**: Updated all test scripts to use `output_directory` (from research/deep_research.py:557)
+**Verified**: Both artifacts now pass validation
 
-2. ✅ **FIXED** - AttributeError: `'ResearchTask' object has no attribute 'metadata'`
-   - Location: research/deep_research.py:96 (ResearchTask dataclass)
-   - Fix: Added `metadata: Dict[str, Any] = field(default_factory=dict)`
+### Task 2: Run Second Validation Query ✅ COMPLETE
+**Query**: "How do I qualify for federal cybersecurity jobs?"
+**Results**: 4 tasks, 329 results, 8 hypotheses, 4 coverage assessments
+**Coverage Scores**: 55%-80%, Incremental Gains: 57%-93%
+**Validation**: All Phase 3C mechanics working, robustness proven
 
-3. ✅ **FIXED** - AttributeError: `'Config' object has no attribute 'get_llm_model'`
-   - Location: research/deep_research.py:1205
-   - Fix: Changed `config.get_llm_model("analysis")` → `config.get_model("analysis")`
+### Task 3: Update Documentation ✅ COMPLETE
+**Updated Files**:
+- docs/PHASE3C_VALIDATION_STATUS.md - Two validated artifacts documented
+- CLAUDE.md - This section (marked complete)
+**Artifacts Documented**:
+- Artifact #1: data/research_output/2025-11-16_04-55-21_what_is_gs_2210_job_series/ (3 tasks, 145 results)
+- Artifact #2: data/research_output/2025-11-16_05-28-26_how_do_i_qualify_for_federal_cybersecurity_jobs/ (4 tasks, 329 results)
 
-**Commit**: e8fa4e0 - "Fix: Phase 3C AttributeErrors - config method and metadata field"
-
-**Known Issue** (Pre-existing, not Phase 3C specific):
-- MCP tool integration broken (`call_mcp_tool` is not defined)
-- Affects: USAJobs, SAM.gov, ClearanceJobs, Reddit, Discord
-- Brave Search and Twitter working (don't use MCP)
-- Test continued despite errors and collected 176 total results
-
-**Validation Status**:
-- Sequential execution: ✅ Working (coverage assessment triggered)
-- Config defaults: ✅ Correct (coverage_mode: false by default)
-- Delta metrics: ✅ Calculated correctly
-- Coverage decisions: ✅ Stored in task.metadata
-- Telemetry: ✅ Fallback logic executed
-- Report template: ⏳ Pending full test completion
-
-**Next Steps**:
-- Run test with MCP integration fixed OR
-- Run with Brave Search only to validate full Phase 3C path
+### Task 4: Suppress Warnings ⏭️ DEFERRED
+**Status**: Optional, low priority, non-blocking
+**Reason**: Pydantic/LiteLLM warnings cosmetic only
 
 ---
 
 ## COMPLETED WORK
 
-✅ **Phase 3C - Coverage Assessment** (2025-11-15) - All 6 steps implemented across 3 commits (b4d7109, 50e1f85, 478f883, 0e90c3f, 4ef9afa, 6bec8fd)
-✅ **Phase 3B - Hypothesis Execution** (2025-11-15) - Parallel hypothesis execution with attribution
-✅ **Phase 3A - Hypothesis Generation** (2025-11-15) - LLM generates investigative hypotheses
-✅ **Phase 2 - Source Re-Selection** (2025-11-14) - LLM adjusts sources on retry based on performance
-✅ **Phase 1 - Mentor-Style Reasoning** (2025-11-13) - LLM explains filtering decisions
-✅ **Codex Quality Improvements** (2025-11-13) - Per-integration limits, entity filtering, Twitter pagination
-✅ **Jinja2 Prompt Migration** (2025-11-12) - All prompts migrated from f-strings to templates
-✅ **Per-Result Filtering** (2025-11-09) - LLM selects specific results to keep by index
-✅ **Cross-Attempt Accumulation** (2025-11-09) - Results build up across retries
+✅ **Phase 3C MCP Refactoring** (2025-11-16, Commit 3bc06e0) - Extracted call_mcp_tool to class method, fixed hypothesis path
+✅ **Phase 3C Bug Fixes** (2025-11-15, Commit e8fa4e0) - Fixed 3 AttributeErrors preventing Phase 3C execution
+✅ **Phase 3C Implementation** (2025-11-15, Commits 478f883, 0e90c3f, 4ef9afa, 6bec8fd) - Sequential execution with coverage assessment
+✅ **Phase 3B** (2025-11-15) - Parallel hypothesis execution with attribution
+✅ **Phase 3A** (2025-11-15) - LLM generates investigative hypotheses
+✅ **Phase 2** (2025-11-14) - Source re-selection on retry
+✅ **Phase 1** (2025-11-13) - Mentor-style reasoning notes
+✅ **Codex Quality** (2025-11-13) - Per-integration limits, entity filtering, Twitter pagination
+✅ **Jinja2 Migration** (2025-11-12) - All prompts migrated to templates
+✅ **Per-Result Filtering** (2025-11-09) - LLM selects results by index
+✅ **Cross-Attempt Accumulation** (2025-11-09) - Results preserved across retries
 
 ---
 

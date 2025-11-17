@@ -1,0 +1,2192 @@
+{
+  "report_id": "synthetic_cooccurrence_test",
+  "total_entities": 27,
+  "total_mentions": 27,
+  "proximity_threshold": 500,
+  "unique_entity_pairs": 118,
+  "cooccurrences": [
+    {
+      "entity1_id": "E1",
+      "entity1_name": "Operation Nightfall",
+      "entity1_type": "event",
+      "entity2_id": "E2",
+      "entity2_name": "Federal Security Service",
+      "entity2_type": "organization",
+      "cooccurrence_count": 1,
+      "mention_pairs": [
+        {
+          "entity1": "Operation Nightfall",
+          "entity2": "Federal Security Service",
+          "distance": 0,
+          "char_range": "208-292"
+        }
+      ]
+    },
+    {
+      "entity1_id": "E1",
+      "entity1_name": "Operation Nightfall",
+      "entity1_type": "event",
+      "entity2_id": "E3",
+      "entity2_name": "Main Intelligence Directorate",
+      "entity2_type": "organization",
+      "cooccurrence_count": 1,
+      "mention_pairs": [
+        {
+          "entity1": "Operation Nightfall",
+          "entity2": "Main Intelligence Directorate",
+          "distance": 0,
+          "char_range": "208-292"
+        }
+      ]
+    },
+    {
+      "entity1_id": "E1",
+      "entity1_name": "Operation Nightfall",
+      "entity1_type": "event",
+      "entity2_id": "E4",
+      "entity2_name": "Colonel Igor Petrov",
+      "entity2_type": "person",
+      "cooccurrence_count": 1,
+      "mention_pairs": [
+        {
+          "entity1": "Operation Nightfall",
+          "entity2": "Colonel Igor Petrov",
+          "distance": 1,
+          "char_range": "208-451"
+        }
+      ]
+    },
+    {
+      "entity1_id": "E1",
+      "entity1_name": "Operation Nightfall",
+      "entity1_type": "event",
+      "entity2_id": "E5",
+      "entity2_name": "Major Sergei Ivanov",
+      "entity2_type": "person",
+      "cooccurrence_count": 1,
+      "mention_pairs": [
+        {
+          "entity1": "Operation Nightfall",
+          "entity2": "Major Sergei Ivanov",
+          "distance": 1,
+          "char_range": "208-451"
+        }
+      ]
+    },
+    {
+      "entity1_id": "E1",
+      "entity1_name": "Operation Nightfall",
+      "entity1_type": "event",
+      "entity2_id": "E6",
+      "entity2_name": "Moscow",
+      "entity2_type": "location",
+      "cooccurrence_count": 1,
+      "mention_pairs": [
+        {
+          "entity1": "Operation Nightfall",
+          "entity2": "Moscow",
+          "distance": 1,
+          "char_range": "208-451"
+        }
+      ]
+    },
+    {
+      "entity1_id": "E1",
+      "entity1_name": "Operation Nightfall",
+      "entity1_type": "event",
+      "entity2_id": "E7",
+      "entity2_name": "53rd Anti-Aircraft Brigade",
+      "entity2_type": "unit",
+      "cooccurrence_count": 1,
+      "mention_pairs": [
+        {
+          "entity1": "Operation Nightfall",
+          "entity2": "53rd Anti-Aircraft Brigade",
+          "distance": 1,
+          "char_range": "208-451"
+        }
+      ]
+    },
+    {
+      "entity1_id": "E1",
+      "entity1_name": "Operation Nightfall",
+      "entity1_type": "event",
+      "entity2_id": "E8",
+      "entity2_name": "Kursk",
+      "entity2_type": "location",
+      "cooccurrence_count": 1,
+      "mention_pairs": [
+        {
+          "entity1": "Operation Nightfall",
+          "entity2": "Kursk",
+          "distance": 1,
+          "char_range": "208-451"
+        }
+      ]
+    },
+    {
+      "entity1_id": "E1",
+      "entity1_name": "Operation Nightfall",
+      "entity1_type": "event",
+      "entity2_id": "E9",
+      "entity2_name": "Buk missile system",
+      "entity2_type": "concept",
+      "cooccurrence_count": 1,
+      "mention_pairs": [
+        {
+          "entity1": "Operation Nightfall",
+          "entity2": "Buk missile system",
+          "distance": 160,
+          "char_range": "208-582"
+        }
+      ]
+    },
+    {
+      "entity1_id": "E1",
+      "entity1_name": "Operation Nightfall",
+      "entity1_type": "event",
+      "entity2_id": "E10",
+      "entity2_name": "Russia",
+      "entity2_type": "location",
+      "cooccurrence_count": 1,
+      "mention_pairs": [
+        {
+          "entity1": "Operation Nightfall",
+          "entity2": "Russia",
+          "distance": 160,
+          "char_range": "208-582"
+        }
+      ]
+    },
+    {
+      "entity1_id": "E1",
+      "entity1_name": "Operation Nightfall",
+      "entity1_type": "event",
+      "entity2_id": "E11",
+      "entity2_name": "Ukraine",
+      "entity2_type": "location",
+      "cooccurrence_count": 1,
+      "mention_pairs": [
+        {
+          "entity1": "Operation Nightfall",
+          "entity2": "Ukraine",
+          "distance": 0,
+          "char_range": "208-292"
+        }
+      ]
+    },
+    {
+      "entity1_id": "E1",
+      "entity1_name": "Operation Nightfall",
+      "entity1_type": "event",
+      "entity2_id": "E12",
+      "entity2_name": "Donetsk",
+      "entity2_type": "location",
+      "cooccurrence_count": 1,
+      "mention_pairs": [
+        {
+          "entity1": "Operation Nightfall",
+          "entity2": "Donetsk",
+          "distance": 160,
+          "char_range": "208-582"
+        }
+      ]
+    },
+    {
+      "entity1_id": "E1",
+      "entity1_name": "Operation Nightfall",
+      "entity1_type": "event",
+      "entity2_id": "E24",
+      "entity2_name": "Test Investigation Team",
+      "entity2_type": "organization",
+      "cooccurrence_count": 1,
+      "mention_pairs": [
+        {
+          "entity1": "Operation Nightfall",
+          "entity2": "Test Investigation Team",
+          "distance": 24,
+          "char_range": "148-292"
+        }
+      ]
+    },
+    {
+      "entity1_id": "E2",
+      "entity1_name": "Federal Security Service",
+      "entity1_type": "organization",
+      "entity2_id": "E3",
+      "entity2_name": "Main Intelligence Directorate",
+      "entity2_type": "organization",
+      "cooccurrence_count": 1,
+      "mention_pairs": [
+        {
+          "entity1": "Federal Security Service",
+          "entity2": "Main Intelligence Directorate",
+          "distance": 0,
+          "char_range": "208-292"
+        }
+      ]
+    },
+    {
+      "entity1_id": "E2",
+      "entity1_name": "Federal Security Service",
+      "entity1_type": "organization",
+      "entity2_id": "E4",
+      "entity2_name": "Colonel Igor Petrov",
+      "entity2_type": "person",
+      "cooccurrence_count": 1,
+      "mention_pairs": [
+        {
+          "entity1": "Federal Security Service",
+          "entity2": "Colonel Igor Petrov",
+          "distance": 1,
+          "char_range": "208-451"
+        }
+      ]
+    },
+    {
+      "entity1_id": "E2",
+      "entity1_name": "Federal Security Service",
+      "entity1_type": "organization",
+      "entity2_id": "E5",
+      "entity2_name": "Major Sergei Ivanov",
+      "entity2_type": "person",
+      "cooccurrence_count": 1,
+      "mention_pairs": [
+        {
+          "entity1": "Federal Security Service",
+          "entity2": "Major Sergei Ivanov",
+          "distance": 1,
+          "char_range": "208-451"
+        }
+      ]
+    },
+    {
+      "entity1_id": "E2",
+      "entity1_name": "Federal Security Service",
+      "entity1_type": "organization",
+      "entity2_id": "E6",
+      "entity2_name": "Moscow",
+      "entity2_type": "location",
+      "cooccurrence_count": 1,
+      "mention_pairs": [
+        {
+          "entity1": "Federal Security Service",
+          "entity2": "Moscow",
+          "distance": 1,
+          "char_range": "208-451"
+        }
+      ]
+    },
+    {
+      "entity1_id": "E2",
+      "entity1_name": "Federal Security Service",
+      "entity1_type": "organization",
+      "entity2_id": "E7",
+      "entity2_name": "53rd Anti-Aircraft Brigade",
+      "entity2_type": "unit",
+      "cooccurrence_count": 1,
+      "mention_pairs": [
+        {
+          "entity1": "Federal Security Service",
+          "entity2": "53rd Anti-Aircraft Brigade",
+          "distance": 1,
+          "char_range": "208-451"
+        }
+      ]
+    },
+    {
+      "entity1_id": "E2",
+      "entity1_name": "Federal Security Service",
+      "entity1_type": "organization",
+      "entity2_id": "E8",
+      "entity2_name": "Kursk",
+      "entity2_type": "location",
+      "cooccurrence_count": 1,
+      "mention_pairs": [
+        {
+          "entity1": "Federal Security Service",
+          "entity2": "Kursk",
+          "distance": 1,
+          "char_range": "208-451"
+        }
+      ]
+    },
+    {
+      "entity1_id": "E2",
+      "entity1_name": "Federal Security Service",
+      "entity1_type": "organization",
+      "entity2_id": "E9",
+      "entity2_name": "Buk missile system",
+      "entity2_type": "concept",
+      "cooccurrence_count": 1,
+      "mention_pairs": [
+        {
+          "entity1": "Federal Security Service",
+          "entity2": "Buk missile system",
+          "distance": 160,
+          "char_range": "208-582"
+        }
+      ]
+    },
+    {
+      "entity1_id": "E10",
+      "entity1_name": "Russia",
+      "entity1_type": "location",
+      "entity2_id": "E2",
+      "entity2_name": "Federal Security Service",
+      "entity2_type": "organization",
+      "cooccurrence_count": 1,
+      "mention_pairs": [
+        {
+          "entity1": "Federal Security Service",
+          "entity2": "Russia",
+          "distance": 160,
+          "char_range": "208-582"
+        }
+      ]
+    },
+    {
+      "entity1_id": "E11",
+      "entity1_name": "Ukraine",
+      "entity1_type": "location",
+      "entity2_id": "E2",
+      "entity2_name": "Federal Security Service",
+      "entity2_type": "organization",
+      "cooccurrence_count": 1,
+      "mention_pairs": [
+        {
+          "entity1": "Federal Security Service",
+          "entity2": "Ukraine",
+          "distance": 0,
+          "char_range": "208-292"
+        }
+      ]
+    },
+    {
+      "entity1_id": "E12",
+      "entity1_name": "Donetsk",
+      "entity1_type": "location",
+      "entity2_id": "E2",
+      "entity2_name": "Federal Security Service",
+      "entity2_type": "organization",
+      "cooccurrence_count": 1,
+      "mention_pairs": [
+        {
+          "entity1": "Federal Security Service",
+          "entity2": "Donetsk",
+          "distance": 160,
+          "char_range": "208-582"
+        }
+      ]
+    },
+    {
+      "entity1_id": "E2",
+      "entity1_name": "Federal Security Service",
+      "entity1_type": "organization",
+      "entity2_id": "E24",
+      "entity2_name": "Test Investigation Team",
+      "entity2_type": "organization",
+      "cooccurrence_count": 1,
+      "mention_pairs": [
+        {
+          "entity1": "Federal Security Service",
+          "entity2": "Test Investigation Team",
+          "distance": 24,
+          "char_range": "148-292"
+        }
+      ]
+    },
+    {
+      "entity1_id": "E3",
+      "entity1_name": "Main Intelligence Directorate",
+      "entity1_type": "organization",
+      "entity2_id": "E4",
+      "entity2_name": "Colonel Igor Petrov",
+      "entity2_type": "person",
+      "cooccurrence_count": 1,
+      "mention_pairs": [
+        {
+          "entity1": "Main Intelligence Directorate",
+          "entity2": "Colonel Igor Petrov",
+          "distance": 1,
+          "char_range": "208-451"
+        }
+      ]
+    },
+    {
+      "entity1_id": "E3",
+      "entity1_name": "Main Intelligence Directorate",
+      "entity1_type": "organization",
+      "entity2_id": "E5",
+      "entity2_name": "Major Sergei Ivanov",
+      "entity2_type": "person",
+      "cooccurrence_count": 1,
+      "mention_pairs": [
+        {
+          "entity1": "Main Intelligence Directorate",
+          "entity2": "Major Sergei Ivanov",
+          "distance": 1,
+          "char_range": "208-451"
+        }
+      ]
+    },
+    {
+      "entity1_id": "E3",
+      "entity1_name": "Main Intelligence Directorate",
+      "entity1_type": "organization",
+      "entity2_id": "E6",
+      "entity2_name": "Moscow",
+      "entity2_type": "location",
+      "cooccurrence_count": 1,
+      "mention_pairs": [
+        {
+          "entity1": "Main Intelligence Directorate",
+          "entity2": "Moscow",
+          "distance": 1,
+          "char_range": "208-451"
+        }
+      ]
+    },
+    {
+      "entity1_id": "E3",
+      "entity1_name": "Main Intelligence Directorate",
+      "entity1_type": "organization",
+      "entity2_id": "E7",
+      "entity2_name": "53rd Anti-Aircraft Brigade",
+      "entity2_type": "unit",
+      "cooccurrence_count": 1,
+      "mention_pairs": [
+        {
+          "entity1": "Main Intelligence Directorate",
+          "entity2": "53rd Anti-Aircraft Brigade",
+          "distance": 1,
+          "char_range": "208-451"
+        }
+      ]
+    },
+    {
+      "entity1_id": "E3",
+      "entity1_name": "Main Intelligence Directorate",
+      "entity1_type": "organization",
+      "entity2_id": "E8",
+      "entity2_name": "Kursk",
+      "entity2_type": "location",
+      "cooccurrence_count": 1,
+      "mention_pairs": [
+        {
+          "entity1": "Main Intelligence Directorate",
+          "entity2": "Kursk",
+          "distance": 1,
+          "char_range": "208-451"
+        }
+      ]
+    },
+    {
+      "entity1_id": "E3",
+      "entity1_name": "Main Intelligence Directorate",
+      "entity1_type": "organization",
+      "entity2_id": "E9",
+      "entity2_name": "Buk missile system",
+      "entity2_type": "concept",
+      "cooccurrence_count": 1,
+      "mention_pairs": [
+        {
+          "entity1": "Main Intelligence Directorate",
+          "entity2": "Buk missile system",
+          "distance": 160,
+          "char_range": "208-582"
+        }
+      ]
+    },
+    {
+      "entity1_id": "E10",
+      "entity1_name": "Russia",
+      "entity1_type": "location",
+      "entity2_id": "E3",
+      "entity2_name": "Main Intelligence Directorate",
+      "entity2_type": "organization",
+      "cooccurrence_count": 1,
+      "mention_pairs": [
+        {
+          "entity1": "Main Intelligence Directorate",
+          "entity2": "Russia",
+          "distance": 160,
+          "char_range": "208-582"
+        }
+      ]
+    },
+    {
+      "entity1_id": "E11",
+      "entity1_name": "Ukraine",
+      "entity1_type": "location",
+      "entity2_id": "E3",
+      "entity2_name": "Main Intelligence Directorate",
+      "entity2_type": "organization",
+      "cooccurrence_count": 1,
+      "mention_pairs": [
+        {
+          "entity1": "Main Intelligence Directorate",
+          "entity2": "Ukraine",
+          "distance": 0,
+          "char_range": "208-292"
+        }
+      ]
+    },
+    {
+      "entity1_id": "E12",
+      "entity1_name": "Donetsk",
+      "entity1_type": "location",
+      "entity2_id": "E3",
+      "entity2_name": "Main Intelligence Directorate",
+      "entity2_type": "organization",
+      "cooccurrence_count": 1,
+      "mention_pairs": [
+        {
+          "entity1": "Main Intelligence Directorate",
+          "entity2": "Donetsk",
+          "distance": 160,
+          "char_range": "208-582"
+        }
+      ]
+    },
+    {
+      "entity1_id": "E24",
+      "entity1_name": "Test Investigation Team",
+      "entity1_type": "organization",
+      "entity2_id": "E3",
+      "entity2_name": "Main Intelligence Directorate",
+      "entity2_type": "organization",
+      "cooccurrence_count": 1,
+      "mention_pairs": [
+        {
+          "entity1": "Main Intelligence Directorate",
+          "entity2": "Test Investigation Team",
+          "distance": 24,
+          "char_range": "148-292"
+        }
+      ]
+    },
+    {
+      "entity1_id": "E4",
+      "entity1_name": "Colonel Igor Petrov",
+      "entity1_type": "person",
+      "entity2_id": "E5",
+      "entity2_name": "Major Sergei Ivanov",
+      "entity2_type": "person",
+      "cooccurrence_count": 1,
+      "mention_pairs": [
+        {
+          "entity1": "Colonel Igor Petrov",
+          "entity2": "Major Sergei Ivanov",
+          "distance": 0,
+          "char_range": "293-451"
+        }
+      ]
+    },
+    {
+      "entity1_id": "E4",
+      "entity1_name": "Colonel Igor Petrov",
+      "entity1_type": "person",
+      "entity2_id": "E6",
+      "entity2_name": "Moscow",
+      "entity2_type": "location",
+      "cooccurrence_count": 1,
+      "mention_pairs": [
+        {
+          "entity1": "Colonel Igor Petrov",
+          "entity2": "Moscow",
+          "distance": 0,
+          "char_range": "293-451"
+        }
+      ]
+    },
+    {
+      "entity1_id": "E4",
+      "entity1_name": "Colonel Igor Petrov",
+      "entity1_type": "person",
+      "entity2_id": "E7",
+      "entity2_name": "53rd Anti-Aircraft Brigade",
+      "entity2_type": "unit",
+      "cooccurrence_count": 1,
+      "mention_pairs": [
+        {
+          "entity1": "Colonel Igor Petrov",
+          "entity2": "53rd Anti-Aircraft Brigade",
+          "distance": 0,
+          "char_range": "293-451"
+        }
+      ]
+    },
+    {
+      "entity1_id": "E4",
+      "entity1_name": "Colonel Igor Petrov",
+      "entity1_type": "person",
+      "entity2_id": "E8",
+      "entity2_name": "Kursk",
+      "entity2_type": "location",
+      "cooccurrence_count": 1,
+      "mention_pairs": [
+        {
+          "entity1": "Colonel Igor Petrov",
+          "entity2": "Kursk",
+          "distance": 0,
+          "char_range": "293-451"
+        }
+      ]
+    },
+    {
+      "entity1_id": "E4",
+      "entity1_name": "Colonel Igor Petrov",
+      "entity1_type": "person",
+      "entity2_id": "E9",
+      "entity2_name": "Buk missile system",
+      "entity2_type": "concept",
+      "cooccurrence_count": 1,
+      "mention_pairs": [
+        {
+          "entity1": "Colonel Igor Petrov",
+          "entity2": "Buk missile system",
+          "distance": 1,
+          "char_range": "293-582"
+        }
+      ]
+    },
+    {
+      "entity1_id": "E10",
+      "entity1_name": "Russia",
+      "entity1_type": "location",
+      "entity2_id": "E4",
+      "entity2_name": "Colonel Igor Petrov",
+      "entity2_type": "person",
+      "cooccurrence_count": 1,
+      "mention_pairs": [
+        {
+          "entity1": "Colonel Igor Petrov",
+          "entity2": "Russia",
+          "distance": 1,
+          "char_range": "293-582"
+        }
+      ]
+    },
+    {
+      "entity1_id": "E11",
+      "entity1_name": "Ukraine",
+      "entity1_type": "location",
+      "entity2_id": "E4",
+      "entity2_name": "Colonel Igor Petrov",
+      "entity2_type": "person",
+      "cooccurrence_count": 1,
+      "mention_pairs": [
+        {
+          "entity1": "Colonel Igor Petrov",
+          "entity2": "Ukraine",
+          "distance": 1,
+          "char_range": "208-451"
+        }
+      ]
+    },
+    {
+      "entity1_id": "E12",
+      "entity1_name": "Donetsk",
+      "entity1_type": "location",
+      "entity2_id": "E4",
+      "entity2_name": "Colonel Igor Petrov",
+      "entity2_type": "person",
+      "cooccurrence_count": 1,
+      "mention_pairs": [
+        {
+          "entity1": "Colonel Igor Petrov",
+          "entity2": "Donetsk",
+          "distance": 1,
+          "char_range": "293-582"
+        }
+      ]
+    },
+    {
+      "entity1_id": "E24",
+      "entity1_name": "Test Investigation Team",
+      "entity1_type": "organization",
+      "entity2_id": "E4",
+      "entity2_name": "Colonel Igor Petrov",
+      "entity2_type": "person",
+      "cooccurrence_count": 1,
+      "mention_pairs": [
+        {
+          "entity1": "Colonel Igor Petrov",
+          "entity2": "Test Investigation Team",
+          "distance": 109,
+          "char_range": "148-451"
+        }
+      ]
+    },
+    {
+      "entity1_id": "E5",
+      "entity1_name": "Major Sergei Ivanov",
+      "entity1_type": "person",
+      "entity2_id": "E6",
+      "entity2_name": "Moscow",
+      "entity2_type": "location",
+      "cooccurrence_count": 1,
+      "mention_pairs": [
+        {
+          "entity1": "Major Sergei Ivanov",
+          "entity2": "Moscow",
+          "distance": 0,
+          "char_range": "293-451"
+        }
+      ]
+    },
+    {
+      "entity1_id": "E5",
+      "entity1_name": "Major Sergei Ivanov",
+      "entity1_type": "person",
+      "entity2_id": "E7",
+      "entity2_name": "53rd Anti-Aircraft Brigade",
+      "entity2_type": "unit",
+      "cooccurrence_count": 1,
+      "mention_pairs": [
+        {
+          "entity1": "Major Sergei Ivanov",
+          "entity2": "53rd Anti-Aircraft Brigade",
+          "distance": 0,
+          "char_range": "293-451"
+        }
+      ]
+    },
+    {
+      "entity1_id": "E5",
+      "entity1_name": "Major Sergei Ivanov",
+      "entity1_type": "person",
+      "entity2_id": "E8",
+      "entity2_name": "Kursk",
+      "entity2_type": "location",
+      "cooccurrence_count": 1,
+      "mention_pairs": [
+        {
+          "entity1": "Major Sergei Ivanov",
+          "entity2": "Kursk",
+          "distance": 0,
+          "char_range": "293-451"
+        }
+      ]
+    },
+    {
+      "entity1_id": "E5",
+      "entity1_name": "Major Sergei Ivanov",
+      "entity1_type": "person",
+      "entity2_id": "E9",
+      "entity2_name": "Buk missile system",
+      "entity2_type": "concept",
+      "cooccurrence_count": 1,
+      "mention_pairs": [
+        {
+          "entity1": "Major Sergei Ivanov",
+          "entity2": "Buk missile system",
+          "distance": 1,
+          "char_range": "293-582"
+        }
+      ]
+    },
+    {
+      "entity1_id": "E10",
+      "entity1_name": "Russia",
+      "entity1_type": "location",
+      "entity2_id": "E5",
+      "entity2_name": "Major Sergei Ivanov",
+      "entity2_type": "person",
+      "cooccurrence_count": 1,
+      "mention_pairs": [
+        {
+          "entity1": "Major Sergei Ivanov",
+          "entity2": "Russia",
+          "distance": 1,
+          "char_range": "293-582"
+        }
+      ]
+    },
+    {
+      "entity1_id": "E11",
+      "entity1_name": "Ukraine",
+      "entity1_type": "location",
+      "entity2_id": "E5",
+      "entity2_name": "Major Sergei Ivanov",
+      "entity2_type": "person",
+      "cooccurrence_count": 1,
+      "mention_pairs": [
+        {
+          "entity1": "Major Sergei Ivanov",
+          "entity2": "Ukraine",
+          "distance": 1,
+          "char_range": "208-451"
+        }
+      ]
+    },
+    {
+      "entity1_id": "E12",
+      "entity1_name": "Donetsk",
+      "entity1_type": "location",
+      "entity2_id": "E5",
+      "entity2_name": "Major Sergei Ivanov",
+      "entity2_type": "person",
+      "cooccurrence_count": 1,
+      "mention_pairs": [
+        {
+          "entity1": "Major Sergei Ivanov",
+          "entity2": "Donetsk",
+          "distance": 1,
+          "char_range": "293-582"
+        }
+      ]
+    },
+    {
+      "entity1_id": "E24",
+      "entity1_name": "Test Investigation Team",
+      "entity1_type": "organization",
+      "entity2_id": "E5",
+      "entity2_name": "Major Sergei Ivanov",
+      "entity2_type": "person",
+      "cooccurrence_count": 1,
+      "mention_pairs": [
+        {
+          "entity1": "Major Sergei Ivanov",
+          "entity2": "Test Investigation Team",
+          "distance": 109,
+          "char_range": "148-451"
+        }
+      ]
+    },
+    {
+      "entity1_id": "E6",
+      "entity1_name": "Moscow",
+      "entity1_type": "location",
+      "entity2_id": "E7",
+      "entity2_name": "53rd Anti-Aircraft Brigade",
+      "entity2_type": "unit",
+      "cooccurrence_count": 1,
+      "mention_pairs": [
+        {
+          "entity1": "Moscow",
+          "entity2": "53rd Anti-Aircraft Brigade",
+          "distance": 0,
+          "char_range": "293-451"
+        }
+      ]
+    },
+    {
+      "entity1_id": "E6",
+      "entity1_name": "Moscow",
+      "entity1_type": "location",
+      "entity2_id": "E8",
+      "entity2_name": "Kursk",
+      "entity2_type": "location",
+      "cooccurrence_count": 1,
+      "mention_pairs": [
+        {
+          "entity1": "Moscow",
+          "entity2": "Kursk",
+          "distance": 0,
+          "char_range": "293-451"
+        }
+      ]
+    },
+    {
+      "entity1_id": "E6",
+      "entity1_name": "Moscow",
+      "entity1_type": "location",
+      "entity2_id": "E9",
+      "entity2_name": "Buk missile system",
+      "entity2_type": "concept",
+      "cooccurrence_count": 1,
+      "mention_pairs": [
+        {
+          "entity1": "Moscow",
+          "entity2": "Buk missile system",
+          "distance": 1,
+          "char_range": "293-582"
+        }
+      ]
+    },
+    {
+      "entity1_id": "E10",
+      "entity1_name": "Russia",
+      "entity1_type": "location",
+      "entity2_id": "E6",
+      "entity2_name": "Moscow",
+      "entity2_type": "location",
+      "cooccurrence_count": 1,
+      "mention_pairs": [
+        {
+          "entity1": "Moscow",
+          "entity2": "Russia",
+          "distance": 1,
+          "char_range": "293-582"
+        }
+      ]
+    },
+    {
+      "entity1_id": "E11",
+      "entity1_name": "Ukraine",
+      "entity1_type": "location",
+      "entity2_id": "E6",
+      "entity2_name": "Moscow",
+      "entity2_type": "location",
+      "cooccurrence_count": 1,
+      "mention_pairs": [
+        {
+          "entity1": "Moscow",
+          "entity2": "Ukraine",
+          "distance": 1,
+          "char_range": "208-451"
+        }
+      ]
+    },
+    {
+      "entity1_id": "E12",
+      "entity1_name": "Donetsk",
+      "entity1_type": "location",
+      "entity2_id": "E6",
+      "entity2_name": "Moscow",
+      "entity2_type": "location",
+      "cooccurrence_count": 1,
+      "mention_pairs": [
+        {
+          "entity1": "Moscow",
+          "entity2": "Donetsk",
+          "distance": 1,
+          "char_range": "293-582"
+        }
+      ]
+    },
+    {
+      "entity1_id": "E24",
+      "entity1_name": "Test Investigation Team",
+      "entity1_type": "organization",
+      "entity2_id": "E6",
+      "entity2_name": "Moscow",
+      "entity2_type": "location",
+      "cooccurrence_count": 1,
+      "mention_pairs": [
+        {
+          "entity1": "Moscow",
+          "entity2": "Test Investigation Team",
+          "distance": 109,
+          "char_range": "148-451"
+        }
+      ]
+    },
+    {
+      "entity1_id": "E7",
+      "entity1_name": "53rd Anti-Aircraft Brigade",
+      "entity1_type": "unit",
+      "entity2_id": "E8",
+      "entity2_name": "Kursk",
+      "entity2_type": "location",
+      "cooccurrence_count": 1,
+      "mention_pairs": [
+        {
+          "entity1": "53rd Anti-Aircraft Brigade",
+          "entity2": "Kursk",
+          "distance": 0,
+          "char_range": "293-451"
+        }
+      ]
+    },
+    {
+      "entity1_id": "E7",
+      "entity1_name": "53rd Anti-Aircraft Brigade",
+      "entity1_type": "unit",
+      "entity2_id": "E9",
+      "entity2_name": "Buk missile system",
+      "entity2_type": "concept",
+      "cooccurrence_count": 1,
+      "mention_pairs": [
+        {
+          "entity1": "53rd Anti-Aircraft Brigade",
+          "entity2": "Buk missile system",
+          "distance": 1,
+          "char_range": "293-582"
+        }
+      ]
+    },
+    {
+      "entity1_id": "E10",
+      "entity1_name": "Russia",
+      "entity1_type": "location",
+      "entity2_id": "E7",
+      "entity2_name": "53rd Anti-Aircraft Brigade",
+      "entity2_type": "unit",
+      "cooccurrence_count": 1,
+      "mention_pairs": [
+        {
+          "entity1": "53rd Anti-Aircraft Brigade",
+          "entity2": "Russia",
+          "distance": 1,
+          "char_range": "293-582"
+        }
+      ]
+    },
+    {
+      "entity1_id": "E11",
+      "entity1_name": "Ukraine",
+      "entity1_type": "location",
+      "entity2_id": "E7",
+      "entity2_name": "53rd Anti-Aircraft Brigade",
+      "entity2_type": "unit",
+      "cooccurrence_count": 1,
+      "mention_pairs": [
+        {
+          "entity1": "53rd Anti-Aircraft Brigade",
+          "entity2": "Ukraine",
+          "distance": 1,
+          "char_range": "208-451"
+        }
+      ]
+    },
+    {
+      "entity1_id": "E12",
+      "entity1_name": "Donetsk",
+      "entity1_type": "location",
+      "entity2_id": "E7",
+      "entity2_name": "53rd Anti-Aircraft Brigade",
+      "entity2_type": "unit",
+      "cooccurrence_count": 1,
+      "mention_pairs": [
+        {
+          "entity1": "53rd Anti-Aircraft Brigade",
+          "entity2": "Donetsk",
+          "distance": 1,
+          "char_range": "293-582"
+        }
+      ]
+    },
+    {
+      "entity1_id": "E24",
+      "entity1_name": "Test Investigation Team",
+      "entity1_type": "organization",
+      "entity2_id": "E7",
+      "entity2_name": "53rd Anti-Aircraft Brigade",
+      "entity2_type": "unit",
+      "cooccurrence_count": 1,
+      "mention_pairs": [
+        {
+          "entity1": "53rd Anti-Aircraft Brigade",
+          "entity2": "Test Investigation Team",
+          "distance": 109,
+          "char_range": "148-451"
+        }
+      ]
+    },
+    {
+      "entity1_id": "E8",
+      "entity1_name": "Kursk",
+      "entity1_type": "location",
+      "entity2_id": "E9",
+      "entity2_name": "Buk missile system",
+      "entity2_type": "concept",
+      "cooccurrence_count": 1,
+      "mention_pairs": [
+        {
+          "entity1": "Kursk",
+          "entity2": "Buk missile system",
+          "distance": 1,
+          "char_range": "293-582"
+        }
+      ]
+    },
+    {
+      "entity1_id": "E10",
+      "entity1_name": "Russia",
+      "entity1_type": "location",
+      "entity2_id": "E8",
+      "entity2_name": "Kursk",
+      "entity2_type": "location",
+      "cooccurrence_count": 1,
+      "mention_pairs": [
+        {
+          "entity1": "Kursk",
+          "entity2": "Russia",
+          "distance": 1,
+          "char_range": "293-582"
+        }
+      ]
+    },
+    {
+      "entity1_id": "E11",
+      "entity1_name": "Ukraine",
+      "entity1_type": "location",
+      "entity2_id": "E8",
+      "entity2_name": "Kursk",
+      "entity2_type": "location",
+      "cooccurrence_count": 1,
+      "mention_pairs": [
+        {
+          "entity1": "Kursk",
+          "entity2": "Ukraine",
+          "distance": 1,
+          "char_range": "208-451"
+        }
+      ]
+    },
+    {
+      "entity1_id": "E12",
+      "entity1_name": "Donetsk",
+      "entity1_type": "location",
+      "entity2_id": "E8",
+      "entity2_name": "Kursk",
+      "entity2_type": "location",
+      "cooccurrence_count": 1,
+      "mention_pairs": [
+        {
+          "entity1": "Kursk",
+          "entity2": "Donetsk",
+          "distance": 1,
+          "char_range": "293-582"
+        }
+      ]
+    },
+    {
+      "entity1_id": "E24",
+      "entity1_name": "Test Investigation Team",
+      "entity1_type": "organization",
+      "entity2_id": "E8",
+      "entity2_name": "Kursk",
+      "entity2_type": "location",
+      "cooccurrence_count": 1,
+      "mention_pairs": [
+        {
+          "entity1": "Kursk",
+          "entity2": "Test Investigation Team",
+          "distance": 109,
+          "char_range": "148-451"
+        }
+      ]
+    },
+    {
+      "entity1_id": "E10",
+      "entity1_name": "Russia",
+      "entity1_type": "location",
+      "entity2_id": "E9",
+      "entity2_name": "Buk missile system",
+      "entity2_type": "concept",
+      "cooccurrence_count": 1,
+      "mention_pairs": [
+        {
+          "entity1": "Buk missile system",
+          "entity2": "Russia",
+          "distance": 0,
+          "char_range": "452-582"
+        }
+      ]
+    },
+    {
+      "entity1_id": "E11",
+      "entity1_name": "Ukraine",
+      "entity1_type": "location",
+      "entity2_id": "E9",
+      "entity2_name": "Buk missile system",
+      "entity2_type": "concept",
+      "cooccurrence_count": 1,
+      "mention_pairs": [
+        {
+          "entity1": "Buk missile system",
+          "entity2": "Ukraine",
+          "distance": 160,
+          "char_range": "208-582"
+        }
+      ]
+    },
+    {
+      "entity1_id": "E12",
+      "entity1_name": "Donetsk",
+      "entity1_type": "location",
+      "entity2_id": "E9",
+      "entity2_name": "Buk missile system",
+      "entity2_type": "concept",
+      "cooccurrence_count": 1,
+      "mention_pairs": [
+        {
+          "entity1": "Buk missile system",
+          "entity2": "Donetsk",
+          "distance": 0,
+          "char_range": "452-582"
+        }
+      ]
+    },
+    {
+      "entity1_id": "E13",
+      "entity1_name": "Lieutenant Oleg Markov",
+      "entity1_type": "person",
+      "entity2_id": "E9",
+      "entity2_name": "Buk missile system",
+      "entity2_type": "concept",
+      "cooccurrence_count": 1,
+      "mention_pairs": [
+        {
+          "entity1": "Buk missile system",
+          "entity2": "Lieutenant Oleg Markov",
+          "distance": 467,
+          "char_range": "452-1176"
+        }
+      ]
+    },
+    {
+      "entity1_id": "E14",
+      "entity1_name": "Agent Anna Volkova",
+      "entity1_type": "person",
+      "entity2_id": "E9",
+      "entity2_name": "Buk missile system",
+      "entity2_type": "concept",
+      "cooccurrence_count": 1,
+      "mention_pairs": [
+        {
+          "entity1": "Buk missile system",
+          "entity2": "Agent Anna Volkova",
+          "distance": 467,
+          "char_range": "452-1176"
+        }
+      ]
+    },
+    {
+      "entity1_id": "E24",
+      "entity1_name": "Test Investigation Team",
+      "entity1_type": "organization",
+      "entity2_id": "E9",
+      "entity2_name": "Buk missile system",
+      "entity2_type": "concept",
+      "cooccurrence_count": 1,
+      "mention_pairs": [
+        {
+          "entity1": "Buk missile system",
+          "entity2": "Test Investigation Team",
+          "distance": 268,
+          "char_range": "148-582"
+        }
+      ]
+    },
+    {
+      "entity1_id": "E10",
+      "entity1_name": "Russia",
+      "entity1_type": "location",
+      "entity2_id": "E11",
+      "entity2_name": "Ukraine",
+      "entity2_type": "location",
+      "cooccurrence_count": 1,
+      "mention_pairs": [
+        {
+          "entity1": "Russia",
+          "entity2": "Ukraine",
+          "distance": 160,
+          "char_range": "208-582"
+        }
+      ]
+    },
+    {
+      "entity1_id": "E10",
+      "entity1_name": "Russia",
+      "entity1_type": "location",
+      "entity2_id": "E12",
+      "entity2_name": "Donetsk",
+      "entity2_type": "location",
+      "cooccurrence_count": 1,
+      "mention_pairs": [
+        {
+          "entity1": "Russia",
+          "entity2": "Donetsk",
+          "distance": 0,
+          "char_range": "452-582"
+        }
+      ]
+    },
+    {
+      "entity1_id": "E10",
+      "entity1_name": "Russia",
+      "entity1_type": "location",
+      "entity2_id": "E13",
+      "entity2_name": "Lieutenant Oleg Markov",
+      "entity2_type": "person",
+      "cooccurrence_count": 1,
+      "mention_pairs": [
+        {
+          "entity1": "Russia",
+          "entity2": "Lieutenant Oleg Markov",
+          "distance": 467,
+          "char_range": "452-1176"
+        }
+      ]
+    },
+    {
+      "entity1_id": "E10",
+      "entity1_name": "Russia",
+      "entity1_type": "location",
+      "entity2_id": "E14",
+      "entity2_name": "Agent Anna Volkova",
+      "entity2_type": "person",
+      "cooccurrence_count": 1,
+      "mention_pairs": [
+        {
+          "entity1": "Russia",
+          "entity2": "Agent Anna Volkova",
+          "distance": 467,
+          "char_range": "452-1176"
+        }
+      ]
+    },
+    {
+      "entity1_id": "E10",
+      "entity1_name": "Russia",
+      "entity1_type": "location",
+      "entity2_id": "E24",
+      "entity2_name": "Test Investigation Team",
+      "entity2_type": "organization",
+      "cooccurrence_count": 1,
+      "mention_pairs": [
+        {
+          "entity1": "Russia",
+          "entity2": "Test Investigation Team",
+          "distance": 268,
+          "char_range": "148-582"
+        }
+      ]
+    },
+    {
+      "entity1_id": "E11",
+      "entity1_name": "Ukraine",
+      "entity1_type": "location",
+      "entity2_id": "E12",
+      "entity2_name": "Donetsk",
+      "entity2_type": "location",
+      "cooccurrence_count": 1,
+      "mention_pairs": [
+        {
+          "entity1": "Ukraine",
+          "entity2": "Donetsk",
+          "distance": 160,
+          "char_range": "208-582"
+        }
+      ]
+    },
+    {
+      "entity1_id": "E11",
+      "entity1_name": "Ukraine",
+      "entity1_type": "location",
+      "entity2_id": "E24",
+      "entity2_name": "Test Investigation Team",
+      "entity2_type": "organization",
+      "cooccurrence_count": 1,
+      "mention_pairs": [
+        {
+          "entity1": "Ukraine",
+          "entity2": "Test Investigation Team",
+          "distance": 24,
+          "char_range": "148-292"
+        }
+      ]
+    },
+    {
+      "entity1_id": "E12",
+      "entity1_name": "Donetsk",
+      "entity1_type": "location",
+      "entity2_id": "E13",
+      "entity2_name": "Lieutenant Oleg Markov",
+      "entity2_type": "person",
+      "cooccurrence_count": 1,
+      "mention_pairs": [
+        {
+          "entity1": "Donetsk",
+          "entity2": "Lieutenant Oleg Markov",
+          "distance": 467,
+          "char_range": "452-1176"
+        }
+      ]
+    },
+    {
+      "entity1_id": "E12",
+      "entity1_name": "Donetsk",
+      "entity1_type": "location",
+      "entity2_id": "E14",
+      "entity2_name": "Agent Anna Volkova",
+      "entity2_type": "person",
+      "cooccurrence_count": 1,
+      "mention_pairs": [
+        {
+          "entity1": "Donetsk",
+          "entity2": "Agent Anna Volkova",
+          "distance": 467,
+          "char_range": "452-1176"
+        }
+      ]
+    },
+    {
+      "entity1_id": "E12",
+      "entity1_name": "Donetsk",
+      "entity1_type": "location",
+      "entity2_id": "E24",
+      "entity2_name": "Test Investigation Team",
+      "entity2_type": "organization",
+      "cooccurrence_count": 1,
+      "mention_pairs": [
+        {
+          "entity1": "Donetsk",
+          "entity2": "Test Investigation Team",
+          "distance": 268,
+          "char_range": "148-582"
+        }
+      ]
+    },
+    {
+      "entity1_id": "E13",
+      "entity1_name": "Lieutenant Oleg Markov",
+      "entity1_type": "person",
+      "entity2_id": "E14",
+      "entity2_name": "Agent Anna Volkova",
+      "entity2_type": "person",
+      "cooccurrence_count": 1,
+      "mention_pairs": [
+        {
+          "entity1": "Lieutenant Oleg Markov",
+          "entity2": "Agent Anna Volkova",
+          "distance": 0,
+          "char_range": "1049-1176"
+        }
+      ]
+    },
+    {
+      "entity1_id": "E13",
+      "entity1_name": "Lieutenant Oleg Markov",
+      "entity1_type": "person",
+      "entity2_id": "E15",
+      "entity2_name": "Captain Dmitri Sokolov",
+      "entity2_type": "person",
+      "cooccurrence_count": 1,
+      "mention_pairs": [
+        {
+          "entity1": "Lieutenant Oleg Markov",
+          "entity2": "Captain Dmitri Sokolov",
+          "distance": 1,
+          "char_range": "1049-1293"
+        }
+      ]
+    },
+    {
+      "entity1_id": "E13",
+      "entity1_name": "Lieutenant Oleg Markov",
+      "entity1_type": "person",
+      "entity2_id": "E16",
+      "entity2_name": "Unit 29155",
+      "entity2_type": "unit",
+      "cooccurrence_count": 1,
+      "mention_pairs": [
+        {
+          "entity1": "Lieutenant Oleg Markov",
+          "entity2": "Unit 29155",
+          "distance": 1,
+          "char_range": "1049-1293"
+        }
+      ]
+    },
+    {
+      "entity1_id": "E14",
+      "entity1_name": "Agent Anna Volkova",
+      "entity1_type": "person",
+      "entity2_id": "E15",
+      "entity2_name": "Captain Dmitri Sokolov",
+      "entity2_type": "person",
+      "cooccurrence_count": 1,
+      "mention_pairs": [
+        {
+          "entity1": "Agent Anna Volkova",
+          "entity2": "Captain Dmitri Sokolov",
+          "distance": 1,
+          "char_range": "1049-1293"
+        }
+      ]
+    },
+    {
+      "entity1_id": "E14",
+      "entity1_name": "Agent Anna Volkova",
+      "entity1_type": "person",
+      "entity2_id": "E16",
+      "entity2_name": "Unit 29155",
+      "entity2_type": "unit",
+      "cooccurrence_count": 1,
+      "mention_pairs": [
+        {
+          "entity1": "Agent Anna Volkova",
+          "entity2": "Unit 29155",
+          "distance": 1,
+          "char_range": "1049-1293"
+        }
+      ]
+    },
+    {
+      "entity1_id": "E15",
+      "entity1_name": "Captain Dmitri Sokolov",
+      "entity1_type": "person",
+      "entity2_id": "E16",
+      "entity2_name": "Unit 29155",
+      "entity2_type": "unit",
+      "cooccurrence_count": 1,
+      "mention_pairs": [
+        {
+          "entity1": "Captain Dmitri Sokolov",
+          "entity2": "Unit 29155",
+          "distance": 0,
+          "char_range": "1177-1293"
+        }
+      ]
+    },
+    {
+      "entity1_id": "E18",
+      "entity1_name": "Bellingcat",
+      "entity1_type": "organization",
+      "entity2_id": "E19",
+      "entity2_name": "The Insider",
+      "entity2_type": "organization",
+      "cooccurrence_count": 1,
+      "mention_pairs": [
+        {
+          "entity1": "Bellingcat",
+          "entity2": "The Insider",
+          "distance": 0,
+          "char_range": "3249-3329"
+        }
+      ]
+    },
+    {
+      "entity1_id": "E18",
+      "entity1_name": "Bellingcat",
+      "entity1_type": "organization",
+      "entity2_id": "E20",
+      "entity2_name": "Eliot Higgins",
+      "entity2_type": "person",
+      "cooccurrence_count": 1,
+      "mention_pairs": [
+        {
+          "entity1": "Bellingcat",
+          "entity2": "Eliot Higgins",
+          "distance": 0,
+          "char_range": "3249-3379"
+        }
+      ]
+    },
+    {
+      "entity1_id": "E18",
+      "entity1_name": "Bellingcat",
+      "entity1_type": "organization",
+      "entity2_id": "E21",
+      "entity2_name": "Christo Grozev",
+      "entity2_type": "person",
+      "cooccurrence_count": 1,
+      "mention_pairs": [
+        {
+          "entity1": "Bellingcat",
+          "entity2": "Christo Grozev",
+          "distance": 16,
+          "char_range": "3249-3410"
+        }
+      ]
+    },
+    {
+      "entity1_id": "E18",
+      "entity1_name": "Bellingcat",
+      "entity1_type": "organization",
+      "entity2_id": "E22",
+      "entity2_name": "Twitter",
+      "entity2_type": "organization",
+      "cooccurrence_count": 1,
+      "mention_pairs": [
+        {
+          "entity1": "Bellingcat",
+          "entity2": "Twitter",
+          "distance": 53,
+          "char_range": "3249-3545"
+        }
+      ]
+    },
+    {
+      "entity1_id": "E18",
+      "entity1_name": "Bellingcat",
+      "entity1_type": "organization",
+      "entity2_id": "E23",
+      "entity2_name": "VKontakte",
+      "entity2_type": "organization",
+      "cooccurrence_count": 1,
+      "mention_pairs": [
+        {
+          "entity1": "Bellingcat",
+          "entity2": "VKontakte",
+          "distance": 53,
+          "char_range": "3249-3545"
+        }
+      ]
+    },
+    {
+      "entity1_id": "E18",
+      "entity1_name": "Bellingcat",
+      "entity1_type": "organization",
+      "entity2_id": "E25",
+      "entity2_name": "Open-source intelligence",
+      "entity2_type": "concept",
+      "cooccurrence_count": 1,
+      "mention_pairs": [
+        {
+          "entity1": "Bellingcat",
+          "entity2": "Open-source intelligence",
+          "distance": 0,
+          "char_range": "3249-3379"
+        }
+      ]
+    },
+    {
+      "entity1_id": "E18",
+      "entity1_name": "Bellingcat",
+      "entity1_type": "organization",
+      "entity2_id": "E27",
+      "entity2_name": "Photographic evidence",
+      "entity2_type": "concept",
+      "cooccurrence_count": 1,
+      "mention_pairs": [
+        {
+          "entity1": "Bellingcat",
+          "entity2": "Photographic evidence",
+          "distance": 217,
+          "char_range": "3249-3670"
+        }
+      ]
+    },
+    {
+      "entity1_id": "E19",
+      "entity1_name": "The Insider",
+      "entity1_type": "organization",
+      "entity2_id": "E20",
+      "entity2_name": "Eliot Higgins",
+      "entity2_type": "person",
+      "cooccurrence_count": 1,
+      "mention_pairs": [
+        {
+          "entity1": "The Insider",
+          "entity2": "Eliot Higgins",
+          "distance": 0,
+          "char_range": "3249-3379"
+        }
+      ]
+    },
+    {
+      "entity1_id": "E19",
+      "entity1_name": "The Insider",
+      "entity1_type": "organization",
+      "entity2_id": "E21",
+      "entity2_name": "Christo Grozev",
+      "entity2_type": "person",
+      "cooccurrence_count": 1,
+      "mention_pairs": [
+        {
+          "entity1": "The Insider",
+          "entity2": "Christo Grozev",
+          "distance": 16,
+          "char_range": "3249-3410"
+        }
+      ]
+    },
+    {
+      "entity1_id": "E19",
+      "entity1_name": "The Insider",
+      "entity1_type": "organization",
+      "entity2_id": "E22",
+      "entity2_name": "Twitter",
+      "entity2_type": "organization",
+      "cooccurrence_count": 1,
+      "mention_pairs": [
+        {
+          "entity1": "The Insider",
+          "entity2": "Twitter",
+          "distance": 53,
+          "char_range": "3249-3545"
+        }
+      ]
+    },
+    {
+      "entity1_id": "E19",
+      "entity1_name": "The Insider",
+      "entity1_type": "organization",
+      "entity2_id": "E23",
+      "entity2_name": "VKontakte",
+      "entity2_type": "organization",
+      "cooccurrence_count": 1,
+      "mention_pairs": [
+        {
+          "entity1": "The Insider",
+          "entity2": "VKontakte",
+          "distance": 53,
+          "char_range": "3249-3545"
+        }
+      ]
+    },
+    {
+      "entity1_id": "E19",
+      "entity1_name": "The Insider",
+      "entity1_type": "organization",
+      "entity2_id": "E25",
+      "entity2_name": "Open-source intelligence",
+      "entity2_type": "concept",
+      "cooccurrence_count": 1,
+      "mention_pairs": [
+        {
+          "entity1": "The Insider",
+          "entity2": "Open-source intelligence",
+          "distance": 0,
+          "char_range": "3249-3379"
+        }
+      ]
+    },
+    {
+      "entity1_id": "E19",
+      "entity1_name": "The Insider",
+      "entity1_type": "organization",
+      "entity2_id": "E27",
+      "entity2_name": "Photographic evidence",
+      "entity2_type": "concept",
+      "cooccurrence_count": 1,
+      "mention_pairs": [
+        {
+          "entity1": "The Insider",
+          "entity2": "Photographic evidence",
+          "distance": 217,
+          "char_range": "3249-3670"
+        }
+      ]
+    },
+    {
+      "entity1_id": "E20",
+      "entity1_name": "Eliot Higgins",
+      "entity1_type": "person",
+      "entity2_id": "E21",
+      "entity2_name": "Christo Grozev",
+      "entity2_type": "person",
+      "cooccurrence_count": 1,
+      "mention_pairs": [
+        {
+          "entity1": "Eliot Higgins",
+          "entity2": "Christo Grozev",
+          "distance": 0,
+          "char_range": "3299-3410"
+        }
+      ]
+    },
+    {
+      "entity1_id": "E20",
+      "entity1_name": "Eliot Higgins",
+      "entity1_type": "person",
+      "entity2_id": "E22",
+      "entity2_name": "Twitter",
+      "entity2_type": "organization",
+      "cooccurrence_count": 1,
+      "mention_pairs": [
+        {
+          "entity1": "Eliot Higgins",
+          "entity2": "Twitter",
+          "distance": 3,
+          "char_range": "3299-3545"
+        }
+      ]
+    },
+    {
+      "entity1_id": "E20",
+      "entity1_name": "Eliot Higgins",
+      "entity1_type": "person",
+      "entity2_id": "E23",
+      "entity2_name": "VKontakte",
+      "entity2_type": "organization",
+      "cooccurrence_count": 1,
+      "mention_pairs": [
+        {
+          "entity1": "Eliot Higgins",
+          "entity2": "VKontakte",
+          "distance": 3,
+          "char_range": "3299-3545"
+        }
+      ]
+    },
+    {
+      "entity1_id": "E20",
+      "entity1_name": "Eliot Higgins",
+      "entity1_type": "person",
+      "entity2_id": "E25",
+      "entity2_name": "Open-source intelligence",
+      "entity2_type": "concept",
+      "cooccurrence_count": 1,
+      "mention_pairs": [
+        {
+          "entity1": "Eliot Higgins",
+          "entity2": "Open-source intelligence",
+          "distance": 0,
+          "char_range": "3299-3379"
+        }
+      ]
+    },
+    {
+      "entity1_id": "E20",
+      "entity1_name": "Eliot Higgins",
+      "entity1_type": "person",
+      "entity2_id": "E27",
+      "entity2_name": "Photographic evidence",
+      "entity2_type": "concept",
+      "cooccurrence_count": 1,
+      "mention_pairs": [
+        {
+          "entity1": "Eliot Higgins",
+          "entity2": "Photographic evidence",
+          "distance": 167,
+          "char_range": "3299-3670"
+        }
+      ]
+    },
+    {
+      "entity1_id": "E21",
+      "entity1_name": "Christo Grozev",
+      "entity1_type": "person",
+      "entity2_id": "E22",
+      "entity2_name": "Twitter",
+      "entity2_type": "organization",
+      "cooccurrence_count": 1,
+      "mention_pairs": [
+        {
+          "entity1": "Christo Grozev",
+          "entity2": "Twitter",
+          "distance": 0,
+          "char_range": "3345-3545"
+        }
+      ]
+    },
+    {
+      "entity1_id": "E21",
+      "entity1_name": "Christo Grozev",
+      "entity1_type": "person",
+      "entity2_id": "E23",
+      "entity2_name": "VKontakte",
+      "entity2_type": "organization",
+      "cooccurrence_count": 1,
+      "mention_pairs": [
+        {
+          "entity1": "Christo Grozev",
+          "entity2": "VKontakte",
+          "distance": 0,
+          "char_range": "3345-3545"
+        }
+      ]
+    },
+    {
+      "entity1_id": "E21",
+      "entity1_name": "Christo Grozev",
+      "entity1_type": "person",
+      "entity2_id": "E25",
+      "entity2_name": "Open-source intelligence",
+      "entity2_type": "concept",
+      "cooccurrence_count": 1,
+      "mention_pairs": [
+        {
+          "entity1": "Christo Grozev",
+          "entity2": "Open-source intelligence",
+          "distance": 0,
+          "char_range": "3299-3410"
+        }
+      ]
+    },
+    {
+      "entity1_id": "E21",
+      "entity1_name": "Christo Grozev",
+      "entity1_type": "person",
+      "entity2_id": "E27",
+      "entity2_name": "Photographic evidence",
+      "entity2_type": "concept",
+      "cooccurrence_count": 1,
+      "mention_pairs": [
+        {
+          "entity1": "Christo Grozev",
+          "entity2": "Photographic evidence",
+          "distance": 136,
+          "char_range": "3345-3670"
+        }
+      ]
+    },
+    {
+      "entity1_id": "E22",
+      "entity1_name": "Twitter",
+      "entity1_type": "organization",
+      "entity2_id": "E23",
+      "entity2_name": "VKontakte",
+      "entity2_type": "organization",
+      "cooccurrence_count": 1,
+      "mention_pairs": [
+        {
+          "entity1": "Twitter",
+          "entity2": "VKontakte",
+          "distance": 0,
+          "char_range": "3382-3545"
+        }
+      ]
+    },
+    {
+      "entity1_id": "E22",
+      "entity1_name": "Twitter",
+      "entity1_type": "organization",
+      "entity2_id": "E25",
+      "entity2_name": "Open-source intelligence",
+      "entity2_type": "concept",
+      "cooccurrence_count": 1,
+      "mention_pairs": [
+        {
+          "entity1": "Twitter",
+          "entity2": "Open-source intelligence",
+          "distance": 3,
+          "char_range": "3299-3545"
+        }
+      ]
+    },
+    {
+      "entity1_id": "E22",
+      "entity1_name": "Twitter",
+      "entity1_type": "organization",
+      "entity2_id": "E27",
+      "entity2_name": "Photographic evidence",
+      "entity2_type": "concept",
+      "cooccurrence_count": 1,
+      "mention_pairs": [
+        {
+          "entity1": "Twitter",
+          "entity2": "Photographic evidence",
+          "distance": 1,
+          "char_range": "3382-3670"
+        }
+      ]
+    },
+    {
+      "entity1_id": "E23",
+      "entity1_name": "VKontakte",
+      "entity1_type": "organization",
+      "entity2_id": "E25",
+      "entity2_name": "Open-source intelligence",
+      "entity2_type": "concept",
+      "cooccurrence_count": 1,
+      "mention_pairs": [
+        {
+          "entity1": "VKontakte",
+          "entity2": "Open-source intelligence",
+          "distance": 3,
+          "char_range": "3299-3545"
+        }
+      ]
+    },
+    {
+      "entity1_id": "E23",
+      "entity1_name": "VKontakte",
+      "entity1_type": "organization",
+      "entity2_id": "E27",
+      "entity2_name": "Photographic evidence",
+      "entity2_type": "concept",
+      "cooccurrence_count": 1,
+      "mention_pairs": [
+        {
+          "entity1": "VKontakte",
+          "entity2": "Photographic evidence",
+          "distance": 1,
+          "char_range": "3382-3670"
+        }
+      ]
+    },
+    {
+      "entity1_id": "E25",
+      "entity1_name": "Open-source intelligence",
+      "entity1_type": "concept",
+      "entity2_id": "E27",
+      "entity2_name": "Photographic evidence",
+      "entity2_type": "concept",
+      "cooccurrence_count": 1,
+      "mention_pairs": [
+        {
+          "entity1": "Open-source intelligence",
+          "entity2": "Photographic evidence",
+          "distance": 167,
+          "char_range": "3299-3670"
+        }
+      ]
+    }
+  ],
+  "bridge_entities": [
+    {
+      "entity_id": "E9",
+      "canonical_name": "Buk missile system",
+      "entity_type": "concept",
+      "connection_count": 14,
+      "total_cooccurrences": 14
+    },
+    {
+      "entity_id": "E10",
+      "canonical_name": "Russia",
+      "entity_type": "location",
+      "connection_count": 14,
+      "total_cooccurrences": 14
+    },
+    {
+      "entity_id": "E12",
+      "canonical_name": "Donetsk",
+      "entity_type": "location",
+      "connection_count": 14,
+      "total_cooccurrences": 14
+    },
+    {
+      "entity_id": "E1",
+      "canonical_name": "Operation Nightfall",
+      "entity_type": "event",
+      "connection_count": 12,
+      "total_cooccurrences": 12
+    },
+    {
+      "entity_id": "E2",
+      "canonical_name": "Federal Security Service",
+      "entity_type": "organization",
+      "connection_count": 12,
+      "total_cooccurrences": 12
+    },
+    {
+      "entity_id": "E3",
+      "canonical_name": "Main Intelligence Directorate",
+      "entity_type": "organization",
+      "connection_count": 12,
+      "total_cooccurrences": 12
+    },
+    {
+      "entity_id": "E4",
+      "canonical_name": "Colonel Igor Petrov",
+      "entity_type": "person",
+      "connection_count": 12,
+      "total_cooccurrences": 12
+    },
+    {
+      "entity_id": "E5",
+      "canonical_name": "Major Sergei Ivanov",
+      "entity_type": "person",
+      "connection_count": 12,
+      "total_cooccurrences": 12
+    },
+    {
+      "entity_id": "E6",
+      "canonical_name": "Moscow",
+      "entity_type": "location",
+      "connection_count": 12,
+      "total_cooccurrences": 12
+    },
+    {
+      "entity_id": "E7",
+      "canonical_name": "53rd Anti-Aircraft Brigade",
+      "entity_type": "unit",
+      "connection_count": 12,
+      "total_cooccurrences": 12
+    },
+    {
+      "entity_id": "E8",
+      "canonical_name": "Kursk",
+      "entity_type": "location",
+      "connection_count": 12,
+      "total_cooccurrences": 12
+    },
+    {
+      "entity_id": "E11",
+      "canonical_name": "Ukraine",
+      "entity_type": "location",
+      "connection_count": 12,
+      "total_cooccurrences": 12
+    },
+    {
+      "entity_id": "E24",
+      "canonical_name": "Test Investigation Team",
+      "entity_type": "organization",
+      "connection_count": 12,
+      "total_cooccurrences": 12
+    },
+    {
+      "entity_id": "E18",
+      "canonical_name": "Bellingcat",
+      "entity_type": "organization",
+      "connection_count": 7,
+      "total_cooccurrences": 7
+    },
+    {
+      "entity_id": "E19",
+      "canonical_name": "The Insider",
+      "entity_type": "organization",
+      "connection_count": 7,
+      "total_cooccurrences": 7
+    },
+    {
+      "entity_id": "E20",
+      "canonical_name": "Eliot Higgins",
+      "entity_type": "person",
+      "connection_count": 7,
+      "total_cooccurrences": 7
+    },
+    {
+      "entity_id": "E21",
+      "canonical_name": "Christo Grozev",
+      "entity_type": "person",
+      "connection_count": 7,
+      "total_cooccurrences": 7
+    },
+    {
+      "entity_id": "E22",
+      "canonical_name": "Twitter",
+      "entity_type": "organization",
+      "connection_count": 7,
+      "total_cooccurrences": 7
+    },
+    {
+      "entity_id": "E23",
+      "canonical_name": "VKontakte",
+      "entity_type": "organization",
+      "connection_count": 7,
+      "total_cooccurrences": 7
+    },
+    {
+      "entity_id": "E25",
+      "canonical_name": "Open-source intelligence",
+      "entity_type": "concept",
+      "connection_count": 7,
+      "total_cooccurrences": 7
+    },
+    {
+      "entity_id": "E27",
+      "canonical_name": "Photographic evidence",
+      "entity_type": "concept",
+      "connection_count": 7,
+      "total_cooccurrences": 7
+    },
+    {
+      "entity_id": "E13",
+      "canonical_name": "Lieutenant Oleg Markov",
+      "entity_type": "person",
+      "connection_count": 6,
+      "total_cooccurrences": 6
+    },
+    {
+      "entity_id": "E14",
+      "canonical_name": "Agent Anna Volkova",
+      "entity_type": "person",
+      "connection_count": 6,
+      "total_cooccurrences": 6
+    },
+    {
+      "entity_id": "E15",
+      "canonical_name": "Captain Dmitri Sokolov",
+      "entity_type": "person",
+      "connection_count": 3,
+      "total_cooccurrences": 3
+    },
+    {
+      "entity_id": "E16",
+      "canonical_name": "Unit 29155",
+      "entity_type": "unit",
+      "connection_count": 3,
+      "total_cooccurrences": 3
+    }
+  ]
+}
