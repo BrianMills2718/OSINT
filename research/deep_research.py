@@ -558,6 +558,8 @@ class SimpleDeepResearch:
                 print(f"\n💾 Research output saved to: {output_path}")
             except Exception as e:
                 logging.error(f"Failed to save research output: {type(e).__name__}: {str(e)}")
+                import traceback
+                logging.error(traceback.format_exc())
                 # Attempt a minimal fallback save to preserve artifacts
                 try:
                     from pathlib import Path
@@ -3100,7 +3102,7 @@ class SimpleDeepResearch:
         # 2. Save markdown report (for human reading)
         report_file = output_path / "report.md"
         with open(report_file, 'w', encoding='utf-8') as f:
-            f.write(result["report"])
+            f.write(result.get("report", "Report unavailable."))
 
         # 3. Save metadata (research parameters + execution info)
         metadata_file = output_path / "metadata.json"
