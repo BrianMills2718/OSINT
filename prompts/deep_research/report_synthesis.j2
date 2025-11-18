@@ -18,10 +18,10 @@ Create a detailed markdown report with:
 # Research Report: [Title based on question]
 
 ## Executive Summary
-[3-5 sentences summarizing the most important findings. Cite dates/quotes where possible. Make clear what was actually found vs. unsubstantiated chatter.]
+[3-5 sentences on the most important findings, phrased for an investigator. Bring in dates/quotes when they materially support the point. Be explicit about what was actually found vs. unsubstantiated chatter.]
 
 ## Key Documents & Links
-Order by relevance to the question and explicit credibility: [PRIMARY] official/archival docs (memos, directives, filings, hearings), [ANALYSIS] reputable media/think-tank/legal commentary, [LEAD] unverified/social chatter. Include dates and short quotes when known.
+Order by how well each item advances the question and its credibility signals. Use labels as helpful context (e.g., [PRIMARY] official/archival; [ANALYSIS] media/think-tank/legal; [LEAD] unverified/social). Include dates/short quotes when they strengthen the investigator’s understanding.
 {% if key_documents %}
 {% for doc in key_documents %}
 - [{{ doc.title }}]({{ doc.url }}) — {{ doc.source }}{% if doc.date %} ({{ doc.date }}){% endif %}
