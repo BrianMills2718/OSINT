@@ -1966,11 +1966,11 @@ class SimpleDeepResearch:
         all_results = []
         sources_count = {}
 
-                # Call filtered MCP tools in parallel (skip irrelevant sources) using class method
-                mcp_results = await asyncio.gather(*[
-                    self._call_mcp_tool(tool, query, param_adjustments, task_id=task_id, attempt=attempt, logger=self.logger)
-                    for tool in filtered_tools
-                ])
+        # Call filtered MCP tools in parallel (skip irrelevant sources) using class method
+        mcp_results = await asyncio.gather(*[
+            self._call_mcp_tool(tool, query, param_adjustments, task_id=task_id, attempt=attempt, logger=self.logger)
+            for tool in filtered_tools
+        ])
 
         # Combine results and track per-source counts
         for tool_result in mcp_results:
