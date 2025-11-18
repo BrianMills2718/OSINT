@@ -1726,4 +1726,177 @@ Then iterate based on **real usage and team feedback**.
 
 **Ready to start?** I can build Phase 0+1 with you right now. We can have automated NVE monitoring running within a week.
 
-What do you think?
+---
+
+## PART 10: Knowledge Graph & Entity Extraction (Separate Repository)
+
+### Overview
+
+A **standalone investigative wiki system** with entity extraction and knowledge graph capabilities is being developed in parallel at:
+
+**Location**: `/home/brian/projects/investigative_wiki/`
+
+**Repository Status**: Separate standalone repository (not integrated with sam_gov)
+
+**Current Phase**: Stage 0 validation (testing GPT-Researcher for investigative journalism use case)
+
+### Why Separated?
+
+The wiki project was originally planned as part of sam_gov but was separated to:
+
+1. **Validate core assumptions independently** - Test if entity-based organization helps investigative work before investing in integration
+2. **De-risk LLM extraction quality** - Prove LLM entity extraction works (Stage 1-3) before coupling to multi-source complexity
+3. **Avoid circular dependencies** - Build and validate knowledge graph concept without sam_gov's deep_research.py dependencies
+4. **Prevent scope creep** - Keep sam_gov focused on multi-source research; keep wiki focused on knowledge organization
+
+### What It Does (Target Architecture)
+
+The investigative wiki transforms **single-run research outputs** into **persistent investigative memory**:
+
+**Core Features**:
+- **Entity Extraction**: LLM extracts people, organizations, offices, programs, concepts from research reports
+- **Knowledge Graph**: SQLite database storing entities, evidence snippets, claims (subject-predicate-object triples)
+- **Entity Pivoting**: Query "show all J-2 mentions across all investigations" - cross-lead entity tracking
+- **Lead Organization**: Investigations organized as "Leads" (case files) with persistent graphs
+- **Source Traceability**: Every claim anchored to evidence snippet → source URL (epistemic nihilism: "what is claimed where")
+
+**What It Does NOT Do**:
+- ❌ Research generation (uses external engines like GPT-Researcher)
+- ❌ Truth adjudication (no fact-checking - just claim tracking)
+- ❌ Multi-source orchestration (that's sam_gov's job)
+
+### Integration Path (If Standalone Proves Valuable)
+
+**Current Standalone Approach**:
+```python
+class GPTResearcherClient(ResearchClient):
+    async def run_research(self, query, params):
+        researcher = GPTResearcher(query=query, **params)
+        await researcher.conduct_research()
+        report = await researcher.write_report()
+        sources = researcher.get_source_urls()
+        return ResearchResult(report_md=report, citations=..., sources=...)
+```
+
+**Future Integration with sam_gov** (Phase 2+ after standalone validation):
+```python
+class SamGovDeepResearchClient(ResearchClient):
+    """Adapter wrapping sam_gov's research/deep_research.py"""
+
+    async def run_research(self, query, params):
+        from research.deep_research import DeepResearchEngine
+
+        engine = DeepResearchEngine(
+            research_question=query,
+            max_tasks=params.get('max_tasks', 5),
+            max_results_per_task=params.get('max_results', 50),
+            # ... Phase 3C parameters
+        )
+
+        result = await engine.run()
+
+        # Transform Phase 3C output → ResearchResult format
+        return ResearchResult(
+            report_md=result['report'],
+            citations=result['evidence'],
+            sources=result['sources']
+        )
+```
+
+**Integration Effort**: ~10-12 hours
+- Create `SamGovDeepResearchClient` adapter (2-3 hours)
+- Update wiki ingestion to handle Phase 3C output format (1-2 hours)
+- Extend entity extraction for government-specific types: `contract`, `solicitation`, `job_posting`, `military_unit` (2-3 hours)
+- Add government-specific predicates: `awarded_to`, `posted_by`, `requires_clearance` (2-3 hours)
+- Test integration end-to-end (2-3 hours)
+
+### What You'd Gain from Integration
+
+**Current sam_gov limitation**: Results are ephemeral JSON files, no persistent memory
+
+**With wiki integration**:
+- All SAM/DVIDS/USAJobs/Twitter results automatically become `evidence` rows with extracted `entities`
+- Cross-investigation queries: "Show all government contractors mentioned in SAM.gov results linked to psychological operations"
+- Entity tracking: "Which entities appear in both my J-2 investigation AND my contractor fraud lead?"
+- Pattern discovery: "Who are the bridge entities connecting multiple themes?"
+- Timeline views: "All J-2 directors mentioned since 2001 with their associated programs"
+
+### Current Status & Timeline
+
+**Phased Validation Approach** (no big-bang):
+
+- **Stage 0** (2 hours, ZERO code): Validate GPT-Researcher works for investigative journalism
+  - Status: Ready to execute
+  - Decision gate: GO/TRY_DEERFLOW/STOP
+
+- **Stage 1** (2 hours, manual): Manually extract entities, test if entity pivoting is useful
+  - Status: Awaiting Stage 0 completion
+  - Decision gate: GO/STOP
+
+- **Stage 2** (4-6 hours): 3-table SQLite + CLI (evidence, entities, evidence_entities)
+  - Status: Schema designed (poc/schema_stage2.sql)
+  - Decision gate: GO/MAINTAIN/STOP
+
+- **Stage 3** (4-6 hours): LLM entity extraction (eliminate manual CSV creation)
+  - Decision gate: GO/TUNE/STOP
+
+- **Full PoC** (6-8 hours): Add leads, research_runs, sources tables + GPT-Researcher integration
+
+- **V1** (20-25 hours): Add claims, predicates, entity_aliases + multi-lead support + Web UI
+
+**Total Standalone Effort**: ~40-50 hours across 5 validation stages
+
+**Integration Timeline**: Only after Full PoC/V1 proves standalone value (weeks-months from now)
+
+### Database Schema Compatibility
+
+**Key Design Decision**: Wiki database schema is **research-engine-agnostic**
+
+Tables are identical whether using:
+- GPT-Researcher (web-only, Tavily/Brave search)
+- sam_gov deep_research.py (SAM/DVIDS/USAJobs/Twitter via MCP)
+
+**Shared Schema**:
+- `leads` (investigation case files)
+- `research_runs` (each has `engine` field: "gpt-researcher" | "sam-gov-deep-research")
+- `sources` (URLs/documents)
+- `evidence` (text snippets)
+- `entities` (people, orgs, offices, programs, concepts)
+- `claims` (subject-predicate-object triples anchored to evidence)
+- `predicates` (held_role, part_of, mentioned_with, etc.)
+
+Only difference: `ResearchRun.engine` field changes + evidence extraction logic adapts to output format
+
+### Decision: When to Integrate?
+
+**DO NOT integrate until**:
+- ✅ Stage 1 validates entity organization is useful
+- ✅ Stage 3 validates LLM extraction quality is good (80%+ accuracy)
+- ✅ Full PoC validates end-to-end automation works
+- ✅ User has used V1 wiki for 5-10 real investigations successfully
+
+**Premature integration risks**:
+- Wasted effort if entity extraction doesn't prove valuable
+- Coupling to unvalidated LLM extraction quality
+- Scope creep contaminating both repos
+
+**Right time to integrate**: After standalone proves "entity pivoting across investigations" is genuinely useful for investigative journalism workflow (weeks-months from now, not days)
+
+### References
+
+**Standalone Wiki Documentation**:
+- `/home/brian/projects/investigative_wiki/README.md` - Project overview
+- `/home/brian/projects/investigative_wiki/v3_STANDALONE.md` - Primary design doc (518 lines)
+- `/home/brian/projects/investigative_wiki/v3_INTEGRATED_FUTURE.md` - Integration patterns reference (for Phase 2+)
+- `/home/brian/projects/investigative_wiki/poc/` - Stage 0-3 validation guides
+
+**sam_gov Deep Research**:
+- `research/deep_research.py` - Phase 3C: Hypothesis generation, sequential task execution, coverage assessment
+- `core/agentic_executor.py` - Multi-database parallel search with LLM refinement
+- `integrations/mcp/` - MCP-based government/social database integrations
+
+---
+
+## CONCLUSION
+
+### What You Have (Amazing Foundation)

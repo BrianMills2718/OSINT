@@ -186,6 +186,15 @@ cost_management:
 # Research Flow Configuration (Supervisor/Scoping/HITL)
 # ============================================================================
 research:
+  # Deep research execution limits
+  deep_research:
+    max_tasks: 15                 # Maximum tasks to execute (prevents infinite loops)
+    max_retries_per_task: 2       # Max retries for failed tasks
+    max_time_minutes: 120         # Maximum total investigation time (minutes)
+    min_results_per_task: 3       # Minimum results to consider task successful
+    max_concurrent_tasks: 4       # Max parallel tasks (1=sequential, 3-5=parallel)
+    task_timeout_seconds: 300     # Per-task timeout when not using hypotheses (5 min)
+
   # Feature flags (start disabled, enable after validation)
   enable_scoping: false           # Enable ScopingAgent (query clarification + planning)
   enable_supervisor: false        # Enable ResearchSupervisor (task decomposition + routing)

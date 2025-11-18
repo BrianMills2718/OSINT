@@ -273,6 +273,38 @@ class SAMIntegration(DatabaseIntegration):
 
             # Parse response
             data = response.json()
+
+            # CHECK FOR QUOTA ERROR (code 900804)
+            # SAM.gov returns HTTP 200 with error JSON when quota exceeded
+            if data.get("code") == "900804":
+                error_msg = data.get("description", "Daily quota exceeded")
+                next_access = data.get("nextAccessTime", "Unknown")
+
+                # Mask API key in params for logging
+                log_params = params.copy()
+                if "api_key" in log_params:
+                    log_params["api_key"] = f"{api_key[:8]}***{api_key[-4:]}"
+
+                # Log quota error
+                log_request(
+                    api_name="SAM.gov",
+                    endpoint=endpoint,
+                    status_code=response.status_code,
+                    response_time_ms=response_time_ms,
+                    error_message=f"Quota exceeded (next access: {next_access})",
+                    request_params=log_params
+                )
+
+                return QueryResult(
+                    success=False,
+                    source="SAM.gov",
+                    total=0,
+                    results=[],
+                    query_params=query_params,
+                    error=f"SAM.gov quota exceeded. {error_msg}. Next access: {next_access}",
+                    response_time_ms=response_time_ms
+                )
+
             opportunities = data.get("opportunitiesData", data.get("results", []))
             total = data.get("totalRecords", data.get("total", len(opportunities)))
 

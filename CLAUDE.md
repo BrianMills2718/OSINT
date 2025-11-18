@@ -150,7 +150,6 @@ See: INVESTIGATIVE_PLATFORM_VISION.md (75 pages)
 **Exception**: Files that ARE part of implementation (code comments, docstrings, inline docs) are always allowed.
 
 **Project-Specific Locations**:
-- Wiki V1 planning: `/home/brian/sam_gov/wiki_from_scratch_20251114/` (all design/analysis docs)
 - Active docs: `/home/brian/sam_gov/docs/` (implementation guides, technical references)
 - Archive: `/home/brian/sam_gov/archive/YYYY-MM-DD/` (completed work)
 
@@ -390,9 +389,9 @@ pip list | grep playwright
 
 # CLAUDE.md - Temporary Section (Updated as Tasks Complete)
 
-**Last Updated**: 2025-11-16
+**Last Updated**: 2025-11-18
 **Current Phase**: Phase 3C Complete
-**Current Focus**: No active work - Phase 3C production ready
+**Current Focus**: Infrastructure cleanup and testing
 **Status**: ✅ ALL VALIDATIONS COMPLETE - PRODUCTION READY
 **Validated Artifacts**:
 - data/research_output/2025-11-16_04-55-21_what_is_gs_2210_job_series/
@@ -430,6 +429,13 @@ pip list | grep playwright
 ---
 
 ## COMPLETED WORK
+
+✅ **Infrastructure Cleanup** (2025-11-18) - Root directory cleanup, SAM.gov quota handling, config migration, test suite
+  - Root cleanup: Archived wiki_from_scratch_20251114/, poc/; removed latest_logs/, __pycache__/; created .env.example
+  - SAM.gov: Added quota error detection (code 900804) with next access time logging
+  - Config migration: deep_research.py now reads from config.yaml with backward-compatible constructor overrides
+  - Test suite: Created tests/test_phase3c_validation.py, tests/test_entry_points.py (all pass)
+  - Updated ROADMAP.md to reflect Phase 3C Complete status
 
 ✅ **Phase 3C MCP Refactoring** (2025-11-16, Commit 3bc06e0) - Extracted call_mcp_tool to class method, fixed hypothesis path
 ✅ **Phase 3C Bug Fixes** (2025-11-15, Commit e8fa4e0) - Fixed 3 AttributeErrors preventing Phase 3C execution
