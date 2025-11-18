@@ -2313,29 +2313,27 @@ class SimpleDeepResearch:
                     async with self.resource_manager.results_lock:
                         self.results_by_task[task.id] = result_dict
 
-                    # Gap #1 Fix: Flush ACCUMULATED results to disk immediately (survive timeout cancellation)
-                    # Write full accumulated_results (all retries combined) not just current batch
-                    if self.logger:
-                        from pathlib import Path
-                        raw_path = Path(self.logger.output_dir) / "raw"
-                        raw_path.mkdir(exist_ok=True)
-                        raw_file = raw_path / f"task_{task.id}_results.json"
+                # Flush accumulated results to disk immediately (survive timeout/cancel)
+                if self.logger:
+                    from pathlib import Path
+                    raw_path = Path(self.logger.output_dir) / "raw"
+                    raw_path.mkdir(exist_ok=True)
+                    raw_file = raw_path / f"task_{task.id}_results.json"
 
-                        # Gap #1: Write accumulated_results instead of just result_dict
-                        accumulated_dict = {
-                            "total_results": len(task.accumulated_results),
-                            "results": task.accumulated_results,  # All attempts combined
-                            "accumulated_count": len(task.accumulated_results),
-                            "entities_discovered": [],  # Will be extracted at end
-                            "sources": self._get_sources(task.accumulated_results)
-                        }
+                    accumulated_dict = {
+                        "total_results": len(task.accumulated_results),
+                        "results": task.accumulated_results,  # All attempts combined
+                        "accumulated_count": len(task.accumulated_results),
+                        "entities_discovered": [],
+                        "sources": self._get_sources(task.accumulated_results)
+                    }
 
-                        try:
-                            with open(raw_file, 'w', encoding='utf-8') as f:
-                                json.dump(accumulated_dict, f, indent=2, ensure_ascii=False)
-                            logging.info(f"Task {task.id} accumulated results ({len(task.accumulated_results)} total) persisted to {raw_file}")
-                        except Exception as persist_error:
-                            logging.warning(f"Failed to persist task {task.id} results: {persist_error}")
+                    try:
+                        with open(raw_file, 'w', encoding='utf-8') as f:
+                            json.dump(accumulated_dict, f, indent=2, ensure_ascii=False)
+                        logging.info(f"Task {task.id} accumulated results ({len(task.accumulated_results)} total) persisted to {raw_file}")
+                    except Exception as persist_error:
+                        logging.warning(f"Failed to persist task {task.id} results: {persist_error}")
 
                     # Priority 2: Entity extraction moved to end of task (after retry loop)
                     # Will extract from accumulated_results, not current batch
@@ -2435,6 +2433,45 @@ class SimpleDeepResearch:
                         task_id=task.id,
                         data=error_details
                     )
+
+                    # Persist whatever has been accumulated so far for this task
+                    if self.logger:
+                        from pathlib import Path
+                        raw_path = Path(self.logger.output_dir) / "raw"
+                        raw_path.mkdir(exist_ok=True)
+                        raw_file = raw_path / f"task_{task.id}_results.json"
+                        accumulated_dict = {
+                            "total_results": len(task.accumulated_results),
+                            "results": task.accumulated_results,
+                            "accumulated_count": len(task.accumulated_results),
+                            "entities_discovered": [],
+                            "sources": self._get_sources(task.accumulated_results)
+                        }
+                        try:
+                            with open(raw_file, 'w', encoding='utf-8') as f:
+                                json.dump(accumulated_dict, f, indent=2, ensure_ascii=False)
+                            logging.info(f"Task {task.id} failed; persisted partial results ({len(task.accumulated_results)}) to {raw_file}")
+                        except Exception as persist_error:
+                            logging.warning(f"Failed to persist partial results for task {task.id}: {persist_error}")
+
+                    # Log task failure to execution logger for visibility
+                    if self.logger:
+                        sources_tried = list(set(task.selected_sources or [])) if hasattr(task, 'selected_sources') else []
+                        try:
+                            self.logger.log_task_complete(
+                                task_id=task.id,
+                                query=task.query,
+                                status="FAILED",
+                                reason=f"Exception: {type(e).__name__}: {str(e)}",
+                                total_results=len(task.accumulated_results),
+                                sources_tried=sources_tried,
+                                sources_succeeded=self._get_sources(task.accumulated_results),
+                                retry_count=task.retry_count,
+                                elapsed_seconds=0
+                            )
+                        except Exception as log_error:
+                            logging.warning(f"Failed to log task failure for task {task.id}: {log_error}")
+
                     return False
 
         return False
