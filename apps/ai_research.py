@@ -17,7 +17,7 @@ logging.basicConfig(
     level=logging.DEBUG,
     format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
     handlers=[
-        logging.FileHandler('ai_research_queries.log'),
+        logging.FileHandler('data/logs/ai_research_queries.log'),
         logging.StreamHandler()  # Also log to console
     ]
 )
