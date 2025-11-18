@@ -2998,6 +2998,39 @@ class SimpleDeepResearch:
                 except Exception as e:
                     logging.warning(f"Failed to load raw task file {raw_file.name}: {e}")
 
+        # Fallback: if a per-task raw file is missing, synthesize it from per-source files
+        # This prevents losing data when a task never wrote task_{id}_results.json
+        if raw_path.exists():
+            # Candidate task_ids from completed/failed tasks and already-aggregated ones
+            candidate_task_ids = set(aggregated_results_by_task.keys())
+            candidate_task_ids.update([t.id for t in (self.completed_tasks + self.failed_tasks)])
+
+            for task_id in candidate_task_ids:
+                if task_id in aggregated_results_by_task:
+                    continue  # already have a consolidated file
+
+                merged_results = []
+                for src_file in sorted(raw_path.glob(f"*task{task_id}_*.json")):
+                    try:
+                        with open(src_file, "r", encoding="utf-8") as f:
+                            data = json.load(f)
+                        # Per-source files can be arrays (list of results) or dicts with "results"
+                        if isinstance(data, list):
+                            merged_results.extend(data)
+                        elif isinstance(data, dict) and "results" in data:
+                            merged_results.extend(data.get("results", []))
+                        else:
+                            logging.debug(f"Skipping unrecognized raw format: {src_file.name}")
+                    except Exception as e:
+                        logging.warning(f"Failed to load per-source file {src_file.name}: {e}")
+
+                if merged_results:
+                    aggregated_results_by_task[task_id] = {
+                        "total_results": len(merged_results),
+                        "results": merged_results
+                    }
+                    logging.info(f"Synthesized task_{task_id}_results from per-source files ({len(merged_results)} items)")
+
         # 2. Merge with results_by_task from memory (in case some tasks didn't write raw files)
         for task_id, result_dict in self.results_by_task.items():
             if task_id not in aggregated_results_by_task:
