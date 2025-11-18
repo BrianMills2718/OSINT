@@ -393,14 +393,18 @@ class SimpleDeepResearch:
                 data={"tasks": [{"id": t.id, "query": t.query} for t in batch]}
             )
 
-            # Codex fix: Emit task_started for each task before parallel execution
+            # Emit task_started for each task before parallel execution
             for task in batch:
                 task.status = TaskStatus.IN_PROGRESS
                 self._emit_progress("task_started", f"Executing: {task.query}", task_id=task.id)
+                # Track selected sources on the task for later logging
+                if hasattr(task, "selected_sources"):
+                    task.selected_sources = list(set(task.selected_sources or []))
 
-            # Priority 3: Increase timeout from 180s to 300s (5 minutes per task)
             # Timeout wraps entire task execution including all retry attempts
-            task_timeout = 300  # 5 minutes per task (50s per attempt × 3 attempts + 2min buffer)
+            task_timeout = 300  # adjustable; overridden by max_time_per_task_seconds if set
+            if getattr(self, "max_time_per_task_seconds", None):
+                task_timeout = self.max_time_per_task_seconds
             results = await asyncio.gather(*[
                 asyncio.wait_for(
                     self._execute_task_with_retry(task),
@@ -422,6 +426,41 @@ class SimpleDeepResearch:
                     task.status = TaskStatus.FAILED
                     task.error = error_msg
                     self.failed_tasks.append(task)
+                    # Persist partial results if any
+                    if self.logger and task.accumulated_results:
+                        from pathlib import Path
+                        raw_path = Path(self.logger.output_dir) / "raw"
+                        raw_path.mkdir(exist_ok=True)
+                        raw_file = raw_path / f"task_{task.id}_results.json"
+                        accumulated_dict = {
+                            "total_results": len(task.accumulated_results),
+                            "results": task.accumulated_results,
+                            "accumulated_count": len(task.accumulated_results),
+                            "entities_discovered": [],
+                            "sources": self._get_sources(task.accumulated_results)
+                        }
+                        try:
+                            with open(raw_file, 'w', encoding='utf-8') as f:
+                                json.dump(accumulated_dict, f, indent=2, ensure_ascii=False)
+                            logging.info(f"Task {task.id} timed out; persisted partial results ({len(task.accumulated_results)}) to {raw_file}")
+                        except Exception as persist_error:
+                            logging.warning(f"Failed to persist partial results for timed-out task {task.id}: {persist_error}")
+                    # Log timeout as a task completion record
+                    if self.logger:
+                        try:
+                            self.logger.log_task_complete(
+                                task_id=task.id,
+                                query=task.query,
+                                status="TIMEOUT",
+                                reason=error_msg,
+                                total_results=len(task.accumulated_results),
+                                sources_tried=list(set(getattr(task, "selected_sources", []) or [])),
+                                sources_succeeded=self._get_sources(task.accumulated_results),
+                                retry_count=task.retry_count,
+                                elapsed_seconds=task_timeout
+                            )
+                        except Exception as log_error:
+                            logging.warning(f"Failed to log task timeout for task {task.id}: {log_error}")
                     continue
 
                 # Handle other exceptions
@@ -434,6 +473,41 @@ class SimpleDeepResearch:
                     task.status = TaskStatus.FAILED
                     task.error = str(success_or_exception)
                     self.failed_tasks.append(task)
+                    # Persist partial results if any
+                    if self.logger and task.accumulated_results:
+                        from pathlib import Path
+                        raw_path = Path(self.logger.output_dir) / "raw"
+                        raw_path.mkdir(exist_ok=True)
+                        raw_file = raw_path / f"task_{task.id}_results.json"
+                        accumulated_dict = {
+                            "total_results": len(task.accumulated_results),
+                            "results": task.accumulated_results,
+                            "accumulated_count": len(task.accumulated_results),
+                            "entities_discovered": [],
+                            "sources": self._get_sources(task.accumulated_results)
+                        }
+                        try:
+                            with open(raw_file, 'w', encoding='utf-8') as f:
+                                json.dump(accumulated_dict, f, indent=2, ensure_ascii=False)
+                            logging.info(f"Task {task.id} exception; persisted partial results ({len(task.accumulated_results)}) to {raw_file}")
+                        except Exception as persist_error:
+                            logging.warning(f"Failed to persist partial results for errored task {task.id}: {persist_error}")
+                    # Log exception as task completion record
+                    if self.logger:
+                        try:
+                            self.logger.log_task_complete(
+                                task_id=task.id,
+                                query=task.query,
+                                status="FAILED",
+                                reason=f"Exception: {type(success_or_exception).__name__}: {str(success_or_exception)}",
+                                total_results=len(task.accumulated_results),
+                                sources_tried=list(set(getattr(task, "selected_sources", []) or [])),
+                                sources_succeeded=self._get_sources(task.accumulated_results),
+                                retry_count=task.retry_count,
+                                elapsed_seconds=0
+                            )
+                        except Exception as log_error:
+                            logging.warning(f"Failed to log task exception for task {task.id}: {log_error}")
                     continue
 
                 success = success_or_exception
@@ -549,6 +623,11 @@ class SimpleDeepResearch:
             "total_results": len(all_results),
             "elapsed_minutes": (datetime.now() - self.start_time).total_seconds() / 60
         }
+
+        # If we have merged tasks from raw files but no explicit completion records, infer sources_used
+        inferred_sources = list(set(r.get('source', 'Unknown') for r in all_results if r.get('source')))
+        if not result["sources_searched"] and inferred_sources:
+            result["sources_searched"] = inferred_sources
 
         # Save output to files if enabled
         if self.save_output:
