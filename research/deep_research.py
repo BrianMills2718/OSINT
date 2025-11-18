@@ -3582,7 +3582,7 @@ class SimpleDeepResearch:
             hypothesis_findings=hypothesis_findings,
             key_documents=key_documents,
             timeline=timeline,
-            current_date=datetime.now(timezone.utc).date().isoformat()
+            current_date=datetime.utcnow().date().isoformat()
         )
 
         report = None
