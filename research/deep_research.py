@@ -3231,6 +3231,21 @@ class SimpleDeepResearch:
         result["duplicates_removed"] = duplicates_removed  # Codex Fix #2: Add dedup stats visibility
         result["results_before_dedup"] = len(aggregated_results_list) + duplicates_removed
 
+        # Timeline: build from dated items in results (simple event list)
+        timeline_out = result.get("timeline", []) or []
+        if not timeline_out:
+            dated_items = []
+            for item in deduplicated_results_list:
+                if item.get("date") and item.get("url"):
+                    dated_items.append({
+                        "date": item.get("date"),
+                        "title": item.get("title", "") or item.get("snippet", "")[:80],
+                        "url": item.get("url", "")
+                    })
+            # Keep top 10 by date order as provided
+            timeline_out = dated_items[:10]
+            result["timeline"] = timeline_out
+
         # Update result dict with aggregated counts
         # Phase 3B: collect hypotheses + execution summaries for persistence
         hypotheses_by_task = {}
@@ -3239,7 +3254,6 @@ class SimpleDeepResearch:
         key_documents = result.get("key_documents", []) or []
         source_counts_out = result.get("source_counts", {}) or {}
         hypothesis_findings_out = result.get("hypothesis_findings", []) or []
-        timeline_out = result.get("timeline", []) or []
         for task in (self.completed_tasks + self.failed_tasks):
             if task.hypotheses:
                 hypotheses_by_task[task.id] = task.hypotheses

@@ -39,25 +39,7 @@ Order by how well each item advances the question and its credibility signals. U
 No dated events extracted from collected sources.
 {% endif %}
 
-## Findings by Angle
-For each hypothesis/angle, state what was actually found (or if it came up empty), list concrete links, and note coverage rationale/gaps if available.
-{% if hypothesis_findings %}
-{% for hf in hypothesis_findings %}
-- Hypothesis {{ hf.hypothesis_id }}: {{ hf.statement }}
-  - Findings: {{ hf.total_results }} result(s){% if hf.total_results == 0 %} — no substantive hits, likely low-yield{% endif %}
-  {% if hf.sample_results %}- Sample links:{% for s in hf.sample_results %}
-    - [{{ s.title }}]({{ s.url }}) ({{ s.source }}){% if s.date %} ({{ s.date }}){% endif %}{% endfor %}{% endif %}
-{% endfor %}
-{% elif hypothesis_execution_summary %}
-{% for task_id, runs in hypothesis_execution_summary.items() %}
-- Task {{ task_id }} ({{ task_queries.get(task_id, 'Unknown task') }}):
-  {% for run in runs %}
-  - Hypothesis {{ run.hypothesis_id }}: {{ run.results_count }} result(s){% if run.results_count == 0 %} — no substantive hits{% endif %}{% if run.delta_metrics %} ({{ run.delta_metrics.results_new }} new / {{ run.delta_metrics.results_duplicate }} dup){% endif %}
-  {% endfor %}
-{% endfor %}
-{% else %}
-- No hypothesis findings were recorded in this run.
-{% endif %}
+{# Findings by angle are captured in metadata/logs; keep main narrative focused. #}
 
 {% if source_counts %}
 ## Coverage Snapshot
