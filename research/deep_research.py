@@ -1966,11 +1966,11 @@ class SimpleDeepResearch:
         all_results = []
         sources_count = {}
 
-        # Call filtered MCP tools in parallel (skip irrelevant sources) using class method
-        mcp_results = await asyncio.gather(*[
-            self._call_mcp_tool(tool, query, param_adjustments, task_id=task_id, attempt=attempt, logger=self.logger)
-            for tool in filtered_tools
-        ])
+                # Call filtered MCP tools in parallel (skip irrelevant sources) using class method
+                mcp_results = await asyncio.gather(*[
+                    self._call_mcp_tool(tool, query, param_adjustments, task_id=task_id, attempt=attempt, logger=self.logger)
+                    for tool in filtered_tools
+                ])
 
         # Combine results and track per-source counts
         for tool_result in mcp_results:
@@ -2039,6 +2039,16 @@ class SimpleDeepResearch:
                         tool_descriptions=self.tool_descriptions,
                         selected_sources=selected_display_names,
                         reasoning=source_selection_reason
+                    )
+                    # Emit progress for traceability
+                    self._emit_progress(
+                        "source_selection",
+                        "LLM-selected sources",
+                        task_id=task.id,
+                        data={
+                            "selected_sources": selected_display_names,
+                            "reasoning": source_selection_reason
+                        }
                     )
 
                 # Separate MCP tools from web tools
@@ -2763,6 +2773,18 @@ class SimpleDeepResearch:
             logging.info(f"Result relevance: {decision} - {reason}")
             logging.info(f"Filtered indices: {relevant_indices} ({len(relevant_indices)} results kept)")
             logging.info(f"Continue searching: {should_continue} - {continuation_reason}")
+            # Emit reasoning trace for transparency
+            self._emit_progress(
+                "relevance_scoring",
+                f"Decision: {decision}",
+                data={
+                    "reason": reason,
+                    "relevant_indices": relevant_indices,
+                    "continue_searching": should_continue,
+                    "continuation_reason": continuation_reason,
+                    "reasoning_breakdown": reasoning_breakdown
+                }
+            )
 
             return (should_accept, reason, relevant_indices, should_continue, continuation_reason, reasoning_breakdown)
 
