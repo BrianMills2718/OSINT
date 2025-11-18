@@ -44,16 +44,16 @@ async def test_nspm7_investigation():
     print("📋 Configuration:")
     print(f"   Hypothesis Mode: execution")
     print(f"   Coverage Mode: true (sequential with adaptive stopping)")
-    print(f"   Max Hypotheses per Task: 2 (narrowed for test)")
-    print(f"   Max Hypotheses to Execute: 2")
+    print(f"   Max Hypotheses per Task: 3 (investigative depth)")
+    print(f"   Max Hypotheses to Execute: 3")
     print(f"   Time Budget per Task: 720s (avoid per-task timeout)")
     print(f"   Expected Sources: SAM.gov, DVIDS, Brave Search, Reddit, Discord")
 
     engine.hypothesis_mode = "execution"
     engine.hypothesis_branching_enabled = True
-    engine.max_hypotheses_per_task = 2  # Narrowed for test stability
+    engine.max_hypotheses_per_task = 3  # More depth for investigative runs
     engine.coverage_mode = True
-    engine.max_hypotheses_to_execute = 2
+    engine.max_hypotheses_to_execute = 3
     engine.max_time_per_task_seconds = 720  # Allow longer per task in test
 
     # Real-world investigative query

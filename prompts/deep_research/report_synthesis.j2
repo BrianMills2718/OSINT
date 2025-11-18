@@ -21,7 +21,7 @@ Create a detailed markdown report with:
 [3-5 sentences summarizing the most important findings. Cite dates/quotes where possible. Make clear what was actually found vs. unsubstantiated chatter.]
 
 ## Key Documents & Links
-Prioritize and label: [PRIMARY] official/archival docs (memos, directives, filings, hearings), [ANALYSIS] reputable media/think-tank/legal commentary, [LEAD] unverified/social chatter. Include dates and short quotes when known.
+Order by relevance to the question and explicit credibility: [PRIMARY] official/archival docs (memos, directives, filings, hearings), [ANALYSIS] reputable media/think-tank/legal commentary, [LEAD] unverified/social chatter. Include dates and short quotes when known.
 {% if key_documents %}
 {% for doc in key_documents %}
 - [{{ doc.title }}]({{ doc.url }}) — {{ doc.source }}{% if doc.date %} ({{ doc.date }}){% endif %}
@@ -40,7 +40,7 @@ No dated events extracted from collected sources.
 {% endif %}
 
 ## Findings by Angle
-For each hypothesis/angle, state what was actually found (or if it came up empty), and list concrete links.
+For each hypothesis/angle, state what was actually found (or if it came up empty), list concrete links, and note coverage rationale/gaps if available.
 {% if hypothesis_findings %}
 {% for hf in hypothesis_findings %}
 - Hypothesis {{ hf.hypothesis_id }}: {{ hf.statement }}
