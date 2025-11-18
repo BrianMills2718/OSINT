@@ -132,11 +132,11 @@ class SimpleDeepResearch:
 
     def __init__(
         self,
-        max_tasks: int = 15,
-        max_retries_per_task: int = 2,
-        max_time_minutes: int = 120,
-        min_results_per_task: int = 3,
-        max_concurrent_tasks: int = 4,
+        max_tasks: Optional[int] = None,
+        max_retries_per_task: Optional[int] = None,
+        max_time_minutes: Optional[int] = None,
+        min_results_per_task: Optional[int] = None,
+        max_concurrent_tasks: Optional[int] = None,
         progress_callback: Optional[Callable[[ResearchProgress], None]] = None,
         save_output: bool = True,
         output_dir: str = "data/research_output"
@@ -145,20 +145,24 @@ class SimpleDeepResearch:
         Initialize deep research engine.
 
         Args:
-            max_tasks: Maximum tasks to execute (prevents infinite loops)
-            max_retries_per_task: Max retries for failed tasks
-            max_time_minutes: Maximum investigation time
-            min_results_per_task: Minimum results to consider task successful
-            max_concurrent_tasks: Maximum tasks to execute in parallel (1 = sequential, 3-5 = parallel)
+            max_tasks: Maximum tasks to execute (prevents infinite loops). Defaults to config or 15.
+            max_retries_per_task: Max retries for failed tasks. Defaults to config or 2.
+            max_time_minutes: Maximum investigation time. Defaults to config or 120.
+            min_results_per_task: Minimum results to consider task successful. Defaults to config or 3.
+            max_concurrent_tasks: Maximum tasks to execute in parallel (1 = sequential, 3-5 = parallel). Defaults to config or 4.
             progress_callback: Function to call with progress updates
             save_output: Whether to automatically save output to files (default: True)
             output_dir: Base directory for saved output (default: data/research_output)
         """
-        self.max_tasks = max_tasks
-        self.max_retries_per_task = max_retries_per_task
-        self.max_time_minutes = max_time_minutes
-        self.min_results_per_task = min_results_per_task
-        self.max_concurrent_tasks = max_concurrent_tasks
+        # Load config with fallbacks
+        raw_config = config.get_raw_config()
+        deep_config = raw_config.get("research", {}).get("deep_research", {})
+
+        self.max_tasks = max_tasks if max_tasks is not None else deep_config.get("max_tasks", 15)
+        self.max_retries_per_task = max_retries_per_task if max_retries_per_task is not None else deep_config.get("max_retries_per_task", 2)
+        self.max_time_minutes = max_time_minutes if max_time_minutes is not None else deep_config.get("max_time_minutes", 120)
+        self.min_results_per_task = min_results_per_task if min_results_per_task is not None else deep_config.get("min_results_per_task", 3)
+        self.max_concurrent_tasks = max_concurrent_tasks if max_concurrent_tasks is not None else deep_config.get("max_concurrent_tasks", 4)
         self.progress_callback = progress_callback
         self.save_output = save_output
         self.output_dir = output_dir
@@ -402,9 +406,15 @@ class SimpleDeepResearch:
                     task.selected_sources = list(set(task.selected_sources or []))
 
             # Timeout wraps entire task execution including all retry attempts
-            task_timeout = 300  # adjustable; overridden by max_time_per_task_seconds if set
+            # Priority: hypothesis config > deep_research config > hardcoded default
             if getattr(self, "max_time_per_task_seconds", None):
+                # Hypothesis-specific timeout (from hypothesis_branching config)
                 task_timeout = self.max_time_per_task_seconds
+            else:
+                # Default task timeout (from deep_research config or fallback)
+                raw_config = config.get_raw_config()
+                deep_config = raw_config.get("research", {}).get("deep_research", {})
+                task_timeout = deep_config.get("task_timeout_seconds", 300)
             results = await asyncio.gather(*[
                 asyncio.wait_for(
                     self._execute_task_with_retry(task),
@@ -3571,7 +3581,8 @@ class SimpleDeepResearch:
             source_counts=source_counts,  # Coverage snapshot
             hypothesis_findings=hypothesis_findings,
             key_documents=key_documents,
-            timeline=timeline
+            timeline=timeline,
+            current_date=datetime.now(timezone.utc).date().isoformat()
         )
 
         report = None
