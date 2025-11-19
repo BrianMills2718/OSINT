@@ -248,10 +248,10 @@ research:
     # Adaptive stopping based on coverage analysis (Phase 3C)
     # Only applies when mode: "execution"
 
-    coverage_mode: false            # EXECUTION STRATEGY: false | true
+    coverage_mode: true             # EXECUTION STRATEGY: false | true
                                      # - false: Parallel execution, all hypotheses run (Phase 3B - faster)
                                      # - true: Sequential execution with adaptive stopping (Phase 3C - adaptive)
-                                     # Default: false (parallel, backward compatible)
+                                     # Changed to true 2025-11-19 to enable Phase 3C coverage assessment
 
     max_hypotheses_to_execute: 5     # HARD CEILING: Maximum hypotheses to execute (never exceed)
                                      # Same as max_hypotheses_per_task unless you want different limit for execution
