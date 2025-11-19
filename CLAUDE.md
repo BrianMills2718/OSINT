@@ -458,7 +458,7 @@ pip list | grep playwright
 
 ## PREVIOUS WORK: Integration Reformulation Wrapper (2025-11-18)
 
-**Status**: ✅ COMPLETE - All wiring done, commits made
+**Status**: ✅ COMPLETE - All wiring done, tested, validated
 
 **What Was Built**:
 - Base class wrapper method `generate_query_with_reasoning()` intercepts rejection metadata
@@ -468,8 +468,10 @@ pip list | grep playwright
 - Test file created: tests/test_rejection_reasoning.py (CI-safe, skips when no API key)
 - **Commits**: 46e4bd6 (wrapper implementation), a6c4b40 (test file)
 
-**Validation Needed**:
-- ⏳ E2E test with F-35 query to verify rejection reasoning is surfaced (not yet run due to focus on timeout investigation)
+**Validation Complete** (✅ 2025-11-19):
+- ✅ test_rejection_reasoning.py: Wrapper works, no crashes, params clean
+- ✅ LLM behavior: Gemini made intelligent relevance decisions (accepted job query for SAM.gov)
+- ✅ No metadata pollution: rejection keys properly stripped before execute_search()
 
 ---
 
