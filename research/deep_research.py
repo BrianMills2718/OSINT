@@ -3300,14 +3300,12 @@ class SimpleDeepResearch:
             )
 
             # Log individual follow-up creation with full details for auditing
-            logging.info(
-                f"[FOLLOW_UP_CREATED] Task {follow_up.id} (parent: {parent_task.id}): {follow_up.query[:80]}"
-            )
+            print(f"   📌 [FOLLOW_UP] Task {follow_up.id} (parent: {parent_task.id}): {follow_up.query[:80]}")
 
             follow_ups.append(follow_up)
             existing_queries.add(task_data["query"].lower())
 
-        logging.info(f"Created {len(follow_ups)} follow-up tasks for task {parent_task.id}")
+        print(f"✓ Created {len(follow_ups)} follow-up task(s) for task {parent_task.id}")
         return follow_ups
 
     def _save_research_output(self, question: str, result: Dict) -> str:
