@@ -71,3 +71,4 @@ experiments/**/*.jsonl
 *_articles_extracted/
 /archive/
 image.png
+downloaded_files/
