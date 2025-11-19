@@ -396,13 +396,47 @@ pip list | grep playwright
 
 ---
 
-## CURRENT WORK: Post-Merge Status (2025-11-19)
+## CURRENT WORK: Phase 3C Coverage Mode Fix + Output Critique (2025-11-19)
 
-**Status**: ✅ COMPLETE - Merge successful, all verification passed
+**Status**: ✅ COMPLETE - Phase 3C blocker fixed, critique updated, config committed
 
-**Context**: Merged feature/jinja2-prompts → master (fast-forward), verified stability, investigated false alarm timeout issue.
+**Context**: User requested post-merge test and critique of Deep Research output. Identified Phase 3C "not executing" and corrected two analyst errors in critique.
 
-**Merge Complete** (✅):
+**Phase 3C Blocker Fixed** (✅ Commit db465e2):
+- **Root Cause**: Config has TWO settings for hypothesis behavior
+  - `hypothesis_branching.mode: "execution"` ✅ Enables Phase 3A+3B (was working)
+  - `hypothesis_branching.coverage_mode: false` ❌ Disabled Phase 3C (blocker)
+- **Logic** (deep_research.py:1373):
+  ```python
+  if self.coverage_mode:  # Was False
+      return await self._execute_hypotheses_sequential(...)  # Phase 3C
+  else:
+      return await self._execute_hypotheses_parallel(...)    # Phase 3B ← Was using this
+  ```
+- **Why report showed "0 hypotheses"**: Phase 3B executes hypotheses but doesn't log coverage metrics
+- **Fix**: Changed `coverage_mode: false → true` in config_default.yaml:251
+- **Verified**: Test run shows sequential execution with coverage assessment working
+
+**Analyst Errors Corrected** (✅):
+1. **"Future Dates" claim - RETRACTED** ❌
+   - Incorrectly flagged Nov 17-18, 2025 as "future dates"
+   - Today IS Nov 19, 2025 → those dates are 2 days ago/yesterday
+   - Date validation IS working correctly (found recent breaking news)
+2. **Phase 3C "broken" claim - CLARIFIED** ⚠️
+   - Phase 3C wasn't broken, it was disabled by config
+   - Phase 3B WAS running hypotheses, just not logging coverage metrics
+   - Simple config change enabled full Phase 3C functionality
+
+**Quality Issues Identified** (Still valid):
+- Query quality: Overly broad queries ("United States", "F-35 fighter jet") waste API calls
+- Task duplication: 13 tasks with 5+ duplicates (Tasks 3/16 identical, Tasks 6/7 identical)
+- Entity extraction: Missing secondary actors (UAE, DIA, Biden, Kushner, Pence)
+
+**Artifacts**:
+- /tmp/phase3c_blocker_analysis.md - Root cause investigation
+- /tmp/deep_research_critique.md - Updated critique (retracted errors, marked Phase 3C fixed)
+
+**Merge Complete** (reference):
 - Branch: feature/jinja2-prompts → master
 - Merge type: Fast-forward (e12b6e2)
 - Files changed: 235 (+47,616 lines, -10,467 lines)
