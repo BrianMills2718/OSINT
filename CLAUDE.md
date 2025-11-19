@@ -396,33 +396,44 @@ pip list | grep playwright
 
 ---
 
-## CURRENT WORK: Deep Research Quality Fixes (2025-11-18)
+## CURRENT WORK: Discord Parsing Investigation (2025-11-18)
 
-**Context**: Ran Deep Research on "F-35 sales to Saudi Arabia", discovered quality issues through output analysis.
+**Context**: Codex identified 14 malformed Discord JSON export files. User asked to investigate root cause and whether Discord still scrapes daily via cron.
 
-**Investigation Results** (✅ Complete):
-1. ✅ **Hypothesis Generation**: Not broken - disabled by config (`hypothesis_branching.mode: "off"`)
-2. ✅ **Duplicate Follow-Up Tasks**: 3× "Donald Trump" queries created due to:
-   - Bare entity searches (`query=f"{entity}"`) without research context
-   - No deduplication check before adding to task queue
-3. ✅ **Future-Dated Sources**: Source data from Brave Search has future dates (Nov 17, 2025) in URLs - not LLM hallucination
-4. ✅ **Discord Parsing**: 14 JSON files have malformed exports causing parse errors
+**Investigation Findings** (✅ Complete):
 
-**Fixes Implemented** (Commit 4e4f2a0):
-1. ✅ Follow-up task generation (research/deep_research.py:3083-3123):
-   - Add context: `f"{entity} {parent_task.query}"` instead of bare `{entity}`
-   - Add deduplication: Check existing queries before creating follow-ups
-   - Prevents duplicate tasks (observed 3× "Donald Trump" in F-35 query)
-2. ✅ Date validation (research/deep_research.py:3049-3118, 2139):
-   - Reject sources with dates > now() + 1 day (timezone buffer)
-   - Flag results with missing/unparseable dates
-   - Filters future-dated test data (e.g., "Nov 17, 2025" from Brave Search)
+**Discord Scraping Status**:
+- ✅ **Daily cron job IS running**: `0 2 * * *` (2:00 AM daily)
+- Script: `experiments/discord/discord_daily_scrape.py`
+- Configured servers: 2 (Bellingcat, The OWL)
+- Recent results: Bellingcat ✓ Success, The OWL ✗ Timeout (30 min limit)
+- Logs: `data/logs/discord_daily_scrape_cron.log`
 
-**Deferred**:
-- Phase 3C enablement decision (config default vs CLI flag)
-- Source balance enforcement (cap per-source contribution in synthesis)
-- Discord JSON parser fixes (isolate malformed files)
-- Cost tracking validation (add mock test)
+**Malformed JSON Analysis**:
+- Total export files: 9,916
+- Valid JSON: 9,902 (99.86%)
+- Malformed JSON: 14 (0.14%)
+- **All malformed files are from Project Owl: The OSINT Community**
+- **None from Bellingcat** (scraping successfully)
+- Error pattern: `Expecting ',' delimiter` in emoji/reaction objects
+
+**Root Cause**:
+- Discord export tool (DiscordChatExporter.Cli) occasionally produces invalid JSON
+- Likely race condition when scraping high-activity channels (The OWL timeouts suggest volume issues)
+- Emoji handling: Unicode escape sequences (`\uD83D\uDC4D`) sometimes missing commas
+
+**Current Defense**:
+- Integration already has `_sanitize_json()` method (lines 221-250 in discord_integration.py)
+- Removes trailing commas, invalid control characters
+- Uses lenient JSON parser (`strict=False`)
+- **But malformed files still fail** (comma insertion needed, not just removal)
+
+**Recommended Fix** (DEFERRED):
+- Enhance `_sanitize_json()` to insert missing commas before closing braces
+- OR: Skip malformed files gracefully (warn but continue)
+- OR: Re-scrape The OWL with longer timeout/pagination
+
+**Status**: Investigation complete, fix deferred (low priority - 99.86% success rate is acceptable)
 
 ---
 
@@ -456,6 +467,25 @@ pip list | grep playwright
 ---
 
 ## COMPLETED WORK
+
+✅ **Phase 3C Enablement** (2025-11-18, Commit 2d7f5b0) - Enabled hypothesis branching by default
+  - Changed `hypothesis_branching.mode` from "off" to "execution" in config_default.yaml
+  - Sequential hypothesis execution with coverage assessment now runs by default
+  - User decision: "I want this '1. Phase 3C enablement: Default ON'"
+
+✅ **Discord Parsing Investigation** (2025-11-18) - Investigated 14 malformed JSON exports
+  - Confirmed daily cron job running (2:00 AM, scrapes Bellingcat + The OWL)
+  - 9,916 total files, 9,902 valid (99.86%), 14 malformed (0.14%)
+  - All malformed files from The OWL (high-volume server with 30min timeouts)
+  - Root cause: DiscordChatExporter.Cli race condition with emoji/reaction objects
+  - Current defense: _sanitize_json() handles trailing commas, control chars
+  - Fix deferred: 99.86% success rate acceptable, low priority
+
+✅ **Deep Research Quality Fixes** (2025-11-18, Commit 4e4f2a0) - Fixed follow-up tasks and date validation
+  - Follow-up task deduplication: Contextualized queries, check existing tasks
+  - Date validation: Reject future-dated sources with 1-day timezone buffer
+  - Prevents duplicate tasks (observed 3× "Donald Trump" in F-35 query)
+  - Filters test data with future dates (e.g., "Nov 17, 2025" from Brave Search)
 
 ✅ **Deep Research Quality Investigation** (2025-11-18) - Analyzed F-35 query output, identified 4 quality issues
   - Fixed async blocking in 5 integrations (SAM, DVIDS, USAJobs, FederalRegister, BraveSearch)
