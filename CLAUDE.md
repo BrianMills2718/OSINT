@@ -414,10 +414,11 @@ pip list | grep playwright
 - ✅ Measured actual task duration: Twitter multi-page fetches at 135-180s when killed
 - ✅ Codex validation: Confirmed findings, recommended conservative approach (not removing timeout entirely)
 
-**Implementation Complete** (✅ Commit 2c8679b):
+**Implementation Complete** (✅ Commits 2c8679b, 3934016):
 1. ✅ config_default.yaml: Increased `task_timeout_seconds` 300s → 600s, made Phase 3C time budget optional
 2. ✅ research/deep_research.py: Removed timeout hierarchy logic, single source of truth
-3. ✅ Phase 3C time budget: Made optional (defaults to None), only used when coverage_mode: true
+3. ✅ Phase 3C time budget: Auto-defaults to 600s when coverage_mode: true (prevents TypeError crashes)
+4. ✅ Critical bug fix: Phase 3C code had 6 direct None comparisons that would crash if enabled
 
 **Validation Results** (✅):
 
@@ -544,11 +545,13 @@ pip list | grep playwright
 
 ## COMPLETED WORK
 
-✅ **Timeout Consolidation** (2025-11-19, Commit 2c8679b) - Fixed timeout hierarchy code smell
+✅ **Timeout Consolidation** (2025-11-19, Commits 2c8679b, 3934016) - Fixed timeout hierarchy code smell
   - Removed confusing `max_time_per_task_seconds: 180` override from hypothesis_branching config
   - Single source of truth: `deep_research.task_timeout_seconds: 600` (increased from 300s)
+  - Critical bug fix: Phase 3C auto-defaults to 600s time budget (prevents TypeError on None comparisons)
   - Validation: NSA run went from 4 timeouts/0 results to 0 timeouts/679 results
   - Impact: 8 tasks completed successfully (3 took >300s), durations 106.8s - 379.2s
+  - Phase 3C ready: coverage_mode can be safely enabled without config changes
 
 ✅ **Phase 3C Enablement** (2025-11-18, Commit 2d7f5b0) - Enabled hypothesis branching by default
   - Changed `hypothesis_branching.mode` from "off" to "execution" in config_default.yaml
