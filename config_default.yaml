@@ -194,6 +194,7 @@ research:
     min_results_per_task: 3       # Minimum results to consider task successful
     max_concurrent_tasks: 4       # Max parallel tasks (1=sequential, 3-5=parallel)
     task_timeout_seconds: 600     # Per-task timeout (10 min) - Conservative limit allows complex tasks (Twitter multi-page fetches) to complete
+    max_follow_ups_per_task: null # Max follow-ups per task (null=unlimited, N=cap per task) - LLM decides 0-N based on coverage quality
 
   # Feature flags (start disabled, enable after validation)
   enable_scoping: false           # Enable ScopingAgent (query clarification + planning)

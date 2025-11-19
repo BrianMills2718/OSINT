@@ -1,0 +1,227 @@
+{#
+Follow-Up Task Generation Prompt
+Generates 0-N follow-up tasks based on coverage gaps (NOT entity permutations)
+
+Input Variables:
+- research_question: The original user research question
+- parent_task: The completed task (query, coverage data, entities)
+- coverage_decisions: List of coverage assessment dicts from task completion
+- gaps_identified: Consolidated list of coverage gaps
+- coverage_score: Latest coverage score (0-100)
+
+Design Philosophy:
+- LLM decides follow-up count (0-N based on coverage quality)
+- No hardcoded limits (LLM uses judgment)
+- Focus on INFORMATION gaps, not ENTITY permutations
+- Full context provided (coverage data, entities, parent query)
+#}
+
+You are a research planning assistant deciding whether to create follow-up research tasks.
+
+# RESEARCH CONTEXT
+
+**Research Question**: {{ research_question }}
+
+**Parent Task Completed**: {{ parent_task.query }}
+
+**Coverage Assessment**:
+- Coverage Score: {{ coverage_score }}%
+- Coverage Status: {% if coverage_score >= 95 %}Excellent{% elif coverage_score >= 70 %}Good{% elif coverage_score >= 50 %}Moderate{% else %}Insufficient{% endif %}
+
+{% if gaps_identified %}
+**Gaps Identified**:
+{% for gap in gaps_identified %}
+- {{ gap }}
+{% endfor %}
+{% else %}
+**Gaps Identified**: None (comprehensive coverage achieved)
+{% endif %}
+
+**Entities Discovered**: {{ parent_task.entities_found|join(', ') if parent_task.entities_found else 'None' }}
+
+---
+
+## UNDERSTANDING HOW YOUR FOLLOW-UPS WILL BE EXECUTED
+
+Your follow-up tasks will be searched across multiple data sources with different strengths and limitations. Understanding these sources will help you craft effective queries:
+
+**GOVERNMENT DATABASES** (SAM.gov, USAJobs, DVIDS, Federal Register):
+- What they contain: Official contracts, job postings, military media, regulatory documents
+- Strengths: Authoritative, structured, primary source material
+- Limitations: Only contain what government publishes; narrow topical scope
+- Query effectiveness: Specific programs/topics work well ("NSA cybersecurity contracts", "FBI counterterrorism jobs"). Generic entity names alone ("United States", "Department of Defense") return everything those entities touch - thousands of unrelated results requiring heavy filtering.
+
+**WEB SEARCH** (Brave Search):
+- What it contains: News articles, analysis, leaked documents, advocacy reports, court filings
+- Strengths: Comprehensive coverage of public discourse and investigative journalism
+- Limitations: Billions of pages - needs sufficient context to distinguish signal from noise
+- Query effectiveness: Topic + context works well ("F-35 Saudi Arabia arms sale congressional debate"). Single keywords or broad entities ("fighter jets", "military") return information overload - millions of generic results.
+
+**SOCIAL MEDIA** (Twitter, Reddit, Discord):
+- What it contains: Real-time discussions, whistleblower revelations, expert commentary, community insights
+- Strengths: Unfiltered perspectives, breaking developments, insider knowledge
+- Limitations: Billions of posts - extremely high noise-to-signal ratio (spam, memes, off-topic)
+- Query effectiveness: Specific events/actors/topics work well ("Snowden NSA PRISM surveillance reform debate"). Generic terms ("surveillance", "government", "security") drown in millions of unrelated posts.
+
+**YOUR GOAL**:
+Craft queries that help these databases find relevant results efficiently. When databases receive generic queries, they return everything tangentially related, forcing the LLM to filter through hundreds or thousands of irrelevant results. This wastes API calls and processing time.
+
+---
+
+## YOUR TASK: Decide Whether to Create Follow-Up Tasks
+
+Based on the coverage assessment and identified gaps, decide whether to generate 0-N follow-up research tasks.
+
+**CRITICAL: This is NOT about exploring entities - it's about addressing INFORMATION gaps.**
+
+### ANTI-PATTERN: Entity Permutations (AVOID THIS)
+
+**DON'T create tasks that just add entity names to the parent query**:
+
+❌ **BAD Example** (Entity Permutations):
+```
+Parent Task: "United States executive branch official policy statements F-35 fighter jet sale Saudi Arabia"
+
+BAD Follow-Up 1: "Donald Trump United States executive branch official policy statements F-35 fighter jet sale Saudi Arabia"
+BAD Follow-Up 2: "Mohammed bin Salman United States executive branch official policy statements F-35 fighter jet sale Saudi Arabia"
+BAD Follow-Up 3: "Mike Pence United States executive branch official policy statements F-35 fighter jet sale Saudi Arabia"
+```
+
+**Why This is Bad**: You're asking the SAME QUESTION three times with different actor names. This creates redundancy - the parent task already searches for executive branch policy statements, which naturally includes Trump, Pence, and other officials. Adding their names separately doesn't explore new angles.
+
+### CORRECT APPROACH: Information Gap Analysis
+
+✅ **GOOD Example** (Coverage-Based Follow-Ups):
+```
+Parent Task: "United States executive branch official policy statements F-35 fighter jet sale Saudi Arabia"
+Coverage Score: 65%
+Gaps Identified:
+1. Specific executive branch officials or departments directly involved
+2. Detailed conditions, timelines, or specific policy changes over time
+3. Congressional oversight or specific legislative interactions
+
+GOOD Follow-Up 1:
+Query: "F-35 Saudi Arabia sale approval timeline Pentagon State Department process requirements"
+Rationale: "Addresses timeline and process gap identified in coverage assessment - explores WHEN decisions were made and WHAT procedural steps were required, not just policy statements"
+
+GOOD Follow-Up 2:
+Query: "F-35 Saudi Arabia sale conditions Israel QME normalization requirements"
+Rationale: "Addresses specific conditions gap - investigates WHAT restrictions or requirements were imposed (Israel security concerns, qualitative military edge), distinct from general policy statements"
+```
+
+**Why This is Good**: Each follow-up addresses a different INFORMATION TYPE:
+- Parent task: Policy statements (WHAT the policy is)
+- Follow-up 1: Process timeline (WHEN and HOW decisions made)
+- Follow-up 2: Specific conditions (WHAT restrictions imposed)
+
+These are distinct research angles, not entity permutations.
+
+---
+
+## FOLLOW-UP DECISION CRITERIA
+
+### When to Create Follow-Ups (0-N tasks):
+
+**Create 1-3 follow-ups if**:
+- Coverage score <95% AND specific gaps identified
+- Gaps represent different INFORMATION TYPES (timeline, process, conditions, reactions, impacts)
+- Follow-ups would explore distinct facets not covered by parent task
+- Sufficient research budget remaining (system enforces max_tasks)
+
+**Create 0 follow-ups if**:
+- Coverage score ≥95% (comprehensive coverage achieved)
+- No meaningful gaps identified
+- Gaps are minor details that don't warrant separate tasks
+- Follow-ups would be redundant with parent task or other tasks
+
+**Use your judgment**: The goal is optimal research quality, not arbitrary task counts. Some queries may need 0 follow-ups (complete coverage), others may need 3 (significant gaps across multiple facets).
+
+---
+
+## QUERY CRAFTING GUIDELINES
+
+When creating follow-up queries, apply the same principles as initial task decomposition:
+
+### Focus on Different Information Facets
+
+**Less Effective** (Entity-focused):
+- "Donald Trump F-35 Saudi Arabia"
+- "Mohammed bin Salman F-35 Saudi Arabia"
+- "Congress F-35 Saudi Arabia"
+→ Same question, different actors
+
+**More Effective** (Information-focused):
+- "F-35 Saudi Arabia timeline approval process stages"
+- "F-35 Saudi Arabia sale conditions Israel security QME"
+- "F-35 Saudi Arabia congressional oversight debate opposition"
+→ Different information types (timeline, conditions, oversight)
+
+### Context is Key
+
+Think about query effectiveness:
+- "Timeline" → Too generic (timeline of what?)
+- "F-35 Saudi Arabia sale timeline Pentagon approval process" → Now databases can focus on policy chronology, not general timelines
+
+- "Conditions" → Too vague (conditions for what?)
+- "F-35 Saudi Arabia sale conditions Israel QME normalization requirements" → Specific requirements and context
+
+### Natural Language Over Boolean Operators
+
+- Avoid complex Boolean: `"F-35" AND ("Saudi Arabia" OR "Kingdom") AND (timeline OR chronology)`
+- Use natural phrases: "F-35 Saudi Arabia sale timeline approval process"
+- No site filters: `site:gov` or date ranges (reduce results unnecessarily)
+
+---
+
+## OUTPUT FORMAT (JSON)
+
+Return a JSON object with this structure:
+
+```json
+{
+  "follow_up_tasks": [
+    {
+      "query": "Specific query addressing an information gap",
+      "rationale": "2-3 sentences explaining: (1) which gap this addresses, (2) what INFORMATION TYPE it explores, (3) why this is distinct from parent task"
+    }
+  ],
+  "decision_reasoning": "2-3 sentences explaining why you chose to create N follow-ups (or 0 if none). Reference coverage score, gaps, and whether follow-ups would add value beyond parent task."
+}
+```
+
+**If no follow-ups needed**, return:
+```json
+{
+  "follow_up_tasks": [],
+  "decision_reasoning": "Coverage score of {{ coverage_score }}% indicates comprehensive coverage. Identified gaps are minor details that don't warrant separate research tasks."
+}
+```
+
+**If follow-ups needed**, example:
+```json
+{
+  "follow_up_tasks": [
+    {
+      "query": "F-35 Saudi Arabia sale approval timeline Pentagon State Department process stages",
+      "rationale": "Addresses timeline gap from coverage assessment. Explores WHEN key decisions were made and WHAT procedural stages were required. Distinct from parent task's focus on policy statements (WHAT the policy is)."
+    },
+    {
+      "query": "F-35 Saudi Arabia sale conditions Israel security QME normalization requirements",
+      "rationale": "Addresses conditions gap from coverage assessment. Investigates specific restrictions, requirements, and security considerations imposed on the sale. Explores contractual/policy CONDITIONS rather than general policy statements."
+    }
+  ],
+  "decision_reasoning": "Coverage score of {{ coverage_score }}% with 2 significant gaps identified. Follow-ups explore distinct information types (timeline/process and conditions/requirements) not fully covered by parent task's policy statement focus. These address 'how' and 'under what terms' rather than repeating 'what' the policy is."
+}
+```
+
+---
+
+## FINAL REMINDERS
+
+1. **0-N flexibility**: Create as many follow-ups as needed (0 if coverage complete, 1-3 if gaps exist)
+2. **Information gaps, not entity gaps**: Focus on WHAT TYPE of information is missing, not WHO hasn't been explored
+3. **Distinct facets**: Each follow-up should explore a different aspect (timeline vs conditions vs impacts)
+4. **Context-based queries**: Help databases find relevant results efficiently
+5. **Use your judgment**: Quality optimization, not arbitrary task counts
+
+Generate your decision now.

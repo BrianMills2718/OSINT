@@ -199,6 +199,9 @@ class SimpleDeepResearch:
         self.hypothesis_branching_enabled = self.hypothesis_mode in ("planning", "execution")
         self.max_hypotheses_per_task = hyp_config.get("max_hypotheses_per_task", 5)
 
+        # Follow-up generation configuration
+        self.max_follow_ups_per_task = deep_config.get("max_follow_ups_per_task", None)  # None = unlimited
+
         # Phase 3C: Coverage assessment configuration
         self.coverage_mode = hyp_config.get("coverage_mode", False)
         self.max_hypotheses_to_execute = hyp_config.get("max_hypotheses_to_execute", 5)
@@ -317,6 +320,7 @@ class SimpleDeepResearch:
         """
         self.start_time = datetime.now()
         self.original_question = question  # Store for entity extraction context
+        self.research_question = question  # Store for follow-up generation and hypothesis calls
 
         # Initialize execution logger (only if save_output is True)
         if self.save_output:
@@ -561,6 +565,24 @@ class SimpleDeepResearch:
                     total_pending_workload = len(self.task_queue) + len(batch) - (batch.index(task) + 1)
                     if self._should_create_follow_ups(task, total_pending_workload):
                         follow_ups = await self._create_follow_up_tasks(task, task_counter)
+
+                        # Phase 3A: Generate hypotheses for follow-ups if branching enabled
+                        if self.hypothesis_branching_enabled and follow_ups:
+                            print(f"\n🔬 Generating hypotheses for {len(follow_ups)} follow-up task(s)...")
+                            for follow_up in follow_ups:
+                                try:
+                                    hypotheses_result = await self._generate_hypotheses(
+                                        task_query=follow_up.query,
+                                        research_question=self.research_question
+                                    )
+                                    follow_up.hypotheses = hypotheses_result
+                                    print(f"   ✓ Follow-up {follow_up.id}: Generated {len(hypotheses_result['hypotheses'])} hypothesis/hypotheses")
+                                except Exception as e:
+                                    print(f"   ⚠️  Follow-up {follow_up.id}: Hypothesis generation failed - {type(e).__name__}: {e}")
+                                    logging.warning(f"Hypothesis generation failed for follow-up {follow_up.id}: {type(e).__name__}: {e}")
+                                    # Continue without hypotheses - don't fail follow-up creation
+                                    follow_up.hypotheses = None
+
                         task_counter += len(follow_ups)
                         self.task_queue.extend(follow_ups)
                         self._emit_progress(
@@ -3126,78 +3148,151 @@ class SimpleDeepResearch:
 
     def _should_create_follow_ups(self, task: ResearchTask, total_pending_workload: int = 0) -> bool:
         """
-        Decide if we should create follow-up tasks based on results.
+        Decide if we should create follow-up tasks based on coverage quality.
+
+        Improvements (2025-11-19):
+        - Removed hardcoded heuristics (entities_found >= 3, total_results >= 5)
+        - LLM decides if follow-ups needed based on coverage gaps (in _create_follow_up_tasks)
+        - Only check: coverage score < 95% and room in workload
+        - Aligns with "no hardcoded limits" design philosophy
 
         Args:
             task: Completed task to evaluate
             total_pending_workload: Total pending tasks (queue + currently executing batch)
 
         Returns:
-            True if follow-ups should be created
+            True if follow-ups should be created (LLM will decide actual count 0-N)
         """
-        if not task.results:
-            return False
-
-        results = task.results
-        total_results = results.get('total_results', 0)
-        entities_found = len(task.entities_found)
+        # Check coverage score - skip follow-ups if coverage is excellent (95%+)
+        coverage_decisions = task.metadata.get("coverage_decisions", [])
+        if coverage_decisions:
+            latest_coverage = coverage_decisions[-1]
+            coverage_score = latest_coverage.get("coverage_score", 0)
+            if coverage_score >= 95:
+                logging.info(f"Skipping follow-ups for task {task.id}: coverage score {coverage_score}% is excellent")
+                return False
 
         # Codex fix: Check TOTAL workload (completed + pending + would-be follow-ups)
         # This prevents follow-up explosion when parallel execution creates many tasks at once
-        max_follow_ups = 2  # We create up to 2 follow-ups per task
+        # Use configured limit or reasonable default (3) to avoid blocking follow-ups
+        max_follow_ups = self.max_follow_ups_per_task if self.max_follow_ups_per_task is not None else 3
         total_workload_if_created = (
             len(self.completed_tasks) +  # Already completed
             total_pending_workload +      # Queue + current batch remainder
             max_follow_ups                # Would-be follow-ups
         )
 
-        # Create follow-ups if we found interesting entities and good results AND room in workload
-        return (
-            total_results >= 5 and                      # Found meaningful results
-            entities_found >= 3 and                     # Discovered multiple entities
-            total_workload_if_created < self.max_tasks  # Room for follow-ups in total workload
-        )
+        # Only check if there's room in workload - LLM decides if follow-ups are actually needed
+        return total_workload_if_created < self.max_tasks
 
     async def _create_follow_up_tasks(self, parent_task: ResearchTask, current_task_id: int) -> List[ResearchTask]:
         """
-        Create follow-up tasks to explore entities discovered.
+        Create follow-up tasks based on coverage gaps using LLM intelligence.
 
-        Improvements (2025-11-18):
-        - Add parent task context to entity queries (prevents overly broad searches)
-        - Deduplicate against existing queued and completed tasks
+        Improvements (2025-11-19):
+        - LLM-powered gap analysis (not hardcoded entity concatenation)
+        - Focus on INFORMATION gaps (timeline, process, conditions) not entity permutations
+        - 0-N follow-ups based on coverage quality (no hardcoded limits)
+        - Context-based query generation (same principles as task_decomposition.j2)
         """
-        # Pick top entities not in original query
-        parent_query_lower = parent_task.query.lower()
-        new_entities = [
-            e for e in parent_task.entities_found
-            if e.lower() not in parent_query_lower
-        ][:3]  # Max 3 entities
+        from core.prompt_loader import render_prompt
+
+        # Extract coverage data
+        coverage_decisions = parent_task.metadata.get("coverage_decisions", [])
+        if not coverage_decisions:
+            # No coverage data available - skip follow-ups (can't do gap analysis)
+            logging.info(f"No coverage data for task {parent_task.id} - skipping follow-ups")
+            return []
+
+        # Get latest coverage assessment
+        latest_coverage = coverage_decisions[-1]
+        coverage_score = latest_coverage.get("coverage_score", 0)
+        gaps_identified = latest_coverage.get("gaps_identified", [])
+
+        # Consolidate gaps from all coverage decisions
+        all_gaps = []
+        for decision in coverage_decisions:
+            all_gaps.extend(decision.get("gaps_identified", []))
+
+        # Remove duplicate gaps
+        unique_gaps = list(dict.fromkeys(all_gaps))  # Preserves order
+
+        # Render follow-up generation prompt
+        prompt = render_prompt(
+            "deep_research/follow_up_generation.j2",
+            research_question=self.research_question,
+            parent_task=parent_task,
+            coverage_decisions=coverage_decisions,
+            gaps_identified=unique_gaps,
+            coverage_score=coverage_score
+        )
+
+        # Call LLM to generate follow-ups
+        try:
+            schema = {
+                "type": "object",
+                "properties": {
+                    "follow_up_tasks": {
+                        "type": "array",
+                        "items": {
+                            "type": "object",
+                            "properties": {
+                                "query": {"type": "string"},
+                                "rationale": {"type": "string"}
+                            },
+                            "required": ["query", "rationale"],
+                            "additionalProperties": False
+                        }
+                    },
+                    "decision_reasoning": {"type": "string"}
+                },
+                "required": ["follow_up_tasks", "decision_reasoning"],
+                "additionalProperties": False
+            }
+
+            response = await acompletion(
+                model=config.get_model("query_generation"),
+                messages=[{"role": "user", "content": prompt}],
+                response_format={
+                    "type": "json_schema",
+                    "json_schema": {
+                        "strict": True,
+                        "name": "follow_up_generation",
+                        "schema": schema
+                    }
+                }
+            )
+
+            result = json.loads(response.choices[0].message.content)
+            logging.info(f"Follow-up generation for task {parent_task.id}: {result['decision_reasoning']}")
+
+        except Exception as e:
+            logging.error(f"Follow-up generation failed for task {parent_task.id}: {type(e).__name__}: {e}")
+            return []
 
         # Build set of existing queries for deduplication
         existing_queries = set()
         for task in self.task_queue + self.completed_tasks:
             existing_queries.add(task.query.lower())
 
+        # Create ResearchTask objects from LLM output
         follow_ups = []
-        for i, entity in enumerate(new_entities[:2]):  # Max 2 follow-ups per task
-            # Add parent task context to maintain focus (Codex refinement)
-            # Example: "Donald Trump" + "US arms export policy F-35"
-            # → "Donald Trump US arms export policy F-35"
-            contextualized_query = f"{entity} {parent_task.query}"
-
-            # Skip if duplicate query already exists (deduplication)
-            if contextualized_query.lower() in existing_queries:
+        for task_data in result["follow_up_tasks"]:
+            # Skip if duplicate query already exists
+            if task_data["query"].lower() in existing_queries:
+                logging.info(f"Skipping duplicate follow-up query: {task_data['query']}")
                 continue
 
             follow_up = ResearchTask(
-                id=current_task_id + len(follow_ups),  # Adjust ID for skipped duplicates
-                query=contextualized_query,
-                rationale=f"Deep dive on entity '{entity}' discovered in task {parent_task.id}, scoped to: {parent_task.query}",
+                id=current_task_id + len(follow_ups),
+                query=task_data["query"],
+                rationale=task_data["rationale"],
                 parent_task_id=parent_task.id
             )
             follow_ups.append(follow_up)
-            existing_queries.add(contextualized_query.lower())  # Add to set to prevent duplicates within this batch
+            existing_queries.add(task_data["query"].lower())
 
+        logging.info(f"Created {len(follow_ups)} follow-up tasks for task {parent_task.id}")
         return follow_ups
 
     def _save_research_output(self, question: str, result: Dict) -> str:
@@ -3434,6 +3529,15 @@ class SimpleDeepResearch:
                 metadata["hypotheses_by_task"] = hypotheses_by_task
             if hypothesis_execution_summary:
                 metadata["hypothesis_execution_summary"] = hypothesis_execution_summary
+
+        # Phase 3C: Add coverage decisions if available
+        coverage_decisions_by_task = {}
+        for task in (self.completed_tasks + self.failed_tasks):
+            if task.metadata.get("coverage_decisions"):
+                coverage_decisions_by_task[task.id] = task.metadata["coverage_decisions"]
+
+        if coverage_decisions_by_task:
+            metadata["coverage_decisions_by_task"] = coverage_decisions_by_task
 
         with open(metadata_file, 'w', encoding='utf-8') as f:
             json.dump(metadata, f, indent=2, ensure_ascii=False)

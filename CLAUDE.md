@@ -390,13 +390,97 @@ pip list | grep playwright
 # CLAUDE.md - Temporary Section (Updated as Tasks Complete)
 
 **Last Updated**: 2025-11-19
-**Current Phase**: Post-Merge Validation Complete
-**Current Focus**: Master branch stable with all Phase 3C features
-**Status**: ✅ MERGE COMPLETE - PRODUCTION READY
+**Current Phase**: LLM-Powered Follow-Up Generation Implementation
+**Current Focus**: Validation test running for coverage-based follow-ups
+**Status**: ⏳ VALIDATING (Implementation complete, test in progress)
 
 ---
 
-## CURRENT WORK: Query Generation Quality Improvements (2025-11-19)
+## CURRENT WORK: LLM-Powered Follow-Up Generation (2025-11-19)
+
+**Context**: Query quality improvements validated (✅ 13 → 4 tasks, angle-based decomposition). Follow-up generation identified as regression point using hardcoded entity permutations instead of coverage-based LLM intelligence.
+
+**Problem Statement**:
+- Current: `f"{entity} {parent_task.query}"` creates entity permutations (10 redundant follow-up tasks)
+- Goal: LLM-powered coverage-based follow-ups addressing INFORMATION gaps (timeline, process, conditions)
+- Philosophy: No hardcoded limits, let LLM decide 0-N follow-ups based on coverage quality
+
+**Investigation Complete** (✅):
+- All data accessible (coverage_decisions in task.metadata)
+- Integration point identified (line 563, full context available)
+- 1 blocker found: research_question not stored in instance (1-line fix)
+- 2 improvements identified: coverage_score < 95 check, max_follow_ups_per_task config
+- Testing strategy defined, edge cases documented
+- Full findings: /tmp/implementation_investigation.md
+
+**Implementation Plan** (3.5-4 hours estimated):
+
+**Phase 1: Create Follow-Up Generation Prompt** (1.5-2 hours)
+1. ⏳ Create `prompts/deep_research/follow_up_generation.j2`
+   - Copy DATABASE BEHAVIOR context from task_decomposition.j2:9-26
+   - Copy angle-based examples from task_decomposition.j2:43-53
+   - Add coverage gap analysis guidance (use coverage_decisions data)
+   - Explain entity permutation anti-pattern with examples
+   - Let LLM decide 0-N follow-ups (NO hardcoded limits)
+   - Output: `{follow_up_tasks: [{query, rationale}], decision_reasoning}`
+
+**Phase 2: Update Follow-Up Generation Code** (45-60 min)
+2. ⏳ Update `_create_follow_up_tasks()` method (research/deep_research.py:3161-3201)
+   - **NEW**: Store research_question in instance (line ~725): `self.research_question = question`
+   - **NEW**: Add coverage_score < 95 check to _should_create_follow_ups (line 3155)
+   - Replace `f"{entity} {parent_task.query}"` with LLM call
+   - Extract coverage_decisions from task.metadata
+   - Call render_prompt() with coverage gaps, entities, parent query
+   - Parse JSON output, accept 0-N tasks from LLM
+   - **NEW**: Add max_follow_ups_per_task config support (read from config, default None)
+
+**Phase 3: Add Hypothesis Generation to Follow-Ups** (15-20 min)
+3. ⏳ Give follow-ups hypotheses (research/deep_research.py:563, after follow-up creation)
+   - Loop through generated follow-ups
+   - Call `_generate_hypotheses()` for each (use self.research_question)
+   - Store hypotheses before adding to queue
+   - Include try/except error handling (copy pattern from lines 748-759)
+   - Makes follow-ups 3x more productive (currently 36.4 vs 107.75 results avg)
+
+**Phase 4: Fix Coverage Export Bug** (5 min)
+4. ⏳ Export coverage_decisions_by_task to metadata.json (research/deep_research.py:3436)
+   - Add after hypothesis_execution_summary export
+   - Loop completed/failed tasks, collect coverage_decisions from task.metadata
+   - Add to metadata dict for JSON export
+   - Enables post-run auditing and validation
+
+**Phase 5: Config Changes** (5 min)
+5. ⏳ Add max_follow_ups_per_task config to config_default.yaml
+   - Add `max_follow_ups_per_task: null` under deep_research section
+   - Document: null = unlimited, N = cap per task
+   - Aligns with "no hardcoded limits" philosophy
+
+**Phase 6: Validation Testing** (30-60 min)
+6. ⏳ Run F-35 test query, validate improvements
+   - Check: NO entity permutations in follow-up queries
+   - Check: Follow-ups address information gaps (timeline, process, conditions)
+   - Check: All tasks have hypotheses (including follow-ups)
+   - Check: coverage_decisions_by_task in metadata.json
+   - Run edge cases: high coverage query, no coverage data
+   - Compare to Nov 19 baseline (should maintain quality, reduce redundancy)
+
+**Success Criteria**:
+- ✅ NO entity permutation tasks ("Donald Trump" + parent query)
+- ✅ Follow-ups address information gaps from coverage assessment
+- ✅ Follow-ups get hypotheses (productive as initial tasks)
+- ✅ Coverage data exported for auditing
+- ✅ LLM decides 0-N follow-ups (no hardcoded limits, uses judgment)
+- ✅ Coverage score < 95 prevents unnecessary follow-ups
+
+**Investigation Documents**:
+- /tmp/implementation_investigation.md - Investigation findings (NO BLOCKERS)
+- /tmp/next_steps_investigation.md - Full technical analysis (3500+ words)
+- /tmp/follow_up_investigation.md - Root cause deep-dive (500+ lines)
+- /tmp/validation_critique_nov19.md - Validation test critique
+
+---
+
+## COMPLETED WORK: Query Generation Quality Improvements (2025-11-19)
 
 **Status**: ✅ COMPLETE - Validation passed, production-ready
 
