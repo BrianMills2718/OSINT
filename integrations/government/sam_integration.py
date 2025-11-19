@@ -9,6 +9,7 @@ Provides access to federal government contracting opportunities from SAM.gov
 import json
 from typing import Dict, Optional
 from datetime import datetime, timedelta
+import asyncio
 import requests
 from llm_utils import acompletion
 from core.prompt_loader import render_prompt
@@ -246,20 +247,25 @@ class SAMIntegration(DatabaseIntegration):
                 params["organizationName"] = query_params["organization"]
 
             # Execute API call with retry logic for rate limits
+            # Use thread pool executor to avoid blocking the event loop
             max_retries = 3
             retry_delays = [2, 4, 8]  # Exponential backoff: 2s, 4s, 8s
 
+            loop = asyncio.get_event_loop()
             for attempt in range(max_retries):
-                response = requests.get(endpoint, params=params,
-                                      timeout=config.get_database_config("sam")["timeout"])
+                # Run blocking requests.get in thread pool
+                response = await loop.run_in_executor(
+                    None,
+                    lambda: requests.get(endpoint, params=params,
+                                        timeout=config.get_database_config("sam")["timeout"])
+                )
 
                 # If HTTP 429 (rate limit), retry with backoff
                 if response.status_code == 429:
                     if attempt < max_retries - 1:  # Don't sleep on last attempt
-                        import time
                         delay = retry_delays[attempt]
                         print(f"SAM.gov rate limit hit, retrying in {delay}s...")
-                        time.sleep(delay)
+                        await asyncio.sleep(delay)  # Use async sleep
                         continue
                     else:
                         # Last attempt failed, raise the error

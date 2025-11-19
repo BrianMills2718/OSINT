@@ -9,6 +9,7 @@ notices, and presidential documents.
 import json
 from typing import Dict, Optional
 from datetime import datetime
+import asyncio
 import requests
 from llm_utils import acompletion
 from core.prompt_loader import render_prompt
@@ -221,11 +222,11 @@ class FederalRegisterIntegration(DatabaseIntegration):
                 params["conditions[publication_date][lte]"] = end_date.strftime("%Y-%m-%d")
 
             # Execute API call
-            response = requests.get(
-                endpoint,
-                params=params,
-                headers={"Accept": "application/json"},
-                timeout=15  # 15 second timeout
+            # Run blocking requests in thread pool to avoid blocking event loop
+            loop = asyncio.get_event_loop()
+            response = await loop.run_in_executor(
+                None,
+                lambda: requests.get(endpoint, params=params, headers={"Accept": "application/json"}, timeout=15)
             )
             response.raise_for_status()
             response_time_ms = (datetime.now() - start_time).total_seconds() * 1000

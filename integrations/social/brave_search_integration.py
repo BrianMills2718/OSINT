@@ -9,6 +9,7 @@ analysis, leaked documents, court filings, and advocacy reports.
 import json
 from typing import Dict, Optional
 from datetime import datetime
+import asyncio
 import requests
 from llm_utils import acompletion
 from core.prompt_loader import render_prompt
@@ -217,14 +218,16 @@ class BraveSearchIntegration(DatabaseIntegration):
                 params["country"] = query_params["country"]
 
             # Execute API call
-            response = requests.get(
-                endpoint,
-                params=params,
-                headers={
-                    "Accept": "application/json",
-                    "X-Subscription-Token": api_key
-                },
-                timeout=15  # 15 second timeout
+            # Run blocking requests in thread pool to avoid blocking event loop
+            loop = asyncio.get_event_loop()
+            response = await loop.run_in_executor(
+                None,
+                lambda: requests.get(
+                    endpoint,
+                    params=params,
+                    headers={"Accept": "application/json", "X-Subscription-Token": api_key},
+                    timeout=15
+                )
             )
             response.raise_for_status()
             response_time_ms = (datetime.now() - start_time).total_seconds() * 1000

@@ -9,6 +9,7 @@ military media including photos, videos, and news.
 import json
 from typing import Dict, Optional
 from datetime import datetime
+import asyncio
 import requests
 from llm_utils import acompletion
 from core.prompt_loader import render_prompt
@@ -242,7 +243,12 @@ class DVIDSIntegration(DatabaseIntegration):
                 headers["Origin"] = dvids_config["origin"]
                 headers["Referer"] = dvids_config["origin"]
 
-            response = requests.get(endpoint, params=params, headers=headers, timeout=dvids_config["timeout"])
+            # Run blocking requests.get in thread pool to avoid blocking event loop
+            loop = asyncio.get_event_loop()
+            response = await loop.run_in_executor(
+                None,
+                lambda: requests.get(endpoint, params=params, headers=headers, timeout=dvids_config["timeout"])
+            )
             response.raise_for_status()
 
             data = response.json()
@@ -266,7 +272,11 @@ class DVIDSIntegration(DatabaseIntegration):
                     term_params = base_params.copy()
                     term_params["q"] = term
 
-                    term_response = requests.get(endpoint, params=term_params, headers=headers, timeout=dvids_config["timeout"])
+                    # Run in thread pool
+                    term_response = await loop.run_in_executor(
+                        None,
+                        lambda p=term_params: requests.get(endpoint, params=p, headers=headers, timeout=dvids_config["timeout"])
+                    )
                     if term_response.status_code == 200:
                         term_data = term_response.json()
                         term_results = term_data.get("results", [])
