@@ -390,99 +390,56 @@ pip list | grep playwright
 # CLAUDE.md - Temporary Section (Updated as Tasks Complete)
 
 **Last Updated**: 2025-11-19
-**Current Phase**: Next Steps Investigation - Complete
-**Current Focus**: Ready for merge to master - no blockers
-**Status**: ✅ INVESTIGATION COMPLETE - MERGE RECOMMENDED
+**Current Phase**: Post-Merge Validation Complete
+**Current Focus**: Master branch stable with all Phase 3C features
+**Status**: ✅ MERGE COMPLETE - PRODUCTION READY
 
 ---
 
-## CURRENT WORK: Next Steps Investigation (2025-11-19)
+## CURRENT WORK: Post-Merge Status (2025-11-19)
 
-**Status**: ✅ COMPLETE - All investigation tasks finished
+**Status**: ✅ COMPLETE - Merge successful, all verification passed
 
-**Context**: After Phase 3C completion and validation, investigated optimal path forward by auditing master branch, checking integration status, and previewing merge.
+**Context**: Merged feature/jinja2-prompts → master (fast-forward), verified stability, investigated false alarm timeout issue.
 
-**Investigation Results**:
+**Merge Complete** (✅):
+- Branch: feature/jinja2-prompts → master
+- Merge type: Fast-forward (e12b6e2)
+- Files changed: 235 (+47,616 lines, -10,467 lines)
+- Commits merged: 21 total
 
-| Area | Status | Findings |
-|------|--------|----------|
-| Master Stability | ✅ PASS | All core modules import cleanly, no errors |
-| Brave Search | ✅ INTEGRATED | Already on master (line 22, 79 in registry.py) |
-| Reddit | ✅ INTEGRATED | Fully registered and enabled |
-| Merge Complexity | ✅ TRIVIAL | Zero conflicts, clean fast-forward merge |
-| Deployment | ℹ️ NOT DEPLOYED | No production constraints |
+**Major Features Merged**:
+- ✅ Phase 3C: Hypothesis branching with coverage assessment (enabled by default)
+- ✅ Timeout consolidation: Single 600s timeout source of truth
+- ✅ Integration rejection reasoning wrapper: Structured metadata capture
+- ✅ Jinja2 prompt templates: All prompts in prompts/ directory
+- ✅ Quality fixes: Async conversions, deduplication, date validation, cost tracking
+- ✅ Discord parsing: Graceful error handling for malformed JSON exports
+- ✅ 30+ new test files and comprehensive documentation
 
-**Master Branch Audit** (✅):
-- Switched to master branch
-- Tested imports: ParallelExecutor, SAMIntegration, USAJobsIntegration, SimpleDeepResearch
-- All imports passed cleanly
-- Recent master commits focus on query syntax fixes and Reddit/Brave integration
+**Verification Results** (✅ ALL PASS):
+- Master branch imports: ✅ PASS (all core modules load cleanly)
+- Entry point tests: ✅ PASS (8/8 tests passed)
+- Git merge verification: ✅ PASS (clean fast-forward, no conflicts)
+- Timeout investigation: ✅ PASS (false alarm from stale test output)
 
-**Integration Status** (✅):
-- **Brave Search**: Confirmed integrated on master (integrations/social/brave_search_integration.py)
-- **Reddit**: Confirmed registered and enabled on master
-- Both integrations available in registry: `['sam', 'dvids', 'usajobs', 'clearancejobs', 'fbi_vault', 'discord', 'twitter', 'reddit', 'brave_search']`
+**Timeout Investigation** (2025-11-19):
+- **Issue**: Background test showed 180s timeouts despite claims of timeout fix
+- **Root cause**: STALE TEST OUTPUT from previous session (Nov 18 18:29, before fix)
+- **Evidence**:
+  - Test file timestamp: Nov 18 18:33 (BEFORE merge)
+  - Merge timestamp: Nov 19 01:30 (AFTER test ran)
+  - Timeout fix commits: 2c8679b, 3934016 (part of merged branch)
+- **Validation**: Post-fix run (Nov 18 21:02) had 0 timeouts, 8 tasks succeeded, 679 results
+- **Conclusion**: Timeout consolidation working correctly on master (600s timeout, single source of truth)
 
-**Merge Preview** (✅):
-```bash
-$ git checkout feature/jinja2-prompts
-$ git merge --no-commit --no-ff master
-Already up to date.
-```
-- **Zero merge conflicts**
-- Feature branch has 20 commits ahead of master
-- Clean fast-forward merge possible
+**Current State** (master branch):
+- config_default.yaml: task_timeout_seconds: 600 ✓
+- research/deep_research.py: Single source of truth (line 420) ✓
+- No timeout hierarchy bugs ✓
+- All integrations working ✓
 
-**Feature Branch Commits (20 total)**:
-1. Integration reformulation wrapper + validation (470bf4a, a6c4b40, 46e4bd6)
-2. Timeout consolidation fixes (9bf9ee5, 3934016, ffa42b1, 2c8679b)
-3. Phase 3C enablement (2d7f5b0)
-4. Deep Research quality fixes (4e4f2a0, b3db16f, c4d22a7, b01ad40, c314810)
-5. Discord parsing fixes (f7addce, e5a6f8e, 40b81e7)
-6. Anacron daily scraping (d62e59d)
-7. Documentation updates and gitignore cleanup
-
-**Major Improvements in Feature Branch**:
-- ✅ Phase 3C Complete - Hypothesis branching with coverage assessment
-- ✅ Timeout Consolidation - Single source of truth (600s)
-- ✅ Integration Rejection Reasoning - Structured metadata capture
-- ✅ Quality Fixes - Cost tracking, async conversions, deduplication
-- ✅ Discord Parsing - Graceful malformed file handling
-
-**Deployment Status** (✅):
-- No running Streamlit processes
-- Deployment docs archived (not actively maintained)
-- No production constraints
-
-**Blockers**: NONE
-
-**Merge Risk**: LOW (clean fast-forward, all tests pass)
-
-**RECOMMENDATION**: **Proceed with merge feature/jinja2-prompts → master**
-
-**Merge Plan**:
-```bash
-# Step 1: Ensure clean working tree
-git status
-
-# Step 2: Checkout master
-git checkout master
-
-# Step 3: Merge feature branch (fast-forward)
-git merge feature/jinja2-prompts
-
-# Step 4: Verify merged state
-git log --oneline -5
-python3 tests/test_entry_points.py
-
-# Step 5: Push to remote (if applicable)
-git push origin master
-```
-
-**Post-Merge Actions**:
-- Update STATUS.md with current integration status
-- Continue development on master or new feature branch
-- Consider Phase 4 priorities (if any)
+**Next Actions**: None required - master branch is production-ready
 
 ---
 
