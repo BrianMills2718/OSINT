@@ -193,7 +193,7 @@ research:
     max_time_minutes: 120         # Maximum total investigation time (minutes)
     min_results_per_task: 3       # Minimum results to consider task successful
     max_concurrent_tasks: 4       # Max parallel tasks (1=sequential, 3-5=parallel)
-    task_timeout_seconds: 300     # Per-task timeout when not using hypotheses (5 min)
+    task_timeout_seconds: 600     # Per-task timeout (10 min) - Conservative limit allows complex tasks (Twitter multi-page fetches) to complete
 
   # Feature flags (start disabled, enable after validation)
   enable_scoping: false           # Enable ScopingAgent (query clarification + planning)
@@ -256,10 +256,7 @@ research:
     max_hypotheses_to_execute: 5     # HARD CEILING: Maximum hypotheses to execute (never exceed)
                                      # Same as max_hypotheses_per_task unless you want different limit for execution
                                      # LLM can stop early but will never exceed this limit
-
-    max_time_per_task_seconds: 180   # TIME BUDGET: Maximum time to spend on hypothesis execution per task
-                                     # Default: 180 seconds (3 minutes)
-                                     # LLM can stop early but execution will halt at this limit
+                                     # NOTE: Task timeout controlled by deep_research.task_timeout_seconds (600s)
 
     # Phase 3C (coverage_mode: true) behavior:
     # - Executes hypotheses sequentially (one-by-one, not parallel)

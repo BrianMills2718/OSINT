@@ -202,7 +202,10 @@ class SimpleDeepResearch:
         # Phase 3C: Coverage assessment configuration
         self.coverage_mode = hyp_config.get("coverage_mode", False)
         self.max_hypotheses_to_execute = hyp_config.get("max_hypotheses_to_execute", 5)
-        self.max_time_per_task_seconds = hyp_config.get("max_time_per_task_seconds", 180)
+        # Phase 3C time budget for hypothesis execution (OPTIONAL - only used when coverage_mode: true)
+        # This is SEPARATE from overall task timeout (task_timeout_seconds)
+        # If None, Phase 3C runs until max_hypotheses_to_execute or LLM decides to stop
+        self.max_time_per_task_seconds = hyp_config.get("max_time_per_task_seconds", None)
 
         # Load API keys from environment
         self.api_keys = {
@@ -406,15 +409,11 @@ class SimpleDeepResearch:
                     task.selected_sources = list(set(task.selected_sources or []))
 
             # Timeout wraps entire task execution including all retry attempts
-            # Priority: hypothesis config > deep_research config > hardcoded default
-            if getattr(self, "max_time_per_task_seconds", None):
-                # Hypothesis-specific timeout (from hypothesis_branching config)
-                task_timeout = self.max_time_per_task_seconds
-            else:
-                # Default task timeout (from deep_research config or fallback)
-                raw_config = config.get_raw_config()
-                deep_config = raw_config.get("research", {}).get("deep_research", {})
-                task_timeout = deep_config.get("task_timeout_seconds", 300)
+            # Single source of truth: deep_research.task_timeout_seconds
+            raw_config = config.get_raw_config()
+            deep_config = raw_config.get("research", {}).get("deep_research", {})
+            task_timeout = deep_config.get("task_timeout_seconds", 600)
+
             results = await asyncio.gather(*[
                 asyncio.wait_for(
                     self._execute_task_with_retry(task),
