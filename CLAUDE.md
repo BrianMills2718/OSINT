@@ -396,11 +396,46 @@ pip list | grep playwright
 
 ---
 
-## CURRENT WORK: Phase 3C Coverage Mode Fix + Output Critique (2025-11-19)
+## CURRENT WORK: Query Generation Quality Improvements (2025-11-19)
 
-**Status**: ✅ COMPLETE - Phase 3C blocker fixed, critique updated, config committed
+**Status**: ✅ COMPLETE - Validation passed, production-ready
 
-**Context**: User requested post-merge test and critique of Deep Research output. Identified Phase 3C "not executing" and corrected two analyst errors in critique.
+**Context**: Following Phase 3C enablement and output critique, identified major query quality issues (overly broad queries, task duplication). Improved prompts using context-based LLM guidance (NO hardcoded rules).
+
+**Validation Results** (F-35 test query):
+- ✅ **Task reduction**: 13 tasks → 4 tasks (69% reduction)
+- ✅ **Query quality**: NO generic queries ("United States", "F-35 fighter jet" alone)
+- ✅ **Angle-based decomposition**: Research angles (policy, oversight, geopolitics, human rights) vs entity permutations
+- ✅ **Zero duplication**: No duplicate tasks (previously 5+)
+- ✅ **Hypothesis quality**: Contextual signals (not generic)
+
+**Prompt Changes** (Commits 7375a39):
+1. **task_decomposition.j2**: Added DATABASE BEHAVIOR context explaining how sources work
+   - Government DBs: Generic entities flood results (thousands of unrelated docs)
+   - Web search: Billions of pages need context to filter
+   - Social media: Extreme noise without specificity
+   - **No hardcoded rules**: Explained WHY, let LLM judge contextually
+2. **hypothesis_generation.j2**: Added SIGNAL SPECIFICITY guidance
+   - Illustrated effective vs generic signals
+   - Emphasized GOAL (minimize filtering noise)
+   - Trust LLM judgment: "Use your judgment - the goal is helping databases find relevant results efficiently"
+
+**Design Philosophy Honored**:
+- ✅ Context-based guidance (not prescriptive rules)
+- ✅ Purpose/goal explanation (not "must include X terms")
+- ✅ LLM applies understanding intelligently
+- ❌ NO hardcoded thresholds ("2+ context terms required")
+
+**Quantitative Impact**:
+- Tasks: 13 → 4 (69% reduction)
+- Duplication: 5+ → 0 (100% elimination)
+- Total results: 440 → 408 (7% reduction, higher quality)
+- Hypotheses: 0 → 14 (Phase 3C working)
+- Entities: 11 → 22 (after filtering 38)
+
+**Artifacts**:
+- /tmp/prompt_validation_results.md - Full before/after comparison
+- data/research_output/2025-11-19_07-07-47_f_35_sales_to_saudi_arabia/ - Validation run output
 
 **Phase 3C Blocker Fixed** (✅ Commit db465e2):
 - **Root Cause**: Config has TWO settings for hypothesis behavior
