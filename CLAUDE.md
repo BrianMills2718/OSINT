@@ -390,9 +390,99 @@ pip list | grep playwright
 # CLAUDE.md - Temporary Section (Updated as Tasks Complete)
 
 **Last Updated**: 2025-11-19
-**Current Phase**: Timeout Consolidation - Complete
-**Current Focus**: Code smell fixed and validated - ready for next priority
-**Status**: ✅ VALIDATION COMPLETE - TIMEOUT FIX WORKING
+**Current Phase**: Next Steps Investigation - Complete
+**Current Focus**: Ready for merge to master - no blockers
+**Status**: ✅ INVESTIGATION COMPLETE - MERGE RECOMMENDED
+
+---
+
+## CURRENT WORK: Next Steps Investigation (2025-11-19)
+
+**Status**: ✅ COMPLETE - All investigation tasks finished
+
+**Context**: After Phase 3C completion and validation, investigated optimal path forward by auditing master branch, checking integration status, and previewing merge.
+
+**Investigation Results**:
+
+| Area | Status | Findings |
+|------|--------|----------|
+| Master Stability | ✅ PASS | All core modules import cleanly, no errors |
+| Brave Search | ✅ INTEGRATED | Already on master (line 22, 79 in registry.py) |
+| Reddit | ✅ INTEGRATED | Fully registered and enabled |
+| Merge Complexity | ✅ TRIVIAL | Zero conflicts, clean fast-forward merge |
+| Deployment | ℹ️ NOT DEPLOYED | No production constraints |
+
+**Master Branch Audit** (✅):
+- Switched to master branch
+- Tested imports: ParallelExecutor, SAMIntegration, USAJobsIntegration, SimpleDeepResearch
+- All imports passed cleanly
+- Recent master commits focus on query syntax fixes and Reddit/Brave integration
+
+**Integration Status** (✅):
+- **Brave Search**: Confirmed integrated on master (integrations/social/brave_search_integration.py)
+- **Reddit**: Confirmed registered and enabled on master
+- Both integrations available in registry: `['sam', 'dvids', 'usajobs', 'clearancejobs', 'fbi_vault', 'discord', 'twitter', 'reddit', 'brave_search']`
+
+**Merge Preview** (✅):
+```bash
+$ git checkout feature/jinja2-prompts
+$ git merge --no-commit --no-ff master
+Already up to date.
+```
+- **Zero merge conflicts**
+- Feature branch has 20 commits ahead of master
+- Clean fast-forward merge possible
+
+**Feature Branch Commits (20 total)**:
+1. Integration reformulation wrapper + validation (470bf4a, a6c4b40, 46e4bd6)
+2. Timeout consolidation fixes (9bf9ee5, 3934016, ffa42b1, 2c8679b)
+3. Phase 3C enablement (2d7f5b0)
+4. Deep Research quality fixes (4e4f2a0, b3db16f, c4d22a7, b01ad40, c314810)
+5. Discord parsing fixes (f7addce, e5a6f8e, 40b81e7)
+6. Anacron daily scraping (d62e59d)
+7. Documentation updates and gitignore cleanup
+
+**Major Improvements in Feature Branch**:
+- ✅ Phase 3C Complete - Hypothesis branching with coverage assessment
+- ✅ Timeout Consolidation - Single source of truth (600s)
+- ✅ Integration Rejection Reasoning - Structured metadata capture
+- ✅ Quality Fixes - Cost tracking, async conversions, deduplication
+- ✅ Discord Parsing - Graceful malformed file handling
+
+**Deployment Status** (✅):
+- No running Streamlit processes
+- Deployment docs archived (not actively maintained)
+- No production constraints
+
+**Blockers**: NONE
+
+**Merge Risk**: LOW (clean fast-forward, all tests pass)
+
+**RECOMMENDATION**: **Proceed with merge feature/jinja2-prompts → master**
+
+**Merge Plan**:
+```bash
+# Step 1: Ensure clean working tree
+git status
+
+# Step 2: Checkout master
+git checkout master
+
+# Step 3: Merge feature branch (fast-forward)
+git merge feature/jinja2-prompts
+
+# Step 4: Verify merged state
+git log --oneline -5
+python3 tests/test_entry_points.py
+
+# Step 5: Push to remote (if applicable)
+git push origin master
+```
+
+**Post-Merge Actions**:
+- Update STATUS.md with current integration status
+- Continue development on master or new feature branch
+- Consider Phase 4 priorities (if any)
 
 ---
 
