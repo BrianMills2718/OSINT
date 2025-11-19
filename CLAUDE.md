@@ -428,12 +428,12 @@ pip list | grep playwright
 - Uses lenient JSON parser (`strict=False`)
 - **But malformed files still fail** (comma insertion needed, not just removal)
 
-**Recommended Fix** (DEFERRED):
-- Enhance `_sanitize_json()` to insert missing commas before closing braces
-- OR: Skip malformed files gracefully (warn but continue)
-- OR: Re-scrape The OWL with longer timeout/pagination
+**Fix Implemented** (Commit e5a6f8e):
+- Enhanced `_sanitize_json()` with comma insertion regex (fixes some cases)
+- Added graceful error handling: skip malformed files, log warnings, continue search
+- Tested: 14 warnings logged, 108 results returned successfully
 
-**Status**: Investigation complete, fix deferred (low priority - 99.86% success rate is acceptable)
+**Status**: [PASS] Integration now handles malformed files gracefully (99.86% files searchable)
 
 ---
 
