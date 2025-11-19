@@ -226,6 +226,7 @@ class DiscordIntegration(DatabaseIntegration):
         invalid control characters, and other syntax errors. This method applies
         comprehensive defensive sanitization:
         - Removes trailing commas before closing braces/brackets
+        - Inserts missing commas before closing braces (DiscordChatExporter bug)
         - Removes invalid control characters (U+0000 to U+001F, U+007F to U+009F)
         - Preserves valid JSON structure
 
@@ -235,13 +236,26 @@ class DiscordIntegration(DatabaseIntegration):
         Returns:
             Sanitized JSON text safe for json.load()
         """
-        # Step 1: Remove trailing commas before } or ]
+        # Step 1: Insert missing commas before closing braces FIRST
+        # Pattern: value followed by newline + whitespace + closing brace (NO comma already)
+        # This fixes DiscordChatExporter bug where emoji objects are missing commas
+        # Example: "imageUrl": "https://..."\n          } → "imageUrl": "https://...",\n          }
+        # IMPORTANT: Negative lookbehind (?<!,) ensures we don't add comma if one exists
+        # Must run BEFORE trailing comma removal to avoid conflicts
+        text = re.sub(
+            r'(["\d\]\}]|true|false|null)(?<!,)(\s*\n\s*)(\})',
+            r'\1,\2\3',
+            text
+        )
+
+        # Step 2: Remove trailing commas before } or ]
         # Pattern: comma followed by optional whitespace followed by } or ]
         # Example: {"key": "value",} → {"key": "value"}
         # Example: ["item1", "item2",] → ["item1", "item2"]
+        # Runs AFTER comma insertion to clean up any double commas
         text = re.sub(r',(\s*[}\]])', r'\1', text)
 
-        # Step 2: Remove invalid control characters
+        # Step 3: Remove invalid control characters
         # JSON spec allows only: tab (\t), newline (\n), carriage return (\r)
         # Remove all other control characters (U+0000 to U+001F except \t\n\r, and U+007F to U+009F)
         # These can cause "Expecting ',' delimiter" errors if present in strings
@@ -342,12 +356,19 @@ class DiscordIntegration(DatabaseIntegration):
                         })
 
             except json.JSONDecodeError as e:
-                # Skip corrupted files
-                print(f"Warning: Could not parse {export_file}: {e}")
+                # Skip malformed files (0.14% of exports have DiscordChatExporter bugs)
+                # Log warning but continue searching other files
+                # See: CLAUDE.md - Discord Parsing Investigation (2025-11-18)
+                import logging
+                logging.warning(
+                    f"Discord export malformed (skipping): {export_file.name[:60]}... "
+                    f"Error: {str(e)[:80]}"
+                )
                 continue
             except Exception as e:
-                # Skip problematic files
-                print(f"Warning: Error reading {export_file}: {e}")
+                # Skip other problematic files
+                import logging
+                logging.warning(f"Discord export error (skipping): {export_file.name[:60]}... Error: {str(e)[:80]}")
                 continue
 
         # Sort by score (best matches first), then by recency
