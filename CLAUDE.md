@@ -408,13 +408,15 @@ pip list | grep playwright
 3. ✅ **Future-Dated Sources**: Source data from Brave Search has future dates (Nov 17, 2025) in URLs - not LLM hallucination
 4. ✅ **Discord Parsing**: 14 JSON files have malformed exports causing parse errors
 
-**Fixes In Progress**:
-1. 🔧 Follow-up task generation (research/deep_research.py:3083-3102):
+**Fixes Implemented** (Commit 4e4f2a0):
+1. ✅ Follow-up task generation (research/deep_research.py:3083-3123):
    - Add context: `f"{entity} {parent_task.query}"` instead of bare `{entity}`
    - Add deduplication: Check existing queries before creating follow-ups
-2. 🔧 Date validation:
+   - Prevents duplicate tasks (observed 3× "Donald Trump" in F-35 query)
+2. ✅ Date validation (research/deep_research.py:3049-3118, 2139):
    - Reject sources with dates > now() + 1 day (timezone buffer)
-   - Flag suspicious dates in report metadata
+   - Flag results with missing/unparseable dates
+   - Filters future-dated test data (e.g., "Nov 17, 2025" from Brave Search)
 
 **Deferred**:
 - Phase 3C enablement decision (config default vs CLI flag)
