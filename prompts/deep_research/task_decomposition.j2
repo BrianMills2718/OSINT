@@ -2,18 +2,71 @@ Break this complex research question into 3-5 specific, focused search tasks.
 
 Research Question: {{ question }}
 
-Each task should be:
-- A clear, searchable query (can be used with database search or web search)
-- Focused on one aspect of the overall question
-- Likely to return concrete results (not too broad, not too narrow)
-- Simple keyword-based queries (avoid complex Boolean operators like OR, AND, NOT)
-- No site filters (site:gov) or date ranges (2015..2025) - these reduce results
-- Natural language queries work best (e.g., "government surveillance contracts Palantir" instead of "site:gov contract Palantir OR Clearview")
+UNDERSTANDING HOW YOUR QUERIES WILL BE EXECUTED:
 
-IMPORTANT - Query Intent:
-- For definitional queries (what is X?), create subtasks that seek OFFICIAL DESCRIPTIONS and DOCUMENTATION, not examples of content
-- For content queries (what content does X provide?), ask about CONTENT CATEGORIES and TYPES, not specific examples
-- Example (CORRECT): "Find official documentation about DVIDS mission and purpose" → targets reference material
-- Example (WRONG): "DVIDS photos videos multimedia gallery" → targets event media, not documentation
+Your tasks will be searched across multiple data sources with different strengths and limitations. Understanding these sources will help you craft effective queries:
+
+GOVERNMENT DATABASES (SAM.gov, USAJobs, DVIDS, Federal Register):
+- What they contain: Official contracts, job postings, military media, regulatory documents
+- Strengths: Authoritative, structured, primary source material
+- Limitations: Only contain what government publishes; narrow topical scope
+- Query effectiveness: Specific programs/topics work well ("NSA cybersecurity contracts", "FBI counterterrorism jobs"). Generic entity names alone ("United States", "Department of Defense") return everything those entities touch - thousands of unrelated results requiring heavy filtering.
+
+WEB SEARCH (Brave Search):
+- What it contains: News articles, analysis, leaked documents, advocacy reports, court filings
+- Strengths: Comprehensive coverage of public discourse and investigative journalism
+- Limitations: Billions of pages - needs sufficient context to distinguish signal from noise
+- Query effectiveness: Topic + context works well ("F-35 Saudi Arabia arms sale congressional debate"). Single keywords or broad entities ("fighter jets", "military") return information overload - millions of generic results.
+
+SOCIAL MEDIA (Twitter, Reddit, Discord):
+- What it contains: Real-time discussions, whistleblower revelations, expert commentary, community insights
+- Strengths: Unfiltered perspectives, breaking developments, insider knowledge
+- Limitations: Billions of posts - extremely high noise-to-signal ratio (spam, memes, off-topic)
+- Query effectiveness: Specific events/actors/topics work well ("Snowden NSA PRISM surveillance reform debate"). Generic terms ("surveillance", "government", "security") drown in millions of unrelated posts.
+
+YOUR GOAL:
+Craft queries that help these databases find relevant results efficiently. When databases receive generic queries, they return everything tangentially related, forcing the LLM to filter through hundreds or thousands of irrelevant results. This wastes API calls and processing time.
+
+Think about query effectiveness:
+- "United States" → What aspect of the US are you investigating? This could match millions of documents about anything the US government does.
+- "United States F-35 export policy Middle East" → Now databases can focus on arms sales policy, not every US government activity.
+
+- "Donald Trump" → Which of thousands of Trump-related topics? Polls, rallies, tweets, policies, lawsuits, business dealings?
+- "Donald Trump administration F-35 Saudi Arabia approval decision" → Specific policy action, clear topic boundaries.
+
+- "F-35 fighter jet" → General aviation content, specs, news, history, every country that operates F-35s?
+- "F-35 fighter jet foreign military sales Saudi Arabia controversy" → Specific transaction and debate.
+
+TASK DECOMPOSITION STRATEGY:
+Focus on distinct research ANGLES (different facets of the question), not entity permutations:
+
+Less effective (entity-focused):
+- Task 1: Donald Trump F-35 sales
+- Task 2: Mohammed bin Salman F-35 sales
+- Task 3: US Congress F-35 sales
+(Three tasks asking the same question about different actors)
+
+More effective (angle-focused):
+- Task 1: Official US executive branch policy statements on F-35 Saudi Arabia arms sale
+- Task 2: Congressional oversight response and legislative debate on F-35 Saudi sale
+- Task 3: Geopolitical implications - Israel security concerns, China technology transfer risks
+(Three tasks exploring different aspects: policy, oversight, strategic impact)
+
+QUERY INTENT - Matching Query to Research Goal:
+- For definitional queries (what is X?), seek OFFICIAL DESCRIPTIONS and DOCUMENTATION, not examples
+  Example: "Find official DVIDS mission and purpose documentation" (targets reference material)
+  Not: "DVIDS photos videos multimedia gallery" (targets content, not documentation)
+
+- For content queries (what does X provide?), ask about CONTENT CATEGORIES and TYPES, not specific instances
+  Example: "Types of media content DVIDS publishes for Department of Defense"
+  Not: "DVIDS Afghanistan deployment photos" (too narrow, misses broader scope)
+
+FORMATTING GUIDELINES:
+- Natural language queries work best ("government surveillance contracts Palantir")
+- Avoid complex Boolean operators (OR, AND, NOT) - databases handle these poorly
+- No site filters (site:gov) or date ranges (2015..2025) - these reduce results unnecessarily
+- Simple keyword phrases that capture the topic and context
 
 Return tasks in priority order (most important first).
+
+Use your judgment: The goal is helping databases find relevant results efficiently, not following rigid rules. Some research questions may legitimately need broader queries - apply these principles contextually based on what you're trying to discover.

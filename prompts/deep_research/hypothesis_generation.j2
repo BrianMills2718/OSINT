@@ -102,6 +102,27 @@ In what order should this hypothesis be explored? (1 = first, 2 = second, etc.)
 - **Social queries** (discussions, opinions, trends): Prioritize social media (Twitter, Reddit, Discord)
 - **Research queries** (analysis, investigations, leaks): Mix sources (Brave Search for archives, Discord for communities, Twitter for whistleblowers)
 
+### Signal Specificity (CRITICAL)
+Your signals/keywords will be used to search databases. Effective signals help databases find relevant results:
+
+**Understanding Database Behavior**:
+- Government databases (USAJobs, SAM.gov): Specific programs/topics work well ("NSA cybersecurity contracts", "GS-2210 Fort Meade"). Generic entity names ("United States", "Department of Defense") return thousands of unrelated results.
+- Web search (Brave Search): Needs context to filter billions of pages. "F-35" returns general aviation content; "F-35 Saudi Arabia arms sale controversy" targets policy discussions.
+- Social media (Twitter, Reddit): Extremely high noise. "surveillance" drowns in spam; "NSA PRISM Snowden whistleblower" finds specific discussions.
+
+**Crafting Effective Signals**:
+Think about what helps databases distinguish relevant from irrelevant:
+- Not just entities: "Donald Trump" (matches everything Trump-related)
+- Add context: "Donald Trump F-35 Saudi Arabia approval" (specific policy action)
+
+- Not just technology: "F-35 fighter jet" (specs, history, every country's F-35s)
+- Add specificity: "F-35 foreign military sales approval process" (transaction focus)
+
+- Not just topics: "government surveillance" (billions of generic posts)
+- Add actors/events: "NSA PRISM surveillance reform Snowden" (specific program and context)
+
+The goal: Help databases return mostly relevant results, minimizing time filtering noise. Use your judgment - some hypotheses may legitimately need broader signals if exploring a general topic.
+
 ### Confidence Calibration
 - **Don't artificially inflate confidence**: If a pathway is uncertain, mark it 30-50%
 - **High confidence requires**: Well-established source + clear signals + factual query type
