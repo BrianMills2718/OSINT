@@ -84,16 +84,19 @@ def generate_search_queries(research_question, comprehensive_mode=False):
             "typical_response_time": meta.typical_response_time
         })
 
+    # Build valid source IDs list for LLM prompt
+    valid_source_ids = ', '.join([s['id'] for s in source_list])
+
     # LLM prompt - dynamic from registry, changes based on mode
     if comprehensive_mode:
         task_instruction = "Select EVERY database that could provide relevant information for this research question."
-        selection_guidance = """
+        selection_guidance = f"""
 IMPORTANT:
 - Include EVERY database that might have relevant information
 - Only exclude databases that are clearly irrelevant
 - Cast a very wide net - when in doubt, include it
 - Keep keywords simple and focused
-- source_id MUST be one of: {', '.join([s['id'] for s in source_list])}
+- source_id MUST be one of: {valid_source_ids}
 
 Example: For "cybersecurity jobs", include:
 - clearancejobs (security cleared jobs)
@@ -104,14 +107,14 @@ Exclude only: discord (not about jobs), fbi_vault (not about jobs)
 """
     else:
         task_instruction = "Select ALL databases that are relevant for this research question."
-        selection_guidance = """
+        selection_guidance = f"""
 IMPORTANT:
 - Include ALL databases that have relevant information
 - Only exclude databases that are clearly NOT relevant
 - Use your judgment - include sources that could help answer the question
 - Keep keywords simple and focused
 - Prioritize free sources (requires_api_key: false) when quality is similar
-- source_id MUST be one of: {', '.join([s['id'] for s in source_list])}
+- source_id MUST be one of: {valid_source_ids}
 
 Examples:
 - For "JTTF activity": Include discord (real-time chatter), fbi_vault (official docs), maybe dvids (operations). Exclude clearancejobs, sam, usajobs (not about jobs/contracts).
@@ -275,17 +278,17 @@ async def execute_search_via_registry(source_id: str, research_question: str, ap
         logger.info(f"Generating query parameters for {integration.metadata.name}...")
         query_params = await integration.generate_query(research_question=research_question)
 
-        # If generate_query returns None, this is a BUG (should never happen)
+        # If generate_query returns None, source marked itself as "not relevant"
+        # This is expected behavior (e.g., SAM.gov returns None for job-only queries)
         if not query_params:
-            logger.error(f"{integration.metadata.name}: ERROR - generate_query() returned None!")
-            logger.error(f"  This should NEVER happen - indicates prompt regression, LLM failure, or bug")
-            logger.error(f"  Query: '{research_question}'")
+            logger.info(f"{integration.metadata.name}: Not relevant for this query (generate_query returned None)")
             return {
-                "success": False,
+                "success": True,  # Not an error - expected behavior
                 "total": 0,
                 "results": [],
                 "source": integration.metadata.name,
-                "error": "Query generation failed (generate_query returned None - this is a BUG)",
+                "not_relevant": True,
+                "error": None,
                 "response_time_ms": (datetime.now() - start_time).total_seconds() * 1000,
                 "query_params": None
             }
