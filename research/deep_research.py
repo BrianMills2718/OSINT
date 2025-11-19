@@ -589,7 +589,16 @@ class SimpleDeepResearch:
                             "follow_ups_created",
                             f"Created {len(follow_ups)} follow-up tasks",
                             task_id=task.id,
-                            data={"follow_ups": [{"id": t.id, "query": t.query} for t in follow_ups]}
+                            data={
+                                "follow_ups": [
+                                    {
+                                        "id": t.id,
+                                        "query": t.query,
+                                        "rationale": t.rationale,
+                                        "parent_task_id": t.parent_task_id
+                                    } for t in follow_ups
+                                ]
+                            }
                         )
                 else:
                     self.failed_tasks.append(task)
@@ -3289,6 +3298,12 @@ class SimpleDeepResearch:
                 rationale=task_data["rationale"],
                 parent_task_id=parent_task.id
             )
+
+            # Log individual follow-up creation with full details for auditing
+            logging.info(
+                f"[FOLLOW_UP_CREATED] Task {follow_up.id} (parent: {parent_task.id}): {follow_up.query[:80]}"
+            )
+
             follow_ups.append(follow_up)
             existing_queries.add(task_data["query"].lower())
 
