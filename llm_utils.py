@@ -182,6 +182,7 @@ class UnifiedLLM:
                           messages: List[Dict[str, str]],
                           response_format: Optional[Dict] = None,
                           fallback: bool = True,
+                          timeout: Optional[float] = None,
                           **kwargs) -> Any:
         """
         Unified async completion supporting both APIs with fallback.
@@ -194,6 +195,7 @@ class UnifiedLLM:
             messages: List of message dicts
             response_format: Standard response format dict
             fallback: Enable fallback to alternative models (default: True)
+            timeout: Timeout in seconds for LLM API call (default: None)
             **kwargs: Additional parameters (max_tokens, temperature, etc.)
 
         Returns:
@@ -215,7 +217,7 @@ class UnifiedLLM:
         for attempt_model in models_to_try:
             try:
                 return await cls._single_completion(
-                    attempt_model, messages, response_format, **kwargs
+                    attempt_model, messages, response_format, timeout=timeout, **kwargs
                 )
             except Exception as e:
                 last_error = e
@@ -235,6 +237,7 @@ class UnifiedLLM:
                                  model: str,
                                  messages: List[Dict[str, str]],
                                  response_format: Optional[Dict] = None,
+                                 timeout: Optional[float] = None,
                                  **kwargs) -> Any:
         """
         Execute a single completion attempt with the specified model.
@@ -253,7 +256,7 @@ class UnifiedLLM:
 
         for attempt in range(max_retries + 1):
             try:
-                return await cls._execute_completion(model, messages, response_format, **kwargs)
+                return await cls._execute_completion(model, messages, response_format, timeout=timeout, **kwargs)
             except Exception as e:
                 last_error = e
 
@@ -277,6 +280,7 @@ class UnifiedLLM:
                                    model: str,
                                    messages: List[Dict[str, str]],
                                    response_format: Optional[Dict] = None,
+                                   timeout: Optional[float] = None,
                                    **kwargs) -> Any:
         """
         Execute the actual LLM API call without retry logic.
@@ -306,6 +310,7 @@ class UnifiedLLM:
                     model=model,
                     input=input_text,
                     text=text_format,
+                    timeout=timeout,
                     **kwargs_copy
                 )
             )
@@ -356,25 +361,35 @@ class UnifiedLLM:
                 model=model,
                 messages=messages,
                 response_format=response_format,
+                timeout=timeout,
                 **kwargs
             )
 
 
 # Convenience function matching litellm.acompletion signature
-async def acompletion(model: str, messages: List[Dict[str, str]], **kwargs) -> Any:
+async def acompletion(model: str, messages: List[Dict[str, str]], timeout: Optional[float] = None, **kwargs) -> Any:
     """
     Drop-in replacement for litellm.acompletion that supports gpt-5-mini.
 
     Args:
         model: Model name
         messages: List of message dicts
+        timeout: Timeout in seconds (default: from config or 60s)
         **kwargs: Additional parameters
 
     Returns:
         Response object
     """
+    # Get timeout from config if not specified
+    if timeout is None:
+        if HAS_CONFIG:
+            raw_config = config.get_raw_config()
+            timeout = raw_config.get("timeouts", {}).get("llm_request", 60)
+        else:
+            timeout = 60  # Fallback default
+
     start_time = datetime.now()
-    response = await UnifiedLLM.acompletion(model, messages, **kwargs)
+    response = await UnifiedLLM.acompletion(model, messages, timeout=timeout, **kwargs)
 
     # Calculate and track cost using LiteLLM's built-in function
     try:
