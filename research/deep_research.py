@@ -204,8 +204,13 @@ class SimpleDeepResearch:
         self.max_hypotheses_to_execute = hyp_config.get("max_hypotheses_to_execute", 5)
         # Phase 3C time budget for hypothesis execution (OPTIONAL - only used when coverage_mode: true)
         # This is SEPARATE from overall task timeout (task_timeout_seconds)
-        # If None, Phase 3C runs until max_hypotheses_to_execute or LLM decides to stop
-        self.max_time_per_task_seconds = hyp_config.get("max_time_per_task_seconds", None)
+        # If not specified in config, defaults to 600s when coverage_mode: true, None otherwise
+        time_budget = hyp_config.get("max_time_per_task_seconds", None)
+        if self.coverage_mode and time_budget is None:
+            # Auto-default to 600s when Phase 3C enabled (prevents None comparison crashes)
+            self.max_time_per_task_seconds = 600
+        else:
+            self.max_time_per_task_seconds = time_budget
 
         # Load API keys from environment
         self.api_keys = {
