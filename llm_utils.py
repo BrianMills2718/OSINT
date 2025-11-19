@@ -22,6 +22,7 @@ Features:
 import litellm
 import asyncio
 import json
+import math
 from typing import List, Dict, Any, Optional
 import logging
 from datetime import datetime
@@ -164,6 +165,17 @@ class UnifiedLLM:
         # Fallback: return string representation
         return str(response)
 
+    @staticmethod
+    def _estimate_tokens(text: Optional[str]) -> int:
+        """
+        Rough token estimation when provider doesn't return usage.
+
+        Approximate 1 token per 4 characters (common rule of thumb).
+        """
+        if not text:
+            return 0
+        return max(1, math.ceil(len(text) / 4))
+
     @classmethod
     async def acompletion(cls,
                           model: str,
@@ -300,15 +312,43 @@ class UnifiedLLM:
 
             # Create a response object that looks like completion() response
             class ResponseWrapper:
-                def __init__(self, content):
+                def __init__(self, content, model_name, usage):
+                    self.id = getattr(response, "id", None)
+                    self.created = getattr(response, "created", None)
+                    self.model = model_name
                     self.choices = [type('obj', (object,), {
                         'message': type('obj', (object,), {
                             'content': content
                         })()
                     })()]
+                    self.usage = usage
 
-            content = cls.extract_responses_content(response)
-            return ResponseWrapper(content)
+            # Extract content once for reuse
+            content_text = cls.extract_responses_content(response)
+
+            # Prefer provider usage if available; otherwise approximate tokens
+            raw_usage = getattr(response, "usage", None)
+            if isinstance(raw_usage, dict):
+                prompt_tokens = raw_usage.get("prompt_tokens") or raw_usage.get("input_tokens")
+                completion_tokens = raw_usage.get("completion_tokens") or raw_usage.get("output_tokens")
+                total_tokens = raw_usage.get("total_tokens")
+                usage = {
+                    "prompt_tokens": prompt_tokens,
+                    "completion_tokens": completion_tokens,
+                    "total_tokens": total_tokens if total_tokens is not None and total_tokens >= 0 else None
+                }
+                if usage["total_tokens"] is None and prompt_tokens is not None and completion_tokens is not None:
+                    usage["total_tokens"] = prompt_tokens + completion_tokens
+            else:
+                prompt_tokens = cls._estimate_tokens(input_text)
+                completion_tokens = cls._estimate_tokens(content_text)
+                usage = {
+                    "prompt_tokens": prompt_tokens,
+                    "completion_tokens": completion_tokens,
+                    "total_tokens": prompt_tokens + completion_tokens
+                }
+
+            return ResponseWrapper(content_text, model_name=model, usage=usage)
 
         else:
             # Use completion() API for other models
