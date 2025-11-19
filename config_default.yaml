@@ -217,11 +217,11 @@ research:
   # IMPORTANT: Hypothesis branching increases LLM cost by 3-3.75x vs traditional task decomposition
   # Enable only if you prioritize quality over cost and have budget for comprehensive exploration
   hypothesis_branching:
-    mode: "off"                   # OPERATION MODE: "off" | "planning" | "execution"
+    mode: "execution"             # OPERATION MODE: "off" | "planning" | "execution"
                                   # - off: Traditional task decomposition (no hypotheses)
                                   # - planning: Generate hypotheses but don't execute (Phase 3A - shows in report only)
                                   # - execution: Generate AND execute hypotheses (Phase 3B - runs searches)
-                                  # Default: "off" (traditional task decomposition)
+                                  # Default: "execution" (changed 2025-11-18 per user request)
 
     # DEPRECATED: Use "mode" instead
     # enabled: false              # Legacy config - auto-upgrades to mode: "planning" | "off"
