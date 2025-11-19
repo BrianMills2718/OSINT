@@ -389,135 +389,93 @@ pip list | grep playwright
 
 # CLAUDE.md - Temporary Section (Updated as Tasks Complete)
 
-**Last Updated**: 2025-11-18
-**Current Phase**: Integration Reformulation Fix
-**Current Focus**: Expose rejection reasoning + LLM-driven reformulation (Option C)
-**Status**: 🔧 IMPLEMENTING TRACEABILITY FIX
+**Last Updated**: 2025-11-19
+**Current Phase**: Timeout Consolidation & Code Quality
+**Current Focus**: Fix timeout hierarchy code smell + repository organization
+**Status**: 🔍 INVESTIGATING & ORGANIZING
 
 ---
 
-## CURRENT WORK: Integration Reformulation Fix (2025-11-18)
+## CURRENT WORK: Timeout Consolidation (2025-11-19)
 
-**Context**: User identified traceability gap - when integrations self-reject queries (e.g., SAM.gov rejects "F-35 sales"), there's NO reformulation attempt and limited visibility into WHY rejection occurred.
+**Context**: NSA surveillance research run timed out all 4 tasks at exactly 180 seconds, despite API calls returning partial results (48 total). Investigation revealed confusing timeout hierarchy that violates single-source-of-truth principle.
 
-**Problem Identified**:
-- SAM.gov selected 18/32 times for F-35 query → rejected all 18 times with "not relevant" → zero reformulation attempts
-- Root cause: Integration `generate_query()` returns `None` when `relevant=false` → MCP tool returns error → Deep Research receives failure → NO reformulation triggered
-- Architectural gap: Reformulation logic doesn't exist at ANY of the three layers (Deep Research, MCP tools, Integrations)
-- Severity: HIGH - Quality gap + Design Philosophy violation (binary true/false with no reasoning, no LLM decision)
+**Code Smell Identified**:
+- **Timeout Hierarchy Bug**: Two config keys for same concept (`max_time_per_task_seconds: 180` vs `task_timeout_seconds: 300`)
+- **Silent Override**: Shorter timeout (180s) always overrides longer one (300s) with no warning
+- **Dead Code**: `task_timeout_seconds: 300` never used when hypothesis branching enabled
+- **User Impact**: Twitter/Brave multi-page fetches take 180-250 seconds → all tasks timeout → partial results wasted
+- **Severity**: MEDIUM - Tasks fail unnecessarily, user can't easily see which timeout governs
 
 **Investigation Complete** (✅):
-- Traced rejection flow through 3 layers (Deep Research → MCP Tools → Integrations)
-- Identified all 10 affected integrations (5 government, 4 social, 1 fed register)
-- Analyzed F-35 query execution logs for evidence
-- Documented in next_steps_investigation.md + CODE_SMELL_AUDIT.md
-- **User caught code smell**: Initial approach required changing 30 files (bad architecture)
-- **Pivoted to base class wrapper**: Changes 5 files instead, future-proof, backward compatible
+- ✅ Validated timeout governed NSA run: Execution log shows all 4 tasks timed out at exactly 180s
+- ✅ Traced timeout hierarchy: `max_time_per_task_seconds` (line 205) always set, overrides `task_timeout_seconds`
+- ✅ Confirmed partial results captured: 48 results (Discord 20, Reddit 28) returned before timeout
+- ✅ Measured actual task duration: Twitter multi-page fetches at 135-180s when killed
+- ✅ Codex validation: Confirmed findings, recommended conservative approach (not removing timeout entirely)
+- ✅ Repository audit: Identified 3 files to archive, 4 experimental directories to review
 
-**REVISED Implementation Plan** (Base Class Wrapper - COMPLETE WIRING):
+**Implementation Plan** (Conservative Timeout Consolidation - Codex Approved):
 
-**Why This Is Better**:
-- ✅ Changes 6 files instead of 30
-- ✅ Backward compatible (existing integrations work unchanged)
-- ✅ Future integrations get rejection reasoning for free
-- ✅ One place to fix bugs (not 10 duplicated implementations)
-- ✅ Aligns with Design Philosophy (no duplication, clean architecture)
+**Why This Approach (vs Removing Timeout Entirely)**:
+- ✅ Conservative: Catches runaway tasks while allowing complex work to complete
+- ✅ Safeguards: Per-source API timeouts (30s) + LLM call timeouts (60-90s) prevent infinite hangs
+- ✅ User-configurable: Can be overridden per-run if needed
+- ✅ Production-tested: Once validated at 600s, can raise or remove based on evidence
 
-**⚠️ Codex Critical Feedback** (2025-11-18):
-- **Half-wired state**: Wrapper added but call sites not updated
-- **ParallelExecutor gap**: Line 268 still calls `generate_query()` directly, logs "None" without reasoning
-- **Param leakage**: SAM returns `{relevant: true, ...}` which pollutes `execute_search()` params
-- **Fix required**: Update ALL call sites (ParallelExecutor + MCP tools) AND strip `relevant` key from params
+**Phase 1: Remove Dead Timeout Config** (1 file):
+1. ⏳ Update config_default.yaml
+   - Remove `max_time_per_task_seconds: 180` from hypothesis_branching section
+   - Change `task_timeout_seconds: 300` → `task_timeout_seconds: 600` in deep_research section
+   - Update comment: "Conservative limit allows complex tasks (Twitter multi-page fetches, etc.) to complete"
 
-**Phase 1: Base Class Wrapper** (1 file):
-1. ✅ DONE: Add `generate_query_with_reasoning()` to core/database_integration_base.py
-   - Wrapper method that calls child's `generate_query()`
-   - Intercepts `None` returns → converts to rejection dict
-   - Intercepts `{"relevant": false}` dicts → extracts reasoning
-   - Returns standardized: `{"relevant": bool, "rejection_reason": str, "suggested_reformulation": str, "query_params": dict}`
-   - **Codex fix needed**: Strip `relevant` key from `query_params` before returning
+**Phase 2: Simplify Timeout Logic** (1 file):
+2. ⏳ Update research/deep_research.py
+   - Remove lines 410-417 (hypothesis timeout hierarchy)
+   - Replace with simple: `task_timeout = deep_config.get("task_timeout_seconds", 600)`
+   - Single source of truth, no confusing override logic
+   - Remove line 205 that always sets `self.max_time_per_task_seconds`
 
-**Phase 2: Fix Base Class Wrapper** (1 file):
-2. ⏳ Update core/database_integration_base.py wrapper
-   - **Codex fix**: Strip `relevant`, `rejection_reason`, `suggested_reformulation` from `query_params`
-   - Only pass clean params dict to `execute_search()` (no metadata pollution)
-   - Example: `{relevant: true, keywords: "x"}` → `query_params: {keywords: "x"}`
+**Phase 3: Test & Validate** (2 queries):
+3. ⏳ Rerun NSA surveillance query with 600s timeout
+   - Expected: All 4 tasks complete (Twitter/Brave searches finish)
+   - Validate: execution_log.jsonl shows task_complete, not TIMEOUT
+   - Measure: Actual task durations (should be 180-250s for complex tasks)
 
-**Phase 3: SAM.gov Integration Cleanup** (2 files):
-3. ⏳ REVERT integrations/government/sam_integration.py to simple pattern
-   - Remove manual rejection dict code (lines 168-174)
-   - Return `None` when not relevant (wrapper handles it)
-   - When relevant: return params WITHOUT `relevant` key (wrapper will add it)
-   - Keep prompt template changes (improves LLM guidance)
+4. ⏳ Rerun F-35 sales query (baseline comparison)
+   - Expected: Similar results to previous run (251 results)
+   - Validate: No regressions introduced by timeout change
 
-4. ⏳ KEEP prompts/integrations/sam_query_generation.j2 changes
-   - Suggested reformulation field improves LLM guidance
-   - Wrapper extracts it from LLM response automatically
+**Phase 4: Update Documentation** (2 files):
+5. ⏳ Update CLAUDE.md TEMPORARY with timeout consolidation completion
+6. ⏳ Update STATUS.md with timeout fix status
 
-**Phase 4: ParallelExecutor Update** (1 file) **← CODEX CRITICAL GAP**:
-5. ⏳ Update core/parallel_executor.py `_generate_query()` method (line 253-280)
-   - Change from: `params = await db.generate_query(question)`
-   - Change to: `enriched = await db.generate_query_with_reasoning(question)`
-   - Check `enriched["relevant"]` instead of `params is None`
-   - Log rejection reasoning: `f"{db.metadata.name}: REJECTED - {enriched['rejection_reason']}"`
-   - Extract `enriched["query_params"]` for execute_search()
-   - **Impact**: Fixes traceability gap in core/parallel_executor.py:240 "ERROR - generate_query() returned None"
+**Files Changed**: 2 total
+1. config_default.yaml - Remove confusing hierarchy, single timeout: 600s
+2. research/deep_research.py - Simplify timeout logic (remove override hierarchy)
 
-**Phase 5: MCP Tool Wrappers** (2 files):
-6. ⏳ Update integrations/mcp/government_mcp.py (5 functions)
-   - Change from: `query_params = await integration.generate_query(...)`
-   - Change to: `enriched = await integration.generate_query_with_reasoning(...)`
-   - Check `enriched["relevant"]` instead of `query_params is None`
-   - Pass `enriched["rejection_reason"]` and `enriched["suggested_reformulation"]` to metadata
-   - Extract `enriched["query_params"]` for execute_search()
+**Benefits**:
+- Single source of truth for timeout configuration
+- Clear, predictable behavior (no silent overrides)
+- Conservative 600s allows complex tasks to complete
+- Can be raised/removed later with production evidence
 
-7. ⏳ Update integrations/mcp/social_mcp.py (4 functions)
-   - Same pattern as government_mcp.py
-   - Functions: search_twitter, search_brave, search_discord, search_reddit
+---
 
-**Phase 6: Deep Research Rejection Handler** (2 files):
-8. ⏳ Create prompts/deep_research/rejection_handling.j2
-   - LLM prompt for analyzing rejections and deciding reformulation strategy
-   - Input: source_name, original_query, rejection_reason, suggested_reformulation
-   - Output: `{"decision": "reformulate"|"skip", "reformulated_query": str|null, "reasoning": str}`
+## PREVIOUS WORK: Integration Reformulation Wrapper (2025-11-18)
 
-9. ⏳ Add _handle_rejection() method to research/deep_research.py
-   - Detect `result.metadata.get("rejection_reasoning")` after MCP call
-   - Call LLM with rejection_handling.j2 prompt
-   - If decision=="reformulate": return new query
-   - If decision=="skip": return None
-   - Log rejection → LLM decision → reformulation
+**Status**: ✅ COMPLETE - All wiring done, commits made
 
-10. ⏳ Update _call_mcp_tool() or hypothesis execution to handle rejections
-    - After MCP call: Check for rejection metadata
-    - If rejection found: Call _handle_rejection()
-    - If reformulation returned: Retry MCP call with new query (max 1 retry per source)
-    - Log full lifecycle: selection → rejection → LLM decision → reformulation → retry
+**What Was Built**:
+- Base class wrapper method `generate_query_with_reasoning()` intercepts rejection metadata
+- Wrapper strips metadata keys (relevant, rejection_reason, suggested_reformulation) from params
+- ParallelExecutor updated to call wrapper and log rejection reasoning
+- All 9 MCP tool functions (government_mcp.py × 5, social_mcp.py × 4) updated to use wrapper
+- Test file created: tests/test_rejection_reasoning.py (CI-safe, skips when no API key)
+- **Commits**: 46e4bd6 (wrapper implementation), a6c4b40 (test file)
 
-**Phase 7: Testing** (1 file):
-11. ⏳ Test with SAM.gov rejection case
-   - Query: "F-35 sales to Saudi Arabia" (known to reject)
-   - Expected flow:
-     1. Deep Research selects SAM.gov
-     2. SAM.gov LLM rejects with reasoning: "Query is about sales, not contracting"
-     3. Base class wrapper converts to rejection dict
-     4. MCP tool passes rejection to Deep Research with metadata
-     5. Deep Research calls _handle_rejection()
-     6. LLM decides: "Reformulate to 'F-35 contracting opportunities'"
-     7. Deep Research retries SAM.gov with new query
-     8. Full lifecycle logged in execution_log.jsonl
-   - Verify all 10 integrations work (backward compatible test)
-
-**Files Changed**: 5 total (not 30!)
-1. core/database_integration_base.py - Add wrapper method
-2. integrations/government/sam_integration.py - Revert to simple None return
-3. integrations/mcp/government_mcp.py - Call wrapper (5 functions)
-4. integrations/mcp/social_mcp.py - Call wrapper (4 functions)
-5. research/deep_research.py - Add rejection handler
-
-**Files Unchanged**: 9 integrations (backward compatible!)
-- All integrations work unchanged (base class handles them)
-- Future integrations automatically get rejection reasoning
+**Validation Needed**:
+- ⏳ E2E test with F-35 query to verify rejection reasoning is surfaced (not yet run due to focus on timeout investigation)
 
 ---
 
