@@ -81,7 +81,7 @@ integration_limits:
 # ============================================================================
 timeouts:
   api_request: 30                 # HTTP requests to external APIs
-  llm_request: 60                 # LLM API calls
+  llm_request: 180                # LLM API calls (3 minutes)
   code_execution: 30              # Generated code execution
   total_search: 300               # Total time for complete search (5 min)
 
