@@ -390,12 +390,37 @@ pip list | grep playwright
 # CLAUDE.md - Temporary Section (Updated as Tasks Complete)
 
 **Last Updated**: 2025-11-18
-**Current Phase**: Phase 3C Complete
-**Current Focus**: Infrastructure cleanup and testing
-**Status**: ✅ ALL VALIDATIONS COMPLETE - PRODUCTION READY
-**Validated Artifacts**:
-- data/research_output/2025-11-16_04-55-21_what_is_gs_2210_job_series/
-- data/research_output/2025-11-16_05-28-26_how_do_i_qualify_for_federal_cybersecurity_jobs/
+**Current Phase**: Deep Research Quality Improvements
+**Current Focus**: Implementing fixes for follow-up task generation and date validation
+**Status**: 🔧 FIXING QUALITY ISSUES
+
+---
+
+## CURRENT WORK: Deep Research Quality Fixes (2025-11-18)
+
+**Context**: Ran Deep Research on "F-35 sales to Saudi Arabia", discovered quality issues through output analysis.
+
+**Investigation Results** (✅ Complete):
+1. ✅ **Hypothesis Generation**: Not broken - disabled by config (`hypothesis_branching.mode: "off"`)
+2. ✅ **Duplicate Follow-Up Tasks**: 3× "Donald Trump" queries created due to:
+   - Bare entity searches (`query=f"{entity}"`) without research context
+   - No deduplication check before adding to task queue
+3. ✅ **Future-Dated Sources**: Source data from Brave Search has future dates (Nov 17, 2025) in URLs - not LLM hallucination
+4. ✅ **Discord Parsing**: 14 JSON files have malformed exports causing parse errors
+
+**Fixes In Progress**:
+1. 🔧 Follow-up task generation (research/deep_research.py:3083-3102):
+   - Add context: `f"{entity} {parent_task.query}"` instead of bare `{entity}`
+   - Add deduplication: Check existing queries before creating follow-ups
+2. 🔧 Date validation:
+   - Reject sources with dates > now() + 1 day (timezone buffer)
+   - Flag suspicious dates in report metadata
+
+**Deferred**:
+- Phase 3C enablement decision (config default vs CLI flag)
+- Source balance enforcement (cap per-source contribution in synthesis)
+- Discord JSON parser fixes (isolate malformed files)
+- Cost tracking validation (add mock test)
 
 ---
 
@@ -429,6 +454,13 @@ pip list | grep playwright
 ---
 
 ## COMPLETED WORK
+
+✅ **Deep Research Quality Investigation** (2025-11-18) - Analyzed F-35 query output, identified 4 quality issues
+  - Fixed async blocking in 5 integrations (SAM, DVIDS, USAJobs, FederalRegister, BraveSearch)
+  - Fixed f-string interpolation bug in ai_research.py
+  - Fixed None handling (treated as error instead of "not relevant")
+  - Identified root causes: hypothesis mode disabled, bare entity queries, future-dated source data
+  - Commits: c314810 (f-string + None fixes), b01ad40 (async fixes)
 
 ✅ **Infrastructure Cleanup** (2025-11-18) - Root directory cleanup, SAM.gov quota handling, config migration, test suite
   - Root cleanup: Archived wiki_from_scratch_20251114/, poc/; removed latest_logs/, __pycache__/; created .env.example
