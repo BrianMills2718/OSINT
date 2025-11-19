@@ -2135,8 +2135,11 @@ class SimpleDeepResearch:
                     discarded_count = len(all_results) - len(filtered_results)
                     print(f"  ✓ Kept {len(filtered_results)} relevant results, discarded {discarded_count} junk results")
 
+                    # Date validation: Reject results with future dates (2025-11-18 fix)
+                    date_validated_results = self._validate_result_dates(filtered_results)
+
                     # ACCUMULATE IMMEDIATELY (whether CONTINUE or STOP) - fixes accumulation bug
-                    task.accumulated_results.extend(filtered_results)
+                    task.accumulated_results.extend(date_validated_results)
                     print(f"  📊 Total accumulated so far: {len(task.accumulated_results)} results")
                 else:
                     # REJECT: discard all results
@@ -3046,6 +3049,77 @@ class SimpleDeepResearch:
                             f"Connected: {entity1} <-> {entity2}"
                         )
 
+    def _validate_result_dates(self, results: List[Dict]) -> List[Dict]:
+        """
+        Validate and filter results with suspicious dates.
+
+        Rejects results with future dates (accounting for timezone differences).
+        Adds warning flags for borderline cases.
+
+        Args:
+            results: List of result dicts
+
+        Returns:
+            Filtered list with valid dates, suspicious results flagged
+
+        Added: 2025-11-18 (Codex recommendation)
+        """
+        from datetime import datetime, timedelta
+        import re
+        import logging
+
+        # Timezone buffer: Allow dates up to 1 day in future (accounts for UTC offsets)
+        now = datetime.utcnow()
+        max_valid_date = now + timedelta(days=1)
+
+        validated_results = []
+        rejected_count = 0
+
+        for result in results:
+            # Check various date fields
+            date_str = result.get('published_date') or result.get('date') or result.get('age')
+
+            if not date_str:
+                # No date found - keep result but flag
+                result['_date_warning'] = 'no_date_found'
+                validated_results.append(result)
+                continue
+
+            # Try to parse date from various formats
+            future_date_found = False
+            try:
+                # Common formats: "Nov 17, 2025", "2025-11-17", "November 17, 2025"
+                for fmt in ["%b %d, %Y", "%Y-%m-%d", "%B %d, %Y", "%Y/%m/%d"]:
+                    try:
+                        parsed_date = datetime.strptime(date_str.strip(), fmt)
+                        if parsed_date > max_valid_date:
+                            future_date_found = True
+                            break
+                    except ValueError:
+                        continue
+            except Exception:
+                # Date parsing failed - keep result but flag
+                result['_date_warning'] = 'date_parse_failed'
+                validated_results.append(result)
+                continue
+
+            if future_date_found:
+                # Reject future-dated result
+                rejected_count += 1
+                logging.warning(
+                    f"Rejected result with future date: '{date_str}' in '{result.get('title', 'Unknown')}' "
+                    f"(source: {result.get('source', 'Unknown')})"
+                )
+                continue
+
+            # Valid date - keep result
+            validated_results.append(result)
+
+        if rejected_count > 0:
+            logging.info(f"📅 Date validation: Rejected {rejected_count}/{len(results)} results with future dates")
+
+        return validated_results
+
     def _should_create_follow_ups(self, task: ResearchTask, total_pending_workload: int = 0) -> bool:
         """
         Decide if we should create follow-up tasks based on results.
@@ -3081,7 +3155,13 @@ class SimpleDeepResearch:
         )
 
     async def _create_follow_up_tasks(self, parent_task: ResearchTask, current_task_id: int) -> List[ResearchTask]:
-        """Create follow-up tasks to explore entities discovered."""
+        """
+        Create follow-up tasks to explore entities discovered.
+
+        Improvements (2025-11-18):
+        - Add parent task context to entity queries (prevents overly broad searches)
+        - Deduplicate against existing queued and completed tasks
+        """
         # Pick top entities not in original query
         parent_query_lower = parent_task.query.lower()
         new_entities = [
@@ -3089,15 +3169,30 @@ class SimpleDeepResearch:
             if e.lower() not in parent_query_lower
         ][:3]  # Max 3 entities
 
+        # Build set of existing queries for deduplication
+        existing_queries = set()
+        for task in self.task_queue + self.completed_tasks:
+            existing_queries.add(task.query.lower())
+
         follow_ups = []
         for i, entity in enumerate(new_entities[:2]):  # Max 2 follow-ups per task
+            # Add parent task context to maintain focus (Codex refinement)
+            # Example: "Donald Trump" + "US arms export policy F-35"
+            # → "Donald Trump US arms export policy F-35"
+            contextualized_query = f"{entity} {parent_task.query}"
+
+            # Skip if duplicate query already exists (deduplication)
+            if contextualized_query.lower() in existing_queries:
+                continue
+
             follow_up = ResearchTask(
-                id=current_task_id + i,
-                query=f"{entity}",  # Search for entity directly
-                rationale=f"Deep dive on entity discovered in task {parent_task.id}: {entity}",
+                id=current_task_id + len(follow_ups),  # Adjust ID for skipped duplicates
+                query=contextualized_query,
+                rationale=f"Deep dive on entity '{entity}' discovered in task {parent_task.id}, scoped to: {parent_task.query}",
                 parent_task_id=parent_task.id
             )
             follow_ups.append(follow_up)
+            existing_queries.add(contextualized_query.lower())  # Add to set to prevent duplicates within this batch
 
         return follow_ups
 
