@@ -135,16 +135,30 @@ async def search_twitter(
     # Create integration instance
     integration = TwitterIntegration()
 
-    # Generate query parameters using LLM
-    query_params = await integration.generate_query(research_question)
+    # Generate query parameters using LLM with rejection reasoning wrapper
+    enriched = await integration.generate_query_with_reasoning(research_question)
 
+    if not enriched.get("relevant", False):
+        return {
+            "success": False,
+            "source": "Twitter",
+            "total": 0,
+            "results": [],
+            "error": f"Research question not relevant for Twitter: {enriched.get('rejection_reason', 'No reason provided')}",
+            "metadata": {
+                "rejection_reasoning": enriched.get("rejection_reason"),
+                "suggested_reformulation": enriched.get("suggested_reformulation")
+            }
+        }
+
+    query_params = enriched.get("query_params")
     if query_params is None:
         return {
             "success": False,
             "source": "Twitter",
             "total": 0,
             "results": [],
-            "error": "Research question not relevant for Twitter"
+            "error": "Wrapper returned relevant=True but query_params is None (wrapper bug)"
         }
 
     # Execute search (with optional param_hints)
@@ -239,16 +253,30 @@ async def search_brave(
     # Create integration instance
     integration = BraveSearchIntegration()
 
-    # Generate query parameters using LLM
-    query_params = await integration.generate_query(research_question)
+    # Generate query parameters using LLM with rejection reasoning wrapper
+    enriched = await integration.generate_query_with_reasoning(research_question)
 
+    if not enriched.get("relevant", False):
+        return {
+            "success": False,
+            "source": "Brave Search",
+            "total": 0,
+            "results": [],
+            "error": f"Research question not relevant for Brave Search: {enriched.get('rejection_reason', 'No reason provided')}",
+            "metadata": {
+                "rejection_reasoning": enriched.get("rejection_reason"),
+                "suggested_reformulation": enriched.get("suggested_reformulation")
+            }
+        }
+
+    query_params = enriched.get("query_params")
     if query_params is None:
         return {
             "success": False,
             "source": "Brave Search",
             "total": 0,
             "results": [],
-            "error": "Research question not relevant for Brave Search"
+            "error": "Wrapper returned relevant=True but query_params is None (wrapper bug)"
         }
 
     # Execute search
@@ -336,16 +364,30 @@ async def search_discord(
     # Create integration instance (uses local exports)
     integration = DiscordIntegration()
 
-    # Generate query parameters using LLM
-    query_params = await integration.generate_query(research_question)
+    # Generate query parameters using LLM with rejection reasoning wrapper
+    enriched = await integration.generate_query_with_reasoning(research_question)
 
+    if not enriched.get("relevant", False):
+        return {
+            "success": False,
+            "source": "Discord",
+            "total": 0,
+            "results": [],
+            "error": f"Research question not relevant for Discord: {enriched.get('rejection_reason', 'No reason provided')}",
+            "metadata": {
+                "rejection_reasoning": enriched.get("rejection_reason"),
+                "suggested_reformulation": enriched.get("suggested_reformulation")
+            }
+        }
+
+    query_params = enriched.get("query_params")
     if query_params is None:
         return {
             "success": False,
             "source": "Discord",
             "total": 0,
             "results": [],
-            "error": "Research question not relevant for Discord"
+            "error": "Wrapper returned relevant=True but query_params is None (wrapper bug)"
         }
 
     # Execute search (no API key needed)
@@ -441,17 +483,35 @@ async def search_reddit(
     # Create integration instance
     integration = RedditIntegration()
 
-    # Generate query parameters using LLM (with optional hints)
-    query_params = await integration.generate_query(research_question, param_hints=param_hints)
+    # Generate query parameters using LLM with rejection reasoning wrapper
+    enriched = await integration.generate_query_with_reasoning(research_question)
 
+    if not enriched.get("relevant", False):
+        return {
+            "success": False,
+            "source": "Reddit",
+            "total": 0,
+            "results": [],
+            "error": f"Research question not relevant for Reddit: {enriched.get('rejection_reason', 'No reason provided')}",
+            "metadata": {
+                "rejection_reasoning": enriched.get("rejection_reason"),
+                "suggested_reformulation": enriched.get("suggested_reformulation")
+            }
+        }
+
+    query_params = enriched.get("query_params")
     if query_params is None:
         return {
             "success": False,
             "source": "Reddit",
             "total": 0,
             "results": [],
-            "error": "Research question not relevant for Reddit"
+            "error": "Wrapper returned relevant=True but query_params is None (wrapper bug)"
         }
+
+    # Apply param_hints if provided (override LLM-generated values)
+    if param_hints:
+        query_params.update(param_hints)
 
     # Execute search (credentials from config)
     result = await integration.execute_search(query_params, api_key=None, limit=limit)

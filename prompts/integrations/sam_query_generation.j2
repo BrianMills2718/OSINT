@@ -37,7 +37,12 @@ Research Question: {{ research_question }}
 
 Decide whether SAM.gov is relevant for this question.
 If relevant, generate appropriate search parameters.
-If not relevant (e.g., question is about jobs, not contracts), return relevant: false.
+If not relevant (e.g., question is about jobs, not contracts), return relevant: false AND provide a suggested_reformulation.
+
+The suggested_reformulation should explain how the query could be rephrased to make it relevant for SAM.gov.
+For example:
+- If query is "F-35 sales to Saudi Arabia" → suggest "F-35 contracting opportunities" or "F-35 maintenance contracts"
+- If query is "cybersecurity analyst jobs" → suggest "cybersecurity consulting contracts" or "penetration testing services"
 
 Return JSON:
 {% raw %}
@@ -49,6 +54,9 @@ Return JSON:
   "naics_codes": array,
   "organization": string | null,
   "date_range_days": integer,
-  "reasoning": string
+  "reasoning": string,
+  "suggested_reformulation": string | null
 }
 {% endraw %}
+
+IMPORTANT: suggested_reformulation is REQUIRED when relevant=false, but should be null when relevant=true.

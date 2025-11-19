@@ -140,9 +140,13 @@ class SAMIntegration(DatabaseIntegration):
                 "reasoning": {
                     "type": "string",
                     "description": "Brief explanation of the query strategy"
+                },
+                "suggested_reformulation": {
+                    "type": ["string", "null"],
+                    "description": "Suggested query reformulation if not relevant, null if relevant"
                 }
             },
-            "required": ["relevant", "keywords", "procurement_types", "set_aside", "naics_codes", "organization", "date_range_days", "reasoning"],
+            "required": ["relevant", "keywords", "procurement_types", "set_aside", "naics_codes", "organization", "date_range_days", "reasoning", "suggested_reformulation"],
             "additionalProperties": False
         }
 
@@ -161,10 +165,15 @@ class SAMIntegration(DatabaseIntegration):
 
         result = json.loads(response.choices[0].message.content)
 
-        # RELEVANCE FILTER RESTORED - Skip SAM for job-only queries
+        # If not relevant, return rejection dict for wrapper to extract reasoning
         if not result["relevant"]:
-            return None
+            return {
+                "relevant": False,
+                "rejection_reason": result["reasoning"],
+                "suggested_reformulation": result.get("suggested_reformulation")
+            }
 
+        # Relevant query - return clean search parameters (wrapper will strip metadata)
         return {
             "keywords": result["keywords"],
             "procurement_types": result["procurement_types"],

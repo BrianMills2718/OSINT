@@ -231,17 +231,42 @@ class ParallelExecutor:
         query_results = await asyncio.gather(*tasks, return_exceptions=True)
 
         db_query_pairs = []
-        for db, params in zip(databases, query_results):
-            if isinstance(params, Exception):
-                print(f"    ⚠️  {db.metadata.name}: Query generation failed ({params})")
+        for db, enriched in zip(databases, query_results):
+            if isinstance(enriched, Exception):
+                print(f"    ⚠️  {db.metadata.name}: Query generation failed ({enriched})")
                 continue
 
-            if params is None:
-                print(f"    ✗ {db.metadata.name}: ERROR - generate_query() returned None (prompt regression or LLM failure)")
+            if enriched is None:
+                print(f"    ✗ {db.metadata.name}: ERROR - generate_query_with_reasoning() returned None (uncaught exception)")
                 logging.error(
                     f"CRITICAL: Integration {db.metadata.name} returned None for query: '{research_question}'. "
-                    f"This should NEVER happen - indicates prompt regression, LLM failure, or uncaught exception. "
-                    f"Check integration code and LLM responses."
+                    f"This should NEVER happen - indicates uncaught exception in wrapper or integration. "
+                    f"Check integration code and wrapper implementation."
+                )
+                continue
+
+            # Handle rejection (LLM determined not relevant)
+            if not enriched.get("relevant", False):
+                rejection_reason = enriched.get("rejection_reason", "No reason provided")
+                suggested = enriched.get("suggested_reformulation")
+
+                print(f"    ⊘ {db.metadata.name}: Not relevant - {rejection_reason}")
+                if suggested:
+                    print(f"      Suggestion: {suggested}")
+
+                logging.info(
+                    f"Integration {db.metadata.name} rejected query: '{research_question}'. "
+                    f"Reason: {rejection_reason}. Suggested reformulation: {suggested or 'None'}"
+                )
+                continue
+
+            # Relevant query - extract clean params for execute_search()
+            params = enriched.get("query_params")
+            if params is None:
+                print(f"    ✗ {db.metadata.name}: ERROR - Relevant but query_params is None (wrapper bug)")
+                logging.error(
+                    f"CRITICAL: Integration {db.metadata.name} returned relevant=True but query_params=None. "
+                    f"This indicates a bug in the wrapper or integration implementation."
                 )
                 continue
 
@@ -254,31 +279,37 @@ class ParallelExecutor:
                              db: DatabaseIntegration,
                              question: str) -> Optional[Dict]:
         """
-        Generate query for a single database using LLM.
+        Generate query for a single database using LLM with rejection reasoning.
 
         Args:
             db: Database integration
             question: Research question
 
         Returns:
-            Query parameters dict, or None if not relevant
+            Enriched dict with {"relevant": bool, "query_params": dict|None,
+            "rejection_reason": str|None, "suggested_reformulation": str|None},
+            or None on error
         """
         try:
             start = datetime.now()
-            params = await db.generate_query(question)
+            enriched = await db.generate_query_with_reasoning(question)
             duration_ms = (datetime.now() - start).total_seconds() * 1000
 
-            # Log LLM call for cost tracking
+            # Log LLM call for cost tracking with rejection reasoning
             log_request(
                 api_name=f"{db.metadata.name}_QueryGen",
                 endpoint="LLM",
                 status_code=200,
                 response_time_ms=duration_ms,
-                error_message=None,
-                request_params={"question_length": len(question)}
+                error_message=enriched.get("rejection_reason") if not enriched.get("relevant") else None,
+                request_params={
+                    "question_length": len(question),
+                    "relevant": enriched.get("relevant"),
+                    "suggested_reformulation": enriched.get("suggested_reformulation")
+                }
             )
 
-            return params
+            return enriched
 
         except Exception as e:
             print(f"⚠️ Query generation error for {db.metadata.name}: {e}")

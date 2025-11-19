@@ -130,17 +130,33 @@ async def search_sam(
     # Create integration instance (reuse existing implementation)
     integration = SAMIntegration()
 
-    # Generate query parameters using LLM
-    query_params = await integration.generate_query(research_question)
+    # Generate query parameters using LLM with rejection reasoning wrapper
+    enriched = await integration.generate_query_with_reasoning(research_question)
 
-    if query_params is None:
-        # LLM determined not relevant
+    # Check if LLM determined not relevant
+    if not enriched.get("relevant", False):
+        # Return error with full rejection metadata for reformulation
         return {
             "success": False,
             "source": "SAM.gov",
             "total": 0,
             "results": [],
-            "error": "Research question not relevant for SAM.gov"
+            "error": f"Research question not relevant for SAM.gov: {enriched.get('rejection_reason', 'No reason provided')}",
+            "metadata": {
+                "rejection_reasoning": enriched.get("rejection_reason"),
+                "suggested_reformulation": enriched.get("suggested_reformulation")
+            }
+        }
+
+    # Extract clean params for execute_search()
+    query_params = enriched.get("query_params")
+    if query_params is None:
+        return {
+            "success": False,
+            "source": "SAM.gov",
+            "total": 0,
+            "results": [],
+            "error": "Wrapper returned relevant=True but query_params is None (wrapper bug)"
         }
 
     # Execute search using existing DatabaseIntegration logic
@@ -227,16 +243,30 @@ async def search_dvids(
     # Create integration instance
     integration = DVIDSIntegration()
 
-    # Generate query parameters using LLM
-    query_params = await integration.generate_query(research_question)
+    # Generate query parameters using LLM with rejection reasoning wrapper
+    enriched = await integration.generate_query_with_reasoning(research_question)
 
+    if not enriched.get("relevant", False):
+        return {
+            "success": False,
+            "source": "DVIDS",
+            "total": 0,
+            "results": [],
+            "error": f"Research question not relevant for DVIDS: {enriched.get('rejection_reason', 'No reason provided')}",
+            "metadata": {
+                "rejection_reasoning": enriched.get("rejection_reason"),
+                "suggested_reformulation": enriched.get("suggested_reformulation")
+            }
+        }
+
+    query_params = enriched.get("query_params")
     if query_params is None:
         return {
             "success": False,
             "source": "DVIDS",
             "total": 0,
             "results": [],
-            "error": "Research question not relevant for DVIDS"
+            "error": "Wrapper returned relevant=True but query_params is None (wrapper bug)"
         }
 
     # Execute search
@@ -325,17 +355,35 @@ async def search_usajobs(
     # Create integration instance
     integration = USAJobsIntegration()
 
-    # Generate query parameters using LLM (with optional hints)
-    query_params = await integration.generate_query(research_question, param_hints=param_hints)
+    # Generate query parameters using LLM with rejection reasoning wrapper
+    enriched = await integration.generate_query_with_reasoning(research_question)
 
+    if not enriched.get("relevant", False):
+        return {
+            "success": False,
+            "source": "USAJobs",
+            "total": 0,
+            "results": [],
+            "error": f"Research question not relevant for USAJobs: {enriched.get('rejection_reason', 'No reason provided')}",
+            "metadata": {
+                "rejection_reasoning": enriched.get("rejection_reason"),
+                "suggested_reformulation": enriched.get("suggested_reformulation")
+            }
+        }
+
+    query_params = enriched.get("query_params")
     if query_params is None:
         return {
             "success": False,
             "source": "USAJobs",
             "total": 0,
             "results": [],
-            "error": "Research question not relevant for USAJobs"
+            "error": "Wrapper returned relevant=True but query_params is None (wrapper bug)"
         }
+
+    # Apply param_hints if provided (override LLM-generated values)
+    if param_hints:
+        query_params.update(param_hints)
 
     # Execute search
     result = await integration.execute_search(query_params, api_key, limit)
@@ -419,16 +467,30 @@ async def search_clearancejobs(
     # Create integration instance
     integration = ClearanceJobsIntegration()
 
-    # Generate query parameters using LLM
-    query_params = await integration.generate_query(research_question)
+    # Generate query parameters using LLM with rejection reasoning wrapper
+    enriched = await integration.generate_query_with_reasoning(research_question)
 
+    if not enriched.get("relevant", False):
+        return {
+            "success": False,
+            "source": "ClearanceJobs",
+            "total": 0,
+            "results": [],
+            "error": f"Research question not relevant for ClearanceJobs: {enriched.get('rejection_reason', 'No reason provided')}",
+            "metadata": {
+                "rejection_reasoning": enriched.get("rejection_reason"),
+                "suggested_reformulation": enriched.get("suggested_reformulation")
+            }
+        }
+
+    query_params = enriched.get("query_params")
     if query_params is None:
         return {
             "success": False,
             "source": "ClearanceJobs",
             "total": 0,
             "results": [],
-            "error": "Research question not relevant for ClearanceJobs"
+            "error": "Wrapper returned relevant=True but query_params is None (wrapper bug)"
         }
 
     # Execute search (no API key needed)
@@ -514,16 +576,30 @@ async def search_fbi_vault(
     # Create integration instance
     integration = FBIVaultIntegration()
 
-    # Generate query parameters using LLM
-    query_params = await integration.generate_query(research_question)
+    # Generate query parameters using LLM with rejection reasoning wrapper
+    enriched = await integration.generate_query_with_reasoning(research_question)
 
+    if not enriched.get("relevant", False):
+        return {
+            "success": False,
+            "source": "FBI Vault",
+            "total": 0,
+            "results": [],
+            "error": f"Research question not relevant for FBI Vault: {enriched.get('rejection_reason', 'No reason provided')}",
+            "metadata": {
+                "rejection_reasoning": enriched.get("rejection_reason"),
+                "suggested_reformulation": enriched.get("suggested_reformulation")
+            }
+        }
+
+    query_params = enriched.get("query_params")
     if query_params is None:
         return {
             "success": False,
             "source": "FBI Vault",
             "total": 0,
             "results": [],
-            "error": "Research question not relevant for FBI Vault"
+            "error": "Wrapper returned relevant=True but query_params is None (wrapper bug)"
         }
 
     # Execute search (no API key needed)

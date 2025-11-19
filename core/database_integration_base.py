@@ -204,6 +204,83 @@ class DatabaseIntegration(ABC):
         """
         pass
 
+    async def generate_query_with_reasoning(self, research_question: str) -> Dict:
+        """
+        Wrapper for generate_query() that ensures rejection reasoning is always captured.
+
+        This method provides a consistent interface for MCP tools to get both query
+        parameters AND rejection reasoning when a database is deemed irrelevant.
+
+        Returns:
+            Dict with standardized format:
+            {
+                "relevant": bool,
+                "rejection_reason": str (if not relevant),
+                "suggested_reformulation": str | None (if not relevant),
+                "query_params": dict (if relevant)
+            }
+
+        Backward Compatible:
+            - If generate_query() returns None → treated as rejection
+            - If generate_query() returns dict with relevant=False → extracts reasoning
+            - If generate_query() returns dict with relevant=True → passes through
+            - If generate_query() returns dict without 'relevant' key → assumes relevant
+
+        Example:
+            # Legacy integration that returns None when not relevant
+            >>> result = await integration.generate_query_with_reasoning("query")
+            {"relevant": False, "rejection_reason": "Not relevant (no reasoning provided)", ...}
+
+            # Modern integration that returns rejection dict
+            >>> result = await integration.generate_query_with_reasoning("query")
+            {"relevant": False, "rejection_reason": "Query is about jobs, not contracts", ...}
+
+            # Relevant query
+            >>> result = await integration.generate_query_with_reasoning("query")
+            {"relevant": True, "query_params": {"keywords": "...", ...}}
+        """
+        # Call child class's generate_query() method
+        query_result = await self.generate_query(research_question)
+
+        # Handle None (legacy rejection pattern)
+        if query_result is None:
+            return {
+                "relevant": False,
+                "rejection_reason": f"{self.metadata.name} determined query not relevant (no reasoning provided)",
+                "suggested_reformulation": None,
+                "query_params": None
+            }
+
+        # Handle dict response
+        if isinstance(query_result, dict):
+            # Check if this is a rejection dict (relevant=False)
+            if not query_result.get("relevant", True):
+                return {
+                    "relevant": False,
+                    "rejection_reason": query_result.get("rejection_reason") or query_result.get("reasoning", "No reasoning provided"),
+                    "suggested_reformulation": query_result.get("suggested_reformulation"),
+                    "query_params": None
+                }
+            # Relevant query - strip metadata keys to avoid polluting execute_search() params
+            else:
+                # Create clean params dict excluding metadata keys that shouldn't go to execute_search()
+                clean_params = {k: v for k, v in query_result.items()
+                               if k not in ('relevant', 'rejection_reason', 'suggested_reformulation', 'reasoning')}
+                return {
+                    "relevant": True,
+                    "rejection_reason": None,
+                    "suggested_reformulation": None,
+                    "query_params": clean_params
+                }
+
+        # Unexpected return type (shouldn't happen, but handle gracefully)
+        return {
+            "relevant": False,
+            "rejection_reason": f"Unexpected return type from generate_query(): {type(query_result)}",
+            "suggested_reformulation": None,
+            "query_params": None
+        }
+
     def get_llm_prompt_template(self) -> str:
         """
         Return the LLM prompt template for query generation.

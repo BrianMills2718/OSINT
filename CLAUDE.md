@@ -390,13 +390,138 @@ pip list | grep playwright
 # CLAUDE.md - Temporary Section (Updated as Tasks Complete)
 
 **Last Updated**: 2025-11-18
-**Current Phase**: Deep Research Quality Improvements
-**Current Focus**: Implementing fixes for follow-up task generation and date validation
-**Status**: 🔧 FIXING QUALITY ISSUES
+**Current Phase**: Integration Reformulation Fix
+**Current Focus**: Expose rejection reasoning + LLM-driven reformulation (Option C)
+**Status**: 🔧 IMPLEMENTING TRACEABILITY FIX
 
 ---
 
-## CURRENT WORK: Discord Parsing Investigation (2025-11-18)
+## CURRENT WORK: Integration Reformulation Fix (2025-11-18)
+
+**Context**: User identified traceability gap - when integrations self-reject queries (e.g., SAM.gov rejects "F-35 sales"), there's NO reformulation attempt and limited visibility into WHY rejection occurred.
+
+**Problem Identified**:
+- SAM.gov selected 18/32 times for F-35 query → rejected all 18 times with "not relevant" → zero reformulation attempts
+- Root cause: Integration `generate_query()` returns `None` when `relevant=false` → MCP tool returns error → Deep Research receives failure → NO reformulation triggered
+- Architectural gap: Reformulation logic doesn't exist at ANY of the three layers (Deep Research, MCP tools, Integrations)
+- Severity: HIGH - Quality gap + Design Philosophy violation (binary true/false with no reasoning, no LLM decision)
+
+**Investigation Complete** (✅):
+- Traced rejection flow through 3 layers (Deep Research → MCP Tools → Integrations)
+- Identified all 10 affected integrations (5 government, 4 social, 1 fed register)
+- Analyzed F-35 query execution logs for evidence
+- Documented in next_steps_investigation.md + CODE_SMELL_AUDIT.md
+- **User caught code smell**: Initial approach required changing 30 files (bad architecture)
+- **Pivoted to base class wrapper**: Changes 5 files instead, future-proof, backward compatible
+
+**REVISED Implementation Plan** (Base Class Wrapper - COMPLETE WIRING):
+
+**Why This Is Better**:
+- ✅ Changes 6 files instead of 30
+- ✅ Backward compatible (existing integrations work unchanged)
+- ✅ Future integrations get rejection reasoning for free
+- ✅ One place to fix bugs (not 10 duplicated implementations)
+- ✅ Aligns with Design Philosophy (no duplication, clean architecture)
+
+**⚠️ Codex Critical Feedback** (2025-11-18):
+- **Half-wired state**: Wrapper added but call sites not updated
+- **ParallelExecutor gap**: Line 268 still calls `generate_query()` directly, logs "None" without reasoning
+- **Param leakage**: SAM returns `{relevant: true, ...}` which pollutes `execute_search()` params
+- **Fix required**: Update ALL call sites (ParallelExecutor + MCP tools) AND strip `relevant` key from params
+
+**Phase 1: Base Class Wrapper** (1 file):
+1. ✅ DONE: Add `generate_query_with_reasoning()` to core/database_integration_base.py
+   - Wrapper method that calls child's `generate_query()`
+   - Intercepts `None` returns → converts to rejection dict
+   - Intercepts `{"relevant": false}` dicts → extracts reasoning
+   - Returns standardized: `{"relevant": bool, "rejection_reason": str, "suggested_reformulation": str, "query_params": dict}`
+   - **Codex fix needed**: Strip `relevant` key from `query_params` before returning
+
+**Phase 2: Fix Base Class Wrapper** (1 file):
+2. ⏳ Update core/database_integration_base.py wrapper
+   - **Codex fix**: Strip `relevant`, `rejection_reason`, `suggested_reformulation` from `query_params`
+   - Only pass clean params dict to `execute_search()` (no metadata pollution)
+   - Example: `{relevant: true, keywords: "x"}` → `query_params: {keywords: "x"}`
+
+**Phase 3: SAM.gov Integration Cleanup** (2 files):
+3. ⏳ REVERT integrations/government/sam_integration.py to simple pattern
+   - Remove manual rejection dict code (lines 168-174)
+   - Return `None` when not relevant (wrapper handles it)
+   - When relevant: return params WITHOUT `relevant` key (wrapper will add it)
+   - Keep prompt template changes (improves LLM guidance)
+
+4. ⏳ KEEP prompts/integrations/sam_query_generation.j2 changes
+   - Suggested reformulation field improves LLM guidance
+   - Wrapper extracts it from LLM response automatically
+
+**Phase 4: ParallelExecutor Update** (1 file) **← CODEX CRITICAL GAP**:
+5. ⏳ Update core/parallel_executor.py `_generate_query()` method (line 253-280)
+   - Change from: `params = await db.generate_query(question)`
+   - Change to: `enriched = await db.generate_query_with_reasoning(question)`
+   - Check `enriched["relevant"]` instead of `params is None`
+   - Log rejection reasoning: `f"{db.metadata.name}: REJECTED - {enriched['rejection_reason']}"`
+   - Extract `enriched["query_params"]` for execute_search()
+   - **Impact**: Fixes traceability gap in core/parallel_executor.py:240 "ERROR - generate_query() returned None"
+
+**Phase 5: MCP Tool Wrappers** (2 files):
+6. ⏳ Update integrations/mcp/government_mcp.py (5 functions)
+   - Change from: `query_params = await integration.generate_query(...)`
+   - Change to: `enriched = await integration.generate_query_with_reasoning(...)`
+   - Check `enriched["relevant"]` instead of `query_params is None`
+   - Pass `enriched["rejection_reason"]` and `enriched["suggested_reformulation"]` to metadata
+   - Extract `enriched["query_params"]` for execute_search()
+
+7. ⏳ Update integrations/mcp/social_mcp.py (4 functions)
+   - Same pattern as government_mcp.py
+   - Functions: search_twitter, search_brave, search_discord, search_reddit
+
+**Phase 6: Deep Research Rejection Handler** (2 files):
+8. ⏳ Create prompts/deep_research/rejection_handling.j2
+   - LLM prompt for analyzing rejections and deciding reformulation strategy
+   - Input: source_name, original_query, rejection_reason, suggested_reformulation
+   - Output: `{"decision": "reformulate"|"skip", "reformulated_query": str|null, "reasoning": str}`
+
+9. ⏳ Add _handle_rejection() method to research/deep_research.py
+   - Detect `result.metadata.get("rejection_reasoning")` after MCP call
+   - Call LLM with rejection_handling.j2 prompt
+   - If decision=="reformulate": return new query
+   - If decision=="skip": return None
+   - Log rejection → LLM decision → reformulation
+
+10. ⏳ Update _call_mcp_tool() or hypothesis execution to handle rejections
+    - After MCP call: Check for rejection metadata
+    - If rejection found: Call _handle_rejection()
+    - If reformulation returned: Retry MCP call with new query (max 1 retry per source)
+    - Log full lifecycle: selection → rejection → LLM decision → reformulation → retry
+
+**Phase 7: Testing** (1 file):
+11. ⏳ Test with SAM.gov rejection case
+   - Query: "F-35 sales to Saudi Arabia" (known to reject)
+   - Expected flow:
+     1. Deep Research selects SAM.gov
+     2. SAM.gov LLM rejects with reasoning: "Query is about sales, not contracting"
+     3. Base class wrapper converts to rejection dict
+     4. MCP tool passes rejection to Deep Research with metadata
+     5. Deep Research calls _handle_rejection()
+     6. LLM decides: "Reformulate to 'F-35 contracting opportunities'"
+     7. Deep Research retries SAM.gov with new query
+     8. Full lifecycle logged in execution_log.jsonl
+   - Verify all 10 integrations work (backward compatible test)
+
+**Files Changed**: 5 total (not 30!)
+1. core/database_integration_base.py - Add wrapper method
+2. integrations/government/sam_integration.py - Revert to simple None return
+3. integrations/mcp/government_mcp.py - Call wrapper (5 functions)
+4. integrations/mcp/social_mcp.py - Call wrapper (4 functions)
+5. research/deep_research.py - Add rejection handler
+
+**Files Unchanged**: 9 integrations (backward compatible!)
+- All integrations work unchanged (base class handles them)
+- Future integrations automatically get rejection reasoning
+
+---
+
+## PREVIOUS WORK: Discord Parsing Investigation (2025-11-18)
 
 **Context**: Codex identified 14 malformed Discord JSON export files. User asked to investigate root cause and whether Discord still scrapes daily via cron.
 
