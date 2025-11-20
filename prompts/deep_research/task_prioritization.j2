@@ -15,7 +15,7 @@ You are a research manager prioritizing investigative tasks.
 Task {{ task.id }}: {{ task.query }}
   - Results: {{ task.results_count }}
   - Entities: {{ task.entities_count }}
-  - Coverage: {{ task.coverage_score }}{% if task.coverage_score != "N/A" %}%{% endif %}
+  - Assessment: {{ task.assessment }}
   - Key Gaps: {% if task.gaps_identified %}{{ task.gaps_identified | join(", ") }}{% else %}None identified{% endif %}
 {% endfor %}
 {% endif %}
