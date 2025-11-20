@@ -403,6 +403,44 @@ class SimpleDeepResearch:
                 )
                 break
 
+            # Phase 4B: Check saturation every 3 tasks (avoid over-calling)
+            if len(self.completed_tasks) >= 3 and len(self.completed_tasks) % 3 == 0:
+                saturation_check = await self._is_saturated()
+                self.last_saturation_check = saturation_check  # Store for checkpointing
+
+                # Log saturation check
+                if self.logger:
+                    try:
+                        self.logger._write_event({
+                            "event": "saturation_assessment",
+                            "timestamp": datetime.now().isoformat(),
+                            "completed_tasks": len(self.completed_tasks),
+                            "saturation_result": saturation_check
+                        })
+                    except Exception as log_error:
+                        logging.warning(f"Failed to log saturation assessment: {log_error}")
+
+                # Act on saturation decision
+                if saturation_check["saturated"] and saturation_check["confidence"] >= 70:
+                    self._emit_progress(
+                        "research_saturated",
+                        f"Research saturated: {saturation_check['rationale']}",
+                        data=saturation_check
+                    )
+                    print(f"\n✅ Research saturated - stopping investigation")
+                    print(f"   Confidence: {saturation_check['confidence']}%")
+                    print(f"   Completed: {len(self.completed_tasks)} tasks")
+                    break
+                elif saturation_check["recommendation"] == "continue_limited":
+                    # Adjust max_tasks dynamically based on recommendation
+                    recommended_total = len(self.completed_tasks) + saturation_check["recommended_additional_tasks"]
+                    if recommended_total < self.max_tasks:
+                        print(f"\n📊 Saturation approaching - limiting scope:")
+                        print(f"   Original max_tasks: {self.max_tasks}")
+                        print(f"   Recommended: {recommended_total} tasks")
+                        print(f"   Rationale: {saturation_check['rationale']}")
+                        self.max_tasks = recommended_total
+
             # Get batch of tasks (up to max_concurrent_tasks)
             batch_size = min(self.max_concurrent_tasks, len(self.task_queue))
             batch = [self.task_queue.pop(0) for _ in range(batch_size)]
@@ -3801,6 +3839,169 @@ class SimpleDeepResearch:
             summary_parts.append(f"Main gaps: {'; '.join(unique_gaps[:3])}")
 
         return ". ".join(summary_parts) + "."
+
+    async def _is_saturated(self) -> Dict[str, Any]:
+        """
+        Detect research saturation (Phase 4B).
+
+        Manager LLM analyzes all completed tasks holistically to determine
+        if continuing research would yield valuable new information or just
+        redundancy and peripheral findings.
+
+        Returns:
+            Dict with:
+            - saturated: bool
+            - confidence: int (0-100)
+            - rationale: str
+            - recommendation: "stop" | "continue_limited" | "continue_full"
+            - recommended_additional_tasks: int
+            - critical_gaps_remaining: List[str]
+        """
+        if len(self.completed_tasks) < 3:
+            # Too early to assess saturation
+            return {
+                "saturated": False,
+                "confidence": 100,
+                "rationale": "Too few tasks completed to assess saturation (need 3+)",
+                "recommendation": "continue_full",
+                "recommended_additional_tasks": 5,
+                "critical_gaps_remaining": ["Early stage - continue exploration"]
+            }
+
+        # Prepare recent task summaries (last 5 tasks)
+        recent_tasks = []
+        for task in self.completed_tasks[-5:]:
+            coverage_decisions = task.metadata.get("coverage_decisions", [])
+            latest_coverage = coverage_decisions[-1] if coverage_decisions else {}
+
+            # Calculate new vs duplicate results from hypothesis runs
+            total_results = sum(run.get("results_count", 0) for run in task.hypothesis_runs)
+            new_results = sum(
+                run.get("delta_metrics", {}).get("results_new", 0)
+                for run in task.hypothesis_runs
+            )
+            duplicate_results = total_results - new_results
+            incremental_value = int(new_results / total_results * 100) if total_results > 0 else 0
+
+            recent_tasks.append({
+                "id": task.id,
+                "query": task.query,
+                "results_count": len(task.accumulated_results),
+                "new_results": new_results,
+                "duplicate_results": duplicate_results,
+                "coverage_score": latest_coverage.get("coverage_score", 0),
+                "incremental_value": incremental_value
+            })
+
+        # Prepare pending task summaries
+        pending_summaries = [
+            {
+                "priority": t.priority,
+                "query": t.query,
+                "estimated_value": t.estimated_value,
+                "estimated_redundancy": t.estimated_redundancy
+            }
+            for t in self.task_queue[:10]  # Top 10 pending
+        ]
+
+        # Calculate stats
+        total_results = sum(len(t.accumulated_results) for t in self.completed_tasks)
+        total_entities = len(set().union(*[set(t.entities_found or []) for t in self.completed_tasks]))
+
+        coverage_scores = []
+        for task in self.completed_tasks:
+            coverage_decisions = task.metadata.get("coverage_decisions", [])
+            if coverage_decisions:
+                coverage_scores.append(coverage_decisions[-1].get("coverage_score", 0))
+        avg_coverage = int(sum(coverage_scores) / len(coverage_scores)) if coverage_scores else 0
+
+        elapsed_minutes = (datetime.now() - self.start_time).total_seconds() / 60
+
+        # Render prompt
+        prompt = render_prompt(
+            "deep_research/saturation_detection.j2",
+            research_question=self.research_question,
+            completed_count=len(self.completed_tasks),
+            total_results=total_results,
+            total_entities=total_entities,
+            avg_coverage=avg_coverage,
+            elapsed_minutes=elapsed_minutes,
+            recent_tasks=recent_tasks,
+            pending_count=len(self.task_queue),
+            pending_tasks=pending_summaries
+        )
+
+        schema = {
+            "type": "object",
+            "properties": {
+                "saturated": {"type": "boolean"},
+                "confidence": {"type": "integer", "minimum": 0, "maximum": 100},
+                "rationale": {"type": "string"},
+                "evidence": {
+                    "type": "object",
+                    "properties": {
+                        "diminishing_returns": {"type": "boolean"},
+                        "coverage_completeness": {"type": "boolean"},
+                        "pending_queue_quality": {"type": "string", "enum": ["high", "medium", "low"]},
+                        "topic_exhaustion": {"type": "boolean"}
+                    },
+                    "required": ["diminishing_returns", "coverage_completeness", "pending_queue_quality", "topic_exhaustion"],
+                    "additionalProperties": False
+                },
+                "recommendation": {"type": "string", "enum": ["stop", "continue_limited", "continue_full"]},
+                "recommended_additional_tasks": {"type": "integer", "minimum": 0, "maximum": 10},
+                "critical_gaps_remaining": {
+                    "type": "array",
+                    "items": {"type": "string"},
+                    "description": "List of critical gaps if not saturated"
+                }
+            },
+            "required": ["saturated", "confidence", "rationale", "evidence", "recommendation", "recommended_additional_tasks", "critical_gaps_remaining"],
+            "additionalProperties": False
+        }
+
+        try:
+            response = await acompletion(
+                model=config.get_model("analysis"),
+                messages=[{"role": "user", "content": prompt}],
+                response_format={
+                    "type": "json_schema",
+                    "json_schema": {
+                        "name": "saturation_detection",
+                        "strict": True,
+                        "schema": schema
+                    }
+                }
+            )
+
+            result = json.loads(response.choices[0].message.content)
+
+            # Log saturation assessment
+            print(f"\n🧠 Saturation Assessment:")
+            print(f"   Saturated: {result['saturated']} (confidence: {result['confidence']}%)")
+            print(f"   Rationale: {result['rationale']}")
+            print(f"   Recommendation: {result['recommendation'].upper()}")
+            if not result['saturated']:
+                print(f"   Continue with: {result['recommended_additional_tasks']} more tasks")
+                if result['critical_gaps_remaining']:
+                    print(f"   Critical gaps: {', '.join(result['critical_gaps_remaining'][:3])}")
+
+            return result
+
+        except Exception as e:
+            logging.error(f"Saturation detection failed: {type(e).__name__}: {e}")
+            print(f"⚠️  Saturation check failed, defaulting to continue")
+            import traceback
+            logging.error(traceback.format_exc())
+            # On error, assume not saturated (continue research)
+            return {
+                "saturated": False,
+                "confidence": 0,
+                "rationale": f"Saturation check failed ({type(e).__name__}), defaulting to continue",
+                "recommendation": "continue_full",
+                "recommended_additional_tasks": 3,
+                "critical_gaps_remaining": ["Saturation check error - continuing"]
+            }
 
     async def _synthesize_report(self, original_question: str) -> str:
         """Synthesize all findings into comprehensive report."""
