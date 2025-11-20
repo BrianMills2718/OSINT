@@ -94,6 +94,11 @@ class ResearchTask:
     hypotheses: Optional[Dict] = None  # Phase 3A: Store generated investigative hypotheses
     hypothesis_runs: List[Dict] = field(default_factory=list)  # Phase 3B: Per-hypothesis execution summaries
     metadata: Dict[str, Any] = field(default_factory=dict)  # Phase 3C: Store coverage decisions and other metadata
+    # Phase 4A: Task prioritization (Manager Agent)
+    priority: int = 5  # 1=highest urgency, 10=lowest (default: medium)
+    priority_reasoning: str = ""  # Why this priority level
+    estimated_value: int = 50  # Expected information value 0-100
+    estimated_redundancy: int = 50  # Expected overlap with existing findings 0-100
 
     def __post_init__(self):
         if self.entities_found is None:
@@ -201,6 +206,16 @@ class SimpleDeepResearch:
 
         # Follow-up generation configuration
         self.max_follow_ups_per_task = deep_config.get("max_follow_ups_per_task", None)  # None = unlimited
+
+        # Phase 4: Manager-Agent configuration (Task Prioritization + Saturation)
+        manager_config = raw_config.get("research", {}).get("manager_agent", {})
+        self.manager_enabled = manager_config.get("enabled", True)
+        self.saturation_detection_enabled = manager_config.get("saturation_detection", True)
+        self.saturation_check_interval = manager_config.get("saturation_check_interval", 3)
+        self.saturation_confidence_threshold = manager_config.get("saturation_confidence_threshold", 70)
+        self.allow_saturation_stop = manager_config.get("allow_saturation_stop", True)
+        self.reprioritize_after_task = manager_config.get("reprioritize_after_task", True)
+        self.last_saturation_check = None  # Will be set after first saturation check
 
         # Phase 3C: Coverage assessment configuration
         self.coverage_mode = hyp_config.get("coverage_mode", False)
@@ -397,6 +412,49 @@ class SimpleDeepResearch:
                     f"Time limit reached ({self.max_time_minutes} minutes)"
                 )
                 break
+
+            # Phase 4B: Check saturation if enabled
+            if (self.saturation_detection_enabled and
+                len(self.completed_tasks) >= 3 and
+                len(self.completed_tasks) % self.saturation_check_interval == 0):
+
+                saturation_check = await self._is_saturated()
+                self.last_saturation_check = saturation_check  # Store for checkpointing
+
+                # Log saturation check
+                if self.logger:
+                    try:
+                        self.logger.log_saturation_assessment(
+                            completed_tasks=len(self.completed_tasks),
+                            saturation_result=saturation_check
+                        )
+                    except Exception as log_error:
+                        logging.warning(f"Failed to log saturation assessment: {log_error}")
+
+                # Act on saturation decision (if stopping allowed)
+                if (self.allow_saturation_stop and
+                    saturation_check["saturated"] and
+                    saturation_check["confidence"] >= self.saturation_confidence_threshold):
+
+                    self._emit_progress(
+                        "research_saturated",
+                        f"Research saturated: {saturation_check['rationale']}",
+                        data=saturation_check
+                    )
+                    print(f"\n✅ Research saturated - stopping investigation")
+                    print(f"   Confidence: {saturation_check['confidence']}%")
+                    print(f"   Threshold: {self.saturation_confidence_threshold}%")
+                    print(f"   Completed: {len(self.completed_tasks)} tasks")
+                    break
+                elif saturation_check["recommendation"] == "continue_limited":
+                    # Adjust max_tasks dynamically based on recommendation
+                    recommended_total = len(self.completed_tasks) + saturation_check["recommended_additional_tasks"]
+                    if recommended_total < self.max_tasks:
+                        print(f"\n📊 Saturation approaching - limiting scope:")
+                        print(f"   Original max_tasks: {self.max_tasks}")
+                        print(f"   Recommended: {recommended_total} tasks")
+                        print(f"   Rationale: {saturation_check['rationale']}")
+                        self.max_tasks = recommended_total
 
             # Get batch of tasks (up to max_concurrent_tasks)
             batch_size = min(self.max_concurrent_tasks, len(self.task_queue))
@@ -600,6 +658,16 @@ class SimpleDeepResearch:
                                 ]
                             }
                         )
+
+                        # Phase 4A: Reprioritize queue after adding follow-ups (if enabled)
+                        if self.reprioritize_after_task and len(self.task_queue) > 1:
+                            print(f"\n🎯 Reprioritizing {len(self.task_queue)} pending tasks based on new findings...")
+                            self.task_queue = await self._prioritize_tasks(
+                                self.task_queue,
+                                global_coverage_summary=self._generate_global_coverage_summary()
+                            )
+                            if self.task_queue:
+                                print(f"   Next: P{self.task_queue[0].priority} - Task {self.task_queue[0].id}: {self.task_queue[0].query[:60]}...")
                 else:
                     self.failed_tasks.append(task)
 
@@ -789,6 +857,14 @@ class SimpleDeepResearch:
                     # Continue without hypotheses - don't fail task creation
                     task.hypotheses = None
 
+        # Phase 4A: Prioritize initial tasks (if manager enabled)
+        if self.manager_enabled:
+            print(f"\n🎯 Prioritizing {len(tasks)} initial tasks...")
+            tasks = await self._prioritize_tasks(tasks, global_coverage_summary="Initial decomposition - no completed tasks yet")
+            print(f"   Execution order: {', '.join([f'P{t.priority}(T{t.id})' for t in tasks])}")
+        else:
+            print(f"\n⏭️  Task prioritization disabled - using FIFO order")
+
         return tasks
 
     async def _generate_hypotheses(self, task_query: str, research_question: str) -> Dict[str, Any]:
@@ -903,6 +979,163 @@ class SimpleDeepResearch:
         print(f"📊 Coverage Assessment: {result['coverage_assessment']}\n")
 
         return result
+
+    async def _prioritize_tasks(
+        self,
+        tasks: List[ResearchTask],
+        global_coverage_summary: str = ""
+    ) -> List[ResearchTask]:
+        """
+        LLM-driven task prioritization (Phase 4A - Manager Agent).
+
+        Ranks pending tasks based on:
+        - Gap criticality (from completed task coverage decisions)
+        - Likelihood of new information (vs redundancy)
+        - Resource efficiency (simple vs complex queries)
+        - Strategic value (unlocks follow-ups, validates findings)
+
+        Args:
+            tasks: List of pending tasks to prioritize
+            global_coverage_summary: Optional global coverage context
+
+        Returns:
+            Same tasks with updated priority/reasoning fields, sorted by priority
+        """
+        if not tasks:
+            return tasks
+
+        if len(tasks) == 1:
+            # Single task - no prioritization needed
+            tasks[0].priority = 1
+            tasks[0].priority_reasoning = "Only pending task"
+            tasks[0].estimated_value = 70
+            tasks[0].estimated_redundancy = 30
+            return tasks
+
+        # Prepare completed task summaries
+        completed_summaries = []
+        for task in self.completed_tasks:
+            coverage_decisions = task.metadata.get("coverage_decisions", [])
+            latest_coverage = coverage_decisions[-1] if coverage_decisions else {}
+
+            completed_summaries.append({
+                "id": task.id,
+                "query": task.query,
+                "results_count": len(task.accumulated_results),
+                "entities_count": len(task.entities_found) if task.entities_found else 0,
+                "assessment": latest_coverage.get("assessment", "No assessment available"),
+                "gaps_identified": latest_coverage.get("gaps_identified", [])
+            })
+
+        # Prepare pending task data
+        pending_summaries = []
+        for task in tasks:
+            pending_summaries.append({
+                "id": task.id,
+                "query": task.query,
+                "rationale": task.rationale,
+                "parent_task_id": task.parent_task_id,
+                "priority": task.priority
+            })
+
+        # Calculate global deduplication rate
+        total_unique = sum(len(t.accumulated_results) for t in self.completed_tasks)
+        total_fetched_estimate = total_unique  # Conservative estimate (will be higher with raw data)
+        # Try to get actual fetched count from results_by_task
+        for task_id, result_dict in self.results_by_task.items():
+            if "accumulated_count" in result_dict:
+                # More accurate if available
+                total_fetched_estimate = max(total_fetched_estimate, result_dict["accumulated_count"])
+
+        dedup_rate = 0  # Default
+        if total_unique > 0 and total_fetched_estimate > total_unique:
+            dedup_rate = int((1 - total_unique / total_fetched_estimate) * 100)
+
+        # Render prioritization prompt
+        prompt = render_prompt(
+            "deep_research/task_prioritization.j2",
+            research_question=self.research_question,
+            elapsed_minutes=(datetime.now() - self.start_time).total_seconds() / 60,
+            completed_tasks=completed_summaries,
+            completed_count=len(completed_summaries),
+            pending_tasks=pending_summaries,
+            pending_count=len(pending_summaries),
+            global_coverage_summary=global_coverage_summary,
+            deduplication_rate=dedup_rate
+        )
+
+        # Define schema
+        schema = {
+            "type": "object",
+            "properties": {
+                "priorities": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "task_id": {"type": "integer"},
+                            "priority": {"type": "integer", "minimum": 1, "maximum": 10},
+                            "estimated_value": {"type": "integer", "minimum": 0, "maximum": 100},
+                            "estimated_redundancy": {"type": "integer", "minimum": 0, "maximum": 100},
+                            "reasoning": {"type": "string"}
+                        },
+                        "required": ["task_id", "priority", "estimated_value", "estimated_redundancy", "reasoning"],
+                        "additionalProperties": False
+                    }
+                },
+                "global_coverage_assessment": {"type": "string"}
+            },
+            "required": ["priorities", "global_coverage_assessment"],
+            "additionalProperties": False
+        }
+
+        try:
+            response = await acompletion(
+                model=config.get_model("analysis"),
+                messages=[{"role": "user", "content": prompt}],
+                response_format={
+                    "type": "json_schema",
+                    "json_schema": {
+                        "name": "task_prioritization",
+                        "strict": True,
+                        "schema": schema
+                    }
+                }
+            )
+
+            result = json.loads(response.choices[0].message.content)
+
+            # Update tasks with priority assignments
+            priority_map = {p["task_id"]: p for p in result["priorities"]}
+
+            for task in tasks:
+                if task.id in priority_map:
+                    p = priority_map[task.id]
+                    task.priority = p["priority"]
+                    task.priority_reasoning = p["reasoning"]
+                    task.estimated_value = p["estimated_value"]
+                    task.estimated_redundancy = p["estimated_redundancy"]
+
+            # Log prioritization
+            print(f"\n📊 Task Prioritization (Manager LLM):")
+            print(f"   Global: {result['global_coverage_assessment'][:120]}...")
+            for task in sorted(tasks, key=lambda t: t.priority):
+                print(f"   P{task.priority}: Task {task.id} - {task.query[:50]}...")
+                print(f"       Value: {task.estimated_value}%, Redundancy: {task.estimated_redundancy}%")
+                print(f"       Why: {task.priority_reasoning[:90]}...")
+
+            # Sort tasks by priority (ascending - P1 executes first)
+            tasks.sort(key=lambda t: (t.priority, t.id))
+
+            return tasks
+
+        except Exception as e:
+            logging.error(f"Task prioritization failed: {type(e).__name__}: {e}")
+            print(f"⚠️  Prioritization failed, using default priority order")
+            import traceback
+            logging.error(traceback.format_exc())
+            # On error, return tasks as-is (FIFO order)
+            return tasks
 
     def _map_hypothesis_sources(self, hypothesis: Dict) -> List[str]:
         """
@@ -1246,11 +1479,14 @@ class SimpleDeepResearch:
             Dict with LLM coverage decision:
             {
                 "decision": "continue" | "stop",
-                "rationale": str,
-                "coverage_score": int (0-100),
-                "incremental_gain_last": float,
+                "assessment": str,  # Qualitative prose assessment
                 "gaps_identified": List[str],
-                "confidence": int (0-100)
+                "facts": {  # Auto-injected by system
+                    "results_new": int,
+                    "results_duplicate": int,
+                    "incremental_gain_last_pct": int,
+                    ...
+                }
             }
         """
         from core.prompt_loader import render_prompt
@@ -1313,35 +1549,17 @@ class SimpleDeepResearch:
                     "enum": ["continue", "stop"],
                     "description": "Whether to continue executing hypotheses or stop"
                 },
-                "rationale": {
+                "assessment": {
                     "type": "string",
-                    "description": "2-3 sentences explaining the decision based on decision criteria"
-                },
-                "coverage_score": {
-                    "type": "integer",
-                    "minimum": 0,
-                    "maximum": 100,
-                    "description": "Assessment of current coverage completeness (0=no coverage, 100=comprehensive)"
-                },
-                "incremental_gain_last": {
-                    "type": "number",
-                    "minimum": 0.0,
-                    "maximum": 100.0,
-                    "description": "Percentage of new results from most recent hypothesis"
+                    "description": "2-4 sentences explaining coverage achieved, gaps remaining, and reasoning for decision. Be specific and reference actual findings."
                 },
                 "gaps_identified": {
                     "type": "array",
                     "items": {"type": "string"},
-                    "description": "Brief descriptions of remaining gaps (1-3 items if decision is continue)"
-                },
-                "confidence": {
-                    "type": "integer",
-                    "minimum": 0,
-                    "maximum": 100,
-                    "description": "Confidence in this decision (0=uncertain, 100=very confident)"
+                    "description": "Specific remaining gaps (1-3 items if decision is continue, empty if stop)"
                 }
             },
-            "required": ["decision", "rationale", "coverage_score", "incremental_gain_last", "gaps_identified", "confidence"],
+            "required": ["decision", "assessment", "gaps_identified"],
             "additionalProperties": False
         }
 
@@ -1355,12 +1573,31 @@ class SimpleDeepResearch:
 
             decision = json.loads(response.choices[0].message.content)
 
+            # Phase 5: Auto-inject facts (system calculates, LLM doesn't)
+            # Calculate incremental gain from last hypothesis
+            if task.hypothesis_runs:
+                last_run = task.hypothesis_runs[-1]
+                delta = last_run.get("delta_metrics", {})
+                incremental_gain_pct = int(delta.get("results_new", 0) / delta.get("total_results", 1) * 100) if delta.get("total_results", 0) > 0 else 0
+            else:
+                incremental_gain_pct = 0
+
+            decision["facts"] = {
+                "results_new": sum(run.get("delta_metrics", {}).get("results_new", 0) for run in task.hypothesis_runs),
+                "results_duplicate": sum(run.get("delta_metrics", {}).get("results_duplicate", 0) for run in task.hypothesis_runs),
+                "incremental_gain_last_pct": incremental_gain_pct,
+                "entities_new": sum(run.get("delta_metrics", {}).get("entities_new", 0) for run in task.hypothesis_runs),
+                "hypotheses_executed": executed_count,
+                "hypotheses_remaining": len(hypotheses_all) - executed_count,
+                "time_elapsed_seconds": time_elapsed_seconds,
+                "time_remaining_seconds": self.max_time_per_task_seconds - time_elapsed_seconds
+            }
+
             # Log coverage decision
             logging.info(f"📊 Coverage assessment (Task {task.id}):")
-            logging.info(f"   Decision: {decision['decision'].upper()} (confidence: {decision['confidence']}%)")
-            logging.info(f"   Coverage score: {decision['coverage_score']}%")
-            logging.info(f"   Incremental gain (last): {decision['incremental_gain_last']}%")
-            logging.info(f"   Rationale: {decision['rationale']}")
+            logging.info(f"   Decision: {decision['decision'].upper()}")
+            logging.info(f"   Assessment: {decision['assessment'][:150]}...")
+            logging.info(f"   Facts: {decision['facts']['results_new']} new, {decision['facts']['results_duplicate']} dup")
 
             return decision
 
@@ -1369,11 +1606,18 @@ class SimpleDeepResearch:
             # Fallback: continue if under hard ceilings
             return {
                 "decision": "continue" if (executed_count < self.max_hypotheses_to_execute and time_elapsed_seconds < self.max_time_per_task_seconds) else "stop",
-                "rationale": f"Coverage assessment failed ({type(e).__name__}), defaulting based on hard ceilings",
-                "coverage_score": 50,
-                "incremental_gain_last": 0.0,
+                "assessment": f"Coverage assessment failed ({type(e).__name__}). Defaulting to hard ceiling logic: continuing if hypotheses remaining and time allows.",
                 "gaps_identified": ["Coverage assessment error - using fallback logic"],
-                "confidence": 0
+                "facts": {  # Minimal facts for failed assessment
+                    "results_new": 0,
+                    "results_duplicate": 0,
+                    "incremental_gain_last_pct": 0,
+                    "entities_new": 0,
+                    "hypotheses_executed": executed_count,
+                    "hypotheses_remaining": len(hypotheses_all) - executed_count,
+                    "time_elapsed_seconds": time_elapsed_seconds,
+                    "time_remaining_seconds": self.max_time_per_task_seconds - time_elapsed_seconds
+                }
             }
 
     async def _execute_hypotheses(
@@ -1593,13 +1837,12 @@ class SimpleDeepResearch:
 
                 if decision["decision"] == "stop":
                     print(f"\n✋ Coverage assessment: STOP")
-                    print(f"   Rationale: {decision['rationale']}")
-                    print(f"   Coverage score: {decision['coverage_score']}%")
+                    print(f"   Assessment: {decision['assessment'][:100]}...")
                     print(f"   Hypotheses executed: {executed_count + 1}/{len(hypotheses)}")
                     break
                 else:
                     print(f"   Coverage assessment: CONTINUE")
-                    print(f"   Coverage score: {decision['coverage_score']}%")
+                    print(f"   Assessment: {decision['assessment'][:100]}...")
 
             except Exception as e:
                 logging.error(f"❌ Coverage assessment failed: {type(e).__name__}: {e}")
@@ -3172,15 +3415,16 @@ class SimpleDeepResearch:
         Returns:
             True if follow-ups should be created (LLM will decide actual count 0-N)
         """
-        # Check coverage score - skip follow-ups if coverage is excellent
-        # Use configurable threshold (default 95%) to align with "no hardcoded limits" philosophy
-        min_coverage = config.get_raw_config().get("research", {}).get("deep_research", {}).get("min_coverage_for_followups", 95)
+        # Phase 5: Check if LLM assessment suggests coverage is excellent
+        # No quantitative threshold - trust LLM qualitative assessment
         coverage_decisions = task.metadata.get("coverage_decisions", [])
         if coverage_decisions:
             latest_coverage = coverage_decisions[-1]
-            coverage_score = latest_coverage.get("coverage_score", 0)
-            if coverage_score >= min_coverage:
-                logging.info(f"Skipping follow-ups for task {task.id}: coverage score {coverage_score}% >= {min_coverage}%")
+            # If LLM said "stop" with no gaps, coverage is likely sufficient
+            decision = latest_coverage.get("decision", "continue")
+            gaps = latest_coverage.get("gaps_identified", [])
+            if decision == "stop" and not gaps:
+                logging.info(f"Skipping follow-ups for task {task.id}: Coverage assessment shows sufficient coverage (no critical gaps)")
                 return False
 
         # Codex fix: Check TOTAL workload (completed + pending + would-be follow-ups)
@@ -3217,7 +3461,7 @@ class SimpleDeepResearch:
 
         # Get latest coverage assessment
         latest_coverage = coverage_decisions[-1]
-        coverage_score = latest_coverage.get("coverage_score", 0)
+        assessment_text = latest_coverage.get("assessment", "")
         gaps_identified = latest_coverage.get("gaps_identified", [])
 
         # Consolidate gaps from all coverage decisions
@@ -3235,7 +3479,7 @@ class SimpleDeepResearch:
             parent_task=parent_task,
             coverage_decisions=coverage_decisions,
             gaps_identified=unique_gaps,
-            coverage_score=coverage_score
+            latest_assessment=assessment_text  # Phase 5: Use prose, not score
         )
 
         # Call LLM to generate follow-ups
@@ -3516,8 +3760,30 @@ class SimpleDeepResearch:
                 "max_concurrent_tasks": self.max_concurrent_tasks,
                 "hypothesis_branching_enabled": self.hypothesis_branching_enabled,
                 "hypothesis_mode": getattr(self, "hypothesis_mode", "off"),
-                "max_hypotheses_per_task": self.max_hypotheses_per_task
+                "max_hypotheses_per_task": self.max_hypotheses_per_task,
+                # Phase 4: Manager-Agent configuration
+                "task_prioritization_enabled": self.manager_enabled,
+                "saturation_detection_enabled": self.saturation_detection_enabled,
+                "saturation_check_interval": self.saturation_check_interval,
+                "saturation_confidence_threshold": self.saturation_confidence_threshold
             },
+            # Phase 4A: Task execution order analysis
+            "task_execution_order": [
+                {
+                    "task_id": task.id,
+                    "query": task.query,
+                    "priority": task.priority,
+                    "priority_reasoning": task.priority_reasoning,
+                    "estimated_value": task.estimated_value,
+                    "estimated_redundancy": task.estimated_redundancy,
+                    "actual_results": len(task.accumulated_results),
+                    # Phase 5: Store qualitative assessment instead of numeric score
+                    "final_assessment": task.metadata.get("coverage_decisions", [{}])[-1].get("assessment", "")[:200] if task.metadata.get("coverage_decisions") else None,
+                    "final_gaps": task.metadata.get("coverage_decisions", [{}])[-1].get("gaps_identified", []) if task.metadata.get("coverage_decisions") else [],
+                    "parent_task_id": task.parent_task_id
+                }
+                for task in (self.completed_tasks + self.failed_tasks)
+            ],
             "execution_summary": {
                 "tasks_executed": result["tasks_executed"],
                 "tasks_failed": result["tasks_failed"],
@@ -3559,6 +3825,241 @@ class SimpleDeepResearch:
 
         logging.info(f"Research output saved to: {output_path}")
         return str(output_path)
+
+    def _generate_global_coverage_summary(self) -> str:
+        """
+        Generate concise summary of overall research coverage (Phase 4A).
+
+        Used for task prioritization context - helps manager LLM understand
+        what's been found and what gaps remain.
+
+        Returns:
+            Text summary for prioritization/saturation context
+        """
+        if not self.completed_tasks:
+            return "No tasks completed yet - initial decomposition."
+
+        # Phase 5: Collect qualitative assessments instead of numeric scores
+        recent_assessments = []
+        for task in self.completed_tasks[-3:]:  # Last 3 tasks
+            coverage_decisions = task.metadata.get("coverage_decisions", [])
+            if coverage_decisions:
+                latest = coverage_decisions[-1]
+                assessment = latest.get("assessment", "")
+                if assessment:
+                    # Extract key phrases (first sentence or ~100 chars)
+                    brief = assessment.split('.')[0][:100]
+                    recent_assessments.append(f"Task {task.id}: {brief}")
+
+        # Collect all gaps across tasks
+        all_gaps = []
+        for task in self.completed_tasks:
+            coverage_decisions = task.metadata.get("coverage_decisions", [])
+            for decision in coverage_decisions:
+                all_gaps.extend(decision.get("gaps_identified", []))
+
+        # Deduplicate gaps while preserving order
+        unique_gaps = list(dict.fromkeys(all_gaps))[:5]  # Top 5 unique gaps
+
+        # Calculate total results
+        total_results = sum(len(t.accumulated_results) for t in self.completed_tasks)
+
+        # Build qualitative summary
+        summary_parts = [
+            f"Completed {len(self.completed_tasks)} tasks, {total_results} results found"
+        ]
+
+        if recent_assessments:
+            summary_parts.append(f"Recent progress: {'; '.join(recent_assessments[:2])}")
+
+        if unique_gaps:
+            summary_parts.append(f"Key gaps remaining: {'; '.join(unique_gaps[:3])}")
+
+        return ". ".join(summary_parts) + "."
+
+    async def _is_saturated(self) -> Dict[str, Any]:
+        """
+        Detect research saturation (Phase 4B).
+
+        Manager LLM analyzes all completed tasks holistically to determine
+        if continuing research would yield valuable new information or just
+        redundancy and peripheral findings.
+
+        Returns:
+            Dict with:
+            - saturated: bool
+            - confidence: int (0-100)
+            - rationale: str
+            - recommendation: "stop" | "continue_limited" | "continue_full"
+            - recommended_additional_tasks: int
+            - critical_gaps_remaining: List[str]
+        """
+        if len(self.completed_tasks) < 3:
+            # Too early to assess saturation
+            return {
+                "saturated": False,
+                "confidence": 100,
+                "rationale": "Too few tasks completed to assess saturation (need 3+)",
+                "recommendation": "continue_full",
+                "recommended_additional_tasks": 5,
+                "critical_gaps_remaining": ["Early stage - continue exploration"]
+            }
+
+        # Prepare recent task summaries (last 5 tasks)
+        recent_tasks = []
+        for task in self.completed_tasks[-5:]:
+            coverage_decisions = task.metadata.get("coverage_decisions", [])
+            latest_coverage = coverage_decisions[-1] if coverage_decisions else {}
+
+            # Calculate new vs duplicate results from hypothesis runs
+            # Bug #4 fix: Fallback to accumulated_results if no hypothesis runs
+            if task.hypothesis_runs:
+                total_results = sum(run.get("results_count", 0) for run in task.hypothesis_runs)
+                new_results = sum(
+                    run.get("delta_metrics", {}).get("results_new", 0)
+                    for run in task.hypothesis_runs
+                )
+                duplicate_results = total_results - new_results
+                incremental_value = int(new_results / total_results * 100) if total_results > 0 else 0
+            else:
+                # No hypothesis mode - use accumulated results
+                total_results = len(task.accumulated_results)
+                new_results = total_results  # Can't calculate delta without hypothesis metrics
+                duplicate_results = 0
+                incremental_value = 100  # Conservative: assume all new
+
+            # Phase 5: Use qualitative assessment instead of numeric score
+            assessment_text = latest_coverage.get("assessment", "No assessment available")
+            gaps = latest_coverage.get("gaps_identified", [])
+
+            recent_tasks.append({
+                "id": task.id,
+                "query": task.query,
+                "results_count": len(task.accumulated_results),
+                "new_results": new_results,
+                "duplicate_results": duplicate_results,
+                "assessment": assessment_text,
+                "gaps_remaining": gaps,
+                "incremental_value": incremental_value
+            })
+
+        # Prepare pending task summaries
+        pending_summaries = [
+            {
+                "priority": t.priority,
+                "query": t.query,
+                "estimated_value": t.estimated_value,
+                "estimated_redundancy": t.estimated_redundancy
+            }
+            for t in self.task_queue[:10]  # Top 10 pending
+        ]
+
+        # Calculate stats
+        total_results = sum(len(t.accumulated_results) for t in self.completed_tasks)
+        total_entities = len(set().union(*[set(t.entities_found or []) for t in self.completed_tasks]))
+
+        # Phase 5: Collect qualitative assessments instead of numeric scores
+        coverage_assessments = []
+        for task in self.completed_tasks:
+            coverage_decisions = task.metadata.get("coverage_decisions", [])
+            if coverage_decisions:
+                latest = coverage_decisions[-1]
+                assessment = latest.get("assessment", "")
+                gaps = latest.get("gaps_identified", [])
+                if assessment:
+                    coverage_assessments.append({
+                        "task_id": task.id,
+                        "assessment": assessment[:200],  # Truncate for brevity
+                        "gaps": gaps
+                    })
+
+        elapsed_minutes = (datetime.now() - self.start_time).total_seconds() / 60
+
+        # Render prompt
+        prompt = render_prompt(
+            "deep_research/saturation_detection.j2",
+            research_question=self.research_question,
+            completed_count=len(self.completed_tasks),
+            total_results=total_results,
+            total_entities=total_entities,
+            coverage_assessments=coverage_assessments,
+            elapsed_minutes=elapsed_minutes,
+            recent_tasks=recent_tasks,
+            pending_count=len(self.task_queue),
+            pending_tasks=pending_summaries
+        )
+
+        schema = {
+            "type": "object",
+            "properties": {
+                "saturated": {"type": "boolean"},
+                "confidence": {"type": "integer", "minimum": 0, "maximum": 100},
+                "rationale": {"type": "string"},
+                "evidence": {
+                    "type": "object",
+                    "properties": {
+                        "diminishing_returns": {"type": "boolean"},
+                        "coverage_completeness": {"type": "boolean"},
+                        "pending_queue_quality": {"type": "string", "enum": ["high", "medium", "low"]},
+                        "topic_exhaustion": {"type": "boolean"}
+                    },
+                    "required": ["diminishing_returns", "coverage_completeness", "pending_queue_quality", "topic_exhaustion"],
+                    "additionalProperties": False
+                },
+                "recommendation": {"type": "string", "enum": ["stop", "continue_limited", "continue_full"]},
+                "recommended_additional_tasks": {"type": "integer", "minimum": 0, "maximum": 10},
+                "critical_gaps_remaining": {
+                    "type": "array",
+                    "items": {"type": "string"},
+                    "description": "List of critical gaps if not saturated"
+                }
+            },
+            "required": ["saturated", "confidence", "rationale", "evidence", "recommendation", "recommended_additional_tasks", "critical_gaps_remaining"],
+            "additionalProperties": False
+        }
+
+        try:
+            response = await acompletion(
+                model=config.get_model("analysis"),
+                messages=[{"role": "user", "content": prompt}],
+                response_format={
+                    "type": "json_schema",
+                    "json_schema": {
+                        "name": "saturation_detection",
+                        "strict": True,
+                        "schema": schema
+                    }
+                }
+            )
+
+            result = json.loads(response.choices[0].message.content)
+
+            # Log saturation assessment
+            print(f"\n🧠 Saturation Assessment:")
+            print(f"   Saturated: {result['saturated']} (confidence: {result['confidence']}%)")
+            print(f"   Rationale: {result['rationale']}")
+            print(f"   Recommendation: {result['recommendation'].upper()}")
+            if not result['saturated']:
+                print(f"   Continue with: {result['recommended_additional_tasks']} more tasks")
+                if result['critical_gaps_remaining']:
+                    print(f"   Critical gaps: {', '.join(result['critical_gaps_remaining'][:3])}")
+
+            return result
+
+        except Exception as e:
+            logging.error(f"Saturation detection failed: {type(e).__name__}: {e}")
+            print(f"⚠️  Saturation check failed, defaulting to continue")
+            import traceback
+            logging.error(traceback.format_exc())
+            # On error, assume not saturated (continue research)
+            return {
+                "saturated": False,
+                "confidence": 0,
+                "rationale": f"Saturation check failed ({type(e).__name__}), defaulting to continue",
+                "recommendation": "continue_full",
+                "recommended_additional_tasks": 3,
+                "critical_gaps_remaining": ["Saturation check error - continuing"]
+            }
 
     async def _synthesize_report(self, original_question: str) -> str:
         """Synthesize all findings into comprehensive report."""

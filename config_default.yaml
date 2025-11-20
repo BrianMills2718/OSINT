@@ -195,7 +195,32 @@ research:
     max_concurrent_tasks: 4       # Max parallel tasks (1=sequential, 3-5=parallel)
     task_timeout_seconds: 1800    # Per-task timeout (30 min) - Backstop for infinite retry loops, primary timeout at LLM call level (60s)
     max_follow_ups_per_task: null # Max follow-ups per task (null=unlimited, N=cap per task) - LLM decides 0-N based on coverage quality
-    min_coverage_for_followups: 95 # Skip follow-ups if coverage >= this % (0-100, lower = more follow-ups)
+    # Phase 5: Removed min_coverage_for_followups (was 95%, never triggered)
+    # LLM decides if follow-ups needed based on qualitative gap assessment
+
+  # ============================================================================
+  # Phase 4: Manager-Agent Architecture (Task Prioritization + Saturation)
+  # ============================================================================
+  # Expert investigator mode - Manager LLM prioritizes tasks and detects saturation
+  # Enables "run until done" behavior with intelligent stopping
+  manager_agent:
+    enabled: true                     # Enable task prioritization (Phase 4A) - DEFAULT: true
+
+    # Saturation detection (Phase 4B)
+    saturation_detection: true        # Check for research saturation - DEFAULT: true
+    saturation_check_interval: 3      # Check every N tasks (avoid over-calling) - DEFAULT: 3
+    saturation_confidence_threshold: 70  # Stop if saturation confidence >= % - DEFAULT: 70 (70-90 recommended)
+    allow_saturation_stop: true       # Stop when saturated even if under max_tasks - DEFAULT: true
+                                       # If false: Saturation logged but ignored (always run to max_tasks)
+
+    # Reprioritization behavior
+    reprioritize_after_task: true     # Reprioritize queue after each completion - DEFAULT: true
+                                       # If false: Only prioritize initial queue (FIFO for follow-ups)
+
+    # Cost notes:
+    # - Prioritization: 1 LLM call per reprioritization (if 14 tasks → ~14 calls @ $0.005 = $0.07)
+    # - Saturation: 1 LLM call every 3 tasks (if 14 tasks → ~4 calls @ $0.005 = $0.02)
+    # - Total Phase 4 cost: ~$0.10 for 14-task research (minimal overhead)
 
   # Feature flags (start disabled, enable after validation)
   enable_scoping: false           # Enable ScopingAgent (query clarification + planning)
