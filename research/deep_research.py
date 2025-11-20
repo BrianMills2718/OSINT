@@ -424,12 +424,10 @@ class SimpleDeepResearch:
                 # Log saturation check
                 if self.logger:
                     try:
-                        self.logger._write_event({
-                            "event": "saturation_assessment",
-                            "timestamp": datetime.now().isoformat(),
-                            "completed_tasks": len(self.completed_tasks),
-                            "saturation_result": saturation_check
-                        })
+                        self.logger.log_saturation_assessment(
+                            completed_tasks=len(self.completed_tasks),
+                            saturation_result=saturation_check
+                        )
                     except Exception as log_error:
                         logging.warning(f"Failed to log saturation assessment: {log_error}")
 
