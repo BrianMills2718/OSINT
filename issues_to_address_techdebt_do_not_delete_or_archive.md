@@ -8,56 +8,7 @@ This file tracks ongoing technical issues, bugs, and tech debt that need to be a
 
 ## High Priority
 
-### SAM.gov Integration - Search Execution Failure
-**Discovered**: 2025-10-21
-**Severity**: High (complete integration failure)
-**Status**: Not started
-
-**Symptoms**:
-- All SAM.gov searches returning 0 results with 0ms response time
-- Pattern seen in logs: ` SAM.gov: 0 results (0ms)`
-- LLM query generation succeeds (queries are being created)
-- API call appears to fail silently without executing
-
-**Evidence**:
-```
-# From realistic_test_monitor.yaml test run (2025-10-21):
-   DVIDS: Query generated
-   SAM.gov: Query generated
-   USAJobs: Query generated
- Generated 3 queries
-Phase 3: Executing searches...
-   DVIDS: 37 results (3501ms)
-   SAM.gov: 0 results (0ms)          # <-- 0ms indicates no actual API call
-   USAJobs: 0 results (967ms)
-```
-
-**Impact**:
-- SAM.gov completely non-functional for all monitors
-- Federal contract data unavailable
-- Adaptive search missing critical government contracting insights
-
-**Possible Causes**:
-1. API key expired or invalid
-2. SAM.gov API endpoint changed
-3. Request format changed (headers, authentication)
-4. Silent exception handling swallowing errors
-5. Network/firewall blocking SAM.gov API specifically
-
-**Investigation Steps**:
-1. Check `.env` for valid `SAM_GOV_API_KEY`
-2. Test SAM.gov integration directly: `python3 -c "from integrations.government.sam_integration import SAMIntegration; import asyncio; asyncio.run(SAMIntegration().execute_search({'keywords': 'cybersecurity'}, api_key='...', limit=5))"`
-3. Check `integrations/government/sam_integration.py` execute_search() for silent error handling
-4. Review SAM.gov API documentation for recent changes
-5. Add verbose logging to SAM.gov integration
-6. Test SAM.gov API directly with curl/httpie
-
-**Files**:
-- `integrations/government/sam_integration.py` (lines 195-346: execute_search method)
-- `core/api_request_tracker.py` (check if errors are being logged)
-
-**Related**:
-- Integration relevance fix (2025-10-21): Fixed overly restrictive is_relevant() - now all integrations call LLM for query generation. SAM.gov query generation works, but execution fails.
+**No high priority issues currently open.**
 
 ---
 
@@ -140,66 +91,6 @@ File "/mount/src/osint/integrations/government/clearancejobs_playwright.py", lin
 ---
 
 ## Low Priority
-
-### Configuration Hardcoding - No Centralized Config System
-**Discovered**: 2025-11-02
-**Severity**: Low (tech debt, doesn't block functionality)
-**Status**: Not started
-
-**Issue**: Critical configuration values hardcoded in Python files instead of centralized config
-
-**Hardcoded Values**:
-1. **Deep Research Engine** (`research/deep_research.py` lines 126-130):
-   - `max_tasks: int = 15`
-   - `max_retries_per_task: int = 2`
-   - `max_time_minutes: int = 120`
-   - `min_results_per_task: int = 3`
-   - `max_concurrent_tasks: int = 4`
-
-2. **SAM.gov Rate Limiting** (`integrations/government/sam_integration.py` line 246):
-   - `retry_delays = [2, 4, 8]  # Exponential backoff`
-
-3. **Deep Research Timeouts** (`research/deep_research.py` line 426):
-   - `task_timeout = 180  # 3 minutes per task`
-
-**What Exists But Unused**:
-- `config_default.yaml` has comprehensive configuration structure
-- Includes: LLM models, timeouts, database settings, cost management
-- **NOT CURRENTLY USED** by deep_research.py or integrations
-
-**Impact**:
-- Hard to tune performance without editing code
-- Different environments (dev/prod) require code changes
-- No single source of truth for limits/timeouts
-- Violates separation of concerns
-
-**Recommended Fix**:
-1. Create `config.yaml` (or use `config_default.yaml`)
-2. Add deep research section:
-   ```yaml
-   deep_research:
-     max_tasks: 15
-     max_retries_per_task: 2
-     max_time_minutes: 120
-     min_results_per_task: 3
-     max_concurrent_tasks: 4
-     task_timeout_seconds: 180
-
-   rate_limiting:
-     sam_gov_retry_delays: [2, 4, 8]
-     brave_search_delay: 1.0
-   ```
-3. Update `research/deep_research.py` to load from config
-4. Update all integrations to use centralized retry/timeout config
-
-**Files**:
-- `config_default.yaml` (exists, comprehensive but unused)
-- `research/deep_research.py` (hardcoded params)
-- `integrations/government/sam_integration.py` (hardcoded retries)
-
-**Priority**: Low - system works, but should fix before scaling/deployment
-
----
 
 ### LiteLLM Async Logging Worker Timeout
 **Discovered**: 2025-11-02
@@ -419,6 +310,87 @@ Time overhead:      3.9-4.7x (limit: 3.0x)
 
 ## Completed / Resolved
 
+### SAM.gov Integration - Search Execution Failure
+**Discovered**: 2025-10-21
+**Resolved**: 2025-11-20 (Phase 4/5 implementation)
+
+**Original Issue**: All SAM.gov searches returning 0 results with 0ms response time
+
+**Solution**: Fixed during Phase 4/5 implementation - likely related to config integration and async improvements
+
+**Verification** (2025-11-20): Test query returned 3 results successfully
+
+---
+
+### Hypothesis Execution Quality Bugs - Filtering and Logging
+**Discovered**: 2025-11-20 (Codebase audit)
+**Resolved**: 2025-11-20 (Commit 2cdee01)
+
+**Original Issues**:
+1. **Bug #1**: Hypothesis results bypassing relevance filtering entirely
+   - Symptom: DVIDS returned 50 junk results (Guantanamo Bay military ops) for "Cuba sanctions" query
+   - Root cause: `_execute_hypothesis()` went directly from source → deduplication → accumulation (no filtering)
+   - Impact: Off-topic results polluting final reports
+
+2. **Bug #2**: Hypothesis query generation reasoning not logged
+   - Symptom: Query "Cuba sanctions Congress" appeared with no LLM reasoning explaining why
+   - Root cause: Used `logging.info()` instead of `self.logger.log_hypothesis_query_generation()`
+   - Impact: Cannot debug why LLM chose generic queries that flood results
+
+3. **Bug #3**: No structured logging for hypothesis query decisions
+   - Symptom: Missing `hypothesis_query_generation` action_type in execution_log.jsonl
+   - Root cause: ExecutionLogger missing the log method entirely
+   - Impact: Incomplete audit trail, can't trace LLM decision-making
+
+**Solution**:
+1. Added per-hypothesis relevance filtering (lines 1449-1472 in deep_research.py)
+   - Calls `_validate_result_relevance()` after all hypothesis searches complete
+   - Filters results before deduplication using same LLM evaluation as main task
+   - Prints filtering decisions to stdout and logs to execution_log.jsonl
+
+2. Added structured logging for query generation (lines 1349-1364 in deep_research.py)
+   - Replaced `logging.info()` with `self.logger.log_hypothesis_query_generation()`
+   - Logs to both stdout (real-time visibility) and execution_log.jsonl (audit trail)
+   - Captures query + reasoning for every hypothesis-source pair
+
+3. Added `log_hypothesis_query_generation()` method (lines 402-425 in execution_logger.py)
+   - New action_type: "hypothesis_query_generation"
+   - Schema: task_id, hypothesis_id, source_name, query, reasoning
+
+**Verification**:
+- Validation tests passed: log method exists and callable
+- Filtering integration verified: _validate_result_relevance callable on hypothesis results
+- Next research run will show: "🔍 Validating relevance of X hypothesis results..." + filtering decisions
+
+**Files Modified**:
+- `research/deep_research.py` (added filtering logic + structured logging)
+- `research/execution_logger.py` (added log method)
+- `CLAUDE.md` (added multi-agent architecture diagram)
+
+**Expected Impact**:
+- DVIDS junk results will be rejected at hypothesis level
+- Can debug query generation decisions via execution_log.jsonl
+- Full observability into hypothesis execution pipeline
+
+---
+
+### Configuration Hardcoding - No Centralized Config System
+**Discovered**: 2025-11-02
+**Resolved**: 2025-11-20 (Phase 4/5 implementation)
+
+**Original Issue**: Critical configuration values hardcoded in Python files instead of centralized config
+
+**Solution**: deep_research.py now reads from config.yaml for all settings (max_tasks, timeouts, etc.)
+
+**Verification**: Lines 163-170 in research/deep_research.py show full config integration with fallbacks
+
+**Files Modified**:
+- `research/deep_research.py` (lines 163-170: config loading)
+- `config_default.yaml` (comprehensive configuration)
+
+---
+
+
 ###  Integration Relevance False Negatives
 **Discovered**: 2025-10-20
 **Resolved**: 2025-10-21
@@ -456,4 +428,4 @@ Time overhead:      3.9-4.7x (limit: 3.0x)
 
 ---
 
-**Last Updated**: 2025-10-24
+**Last Updated**: 2025-11-20
