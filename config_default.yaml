@@ -195,7 +195,8 @@ research:
     max_concurrent_tasks: 4       # Max parallel tasks (1=sequential, 3-5=parallel)
     task_timeout_seconds: 1800    # Per-task timeout (30 min) - Backstop for infinite retry loops, primary timeout at LLM call level (60s)
     max_follow_ups_per_task: null # Max follow-ups per task (null=unlimited, N=cap per task) - LLM decides 0-N based on coverage quality
-    min_coverage_for_followups: 95 # Skip follow-ups if coverage >= this % (0-100, lower = more follow-ups)
+    # Phase 5: Removed min_coverage_for_followups (was 95%, never triggered)
+    # LLM decides if follow-ups needed based on qualitative gap assessment
 
   # ============================================================================
   # Phase 4: Manager-Agent Architecture (Task Prioritization + Saturation)

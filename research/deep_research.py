@@ -1023,7 +1023,7 @@ class SimpleDeepResearch:
                 "query": task.query,
                 "results_count": len(task.accumulated_results),
                 "entities_count": len(task.entities_found) if task.entities_found else 0,
-                "coverage_score": latest_coverage.get("coverage_score", "N/A"),
+                "assessment": latest_coverage.get("assessment", "No assessment available"),
                 "gaps_identified": latest_coverage.get("gaps_identified", [])
             })
 
@@ -1827,13 +1827,12 @@ class SimpleDeepResearch:
 
                 if decision["decision"] == "stop":
                     print(f"\n✋ Coverage assessment: STOP")
-                    print(f"   Rationale: {decision['rationale']}")
-                    print(f"   Coverage score: {decision['coverage_score']}%")
+                    print(f"   Assessment: {decision['assessment'][:100]}...")
                     print(f"   Hypotheses executed: {executed_count + 1}/{len(hypotheses)}")
                     break
                 else:
                     print(f"   Coverage assessment: CONTINUE")
-                    print(f"   Coverage score: {decision['coverage_score']}%")
+                    print(f"   Assessment: {decision['assessment'][:100]}...")
 
             except Exception as e:
                 logging.error(f"❌ Coverage assessment failed: {type(e).__name__}: {e}")
@@ -3406,15 +3405,16 @@ class SimpleDeepResearch:
         Returns:
             True if follow-ups should be created (LLM will decide actual count 0-N)
         """
-        # Check coverage score - skip follow-ups if coverage is excellent
-        # Use configurable threshold (default 95%) to align with "no hardcoded limits" philosophy
-        min_coverage = config.get_raw_config().get("research", {}).get("deep_research", {}).get("min_coverage_for_followups", 95)
+        # Phase 5: Check if LLM assessment suggests coverage is excellent
+        # No quantitative threshold - trust LLM qualitative assessment
         coverage_decisions = task.metadata.get("coverage_decisions", [])
         if coverage_decisions:
             latest_coverage = coverage_decisions[-1]
-            coverage_score = latest_coverage.get("coverage_score", 0)
-            if coverage_score >= min_coverage:
-                logging.info(f"Skipping follow-ups for task {task.id}: coverage score {coverage_score}% >= {min_coverage}%")
+            # If LLM said "stop" with no gaps, coverage is likely sufficient
+            decision = latest_coverage.get("decision", "continue")
+            gaps = latest_coverage.get("gaps_identified", [])
+            if decision == "stop" and not gaps:
+                logging.info(f"Skipping follow-ups for task {task.id}: Coverage assessment shows sufficient coverage (no critical gaps)")
                 return False
 
         # Codex fix: Check TOTAL workload (completed + pending + would-be follow-ups)
@@ -3451,7 +3451,7 @@ class SimpleDeepResearch:
 
         # Get latest coverage assessment
         latest_coverage = coverage_decisions[-1]
-        coverage_score = latest_coverage.get("coverage_score", 0)
+        assessment_text = latest_coverage.get("assessment", "")
         gaps_identified = latest_coverage.get("gaps_identified", [])
 
         # Consolidate gaps from all coverage decisions
@@ -3469,7 +3469,7 @@ class SimpleDeepResearch:
             parent_task=parent_task,
             coverage_decisions=coverage_decisions,
             gaps_identified=unique_gaps,
-            coverage_score=coverage_score
+            assessment_summary=assessment_text  # Phase 5: Use prose, not score
         )
 
         # Call LLM to generate follow-ups
