@@ -1284,7 +1284,8 @@ class SimpleDeepResearch:
         hypothesis: Dict,
         source_tool_name: str,
         research_question: str,
-        task_query: str
+        task_query: str,
+        task: 'ResearchTask'
     ) -> Optional[str]:
         """
         Generate source-specific query for hypothesis execution (Phase 3B).
@@ -1402,7 +1403,8 @@ class SimpleDeepResearch:
                     hypothesis=hypothesis,
                     source_tool_name=tool_name,
                     research_question=research_question,
-                    task_query=task.query
+                    task_query=task.query,
+                    task=task
                 )
 
                 if not query:
