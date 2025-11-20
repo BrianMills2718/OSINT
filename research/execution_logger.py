@@ -372,3 +372,22 @@ class ExecutionLogger:
             "retry_count": retry_count,
             "elapsed_seconds": elapsed_seconds
         })
+
+    def log_saturation_assessment(self, completed_tasks: int, saturation_result: Dict[str, Any]):
+        """
+        Log saturation detection assessment (Phase 4B).
+
+        Args:
+            completed_tasks: Number of tasks completed when check performed
+            saturation_result: LLM saturation decision with all fields
+        """
+        self._write_entry(None, "saturation_assessment", {
+            "completed_tasks": completed_tasks,
+            "saturated": saturation_result.get("saturated"),
+            "confidence": saturation_result.get("confidence"),
+            "rationale": saturation_result.get("rationale"),
+            "recommendation": saturation_result.get("recommendation"),
+            "evidence": saturation_result.get("evidence"),
+            "recommended_additional_tasks": saturation_result.get("recommended_additional_tasks"),
+            "critical_gaps_remaining": saturation_result.get("critical_gaps_remaining", [])
+        })
