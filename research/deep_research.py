@@ -207,6 +207,16 @@ class SimpleDeepResearch:
         # Follow-up generation configuration
         self.max_follow_ups_per_task = deep_config.get("max_follow_ups_per_task", None)  # None = unlimited
 
+        # Phase 4: Manager-Agent configuration (Task Prioritization + Saturation)
+        manager_config = raw_config.get("research", {}).get("manager_agent", {})
+        self.manager_enabled = manager_config.get("enabled", True)
+        self.saturation_detection_enabled = manager_config.get("saturation_detection", True)
+        self.saturation_check_interval = manager_config.get("saturation_check_interval", 3)
+        self.saturation_confidence_threshold = manager_config.get("saturation_confidence_threshold", 70)
+        self.allow_saturation_stop = manager_config.get("allow_saturation_stop", True)
+        self.reprioritize_after_task = manager_config.get("reprioritize_after_task", True)
+        self.last_saturation_check = None  # Will be set after first saturation check
+
         # Phase 3C: Coverage assessment configuration
         self.coverage_mode = hyp_config.get("coverage_mode", False)
         self.max_hypotheses_to_execute = hyp_config.get("max_hypotheses_to_execute", 5)
@@ -403,8 +413,11 @@ class SimpleDeepResearch:
                 )
                 break
 
-            # Phase 4B: Check saturation every 3 tasks (avoid over-calling)
-            if len(self.completed_tasks) >= 3 and len(self.completed_tasks) % 3 == 0:
+            # Phase 4B: Check saturation if enabled
+            if (self.saturation_detection_enabled and
+                len(self.completed_tasks) >= 3 and
+                len(self.completed_tasks) % self.saturation_check_interval == 0):
+
                 saturation_check = await self._is_saturated()
                 self.last_saturation_check = saturation_check  # Store for checkpointing
 
@@ -420,8 +433,11 @@ class SimpleDeepResearch:
                     except Exception as log_error:
                         logging.warning(f"Failed to log saturation assessment: {log_error}")
 
-                # Act on saturation decision
-                if saturation_check["saturated"] and saturation_check["confidence"] >= 70:
+                # Act on saturation decision (if stopping allowed)
+                if (self.allow_saturation_stop and
+                    saturation_check["saturated"] and
+                    saturation_check["confidence"] >= self.saturation_confidence_threshold):
+
                     self._emit_progress(
                         "research_saturated",
                         f"Research saturated: {saturation_check['rationale']}",
@@ -429,6 +445,7 @@ class SimpleDeepResearch:
                     )
                     print(f"\n✅ Research saturated - stopping investigation")
                     print(f"   Confidence: {saturation_check['confidence']}%")
+                    print(f"   Threshold: {self.saturation_confidence_threshold}%")
                     print(f"   Completed: {len(self.completed_tasks)} tasks")
                     break
                 elif saturation_check["recommendation"] == "continue_limited":
@@ -644,8 +661,8 @@ class SimpleDeepResearch:
                             }
                         )
 
-                        # Phase 4A: Reprioritize queue after adding follow-ups
-                        if len(self.task_queue) > 1:
+                        # Phase 4A: Reprioritize queue after adding follow-ups (if enabled)
+                        if self.reprioritize_after_task and len(self.task_queue) > 1:
                             print(f"\n🎯 Reprioritizing {len(self.task_queue)} pending tasks based on new findings...")
                             self.task_queue = await self._prioritize_tasks(
                                 self.task_queue,
@@ -842,10 +859,13 @@ class SimpleDeepResearch:
                     # Continue without hypotheses - don't fail task creation
                     task.hypotheses = None
 
-        # Phase 4A: Prioritize initial tasks (before execution)
-        print(f"\n🎯 Prioritizing {len(tasks)} initial tasks...")
-        tasks = await self._prioritize_tasks(tasks, global_coverage_summary="Initial decomposition - no completed tasks yet")
-        print(f"   Execution order: {', '.join([f'P{t.priority}(T{t.id})' for t in tasks])}")
+        # Phase 4A: Prioritize initial tasks (if manager enabled)
+        if self.manager_enabled:
+            print(f"\n🎯 Prioritizing {len(tasks)} initial tasks...")
+            tasks = await self._prioritize_tasks(tasks, global_coverage_summary="Initial decomposition - no completed tasks yet")
+            print(f"   Execution order: {', '.join([f'P{t.priority}(T{t.id})' for t in tasks])}")
+        else:
+            print(f"\n⏭️  Task prioritization disabled - using FIFO order")
 
         return tasks
 
@@ -3875,13 +3895,21 @@ class SimpleDeepResearch:
             latest_coverage = coverage_decisions[-1] if coverage_decisions else {}
 
             # Calculate new vs duplicate results from hypothesis runs
-            total_results = sum(run.get("results_count", 0) for run in task.hypothesis_runs)
-            new_results = sum(
-                run.get("delta_metrics", {}).get("results_new", 0)
-                for run in task.hypothesis_runs
-            )
-            duplicate_results = total_results - new_results
-            incremental_value = int(new_results / total_results * 100) if total_results > 0 else 0
+            # Bug #4 fix: Fallback to accumulated_results if no hypothesis runs
+            if task.hypothesis_runs:
+                total_results = sum(run.get("results_count", 0) for run in task.hypothesis_runs)
+                new_results = sum(
+                    run.get("delta_metrics", {}).get("results_new", 0)
+                    for run in task.hypothesis_runs
+                )
+                duplicate_results = total_results - new_results
+                incremental_value = int(new_results / total_results * 100) if total_results > 0 else 0
+            else:
+                # No hypothesis mode - use accumulated results
+                total_results = len(task.accumulated_results)
+                new_results = total_results  # Can't calculate delta without hypothesis metrics
+                duplicate_results = 0
+                incremental_value = 100  # Conservative: assume all new
 
             recent_tasks.append({
                 "id": task.id,
