@@ -2485,7 +2485,8 @@ class SimpleDeepResearch:
                                 "continuation_reason": continuation_reason
                             },
                             threshold=None,  # No threshold anymore
-                            passes=should_accept
+                            passes=should_accept,
+                            reasoning_breakdown=reasoning_breakdown  # Bug fix: include detailed reasoning
                         )
                     except Exception as log_error:
                         logging.warning(f"Failed to log relevance scoring: {log_error}")

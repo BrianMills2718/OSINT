@@ -222,7 +222,8 @@ class ExecutionLogger:
                              original_query: str, results_count: int,
                              llm_prompt: str, llm_response: Dict[str, Any],
                              threshold: int, passes: bool,
-                             llm_metadata: Optional[Dict[str, Any]] = None):
+                             llm_metadata: Optional[Dict[str, Any]] = None,
+                             reasoning_breakdown: Optional[Dict[str, Any]] = None):
         """
         Log LLM relevance evaluation.
 
@@ -237,8 +238,9 @@ class ExecutionLogger:
             threshold: Relevance threshold (e.g., 6/10)
             passes: Whether results pass threshold
             llm_metadata: Optional LLM cost tracking
+            reasoning_breakdown: Optional detailed reasoning (filtering_strategy, interesting_decisions, patterns_noticed)
         """
-        self._write_entry(task_id, "relevance_scoring", {
+        payload = {
             "attempt": attempt,
             "source_name": source_name,
             "original_query": original_query,
@@ -248,7 +250,13 @@ class ExecutionLogger:
             "relevance_threshold": threshold,
             "passes_threshold": passes,
             "llm_metadata": llm_metadata or {}
-        })
+        }
+
+        # Add reasoning_breakdown if provided (Bug fix: audit trail completeness)
+        if reasoning_breakdown:
+            payload["reasoning_breakdown"] = reasoning_breakdown
+
+        self._write_entry(task_id, "relevance_scoring", payload)
 
     def log_filter_decision(self, task_id: int, attempt: int, source_name: str,
                            decision: str, reason: str, kept: int, discarded: int):
