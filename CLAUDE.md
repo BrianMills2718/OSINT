@@ -533,6 +533,14 @@ pip list | grep playwright
 
 ## RECENT CHANGES (Last 7 Days)
 
+**2025-11-20**: Hypothesis execution bugs fixed (2cdee01, 9c0be0b, ac0dfbc)
+- ✅ Bug #1: Per-hypothesis relevance filtering (prevents junk results)
+- ✅ Bug #2: Query generation structured logging (enables debugging)
+- ✅ Bug #3: reasoning_breakdown in logs (complete audit trail)
+- All 3 critical bugs from architecture audit resolved
+- System validated with 37 hypothesis query events logged
+- Documentation: docs/archive/2025-11-20/HYPOTHESIS_EXECUTION_BUGS_ALL_FIXED.md
+
 **2025-11-20**: Phase 5 merged to master (b7b7efc)
 - Pure qualitative intelligence (no numeric scores)
 - Schema: {decision, assessment (prose), gaps_identified, facts (auto-injected)}
