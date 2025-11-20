@@ -6,14 +6,14 @@ You are a research completion analyst determining if investigation has reached s
 - Tasks Completed: {{ completed_count }}
 - Total Results: {{ total_results }}
 - Total Entities: {{ total_entities }}
-- Average Coverage: {{ avg_coverage }}%
 - Duration: {{ elapsed_minutes|round(1) }} minutes
 
 **RECENT TASKS** (last {{ recent_tasks|length }}):
 {% for task in recent_tasks %}
 Task {{ task.id }}: {{ task.query }}
   - Results: {{ task.results_count }} ({{ task.new_results }} new, {{ task.duplicate_results }} duplicates)
-  - Coverage: {{ task.coverage_score }}%
+  - Assessment: {{ task.assessment }}
+  - Gaps remaining: {% if task.gaps_remaining %}{{ task.gaps_remaining | join(", ") }}{% else %}None identified{% endif %}
   - Incremental value: {{ task.incremental_value }}% (% of new results)
 {% endfor %}
 
@@ -38,31 +38,31 @@ Determine if this research has reached **saturation** - the point where continui
 
 ### **SATURATION INDICATORS**
 
-Check for these patterns (multiple indicators = higher confidence):
+Analyze these qualitative patterns (multiple indicators = higher confidence):
 
 #### **1. Diminishing Returns** (STRONG signal for saturation):
-- Last 3+ tasks yielding <15% new results? (Mostly duplicates)
-- Coverage scores plateaued? (No increase in last 3 tasks)
-- Entity discovery rate dropped? (<2 new entities per recent task)
-- Incremental value declining? (100% → 80% → 60% → 40%)
+- Are recent tasks mostly finding duplicates? (Look at new vs duplicate counts)
+- Is incremental value declining across recent tasks? (e.g., 100% → 80% → 60% → 40%)
+- Are recent task assessments saying "no new information" or "confirming existing findings"?
+- Has entity discovery rate dropped significantly?
 
 #### **2. Coverage Completeness** (MODERATE signal):
-- Average coverage across tasks >70%?
-- No critical gaps in recent coverage decisions?
-- All major topic dimensions explored?
-- Recent tasks only filling minor details?
+- Based on recent task assessments, are the main topic dimensions explored?
+- Are recent tasks reporting "no critical gaps" or only "peripheral gaps remaining"?
+- Do the assessments indicate comprehensive coverage of the research question?
+- Are recent tasks only filling minor details rather than major gaps?
 
 #### **3. Pending Queue Quality** (MODERATE signal):
-- Remaining tasks all Priority 6-10? (Low value)
-- Estimated redundancy >60% for most pending tasks?
-- No high-confidence unexplored angles remaining?
-- Follow-ups becoming increasingly tangential?
+- Are remaining tasks mostly low-priority (P6-10)?
+- Do pending tasks have high estimated redundancy?
+- Based on assessments, are there any high-value unexplored angles left?
+- Are follow-ups becoming increasingly tangential to the core question?
 
 #### **4. Topic Exhaustion** (STRONG signal):
-- Same sources re-queried with similar queries?
-- Follow-up generator creating <2 follow-ups per task?
-- Gaps identified are peripheral? (Not core to research question)
-- Results from last 2-3 tasks mostly confirming existing findings?
+- Are we re-querying the same sources with similar queries?
+- Are assessments indicating that "all major angles explored"?
+- Are identified gaps peripheral rather than core to the research question?
+- Are recent results mostly confirming rather than expanding our understanding?
 
 ### **IMPORTANT CONTEXT**
 
@@ -71,29 +71,30 @@ Check for these patterns (multiple indicators = higher confidence):
 - False positive (stopping too early) is worse than false negative (continuing)
 - When uncertain, err toward "NOT saturated"
 
-**However**, genuine saturation DOES occur:
-- If last 3 tasks all <10% new results → clearly saturated
-- If coverage >75% and all pending tasks Priority 7-10 → likely saturated
-- If zero follow-ups created from last 2 tasks → possibly saturated
+**However**, genuine saturation DOES occur when:
+- Last several tasks finding mostly duplicates (very low new result counts)
+- Recent assessments consistently report "comprehensively covered" or "no critical gaps"
+- Follow-up generation stopped creating new tasks
+- Only low-priority peripheral tasks remain
 
 ---
 
 ## DECISION FRAMEWORK
 
 ### **Declare SATURATED if**:
-- **Strong evidence of diminishing returns** (last 3 tasks <15% new results)
-  **AND** (Coverage >65% OR pending queue all low-priority)
+- **Strong evidence of diminishing returns** (recent tasks mostly duplicates)
+  **AND** (Assessments indicate comprehensive coverage OR pending queue all low-priority)
 
-- **OR** Coverage >80% AND no critical gaps remain
+- **OR** Recent assessments consistently report "no critical gaps" AND no high-priority tasks remain
 
-- **OR** Last 3 tasks found <5% new results (extreme redundancy)
+- **OR** Last several tasks found very few new results (extreme redundancy)
 
 ### **Declare NOT SATURATED if**:
-- Recent tasks still yielding >30% new results
-- **OR** Critical gaps identified in recent coverage decisions
+- Recent tasks still yielding substantial new results
+- **OR** Critical gaps identified in recent assessments
 - **OR** High-priority (P1-3) tasks remain in queue
-- **OR** Average coverage <60%
-- **OR** Only completed <5 tasks (too early to assess)
+- **OR** Recent assessments indicate major topic dimensions unexplored
+- **OR** Only completed few tasks (too early to assess)
 
 ### **RECOMMENDATIONS**
 

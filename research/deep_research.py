@@ -1479,11 +1479,14 @@ class SimpleDeepResearch:
             Dict with LLM coverage decision:
             {
                 "decision": "continue" | "stop",
-                "rationale": str,
-                "coverage_score": int (0-100),
-                "incremental_gain_last": float,
+                "assessment": str,  # Qualitative prose assessment
                 "gaps_identified": List[str],
-                "confidence": int (0-100)
+                "facts": {  # Auto-injected by system
+                    "results_new": int,
+                    "results_duplicate": int,
+                    "incremental_gain_last_pct": int,
+                    ...
+                }
             }
         """
         from core.prompt_loader import render_prompt
@@ -1603,11 +1606,18 @@ class SimpleDeepResearch:
             # Fallback: continue if under hard ceilings
             return {
                 "decision": "continue" if (executed_count < self.max_hypotheses_to_execute and time_elapsed_seconds < self.max_time_per_task_seconds) else "stop",
-                "rationale": f"Coverage assessment failed ({type(e).__name__}), defaulting based on hard ceilings",
-                "coverage_score": 50,
-                "incremental_gain_last": 0.0,
+                "assessment": f"Coverage assessment failed ({type(e).__name__}). Defaulting to hard ceiling logic: continuing if hypotheses remaining and time allows.",
                 "gaps_identified": ["Coverage assessment error - using fallback logic"],
-                "confidence": 0
+                "facts": {  # Minimal facts for failed assessment
+                    "results_new": 0,
+                    "results_duplicate": 0,
+                    "incremental_gain_last_pct": 0,
+                    "entities_new": 0,
+                    "hypotheses_executed": executed_count,
+                    "hypotheses_remaining": len(hypotheses_all) - executed_count,
+                    "time_elapsed_seconds": time_elapsed_seconds,
+                    "time_remaining_seconds": self.max_time_per_task_seconds - time_elapsed_seconds
+                }
             }
 
     async def _execute_hypotheses(
@@ -3767,7 +3777,9 @@ class SimpleDeepResearch:
                     "estimated_value": task.estimated_value,
                     "estimated_redundancy": task.estimated_redundancy,
                     "actual_results": len(task.accumulated_results),
-                    "actual_coverage": task.metadata.get("coverage_decisions", [{}])[-1].get("coverage_score") if task.metadata.get("coverage_decisions") else None,
+                    # Phase 5: Store qualitative assessment instead of numeric score
+                    "final_assessment": task.metadata.get("coverage_decisions", [{}])[-1].get("assessment", "")[:200] if task.metadata.get("coverage_decisions") else None,
+                    "final_gaps": task.metadata.get("coverage_decisions", [{}])[-1].get("gaps_identified", []) if task.metadata.get("coverage_decisions") else [],
                     "parent_task_id": task.parent_task_id
                 }
                 for task in (self.completed_tasks + self.failed_tasks)
@@ -3827,15 +3839,17 @@ class SimpleDeepResearch:
         if not self.completed_tasks:
             return "No tasks completed yet - initial decomposition."
 
-        # Aggregate coverage scores
-        coverage_scores = []
-        for task in self.completed_tasks:
+        # Phase 5: Collect qualitative assessments instead of numeric scores
+        recent_assessments = []
+        for task in self.completed_tasks[-3:]:  # Last 3 tasks
             coverage_decisions = task.metadata.get("coverage_decisions", [])
             if coverage_decisions:
                 latest = coverage_decisions[-1]
-                coverage_scores.append(latest.get("coverage_score", 0))
-
-        avg_coverage = int(sum(coverage_scores) / len(coverage_scores)) if coverage_scores else 0
+                assessment = latest.get("assessment", "")
+                if assessment:
+                    # Extract key phrases (first sentence or ~100 chars)
+                    brief = assessment.split('.')[0][:100]
+                    recent_assessments.append(f"Task {task.id}: {brief}")
 
         # Collect all gaps across tasks
         all_gaps = []
@@ -3850,15 +3864,16 @@ class SimpleDeepResearch:
         # Calculate total results
         total_results = sum(len(t.accumulated_results) for t in self.completed_tasks)
 
-        # Build summary
+        # Build qualitative summary
         summary_parts = [
-            f"Completed {len(self.completed_tasks)} tasks",
-            f"avg coverage {avg_coverage}%",
-            f"{total_results} results found"
+            f"Completed {len(self.completed_tasks)} tasks, {total_results} results found"
         ]
 
+        if recent_assessments:
+            summary_parts.append(f"Recent progress: {'; '.join(recent_assessments[:2])}")
+
         if unique_gaps:
-            summary_parts.append(f"Main gaps: {'; '.join(unique_gaps[:3])}")
+            summary_parts.append(f"Key gaps remaining: {'; '.join(unique_gaps[:3])}")
 
         return ". ".join(summary_parts) + "."
 
@@ -3913,13 +3928,18 @@ class SimpleDeepResearch:
                 duplicate_results = 0
                 incremental_value = 100  # Conservative: assume all new
 
+            # Phase 5: Use qualitative assessment instead of numeric score
+            assessment_text = latest_coverage.get("assessment", "No assessment available")
+            gaps = latest_coverage.get("gaps_identified", [])
+
             recent_tasks.append({
                 "id": task.id,
                 "query": task.query,
                 "results_count": len(task.accumulated_results),
                 "new_results": new_results,
                 "duplicate_results": duplicate_results,
-                "coverage_score": latest_coverage.get("coverage_score", 0),
+                "assessment": assessment_text,
+                "gaps_remaining": gaps,
                 "incremental_value": incremental_value
             })
 
@@ -3938,12 +3958,20 @@ class SimpleDeepResearch:
         total_results = sum(len(t.accumulated_results) for t in self.completed_tasks)
         total_entities = len(set().union(*[set(t.entities_found or []) for t in self.completed_tasks]))
 
-        coverage_scores = []
+        # Phase 5: Collect qualitative assessments instead of numeric scores
+        coverage_assessments = []
         for task in self.completed_tasks:
             coverage_decisions = task.metadata.get("coverage_decisions", [])
             if coverage_decisions:
-                coverage_scores.append(coverage_decisions[-1].get("coverage_score", 0))
-        avg_coverage = int(sum(coverage_scores) / len(coverage_scores)) if coverage_scores else 0
+                latest = coverage_decisions[-1]
+                assessment = latest.get("assessment", "")
+                gaps = latest.get("gaps_identified", [])
+                if assessment:
+                    coverage_assessments.append({
+                        "task_id": task.id,
+                        "assessment": assessment[:200],  # Truncate for brevity
+                        "gaps": gaps
+                    })
 
         elapsed_minutes = (datetime.now() - self.start_time).total_seconds() / 60
 
@@ -3954,7 +3982,7 @@ class SimpleDeepResearch:
             completed_count=len(self.completed_tasks),
             total_results=total_results,
             total_entities=total_entities,
-            avg_coverage=avg_coverage,
+            coverage_assessments=coverage_assessments,
             elapsed_minutes=elapsed_minutes,
             recent_tasks=recent_tasks,
             pending_count=len(self.task_queue),
