@@ -1546,35 +1546,17 @@ class SimpleDeepResearch:
                     "enum": ["continue", "stop"],
                     "description": "Whether to continue executing hypotheses or stop"
                 },
-                "rationale": {
+                "assessment": {
                     "type": "string",
-                    "description": "2-3 sentences explaining the decision based on decision criteria"
-                },
-                "coverage_score": {
-                    "type": "integer",
-                    "minimum": 0,
-                    "maximum": 100,
-                    "description": "Assessment of current coverage completeness (0=no coverage, 100=comprehensive)"
-                },
-                "incremental_gain_last": {
-                    "type": "number",
-                    "minimum": 0.0,
-                    "maximum": 100.0,
-                    "description": "Percentage of new results from most recent hypothesis"
+                    "description": "2-4 sentences explaining coverage achieved, gaps remaining, and reasoning for decision. Be specific and reference actual findings."
                 },
                 "gaps_identified": {
                     "type": "array",
                     "items": {"type": "string"},
-                    "description": "Brief descriptions of remaining gaps (1-3 items if decision is continue)"
-                },
-                "confidence": {
-                    "type": "integer",
-                    "minimum": 0,
-                    "maximum": 100,
-                    "description": "Confidence in this decision (0=uncertain, 100=very confident)"
+                    "description": "Specific remaining gaps (1-3 items if decision is continue, empty if stop)"
                 }
             },
-            "required": ["decision", "rationale", "coverage_score", "incremental_gain_last", "gaps_identified", "confidence"],
+            "required": ["decision", "assessment", "gaps_identified"],
             "additionalProperties": False
         }
 
@@ -1588,12 +1570,31 @@ class SimpleDeepResearch:
 
             decision = json.loads(response.choices[0].message.content)
 
+            # Phase 5: Auto-inject facts (system calculates, LLM doesn't)
+            # Calculate incremental gain from last hypothesis
+            if task.hypothesis_runs:
+                last_run = task.hypothesis_runs[-1]
+                delta = last_run.get("delta_metrics", {})
+                incremental_gain_pct = int(delta.get("results_new", 0) / delta.get("total_results", 1) * 100) if delta.get("total_results", 0) > 0 else 0
+            else:
+                incremental_gain_pct = 0
+
+            decision["facts"] = {
+                "results_new": sum(run.get("delta_metrics", {}).get("results_new", 0) for run in task.hypothesis_runs),
+                "results_duplicate": sum(run.get("delta_metrics", {}).get("results_duplicate", 0) for run in task.hypothesis_runs),
+                "incremental_gain_last_pct": incremental_gain_pct,
+                "entities_new": sum(run.get("delta_metrics", {}).get("entities_new", 0) for run in task.hypothesis_runs),
+                "hypotheses_executed": executed_count,
+                "hypotheses_remaining": len(hypotheses_all) - executed_count,
+                "time_elapsed_seconds": time_elapsed_seconds,
+                "time_remaining_seconds": self.max_time_per_task_seconds - time_elapsed_seconds
+            }
+
             # Log coverage decision
             logging.info(f"📊 Coverage assessment (Task {task.id}):")
-            logging.info(f"   Decision: {decision['decision'].upper()} (confidence: {decision['confidence']}%)")
-            logging.info(f"   Coverage score: {decision['coverage_score']}%")
-            logging.info(f"   Incremental gain (last): {decision['incremental_gain_last']}%")
-            logging.info(f"   Rationale: {decision['rationale']}")
+            logging.info(f"   Decision: {decision['decision'].upper()}")
+            logging.info(f"   Assessment: {decision['assessment'][:150]}...")
+            logging.info(f"   Facts: {decision['facts']['results_new']} new, {decision['facts']['results_duplicate']} dup")
 
             return decision
 

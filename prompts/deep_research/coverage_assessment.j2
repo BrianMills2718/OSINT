@@ -66,15 +66,18 @@ Return a JSON object with these fields:
 
 {
   "decision": "continue" | "stop",
-  "rationale": "2-3 sentences explaining your decision based on the criteria above",
-  "coverage_score": 0-100,  // Your assessment of current coverage completeness (0=no coverage, 100=comprehensive)
-  "incremental_gain_last": 0.0-100.0,  // Percentage of new results from most recent hypothesis
+  "assessment": "2-4 sentences explaining your decision. Describe what coverage we've achieved, what critical gaps remain, and why continuing (or stopping) makes sense. Be specific about what we found and what's missing.",
   "gaps_identified": [
     "Brief description of remaining gaps (if decision: continue)",
     "List 1-3 specific information needs not yet addressed"
-  ],
-  "confidence": 0-100  // How confident are you in this decision (0=uncertain, 100=very confident)
+  ]
 }
+
+**IMPORTANT**:
+- Write naturally - don't force rigid structure
+- Be specific: "Missing humanitarian org perspectives" not "gaps exist"
+- Reference actual findings: "Found 50 economic analyses but zero Cuban govt responses"
+- System will auto-inject facts (result counts, entity counts, time) - you focus on MEANING
 
 **DECISION GUIDANCE**:
 - **Continue** if:
