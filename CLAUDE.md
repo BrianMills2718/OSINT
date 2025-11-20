@@ -223,6 +223,76 @@ sam_gov/
 
 ---
 
+## SYSTEM ARCHITECTURE
+
+### Multi-Agent Research System
+
+**Pattern**: Manager-Agent with Hypothesis Branching (evolved BabyAGI-like)
+**Complexity**: 4,392 lines (research/deep_research.py)
+**Philosophy**: No hardcoded heuristics, full LLM intelligence, quality-first
+
+### Agent Hierarchy
+
+```
+User Query → [Task Decomposition LLM] → 3-5 research tasks
+    ↓
+[Manager LLM] → Prioritizes tasks (P1-P10)
+    ↓
+For each task:
+    ├─ [Hypothesis Generation LLM] → 3-5 investigative hypotheses
+    ├─ For each hypothesis:
+    │   ├─ [Query Generation LLM] → Source-specific queries
+    │   ├─ [Source Execution] → DVIDS, Brave, SAM.gov, etc.
+    │   ├─ [Relevance Filter LLM] → Filter hypothesis results
+    │   └─ [Coverage Assessment LLM] → Should we continue?
+    └─ [Relevance Filter LLM] → Filter main task results (if no hypotheses)
+        ↓
+[Report Synthesis LLM] → Final markdown report
+```
+
+### Key Components
+
+**research/deep_research.py** (4,392 lines):
+- Main class: `SimpleDeepResearch` (misnomer - not simple!)
+- Task decomposition, hypothesis generation, filtering, synthesis
+- 5 phases implemented (see STATUS.md for details)
+
+**research/execution_logger.py**:
+- Structured logging to `execution_log.jsonl`
+- All LLM decisions, API calls, filtering choices logged
+
+**prompts/deep_research/** (Jinja2 templates):
+- 8+ prompts for different LLM agents
+- All prompts version-controlled separately from code
+
+**8 integrations** (via MCP + direct):
+- Government: SAM.gov, DVIDS, USAJobs, ClearanceJobs
+- Social: Twitter, Reddit, Discord
+- Web: Brave Search
+
+### Output Structure
+
+```
+data/research_output/YYYY-MM-DD_HH-MM-SS_query/
+├─ execution_log.jsonl  # Structured event log (all LLM decisions)
+├─ metadata.json        # Run metadata (config, stats, coverage decisions)
+├─ report.md           # Final markdown report
+├─ results.json        # All results with deduplication
+└─ raw/                # Raw API responses
+```
+
+### Entry Points
+
+**Primary**:
+- `apps/ai_research.py` - Main CLI for deep research
+- `apps/unified_search_app.py` - Streamlit web UI
+
+**Testing**:
+- `tests/test_deep_research_full.py` - E2E validation
+- 160+ test files for all components
+
+---
+
 ## ENVIRONMENT
 
 ### Python (.venv)

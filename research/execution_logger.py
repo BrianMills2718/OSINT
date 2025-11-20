@@ -398,3 +398,28 @@ class ExecutionLogger:
             "recommended_additional_tasks": saturation_result.get("recommended_additional_tasks"),
             "critical_gaps_remaining": saturation_result.get("critical_gaps_remaining", [])
         })
+
+    def log_hypothesis_query_generation(
+        self,
+        task_id: int,
+        hypothesis_id: str,
+        source_name: str,
+        query: str,
+        reasoning: str
+    ):
+        """
+        Log LLM-generated hypothesis query with reasoning (Phase 3B).
+
+        Args:
+            task_id: Task this hypothesis belongs to
+            hypothesis_id: Hypothesis identifier
+            source_name: Target source (e.g., "DVIDS", "Brave Search")
+            query: Generated query string
+            reasoning: LLM's explanation for why this query tests the hypothesis
+        """
+        self._write_entry(task_id, "hypothesis_query_generation", {
+            "hypothesis_id": hypothesis_id,
+            "source_name": source_name,
+            "query": query,
+            "reasoning": reasoning
+        })

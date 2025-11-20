@@ -1346,7 +1346,21 @@ class SimpleDeepResearch:
             )
 
             result = json.loads(response.choices[0].message.content)
-            logging.info(f"🔍 Hypothesis {hypothesis['id']} → {source_display_name}: '{result['query']}' ({result['reasoning']})")
+
+            # Log to structured log
+            if self.logger:
+                self.logger.log_hypothesis_query_generation(
+                    task_id=task.id,
+                    hypothesis_id=hypothesis['id'],
+                    source_name=source_display_name,
+                    query=result['query'],
+                    reasoning=result['reasoning']
+                )
+
+            # Also print for real-time visibility
+            print(f"      Query: '{result['query']}'")
+            print(f"      Reasoning: {result['reasoning']}")
+
             return result["query"]
 
         except Exception as e:
@@ -1431,6 +1445,31 @@ class SimpleDeepResearch:
             except Exception as e:
                 logging.error(f"❌ Hypothesis {hypothesis_id} search failed for {source_display}: {type(e).__name__}: {e}")
                 continue  # Continue with other sources
+
+        # Filter hypothesis results for relevance (Bug fix: hypothesis execution was bypassing filtering)
+        if all_results:
+            print(f"   🔍 Validating relevance of {len(all_results)} hypothesis results...")
+            should_accept, relevance_reason, relevant_indices, should_continue, continuation_reason, reasoning_breakdown = await self._validate_result_relevance(
+                task_query=hypothesis['statement'],  # Use hypothesis statement as query context
+                research_question=research_question,
+                sample_results=all_results
+            )
+
+            decision_str = "ACCEPT" if should_accept else "REJECT"
+            print(f"   Decision: {decision_str}")
+            print(f"   Reason: {relevance_reason}")
+            print(f"   Filtered: {len(relevant_indices)}/{len(all_results)} results kept")
+
+            # Filter to only relevant results
+            if should_accept and relevant_indices:
+                filtered_results = [all_results[i] for i in relevant_indices if i < len(all_results)]
+                discarded_count = len(all_results) - len(filtered_results)
+                print(f"   ✓ Kept {len(filtered_results)} relevant results, discarded {discarded_count} junk")
+                all_results = filtered_results
+            elif not should_accept:
+                # Reject all results
+                print(f"   ✗ Rejected all {len(all_results)} results as off-topic")
+                all_results = []
 
         # Deduplicate results with hypothesis tagging
         deduplicated = self._deduplicate_with_attribution(all_results, hypothesis_id)
