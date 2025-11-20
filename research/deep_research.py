@@ -3172,13 +3172,15 @@ class SimpleDeepResearch:
         Returns:
             True if follow-ups should be created (LLM will decide actual count 0-N)
         """
-        # Check coverage score - skip follow-ups if coverage is excellent (95%+)
+        # Check coverage score - skip follow-ups if coverage is excellent
+        # Use configurable threshold (default 95%) to align with "no hardcoded limits" philosophy
+        min_coverage = config.get_raw_config().get("research", {}).get("deep_research", {}).get("min_coverage_for_followups", 95)
         coverage_decisions = task.metadata.get("coverage_decisions", [])
         if coverage_decisions:
             latest_coverage = coverage_decisions[-1]
             coverage_score = latest_coverage.get("coverage_score", 0)
-            if coverage_score >= 95:
-                logging.info(f"Skipping follow-ups for task {task.id}: coverage score {coverage_score}% is excellent")
+            if coverage_score >= min_coverage:
+                logging.info(f"Skipping follow-ups for task {task.id}: coverage score {coverage_score}% >= {min_coverage}%")
                 return False
 
         # Codex fix: Check TOTAL workload (completed + pending + would-be follow-ups)
