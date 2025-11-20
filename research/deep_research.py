@@ -3693,8 +3693,25 @@ class SimpleDeepResearch:
                 "max_concurrent_tasks": self.max_concurrent_tasks,
                 "hypothesis_branching_enabled": self.hypothesis_branching_enabled,
                 "hypothesis_mode": getattr(self, "hypothesis_mode", "off"),
-                "max_hypotheses_per_task": self.max_hypotheses_per_task
+                "max_hypotheses_per_task": self.max_hypotheses_per_task,
+                # Phase 4A: Task prioritization enabled
+                "task_prioritization_enabled": True
             },
+            # Phase 4A: Task execution order analysis
+            "task_execution_order": [
+                {
+                    "task_id": task.id,
+                    "query": task.query,
+                    "priority": task.priority,
+                    "priority_reasoning": task.priority_reasoning,
+                    "estimated_value": task.estimated_value,
+                    "estimated_redundancy": task.estimated_redundancy,
+                    "actual_results": len(task.accumulated_results),
+                    "actual_coverage": task.metadata.get("coverage_decisions", [{}])[-1].get("coverage_score") if task.metadata.get("coverage_decisions") else None,
+                    "parent_task_id": task.parent_task_id
+                }
+                for task in (self.completed_tasks + self.failed_tasks)
+            ],
             "execution_summary": {
                 "tasks_executed": result["tasks_executed"],
                 "tasks_failed": result["tasks_failed"],
