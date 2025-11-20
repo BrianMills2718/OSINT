@@ -103,10 +103,9 @@ Summary of executed hypotheses from this run (mode: execution):
 
 {% for decision in decisions %}
 - **After Hypothesis {{ decision.hypothesis_id }}** ({{ decision.executed_count }}/{{ decision.total_hypotheses }} executed):
-  - **Decision**: {{ decision.decision|upper }} ({{ decision.confidence }}% confidence)
-  - **Coverage Score**: {{ decision.coverage_score }}%
-  - **Incremental Gain**: {{ decision.incremental_gain_last }}% new results from last hypothesis
-  - **Rationale**: {{ decision.rationale }}
+  - **Decision**: {{ decision.decision|upper }}
+  - **New Results**: {{ decision.results_new }} ({{ decision.incremental_gain_last_pct }}% of total)
+  - **Assessment**: {{ decision.assessment }}
   {% if decision.gaps_identified %}
   - **Gaps Identified**: {{ decision.gaps_identified|join('; ') }}
   {% endif %}
