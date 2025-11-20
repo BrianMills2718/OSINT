@@ -3479,7 +3479,7 @@ class SimpleDeepResearch:
             parent_task=parent_task,
             coverage_decisions=coverage_decisions,
             gaps_identified=unique_gaps,
-            assessment_summary=assessment_text  # Phase 5: Use prose, not score
+            latest_assessment=assessment_text  # Phase 5: Use prose, not score
         )
 
         # Call LLM to generate follow-ups
