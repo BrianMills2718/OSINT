@@ -94,6 +94,11 @@ class ResearchTask:
     hypotheses: Optional[Dict] = None  # Phase 3A: Store generated investigative hypotheses
     hypothesis_runs: List[Dict] = field(default_factory=list)  # Phase 3B: Per-hypothesis execution summaries
     metadata: Dict[str, Any] = field(default_factory=dict)  # Phase 3C: Store coverage decisions and other metadata
+    # Phase 4A: Task prioritization (Manager Agent)
+    priority: int = 5  # 1=highest urgency, 10=lowest (default: medium)
+    priority_reasoning: str = ""  # Why this priority level
+    estimated_value: int = 50  # Expected information value 0-100
+    estimated_redundancy: int = 50  # Expected overlap with existing findings 0-100
 
     def __post_init__(self):
         if self.entities_found is None:
@@ -600,6 +605,16 @@ class SimpleDeepResearch:
                                 ]
                             }
                         )
+
+                        # Phase 4A: Reprioritize queue after adding follow-ups
+                        if len(self.task_queue) > 1:
+                            print(f"\n🎯 Reprioritizing {len(self.task_queue)} pending tasks based on new findings...")
+                            self.task_queue = await self._prioritize_tasks(
+                                self.task_queue,
+                                global_coverage_summary=self._generate_global_coverage_summary()
+                            )
+                            if self.task_queue:
+                                print(f"   Next: P{self.task_queue[0].priority} - Task {self.task_queue[0].id}: {self.task_queue[0].query[:60]}...")
                 else:
                     self.failed_tasks.append(task)
 
@@ -789,6 +804,11 @@ class SimpleDeepResearch:
                     # Continue without hypotheses - don't fail task creation
                     task.hypotheses = None
 
+        # Phase 4A: Prioritize initial tasks (before execution)
+        print(f"\n🎯 Prioritizing {len(tasks)} initial tasks...")
+        tasks = await self._prioritize_tasks(tasks, global_coverage_summary="Initial decomposition - no completed tasks yet")
+        print(f"   Execution order: {', '.join([f'P{t.priority}(T{t.id})' for t in tasks])}")
+
         return tasks
 
     async def _generate_hypotheses(self, task_query: str, research_question: str) -> Dict[str, Any]:
@@ -903,6 +923,163 @@ class SimpleDeepResearch:
         print(f"📊 Coverage Assessment: {result['coverage_assessment']}\n")
 
         return result
+
+    async def _prioritize_tasks(
+        self,
+        tasks: List[ResearchTask],
+        global_coverage_summary: str = ""
+    ) -> List[ResearchTask]:
+        """
+        LLM-driven task prioritization (Phase 4A - Manager Agent).
+
+        Ranks pending tasks based on:
+        - Gap criticality (from completed task coverage decisions)
+        - Likelihood of new information (vs redundancy)
+        - Resource efficiency (simple vs complex queries)
+        - Strategic value (unlocks follow-ups, validates findings)
+
+        Args:
+            tasks: List of pending tasks to prioritize
+            global_coverage_summary: Optional global coverage context
+
+        Returns:
+            Same tasks with updated priority/reasoning fields, sorted by priority
+        """
+        if not tasks:
+            return tasks
+
+        if len(tasks) == 1:
+            # Single task - no prioritization needed
+            tasks[0].priority = 1
+            tasks[0].priority_reasoning = "Only pending task"
+            tasks[0].estimated_value = 70
+            tasks[0].estimated_redundancy = 30
+            return tasks
+
+        # Prepare completed task summaries
+        completed_summaries = []
+        for task in self.completed_tasks:
+            coverage_decisions = task.metadata.get("coverage_decisions", [])
+            latest_coverage = coverage_decisions[-1] if coverage_decisions else {}
+
+            completed_summaries.append({
+                "id": task.id,
+                "query": task.query,
+                "results_count": len(task.accumulated_results),
+                "entities_count": len(task.entities_found) if task.entities_found else 0,
+                "coverage_score": latest_coverage.get("coverage_score", "N/A"),
+                "gaps_identified": latest_coverage.get("gaps_identified", [])
+            })
+
+        # Prepare pending task data
+        pending_summaries = []
+        for task in tasks:
+            pending_summaries.append({
+                "id": task.id,
+                "query": task.query,
+                "rationale": task.rationale,
+                "parent_task_id": task.parent_task_id,
+                "priority": task.priority
+            })
+
+        # Calculate global deduplication rate
+        total_unique = sum(len(t.accumulated_results) for t in self.completed_tasks)
+        total_fetched_estimate = total_unique  # Conservative estimate (will be higher with raw data)
+        # Try to get actual fetched count from results_by_task
+        for task_id, result_dict in self.results_by_task.items():
+            if "accumulated_count" in result_dict:
+                # More accurate if available
+                total_fetched_estimate = max(total_fetched_estimate, result_dict["accumulated_count"])
+
+        dedup_rate = 0  # Default
+        if total_unique > 0 and total_fetched_estimate > total_unique:
+            dedup_rate = int((1 - total_unique / total_fetched_estimate) * 100)
+
+        # Render prioritization prompt
+        prompt = render_prompt(
+            "deep_research/task_prioritization.j2",
+            research_question=self.research_question,
+            elapsed_minutes=(datetime.now() - self.start_time).total_seconds() / 60,
+            completed_tasks=completed_summaries,
+            completed_count=len(completed_summaries),
+            pending_tasks=pending_summaries,
+            pending_count=len(pending_summaries),
+            global_coverage_summary=global_coverage_summary,
+            deduplication_rate=dedup_rate
+        )
+
+        # Define schema
+        schema = {
+            "type": "object",
+            "properties": {
+                "priorities": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "properties": {
+                            "task_id": {"type": "integer"},
+                            "priority": {"type": "integer", "minimum": 1, "maximum": 10},
+                            "estimated_value": {"type": "integer", "minimum": 0, "maximum": 100},
+                            "estimated_redundancy": {"type": "integer", "minimum": 0, "maximum": 100},
+                            "reasoning": {"type": "string"}
+                        },
+                        "required": ["task_id", "priority", "estimated_value", "estimated_redundancy", "reasoning"],
+                        "additionalProperties": False
+                    }
+                },
+                "global_coverage_assessment": {"type": "string"}
+            },
+            "required": ["priorities", "global_coverage_assessment"],
+            "additionalProperties": False
+        }
+
+        try:
+            response = await acompletion(
+                model=config.get_model("analysis"),
+                messages=[{"role": "user", "content": prompt}],
+                response_format={
+                    "type": "json_schema",
+                    "json_schema": {
+                        "name": "task_prioritization",
+                        "strict": True,
+                        "schema": schema
+                    }
+                }
+            )
+
+            result = json.loads(response.choices[0].message.content)
+
+            # Update tasks with priority assignments
+            priority_map = {p["task_id"]: p for p in result["priorities"]}
+
+            for task in tasks:
+                if task.id in priority_map:
+                    p = priority_map[task.id]
+                    task.priority = p["priority"]
+                    task.priority_reasoning = p["reasoning"]
+                    task.estimated_value = p["estimated_value"]
+                    task.estimated_redundancy = p["estimated_redundancy"]
+
+            # Log prioritization
+            print(f"\n📊 Task Prioritization (Manager LLM):")
+            print(f"   Global: {result['global_coverage_assessment'][:120]}...")
+            for task in sorted(tasks, key=lambda t: t.priority):
+                print(f"   P{task.priority}: Task {task.id} - {task.query[:50]}...")
+                print(f"       Value: {task.estimated_value}%, Redundancy: {task.estimated_redundancy}%")
+                print(f"       Why: {task.priority_reasoning[:90]}...")
+
+            # Sort tasks by priority (ascending - P1 executes first)
+            tasks.sort(key=lambda t: (t.priority, t.id))
+
+            return tasks
+
+        except Exception as e:
+            logging.error(f"Task prioritization failed: {type(e).__name__}: {e}")
+            print(f"⚠️  Prioritization failed, using default priority order")
+            import traceback
+            logging.error(traceback.format_exc())
+            # On error, return tasks as-is (FIFO order)
+            return tasks
 
     def _map_hypothesis_sources(self, hypothesis: Dict) -> List[str]:
         """
@@ -3559,6 +3736,54 @@ class SimpleDeepResearch:
 
         logging.info(f"Research output saved to: {output_path}")
         return str(output_path)
+
+    def _generate_global_coverage_summary(self) -> str:
+        """
+        Generate concise summary of overall research coverage (Phase 4A).
+
+        Used for task prioritization context - helps manager LLM understand
+        what's been found and what gaps remain.
+
+        Returns:
+            Text summary for prioritization/saturation context
+        """
+        if not self.completed_tasks:
+            return "No tasks completed yet - initial decomposition."
+
+        # Aggregate coverage scores
+        coverage_scores = []
+        for task in self.completed_tasks:
+            coverage_decisions = task.metadata.get("coverage_decisions", [])
+            if coverage_decisions:
+                latest = coverage_decisions[-1]
+                coverage_scores.append(latest.get("coverage_score", 0))
+
+        avg_coverage = int(sum(coverage_scores) / len(coverage_scores)) if coverage_scores else 0
+
+        # Collect all gaps across tasks
+        all_gaps = []
+        for task in self.completed_tasks:
+            coverage_decisions = task.metadata.get("coverage_decisions", [])
+            for decision in coverage_decisions:
+                all_gaps.extend(decision.get("gaps_identified", []))
+
+        # Deduplicate gaps while preserving order
+        unique_gaps = list(dict.fromkeys(all_gaps))[:5]  # Top 5 unique gaps
+
+        # Calculate total results
+        total_results = sum(len(t.accumulated_results) for t in self.completed_tasks)
+
+        # Build summary
+        summary_parts = [
+            f"Completed {len(self.completed_tasks)} tasks",
+            f"avg coverage {avg_coverage}%",
+            f"{total_results} results found"
+        ]
+
+        if unique_gaps:
+            summary_parts.append(f"Main gaps: {'; '.join(unique_gaps[:3])}")
+
+        return ". ".join(summary_parts) + "."
 
     async def _synthesize_report(self, original_question: str) -> str:
         """Synthesize all findings into comprehensive report."""
