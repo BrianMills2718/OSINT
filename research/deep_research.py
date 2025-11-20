@@ -3752,8 +3752,11 @@ class SimpleDeepResearch:
                 "hypothesis_branching_enabled": self.hypothesis_branching_enabled,
                 "hypothesis_mode": getattr(self, "hypothesis_mode", "off"),
                 "max_hypotheses_per_task": self.max_hypotheses_per_task,
-                # Phase 4A: Task prioritization enabled
-                "task_prioritization_enabled": True
+                # Phase 4: Manager-Agent configuration
+                "task_prioritization_enabled": self.manager_enabled,
+                "saturation_detection_enabled": self.saturation_detection_enabled,
+                "saturation_check_interval": self.saturation_check_interval,
+                "saturation_confidence_threshold": self.saturation_confidence_threshold
             },
             # Phase 4A: Task execution order analysis
             "task_execution_order": [
