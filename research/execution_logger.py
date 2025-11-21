@@ -436,3 +436,94 @@ class ExecutionLogger:
             "query": query,
             "reasoning": reasoning
         })
+
+    def log_source_saturation_start(
+        self,
+        task_id: int,
+        hypothesis_id: str,
+        source_name: str,
+        max_queries: int,
+        max_time_seconds: int
+    ):
+        """
+        Log start of source saturation (Phase 1: Query Saturation).
+
+        Args:
+            task_id: Task ID
+            hypothesis_id: Hypothesis identifier
+            source_name: Source being queried
+            max_queries: Maximum queries allowed for this source
+            max_time_seconds: Maximum time allowed for this source
+        """
+        self._write_entry(task_id, "source_saturation_start", {
+            "hypothesis_id": hypothesis_id,
+            "source_name": source_name,
+            "max_queries": max_queries,
+            "max_time_seconds": max_time_seconds
+        })
+
+    def log_query_attempt(
+        self,
+        task_id: int,
+        hypothesis_id: str,
+        source_name: str,
+        query_num: int,
+        query: str,
+        reasoning: str,
+        expected_value: str = None
+    ):
+        """
+        Log individual query attempt (Phase 1: Query Saturation).
+
+        Args:
+            task_id: Task ID
+            hypothesis_id: Hypothesis identifier
+            source_name: Source being queried
+            query_num: Query number (1, 2, 3, ...)
+            query: Query string
+            reasoning: LLM reasoning for this query
+            expected_value: Expected value (high | medium | low)
+        """
+        self._write_entry(task_id, "query_attempt", {
+            "hypothesis_id": hypothesis_id,
+            "source_name": source_name,
+            "query_num": query_num,
+            "query": query,
+            "reasoning": reasoning,
+            "expected_value": expected_value
+        })
+
+    def log_source_saturation_complete(
+        self,
+        task_id: int,
+        hypothesis_id: str,
+        source_name: str,
+        exit_reason: str,
+        queries_executed: int,
+        results_accepted: int,
+        saturation_reasoning: str,
+        decision_confidence: int = None
+    ):
+        """
+        Log completion of source saturation (Phase 1: Query Saturation).
+
+        Args:
+            task_id: Task ID
+            hypothesis_id: Hypothesis identifier
+            source_name: Source that was queried
+            exit_reason: Why saturation ended (llm_saturated | max_queries_reached |
+                        time_limit_reached | query_generation_error | empty_query_suggestion)
+            queries_executed: Number of queries executed
+            results_accepted: Number of results accepted (after deduplication)
+            saturation_reasoning: LLM reasoning for saturation decision
+            decision_confidence: Confidence score 0-100 (if LLM saturation)
+        """
+        self._write_entry(task_id, "source_saturation_complete", {
+            "hypothesis_id": hypothesis_id,
+            "source_name": source_name,
+            "exit_reason": exit_reason,
+            "queries_executed": queries_executed,
+            "results_accepted": results_accepted,
+            "saturation_reasoning": saturation_reasoning,
+            "decision_confidence": decision_confidence
+        })
