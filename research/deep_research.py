@@ -1427,7 +1427,7 @@ class SimpleDeepResearch:
         )
 
         response = await acompletion(
-            model=self.resource_manager.get_preferred_model(),
+            model=config.get_model("query_generation"),
             messages=[{"role": "user", "content": prompt}],
             response_format={
                 "type": "json_schema",
@@ -1502,7 +1502,7 @@ class SimpleDeepResearch:
 
         # LLM decision
         response = await acompletion(
-            model=self.resource_manager.get_preferred_model(),
+            model=config.get_model("query_generation"),
             messages=[{"role": "user", "content": prompt}],
             response_format={
                 "type": "json_schema",
