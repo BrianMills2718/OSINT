@@ -1387,6 +1387,368 @@ class SimpleDeepResearch:
             logging.error(f"❌ Hypothesis {hypothesis['id']} query generation failed for {source_display_name}: {type(e).__name__}: {e}")
             return None
 
+    async def _generate_initial_query(
+        self,
+        hypothesis: Dict[str, Any],
+        source_name: str,
+        source_metadata: Dict[str, Any]
+    ) -> Dict[str, str]:
+        """
+        Generate first query from hypothesis (no query history yet).
+
+        This is separate from _generate_next_query_or_stop because:
+        - First query has no history to reason from
+        - Uses hypothesis statement + source metadata only
+        - Simpler prompt without saturation decision
+
+        Args:
+            hypothesis: Hypothesis dictionary
+            source_name: Name of the source
+            source_metadata: Metadata about the source
+
+        Returns:
+            {
+                "query": str,
+                "reasoning": str
+            }
+        """
+        from core.prompt_loader import render_prompt
+
+        # Use existing hypothesis query generation prompt
+        prompt = render_prompt(
+            'deep_research/hypothesis_query_generation.j2',
+            hypothesis_statement=hypothesis['statement'],
+            source_name=source_name,
+            source_metadata=source_metadata,
+            search_strategy=hypothesis.get('search_strategy', {}),
+            information_gaps=hypothesis.get('information_gaps', [])
+        )
+
+        response = await acompletion(
+            model=self.resource_manager.get_preferred_model(),
+            messages=[{"role": "user", "content": prompt}],
+            response_format={
+                "type": "json_schema",
+                "json_schema": {
+                    "name": "initial_query",
+                    "strict": True,
+                    "schema": {
+                        "type": "object",
+                        "properties": {
+                            "query": {"type": "string"},
+                            "reasoning": {"type": "string"}
+                        },
+                        "required": ["query", "reasoning"]
+                    }
+                }
+            }
+        )
+
+        result = json.loads(response.choices[0].message.content)
+        return result
+
+    async def _generate_next_query_or_stop(
+        self,
+        task: ResearchTask,
+        hypothesis: Dict[str, Any],
+        source_name: str,
+        query_history: List[Dict],
+        source_metadata: Dict,
+        total_results_accepted: int
+    ) -> Dict[str, Any]:
+        """
+        LLM decides: continue with next query or stop (saturated).
+
+        Args:
+            task: Research task
+            hypothesis: Hypothesis dictionary
+            source_name: Name of the source
+            query_history: List of previous query attempts
+            source_metadata: Metadata about the source
+            total_results_accepted: Total results accepted so far
+
+        Returns:
+            {
+                "decision": "SATURATED" | "CONTINUE",
+                "reasoning": "...",
+                "confidence": 0-100,
+                "existence_confidence": 0-100,
+                "next_query_suggestion": "...",  # if CONTINUE
+                "next_query_reasoning": "...",   # if CONTINUE
+                "expected_value": "high" | "medium" | "low",
+                "remaining_gaps": [...]  # Updated list of info gaps
+            }
+        """
+        from core.prompt_loader import render_prompt
+
+        # NOTE: information_gaps should be updated dynamically:
+        # - Initial gaps from hypothesis generation
+        # - LLM updates "remaining_gaps" field after each query
+        # - Caller updates hypothesis['information_gaps'] with remaining_gaps
+        # This enables adaptive query generation targeting unaddressed gaps
+
+        # Render saturation prompt
+        prompt = render_prompt(
+            'deep_research/source_saturation.j2',
+            hypothesis_statement=hypothesis['statement'],
+            source_name=source_name,
+            source_metadata=source_metadata,
+            query_history=query_history,
+            total_results_accepted=total_results_accepted,
+            information_gaps=hypothesis.get('information_gaps', [])
+        )
+
+        # LLM decision
+        response = await acompletion(
+            model=self.resource_manager.get_preferred_model(),
+            messages=[{"role": "user", "content": prompt}],
+            response_format={
+                "type": "json_schema",
+                "json_schema": {
+                    "name": "saturation_decision",
+                    "strict": True,
+                    "schema": {
+                        "type": "object",
+                        "properties": {
+                            "decision": {"type": "string", "enum": ["SATURATED", "CONTINUE"]},
+                            "reasoning": {"type": "string"},
+                            "confidence": {"type": "integer", "minimum": 0, "maximum": 100},
+                            "existence_confidence": {"type": "integer", "minimum": 0, "maximum": 100},
+                            "next_query_suggestion": {"type": "string"},
+                            "next_query_reasoning": {"type": "string"},
+                            "expected_value": {"type": "string", "enum": ["high", "medium", "low"]},
+                            "remaining_gaps": {
+                                "type": "array",
+                                "items": {"type": "string"},
+                                "description": "Updated list of information gaps still unaddressed"
+                            }
+                        },
+                        "required": ["decision", "reasoning", "confidence"]
+                    }
+                }
+            }
+        )
+
+        decision = json.loads(response.choices[0].message.content)
+        return decision
+
+    async def _execute_source_with_saturation(
+        self,
+        task_id: int,
+        task: ResearchTask,
+        hypothesis: Dict[str, Any],
+        source_name: str
+    ) -> List[Dict[str, Any]]:
+        """
+        Execute queries against single source until saturated.
+
+        Args:
+            task_id: Task ID
+            task: Research task
+            hypothesis: Hypothesis dictionary
+            source_name: Name of the source
+
+        Returns:
+            List of accepted results from all queries
+        """
+        from integrations.source_metadata import SOURCE_METADATA
+
+        query_history = []
+        all_results = []
+        seen_result_urls = set()  # Track URLs for within-source deduplication
+        start_time = time.time()
+
+        # Get source-specific limits
+        max_queries = self.max_queries_per_source.get(source_name, 5)
+        max_time = self.max_time_per_source_seconds
+        source_metadata = SOURCE_METADATA.get(source_name, {})
+
+        # Log saturation start
+        if self.logger:
+            self.logger.log_source_saturation_start(
+                task_id=task_id,
+                hypothesis_id=hypothesis.get('id'),
+                source_name=source_name,
+                max_queries=max_queries,
+                max_time_seconds=max_time
+            )
+
+        while True:  # ✅ No hardcoded loop count
+            query_num = len(query_history) + 1
+
+            try:
+                # FIRST QUERY: Different logic than subsequent queries
+                if len(query_history) == 0:
+                    # Generate initial query from hypothesis (no history yet)
+                    initial = await self._generate_initial_query(
+                        hypothesis=hypothesis,
+                        source_name=source_name,
+                        source_metadata=source_metadata
+                    )
+                    query_decision = {
+                        'decision': 'CONTINUE',
+                        'reasoning': 'Initial query for hypothesis',
+                        'next_query_suggestion': initial['query'],
+                        'next_query_reasoning': initial['reasoning'],
+                        'confidence': 100,
+                        'expected_value': 'high'
+                    }
+                else:
+                    # SUBSEQUENT QUERIES: Check saturation and generate next query
+                    query_decision = await self._generate_next_query_or_stop(
+                        task=task,
+                        hypothesis=hypothesis,
+                        source_name=source_name,
+                        query_history=query_history,
+                        source_metadata=source_metadata,
+                        total_results_accepted=len(all_results)
+                    )
+
+                    # Update hypothesis information_gaps dynamically (if provided)
+                    if 'remaining_gaps' in query_decision:
+                        hypothesis['information_gaps'] = query_decision['remaining_gaps']
+
+                    # PRIMARY EXIT: LLM says saturated
+                    if query_decision['decision'] == 'SATURATED':
+                        if self.logger:
+                            self.logger.log_source_saturation_complete(
+                                task_id=task_id,
+                                hypothesis_id=hypothesis.get('id'),
+                                source_name=source_name,
+                                exit_reason='llm_saturated',
+                                queries_executed=len(query_history),
+                                results_accepted=len(all_results),
+                                saturation_reasoning=query_decision['reasoning'],
+                                decision_confidence=query_decision.get('confidence', 0)
+                            )
+                        break
+
+            except Exception as e:
+                logging.error(f"Error generating query for {source_name}: {e}")
+                if self.logger:
+                    self.logger.log_source_saturation_complete(
+                        task_id=task_id,
+                        hypothesis_id=hypothesis.get('id'),
+                        source_name=source_name,
+                        exit_reason='query_generation_error',
+                        queries_executed=len(query_history),
+                        results_accepted=len(all_results),
+                        saturation_reasoning=f"Query generation failed: {str(e)}"
+                    )
+                break
+
+            # Validate query suggestion exists
+            query = query_decision.get('next_query_suggestion', '').strip()
+            if not query:
+                logging.warning(f"Empty query suggestion from LLM for {source_name}")
+                if self.logger:
+                    self.logger.log_source_saturation_complete(
+                        task_id=task_id,
+                        hypothesis_id=hypothesis.get('id'),
+                        source_name=source_name,
+                        exit_reason='empty_query_suggestion',
+                        queries_executed=len(query_history),
+                        results_accepted=len(all_results),
+                        saturation_reasoning="LLM suggested empty query"
+                    )
+                break
+
+            query_reasoning = query_decision.get('next_query_reasoning', '')
+
+            if self.logger:
+                self.logger.log_query_attempt(
+                    task_id=task_id,
+                    hypothesis_id=hypothesis.get('id'),
+                    source_name=source_name,
+                    query_num=query_num,
+                    query=query,
+                    reasoning=query_reasoning,
+                    expected_value=query_decision.get('expected_value', 'unknown')
+                )
+
+            try:
+                # Call source API (using existing _execute_source_query or similar)
+                # TODO: This needs to integrate with existing source execution logic
+                # For now, placeholder
+                results = []  # Will be replaced with actual source query execution
+
+            except Exception as e:
+                logging.error(f"Source query failed for {source_name}: {e}")
+                # Track failed attempt and continue
+                query_history.append({
+                    'query': query,
+                    'reasoning': query_reasoning,
+                    'results_total': 0,
+                    'results_accepted': 0,
+                    'results_rejected': 0,
+                    'error': str(e),
+                    'effectiveness': 0
+                })
+                continue  # Try next query
+
+            # Filter results using EXISTING relevance evaluation
+            # TODO: Integrate with existing filtering logic
+            # For now, placeholder
+            filtered = {'accepted_results': [], 'rejection_themes': []}
+
+            # Deduplicate within source (track URLs seen)
+            accepted = filtered.get('accepted_results', [])
+            new_results = []
+            duplicate_count = 0
+
+            for result in accepted:
+                result_url = result.get('url', '') or result.get('id', '')
+                if result_url and result_url not in seen_result_urls:
+                    new_results.append(result)
+                    seen_result_urls.add(result_url)
+                else:
+                    duplicate_count += 1
+
+            all_results.extend(new_results)
+
+            # Track query attempt
+            query_history.append({
+                'query': query,
+                'reasoning': query_reasoning,
+                'results_total': len(results),
+                'results_accepted': len(new_results),
+                'results_rejected': len(results) - len(accepted),
+                'results_duplicate': duplicate_count,
+                'rejection_themes': filtered.get('rejection_themes', []),
+                'effectiveness': len(new_results) / len(results) if results else 0
+            })
+
+            # SECONDARY EXIT: User-configured query limit
+            if len(query_history) >= max_queries:
+                if self.logger:
+                    self.logger.log_source_saturation_complete(
+                        task_id=task_id,
+                        hypothesis_id=hypothesis.get('id'),
+                        source_name=source_name,
+                        exit_reason='max_queries_reached',
+                        queries_executed=len(query_history),
+                        results_accepted=len(all_results),
+                        saturation_reasoning=f"Reached user-configured limit: {max_queries} queries"
+                    )
+                break
+
+            # TERTIARY EXIT: User-configured time limit
+            elapsed = time.time() - start_time
+            if elapsed > max_time:
+                if self.logger:
+                    self.logger.log_source_saturation_complete(
+                        task_id=task_id,
+                        hypothesis_id=hypothesis.get('id'),
+                        source_name=source_name,
+                        exit_reason='time_limit_reached',
+                        queries_executed=len(query_history),
+                        results_accepted=len(all_results),
+                        saturation_reasoning=f"Reached time limit: {max_time}s"
+                    )
+                break
+
+        return all_results
+
     async def _execute_hypothesis(
         self,
         hypothesis: Dict,
