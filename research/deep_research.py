@@ -142,6 +142,8 @@ class SimpleDeepResearch:
         max_time_minutes: Optional[int] = None,
         min_results_per_task: Optional[int] = None,
         max_concurrent_tasks: Optional[int] = None,
+        max_queries_per_source: Optional[Dict[str, int]] = None,
+        max_time_per_source_seconds: Optional[int] = None,
         progress_callback: Optional[Callable[[ResearchProgress], None]] = None,
         save_output: bool = True,
         output_dir: str = "data/research_output"
@@ -155,6 +157,8 @@ class SimpleDeepResearch:
             max_time_minutes: Maximum investigation time. Defaults to config or 120.
             min_results_per_task: Minimum results to consider task successful. Defaults to config or 3.
             max_concurrent_tasks: Maximum tasks to execute in parallel (1 = sequential, 3-5 = parallel). Defaults to config or 4.
+            max_queries_per_source: Per-source query limits (e.g., {'SAM.gov': 10, 'Twitter': 3}). Defaults to config or standard limits.
+            max_time_per_source_seconds: Maximum time per source (seconds). Defaults to config or 300.
             progress_callback: Function to call with progress updates
             save_output: Whether to automatically save output to files (default: True)
             output_dir: Base directory for saved output (default: data/research_output)
@@ -168,6 +172,21 @@ class SimpleDeepResearch:
         self.max_time_minutes = max_time_minutes if max_time_minutes is not None else deep_config.get("max_time_minutes", 120)
         self.min_results_per_task = min_results_per_task if min_results_per_task is not None else deep_config.get("min_results_per_task", 3)
         self.max_concurrent_tasks = max_concurrent_tasks if max_concurrent_tasks is not None else deep_config.get("max_concurrent_tasks", 4)
+
+        # Phase 1: Query saturation configuration
+        saturation_config = deep_config.get("query_saturation", {})
+        self.max_queries_per_source = max_queries_per_source or saturation_config.get("max_queries_per_source", {
+            'SAM.gov': 10,
+            'DVIDS': 5,
+            'USAJobs': 5,
+            'ClearanceJobs': 5,
+            'Twitter': 3,
+            'Reddit': 3,
+            'Discord': 3,
+            'Brave Search': 5
+        })
+        self.max_time_per_source_seconds = max_time_per_source_seconds if max_time_per_source_seconds is not None else saturation_config.get("max_time_per_source_seconds", 300)
+
         self.progress_callback = progress_callback
         self.save_output = save_output
         self.output_dir = output_dir
