@@ -60,7 +60,7 @@ async def main():
     print(f"Entities: {len(result['entities_discovered'])}")
     print(f"Sources: {', '.join(result['sources_searched'])}")
     print(f"Time: {result['elapsed_minutes']:.1f} minutes")
-    print(f"\nOutput directory: {result.get('output_dir', 'N/A')}")
+    print(f"\nOutput directory: {result.get('output_directory', 'N/A')}")
     print("="*80)
 
 

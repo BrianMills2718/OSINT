@@ -2,6 +2,13 @@ Synthesize these research findings into a comprehensive report.
 
 Original Question: {{ original_question }}
 
+**Synthesis Guidance**: If the research question contains ambiguous terms (dates, acronyms, technical jargon), explicitly clarify what was found and note any scope ambiguities. Examples:
+- Date ranges: If "2024" yielded results from multiple fiscal/calendar years, state which system was used
+- Technical terms: If results interpret a term differently than expected, explain the interpretation
+- Geographic/organizational scope: If results span broader/narrower scope, note the mismatch
+
+Your goal: Create a clear, unambiguous, useful report that helps the investigator understand EXACTLY what was found, not just aggregate data.
+
 Research Summary:
 - Tasks Executed: {{ tasks_executed }}
 - Total Results: {{ total_results }}
@@ -18,7 +25,11 @@ Create a detailed markdown report with:
 # Research Report: [Title based on question]
 
 ## Executive Summary
-[3-5 sentences on the most important findings, phrased for an investigator. Use dates/quotes when they materially support the point and always cite the source URL. Be explicit about what was actually found vs. unsubstantiated chatter.]
+[3-5 sentences on the most important findings, phrased for an investigator. Use dates/quotes when they materially support the point and always cite the source URL. Be explicit about:
+- What was actually found vs. unsubstantiated chatter
+- Any temporal ambiguities (e.g., "2024 contracts" may span FY2024 Oct 2023-Sep 2024 or CY2024)
+- Scope matches or mismatches vs. the original question
+- Confidence level based on source quality (PRIMARY vs ANALYSIS vs LEAD)]
 
 ## Key Documents & Links
 Order by how well each item advances the question and its credibility signals. Use labels as helpful context (e.g., [PRIMARY] official/archival; [ANALYSIS] media/think-tank/legal; [LEAD] unverified/social). Include short quotes only when paired with the source URL and when they strengthen understanding.
@@ -120,7 +131,11 @@ Summary of executed hypotheses from this run (mode: execution):
 [Bullet points of the most important discoveries with inline source cues (e.g., date/source). Lead with primary/official documents; clearly separate social claims as leads.]
 
 ## Detailed Analysis
-[2-3 paragraphs connecting entities, documents, and events. Include short quotes or dates where possible. Note gaps or unverified claims explicitly.]
+[2-3 paragraphs connecting entities, documents, and events. Include short quotes or dates where possible. Explicitly address:
+- Temporal precision: If dates are ambiguous (fiscal vs calendar year, "recent" vs specific dates), clarify what timeframe results actually cover
+- Terminology interpretation: If technical terms, acronyms, or jargon could have multiple meanings, state which interpretation the results reflect
+- Gaps or unverified claims: Note explicitly what wasn't found, what conflicts exist, or what requires additional verification
+- Scope boundary issues: If results extend beyond or fall short of the query scope, explain why]
 
 ## Entity Network
 [Description of key entities and their relationships]

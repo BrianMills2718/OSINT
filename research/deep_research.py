@@ -4328,7 +4328,7 @@ class SimpleDeepResearch:
             original_question=original_question,
             tasks_executed=len(self.completed_tasks),
             total_results=actual_total_results,
-            entities_discovered=len(self.entity_graph),
+            entities_discovered=len(entity_task_counts),
             relationship_summary=chr(10).join(relationship_summary),
             top_findings_json=json.dumps(all_results, indent=2),  # Send ALL findings to synthesis
             integrations_used=integrations_used,

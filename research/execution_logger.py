@@ -396,7 +396,12 @@ class ExecutionLogger:
             completed_tasks: Number of tasks completed when check performed
             saturation_result: LLM saturation decision with all fields
         """
+        # Derive explicit decision label for easier log analysis
+        decision = "STOP" if saturation_result.get("saturated") else "CONTINUE"
+
         self._write_entry(None, "saturation_assessment", {
+            "decision": decision,  # Human-readable decision label
+            "reason": saturation_result.get("rationale"),  # Alias for easier access
             "completed_tasks": completed_tasks,
             "saturated": saturation_result.get("saturated"),
             "confidence": saturation_result.get("confidence"),
