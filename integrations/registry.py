@@ -18,6 +18,13 @@ try:
 except ImportError:
     CLEARANCEJOBS_AVAILABLE = False
 
+# CREST integration requires Playwright (optional dependency)
+try:
+    from integrations.government.crest_integration import CRESTIntegration
+    CREST_AVAILABLE = True
+except ImportError:
+    CREST_AVAILABLE = False
+
 # Import social integrations
 from integrations.social.discord_integration import DiscordIntegration
 from integrations.social.brave_search_integration import BraveSearchIntegration
@@ -67,6 +74,8 @@ class IntegrationRegistry:
         self._try_register("usajobs", USAJobsIntegration)
         if CLEARANCEJOBS_AVAILABLE:
             self._try_register("clearancejobs", ClearanceJobsIntegration)
+        if CREST_AVAILABLE:
+            self._try_register("crest", CRESTIntegration)
         self._try_register("fbi_vault", FBIVaultIntegration)
         self._try_register("federal_register", FederalRegisterIntegration)
 

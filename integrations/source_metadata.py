@@ -107,6 +107,28 @@ SOURCE_METADATA = {
         max_queries_recommended=5
     ),
 
+    'CIA CREST': SourceMetadata(
+        name='CIA CREST',
+        description='CIA declassified document reading room (FOIA records from 1940s-1990s)',
+        characteristics={
+            'historical_documents': True,
+            'declassified_intelligence': True,
+            'formal_government_prose': True,
+            'pre_2000_focus': True,
+            'full_text_available': True,
+            'requires_verification': False  # Official government docs
+        },
+        query_strategies=[
+            'keyword_search',
+            'operation_name',
+            'country_region_focus',
+            'time_period',
+            'intelligence_topic'
+        ],
+        typical_result_count=20,
+        max_queries_recommended=3  # Historical docs, focused topics
+    ),
+
     'Twitter': SourceMetadata(
         name='Twitter',
         description='Social media platform (real-time news, announcements, discussions)',
