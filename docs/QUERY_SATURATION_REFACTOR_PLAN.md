@@ -1,7 +1,8 @@
-# Query-Level Saturation Refactor - Comprehensive Plan
+# Query-Level Saturation Refactor - Comprehensive Plan (REVISED)
 
 **Branch**: `feature/query-level-saturation`
 **Created**: 2025-11-21
+**Revised**: 2025-11-21 (removed overengineered phases)
 **Status**: Planning Phase
 
 ---
@@ -10,11 +11,12 @@
 
 **Problem**: Current system executes ONE query per source per hypothesis, which is too shallow for thorough investigative research.
 
-**Solution**: Implement query-level saturation with LLM-driven iterative querying until each source is saturated.
+**Solution**: Implement query-level saturation with LLM-driven iterative querying until each source is saturated, plus intelligent capabilities that expert investigators use.
 
 **Impact**:
 - ✅ More thorough research (especially for rich sources like SAM.gov)
 - ✅ Adaptive depth (stops quickly for shallow sources like Twitter)
+- ✅ Intelligence capabilities: breadcrumb following, verification, entity research
 - ✅ Better aligned with investigative journalism workflow
 - ⚠️ More LLM calls (acceptable tradeoff for quality)
 - ⚠️ Slightly slower (mitigated by source-level parallelism)
@@ -45,55 +47,291 @@ Research Question
 2. No iterative exploration of query space
 3. Can't adapt based on results
 4. Misses information requiring alternative formulations
+5. Doesn't follow leads mentioned in results
+6. No verification or cross-referencing
+7. Doesn't research entities discovered
 
 ---
 
-## Target Architecture (Refactor Goal)
+## Target Architecture (Simplified & Focused)
 
 ```
 Research Question
-└─ Tasks (decomposition)
-   └─ Task 0
-      └─ Hypotheses (investigative angles)
-         └─ Hypothesis 1
-            │
-            ├─ SAM.gov Thread (parallel):
-            │  ├─ Query 1: "DoD AI contracts 2024" → 10 results (10 new)
-            │  ├─ Saturation check → CONTINUE (high value)
-            │  ├─ Query 2: "Department of Defense artificial intelligence" → 15 results (8 new)
-            │  ├─ Saturation check → CONTINUE (finding new info)
-            │  ├─ Query 3: "Pentagon ML contracts" → 12 results (3 new)
-            │  ├─ Saturation check → CONTINUE (gaps remain)
-            │  ├─ Query 4: "CDAO AI awards" → 8 results (1 new)
-            │  └─ Saturation check → STOP (diminishing returns)
-            │
-            ├─ Brave Thread (parallel):
-            │  ├─ Query 1: "DoD AI contracts news 2024" → 20 results (18 new)
-            │  ├─ Saturation check → CONTINUE
-            │  ├─ Query 2: "Defense AI awards announcements" → 15 results (2 new)
-            │  └─ Saturation check → STOP (saturated)
-            │
-            └─ Twitter Thread (parallel):
-               ├─ Query 1: "#DoD #AI contracts" → 8 results (8 new)
-               └─ Saturation check → STOP (shallow source)
-
-            Wait for all threads → Combine (67 unique results)
-            → Coverage Assessment: Execute Hypothesis 2?
+│
+└─ Task Decomposition (existing - works well)
+   └─ Tasks with hypotheses
+      │
+      └─ For each hypothesis:
+         │
+         ├─ PARALLEL: Source Saturation Threads (NEW - PHASE 1)
+         │  │
+         │  ├─ SAM.gov Thread:
+         │  │  └─ Query Loop:
+         │  │     ├─ Query 1 → results
+         │  │     ├─ LLM assesses: saturated? terminology working? strategy effective?
+         │  │     ├─ Query 2 (adapted based on Q1 results) → results
+         │  │     ├─ LLM assesses: continue or stop?
+         │  │     └─ ... until saturated
+         │  │
+         │  ├─ Brave Thread: (same pattern)
+         │  └─ Twitter Thread: (same pattern)
+         │
+         ├─ Breadcrumb Following (NEW - PHASE 2)
+         │  └─ Extract entities/IDs/names from results → Investigate them
+         │  └─ Example: Result mentions "Contract #12345" → Look up in SAM.gov
+         │  └─ Example: Result mentions "CDAO" → Research what it is
+         │
+         ├─ Verification & Triangulation (NEW - PHASE 3)
+         │  └─ Cross-reference claims across sources
+         │  └─ Detect contradictions
+         │  └─ Flag unverified single-source claims
+         │  └─ Prefer official sources over social media
+         │
+         └─ Coverage Assessment (existing - works well)
+            └─ Continue to next hypothesis?
 ```
 
-**Improvements**:
-1. ✅ Multiple queries per source (adaptive depth)
-2. ✅ Iterative query generation based on results
-3. ✅ Sophisticated saturation reasoning (existence confidence, gap analysis)
-4. ✅ Source-level parallelism (speed + thoroughness)
+**Key Design Principle**: The query saturation loop with sophisticated LLM reasoning handles what "reconnaissance" and "question understanding" phases tried to do, without adding separate phases.
 
 ---
 
-## Key Components to Build
+## Core Innovation: The Smart Saturation Loop
 
-### 1. Source Saturation Loop
+The intelligence is in the **prompt and reasoning**, not in architectural phases:
 
-**New Method**: `_saturate_source_for_hypothesis()`
+### What Makes It Smart
+
+```python
+# LLM receives FULL CONTEXT for each query decision:
+
+Query History:
+1. "DoD AI 2024" → 0 results
+   Reasoning: "Tried abbreviations, got nothing"
+
+2. "Department of Defense artificial intelligence 2024" → 10 results
+   Reasoning: "Formal terminology works! SAM.gov requires full agency names"
+
+3. "Department of Defense machine learning contracts 2024" → 8 results
+   Reasoning: "Synonym exploration successful, found different contracts"
+
+Current Gaps:
+- Found contracts but 60% lack dollar amounts
+- Missing Q4 2024 contracts (only Q1-Q3 found)
+- No Defense Innovation Unit contracts found
+
+LLM Decision:
+{
+  "action": "continue",
+  "query": "Department of Defense artificial intelligence contract value awarded 2024",
+  "reasoning": "Previous queries found contracts but not amounts. Adding 'contract
+               value' to query targets financial data gap. Critical info worth
+               another query.",
+  "expected_value": "high",
+  "confidence_will_find": 75
+}
+```
+
+**This ONE loop handles:**
+- ✅ Terminology discovery (sees what keywords work)
+- ✅ Source assessment (stops if source is empty)
+- ✅ Strategy adaptation (pivots when not working)
+- ✅ Gap-driven querying (targets missing information)
+- ✅ Meta-cognitive reasoning (learns from query history)
+
+**No separate phases needed!**
+
+---
+
+## Implementation Phases (Revised)
+
+### Phase 1: Core Query Saturation (Weeks 1-2)
+**Goal**: Iterative querying per source until saturated
+
+**Components**:
+
+1. **`_saturate_source_for_hypothesis()` method**
+   - Iterative query loop for single source
+   - Maintains query history
+   - Respects source-specific ceilings (SAM.gov: 10, Twitter: 3)
+   - Returns accumulated unique results
+
+2. **`prompts/deep_research/source_saturation.j2` prompt**
+   - Inputs: query history, results counts, gaps, source characteristics
+   - LLM reasoning: existence confidence, query effectiveness, gap value, strategy
+   - Output: continue/stop decision + next query + reasoning
+
+3. **`_decide_next_query()` LLM call**
+   - Wraps saturation prompt
+   - Returns structured decision
+
+4. **Modified `_execute_hypothesis()` for parallelism**
+   - Launch parallel source saturation tasks
+   - Wait for all with `asyncio.gather()`
+   - Cross-source deduplication
+
+5. **Logging enhancements**
+   - New event: `source_query` (log each individual query)
+   - Fields: task_id, hypothesis_id, source, query_num, query, results_total, results_new, reasoning
+
+6. **Source configuration**
+   - Query ceilings per source
+   - Source characteristics for LLM guidance
+
+**Success Criteria**:
+- [ ] System executes 2+ queries per source when warranted
+- [ ] LLM makes intelligent stop/continue decisions
+- [ ] Finds 30%+ more results than baseline
+- [ ] No infinite loops
+- [ ] <2x baseline execution time
+
+---
+
+### Phase 2: Breadcrumb Following (Weeks 3-4)
+**Goal**: Investigate entities/IDs mentioned in results
+
+**Components**:
+
+1. **`_extract_breadcrumbs()` method**
+   - Parse results for entities, contract IDs, organization names
+   - Identify leads worth investigating
+   - Return structured list of breadcrumbs
+
+2. **`_follow_breadcrumb()` method**
+   - Takes breadcrumb (type + value)
+   - Determines best source to investigate
+   - Executes targeted query
+   - Returns results
+
+3. **Integration with hypothesis execution**
+   - After source saturation, extract breadcrumbs
+   - Follow high-value breadcrumbs (configurable limit)
+   - Add breadcrumb results to hypothesis results
+
+**Examples**:
+```python
+# Result: "Contract #GS-35F-0119Y awarded..."
+Breadcrumb: (type="contract_id", value="GS-35F-0119Y")
+→ Query SAM.gov with exact contract ID
+
+# Result: "CDAO announced partnership..."
+Breadcrumb: (type="entity", value="CDAO")
+→ Research: What is CDAO? Budget? Leadership? Role?
+
+# Result: "Dr. Jane Smith testified..."
+Breadcrumb: (type="person", value="Dr. Jane Smith")
+→ Research: Who is Jane Smith? Position? Expertise?
+```
+
+**Success Criteria**:
+- [ ] System extracts 5-10 breadcrumbs per hypothesis
+- [ ] Follows high-value breadcrumbs (contract IDs, entities)
+- [ ] Breadcrumb following adds 10-20% more context
+- [ ] No excessive following (configurable limits work)
+
+---
+
+### Phase 3: Verification & Triangulation (Weeks 5-6)
+**Goal**: Cross-reference claims, detect contradictions
+
+**Components**:
+
+1. **`_verify_claim()` method**
+   - Takes claim + sources
+   - Checks if sources are independent (not citing each other)
+   - Searches for confirmation in official sources
+   - Returns verification status + confidence
+
+2. **`_detect_contradictions()` method**
+   - Compares claims across results
+   - Identifies conflicts (dates, amounts, names)
+   - Attempts resolution via official sources
+   - Flags unresolvable contradictions
+
+3. **Verification metadata**
+   - Tag each result with verification status:
+     - `verified_official`: Confirmed by official source
+     - `verified_multi`: Confirmed by multiple independent sources
+     - `unverified_single`: Only one source
+     - `contradicted`: Conflicts with other sources
+
+4. **Report enhancements**
+   - Clearly mark unverified claims
+   - Explain contradictions found
+   - Prioritize verified information
+
+**Examples**:
+```python
+# Claim: "OpenAI received $200M DoD contract in 2024"
+Sources: [Twitter, DefenseTech.com, Reddit]
+Check: All 3 cite same Twitter post → Not independent
+
+Action: Search SAM.gov for OpenAI contracts
+Result: Found contract #123, $200M, awarded Oct 2023 (not 2024)
+
+Verification:
+- Amount: VERIFIED ($200M)
+- Recipient: VERIFIED (OpenAI)
+- Year: CONTRADICTED (2023, not 2024)
+```
+
+**Success Criteria**:
+- [ ] System verifies high-value claims (>$100M contracts, key facts)
+- [ ] Detects date mismatches, amount discrepancies
+- [ ] Report clearly marks unverified information
+- [ ] No false contradictions (handles date format variations)
+
+---
+
+### Phase 4: Entity Research (Weeks 7-8)
+**Goal**: Research key entities discovered during investigation
+
+**Components**:
+
+1. **`_research_entity()` method**
+   - Takes entity name/type
+   - Generates targeted queries about entity
+   - Collects: description, role, leadership, budget, history
+   - Returns entity profile
+
+2. **Entity identification**
+   - During research, track entities encountered
+   - Rank by frequency + relevance
+   - Select top N for deep research (configurable)
+
+3. **Entity profiles in report**
+   - Dedicated section: "Key Actors"
+   - For each entity: profile, role in findings, significance
+
+**Examples**:
+```python
+# Frequent mention of "CDAO" in results
+
+Research CDAO:
+- Full name: Chief Digital and Artificial Intelligence Office
+- Created: 2022
+- Leadership: Craig Martell (Chief Digital and AI Officer)
+- Budget: $500M annually
+- Role: Centralize DoD AI/data initiatives
+- Significance: Awarded 60% of FY2024 DoD AI contracts
+
+# This context transforms interpretation:
+"CDAO centralization explains spike in contract volume and
+standardization of procurement process observed in findings"
+```
+
+**Success Criteria**:
+- [ ] System identifies 5-10 key entities per research
+- [ ] Researches top entities automatically
+- [ ] Entity profiles add context to report
+- [ ] Profiles help explain patterns/significance
+
+---
+
+## Key Components Detail
+
+### 1. Source Saturation Loop (Phase 1 - Core)
+
+**Method**: `_saturate_source_for_hypothesis()`
 
 ```python
 async def _saturate_source_for_hypothesis(
@@ -109,345 +347,370 @@ async def _saturate_source_for_hypothesis(
     Returns:
         All unique results from this source for this hypothesis
     """
-    # Iterative loop:
-    # 1. Generate next query (with full history context)
-    # 2. Execute query
-    # 3. Deduplicate
-    # 4. Assess saturation (LLM decision)
-    # 5. If not saturated: loop to step 1
-    # 6. If saturated: return results
+    query_history = []
+    all_results = []
+    url_dedup = set()
+
+    max_queries = self._get_source_query_ceiling(source_name)
+
+    for query_num in range(max_queries):
+        # LLM decides: continue or stop?
+        decision = await self._decide_next_query(
+            hypothesis=hypothesis,
+            source_name=source_name,
+            research_question=research_question,
+            task_query=task.query,
+            query_history=query_history,
+            accumulated_results=len(all_results),
+            coverage_gaps=self._identify_gaps(task, hypothesis)
+        )
+
+        if decision["action"] == "stop":
+            break
+
+        # Execute query
+        query = decision["next_query"]
+        results = await self._execute_source_query(source_name, query)
+
+        # Deduplicate
+        new_results = [r for r in results if r.get('url') not in url_dedup]
+
+        # Update state
+        for r in new_results:
+            if r.get('url'):
+                url_dedup.add(r['url'])
+            all_results.append(r)
+
+        # Record history
+        query_history.append({
+            "query": query,
+            "reasoning": decision.get("query_rationale", ""),
+            "results_total": len(results),
+            "results_new": len(new_results),
+            "results_duplicate": len(results) - len(new_results),
+            "incremental_pct": len(new_results) / len(results) * 100 if results else 0
+        })
+
+        # Log
+        if self.logger:
+            self.logger.log_source_query(
+                task_id=task.id,
+                hypothesis_id=hypothesis["id"],
+                source_name=source_name,
+                query_number=query_num + 1,
+                query=query,
+                results_total=len(results),
+                results_new=len(new_results),
+                reasoning=decision.get("query_rationale", "")
+            )
+
+    return all_results
 ```
 
-**Responsibilities**:
-- Maintains query history for this source
-- Calls saturation assessment LLM after each query
-- Respects source-specific query ceiling (SAM.gov: 10, Twitter: 3)
-- Returns all accumulated unique results
+### 2. Saturation Decision Prompt (Phase 1 - Core)
 
-### 2. Saturation Decision LLM
+**File**: `prompts/deep_research/source_saturation.j2`
 
-**New Method**: `_decide_next_query()`
+```jinja2
+You are deciding whether to continue querying {{ source_name }} for this hypothesis.
 
-**New Prompt**: `prompts/deep_research/source_saturation.j2`
+## Context
 
-**Inputs**:
-- Hypothesis statement
-- Source name + characteristics
-- Query history (queries, results counts, incremental %)
-- Coverage gaps identified
-- Accumulated results count
+**Research Question**: {{ research_question }}
+**Task**: {{ task_query }}
+**Hypothesis**: {{ hypothesis_statement }}
+**Source**: {{ source_name }}
 
-**LLM Reasoning**:
-1. **Existence Confidence**: Does this info likely exist in this source?
-2. **Query Effectiveness**: Are queries finding new info or hitting duplicates?
-3. **Gap Value**: Are remaining gaps high-value or peripheral?
-4. **Query Space**: Have we exhausted terminology/angles?
-5. **Source Depth**: Have we queried proportionally to expected richness?
+Source Characteristics: {{ source_characteristics }}
 
-**Output Schema**:
-```json
+## Query History (This Source Only)
+
+{% for query in query_history %}
+{{ loop.index }}. Query: "{{ query.query }}"
+   → Results: {{ query.results_total }} ({{ query.results_new }} new, {{ query.results_duplicate }} duplicate)
+   → Incremental: {{ query.incremental_pct|round(1) }}%
+   → Reasoning: {{ query.reasoning }}
+{% endfor %}
+
+## Current State
+
+- Total unique results from this source: {{ accumulated_results }}
+- Queries executed: {{ query_count }}
+- Query ceiling for this source: {{ max_queries }}
+
+## Information Gaps
+
+What we're seeking but haven't found yet:
+{% for gap in coverage_gaps %}
+- {{ gap }}
+{% endfor %}
+
+## Your Task: Assess Whether to Continue
+
+Consider these factors:
+
+1. **Existence Confidence**: How confident are you this information exists in {{ source_name }}?
+   - High confidence + not finding it → Likely query problem → Continue with better formulation
+   - Low confidence + not finding it → Information probably doesn't exist → Stop
+
+2. **Query Effectiveness**: Is our strategy working?
+   - Recent queries finding new info (>40% new) → Good signal → Continue
+   - Recent queries mostly duplicates (<20% new) → Diminishing returns → Consider stopping
+   - BUT: Critical gaps remain despite duplicates → Continue with targeted queries
+
+3. **Gap Value**: How important are remaining gaps?
+   - High-value gaps (contract amounts, dates, awardees) → Justify more queries
+   - Low-value gaps (peripheral mentions) → Not worth many queries
+
+4. **Terminology Discovery**: Have we found what works?
+   - Query 1 failed, Query 2 succeeded → We learned correct terminology → Continue variations
+   - All queries failing → Wrong approach OR info doesn't exist → Consider stopping
+
+5. **Source Depth**: Is this source rich or shallow?
+   - {{ source_name }} typical depth: {{ source_depth_expectation }}
+   - Have we explored proportionally to expected richness?
+
+## Output (JSON)
+
 {
   "action": "continue" | "stop",
-  "reasoning": "Why continue/stop based on factors above",
-  "next_query": "If continuing, specific query targeting gaps",
-  "query_rationale": "Why this query will find what previous missed",
-  "expected_new_results": "high (>50%)" | "medium (20-50%)" | "low (<20%)",
+  "reasoning": "Explain decision considering existence confidence, query effectiveness, gap value, terminology, source depth",
+  "next_query": "If continuing: specific query targeting remaining gaps OR exploring new terminology",
+  "query_rationale": "Why this query will find what previous queries missed",
+  "expected_new_results": "high (>50% new)" | "medium (20-50% new)" | "low (<20% new)",
   "confidence_gaps_fillable": 0-100
 }
 ```
 
-### 3. Modified Hypothesis Execution
+### 3. Modified Hypothesis Execution (Phase 1 - Core)
 
-**Modified Method**: `_execute_hypothesis()`
-
-**Changes**:
-- Remove: Loop over sources with single query per source
-- Add: Launch parallel source saturation tasks
-- Add: Wait for all sources to complete (`asyncio.gather`)
-- Keep: Cross-source deduplication
-- Keep: Result attribution with hypothesis IDs
-
-### 4. Gap Analysis
-
-**New Method**: `_identify_coverage_gaps()`
-
-**Purpose**: Identify what information we're seeking but haven't found
-
-**Examples**:
-- "Contract dollar amounts missing for 12/15 contracts"
-- "No contracts from Oct-Dec 2024 timeframe"
-- "Defense Innovation Unit contracts mentioned in news but not found"
-- "Specific awardee companies not identified"
-
-**Used By**: Saturation LLM to assess if continuing is worthwhile
-
-### 5. Source-Specific Configuration
-
-**New Config Section**: `config.yaml` (or defaults in code)
-
-```yaml
-research:
-  source_saturation:
-    # Query ceilings (hard stops)
-    sam_gov_max_queries: 10
-    brave_search_max_queries: 6
-    twitter_max_queries: 3
-    reddit_max_queries: 4
-    discord_max_queries: 4
-    dvids_max_queries: 5
-    usajobs_max_queries: 4
-    clearancejobs_max_queries: 4
-
-    # Source depth expectations (for LLM guidance)
-    source_characteristics:
-      sam_gov: "Rich, structured government database with deep historical data"
-      brave_search: "Broad web index, good for news/announcements"
-      twitter: "Shallow, limited search depth, real-time focus"
-      reddit: "Medium depth, community discussions"
-      # etc.
-```
-
-### 6. Logging Enhancements
-
-**New Log Event**: `source_query` (in `execution_logger.py`)
+**Method**: `_execute_hypothesis()`
 
 ```python
-def log_source_query(
+async def _execute_hypothesis(
     self,
-    task_id: int,
-    hypothesis_id: str,
-    source_name: str,
-    query_number: int,
-    query: str,
-    results_total: int,
-    results_new: int,
-    reasoning: str
-):
-    """Log each individual source query in saturation loop."""
+    hypothesis: Dict,
+    task: ResearchTask,
+    research_question: str
+) -> List[Dict]:
+    """
+    Execute hypothesis by saturating multiple sources IN PARALLEL.
+    """
+    sources = hypothesis["search_strategy"]["sources"]
+
+    print(f"\n🔬 Executing Hypothesis {hypothesis['id']}")
+    print(f"   Sources: {', '.join(sources)} (parallel)")
+
+    # Launch parallel source saturation
+    source_tasks = []
+    for source in sources:
+        coro = self._saturate_source_for_hypothesis(
+            hypothesis=hypothesis,
+            source_name=source,
+            task=task,
+            research_question=research_question
+        )
+        source_tasks.append(coro)
+
+    # Wait for all sources
+    results_by_source = await asyncio.gather(*source_tasks, return_exceptions=True)
+
+    # Combine
+    all_results = []
+    for i, results in enumerate(results_by_source):
+        if isinstance(results, Exception):
+            logging.error(f"Source {sources[i]} failed: {results}")
+            continue
+        all_results.extend(results)
+
+    # Cross-source deduplication
+    deduplicated = self._deduplicate_with_attribution(all_results, hypothesis["id"])
+
+    print(f"   📊 Hypothesis {hypothesis['id']}: {len(deduplicated)} unique results")
+
+    return deduplicated
 ```
 
-**Purpose**: Complete audit trail of ALL queries executed, not just final results
-
 ---
 
-## Implementation Phases
+## Source-Specific Configuration
 
-### Phase 1: Core Infrastructure (Week 1)
-**Goal**: Build saturation loop without breaking existing functionality
-
-- [ ] Create `_saturate_source_for_hypothesis()` method
-- [ ] Create `prompts/deep_research/source_saturation.j2` prompt
-- [ ] Create `_decide_next_query()` LLM call method
-- [ ] Add `log_source_query()` to ExecutionLogger
-- [ ] Add source configuration defaults
-- [ ] **Validation**: Run system in "compatibility mode" (old behavior)
-
-### Phase 2: Gap Analysis (Week 1-2)
-**Goal**: Enable LLM to reason about missing information
-
-- [ ] Create `_identify_coverage_gaps()` method
-- [ ] Integrate gap analysis into saturation prompt
-- [ ] Test gap identification accuracy
-- [ ] **Validation**: Gaps logged correctly in execution_log.jsonl
-
-### Phase 3: Parallel Source Execution (Week 2)
-**Goal**: Enable sources to query in parallel
-
-- [ ] Modify `_execute_hypothesis()` to launch parallel tasks
-- [ ] Add proper error handling for parallel execution
-- [ ] Ensure cross-source deduplication works
-- [ ] **Validation**: All sources complete, results combined correctly
-
-### Phase 4: Integration Testing (Week 2-3)
-**Goal**: End-to-end validation
-
-- [ ] Test with simple query (2-3 tasks, 1-2 hypotheses each)
-- [ ] Test with complex query (5+ tasks, 3-4 hypotheses each)
-- [ ] Compare results vs old system (should find MORE information)
-- [ ] Measure cost increase (LLM calls)
-- [ ] Measure time increase (should be minimal due to parallelism)
-- [ ] **Validation**: System finds 30-50% more results than baseline
-
-### Phase 5: Production Readiness (Week 3-4)
-**Goal**: Polish and optimize
-
-- [ ] Add circuit breakers (max time per source)
-- [ ] Add cost tracking for saturation queries
-- [ ] Optimize prompt length (saturation prompt gets large with history)
-- [ ] Add configuration options (enable/disable per source)
-- [ ] Update documentation
-- [ ] **Validation**: Clean execution logs, no errors, configurable
-
----
-
-## Compatibility & Migration Strategy
-
-### Backward Compatibility Options
-
-**Option A: Flag-Based (Recommended)**
 ```python
-# Config toggle
-hypothesis_saturation_enabled: true  # New behavior
-hypothesis_saturation_enabled: false # Old behavior (one query per source)
+# In config or code defaults:
+
+SOURCE_QUERY_CEILINGS = {
+    "sam_gov": 10,           # Rich government database
+    "brave_search": 6,       # Broad web index
+    "twitter": 3,            # Shallow, noisy
+    "reddit": 4,             # Medium depth
+    "discord": 4,            # Medium depth
+    "dvids": 5,              # Specialized military media
+    "usajobs": 4,            # Job postings
+    "clearancejobs": 4       # Job postings
+}
+
+SOURCE_CHARACTERISTICS = {
+    "sam_gov": "Official federal procurement database with deep historical data. Requires exact formal terminology (full agency names, no abbreviations).",
+    "brave_search": "Broad web index, good for news articles, press releases, and general announcements.",
+    "twitter": "Real-time social media with limited search depth. Good for breaking news and official announcements but noisy.",
+    "reddit": "Community discussions with moderate depth. Good for informal insights and leads.",
+    # etc.
+}
 ```
-
-**Why**: Allows A/B testing, easy rollback if issues
-
-**Option B: Automatic Migration**
-- Remove old code paths entirely
-- All users get new behavior immediately
-
-**Recommendation**: Option A during development, migrate to Option B after 30 days of validation
-
-### Migration Plan
-
-1. **Week 1-2**: New code in feature branch, old behavior default
-2. **Week 3**: Enable for internal testing, compare outputs
-3. **Week 4**: Enable by default, monitor for issues
-4. **Week 5-6**: Remove old code paths, simplify architecture
 
 ---
 
 ## Testing Strategy
 
-### Unit Tests
+### Phase 1 Tests (Query Saturation)
 
 ```python
 # tests/test_source_saturation.py
-async def test_saturation_stops_after_3_queries():
-    """Verify LLM can decide to stop after N queries"""
 
-async def test_saturation_continues_for_high_value_gaps():
-    """Verify system persists when critical info missing"""
+async def test_saturation_stops_at_ceiling():
+    """Verify system respects query ceilings"""
+    # SAM.gov ceiling = 10
+    # Even if LLM says continue, stop at 10
+
+async def test_saturation_stops_early_when_empty():
+    """Verify system stops quickly for empty sources"""
+    # Query 1: 0 results
+    # Query 2: 0 results
+    # LLM should decide: "Source is empty, stop"
+
+async def test_terminology_discovery():
+    """Verify system learns from query results"""
+    # Query 1: "DoD AI" → 0 results
+    # LLM should try: "Department of Defense artificial intelligence"
 
 async def test_parallel_source_execution():
-    """Verify sources execute in parallel, not sequential"""
+    """Verify sources execute in parallel"""
+    # Time 3 sources
+    # Should be ~1x slowest source, not 3x sum
 
-async def test_query_history_passed_to_llm():
-    """Verify LLM receives full query history for decisions"""
+async def test_gap_driven_querying():
+    """Verify system targets specific gaps"""
+    # Gap: "Contract amounts missing"
+    # Next query should include "value" or "amount"
 ```
 
 ### Integration Tests
 
 ```python
 # tests/test_query_saturation_e2e.py
-async def test_e2e_dod_contracts():
+
+async def test_e2e_dod_contracts_baseline_comparison():
     """
-    End-to-end test: "Recent DoD AI contracts 2024"
+    Compare new system vs baseline.
+
+    Expected improvements:
+    - 30-50% more results
+    - Better quality (more specific info)
+    - <2x execution time
+    """
+
+async def test_e2e_source_adaptation():
+    """
+    Verify system adapts to source characteristics.
 
     Expected:
     - SAM.gov: 5-8 queries (rich source)
-    - Brave: 3-5 queries (medium source)
     - Twitter: 1-2 queries (shallow source)
-    - Total results: 40-60 (vs 20-30 with old system)
     """
 ```
 
-### Validation Criteria
+---
 
-**Success Metrics**:
-- ✅ Finds 30%+ more results than baseline
-- ✅ LLM stops within query ceilings (no infinite loops)
-- ✅ Execution time <2x baseline (parallelism mitigates sequential queries)
-- ✅ No crashes or timeouts
-- ✅ Clean execution logs with full audit trail
+## Success Metrics
+
+### Phase 1: Query Saturation
+
+**Must Have**:
+- [ ] Finds 30%+ more results than baseline
+- [ ] LLM stops within query ceilings (no infinite loops)
+- [ ] Execution time <2x baseline
+- [ ] No crashes or timeouts
+- [ ] Clean execution logs with query audit trail
+
+**Nice to Have**:
+- [ ] Finds 50%+ more results
+- [ ] Execution time <1.5x baseline (parallelism working well)
+- [ ] Clear evidence of intelligent query adaptation in logs
 
 **Cost Metrics**:
-- LLM call increase: Expect 3-5x more LLM calls (acceptable for quality)
-- Total cost: Track per-research cost, ensure <$5 for typical query
+- Expect 3-5x more LLM calls (acceptable for quality)
+- Track per-research cost, target <$5 for typical query
 
 ---
 
-## Risk Analysis
+## Risk Analysis & Mitigations
 
 ### High Risk
 
 1. **Infinite Loop Risk**
-   - **Mitigation**: Hard query ceilings per source (10 max for SAM.gov, 3 for Twitter)
-   - **Fallback**: Timeout after N seconds per source
+   - **Mitigation**: Hard query ceilings per source
+   - **Fallback**: Timeout after 1800s per source
 
 2. **Cost Explosion**
-   - **Mitigation**: Track cumulative LLM calls, add budget circuit breaker
-   - **Fallback**: Disable saturation for expensive sources
+   - **Mitigation**: Track LLM calls, add budget circuit breaker
+   - **Fallback**: Reduce query ceilings if needed
 
 ### Medium Risk
 
-3. **Slower Execution**
-   - **Mitigation**: Parallel source execution
-   - **Fallback**: Reduce query ceilings (SAM.gov: 10 → 6)
+3. **LLM Decision Quality**
+   - **Mitigation**: Extensive prompt engineering, validation testing
+   - **Fallback**: Simple heuristic (>80% duplicates → stop)
 
-4. **LLM Decision Quality**
-   - **Mitigation**: Extensive prompt engineering, A/B testing
-   - **Fallback**: Simpler heuristic (>80% duplicates → stop)
-
-### Low Risk
-
-5. **Complexity Increase**
-   - **Mitigation**: Good documentation, clear code structure
-   - **Impact**: Higher maintenance burden
+4. **Slower Execution**
+   - **Mitigation**: Source-level parallelism
+   - **Fallback**: Reduce query ceilings
 
 ---
 
-## Success Criteria
+## Open Questions & Decisions
 
-**Minimum Viable Product (MVP)**:
-- [ ] System executes 2+ queries per source when warranted
-- [ ] LLM makes stop/continue decisions based on results
-- [ ] No infinite loops or crashes
-- [ ] Finds more information than baseline
+### Question 1: Query Reformulation vs New Queries
 
-**Production Ready**:
-- [ ] All tests passing
-- [ ] <2x baseline execution time
-- [ ] Complete execution logs
-- [ ] Configuration options documented
-- [ ] Validated on 5+ different research questions
+**Context**: Current system has "reformulation" for retries. New system has "saturation-driven new queries". Are these the same?
 
-**Exceptional**:
-- [ ] Finds 50%+ more results than baseline
-- [ ] Adaptive query strategy clearly visible in logs
-- [ ] Users report significantly better research quality
-- [ ] Cost increase <50% vs baseline
+**Decision**: MERGE THEM. Saturation loop subsumes reformulation. Query N+1 is always based on results of Query N, whether it's a "reformulation" or "new angle".
 
----
+### Question 2: Source-Specific Query Strategies
 
-## Open Questions
+**Context**: Should we encode SAM.gov-specific strategies (date formats, contract types) or let LLM discover?
 
-1. **Should saturation assessment be per-query or per-batch?**
-   - Per-query: Assess after EACH query (more adaptive, slower)
-   - Per-batch: Execute 2-3 queries, then assess (faster, less precise)
-   - **Recommendation**: Per-query for MVP, experiment with batching later
+**Decision**: PROVIDE IN SOURCE CHARACTERISTICS. Give LLM guidance ("SAM.gov requires formal terminology") but let it adapt the details.
 
-2. **How to handle query reformulation vs new queries?**
-   - Current system has "reformulation" for retries
-   - New system has "saturation-driven new queries"
-   - Are these the same or different?
-   - **Recommendation**: Treat as same - saturation loop subsumes reformulation
+### Question 3: Breadcrumb Following Limits
 
-3. **Should we parallelize within a source?**
-   - E.g., SAM.gov Query 1 + Query 2 simultaneously?
-   - **Recommendation**: No - Query N+1 should use results of Query N
+**Context**: Could potentially follow unlimited breadcrumbs, exploding scope.
 
-4. **What about source-specific query strategies?**
-   - SAM.gov: Try different date formats, contract types
-   - Twitter: Try hashtags vs full text
-   - **Recommendation**: Encode in source_characteristics, let LLM adapt
+**Decision**: CONFIGURABLE LIMIT. Follow top 5-10 high-value breadcrumbs per hypothesis. Prioritize: contract IDs > entity names > person names > other.
 
 ---
 
-## Next Steps
+## Implementation Schedule
 
-**Immediate Actions**:
-1. Review this plan with user - get approval/feedback
-2. Create detailed task breakdown for Phase 1
-3. Set up test harness for comparing old vs new system
-4. Begin implementation of `_saturate_source_for_hypothesis()`
+**Week 1-2**: Phase 1 Core Infrastructure
+- [ ] `_saturate_source_for_hypothesis()` method
+- [ ] Saturation prompt
+- [ ] `_decide_next_query()` method
+- [ ] Modified `_execute_hypothesis()`
+- [ ] Logging enhancements
+- [ ] Unit tests
 
-**Before Starting Implementation**:
-- [ ] User approves architecture
-- [ ] User approves phasing plan
-- [ ] User approves success criteria
-- [ ] Decision on open questions documented
+**Week 3-4**: Phase 1 Validation & Phase 2 Start
+- [ ] Integration testing (compare vs baseline)
+- [ ] Cost/performance analysis
+- [ ] Start breadcrumb following implementation
+
+**Week 5-6**: Phase 2 Completion & Phase 3 Start
+- [ ] Complete breadcrumb following
+- [ ] Start verification/triangulation
+
+**Week 7-8**: Phase 3 & 4
+- [ ] Complete verification
+- [ ] Start entity research
 
 ---
 
@@ -456,8 +719,23 @@ async def test_e2e_dod_contracts():
 - **Original Discussion**: Session 2025-11-21 (saturation architecture deep-dive)
 - **Current System**: `research/deep_research.py:1371` (`_execute_hypothesis`)
 - **Coverage Assessment**: `research/deep_research.py:1498` (`_assess_coverage`)
-- **Hypothesis Execution**: `research/deep_research.py:1777` (`_execute_hypotheses_sequential`)
+- **Ultrathink Analysis**: Session 2025-11-21 (expert investigator process)
 
 ---
 
-**Document Status**: Planning - Awaiting User Approval
+## Changelog
+
+**2025-11-21 (Initial)**: Created comprehensive refactor plan
+**2025-11-21 (Revision 1)**: Removed overengineered Phase 0/1, simplified to focused implementation
+
+**Key Changes in Revision**:
+- ❌ Removed: Separate "Question Understanding" phase (overengineered)
+- ❌ Removed: Separate "Reconnaissance" phase (overengineered)
+- ✅ Kept: Query saturation with smart prompting (handles what Phase 0/1 tried to do)
+- ✅ Added: Breadcrumb following (Phase 2)
+- ✅ Added: Verification/triangulation (Phase 3)
+- ✅ Added: Entity research (Phase 4)
+
+---
+
+**Document Status**: Planning - Ready for Implementation
