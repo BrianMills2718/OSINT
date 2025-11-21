@@ -175,6 +175,7 @@ class SimpleDeepResearch:
 
         # Phase 1: Query saturation configuration
         saturation_config = deep_config.get("query_saturation", {})
+        self.query_saturation_enabled = saturation_config.get("enabled", False)  # Feature flag
         self.max_queries_per_source = max_queries_per_source or saturation_config.get("max_queries_per_source", {
             'SAM.gov': 10,
             'DVIDS': 5,
@@ -1667,10 +1668,57 @@ class SimpleDeepResearch:
                 )
 
             try:
-                # Call source API (using existing _execute_source_query or similar)
-                # TODO: This needs to integrate with existing source execution logic
-                # For now, placeholder
-                results = []  # Will be replaced with actual source query execution
+                # Call source API using existing infrastructure
+                # Map display name → tool name
+                tool_name = self.tool_display_to_name.get(source_name)
+                if not tool_name:
+                    logging.error(f"Unknown source: {source_name}")
+                    query_history.append({
+                        'query': query,
+                        'reasoning': query_reasoning,
+                        'results_total': 0,
+                        'results_accepted': 0,
+                        'results_rejected': 0,
+                        'error': f"Unknown source: {source_name}",
+                        'effectiveness': 0
+                    })
+                    continue
+
+                # Get limit from config
+                limit = config.get_integration_limit(source_name)
+
+                # Execute based on source type
+                results = []
+                if tool_name in [t["name"] for t in self.mcp_tools]:
+                    # MCP tool path (SAM, DVIDS, USAJobs, etc.)
+                    mcp_tool = next(t for t in self.mcp_tools if t["name"] == tool_name)
+                    tool_result = await self._call_mcp_tool(
+                        tool_config=mcp_tool,
+                        query=query,
+                        param_adjustments=None,
+                        task_id=task_id,
+                        attempt=0,
+                        logger=self.logger
+                    )
+                    if tool_result.get("success"):
+                        results = tool_result.get("results", [])
+                    else:
+                        error_msg = tool_result.get('error', 'Unknown error')
+                        logging.error(f"MCP tool {source_name} failed: {error_msg}")
+                        query_history.append({
+                            'query': query,
+                            'reasoning': query_reasoning,
+                            'results_total': 0,
+                            'results_accepted': 0,
+                            'results_rejected': 0,
+                            'error': error_msg,
+                            'effectiveness': 0
+                        })
+                        continue
+
+                elif tool_name == "brave_search":
+                    # Brave search path (non-MCP)
+                    results = await self._search_brave(query, max_results=limit)
 
             except Exception as e:
                 logging.error(f"Source query failed for {source_name}: {e}")
@@ -1687,9 +1735,21 @@ class SimpleDeepResearch:
                 continue  # Try next query
 
             # Filter results using EXISTING relevance evaluation
-            # TODO: Integrate with existing filtering logic
-            # For now, placeholder
-            filtered = {'accepted_results': [], 'rejection_themes': []}
+            if results:
+                # Use hypothesis statement as the query context for filtering
+                should_accept, relevance_reason, relevant_indices, should_continue, continuation_reason, reasoning_breakdown = await self._validate_result_relevance(
+                    task_query=hypothesis['statement'],  # Use hypothesis statement
+                    research_question=task.query,  # Parent task query
+                    sample_results=results
+                )
+
+                # Transform to expected format
+                filtered = {
+                    'accepted_results': [results[i] for i in relevant_indices if i < len(results)] if should_accept else [],
+                    'rejection_themes': [relevance_reason] if not should_accept else []
+                }
+            else:
+                filtered = {'accepted_results': [], 'rejection_themes': []}
 
             # Deduplicate within source (track URLs seen)
             accepted = filtered.get('accepted_results', [])
@@ -1775,62 +1835,88 @@ class SimpleDeepResearch:
             logging.warning(f"⚠️  Hypothesis {hypothesis_id}: No valid sources to search")
             return []
 
-        # Generate queries for each source
+        # Execute sources (saturation mode or single-shot mode)
         all_results = []
-        for tool_name in source_tool_names:
-            try:
-                # Generate source-specific query
-                query = await self._generate_hypothesis_query(
-                    hypothesis=hypothesis,
-                    source_tool_name=tool_name,
-                    research_question=research_question,
-                    task_query=task.query,
-                    task=task
-                )
 
-                if not query:
-                    continue  # Query generation failed, skip this source
+        if self.query_saturation_enabled:
+            # NEW: Query saturation mode (iterative querying per source)
+            print(f"   🔄 Query saturation enabled - iterative querying per source")
+            for tool_name in source_tool_names:
+                try:
+                    source_display = self.tool_name_to_display.get(tool_name, tool_name)
+                    print(f"   🔍 Saturating {source_display}...")
 
-                # Execute search (single-shot, no retries)
-                source_display = self.tool_name_to_display.get(tool_name, tool_name)
-                print(f"   🔍 Searching {source_display}: '{query}'")
-
-                # Use existing search infrastructure
-                # Get limit from config
-                limit = config.get_integration_limit(source_display)
-
-                # Execute MCP search
-                if tool_name in [t["name"] for t in self.mcp_tools]:
-                    mcp_tool = next(t for t in self.mcp_tools if t["name"] == tool_name)
-
-                    # Call MCP tool using class method
-                    tool_result = await self._call_mcp_tool(
-                        tool_config=mcp_tool,
-                        query=query,
-                        param_adjustments=None,  # No param hints in direct hypothesis execution
+                    # Execute with saturation (multiple queries until LLM determines saturation)
+                    source_results = await self._execute_source_with_saturation(
                         task_id=task.id,
-                        attempt=0,
-                        logger=self.logger
+                        task=task,
+                        hypothesis=hypothesis,
+                        source_name=source_display
                     )
 
-                    if tool_result.get("success"):
-                        results = tool_result.get("results", [])
+                    print(f"   ✓ {source_display}: {len(source_results)} results (after saturation)")
+                    all_results.extend(source_results)
+
+                except Exception as e:
+                    logging.error(f"❌ Hypothesis {hypothesis_id} saturation failed for {source_display}: {type(e).__name__}: {e}")
+                    continue  # Continue with other sources
+        else:
+            # OLD: Single-shot mode (one query per source)
+            for tool_name in source_tool_names:
+                try:
+                    # Generate source-specific query
+                    query = await self._generate_hypothesis_query(
+                        hypothesis=hypothesis,
+                        source_tool_name=tool_name,
+                        research_question=research_question,
+                        task_query=task.query,
+                        task=task
+                    )
+
+                    if not query:
+                        continue  # Query generation failed, skip this source
+
+                    # Execute search (single-shot, no retries)
+                    source_display = self.tool_name_to_display.get(tool_name, tool_name)
+                    print(f"   🔍 Searching {source_display}: '{query}'")
+
+                    # Use existing search infrastructure
+                    # Get limit from config
+                    limit = config.get_integration_limit(source_display)
+
+                    # Execute MCP search
+                    if tool_name in [t["name"] for t in self.mcp_tools]:
+                        mcp_tool = next(t for t in self.mcp_tools if t["name"] == tool_name)
+
+                        # Call MCP tool using class method
+                        tool_result = await self._call_mcp_tool(
+                            tool_config=mcp_tool,
+                            query=query,
+                            param_adjustments=None,  # No param hints in direct hypothesis execution
+                            task_id=task.id,
+                            attempt=0,
+                            logger=self.logger
+                        )
+
+                        if tool_result.get("success"):
+                            results = tool_result.get("results", [])
+                            print(f"   ✓ {source_display}: {len(results)} results")
+                            all_results.extend(results)
+                        else:
+                            print(f"   ⚠️  {source_display}: {tool_result.get('error', 'Unknown error')}")
+                    elif tool_name == "brave_search":
+                        # Web search (non-MCP)
+                        results = await self._search_brave(query, max_results=limit)
                         print(f"   ✓ {source_display}: {len(results)} results")
                         all_results.extend(results)
-                    else:
-                        print(f"   ⚠️  {source_display}: {tool_result.get('error', 'Unknown error')}")
-                elif tool_name == "brave_search":
-                    # Web search (non-MCP)
-                    results = await self._search_brave(query, max_results=limit)
-                    print(f"   ✓ {source_display}: {len(results)} results")
-                    all_results.extend(results)
 
-            except Exception as e:
-                logging.error(f"❌ Hypothesis {hypothesis_id} search failed for {source_display}: {type(e).__name__}: {e}")
-                continue  # Continue with other sources
+                except Exception as e:
+                    logging.error(f"❌ Hypothesis {hypothesis_id} search failed for {source_display}: {type(e).__name__}: {e}")
+                    continue  # Continue with other sources
 
-        # Filter hypothesis results for relevance (Bug fix: hypothesis execution was bypassing filtering)
-        if all_results:
+        # Filter hypothesis results for relevance (only in single-shot mode)
+        # In saturation mode, results are already filtered per-query
+        if all_results and not self.query_saturation_enabled:
             print(f"   🔍 Validating relevance of {len(all_results)} hypothesis results...")
             should_accept, relevance_reason, relevant_indices, should_continue, continuation_reason, reasoning_breakdown = await self._validate_result_relevance(
                 task_query=hypothesis['statement'],  # Use hypothesis statement as query context
