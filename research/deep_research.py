@@ -1563,7 +1563,8 @@ class SimpleDeepResearch:
         # Get source-specific limits
         max_queries = self.max_queries_per_source.get(source_name, 5)
         max_time = self.max_time_per_source_seconds
-        source_metadata = SOURCE_METADATA.get(source_name, {})
+        source_metadata_obj = SOURCE_METADATA.get(source_name)
+        source_metadata = asdict(source_metadata_obj) if source_metadata_obj else {}
 
         # Log saturation start
         if self.logger:
