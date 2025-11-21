@@ -469,25 +469,27 @@ pip list | grep playwright
 **END OF PERMANENT SECTION**
 # CLAUDE.md - Temporary Section (Condensed)
 
-**Last Updated**: 2025-11-20
-**Current Branch**: `master`
-**Current Phase**: Phase 5 (Pure Qualitative Intelligence) ✅ COMPLETE
-**Status**: Production-ready
+**Last Updated**: 2025-11-21
+**Current Branch**: `feature/query-level-saturation`
+**Current Phase**: Phase 1 (Query Saturation) - 🚧 IMPLEMENTATION IN PROGRESS
+**Status**: Planning complete, implementing core saturation
 
 ---
 
 ## CURRENT STATUS
 
-**Phase 5 Merge Complete** (2025-11-20, commit b7b7efc):
-- Removed all quantitative scores (coverage_score, confidence)
-- System now uses qualitative LLM assessments with auto-injected facts
-- Manager-agent architecture with task prioritization and saturation detection
-- 15 files changed (+3,754, -77 lines)
+**Phase 1 Planning Complete** (2025-11-21, commit 92c1401):
+- Implementation plan validated with critical fixes
+- Added: First query generation, within-source dedup, error handling
+- Updated: Objective success criteria, dynamic gap tracking, enhanced logging
+- Time estimate: 2.5 weeks (12.5 days)
+- Ready to begin implementation
 
-**Validation Results** (Cuba sanctions test):
-- 3 tasks, 216 results, 27 entities, 8 coverage assessments
-- Duration: 8.4 minutes
-- Phase 5 schema verified in metadata.json, report.md, execution_log.jsonl
+**Baseline System** (master branch, commit b7b7efc):
+- Phase 5 complete: Pure qualitative intelligence
+- System executes exactly 1 query per source (no iteration)
+- 3 tasks, 216 results, 27 entities, 8.4 minutes (Cuba sanctions test)
+- Production-ready on master branch
 
 **System Architecture**:
 - ✅ No hardcoded heuristics - full LLM intelligence
@@ -533,6 +535,14 @@ pip list | grep playwright
 
 ## RECENT CHANGES (Last 7 Days)
 
+**2025-11-21**: Phase 1 query saturation planning (92c1401, 1ace9c5)
+- ✅ Implementation plan created with critical fixes
+- ✅ Fixed gaps: first query generation, deduplication, error handling
+- ✅ Objective success criteria (70% LLM stops, avg 3-5 queries)
+- ✅ Timeout architecture simplified (removed redundant task timeout)
+- ✅ Dynamic information gaps tracking
+- Documentation: docs/QUERY_SATURATION_IMPLEMENTATION_PLAN.md, docs/TIMEOUT_ARCHITECTURE.md
+
 **2025-11-20**: Hypothesis execution bugs fixed (2cdee01, 9c0be0b, ac0dfbc)
 - ✅ Bug #1: Per-hypothesis relevance filtering (prevents junk results)
 - ✅ Bug #2: Query generation structured logging (enables debugging)
@@ -565,12 +575,41 @@ pip list | grep playwright
 
 ## NEXT PLANNED WORK
 
-**No active development** - System is production-ready.
+**Phase 1: Query Saturation Implementation** (2.5 weeks)
+**Goal**: Enable iterative querying per source until LLM determines saturation
+**Value**: 30-50% more results, better coverage of complex topics
 
-**Potential Future Enhancements**:
-- Additional integrations (Federal Register, Congress.gov)
-- Boolean monitoring system (monitoring/ directory exists, not yet tested)
-- Unified search app improvements (apps/unified_search_app.py)
+**Implementation Steps** (in order):
+1. ✅ Step 0: Planning complete (commit 92c1401)
+2. ⏳ Step 1: Configuration enhancement (~30 min)
+   - Add max_queries_per_source, max_time_per_source_seconds to __init__
+3. ⏳ Step 2: Source metadata (~1 hour)
+   - Create integrations/source_metadata.py
+   - Define SOURCE_METADATA for each source
+4. ⏳ Step 3: Saturation prompt (~2 hours)
+   - Create prompts/deep_research/source_saturation.j2
+   - Include remaining_gaps for dynamic gap tracking
+5. ⏳ Step 3.5: First query generation (~1 hour)
+   - Add _generate_initial_query() method
+6. ⏳ Step 4: Core saturation method (~5 hours)
+   - Add _execute_source_with_saturation() method
+   - Include: deduplication, error handling, first query branching
+7. ⏳ Step 5: Query decision method (~2 hours)
+   - Add _generate_next_query_or_stop() method
+8. ⏳ Step 6: Update hypothesis execution (~2 hours)
+   - Modify _execute_hypothesis() to use saturation
+9. ⏳ Step 7: Logging enhancements (~2 hours)
+   - Add log_source_saturation_start(), log_query_attempt(), log_source_saturation_complete()
+10. ⏳ Step 8: Integration testing (~1 day)
+    - Unit tests, single source, multi-source, E2E
+
+**Success Criteria** (must pass ALL to proceed):
+- Multi-query execution (2+ queries on 70% of sources)
+- LLM stops before max_queries in >70% of sources
+- Average 3-5 queries per source (adaptive behavior)
+- 30%+ more results than baseline
+- <2x baseline execution time
+- Comprehensive logging with confidence scores
 
 ---
 
