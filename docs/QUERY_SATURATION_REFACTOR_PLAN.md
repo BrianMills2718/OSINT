@@ -648,8 +648,9 @@ async def test_e2e_source_adaptation():
 ### High Risk
 
 1. **Infinite Loop Risk**
-   - **Mitigation**: Hard query ceilings per source
-   - **Fallback**: Timeout after 1800s per source
+   - **Mitigation**: User-configured query ceilings per source (SAM.gov: 10, Twitter: 3)
+   - **Fallback**: User-configured max_time_per_source_seconds (e.g., 300s)
+   - **Defense-in-depth**: Total research budget timeout (e.g., 120 min)
 
 2. **Cost Explosion**
    - **Mitigation**: Track LLM calls, add budget circuit breaker

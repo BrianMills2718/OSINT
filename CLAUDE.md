@@ -21,7 +21,7 @@
 - ✅ Require LLM to justify all decisions with reasoning
 - ✅ Optimize for quality - user configures budget upfront and walks away
 - ✅ Use LLM's 1M token context fully (no artificial sampling)
-- ✅ **Let tests run naturally** - System has built-in timeouts (LLM 180s, Task 1800s, Max 120min). Trust them.
+- ✅ **Let tests run naturally** - System has built-in timeouts (LLM 180s, Max research budget). Trust them.
 
 **User Workflow**: Configure parameters once → Run research → Walk away → Get comprehensive results
 - No mid-run feedback required
@@ -126,10 +126,10 @@ See: INVESTIGATIVE_PLATFORM_VISION.md (75 pages)
 **NEVER impose artificial timeouts**:
 - ❌ Shell-level timeout wrappers (`timeout 600 python3 script.py`)
 - ❌ Bash tool timeout parameter on research/test scripts
-- ✅ Trust system's built-in defense-in-depth timeouts:
-  - LLM calls: 180s (3 min)
-  - Task execution: 1800s (30 min)
-  - Max research time: 120 min (configurable)
+- ✅ Trust system's built-in protection:
+  - LLM call timeout: 180s (3 min) - API failure protection
+  - User-configured limits: max_queries_per_source, max_time_per_source_seconds
+  - Total research budget: User-configured (e.g., 120 min) - Total cap
 - ✅ User configured these upfront - let them work
 
 ### 7. FAIL-FAST AND LOUD
@@ -492,7 +492,7 @@ pip list | grep playwright
 **System Architecture**:
 - ✅ No hardcoded heuristics - full LLM intelligence
 - ✅ Two research modes: Expert Investigator (run until saturated) / Budget-Constrained (run to limits)
-- ✅ Defense-in-depth timeouts: LLM (180s), Task (1800s), Max research (120min)
+- ✅ Simplified timeout architecture: LLM (180s) + Source limits (user-configured) + Total budget (user-configured)
 - ✅ All prompts in Jinja2 templates (prompts/ directory)
 - ✅ 11 hypotheses per research question with coverage assessment
 
@@ -548,8 +548,8 @@ pip list | grep playwright
 
 **2025-11-19**: Timeout architecture refactored (f75ad15, b90f20a)
 - Added LLM call timeouts (180s)
-- Increased task timeout to 1800s (backstop)
-- Defense-in-depth: 3 layers of timeout protection
+- User-configured source limits and total budget
+- Simplified from 3 layers to 2 layers (removed redundant task timeout)
 
 **2025-11-19**: LLM-powered follow-up generation (93b45d7)
 - Removed hardcoded entity concatenation
