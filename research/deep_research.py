@@ -204,6 +204,7 @@ class SimpleDeepResearch:
         self.start_time: Optional[datetime] = None
         self.critical_source_failures: List[str] = []  # Track failed critical sources
         self.rate_limited_sources: set = set()  # Track rate-limited sources (circuit breaker)
+        self.logger = None  # Initialized later in research() if save_output=True
 
         # Hypothesis branching configuration (Phase 3A/3B)
         raw_config = config.get_raw_config()
