@@ -1,7 +1,8 @@
 # STATUS.md - Component Status Tracker
 
-**Last Updated**: 2025-11-21 (Phase 6: Query Saturation - COMPLETE)
-**Current Phase**: Phase 6 (Query Saturation) COMPLETE ✅
+**Last Updated**: 2025-11-22 (Quality Improvements - IN PROGRESS)
+**Current Phase**: Quality Improvements (Report Synthesis) - IN PROGRESS 🔄
+**Previous Phase**: Phase 6 (Query Saturation) COMPLETE ✅
 **Previous Phase**: Phase 5 (Pure Qualitative Intelligence) - COMPLETE ✅
 **Previous Phase**: Phase 4 (Manager-Agent Architecture) - COMPLETE ✅
 **Previous Phase**: Phase 3C (Coverage Assessment) - COMPLETE ✅
@@ -13,6 +14,114 @@
 **Previous Phase**: Phase 1.5 (Adaptive Search & Knowledge Graph) - Week 1 COMPLETE ✅
 **Previous Phase**: Phase 1 (Boolean Monitoring MVP) - 100% COMPLETE + **DEPLOYED IN PRODUCTION** ✅
 **Previous Phase**: Phase 0 (Foundation) - 100% COMPLETE
+
+---
+
+## Quality Improvements (2025-11-22)
+
+**Status**: 🔄 **IN PROGRESS** - Three improvements completed, synthesis enhancement in progress
+**Philosophy**: LLM intelligence via architecture, not hardcoded heuristics
+
+### Completed Improvements
+
+#### 1. Reddit Integration - LLM-Based Relevance Check ✅
+**Problem**: Reddit systematically excluded from research (3 queries vs 59 for Discord)
+**Root Cause**: Hardcoded keyword filtering rejected contract-related queries
+**Solution**: Replaced hardcoded rules with LLM-based `is_relevant()` method
+
+**Implementation** (commit 503b13d):
+- Uses GPT-4o-mini to evaluate relevance based on Reddit characteristics
+- Returns JSON with boolean decision and reasoning
+- Defaults to True on error (fail-safe)
+- Enables future configurability via prompts (deep/shallow research modes)
+
+**Validation**:
+```
+Test: "What government contracts has Anduril Industries received?"
+Before: Reddit=False, Discord=True (inconsistent)
+After:  Reddit=True, Discord=True (consistent) ✅
+```
+
+**Impact**:
+- Reddit now queried proportionally to its relevance
+- Community discussions, controversies, insider perspectives captured
+- Consistent LLM-based pattern across all integrations
+
+**Files Modified**:
+- `integrations/social/reddit_integration.py` (lines 102-162)
+- `tests/test_reddit_fix.py` (new validation test)
+- `PATTERNS.md` (updated is_relevant() pattern)
+
+---
+
+#### 2. Follow-Up Task Redundancy Prevention ✅
+**Problem**: Follow-up generation created duplicate tasks
+**Example**: Anduril research generated near-duplicate Tasks 4-7
+**Root Cause**: Follow-up LLM didn't see existing completed/pending tasks
+
+**Solution**: Added global task context to follow-up generation
+- Follow-up LLM now receives all completed + pending tasks
+- Prevents creating duplicate follow-ups via context visibility
+- Extends existing pattern from hypothesis diversity fix
+
+**Implementation**:
+- `research/deep_research.py`: Pass all_tasks context (17 lines modified)
+- `prompts/deep_research/follow_up_generation.j2`: Add context section (15 lines + docs)
+
+**Impact**: Should eliminate near-duplicate follow-ups in future research runs
+
+---
+
+#### 3. Hypothesis Diversity Enhancement ✅
+**Problem**: Multiple hypotheses within same task investigated overlapping angles
+**Root Cause**: Hypothesis generation LLM didn't see existing tasks or other hypotheses
+
+**Solution**: Pass context to hypothesis generation
+- Updated `_generate_hypotheses()` to accept `all_tasks` and `existing_hypotheses`
+- Modified both call sites (lines 653, 870) to pass context
+- Enhanced `hypothesis_generation.j2` with "CONTEXT - AVOID DUPLICATION" section
+
+**Architecture**:
+- No hardcoded similarity checks or overlap thresholds
+- Declarative - LLM uses context to ensure diversity via reasoning
+- Scales to new sources - no source-specific logic
+
+**Files Modified**:
+- `research/deep_research.py` (method signature, 2 call sites, context formatting)
+- `prompts/deep_research/hypothesis_generation.j2` (context section, diversity guidance)
+
+---
+
+### In Progress
+
+#### 4. Report Synthesis Quality Enhancement 🔄
+**Problem**: Final reports lack inline citations and intelligent source grouping
+**Root Cause**: Synthesis uses free-form markdown without structured schema enforcement
+
+**Gaps Identified**:
+1. Claims presented without inline source citations
+2. All sources treated with equal weight (no intelligent grouping)
+3. ~~Information gaps in final report~~ → User clarified: Keep in logs/metadata only
+
+**Solution Approach** (LLM-driven, not hardcoded):
+- Add structured JSON schema to synthesis prompt (in Jinja2 template)
+- Schema structure: `{source_groups: [{group_name, findings: [{claim, inline_citations}]}]}`
+- LLM decides group names ("Official DoD Sources" vs "Industry Analysis" vs "Community Discussions")
+- LLM decides which sources belong in which groups (intelligent reasoning, not hardcoded labels)
+- Python post-processor: Format JSON → Markdown (NO decision logic, just templating)
+
+**Architecture Principles**:
+- ✅ Schema = structure, LLM = intelligence (no hardcoded source categories)
+- ✅ Every claim has inline citations for verifiability
+- ✅ Source grouping emerges from data (not predetermined labels like [PRIMARY]/[ANALYSIS]/[LEAD])
+- ✅ Configuration via prompt template (schema is declarative, not code)
+- ❌ NO information gaps in final report (user preference: keep in logs/metadata only)
+
+**Status**: Documentation audit complete, implementation next
+
+**Files to Modify**:
+- `prompts/deep_research/report_synthesis.j2` (schema + enhanced prompt)
+- `research/deep_research.py` (JSON → Markdown post-processor)
 
 ---
 

@@ -51,7 +51,60 @@ response = await acompletion(
 
 ## Database Integration Pattern
 
-**Copy from**: `integrations/sam_integration.py`
+**Copy from**: `integrations/government/federal_register.py` (best example)
+
+### Required Result Format (CRITICAL!)
+
+**ALL integrations must return results with these fields**:
+- `title` (str, required): Human-readable title/name
+- `url` (str, required): Link to full result
+- `snippet` (str, optional): Brief excerpt (max 500 chars)
+- `metadata` (dict, optional): Source-specific data
+
+**Results are validated using Pydantic** - missing fields will raise ValueError!
+
+### Field Transformation Pattern
+
+**ALWAYS transform API responses to standardized format**:
+
+```python
+# CORRECT - Transform raw API response to standardized format
+transformed_results = []
+for doc in raw_api_response[:limit]:
+    transformed = {
+        "title": doc.get("api_title_field", "Untitled"),
+        "url": doc.get("api_url_field", ""),
+        "snippet": doc.get("api_summary_field", "")[:500],
+        "metadata": {
+            "api_specific_field1": doc.get("field1"),
+            "api_specific_field2": doc.get("field2")
+        }
+    }
+    transformed_results.append(transformed)
+
+return QueryResult(
+    success=True,
+    source="NewSource",
+    total=total,
+    results=transformed_results,  # ← Transformed, not raw!
+    query_params=query_params,
+    response_time_ms=response_time_ms
+)
+```
+
+**WRONG - Returning raw API response**:
+```python
+# WRONG - This will fail Pydantic validation!
+return QueryResult(
+    success=True,
+    source="NewSource",
+    total=total,
+    results=raw_api_data,  # ← Missing title/url/snippet fields!
+    ...
+)
+```
+
+### Full Integration Example
 
 ```python
 from typing import Dict, Optional
@@ -72,22 +125,66 @@ class NewSourceIntegration(DatabaseIntegration):
         return DatabaseMetadata(
             id="newsource",
             name="New Source",
-            category=DatabaseCategory.GOVERNMENT,
+            category=DatabaseCategory.GOV_GENERAL,
             requires_api_key=True,
             cost_per_query_estimate=0.001,
             typical_response_time=2.0,
+            rate_limit_daily=None,
             description="Brief description"
         )
 
     async def is_relevant(self, research_question: str) -> bool:
-        """Quick keyword check BEFORE expensive LLM call."""
-        keywords = ["keyword1", "keyword2"]
-        question_lower = research_question.lower()
-        return any(kw in question_lower for kw in keywords)
+        """
+        LLM-based relevance check.
+
+        Uses LLM to determine if this source is relevant for the research question,
+        considering source strengths and limitations.
+        """
+        from llm_utils import acompletion
+        from dotenv import load_dotenv
+
+        load_dotenv()
+
+        prompt = f"""Is [SourceName] relevant for researching this question?
+
+RESEARCH QUESTION:
+{research_question}
+
+[SOURCENAME] CHARACTERISTICS:
+Strengths:
+- [List source strengths]
+
+Limitations:
+- [List source limitations]
+
+DECISION CRITERIA:
+- Is relevant: If [source capabilities] could provide valuable information
+- NOT relevant: If ONLY seeking [things this source doesn't have]
+
+Return JSON:
+{{
+  "relevant": true/false,
+  "reasoning": "1-2 sentences explaining why"
+}}"""
+
+        try:
+            response = await acompletion(
+                model="gpt-4o-mini",
+                messages=[{"role": "user", "content": prompt}],
+                response_format={"type": "json_object"}
+            )
+
+            result = json.loads(response.choices[0].message.content)
+            return result.get("relevant", True)  # Default to True on parsing failure
+
+        except Exception as e:
+            # On error, default to True (let query generation handle filtering)
+            print(f"[WARN] Relevance check failed: {e}, defaulting to True")
+            return True
 
     async def generate_query(self, research_question: str) -> Optional[Dict]:
         """Use LLM to generate query parameters."""
-        # See sam_integration.py for full example
+        # See federal_register.py for full example
         pass
 
     async def execute_search(
@@ -103,8 +200,27 @@ class NewSourceIntegration(DatabaseIntegration):
             # Make API call
             response = requests.get(url, params, headers, timeout=30)
             response.raise_for_status()
-
             response_time_ms = (datetime.now() - start_time).total_seconds() * 1000
+
+            # Parse raw API response
+            raw_data = response.json()
+            raw_results = raw_data.get("results", [])
+            total = raw_data.get("total_count", len(raw_results))
+
+            # CRITICAL: Transform to standardized format
+            transformed_results = []
+            for doc in raw_results[:limit]:
+                transformed = {
+                    "title": doc.get("doc_title", "Untitled"),
+                    "url": doc.get("permalink", ""),
+                    "snippet": doc.get("abstract", "")[:500],
+                    "metadata": {
+                        "doc_id": doc.get("id"),
+                        "date": doc.get("publish_date"),
+                        "author": doc.get("author")
+                    }
+                }
+                transformed_results.append(transformed)
 
             # Log success
             log_request(
@@ -119,8 +235,8 @@ class NewSourceIntegration(DatabaseIntegration):
             return QueryResult(
                 success=True,
                 source="NewSource",
-                total=response.json().get("total", 0),
-                results=response.json().get("results", []),
+                total=total,
+                results=transformed_results,  # ← Transformed format
                 query_params=query_params,
                 response_time_ms=response_time_ms
             )
@@ -143,7 +259,7 @@ class NewSourceIntegration(DatabaseIntegration):
                 results=[],
                 query_params=query_params,
                 error=str(e),
-                response_time_ms=response_time_ms
+                response_time_ms=(datetime.now() - start_time).total_seconds() * 1000
             )
 ```
 
