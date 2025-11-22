@@ -185,7 +185,7 @@ class CRESTIntegration(DatabaseIntegration):
 
                 # Fetch multiple pages if requested
                 for page_num in range(max_pages):
-                    if len(documents) >= result_limit:
+                    if len(documents) >= limit:
                         break
 
                     # Construct search URL
@@ -226,9 +226,9 @@ class CRESTIntegration(DatabaseIntegration):
                         }
                     """)
 
-                    # Visit each document to get snippet (limited to result_limit)
+                    # Visit each document to get snippet (limited to limit)
                     for doc_link in doc_links:
-                        if len(documents) >= result_limit:
+                        if len(documents) >= limit:
                             break
 
                         try:
