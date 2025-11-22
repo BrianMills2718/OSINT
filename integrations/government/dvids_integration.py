@@ -310,11 +310,27 @@ class DVIDSIntegration(DatabaseIntegration):
                 request_params=log_params
             )
 
+            # Transform results to standardized format
+            documents = []
+            for item in results[:limit]:
+                doc = {
+                    "title": item.get("title", "Untitled"),
+                    "url": item.get("url", ""),
+                    "snippet": item.get("description", item.get("caption", "")),  # Use description or caption
+                    "metadata": {
+                        "id": item.get("id"),
+                        "type": item.get("type"),
+                        "branch": item.get("branch"),
+                        "date": item.get("date")
+                    }
+                }
+                documents.append(doc)
+
             return QueryResult(
                 success=True,
                 source="DVIDS",
                 total=total,
-                results=results[:limit],
+                results=documents,
                 query_params=query_params,
                 response_time_ms=response_time_ms,
                 metadata={

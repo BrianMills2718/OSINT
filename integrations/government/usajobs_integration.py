@@ -255,6 +255,7 @@ class USAJobsIntegration(DatabaseIntegration):
                 normalized = {
                     **matched_obj,  # Keep all raw fields
                     "title": matched_obj.get("PositionTitle", ""),
+                    "url": matched_obj.get("PositionURI", "") or matched_obj.get("ApplyURI", [{}])[0].get("ApplicationURI", "") if matched_obj.get("ApplyURI") else "",
                     "description": (matched_obj.get("QualificationSummary", "") or "")[:500],  # Limit to 500 chars
                     "snippet": (matched_obj.get("QualificationSummary", "") or "")[:200]  # Shorter snippet
                 }
