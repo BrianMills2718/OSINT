@@ -159,7 +159,7 @@ class CongressIntegration(DatabaseIntegration):
         self,
         params: Dict,
         api_key: Optional[str],
-        result_limit: int = 100
+        limit: int = 100
     ) -> QueryResult:
         """
         Execute Congress.gov search via API.
@@ -167,7 +167,7 @@ class CongressIntegration(DatabaseIntegration):
         Args:
             params: Query parameters from generate_query()
             api_key: Congress.gov API key (from api.data.gov)
-            result_limit: Maximum results to return
+            limit: Maximum results to return
 
         Returns:
             QueryResult with bills/records found
@@ -175,7 +175,7 @@ class CongressIntegration(DatabaseIntegration):
         endpoint = params.get("endpoint", "bill")
         keywords = params.get("keywords", "")
         congress_num = params.get("congress", 118)
-        limit = min(params.get("limit", 100), result_limit, 250)
+        limit = min(params.get("limit", 100), limit, 250)
 
         if not api_key:
             db_config = config.get_database_config("congress")
@@ -268,8 +268,8 @@ class CongressIntegration(DatabaseIntegration):
                     }
                     documents.append(doc)
 
-            # Limit results to result_limit
-            documents = documents[:result_limit]
+            # Limit results to limit
+            documents = documents[:limit]
 
             # Log the request
             log_request(
