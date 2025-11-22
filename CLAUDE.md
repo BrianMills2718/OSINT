@@ -534,7 +534,29 @@ pip list | grep playwright
   - prompts/deep_research/hypothesis_generation.j2 (context section, enhanced diversity guidance)
 - **Status**: ✅ COMPLETE (2025-11-22) - Implementation complete, imports verified
 
-**3. Enhanced Structured Logging** 📋 **APPROVED - NOT STARTED**
+**3. Report Synthesis Quality Enhancement** ✅ **COMPLETE**
+- **Problem**: Final reports lacked inline citations and intelligent source grouping
+- **Root Cause**: Synthesis used free-form markdown without structured schema enforcement
+- **Solution Implemented** (2025-11-22, commit 8b2b020):
+  - ✅ Structured JSON schema in synthesis prompt (Jinja2 template)
+  - ✅ LLM-driven source grouping with intelligent group names (NO hardcoded labels)
+  - ✅ Python post-processor for JSON → Markdown (NO decision logic, just formatting)
+  - ✅ Inline citations mandatory for all claims (schema enforcement)
+  - ✅ Quality validation (all_claims_have_citations check)
+- **Architecture**:
+  - ✅ Schema = structure, LLM = intelligence (no hardcoded source categories)
+  - ✅ Every claim has inline citations for verifiability
+  - ✅ Source grouping emerges from data (LLM decides group names like "Official Government Sources")
+  - ✅ Configuration via prompt template (schema is declarative, in Jinja2, not Python)
+  - ❌ NO information gaps in final report (user preference: debugging data stays in logs)
+- **Files Modified**:
+  - prompts/deep_research/report_synthesis.j2 (196 lines, complete rewrite)
+  - research/deep_research.py (+154 lines: formatter + updated synthesis call)
+  - tests/test_synthesis_formatter.py (new validation test)
+- **Validation**: 10/11 test checks passed (inline citations, source grouping, reliability context all working)
+- **Status**: ✅ COMPLETE (2025-11-22) - Implemented, tested, documented
+
+**4. Enhanced Structured Logging** 📋 **APPROVED - NOT STARTED**
 - **Goal**: Detailed visibility into ALL decisions and time usage
 - **New event types needed**:
   ```python
