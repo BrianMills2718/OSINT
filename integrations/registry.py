@@ -10,6 +10,7 @@ from integrations.government.dvids_integration import DVIDSIntegration
 from integrations.government.usajobs_integration import USAJobsIntegration
 from integrations.government.fbi_vault import FBIVaultIntegration
 from integrations.government.federal_register import FederalRegisterIntegration
+from integrations.government.congress_integration import CongressIntegration
 
 # ClearanceJobs integration requires Playwright (optional dependency)
 try:
@@ -78,6 +79,7 @@ class IntegrationRegistry:
             self._try_register("crest", CRESTIntegration)
         self._try_register("fbi_vault", FBIVaultIntegration)
         self._try_register("federal_register", FederalRegisterIntegration)
+        self._try_register("congress", CongressIntegration)
 
         # Social media sources
         self._try_register("discord", DiscordIntegration)

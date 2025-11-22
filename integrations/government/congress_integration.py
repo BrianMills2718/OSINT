@@ -53,7 +53,7 @@ class CongressIntegration(DatabaseIntegration):
         return DatabaseMetadata(
             name="Congress.gov",
             id="congress",
-            category=DatabaseCategory.GOVERNMENT,
+            category=DatabaseCategory.GOV_CONGRESS,
             requires_api_key=True,
             cost_per_query_estimate=0.001,  # LLM cost only
             typical_response_time=1.5,      # seconds
@@ -132,7 +132,7 @@ class CongressIntegration(DatabaseIntegration):
                         "description": "Number of results to retrieve (20-250)"
                     }
                 },
-                "required": ["relevant", "reasoning"],
+                "required": ["relevant", "reasoning", "endpoint", "keywords", "congress", "limit"],
                 "additionalProperties": False
             }
         }
@@ -143,7 +143,7 @@ class CongressIntegration(DatabaseIntegration):
             response_format={"type": "json_schema", "json_schema": schema}
         )
 
-        result = response.get_message_content_json()
+        result = json.loads(response.choices[0].message.content)
 
         if not result.get("relevant", False):
             return None

@@ -129,6 +129,29 @@ SOURCE_METADATA = {
         max_queries_recommended=3  # Historical docs, focused topics
     ),
 
+    'Congress.gov': SourceMetadata(
+        name='Congress.gov',
+        description='U.S. Congressional bills, members, votes, and legislative records',
+        characteristics={
+            'official_government_data': True,
+            'legislative_focus': True,
+            'structured_data': True,
+            'historical_records': True,
+            'member_tracking': True,
+            'requires_verification': False  # Official government data
+        },
+        query_strategies=[
+            'bill_search',
+            'member_search',
+            'keyword_search',
+            'congress_number_filter',
+            'committee_search',
+            'vote_tracking'
+        ],
+        typical_result_count=50,
+        max_queries_recommended=5  # Legislative data, moderate saturation
+    ),
+
     'Twitter': SourceMetadata(
         name='Twitter',
         description='Social media platform (real-time news, announcements, discussions)',

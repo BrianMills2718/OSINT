@@ -117,6 +117,12 @@ databases:
     enabled: true
     timeout: 30                   # FBI Vault scraping can be slow
 
+  congress:
+    enabled: true
+    timeout: 20                   # Congress.gov API is fast
+    default_congress: 118         # 118th Congress (2023-2025)
+    default_limit: 100            # Default results per query
+
   # Social Media & Community Sources
   discord:
     enabled: true

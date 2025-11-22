@@ -6,6 +6,7 @@ Provides access to declassified CIA documents from the CIA Reading Room.
 """
 
 import asyncio
+import json
 from typing import Dict, Optional, List
 from urllib.parse import quote
 from llm_utils import acompletion
@@ -46,7 +47,7 @@ class CRESTIntegration(DatabaseIntegration):
         return DatabaseMetadata(
             name="CIA CREST",
             id="crest",
-            category=DatabaseCategory.GOVERNMENT,
+            category=DatabaseCategory.GOV_GENERAL,
             requires_api_key=False,
             cost_per_query_estimate=0.001,  # LLM cost only
             typical_response_time=10.0,     # seconds (scraping is slow)
@@ -106,7 +107,7 @@ class CRESTIntegration(DatabaseIntegration):
                         "description": "Number of result pages to fetch (1-3, each page has ~20 docs)"
                     }
                 },
-                "required": ["relevant", "reasoning"],
+                "required": ["relevant", "reasoning", "keyword", "max_pages"],
                 "additionalProperties": False
             }
         }
@@ -117,7 +118,7 @@ class CRESTIntegration(DatabaseIntegration):
             response_format={"type": "json_schema", "json_schema": schema}
         )
 
-        result = response.get_message_content_json()
+        result = json.loads(response.choices[0].message.content)
 
         if not result.get("relevant", False):
             return None
@@ -130,8 +131,8 @@ class CRESTIntegration(DatabaseIntegration):
     async def execute_search(
         self,
         params: Dict,
-        api_key: Optional[str],
-        result_limit: int = 20
+        api_key: Optional[str] = None,
+        limit: int = 20
     ) -> QueryResult:
         """
         Execute CREST search using Playwright web scraping.
@@ -139,7 +140,7 @@ class CRESTIntegration(DatabaseIntegration):
         Args:
             params: Query parameters from generate_query()
             api_key: Not used (CREST is public)
-            result_limit: Maximum results to return
+            limit: Maximum results to return
 
         Returns:
             QueryResult with documents found
