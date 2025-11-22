@@ -101,28 +101,65 @@ class RedditIntegration(DatabaseIntegration):
 
     async def is_relevant(self, research_question: str) -> bool:
         """
-        Quick relevance check for Reddit.
+        LLM-based relevance check for Reddit.
 
-        Reddit is useful for: Community discussions, opinions, user experiences, informal leads
-        Reddit is NOT useful for: Official contracts, formal solicitations, structured procurement data
+        Uses LLM to determine if Reddit communities might have valuable information
+        for the research question, considering Reddit's strengths and limitations.
 
         Args:
             research_question: The user's research question
 
         Returns:
-            False if asking about official contracts/solicitations, True for discussion/community queries
+            True if Reddit might have relevant discussions/information, False otherwise
         """
-        question_lower = research_question.lower()
+        from llm_utils import acompletion
+        from dotenv import load_dotenv
 
-        # Contract/procurement queries - Reddit doesn't have official solicitations
-        contract_keywords = ["contract", "solicitation", "rfp", "procurement", "award", "bidding", "idiq", "gwac"]
-        if any(keyword in question_lower for keyword in contract_keywords):
-            # Check if asking about discussion/experience with contracts (Reddit IS relevant for that)
-            discourse_keywords = ["discussion", "experience", "advice", "tips", "community", "opinion"]
-            if not any(keyword in question_lower for keyword in discourse_keywords):
-                return False
+        load_dotenv()
 
-        return True
+        prompt = f"""Is Reddit relevant for researching this question?
+
+RESEARCH QUESTION:
+{research_question}
+
+REDDIT CHARACTERISTICS:
+Strengths:
+- Community discussions and insider perspectives
+- Real-time reactions to news/events
+- User experiences and opinions
+- Controversies and debates
+- Informal information sharing
+- Niche expertise communities (r/defense, r/Intelligence, r/geopolitics, r/military, etc.)
+
+Limitations:
+- No official government documents or formal solicitations
+- Information reliability varies (requires verification)
+- Not a source for structured data or official records
+
+DECISION CRITERIA:
+- Is relevant: If community discussions, opinions, insider perspectives, controversies, or user experiences could provide valuable context
+- NOT relevant: If ONLY seeking official documents with no value from community perspectives
+
+Return JSON with your decision:
+{{
+  "relevant": true/false,
+  "reasoning": "1-2 sentences explaining why Reddit is/isn't relevant for this question"
+}}"""
+
+        try:
+            response = await acompletion(
+                model="gpt-4o-mini",
+                messages=[{"role": "user", "content": prompt}],
+                response_format={"type": "json_object"}
+            )
+
+            result = json.loads(response.choices[0].message.content)
+            return result.get("relevant", True)  # Default to True if parsing fails
+
+        except Exception as e:
+            # On error, default to True (let query generation and filtering handle it)
+            print(f"[WARN] Reddit relevance check failed: {e}, defaulting to True")
+            return True
 
     async def generate_query(self, research_question: str, param_hints: Optional[Dict] = None) -> Optional[Dict]:
         """
