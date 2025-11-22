@@ -4613,6 +4613,161 @@ class SimpleDeepResearch:
                 "critical_gaps_remaining": ["Saturation check error - continuing"]
             }
 
+    def _format_synthesis_json_to_markdown(self, json_data: Dict) -> str:
+        """
+        Convert structured synthesis JSON to markdown report.
+
+        NO DECISION LOGIC - just formatting/templating.
+        All intelligence decisions (grouping, reliability assessment, etc.) come from LLM.
+        """
+        try:
+            report_data = json_data.get("report", {})
+        except (AttributeError, TypeError):
+            # If json_data is malformed, return error
+            return "# Error: Invalid synthesis JSON structure\n\nThe synthesis LLM returned malformed JSON."
+
+        md = []
+
+        # Title
+        title = report_data.get("title", "Research Report")
+        md.append(f"# {title}\n\n")
+
+        # Executive Summary
+        exec_summary = report_data.get("executive_summary", {})
+        md.append("## Executive Summary\n\n")
+        md.append(f"{exec_summary.get('text', 'No summary provided.')}\n\n")
+
+        if exec_summary.get("key_points"):
+            md.append("**Key Points:**\n\n")
+            for kp in exec_summary["key_points"]:
+                point = kp.get("point", "")
+                citations = kp.get("inline_citations", [])
+                citation_links = []
+                for c in citations:
+                    title_str = c.get("title", "Source")
+                    url_str = c.get("url", "")
+                    date_str = c.get("date")
+                    link = f"[{title_str}]({url_str})"
+                    if date_str:
+                        link += f" ({date_str})"
+                    citation_links.append(link)
+
+                citations_str = ", ".join(citation_links) if citation_links else "No citations"
+                md.append(f"- {point} — {citations_str}\n")
+            md.append("\n")
+
+        # Source Groups (Key Findings)
+        source_groups = report_data.get("source_groups", [])
+        if source_groups:
+            md.append("## Key Findings\n\n")
+            for group in source_groups:
+                group_name = group.get("group_name", "Unknown Group")
+                group_desc = group.get("group_description", "")
+                reliability = group.get("reliability_context", "")
+
+                md.append(f"### {group_name}\n\n")
+                if reliability:
+                    md.append(f"*{reliability}*\n\n")
+
+                findings = group.get("findings", [])
+                for finding in findings:
+                    claim = finding.get("claim", "")
+                    citations = finding.get("inline_citations", [])
+                    supporting = finding.get("supporting_detail")
+
+                    citation_links = []
+                    for c in citations:
+                        title_str = c.get("title", "Source")
+                        url_str = c.get("url", "")
+                        date_str = c.get("date")
+                        source_str = c.get("source", "")
+                        link = f"[{title_str}]({url_str})"
+                        if date_str:
+                            link += f", {date_str}"
+                        citation_links.append(link)
+
+                    citations_str = "; ".join(citation_links) if citation_links else "No citations"
+                    md.append(f"- {claim} ({citations_str})\n")
+
+                    if supporting:
+                        md.append(f"  > {supporting}\n")
+
+                md.append("\n")
+
+        # Entity Network
+        entity_network = report_data.get("entity_network", {})
+        if entity_network:
+            md.append("## Entity Network\n\n")
+            md.append(f"{entity_network.get('description', 'No entity description provided.')}\n\n")
+
+            key_entities = entity_network.get("key_entities", [])
+            if key_entities:
+                for entity in key_entities:
+                    name = entity.get("name", "Unknown Entity")
+                    context = entity.get("context", "")
+                    relationships = entity.get("relationships", [])
+
+                    md.append(f"**{name}**: {context}\n")
+                    for rel in relationships:
+                        md.append(f"  - {rel}\n")
+                    md.append("\n")
+
+        # Timeline
+        timeline = report_data.get("timeline", [])
+        if timeline:
+            md.append("## Timeline\n\n")
+            for item in timeline:
+                date = item.get("date", "Unknown date")
+                event = item.get("event", "")
+                sources = item.get("sources", [])
+
+                source_links = []
+                for s in sources:
+                    s_title = s.get("title", "Source")
+                    s_url = s.get("url", "")
+                    source_links.append(f"[{s_title}]({s_url})")
+
+                sources_str = ", ".join(source_links) if source_links else ""
+                md.append(f"- **{date}**: {event}")
+                if sources_str:
+                    md.append(f" ({sources_str})")
+                md.append("\n")
+            md.append("\n")
+
+        # Methodology
+        methodology = report_data.get("methodology", {})
+        if methodology:
+            md.append("## Methodology\n\n")
+            approach = methodology.get("approach", "No methodology description provided.")
+            md.append(f"{approach}\n\n")
+
+            tasks_exec = methodology.get("tasks_executed", 0)
+            total_res = methodology.get("total_results", 0)
+            entities_disc = methodology.get("entities_discovered", 0)
+            integrations = methodology.get("integrations_used", [])
+            coverage = methodology.get("coverage_summary", {})
+
+            md.append(f"- **Tasks executed**: {tasks_exec}\n")
+            md.append(f"- **Total results**: {total_res}\n")
+            md.append(f"- **Entities discovered**: {entities_disc}\n")
+            md.append(f"- **Integrations used**: {', '.join(integrations) if integrations else 'None'}\n\n")
+
+            if coverage:
+                md.append("**Coverage Summary:**\n\n")
+                for source, count in coverage.items():
+                    md.append(f"- {source}: {count} results\n")
+                md.append("\n")
+
+        # Quality Check (optional footer)
+        quality_check = report_data.get("synthesis_quality_check", {})
+        if quality_check:
+            limitations = quality_check.get("limitations_noted")
+            if limitations:
+                md.append("## Research Limitations\n\n")
+                md.append(f"{limitations}\n\n")
+
+        return "".join(md)
+
     async def _synthesize_report(self, original_question: str) -> str:
         """Synthesize all findings into comprehensive report."""
         # Collect all results
@@ -4857,24 +5012,50 @@ class SimpleDeepResearch:
         )
 
         report = None
+        synthesis_json = None
+
         try:
+            # Call LLM for structured JSON synthesis
             response = await acompletion(
                 model=config.get_model("synthesis"),  # Use best model for synthesis
-                messages=[{"role": "user", "content": prompt}]
+                messages=[{"role": "user", "content": prompt}],
+                response_format={"type": "json_object"}  # Enforce JSON output
             )
-            report = response.choices[0].message.content
+
+            # Parse JSON response
+            synthesis_json = json.loads(response.choices[0].message.content)
+
+            # Add critical source failures to limitations if needed
+            if self.critical_source_failures:
+                limitations_text = synthesis_json.get("report", {}).get("synthesis_quality_check", {}).get("limitations_noted", "")
+                critical_failures_text = "Critical sources unavailable: " + ", ".join(self.critical_source_failures) + ". This research may be incomplete."
+
+                if limitations_text:
+                    synthesis_json["report"]["synthesis_quality_check"]["limitations_noted"] = f"{limitations_text}\n\n{critical_failures_text}"
+                else:
+                    synthesis_json["report"]["synthesis_quality_check"]["limitations_noted"] = critical_failures_text
+
+            # Convert JSON to Markdown using formatter (NO decision logic, just templating)
+            report = self._format_synthesis_json_to_markdown(synthesis_json)
+
+            # Log synthesis quality check
+            quality_check = synthesis_json.get("report", {}).get("synthesis_quality_check", {})
+            all_have_citations = quality_check.get("all_claims_have_citations", False)
+            grouping_reasoning = quality_check.get("source_grouping_reasoning", "")
+
+            print(f"✓ Synthesis complete:")
+            print(f"  - All claims have citations: {all_have_citations}")
+            print(f"  - Source grouping strategy: {grouping_reasoning[:100]}...")
+
+            if not all_have_citations:
+                print(f"⚠️  WARNING: LLM reported not all claims have citations!")
+
+        except json.JSONDecodeError as e:
+            logging.error(f"Synthesis JSON parsing failed: {e}")
+            report = f"# Research Report\n\nFailed to parse synthesis JSON.\n\nError: {e}\n\n## Raw Statistics\n\n- Tasks Executed: {len(self.completed_tasks)}\n- Tasks Failed: {len(self.failed_tasks)}\n"
         except Exception as e:
             logging.error(f"Synthesis failed: {type(e).__name__}: {e}")
             report = f"# Research Report\n\nFailed to synthesize final report.\n\nError: {type(e).__name__}: {e}\n\n## Raw Statistics\n\n- Tasks Executed: {len(self.completed_tasks)}\n- Tasks Failed: {len(self.failed_tasks)}\n"
-
-        # Add limitations section if critical sources failed (Fix 3 - Channel 4)
-        if self.critical_source_failures and report:
-            report += "\n\n## Research Limitations\n\n"
-            report += "The following critical sources were unavailable during this research:\n\n"
-            for source in self.critical_source_failures:
-                report += f"- **{source}**: Returned 0 results (rate limited or unavailable)\n"
-            report += "\n**Impact**: This research may be incomplete due to missing data from these authoritative sources. "
-            report += "Results should be verified against these sources when they become available.\n"
 
         return report
 

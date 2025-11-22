@@ -1,13 +1,6 @@
-Synthesize these research findings into a comprehensive report.
+Synthesize these research findings into a comprehensive structured report.
 
 Original Question: {{ original_question }}
-
-**Synthesis Guidance**: If the research question contains ambiguous terms (dates, acronyms, technical jargon), explicitly clarify what was found and note any scope ambiguities. Examples:
-- Date ranges: If "2024" yielded results from multiple fiscal/calendar years, state which system was used
-- Technical terms: If results interpret a term differently than expected, explain the interpretation
-- Geographic/organizational scope: If results span broader/narrower scope, note the mismatch
-
-Your goal: Create a clear, unambiguous, useful report that helps the investigator understand EXACTLY what was found, not just aggregate data.
 
 Research Summary:
 - Tasks Executed: {{ tasks_executed }}
@@ -17,169 +10,187 @@ Research Summary:
 Entity Relationships:
 {{ relationship_summary }}
 
-Top Findings (from {{ total_results }} results):
+Research Findings ({{ total_results }} results):
 {{ top_findings_json }}
 
-Create a detailed markdown report with:
-
-# Research Report: [Title based on question]
-
-## Executive Summary
-[3-5 sentences on the most important findings, phrased for an investigator. Use dates/quotes when they materially support the point and always cite the source URL. Be explicit about:
-- What was actually found vs. unsubstantiated chatter
-- Any temporal ambiguities (e.g., "2024 contracts" may span FY2024 Oct 2023-Sep 2024 or CY2024)
-- Scope matches or mismatches vs. the original question
-- Confidence level based on source quality (PRIMARY vs ANALYSIS vs LEAD)]
-
-## Key Documents & Links
-Order by how well each item advances the question and its credibility signals. Use labels as helpful context (e.g., [PRIMARY] official/archival; [ANALYSIS] media/think-tank/legal; [LEAD] unverified/social). Include short quotes only when paired with the source URL and when they strengthen understanding.
-{% if key_documents %}
-{% for doc in key_documents %}
-- [{{ doc.title }}]({{ doc.url }}) — {{ doc.source }}{% if doc.date %} ({{ doc.date }}){% endif %}
-{% endfor %}
-{% else %}
-- No key documents surfaced in this run.
-{% endif %}
-
-{% if timeline %}
-## Timeline (Key Publications/Events)
-{% for item in timeline %}
-- {{ item.date }}: [{{ item.title }}]({{ item.url }})
-{% endfor %}
-{% else %}
-No dated events extracted from collected sources.
-{% endif %}
-
-{# Findings by angle are captured in metadata/logs; keep main narrative focused. #}
-
+Coverage Summary:
 {% if source_counts %}
-## Coverage Snapshot
-- Per-source results:
 {% for source, count in source_counts.items() %}
-  - {{ source }}: {{ count }}
+- {{ source }}: {{ count }} results
 {% endfor %}
 {% endif %}
 
-## Scope & Sanity Checks
-- Tasks executed: {{ tasks_executed }}; Total results after dedup: {{ total_results }}; Entities discovered: {{ entities_discovered }}
-- Coverage decisions recorded: {% if coverage_decisions_by_task %}yes ({{ coverage_decisions_by_task|length }} task(s)){% else %}no (only baseline hypotheses or timeouts){% endif %}
-{% if sanity_metrics %}- Per-task: {% for m in sanity_metrics %}[Task {{ m.id }}: {{ m.total_results }} results, {{ m.hypotheses_executed }} hypotheses]{% if not loop.last %}; {% endif %}{% endfor %}{% endif %}
+Integrations Used: {{ integrations_used|join(', ') if integrations_used else 'None' }}
 
-{% if hypotheses_by_task %}
-## Suggested Investigative Angles
+---
 
-This research explored multiple investigative hypotheses for each subtask. Below are the pathways the LLM identified as promising:
+## TASK: Create Structured Synthesis Report
 
-{% for task_id, hypothesis_data in hypotheses_by_task.items() %}
-**Task {{ task_id }}**: {{ task_queries.get(task_id, 'Unknown task') }}
+Return a JSON object with the following structure. **CRITICAL**: Every claim MUST have inline citations with URLs.
 
-{% for hypothesis in hypothesis_data.hypotheses %}
-- **Hypothesis {{ hypothesis.id }}** ({{ hypothesis.confidence }}% confidence, Priority {{ hypothesis.exploration_priority }}):
-  - *Statement*: {{ hypothesis.statement }}
-  - *Reasoning*: {{ hypothesis.confidence_reasoning }}
-  - *Search Strategy*:
-    - Sources: {{ hypothesis.search_strategy.sources|join(', ') }}
-    - Key Signals: {{ hypothesis.search_strategy.signals|join(', ') }}
-    - Expected Entities: {{ hypothesis.search_strategy.expected_entities|join(', ') }}
-  - *Priority Reasoning*: {{ hypothesis.priority_reasoning }}
+### Schema Requirements:
 
-{% endfor %}
+```json
+{
+  "report": {
+    "title": "Research Report: [Title based on question]",
 
-*Coverage Assessment*: {{ hypothesis_data.coverage_assessment }}
+    "executive_summary": {
+      "text": "3-5 sentences summarizing most important findings",
+      "key_points": [
+        {
+          "point": "Key finding statement",
+          "inline_citations": [
+            {
+              "title": "Source document title",
+              "url": "https://...",
+              "date": "YYYY-MM-DD or null",
+              "source": "Integration name (e.g., USAJobs, SAM.gov)"
+            }
+          ]
+        }
+      ]
+    },
 
-{% endfor %}
-{% if hypothesis_execution_summary %}
+    "source_groups": [
+      {
+        "group_name": "YOUR INTELLIGENT GROUP NAME",
+        "group_description": "Why these sources are grouped together",
+        "reliability_context": "Your assessment of this group's reliability and strengths",
+        "findings": [
+          {
+            "claim": "Specific finding or claim",
+            "inline_citations": [
+              {
+                "title": "Document title",
+                "url": "https://...",
+                "date": "YYYY-MM-DD or null",
+                "source": "Integration name"
+              }
+            ],
+            "supporting_detail": "Additional context, quote, or detail (optional, can be null)"
+          }
+        ]
+      }
+    ],
 
-## Hypothesis Execution Results
+    "entity_network": {
+      "description": "Narrative description of key entities and relationships",
+      "key_entities": [
+        {
+          "name": "Entity name",
+          "relationships": ["connected to X", "interfaces with Y"],
+          "context": "Why this entity matters to the research question"
+        }
+      ]
+    },
 
-Summary of executed hypotheses from this run (mode: execution):
+    "timeline": [
+      {
+        "date": "YYYY-MM-DD",
+        "event": "Event description",
+        "sources": [
+          {
+            "title": "Source title",
+            "url": "https://..."
+          }
+        ]
+      }
+    ],
 
-{% for task_id, runs in hypothesis_execution_summary.items() %}
-**Task {{ task_id }}**: {{ task_queries.get(task_id, 'Unknown task') }}
+    "methodology": {
+      "approach": "Brief description of search approach",
+      "tasks_executed": {{ tasks_executed }},
+      "total_results": {{ total_results }},
+      "entities_discovered": {{ entities_discovered }},
+      "integrations_used": {{ integrations_used|tojson if integrations_used else '[]' }},
+      "coverage_summary": {{ source_counts|tojson if source_counts else '{}' }}
+    },
 
-{% for run in runs %}
-- Hypothesis {{ run.hypothesis_id }} → {{ run.results_count }} results (Sources: {{ run.sources|join(', ') }})
-  {% if run.delta_metrics %}
-  - Incremental Contribution: {{ run.delta_metrics.results_new }} new + {{ run.delta_metrics.results_duplicate }} duplicate ({{ (run.delta_metrics.results_new / run.delta_metrics.total_results * 100)|round(1) if run.delta_metrics.total_results > 0 else 0 }}% new)
-  {% endif %}
-{% endfor %}
+    "synthesis_quality_check": {
+      "all_claims_have_citations": true,
+      "source_grouping_reasoning": "Brief explanation of your grouping strategy",
+      "limitations_noted": "Any known limitations of this research (optional, can be null)"
+    }
+  }
+}
+```
 
-{% endfor %}
+---
 
-{% if coverage_decisions_by_task %}
-## Coverage Assessment Decisions
+## INSTRUCTIONS FOR SOURCE GROUPING (LLM Intelligence Required)
 
-{% for task_id, decisions in coverage_decisions_by_task.items() %}
-**Task {{ task_id }}**: {{ task_queries.get(task_id, 'Unknown task') }}
+**DO NOT use hardcoded labels like [PRIMARY], [ANALYSIS], [LEAD].**
 
-{% for decision in decisions %}
-- **After Hypothesis {{ decision.hypothesis_id }}** ({{ decision.executed_count }}/{{ decision.total_hypotheses }} executed):
-  - **Decision**: {{ decision.decision|upper }}
-  - **New Results**: {{ decision.results_new }} ({{ decision.incremental_gain_last_pct }}% of total)
-  - **Assessment**: {{ decision.assessment }}
-  {% if decision.gaps_identified %}
-  - **Gaps Identified**: {{ decision.gaps_identified|join('; ') }}
-  {% endif %}
-{% endfor %}
+Instead, intelligently group sources based on:
+1. **Authority level**: Official government sources vs industry analysis vs community discussions
+2. **Source type**: Job boards vs news articles vs official documents vs social media
+3. **Reliability**: Verified data vs aggregated analysis vs user experiences
+4. **Relevance**: Direct answers vs contextual information vs background
 
-{% endfor %}
-{% endif %}
-{% endif %}
-{% endif %}
+**Example intelligent groupings**:
+- "Official Government Publications" (USAJobs postings, SAM.gov contracts, DVIDS releases)
+- "Industry Job Market Analysis" (ClearanceJobs aggregated data, market reports)
+- "Community Insights and Experiences" (Reddit discussions, Discord conversations)
+- "News and Media Coverage" (Brave Search news articles)
 
-## Key Findings
-[Bullet points of the most important discoveries with inline source cues (e.g., date/source). Lead with primary/official documents; clearly separate social claims as leads.]
+**Your task**: Analyze the sources in the findings and create meaningful groups with descriptive names.
 
-## Detailed Analysis
-[2-3 paragraphs connecting entities, documents, and events. Include short quotes or dates where possible. Explicitly address:
-- Temporal precision: If dates are ambiguous (fiscal vs calendar year, "recent" vs specific dates), clarify what timeframe results actually cover
-- Terminology interpretation: If technical terms, acronyms, or jargon could have multiple meanings, state which interpretation the results reflect
-- Gaps or unverified claims: Note explicitly what wasn't found, what conflicts exist, or what requires additional verification
-- Scope boundary issues: If results extend beyond or fall short of the query scope, explain why]
+---
 
-## Entity Network
-[Description of key entities and their relationships]
+## INSTRUCTIONS FOR INLINE CITATIONS (MANDATORY)
 
-## Data Sources
-**Primary Integrations**: {% if integrations_used %}{{ integrations_used|join(', ') }}{% else %}None{% endif %}
-{% if websites_found %}**Websites Discovered**: {{ websites_found|join(', ') }} (via web search){% endif %}
+**Every claim MUST have at least one inline citation.**
 
-## Research Process Notes
-{% for task in task_diagnostics %}
-**Task {{ task.id }}**: {{ task.status }}
-- Query: "{{ task.query }}"
-- Results: {{ task.results_kept }} kept ({{ task.results_total }} evaluated)
-- Decision: {{ task.continuation_reason }}
-{% if task.reasoning_notes %}
+Good examples:
+- ✅ "Cleared cybersecurity roles require TS/SCI clearance for NSA positions" with citation to specific USAJobs posting
+- ✅ "Contractor positions show $120K-$160K salary ranges" with citation to ClearanceJobs analysis
+- ✅ "Reddit users report 6-month delays for polygraph clearances" with citation to specific Reddit thread
 
-*LLM Decision-Making Process*:
-{% for note in task.reasoning_notes %}
-  - **Attempt {{ note.attempt }}**: Evaluated {{ note.results_evaluated }} results ({{ note.decision }})
-    - **Filtering Strategy**: {{ note.reasoning_breakdown.filtering_strategy }}
-    {% if note.reasoning_breakdown.interesting_decisions %}
-    - **Interesting Decisions**:
-      {% for decision in note.reasoning_breakdown.interesting_decisions[:5] %}
-      - Result #{{ decision.result_index }} ({{ decision.action }}): {{ decision.reasoning }}
-      {% endfor %}
-    {% endif %}
-    {% if note.reasoning_breakdown.patterns_noticed %}
-    - **Patterns Noticed**: {{ note.reasoning_breakdown.patterns_noticed }}
-    {% endif %}
-{% endfor %}
-{% endif %}
+Bad examples:
+- ❌ "Many cleared positions require TS/SCI" (no citation - which source?)
+- ❌ "Salaries are competitive" (vague + no citation)
 
-{% endfor %}
+---
 
-{% if sanity_metrics %}
-## Sanity Metrics
+## SYNTHESIS GUIDANCE
 
-Quick checks to spot regressions (counts should match results.json):
-{% for m in sanity_metrics %}
-- **Task {{ m.id }}**: {{ m.total_results }} results, {{ m.hypotheses_executed }} hypotheses executed{% if m.hypothesis_result_counts %} (per-hyp results: {{ m.hypothesis_result_counts|join(', ') }}){% endif %}
-{% endfor %}
-{% endif %}
+**Temporal Precision**:
+- If research question mentions "2024", clarify if results cover FY2024 (Oct 2023-Sep 2024) or CY2024
+- Use specific dates when available, not vague terms like "recent" or "lately"
 
-## Methodology
-A total of {{ total_results }} relevant results were analyzed across {{ tasks_executed }} research tasks, leading to the discovery of {{ entities_discovered }} distinct entities and their interrelationships. The findings were synthesized to provide a comprehensive overview of the topic.
+**Terminology Interpretation**:
+- If technical terms, acronyms, or jargon have multiple meanings, state which interpretation the results reflect
+- Example: "RMF" could mean Risk Management Framework or other acronyms - clarify which
 
-Make the report insightful and well-structured. Focus on connections and relationships, not just listing results.
+**Scope Clarity**:
+- If results extend beyond or fall short of query scope, note this in limitations_noted
+- Example: Query asked about "government contracts" but only DoD contracts were found
+
+**What NOT to Include in Final Report**:
+- ❌ Information gaps (these go to metadata.json and logs, not user-facing report)
+- ❌ Contradictions requiring resolution (debugging data for logs)
+- ❌ LLM decision-making process details (goes to execution_log.jsonl)
+
+**Focus on**:
+- ✅ Clear, verifiable claims with inline citations
+- ✅ Intelligent source grouping with reliability context
+- ✅ Entity relationships and connections
+- ✅ Timeline of key events (if dates available)
+- ✅ Clean, useful report for investigator
+
+---
+
+## QUALITY CHECKS BEFORE RETURNING
+
+1. **Citation Check**: Does every claim in executive_summary.key_points and source_groups[].findings[] have at least one inline_citation?
+2. **Source Grouping**: Did you create intelligent group names (not hardcoded labels)?
+3. **Reliability Context**: Did you assess each group's reliability and strengths?
+4. **Entity Context**: Did you explain why each key entity matters to the research question?
+5. **Completeness**: Did you include all required fields from the schema?
+
+Set `synthesis_quality_check.all_claims_have_citations` to `true` only if you verified every claim has citations.
+
+---
+
+Return ONLY the JSON object. No markdown, no explanations, just valid JSON matching the schema above.
