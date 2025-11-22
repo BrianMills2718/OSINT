@@ -344,7 +344,8 @@ class DiscordIntegration(DatabaseIntegration):
 
                         matches.append({
                             "title": f"Discord message from {msg.get('author', {}).get('name', 'Unknown')}",
-                            "content": msg.get("content", ""),
+                            "snippet": msg.get("content", ""),  # Standard field name for QueryResult
+                            "content": msg.get("content", ""),   # Keep for backward compatibility
                             "url": f"https://discord.com/channels/{guild.get('id', '')}/{channel.get('id', '')}/{msg.get('id', '')}",
                             "timestamp": msg.get("timestamp", ""),
                             "author": msg.get("author", {}).get("name", "Unknown"),

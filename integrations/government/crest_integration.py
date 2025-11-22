@@ -15,9 +15,7 @@ from core.database_integration_base import (
     DatabaseIntegration,
     DatabaseMetadata,
     DatabaseCategory,
-    QueryResult,
-    Document,
-    SourceMetadata
+    QueryResult
 )
 from core.api_request_tracker import log_request
 
@@ -151,9 +149,11 @@ class CRESTIntegration(DatabaseIntegration):
 
         if not keyword:
             return QueryResult(
-                source=SourceMetadata(name="CIA CREST", type="government"),
-                documents=[],
-                total_results=0,
+                success=False,
+                source="CIA CREST",
+                total=0,
+                results=[],
+                query_params=params,
                 error="No keyword provided"
             )
 
@@ -162,9 +162,11 @@ class CRESTIntegration(DatabaseIntegration):
             from playwright.async_api import async_playwright, TimeoutError as PlaywrightTimeout
         except ImportError:
             return QueryResult(
-                source=SourceMetadata(name="CIA CREST", type="government"),
-                documents=[],
-                total_results=0,
+                success=False,
+                source="CIA CREST",
+                total=0,
+                results=[],
+                query_params=params,
                 error="Playwright not installed. Run: pip install playwright && playwright install chromium"
             )
 
@@ -262,14 +264,13 @@ class CRESTIntegration(DatabaseIntegration):
                                 }
                             """)
 
-                            # Create document
-                            doc = Document(
-                                title=content.get('title', doc_link['title']),
-                                url=doc_link['url'],
-                                snippet=content.get('snippet', ''),
-                                source="CIA CREST",
-                                metadata=content.get('metadata', {})
-                            )
+                            # Create document dictionary
+                            doc = {
+                                "title": content.get('title', doc_link['title']),
+                                "url": doc_link['url'],
+                                "snippet": content.get('snippet', ''),
+                                "metadata": content.get('metadata', {})
+                            }
                             documents.append(doc)
 
                         except Exception as e:
@@ -288,15 +289,19 @@ class CRESTIntegration(DatabaseIntegration):
                 )
 
                 return QueryResult(
-                    source=SourceMetadata(name="CIA CREST", type="government"),
-                    documents=documents,
-                    total_results=len(documents)
+                    success=True,
+                    source="CIA CREST",
+                    total=len(documents),
+                    results=documents,
+                    query_params=params
                 )
 
         except Exception as e:
             return QueryResult(
-                source=SourceMetadata(name="CIA CREST", type="government"),
-                documents=[],
-                total_results=0,
+                success=False,
+                source="CIA CREST",
+                total=0,
+                results=[],
+                query_params=params,
                 error=f"CREST scraping failed: {str(e)}"
             )
