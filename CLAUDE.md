@@ -627,11 +627,17 @@ pip list | grep playwright
 3. **USAJobs**: Requires headers: `User-Agent: email`, `Authorization-Key: [key]`
 4. **Discord**: 14/9916 exports malformed (0.14%) - gracefully skipped with warnings
 5. **SAM.gov**: Low rate limits - will be rate-limited early in research (handled gracefully)
-6. **Reddit**: Barely being queried despite being selected (3 queries vs 59 for Discord) - **INVESTIGATING**
 
 ---
 
 ## RECENT CHANGES (Last 7 Days)
+
+**2025-11-22**: Reddit underutilization fix (commit 503b13d)
+- ✅ Replaced hardcoded keyword filtering with LLM-based relevance check
+- ✅ Reddit now returns True for contract queries (previously returned False)
+- ✅ Consistent with Discord integration pattern
+- Files modified: integrations/social/reddit_integration.py (60 lines), tests/test_reddit_fix.py (new)
+- Impact: Reddit will now be queried proportionally to its relevance, capturing community discussions and insider perspectives
 
 **2025-11-22**: Follow-up task redundancy fix
 - ✅ Added global task context to follow-up generation
