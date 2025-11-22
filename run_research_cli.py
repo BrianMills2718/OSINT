@@ -15,8 +15,10 @@ async def main():
     print(f"Starting research: {question}\n")
 
     engine = SimpleDeepResearch(
-        max_tasks=8,
-        max_time_minutes=60,
+        max_tasks=20,              # Unleashed - up to 20 tasks
+        max_time_minutes=120,      # 2 hours total
+        max_retries_per_task=3,    # More retries
+        max_concurrent_tasks=4,    # More parallelism
         progress_callback=show_progress,
         save_output=True,
         output_dir="data/research_output"
