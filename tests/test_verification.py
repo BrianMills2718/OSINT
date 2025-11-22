@@ -33,8 +33,14 @@ async def test_integration(integration_id: str, integration):
     # Get API key if needed
     api_key = None
     if integration.metadata.requires_api_key:
-        # Try to get key from environment
-        key_var = f"{integration_id.upper()}_API_KEY"
+        # Try to get key from environment - handle special cases
+        if integration_id == "sam":
+            key_var = "SAM_GOV_API_KEY"
+        elif integration_id == "twitter":
+            key_var = "RAPIDAPI_KEY"
+        else:
+            key_var = f"{integration_id.upper()}_API_KEY"
+
         api_key = os.getenv(key_var)
 
         if not api_key:
