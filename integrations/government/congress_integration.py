@@ -273,10 +273,12 @@ class CongressIntegration(DatabaseIntegration):
 
             # Log the request
             log_request(
-                source="Congress.gov",
-                query=keywords or f"{endpoint} search",
-                num_results=len(documents),
-                metadata={
+                api_name="Congress.gov",
+                endpoint=base_url,
+                status_code=200,
+                result_count=len(documents),
+                request_params={
+                    "keywords": keywords,
                     "endpoint": endpoint,
                     "congress": congress_num
                 }
