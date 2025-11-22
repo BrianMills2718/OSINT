@@ -1,0 +1,117 @@
+You are helping generate a search query for the SEC EDGAR database.
+
+RESEARCH QUESTION:
+{{ research_question }}
+
+---
+
+SEC EDGAR CAPABILITIES:
+
+**What SEC EDGAR Has:**
+- Corporate filings from publicly-traded companies
+- Financial statements (10-K annual, 10-Q quarterly, 8-K current reports)
+- Insider trading reports (Forms 3, 4, 5)
+- Proxy statements (DEF 14A - executive compensation, board composition)
+- IPO documents (S-1 registration statements)
+- Merger/acquisition filings
+- Company ownership and structure
+- Historical filings back to 1994
+
+**Common Form Types:**
+- 10-K: Annual report with audited financials
+- 10-Q: Quarterly report
+- 8-K: Current report (major events - acquisitions, exec changes, etc.)
+- 4: Insider trading report (stock transactions by officers/directors)
+- DEF 14A: Proxy statement (annual meeting, exec compensation)
+- S-1: IPO registration statement
+- 13F: Institutional investment manager holdings
+- 13D/13G: Beneficial ownership reports (5%+ shareholders)
+
+**What SEC EDGAR Does NOT Have:**
+- Private companies (unless recently went public)
+- Government contracts (use SAM.gov)
+- Job postings (use USAJobs/ClearanceJobs)
+- Product specifications (unless disclosed in filings)
+- Real-time news (filings are point-in-time disclosures)
+
+---
+
+INSTRUCTIONS:
+
+1. Determine if SEC EDGAR is relevant for this research question
+2. If relevant, specify:
+   - **query_type**: "company_filings" (get filings for specific company), "company_search" (find company by name), or "form_search" (search across all companies by form type)
+   - **company_name**: Full company name (e.g., "Apple Inc", "Lockheed Martin Corporation") if searching for specific company
+   - **form_types**: Array of SEC form types to filter (e.g., ["10-K", "10-Q"] for financial reports, ["4"] for insider trading, ["8-K"] for major events)
+   - **keywords**: Keywords to search within filings (optional, for filtering results)
+   - **limit**: Number of results (1-100, default 20)
+
+3. If NOT relevant (e.g., seeking private company data, government contracts, job postings), set relevant=false
+
+---
+
+EXAMPLES:
+
+**Example 1: Financial Filings**
+Question: "What were Apple's recent financial results?"
+Response:
+```json
+{
+  "relevant": true,
+  "reasoning": "SEC EDGAR contains Apple's 10-K and 10-Q filings with detailed financial results",
+  "query_type": "company_filings",
+  "company_name": "Apple Inc",
+  "form_types": ["10-K", "10-Q"],
+  "keywords": null,
+  "limit": 10
+}
+```
+
+**Example 2: Insider Trading**
+Question: "Has the CEO of Tesla been selling stock?"
+Response:
+```json
+{
+  "relevant": true,
+  "reasoning": "Form 4 filings disclose insider stock transactions including CEO sales",
+  "query_type": "company_filings",
+  "company_name": "Tesla Inc",
+  "form_types": ["4"],
+  "keywords": null,
+  "limit": 20
+}
+```
+
+**Example 3: Not Relevant (Private Company)**
+Question: "What are SpaceX's recent contracts?"
+Response:
+```json
+{
+  "relevant": false,
+  "reasoning": "SpaceX is a private company and does not file with SEC; government contracts are in SAM.gov not SEC EDGAR",
+  "query_type": "company_filings",
+  "company_name": null,
+  "form_types": [],
+  "keywords": null,
+  "limit": 20
+}
+```
+
+**Example 4: Merger/Acquisition Activity**
+Question: "What companies has Microsoft acquired recently?"
+Response:
+```json
+{
+  "relevant": true,
+  "reasoning": "8-K filings disclose material acquisitions and major corporate events",
+  "query_type": "company_filings",
+  "company_name": "Microsoft Corporation",
+  "form_types": ["8-K"],
+  "keywords": "acquisition",
+  "limit": 15
+}
+```
+
+---
+
+Now generate the appropriate SEC EDGAR query for the research question above.
