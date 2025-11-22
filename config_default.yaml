@@ -123,6 +123,15 @@ databases:
     default_congress: 118         # 118th Congress (2023-2025)
     default_limit: 100            # Default results per query
 
+  sec_edgar:
+    enabled: true
+    timeout: 15                   # SEC EDGAR APIs are fast
+    max_results_per_query: 100    # Default limit for search results
+    rate_limit_per_second: 10     # SEC enforces 10 requests/second
+    # User email for User-Agent header (loaded from .env)
+    # Required: SEC_EDGAR_USER_EMAIL (e.g., yourname@domain.com)
+    user_email: ${SEC_EDGAR_USER_EMAIL}
+
   # Social Media & Community Sources
   discord:
     enabled: true
