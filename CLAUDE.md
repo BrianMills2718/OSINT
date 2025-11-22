@@ -469,42 +469,128 @@ pip list | grep playwright
 **END OF PERMANENT SECTION**
 # CLAUDE.md - Temporary Section (Condensed)
 
-**Last Updated**: 2025-11-21
-**Current Branch**: `feature/query-level-saturation`
-**Current Phase**: Phase 1 (Query Saturation) - ✅ COMPLETE
-**Status**: Implementation complete, validated, ready for merge
+**Last Updated**: 2025-11-22
+**Current Branch**: `master`
+**Current Phase**: Research Quality Improvements
+**Status**: Implementing source selection bug fixes and enhanced logging
 
 ---
 
 ## CURRENT STATUS
 
-**Phase 1 Complete** (2025-11-21, 10 commits, commit 8431e39):
-- ✅ Multi-query saturation with LLM intelligence (no hardcoded limits)
-- ✅ Three-tier exit strategy: LLM saturation (primary), max_queries (secondary), time_limit (tertiary)
-- ✅ Per-query filtering with effectiveness metrics
-- ✅ Within-source deduplication tracking
-- ✅ Dynamic information gaps updating
-- ✅ Comprehensive structured logging
-- ✅ Feature flag for backwards compatibility
+**Recent Fixes** (2025-11-22):
+- ✅ Follow-up task redundancy fixed (global task context added)
+- ✅ Docker infrastructure complete (Chrome + Playwright pre-installed)
 
-**Validation Results** (SpaceX test):
-- 5 sources with 2+ queries (multi-query execution confirmed)
-- Max 5 queries per source (SAM.gov)
-- 2 sources stopped via llm_saturated (intelligent stopping confirmed)
-- 80 results collected vs 52 baseline (54% improvement)
-- All exit reasons working: llm_saturated (2), max_queries_reached (5)
+**Active Investigation** (2025-11-22):
+- 🔍 Reddit source selection bug (selected but barely queried: 3 vs 59 for Discord)
+- 🔍 Source skipping logic (why are selected sources not executed?)
+- 🔍 Logging gaps (need visibility into all LLM decisions)
 
-**Baseline System** (master branch, commit b7b7efc):
-- Phase 5 complete: Pure qualitative intelligence
-- System executes exactly 1 query per source (no iteration)
-- 3 tasks, 216 results, 27 entities, 8.4 minutes (Cuba sanctions test)
+---
 
-**System Architecture**:
-- ✅ No hardcoded heuristics - full LLM intelligence
-- ✅ Two research modes: Expert Investigator (run until saturated) / Budget-Constrained (run to limits)
-- ✅ Simplified timeout architecture: LLM (180s) + Source limits (user-configured) + Total budget (user-configured)
-- ✅ All prompts in Jinja2 templates (prompts/ directory)
-- ✅ 11 hypotheses per research question with coverage assessment
+## NEXT PLANNED WORK
+
+### HIGH PRIORITY (In Progress)
+
+**1. Query Quality Assessment (Saturation Enhancement)** 🔄 **IN PROGRESS**
+- **Problem**: Reddit/other sources generating overly specific queries → 0 results
+- **Root Cause**: Queries too restrictive (multiple AND operators, overly specific)
+- **Solution**: Enhance saturation prompt with general query quality assessment
+- **Approach** (LLM intelligence, not hardcoded heuristics):
+  - Saturation LLM analyzes query_history: results_total, results_accepted, effectiveness
+  - Uses prose reasoning to identify issues (0 results, low acceptance, wrong domain, etc.)
+  - Suggests improvements based on source_metadata (what this source supports)
+  - No predefined quality categories - LLM reasons intelligently
+  - Single LLM call (no extra analysis call) - efficient
+- **Architecture Principles**:
+  - ✅ Give LLM goal + context, let it reason (not hardcoded categories)
+  - ✅ Leverage existing query_history metrics (results_total, effectiveness)
+  - ✅ Use source_metadata for source-specific capabilities
+  - ✅ Prose reasoning (not structured "quality_issues" categories)
+- **Implementation**:
+  - Enhance prompts/deep_research/source_saturation.j2 with query quality guidance
+  - Remove separate zero_result_analysis.j2 (too narrow)
+  - Keep simple schema - reasoning field explains quality assessment
+- **Files**: prompts/deep_research/source_saturation.j2, research/deep_research.py
+- **Status**: ✅ COMPLETE (2025-11-22) - Saturation prompt enhanced, zero-result analysis removed
+
+**2. Hypothesis Diversity Enhancement** ✅ **COMPLETE**
+- **Problem**: Multiple hypotheses within same task may investigate overlapping angles
+- **Root Cause**: Hypothesis generation LLM doesn't see existing tasks or other hypotheses
+- **Solution Implemented** (2025-11-22):
+  - ✅ Updated `_generate_hypotheses()` method signature to accept `all_tasks` and `existing_hypotheses`
+  - ✅ Modified both call sites (lines 653, 870) to pass context
+  - ✅ Enhanced hypothesis_generation.j2 template with "CONTEXT - AVOID DUPLICATION" section
+  - ✅ Added diversity guidance referencing existing tasks and hypotheses
+  - ✅ Verified imports and prompt rendering work correctly
+- **Architecture**:
+  - ✅ Extends existing pattern from follow-up generation (clean, no code duplication)
+  - ✅ No hardcoded similarity checks or overlap thresholds
+  - ✅ Declarative - LLM uses context to ensure diversity via reasoning
+  - ✅ Scales to new sources - no source-specific logic
+- **Files Modified**:
+  - research/deep_research.py (method signature, 2 call sites, context formatting)
+  - prompts/deep_research/hypothesis_generation.j2 (context section, enhanced diversity guidance)
+- **Status**: ✅ COMPLETE (2025-11-22) - Implementation complete, imports verified
+
+**3. Enhanced Structured Logging** 📋 **APPROVED - NOT STARTED**
+- **Goal**: Detailed visibility into ALL decisions and time usage
+- **New event types needed**:
+  ```python
+  {
+    "event_type": "source_skipped",
+    "source": "Reddit",
+    "reason": "is_relevant returned False" | "generate_query failed" | "timeout",
+    "task_id": 0,
+    "hypothesis_id": 1
+  }
+
+  {
+    "event_type": "zero_results_analysis",
+    "source": "SAM.gov",
+    "query": "...",
+    "llm_assessment": "Query too specific - no violations exist",
+    "should_reformulate": false
+  }
+
+  {
+    "event_type": "time_breakdown",
+    "task_id": 0,
+    "hypothesis_id": 1,
+    "source": "Brave",
+    "time_query_generation_ms": 234,
+    "time_api_call_ms": 1523,
+    "time_filtering_ms": 456,
+    "total_time_ms": 2213
+  }
+  ```
+- **Files**: research/execution_logger.py, research/deep_research.py
+
+### MEDIUM PRIORITY
+
+**4. Discord Parser Robustness** 📋 **CHECK IF FIXED**
+- **Status**: User reports "the problem that caused that has been fixed"
+- **Action**: Verify fix is in place for malformed JSON lines (0.14% error rate)
+- **Action**: Add try/catch if not already present
+- **Files**: integrations/social/discord_integration.py
+
+**5. Time Budget Configuration** 📋 **APPROVED**
+- **Goal**: Set very high defaults + detailed time logging
+- **Actions**:
+  - Increase config.yaml defaults: `max_time_minutes: 240` (4 hours)
+  - Add time breakdown logging (see #3 above)
+  - Skip dynamic budgeting (user confirmed: overengineered)
+- **Files**: config.yaml, research/deep_research.py
+
+### LOW PRIORITY
+
+**6. Source Context Documentation** 📋 **NOT STARTED**
+- **Goal**: Better explain what each source provides in prompts
+- **Add to hypothesis_generation.j2**:
+  - "Reddit provides: r/defense, r/govcontracts, r/Intelligence, r/geopolitics discussions"
+  - "Discord provides: Bellingcat OSINT server, Project OWL geopolitics, OSINT community"
+- **Files**: prompts/deep_research/hypothesis_generation.j2
 
 ---
 
@@ -513,8 +599,9 @@ pip list | grep playwright
 **Core Research Engine**: `apps/ai_research.py`
 - Task decomposition with angle-based queries (not entity permutations)
 - Hypothesis generation (3-5 per task)
+- **NEW**: Follow-up generation with global task context (prevents redundancy)
 - Sequential hypothesis execution with coverage assessment
-- LLM-powered follow-up generation (addresses info gaps, not entity concat)
+- LLM-powered follow-up generation (addresses info gaps)
 - Manager LLM prioritizes pending tasks (P1-P10)
 - Saturation detection (stops when research complete)
 
@@ -529,6 +616,7 @@ pip list | grep playwright
 - Cross-attempt result accumulation
 - Deduplication (60-80% typical)
 - Entity extraction and relationship discovery
+- **NEW**: Follow-up tasks see all existing tasks to avoid duplication
 
 ---
 
@@ -538,105 +626,32 @@ pip list | grep playwright
 2. **ClearanceJobs**: Official API broken. Use clearancejobs_playwright.py
 3. **USAJobs**: Requires headers: `User-Agent: email`, `Authorization-Key: [key]`
 4. **Discord**: 14/9916 exports malformed (0.14%) - gracefully skipped with warnings
+5. **SAM.gov**: Low rate limits - will be rate-limited early in research (handled gracefully)
+6. **Reddit**: Barely being queried despite being selected (3 queries vs 59 for Discord) - **INVESTIGATING**
 
 ---
 
 ## RECENT CHANGES (Last 7 Days)
 
-**2025-11-21**: Phase 1 query saturation COMPLETE (10 commits, 8431e39)
-- ✅ Implementation: Multi-query saturation with LLM intelligence (6 commits)
-  - Core saturation loop with three-tier exit strategy
-  - Per-query filtering and within-source deduplication
-  - Dynamic gap tracking and first query generation
-  - Source metadata with query strategies
-  - Comprehensive structured logging
-  - Feature flag for backwards compatibility
-- ✅ Bug fixes: Logger init, model API, SourceMetadata serialization (3 commits)
-- ✅ Validation: SpaceX test shows 54% more results, 2 LLM stops, max 5 queries
-- ✅ Cleanup: Removed temporary test scripts (1 commit)
-- Files modified: ~482 new lines across research/deep_research.py, integrations/source_metadata.py, prompts/deep_research/source_saturation.j2, research/execution_logger.py, config.yaml
+**2025-11-22**: Follow-up task redundancy fix
+- ✅ Added global task context to follow-up generation
+- ✅ Follow-up LLM now sees all completed + pending tasks
+- ✅ Prevents creating duplicate follow-ups
+- Files modified: research/deep_research.py (17 lines), prompts/deep_research/follow_up_generation.j2 (15 lines + documentation)
+- Impact: Should eliminate near-duplicate follow-ups like Anduril Tasks 4-7
 
-**2025-11-21**: Phase 1 query saturation planning (92c1401, 1ace9c5)
-- ✅ Implementation plan created with critical fixes
-- ✅ Fixed gaps: first query generation, deduplication, error handling
-- ✅ Objective success criteria (70% LLM stops, avg 3-5 queries)
-- ✅ Timeout architecture simplified (removed redundant task timeout)
-- ✅ Dynamic information gaps tracking
-- Documentation: docs/QUERY_SATURATION_IMPLEMENTATION_PLAN.md, docs/TIMEOUT_ARCHITECTURE.md
+**2025-11-22**: Docker infrastructure created
+- ✅ Dockerfile with Chrome + Playwright pre-installed
+- ✅ docker-compose.yml for research CLI and web UI
+- ✅ .dockerignore for optimized builds
+- ✅ DOCKER.md documentation
+- Impact: Solves WSL2 Chrome binary path issues permanently
 
-**2025-11-20**: Hypothesis execution bugs fixed (2cdee01, 9c0be0b, ac0dfbc)
-- ✅ Bug #1: Per-hypothesis relevance filtering (prevents junk results)
-- ✅ Bug #2: Query generation structured logging (enables debugging)
-- ✅ Bug #3: reasoning_breakdown in logs (complete audit trail)
-- All 3 critical bugs from architecture audit resolved
-- System validated with 37 hypothesis query events logged
-- Documentation: docs/archive/2025-11-20/HYPOTHESIS_EXECUTION_BUGS_ALL_FIXED.md
-
-**2025-11-20**: Phase 5 merged to master (b7b7efc)
-- Pure qualitative intelligence (no numeric scores)
-- Schema: {decision, assessment (prose), gaps_identified, facts (auto-injected)}
-- Saturation detection uses prose reasoning
-
-**2025-11-19**: Timeout architecture refactored (f75ad15, b90f20a)
-- Added LLM call timeouts (180s)
-- User-configured source limits and total budget
-- Simplified from 3 layers to 2 layers (removed redundant task timeout)
-
-**2025-11-19**: LLM-powered follow-up generation (93b45d7)
-- Removed hardcoded entity concatenation
-- Coverage-based follow-ups addressing info gaps
-- Zero entity permutations created
-
-**2025-11-18**: Query quality improvements (7375a39)
-- Context-based LLM guidance (not hardcoded rules)
-- Task reduction: 13→4 (69% fewer duplicate tasks)
-- Angle-based decomposition vs entity permutations
-
----
-
-## NEXT PLANNED WORK
-
-**Phase 1: Query Saturation** - ✅ COMPLETE
-- All implementation steps completed (10 commits)
-- All success criteria met:
-  - ✅ Multi-query execution (5 sources with 2+ queries)
-  - ✅ LLM stops intelligently (2 sources stopped via llm_saturated)
-  - ✅ Adaptive behavior (1-5 queries per source)
-  - ✅ 54% more results than baseline
-  - ✅ Comprehensive logging with structured events
-
-**Next Options:**
-
-**Option 1: Merge to Master** (RECOMMENDED)
-- Merge feature/query-level-saturation → master
-- Update STATUS.md with Phase 1 completion
-- System is production-ready with query saturation
-
-**Option 2: Phase 2 - Query-Level Learning**
-- Learn from query effectiveness over time
-- Optimize query strategies per source
-- Requires: query history database, learning prompts
-- Estimated: 2-3 weeks
-
-**Option 3: Additional Integrations**
-- Federal Register, Congress.gov, additional sources
-- Boolean monitoring system testing
-
----
-
-## COMPLETED WORK (Brief History)
-
-For detailed implementation history, see:
-- **STATUS.md** - What's working with [PASS]/[BLOCKED] status
-- **Git history** - Full commit log with diffs
-- **docs/archive/** - Archived planning docs and investigations
-
-**Major Milestones**:
-- ✅ Phase 5: Pure qualitative intelligence (2025-11-20)
-- ✅ Phase 4: Manager-agent architecture (2025-11-20)
-- ✅ Phase 3C: Coverage assessment with hypothesis branching (2025-11-16)
-- ✅ Jinja2 template migration (2025-11-12)
-- ✅ Per-result LLM filtering (2025-11-09)
+**2025-11-21**: Phase 1 query saturation COMPLETE
+- ✅ Multi-query saturation with LLM intelligence
+- ✅ Three-tier exit strategy
+- ✅ 54% more results than baseline (SpaceX test: 80 vs 52)
+- Files modified: ~482 lines across research/deep_research.py, integrations/source_metadata.py, etc.
 
 ---
 

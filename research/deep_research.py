@@ -652,7 +652,9 @@ class SimpleDeepResearch:
                                 try:
                                     hypotheses_result = await self._generate_hypotheses(
                                         task_query=follow_up.query,
-                                        research_question=self.research_question
+                                        research_question=self.research_question,
+                                        all_tasks=self.tasks,
+                                        existing_hypotheses=[]  # New follow-up, no existing hypotheses yet
                                     )
                                     follow_up.hypotheses = hypotheses_result
                                     print(f"   ✓ Follow-up {follow_up.id}: Generated {len(hypotheses_result['hypotheses'])} hypothesis/hypotheses")
@@ -869,7 +871,9 @@ class SimpleDeepResearch:
                 try:
                     hypotheses_result = await self._generate_hypotheses(
                         task_query=task.query,
-                        research_question=question
+                        research_question=question,
+                        all_tasks=tasks,  # Pass all tasks for diversity across tasks
+                        existing_hypotheses=[]  # New task, no existing hypotheses yet
                     )
                     task.hypotheses = hypotheses_result
                     print(f"   ✓ Task {task.id}: Generated {len(hypotheses_result['hypotheses'])} hypothesis/hypotheses")
@@ -888,7 +892,13 @@ class SimpleDeepResearch:
 
         return tasks
 
-    async def _generate_hypotheses(self, task_query: str, research_question: str) -> Dict[str, Any]:
+    async def _generate_hypotheses(
+        self,
+        task_query: str,
+        research_question: str,
+        all_tasks: List['ResearchTask'],
+        existing_hypotheses: List[Dict[str, Any]] = None
+    ) -> Dict[str, Any]:
         """
         Generate 1-5 investigative hypotheses for a research subtask.
 
@@ -897,6 +907,8 @@ class SimpleDeepResearch:
         Args:
             task_query: The specific subtask query to generate hypotheses for
             research_question: The original user research question (for context)
+            all_tasks: All research tasks (completed + pending) to avoid duplicate angles
+            existing_hypotheses: Hypotheses already generated for this task (for diversity)
 
         Returns:
             Dict containing:
@@ -906,13 +918,25 @@ class SimpleDeepResearch:
         # Get available sources for hypothesis generation
         available_sources = self._get_available_source_names()
 
+        # Format existing tasks for prompt context
+        formatted_tasks = [
+            {
+                "id": task.id,
+                "status": task.status,
+                "query": task.query
+            }
+            for task in all_tasks
+        ]
+
         # Render hypothesis generation prompt
         prompt = render_prompt(
             "deep_research/hypothesis_generation.j2",
             research_question=research_question,
             task_query=task_query,
             available_sources=available_sources,
-            max_hypotheses=self.max_hypotheses_per_task
+            max_hypotheses=self.max_hypotheses_per_task,
+            existing_tasks=formatted_tasks,
+            existing_hypotheses=existing_hypotheses or []
         )
 
         # Define JSON schema for hypothesis structure
@@ -3983,6 +4007,22 @@ class SimpleDeepResearch:
         # Remove duplicate gaps
         unique_gaps = list(dict.fromkeys(all_gaps))  # Preserves order
 
+        # Gather all existing tasks to avoid duplicates (completed + queue)
+        # This gives the LLM full context about what's already been explored
+        existing_tasks = []
+        for t in self.completed_tasks:
+            existing_tasks.append({
+                "id": t.id,
+                "query": t.query,
+                "status": "completed"
+            })
+        for t in self.task_queue:
+            existing_tasks.append({
+                "id": t.id,
+                "query": t.query,
+                "status": "pending"
+            })
+
         # Render follow-up generation prompt
         prompt = render_prompt(
             "deep_research/follow_up_generation.j2",
@@ -3990,7 +4030,8 @@ class SimpleDeepResearch:
             parent_task=parent_task,
             coverage_decisions=coverage_decisions,
             gaps_identified=unique_gaps,
-            latest_assessment=assessment_text  # Phase 5: Use prose, not score
+            latest_assessment=assessment_text,  # Phase 5: Use prose, not score
+            existing_tasks=existing_tasks  # NEW: Give LLM global task context
         )
 
         # Call LLM to generate follow-ups

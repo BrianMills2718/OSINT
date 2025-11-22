@@ -24,6 +24,26 @@ You are an investigative researcher planning a comprehensive investigation.
 # AVAILABLE DATA SOURCES
 {{ available_sources|join(', ') }}
 
+# CONTEXT - AVOID DUPLICATION
+
+**Existing Tasks** (DO NOT duplicate these angles):
+{% if existing_tasks %}
+{% for task in existing_tasks %}
+- [{{ task.status }}] Task {{ task.id }}: {{ task.query }}
+{% endfor %}
+{% else %}
+- (No other tasks exist yet)
+{% endif %}
+
+{% if existing_hypotheses %}
+**Existing Hypotheses for This Task** (ensure NEW hypotheses explore DIFFERENT angles):
+{% for hyp in existing_hypotheses %}
+- Hypothesis {{ hyp.id }}: {{ hyp.statement }}
+{% endfor %}
+{% else %}
+**Existing Hypotheses**: None (this is the first hypothesis generation for this task)
+{% endif %}
+
 ---
 
 ## YOUR TASK: Generate Investigative Hypotheses
@@ -93,9 +113,14 @@ In what order should this hypothesis be explored? (1 = first, 2 = second, etc.)
 ## GUIDELINES FOR HYPOTHESIS GENERATION
 
 ### Diversity (CRITICAL)
-- Each hypothesis should explore a **DIFFERENT** investigative angle
+- **CRITICAL**: Review the "Existing Tasks" and "Existing Hypotheses" sections above to ensure your hypotheses explore GENUINELY NEW angles
+- Each hypothesis should explore a **DIFFERENT** investigative angle from:
+  1. Other hypotheses you're generating now (within-task diversity)
+  2. Existing hypotheses already generated for this task (if any)
+  3. Other research tasks being investigated (cross-task diversity)
 - ❌ BAD: "Official job postings", "Government job listings", "Federal employment opportunities" (all the same)
 - ✅ GOOD: "Official job postings", "Social media hiring discussions", "Contractor career pages" (distinct pathways)
+- **Before generating**: Check if an existing task or hypothesis already covers this angle. If yes, explore a different dimension.
 
 ### Source Selection Strategy
 - **Official queries** (jobs, documentation, regulations): Prioritize government databases (USAJobs, SAM.gov)
