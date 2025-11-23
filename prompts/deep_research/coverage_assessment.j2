@@ -37,29 +37,34 @@ You are a research coverage analyst. After executing a hypothesis, you must deci
 **YOUR TASK**:
 Decide whether to continue executing hypotheses or stop here.
 
-**DECISION CRITERIA** (consider all factors, no hardcoded thresholds):
+**DECISION PHILOSOPHY**:
 
-1. **Incremental Gain**: Are recent hypotheses adding significant new information?
-   - Look at results_new percentage for last 1-2 hypotheses
-   - Diminishing returns suggest stopping
-   - If last hypothesis found <20% new results, consider stopping
+Your goal: Determine if there are plausible investigative angles we haven't explored yet AND if unexplored information likely exists.
 
-2. **Coverage Gaps**: Are there important angles not yet explored?
-   - Review remaining hypotheses - do they target different sources/approaches?
-   - If remaining hypotheses are redundant with what's been explored, consider stopping
-   - If remaining hypotheses target unexplored high-value sources, consider continuing
+**Human Investigation Principle**:
+When hypotheses return duplicates or diminishing results, humans don't stop - they explore different angles. Low new results means "we've covered this angle well" not "stop all research."
 
-3. **Information Sufficiency**: Has the research question been adequately answered?
-   - {{ task_total_results }} total results - is this sufficient for the query?
-   - {{ task_total_entities }} entities discovered - does this suggest comprehensive coverage?
+**Critical Thinking Questions**:
 
-4. **Resource Budget**: Is there enough time/capacity to continue?
-   - Time remaining: {{ max_time_seconds - time_elapsed_seconds }}s
-   - Hypothesis slots remaining: {{ max_hypotheses - executed_count }}
+1. **Angle Diversity**: What perspectives/angles have we explored vs. not explored?
+   - Executed hypotheses: What sources, viewpoints, timeframes did they cover?
+   - Remaining hypotheses: Do they explore fundamentally different angles?
+   - Missing perspectives: What stakeholder views, geographic regions, or aspects are absent?
 
-5. **Hypothesis Quality**: Are remaining hypotheses likely to add value?
-   - Lower priority/confidence hypotheses may have diminishing returns
-   - If top priorities already executed with good results, consider stopping
+2. **Information Existence**: Does unexplored information likely exist?
+   - Given the research question, what types of info SHOULD exist but we haven't found?
+   - Are remaining hypotheses chasing plausible leads or unlikely hunts?
+   - Do executed hypotheses suggest other angles worth pursuing?
+
+3. **Exploration Completeness**: Have we checked all plausible investigative angles?
+   - Primary sources (official docs, statements): Covered?
+   - Reactions (domestic, international, expert): Covered?
+   - Secondary effects (economic, political, social): Covered?
+   - Historical context, comparisons, precedents: Covered?
+
+4. **Resource Efficiency**: Can we meaningfully explore remaining angles with budget left?
+   - Time/slots remaining vs. what's needed for unexplored angles
+   - Are we abandoning high-value angles prematurely to save resources?
 
 **OUTPUT REQUIREMENTS**:
 Return a JSON object with these fields:
@@ -80,17 +85,18 @@ Return a JSON object with these fields:
 - System will auto-inject facts (result counts, entity counts, time) - you focus on MEANING
 
 **DECISION GUIDANCE**:
+
 - **Continue** if:
-  - Last hypothesis showed >20% new results AND time/slots remaining
-  - Significant coverage gaps remain AND high-priority hypotheses not yet executed
-  - Total results <30 AND top-priority hypotheses remain
+  - Remaining hypotheses explore fundamentally different angles not yet covered
+  - High-confidence hypotheses remain AND plausible information likely exists
+  - Executed hypotheses suggest promising leads worth pursuing
+  - Sufficient time/slots remain to meaningfully explore remaining angles
 
 - **Stop** if:
-  - Last 1-2 hypotheses showed <20% new results (diminishing returns)
-  - Coverage score >70 AND no critical gaps identified
-  - Total results >50 AND recent hypotheses mostly duplicates
-  - Time budget <25% remaining (not enough for additional hypotheses)
-  - Only low-priority hypotheses remain AND coverage score >60
+  - All major investigative angles have been explored thoroughly
+  - Remaining hypotheses unlikely to yield new information (low plausibility)
+  - Recent hypotheses showing high duplication across different angles (source exhaustion, not angle exhaustion)
+  - Insufficient resources to meaningfully complete remaining hypotheses
 
 **REMEMBER**: You're optimizing for quality, not cost. Don't stop prematurely just to save LLM calls. But DO stop when continuing would yield mostly duplicate information.
 
