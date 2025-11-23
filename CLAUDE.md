@@ -537,24 +537,26 @@ pip list | grep playwright
 **3. Report Synthesis Quality Enhancement** ✅ **COMPLETE**
 - **Problem**: Final reports lacked inline citations and intelligent source grouping
 - **Root Cause**: Synthesis used free-form markdown without structured schema enforcement
-- **Solution Implemented** (2025-11-22, commit 8b2b020):
+- **Solution Implemented** (2025-11-22, commits 8b2b020, 9de7ac1):
   - ✅ Structured JSON schema in synthesis prompt (Jinja2 template)
   - ✅ LLM-driven source grouping with intelligent group names (NO hardcoded labels)
   - ✅ Python post-processor for JSON → Markdown (NO decision logic, just formatting)
   - ✅ Inline citations mandatory for all claims (schema enforcement)
   - ✅ Quality validation (all_claims_have_citations check)
+  - ✅ **NEW (9de7ac1)**: SOURCE VERIFICATION CONTEXT section - helps readers distinguish evidentiary strength (primary vs secondary sources, official vs reported, verification levels)
 - **Architecture**:
   - ✅ Schema = structure, LLM = intelligence (no hardcoded source categories)
   - ✅ Every claim has inline citations for verifiability
   - ✅ Source grouping emerges from data (LLM decides group names like "Official Government Sources")
   - ✅ Configuration via prompt template (schema is declarative, in Jinja2, not Python)
+  - ✅ Goal-oriented guidance (explains WHAT to achieve, not HOW - LLM decides)
   - ❌ NO information gaps in final report (user preference: debugging data stays in logs)
 - **Files Modified**:
-  - prompts/deep_research/report_synthesis.j2 (196 lines, complete rewrite)
+  - prompts/deep_research/report_synthesis.j2 (210 lines, complete rewrite + verification context)
   - research/deep_research.py (+154 lines: formatter + updated synthesis call)
   - tests/test_synthesis_formatter.py (new validation test)
 - **Validation**: 10/11 test checks passed (inline citations, source grouping, reliability context all working)
-- **Status**: ✅ COMPLETE (2025-11-22) - Implemented, tested, documented
+- **Status**: ✅ COMPLETE (2025-11-22) - Implemented, tested, documented, enhanced with source verification
 
 **4. Enhanced Structured Logging** 📋 **APPROVED - NOT STARTED**
 - **Goal**: Detailed visibility into ALL decisions and time usage
