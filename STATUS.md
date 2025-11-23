@@ -1,7 +1,7 @@
 # STATUS.md - Component Status Tracker
 
-**Last Updated**: 2025-11-22 (Quality Improvements - COMPLETE)
-**Current Phase**: All quality improvements complete - Research system ready for production use ✅
+**Last Updated**: 2025-11-23 (Twitter Integration Expansion - COMPLETE)
+**Current Phase**: All quality improvements complete, Twitter integration expanded - Research system ready for production use ✅
 **Previous Phase**: Quality Improvements (Report Synthesis, Logging, Source Context) - COMPLETE ✅
 **Previous Phase**: Phase 6 (Query Saturation) COMPLETE ✅
 **Previous Phase**: Phase 5 (Pure Qualitative Intelligence) - COMPLETE ✅
@@ -18,13 +18,62 @@
 
 ---
 
-## Quality Improvements (2025-11-22)
+## Quality Improvements (2025-11-22/23)
 
-**Status**: ✅ **COMPLETE** - Six quality improvements implemented and validated
+**Status**: ✅ **COMPLETE** - Seven quality improvements implemented and validated
 **Philosophy**: LLM intelligence via architecture, not hardcoded heuristics
 **Impact**: Research system ready for production use with comprehensive quality controls
 
 ### Completed Improvements
+
+#### 0. Twitter Integration Expansion ✅
+**Date**: 2025-11-23
+**Problem**: Twitter integration only used 1 of 20 available endpoints (5% utilization)
+**Root Cause**: Integration was never expanded beyond initial search implementation
+
+**Solution**: Full endpoint expansion with LLM-driven selection
+- Expanded from 1 to 20 endpoints (100% coverage of TwitterExplorer API)
+- Added LLM-driven endpoint selection via comprehensive prompt template
+- Implemented pattern-based response transformation for all endpoint types
+- Added relationship-aware investigation patterns (network analysis, conversation tracking, amplification)
+- Fixed API key mapping (added Twitter special case: `twitter` → `RAPIDAPI_KEY`)
+
+**Implementation**:
+- `integrations/social/twitter_integration.py`: Added 20 QUERY_PATTERNS, 5 RELATIONSHIP_TYPES
+- `prompts/integrations/twitter_query_generation.j2`: Complete rewrite with decision tree
+- `research/deep_research.py`: Added Twitter API key special case (lines 334-335)
+- `tests/test_twitter_integration_live.py`: Live API integration tests
+- `tests/test_twitter_endpoint_expansion.py`: Endpoint selection tests
+- `tests/test_twitter_deep_research.py`: Full system integration test
+
+**New Capabilities**:
+- Network Analysis (user_followers, user_following, user_affiliates)
+- Conversation Tracking (tweet_replies, tweet_thread)
+- Amplification Analysis (retweet_users, trending_topics)
+- Verification (check_follow_relationship, check_retweet_status)
+- Batch Operations (bulk_user_lookup)
+- Community Monitoring (community_timeline, spaces_details, list_timeline)
+
+**Validation**:
+- ✅ All isolation tests passing (search_tweets, user_timeline)
+- ✅ Full system integration verified
+- ✅ No API key warnings
+- ✅ Real Twitter data flowing through system
+- ✅ 20/20 patterns loading successfully
+
+**Files Modified**:
+- `integrations/social/twitter_integration.py` (~200 lines added)
+- `prompts/integrations/twitter_query_generation.j2` (complete rewrite, ~212 lines)
+- `research/deep_research.py` (2 lines: API key mapping)
+- `tests/` (3 new test files)
+- `tests/TWITTER_INTEGRATION_FINAL_STATUS.md` (documentation)
+
+**Impact**:
+- Twitter now supports comprehensive social intelligence gathering
+- Enables network analysis, influence mapping, verification, community monitoring
+- Production ready with all tests passing
+
+---
 
 #### 1. Reddit Integration - LLM-Based Relevance Check ✅
 **Problem**: Reddit systematically excluded from research (3 queries vs 59 for Discord)
@@ -168,10 +217,15 @@ After:  Reddit=True, Discord=True (consistent) ✅
 **Problem**: Insufficient visibility into LLM decisions and time usage across research workflow
 **Goal**: Track all decision points and time breakdowns for performance analysis
 
-**Solution** (commit 157246b):
+**Solution** (commits 157246b, a948fde):
 - Added `log_source_skipped()` method to track non-selected sources
 - Added `log_time_breakdown()` method for per-operation timing
-- Integrated logging throughout research pipeline
+- Integrated logging throughout research pipeline (commit 157246b)
+- Enhanced with additional logging points (commit a948fde):
+  - Source skipped when is_relevant() returns False
+  - Source skipped when generate_query() returns None
+  - Query generation timing tracking
+  - Relevance filtering timing tracking
 
 **New Event Types**:
 ```python
@@ -179,10 +233,10 @@ After:  Reddit=True, Discord=True (consistent) ✅
 {
   "event_type": "source_skipped",
   "source": "Reddit",
-  "reason": "not_selected_by_llm" | "is_relevant_returned_false" | "generate_query_failed",
+  "reason": "not_selected_by_llm" | "is_relevant_false" | "generate_query_none",
   "task_id": 0,
   "hypothesis_id": 1,
-  "stage": "source_selection" | "is_relevant_check" | "query_generation"
+  "stage": "source_selection" | "is_relevant" | "generate_query"
 }
 
 # Time breakdown (where time is spent)
@@ -191,20 +245,25 @@ After:  Reddit=True, Discord=True (consistent) ✅
   "task_id": 0,
   "hypothesis_id": 1,
   "source": "Brave Search",
-  "time_query_generation_ms": 234,
-  "time_api_call_ms": 1523,
-  "time_filtering_ms": 456,
-  "total_time_ms": 2213
+  "operation": "query_generation" | "api_call" | "relevance_filtering",
+  "time_ms": 234,
+  "success": true
 }
 ```
 
-**Validation** (actual research run analysis):
+**Validation** (2025-11-23 test: "Recent SEC EDGAR filings for Apple Inc"):
+- ✅ 7 source_skipped events (is_relevant_false) - NEW visibility
+- ✅ 11 query_generation timing events - NEW visibility
+- ✅ 5 relevance_filtering timing events - NEW visibility
+- ✅ Complete audit trail of all source selection decisions
+- ✅ Granular timing data for performance optimization
+
+**Earlier Validation** (commit 157246b research run):
 - ✅ 47 time_breakdown events logged (API call durations)
 - ✅ 6 source_selection events (LLM reasoning)
 - ✅ 2 reformulation events
 - ✅ 7 coverage_assessment events
 - ✅ 54 source_saturation events
-- ✅ source_skipped events for non-selected sources
 
 **Bug Fixed** (commit following 157246b):
 - Hardcoded `task_id=0` → Pass actual task.id parameter
@@ -213,7 +272,7 @@ After:  Reddit=True, Discord=True (consistent) ✅
 
 **Files Modified**:
 - `research/execution_logger.py` (new methods: log_source_skipped, log_time_breakdown)
-- `research/deep_research.py` (logging instrumentation, task_id parameter fix)
+- `research/deep_research.py` (logging instrumentation at 4 new locations: lines 2851-2863, 2878-2891, 2896-2905, 3238-3263)
 
 **Impact**:
 - Complete audit trail of all research decisions

@@ -469,16 +469,17 @@ pip list | grep playwright
 **END OF PERMANENT SECTION**
 # CLAUDE.md - Temporary Section (Condensed)
 
-**Last Updated**: 2025-11-22
+**Last Updated**: 2025-11-23
 **Current Branch**: `master`
 **Current Phase**: Maintenance and optimization
-**Status**: Core research quality improvements complete
+**Status**: Twitter integration expansion complete, all quality improvements complete
 
 ---
 
 ## CURRENT STATUS
 
-**Recently Completed** (2025-11-22):
+**Recently Completed** (2025-11-22/23):
+- ✅ Twitter integration expansion (20/20 endpoints, 100% coverage) - **COMPLETE** (2025-11-23)
 - ✅ Cross-task deduplication (global URL dedup before synthesis) - **COMPLETE**
 - ✅ Cost visibility (estimated LLM calls and cost before research starts) - **COMPLETE**
 - ✅ Saturation logic redesign (strategy-based persistence vs metrics-based stopping) - **COMPLETE**
@@ -507,11 +508,12 @@ pip list | grep playwright
 
 ### LOW PRIORITY
 
-**Time Budget Increase** 📋 **OPTIONAL**
-- **Current**: 45 min total (user configured)
-- **Proposal**: Increase to 240 min (4 hours) for exhaustive research mode
-- **Note**: Current 45-min budget sufficient for most queries
-- **User Decision**: Whether to increase default budget
+**No pending low-priority items**
+
+All planned improvements complete. System configured for long-running research:
+- Time budget: 2440 min (~40 hours) in config.yaml (exceeds proposed 240 min)
+- Enhanced logging provides detailed time tracking
+- System is production-ready for exhaustive research
 
 ---
 
@@ -553,6 +555,15 @@ pip list | grep playwright
 
 ## RECENT CHANGES (Last 7 Days)
 
+**2025-11-23**: Enhanced structured logging + Quick wins (commits a948fde, 80daaef, fd09d4b)
+- ✅ Source skipping visibility: Log when is_relevant() returns False or generate_query() returns None
+- ✅ Time breakdown tracking: Log query_generation and relevance_filtering operation times
+- ✅ Fuzzy source name matching: Handle LLM variations (e.g., "USASpending.gov" → "usaspending")
+- ✅ Optional URL field: SearchResult URL now Optional[str] for honest data representation
+- ✅ Validation: All 3 new event types confirmed working (source_skipped: 7 events, query_generation: 11 events, relevance_filtering: 5 events)
+- Files modified: research/deep_research.py (+148 lines), core/database_integration_base.py, integrations/government/sam_integration.py, integrations/government/usaspending_integration.py
+- Impact: Complete visibility into source selection and performance bottlenecks for debugging and optimization
+
 **2025-11-22**: Cross-task deduplication + cost visibility (commit ef376ce)
 - ✅ Global deduplication removes duplicate URLs across all tasks before synthesis
 - ✅ Displays dedup stats: "X → Y results (Z cross-task duplicates removed)"
@@ -576,6 +587,16 @@ pip list | grep playwright
 - ✅ Enhanced source selection strategy with practical use cases
 - Files modified: prompts/deep_research/hypothesis_generation.j2 (37 lines added)
 - Impact: LLM can make better source selections when generating hypotheses by understanding source capabilities
+
+**2025-11-23**: Twitter integration expansion - **COMPLETE**
+- ✅ Expanded from 1 to 20 endpoints (100% coverage of TwitterExplorer API)
+- ✅ Added LLM-driven endpoint selection (search_tweets, user_timeline, user_followers, etc.)
+- ✅ Implemented relationship-aware querying (network analysis, conversation tracking, amplification)
+- ✅ Pattern-based response transformation for all endpoint types
+- ✅ Fixed API key mapping (RAPIDAPI_KEY special case)
+- ✅ All tests passing (isolation + full system integration)
+- Files modified: integrations/social/twitter_integration.py (20 QUERY_PATTERNS), prompts/integrations/twitter_query_generation.j2 (complete rewrite), research/deep_research.py (API key fix), tests/ (3 new test files)
+- Impact: Twitter now supports comprehensive social intelligence gathering (network analysis, verification, batch operations, community monitoring)
 
 **2025-11-22**: Reddit underutilization fix (commit 503b13d)
 - ✅ Replaced hardcoded keyword filtering with LLM-based relevance check
