@@ -2642,6 +2642,21 @@ class SimpleDeepResearch:
                 result = await client.call_tool(tool_name, args)
             response_time_ms = (time.time() - start_time) * 1000
 
+            # Log time breakdown for API call
+            if logger and task_id is not None:
+                try:
+                    logger.log_time_breakdown(
+                        task_id=task_id,
+                        hypothesis_id=None,  # Set by caller if hypothesis execution
+                        source_name=source_name,
+                        operation="api_call",
+                        time_ms=int(response_time_ms),
+                        success=True,  # Will be updated if error found
+                        metadata={"tool_name": tool_name, "attempt": attempt}
+                    )
+                except Exception as log_error:
+                    logging.warning(f"Failed to log time breakdown: {log_error}")
+
             # Parse result (FastMCP returns ToolResult with content)
             import json
             result_data = json.loads(result.content[0].text)
@@ -2766,6 +2781,20 @@ class SimpleDeepResearch:
             source_display_name = self.tool_name_to_display.get(tool["name"], tool["name"])
             if source_display_name in self.rate_limited_sources:
                 skip_rate_limited_names.add(tool["name"])
+
+                # Log source skipped due to rate limiting
+                if self.logger and task_id is not None:
+                    try:
+                        self.logger.log_source_skipped(
+                            task_id=task_id,
+                            hypothesis_id=None,  # Set by caller if hypothesis execution
+                            source_name=source_display_name,
+                            reason="rate_limited",
+                            stage="execute_search",
+                            details={"message": "Circuit breaker active - source previously rate limited"}
+                        )
+                    except Exception as log_error:
+                        logging.warning(f"Failed to log source skipped: {log_error}")
 
         if skip_rate_limited_names:
             skipped_display = [self.tool_name_to_display[name] for name in skip_rate_limited_names]

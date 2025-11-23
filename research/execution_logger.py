@@ -567,3 +567,70 @@ class ExecutionLogger:
             "reformulation_reasoning": reformulation_reasoning,
             "expected_value_if_reformulated": expected_value_if_reformulated
         })
+
+    def log_source_skipped(
+        self,
+        task_id: int,
+        hypothesis_id: Optional[str],
+        source_name: str,
+        reason: str,
+        stage: str,
+        details: Optional[Dict[str, Any]] = None
+    ):
+        """
+        Log when a source is skipped (not selected or failed early).
+
+        Provides visibility into WHY sources don't contribute results.
+        Critical for understanding source utilization patterns.
+
+        Args:
+            task_id: Task ID
+            hypothesis_id: Hypothesis identifier (None if skipped before hypothesis)
+            source_name: Source that was skipped
+            reason: Why source was skipped (is_relevant_false, generate_query_none,
+                   generate_query_error, not_selected, timeout, rate_limited)
+            stage: When skipped (source_selection, is_relevant, generate_query, execute_search)
+            details: Optional additional context (error message, LLM reasoning, etc.)
+        """
+        self._write_entry(task_id, "source_skipped", {
+            "hypothesis_id": hypothesis_id,
+            "source_name": source_name,
+            "reason": reason,
+            "stage": stage,
+            "details": details or {}
+        })
+
+    def log_time_breakdown(
+        self,
+        task_id: int,
+        hypothesis_id: Optional[str],
+        source_name: Optional[str],
+        operation: str,
+        time_ms: int,
+        success: bool,
+        metadata: Optional[Dict[str, Any]] = None
+    ):
+        """
+        Log time breakdown for individual operations.
+
+        Provides detailed visibility into where time is spent during research.
+        Enables performance optimization and budget management.
+
+        Args:
+            task_id: Task ID
+            hypothesis_id: Hypothesis identifier (None for task-level operations)
+            source_name: Source name (None for non-source operations)
+            operation: Operation type (query_generation, api_call, relevance_filtering,
+                      hypothesis_generation, coverage_assessment, etc.)
+            time_ms: Time in milliseconds
+            success: Whether operation succeeded
+            metadata: Optional operation-specific metadata (tokens, cost, result_count, etc.)
+        """
+        self._write_entry(task_id, "time_breakdown", {
+            "hypothesis_id": hypothesis_id,
+            "source_name": source_name,
+            "operation": operation,
+            "time_ms": time_ms,
+            "success": success,
+            "metadata": metadata or {}
+        })
