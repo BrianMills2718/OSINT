@@ -30,6 +30,50 @@ CURRENT GAPS:
 No specific gaps identified.
 {% endif %}
 
+QUERY QUALITY ASSESSMENT:
+
+Before deciding saturation, analyze the query effectiveness patterns in the history above:
+
+**Analyze Query Performance:**
+1. **Zero results** (results_total = 0)
+   - Does the source actually lack this information? (Consider source characteristics above)
+   - Or is the query too specific/restrictive? (e.g., multiple AND operators, overly narrow timeframes)
+   - Could broader terminology or fewer constraints help?
+
+2. **Low acceptance rate** (effectiveness < 20%)
+   - Are results off-topic for the hypothesis?
+   - Is the query too broad, matching irrelevant content?
+   - Are we searching in the wrong domain/timeframe?
+   - Could more specific terms or constraints improve precision?
+
+3. **High rejection themes**
+   - What patterns appear in rejection_themes?
+   - Do rejections suggest query mismatch (wrong source) or need refinement (right source, wrong query)?
+
+4. **Diminishing returns**
+   - Are recent queries less effective than earlier ones?
+   - Are we exhausting the source's depth, or using less optimal query strategies?
+
+**Consider Source Capabilities:**
+Refer to the SOURCE CHARACTERISTICS above to understand:
+- What query_strategies this source supports (keyword_search, boolean_operators, quoted_phrases, etc.)
+- What characteristics define this source (community_discussions, formal_documents, realtime_feeds, etc.)
+- What typical_result_count and max_queries_recommended suggest about source depth
+
+**Quality Improvement Strategies:**
+Based on the query_history patterns and source capabilities, consider:
+- If too specific (0 results): Remove restrictive operators, broaden terminology, expand timeframes
+- If too broad (low acceptance): Add specific constraints, use source-specific filters, narrow domain
+- If wrong approach: Try different query_strategies from source metadata (e.g., subreddit_specific vs keyword_search)
+- If saturation suspected: Verify with different angles, not just variations of same query
+
+**Integration Intelligence:**
+When suggesting next_query, ensure it:
+- Aligns with source's supported query_strategies
+- Learns from effectiveness patterns (avoid repeating failed approaches)
+- Targets specific information_gaps
+- Uses appropriate specificity for this source type (government databases vs social media vs web search)
+
 DECISION FRAMEWORK:
 
 **SATURATED** if:
@@ -65,7 +109,7 @@ IMPORTANT CONSIDERATIONS:
 Return JSON:
 {
     "decision": "SATURATED" or "CONTINUE",
-    "reasoning": "2-3 sentences explaining your decision based on the query history and source characteristics",
+    "reasoning": "2-4 sentences explaining your decision. Include: (1) query quality analysis from patterns above (zero results, low acceptance, etc.), (2) whether issues stem from source limitations or query formulation, (3) saturation confidence based on evidence",
     "confidence": 0-100,  // Confidence in this decision (0=uncertain, 100=very confident)
     "existence_confidence": 0-100,  // Confidence information exists in source (0=unlikely, 100=very likely)
     "next_query_suggestion": "If CONTINUE, specific query to try next (empty if SATURATED)",

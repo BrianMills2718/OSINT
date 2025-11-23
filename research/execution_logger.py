@@ -527,3 +527,43 @@ class ExecutionLogger:
             "saturation_reasoning": saturation_reasoning,
             "decision_confidence": decision_confidence
         })
+
+    def log_zero_result_analysis(
+        self,
+        task_id: int,
+        hypothesis_id: str,
+        source_name: str,
+        query: str,
+        analysis: str,
+        reasoning: str,
+        confidence: int,
+        reformulated_query: Optional[str] = None,
+        reformulation_reasoning: Optional[str] = None,
+        expected_value_if_reformulated: Optional[str] = None
+    ):
+        """
+        Log zero-result analysis (centralized query reformulation).
+
+        Args:
+            task_id: Task ID
+            hypothesis_id: Hypothesis identifier
+            source_name: Source that returned 0 results
+            query: Original query that returned 0 results
+            analysis: ACCURATE_ZERO | REFORMULATABLE
+            reasoning: LLM reasoning for analysis decision
+            confidence: Confidence score 0-100
+            reformulated_query: Broader query suggestion (if REFORMULATABLE)
+            reformulation_reasoning: Explanation of reformulation (if REFORMULATABLE)
+            expected_value_if_reformulated: Expected value of reformulated query (high|medium|low)
+        """
+        self._write_entry(task_id, "zero_result_analysis", {
+            "hypothesis_id": hypothesis_id,
+            "source_name": source_name,
+            "original_query": query,
+            "analysis": analysis,
+            "reasoning": reasoning,
+            "confidence": confidence,
+            "reformulated_query": reformulated_query,
+            "reformulation_reasoning": reformulation_reasoning,
+            "expected_value_if_reformulated": expected_value_if_reformulated
+        })

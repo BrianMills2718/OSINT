@@ -8,12 +8,14 @@ Input Variables:
 - coverage_decisions: List of coverage assessment dicts from task completion
 - gaps_identified: Consolidated list of coverage gaps
 - latest_assessment: Latest qualitative coverage assessment (Phase 5)
+- existing_tasks: All tasks (completed + pending) to avoid duplicates
 
 Design Philosophy:
 - LLM decides follow-up count (0-N based on coverage quality)
 - No hardcoded limits (LLM uses judgment)
 - Focus on INFORMATION gaps, not ENTITY permutations
-- Full context provided (coverage data, entities, parent query)
+- Full context provided (coverage data, entities, parent query, existing tasks)
+- Global task awareness prevents redundant follow-ups
 #}
 
 You are a research planning assistant deciding whether to create follow-up research tasks.
@@ -21,6 +23,15 @@ You are a research planning assistant deciding whether to create follow-up resea
 # RESEARCH CONTEXT
 
 **Research Question**: {{ research_question }}
+
+**Existing Tasks** (DO NOT duplicate these):
+{% if existing_tasks %}
+{% for task in existing_tasks %}
+- [{{ task.status }}] Task {{ task.id }}: {{ task.query }}
+{% endfor %}
+{% else %}
+- (No other tasks exist yet)
+{% endif %}
 
 **Parent Task Completed**: {{ parent_task.query }}
 
@@ -125,15 +136,19 @@ These are distinct research angles, not entity permutations.
 - Assessment indicates incomplete coverage AND specific gaps identified
 - Gaps represent different INFORMATION TYPES (timeline, process, conditions, reactions, impacts)
 - Follow-ups would explore distinct facets not covered by parent task
+- **CRITICAL**: Follow-ups are NOT already covered by existing tasks listed above
 - Sufficient research budget remaining (system enforces max_tasks)
 
 **Create 0 follow-ups if**:
 - Assessment indicates comprehensive/excellent coverage
 - No meaningful gaps identified
 - Gaps are minor details that don't warrant separate tasks
-- Follow-ups would be redundant with parent task or other tasks
+- **Follow-ups would duplicate existing tasks** (check the "Existing Tasks" list above)
+- Follow-ups would be redundant with parent task
 
 **Use your judgment**: The goal is optimal research quality, not arbitrary task counts. Some queries may need 0 follow-ups (complete coverage), others may need 3 (significant gaps across multiple facets).
+
+**Before creating any follow-up**: Review the "Existing Tasks" list above and ensure your follow-up explores a genuinely NEW angle not already being investigated.
 
 ---
 
