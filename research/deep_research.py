@@ -2847,6 +2847,21 @@ class SimpleDeepResearch:
                 is_relevant = await integration.is_relevant(query)
                 if not is_relevant:
                     logging.warning(f"{source_name} not relevant for query: {query}")
+
+                    # Log source skipped (Enhanced Structured Logging)
+                    if logger and task_id is not None:
+                        try:
+                            logger.log_source_skipped(
+                                task_id=task_id,
+                                hypothesis_id=None,  # Set by caller if hypothesis execution
+                                source_name=source_name,
+                                reason="is_relevant_false",
+                                stage="is_relevant",
+                                details={"query": query}
+                            )
+                        except Exception as log_error:
+                            logging.warning(f"Failed to log source_skipped: {log_error}")
+
                     result_data = {
                         "success": False,
                         "source": source_name,
@@ -2856,9 +2871,42 @@ class SimpleDeepResearch:
                     }
                 else:
                     # 2. Generate query parameters
+                    query_gen_start = time.time()
                     query_params = await integration.generate_query(query)
+                    query_gen_time_ms = int((time.time() - query_gen_start) * 1000)
+
+                    # Log query generation timing (Enhanced Structured Logging)
+                    if logger and task_id is not None:
+                        try:
+                            logger.log_time_breakdown(
+                                task_id=task_id,
+                                hypothesis_id=None,  # Set by caller if hypothesis execution
+                                source_name=source_name,
+                                operation="query_generation",
+                                time_ms=query_gen_time_ms,
+                                success=query_params is not None,
+                                metadata={"tool_name": tool_name}
+                            )
+                        except Exception as log_error:
+                            logging.warning(f"Failed to log time breakdown: {log_error}")
+
                     if not query_params:
                         logging.warning(f"{source_name} failed to generate query for: {query}")
+
+                        # Log source skipped (Enhanced Structured Logging)
+                        if logger and task_id is not None:
+                            try:
+                                logger.log_source_skipped(
+                                    task_id=task_id,
+                                    hypothesis_id=None,  # Set by caller if hypothesis execution
+                                    source_name=source_name,
+                                    reason="generate_query_none",
+                                    stage="generate_query",
+                                    details={"query": query}
+                                )
+                            except Exception as log_error:
+                                logging.warning(f"Failed to log source_skipped: {log_error}")
+
                         result_data = {
                             "success": False,
                             "source": source_name,
@@ -3186,11 +3234,34 @@ class SimpleDeepResearch:
                 # LLM makes 3 decisions: ACCEPT/REJECT, which indices to keep, continue searching?
                 # Gemini 2.5 Flash has 65K token context - evaluate ALL results, no sampling needed
                 print(f"🔍 Validating relevance of {len(all_results)} results...")
+
+                # Track relevance filtering time (Enhanced Structured Logging)
+                filtering_start = time.time()
                 should_accept, relevance_reason, relevant_indices, should_continue, continuation_reason, reasoning_breakdown = await self._validate_result_relevance(
                     task_query=task.query,
                     research_question=self.original_question,
                     sample_results=all_results  # Send ALL results to LLM
                 )
+                filtering_time_ms = int((time.time() - filtering_start) * 1000)
+
+                # Log relevance filtering timing (Enhanced Structured Logging)
+                if self.logger and task.id is not None:
+                    try:
+                        self.logger.log_time_breakdown(
+                            task_id=task.id,
+                            hypothesis_id=None,
+                            source_name="Multi-source",  # Combined MCP + web results
+                            operation="relevance_filtering",
+                            time_ms=filtering_time_ms,
+                            success=True,
+                            metadata={
+                                "results_evaluated": len(all_results),
+                                "results_kept": len(relevant_indices)
+                            }
+                        )
+                    except Exception as log_error:
+                        logging.warning(f"Failed to log time breakdown: {log_error}")
+
                 decision_str = "ACCEPT" if should_accept else "REJECT"
                 continue_str = "CONTINUE" if should_continue else "STOP"
                 print(f"  Decision: {decision_str}")
