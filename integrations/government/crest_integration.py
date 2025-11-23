@@ -11,6 +11,7 @@ from typing import Dict, Optional, List
 from urllib.parse import quote
 from llm_utils import acompletion
 from core.prompt_loader import render_prompt
+from core.stealth_browser import StealthBrowser
 
 from core.database_integration_base import (
     DatabaseIntegration,
@@ -51,8 +52,9 @@ class CRESTIntegration(DatabaseIntegration):
             requires_api_key=False,
             cost_per_query_estimate=0.001,  # LLM cost only
             typical_response_time=10.0,     # seconds (scraping is slow)
-            rate_limit_daily=None,          # Self-imposed: be respectful
-            description="CIA's declassified document reading room (FOIA records, 1940s-1990s)"
+            description="CIA's declassified document reading room (FOIA records, 1940s-1990s)",
+            requires_stealth=True,          # Akamai Bot Manager protection
+            rate_limit_daily=None           # Self-imposed: be respectful
         )
 
     async def is_relevant(self, research_question: str) -> bool:
@@ -160,7 +162,7 @@ class CRESTIntegration(DatabaseIntegration):
 
         # Import playwright only when needed (lazy import)
         try:
-            from playwright.async_api import async_playwright, TimeoutError as PlaywrightTimeout
+            from playwright.async_api import TimeoutError as PlaywrightTimeout
         except ImportError:
             return QueryResult(
                 success=False,
@@ -174,110 +176,105 @@ class CRESTIntegration(DatabaseIntegration):
         documents = []
 
         try:
-            async with async_playwright() as p:
-                browser = await p.chromium.launch(headless=True)
-                page = await browser.new_page()
+            # Use stealth browser to bypass Akamai Bot Manager
+            browser = await StealthBrowser.create_playwright_browser(headless=True)
+            page = await StealthBrowser.create_stealth_page(browser)
 
-                # Set user agent to avoid bot detection
-                await page.set_extra_http_headers({
-                    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36"
-                })
+            # Fetch multiple pages if requested
+            for page_num in range(max_pages):
+                if len(documents) >= limit:
+                    break
 
-                # Fetch multiple pages if requested
-                for page_num in range(max_pages):
+                # Construct search URL
+                encoded_keyword = quote(keyword)
+                search_url = f"https://www.cia.gov/readingroom/advanced-search-view?keyword={encoded_keyword}&page={page_num}"
+
+                await page.goto(search_url, timeout=30000)
+                await asyncio.sleep(2)  # Be respectful
+
+                # Wait for results table
+                try:
+                    await page.wait_for_selector('.views-table', timeout=10000)
+                except PlaywrightTimeout:
+                    # No results found
+                    break
+
+                # Extract document links from table
+                doc_links = await page.evaluate("""
+                    () => {
+                        const results = [];
+                        const table = document.querySelector('table.views-table');
+                        if (!table) return results;
+
+                        const rows = table.querySelectorAll('tr');
+                        for (let i = 1; i < rows.length; i++) {  // Skip header row
+                            const titleCell = rows[i].querySelector('.views-field-label');
+                            if (titleCell) {
+                                const link = titleCell.querySelector('a');
+                                if (link && link.href.includes('/readingroom/document/')) {
+                                    results.push({
+                                        title: link.textContent.trim(),
+                                        url: link.href
+                                    });
+                                }
+                            }
+                        }
+                        return results;
+                    }
+                """)
+
+                # Visit each document to get snippet (limited to limit)
+                for doc_link in doc_links:
                     if len(documents) >= limit:
                         break
 
-                    # Construct search URL
-                    encoded_keyword = quote(keyword)
-                    search_url = f"https://www.cia.gov/readingroom/advanced-search-view?keyword={encoded_keyword}&page={page_num}"
-
-                    await page.goto(search_url, timeout=30000)
-                    await asyncio.sleep(2)  # Be respectful
-
-                    # Wait for results table
                     try:
-                        await page.wait_for_selector('.views-table', timeout=10000)
-                    except PlaywrightTimeout:
-                        # No results found
-                        break
+                        await page.goto(doc_link['url'], timeout=30000)
+                        await asyncio.sleep(2)  # Be respectful
 
-                    # Extract document links from table
-                    doc_links = await page.evaluate("""
-                        () => {
-                            const results = [];
-                            const table = document.querySelector('table.views-table');
-                            if (!table) return results;
+                        # Extract document content
+                        content = await page.evaluate("""
+                            () => {
+                                const data = {};
 
-                            const rows = table.querySelectorAll('tr');
-                            for (let i = 1; i < rows.length; i++) {  // Skip header row
-                                const titleCell = rows[i].querySelector('.views-field-label');
-                                if (titleCell) {
-                                    const link = titleCell.querySelector('a');
-                                    if (link && link.href.includes('/readingroom/document/')) {
-                                        results.push({
-                                            title: link.textContent.trim(),
-                                            url: link.href
-                                        });
+                                // Extract title
+                                const title = document.querySelector('h1.documentFirstHeading');
+                                data.title = title ? title.textContent.trim() : '';
+
+                                // Extract metadata
+                                const metadata = {};
+                                const fields = document.querySelectorAll('.field-label-inline');
+                                fields.forEach(field => {
+                                    const label = field.querySelector('.field-label');
+                                    const item = field.querySelector('.field-item');
+                                    if (label && item) {
+                                        const key = label.textContent.trim().replace(':', '');
+                                        metadata[key] = item.textContent.trim();
                                     }
-                                }
+                                });
+                                data.metadata = metadata;
+
+                                // Extract body text (first 500 chars as snippet)
+                                const body = document.querySelector('.field-name-body .field-item');
+                                data.snippet = body ? body.textContent.trim().substring(0, 500) + '...' : '';
+
+                                return data;
                             }
-                            return results;
+                        """)
+
+                        # Create document dictionary
+                        doc = {
+                            "title": content.get('title', doc_link['title']),
+                            "url": doc_link['url'],
+                            "snippet": content.get('snippet', ''),
+                            "metadata": content.get('metadata', {})
                         }
-                    """)
+                        documents.append(doc)
 
-                    # Visit each document to get snippet (limited to limit)
-                    for doc_link in doc_links:
-                        if len(documents) >= limit:
-                            break
-
-                        try:
-                            await page.goto(doc_link['url'], timeout=30000)
-                            await asyncio.sleep(2)  # Be respectful
-
-                            # Extract document content
-                            content = await page.evaluate("""
-                                () => {
-                                    const data = {};
-
-                                    // Extract title
-                                    const title = document.querySelector('h1.documentFirstHeading');
-                                    data.title = title ? title.textContent.trim() : '';
-
-                                    // Extract metadata
-                                    const metadata = {};
-                                    const fields = document.querySelectorAll('.field-label-inline');
-                                    fields.forEach(field => {
-                                        const label = field.querySelector('.field-label');
-                                        const item = field.querySelector('.field-item');
-                                        if (label && item) {
-                                            const key = label.textContent.trim().replace(':', '');
-                                            metadata[key] = item.textContent.trim();
-                                        }
-                                    });
-                                    data.metadata = metadata;
-
-                                    // Extract body text (first 500 chars as snippet)
-                                    const body = document.querySelector('.field-name-body .field-item');
-                                    data.snippet = body ? body.textContent.trim().substring(0, 500) + '...' : '';
-
-                                    return data;
-                                }
-                            """)
-
-                            # Create document dictionary
-                            doc = {
-                                "title": content.get('title', doc_link['title']),
-                                "url": doc_link['url'],
-                                "snippet": content.get('snippet', ''),
-                                "metadata": content.get('metadata', {})
-                            }
-                            documents.append(doc)
-
-                        except Exception as e:
-                            # Skip failed documents
-                            print(f"Failed to fetch document {doc_link['url']}: {e}")
-                            continue
+                    except Exception as e:
+                        # Skip failed documents
+                        print(f"Failed to fetch document {doc_link['url']}: {e}")
+                        continue
 
                 await browser.close()
 
