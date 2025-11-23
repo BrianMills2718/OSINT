@@ -246,11 +246,38 @@ class FederalRegisterIntegration(DatabaseIntegration):
                 request_params=params
             )
 
+            # Transform results to standardized format
+            transformed_docs = []
+            for doc in documents[:limit]:
+                # Federal Register API returns html_url and pdf_url
+                url = doc.get("html_url", "") or doc.get("pdf_url", "")
+
+                # Use abstract as snippet, or truncate full text if available
+                snippet = doc.get("abstract", "")
+                if not snippet and doc.get("full_text_xml_url"):
+                    snippet = f"Full text available at {doc.get('full_text_xml_url')}"
+
+                transformed = {
+                    "title": doc.get("title", "Untitled Document"),
+                    "url": url,
+                    "snippet": snippet[:500] if snippet else "",
+                    "metadata": {
+                        "document_number": doc.get("document_number"),
+                        "type": doc.get("type"),
+                        "publication_date": doc.get("publication_date"),
+                        "agencies": doc.get("agencies", []),
+                        "citation": doc.get("citation"),
+                        "pdf_url": doc.get("pdf_url"),
+                        "html_url": doc.get("html_url")
+                    }
+                }
+                transformed_docs.append(transformed)
+
             return QueryResult(
                 success=True,
                 source="Federal Register",
                 total=total,
-                results=documents[:limit],
+                results=transformed_docs,
                 query_params=query_params,
                 response_time_ms=response_time_ms,
                 metadata={
