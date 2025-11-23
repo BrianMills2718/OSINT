@@ -16,7 +16,8 @@ async def main():
     print(f"Starting research: {question}\n")
 
     # Load config from config.yaml
-    deep_config = config.get("research", {}).get("deep_research", {})
+    raw_config = config.get_raw_config()
+    deep_config = raw_config.get("research", {}).get("deep_research", {})
 
     engine = SimpleDeepResearch(
         max_tasks=deep_config.get("max_tasks", 20),
