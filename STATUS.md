@@ -1,7 +1,8 @@
 # STATUS.md - Component Status Tracker
 
-**Last Updated**: 2025-11-22 (Quality Improvements - IN PROGRESS)
-**Current Phase**: Quality Improvements (Report Synthesis) - IN PROGRESS 🔄
+**Last Updated**: 2025-11-22 (Quality Improvements - COMPLETE)
+**Current Phase**: All quality improvements complete - Research system ready for production use ✅
+**Previous Phase**: Quality Improvements (Report Synthesis, Logging, Source Context) - COMPLETE ✅
 **Previous Phase**: Phase 6 (Query Saturation) COMPLETE ✅
 **Previous Phase**: Phase 5 (Pure Qualitative Intelligence) - COMPLETE ✅
 **Previous Phase**: Phase 4 (Manager-Agent Architecture) - COMPLETE ✅
@@ -19,8 +20,9 @@
 
 ## Quality Improvements (2025-11-22)
 
-**Status**: ✅ **COMPLETE** - Four quality improvements implemented and validated
+**Status**: ✅ **COMPLETE** - Six quality improvements implemented and validated
 **Philosophy**: LLM intelligence via architecture, not hardcoded heuristics
+**Impact**: Research system ready for production use with comprehensive quality controls
 
 ### Completed Improvements
 
@@ -159,6 +161,111 @@ After:  Reddit=True, Discord=True (consistent) ✅
 - Intelligent source grouping with reliability transparency
 - Clean user-facing reports (debugging data in execution_log.jsonl and metadata.json)
 - Future-configurable via prompt changes (no code changes needed)
+
+---
+
+#### 5. Enhanced Structured Logging ✅
+**Problem**: Insufficient visibility into LLM decisions and time usage across research workflow
+**Goal**: Track all decision points and time breakdowns for performance analysis
+
+**Solution** (commit 157246b):
+- Added `log_source_skipped()` method to track non-selected sources
+- Added `log_time_breakdown()` method for per-operation timing
+- Integrated logging throughout research pipeline
+
+**New Event Types**:
+```python
+# Source skipping (why sources weren't used)
+{
+  "event_type": "source_skipped",
+  "source": "Reddit",
+  "reason": "not_selected_by_llm" | "is_relevant_returned_false" | "generate_query_failed",
+  "task_id": 0,
+  "hypothesis_id": 1,
+  "stage": "source_selection" | "is_relevant_check" | "query_generation"
+}
+
+# Time breakdown (where time is spent)
+{
+  "event_type": "time_breakdown",
+  "task_id": 0,
+  "hypothesis_id": 1,
+  "source": "Brave Search",
+  "time_query_generation_ms": 234,
+  "time_api_call_ms": 1523,
+  "time_filtering_ms": 456,
+  "total_time_ms": 2213
+}
+```
+
+**Validation** (actual research run analysis):
+- ✅ 47 time_breakdown events logged (API call durations)
+- ✅ 6 source_selection events (LLM reasoning)
+- ✅ 2 reformulation events
+- ✅ 7 coverage_assessment events
+- ✅ 54 source_saturation events
+- ✅ source_skipped events for non-selected sources
+
+**Bug Fixed** (commit following 157246b):
+- Hardcoded `task_id=0` → Pass actual task.id parameter
+- Added `task_id` parameter to `_select_relevant_sources()` method
+- Updated caller to pass `task.id`
+
+**Files Modified**:
+- `research/execution_logger.py` (new methods: log_source_skipped, log_time_breakdown)
+- `research/deep_research.py` (logging instrumentation, task_id parameter fix)
+
+**Impact**:
+- Complete audit trail of all research decisions
+- Performance bottleneck identification (which operations are slow)
+- Source utilization tracking (which sources used, which skipped, why)
+
+---
+
+#### 6. Source Context Documentation ✅
+**Problem**: Hypothesis generation prompt only listed source names without explaining capabilities
+**Example**: "Available sources: SAM.gov, Reddit, Discord, Brave Search" (no context)
+**Impact**: LLM couldn't make informed source selections without understanding what each contains
+
+**Solution** (commit af2faad):
+- Added comprehensive descriptions for all 15 integrations
+- Organized by category (Government, Social, Legal, News, Archive)
+- Included specific capabilities for each source
+
+**Enhanced Content**:
+```jinja2
+## Government & Official Sources
+- **SAM.gov**: Federal contract awards, vendor registrations (multi-billion dollar database)
+- **USAJobs**: Federal job postings with GS series, clearance requirements
+- **DVIDS**: Military press releases, photos, videos, unit news
+- **FBI Vault**: FBI's FOIA library of declassified documents
+...
+
+## Social Media & Community Sources
+- **Discord**: OSINT communities (Bellingcat, Project OWL)
+  - Channels: OSINT, geopolitics, Ukraine conflict, intelligence, cyber ops
+- **Reddit**: Specialized subreddits
+  - Key: r/defense, r/govcontracts, r/Intelligence, r/geopolitics
+...
+```
+
+**Added Source Selection Strategy** with practical use cases:
+- Contract & Procurement Investigations → SAM.gov, USASpending, SEC EDGAR
+- Employment Research → USAJobs, ClearanceJobs, Reddit r/fednews
+- Military & Defense Topics → DVIDS, SAM.gov, Discord OSINT communities
+- Intelligence & Classified Programs → FBI Vault, CIA CREST, ProPublica
+- Policy & Regulatory → Federal Register, Congress.gov, CourtListener
+- Corporate & Financial → SEC EDGAR, ProPublica, Brave Search
+- Social Sentiment → Reddit, Discord, Twitter, Brave Search
+
+**Files Modified**:
+- `prompts/deep_research/hypothesis_generation.j2` (+37 lines)
+- `CLAUDE.md` (updated status)
+
+**Impact**:
+- LLM can match source capabilities to information needs
+- Better hypothesis design with appropriate source selections
+- Reduced "fishing expedition" queries (wrong sources for investigation type)
 
 ---
 
