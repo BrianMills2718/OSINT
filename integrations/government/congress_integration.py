@@ -173,25 +173,25 @@ class CongressIntegration(DatabaseIntegration):
 
     async def execute_search(
         self,
-        params: Dict,
-        api_key: Optional[str],
+        query_params: Dict,
+        api_key: Optional[str] = None,
         limit: int = 100
     ) -> QueryResult:
         """
         Execute Congress.gov search via API.
 
         Args:
-            params: Query parameters from generate_query()
+            query_params: Query parameters from generate_query()
             api_key: Congress.gov API key (from api.data.gov)
             limit: Maximum results to return
 
         Returns:
             QueryResult with bills/records found
         """
-        endpoint = params.get("endpoint", "bill")
-        keywords = params.get("keywords", "")
-        congress_num = params.get("congress", 118)
-        limit = min(params.get("limit", 100), limit, 250)
+        endpoint = query_params.get("endpoint", "bill")
+        keywords = query_params.get("keywords", "")
+        congress_num = query_params.get("congress", 118)
+        limit = min(query_params.get("limit", 100), limit, 250)
 
         if not api_key:
             # Try loading from environment variable
@@ -203,7 +203,7 @@ class CongressIntegration(DatabaseIntegration):
                 source="Congress.gov",
                 total=0,
                 results=[],
-                query_params=params,
+                query_params=query_params,
                 error="Congress.gov API key not found. Get one at: https://api.congress.gov/sign-up/"
             )
 
@@ -312,7 +312,7 @@ class CongressIntegration(DatabaseIntegration):
                 source="Congress.gov",
                 total=len(documents),
                 results=documents,
-                query_params=params,
+                query_params=query_params,
                 response_time_ms=response_time_ms
             )
 
@@ -328,7 +328,7 @@ class CongressIntegration(DatabaseIntegration):
                 source="Congress.gov",
                 total=0,
                 results=[],
-                query_params=params,
+                query_params=query_params,
                 error=error_msg
             )
 
@@ -338,6 +338,6 @@ class CongressIntegration(DatabaseIntegration):
                 source="Congress.gov",
                 total=0,
                 results=[],
-                query_params=params,
+                query_params=query_params,
                 error=f"Congress.gov API error: {str(e)}"
             )

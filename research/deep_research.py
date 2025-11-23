@@ -3713,11 +3713,11 @@ class SimpleDeepResearch:
         task_query: str,
         research_question: str,
         sample_results: List[Dict]
-    ) -> Tuple[bool, str, List[int], bool, Dict]:
+    ) -> Tuple[bool, str, List[int], bool, str, Dict]:
         """
         Validate result relevance, filter to best results, and decide if more searching needed.
 
-        LLM makes FOUR parts: ACCEPT/REJECT, which indices to keep, continue searching?, reasoning breakdown
+        LLM makes decisions: ACCEPT/REJECT, which indices to keep, continue searching?, reasoning breakdown
 
         Args:
             task_query: Query that generated these results
@@ -3725,15 +3725,16 @@ class SimpleDeepResearch:
             sample_results: All results to evaluate (Gemini 2.5 Flash has 65K token context)
 
         Returns:
-            Tuple of (should_accept, reason, relevant_indices, should_continue, reasoning_breakdown):
+            Tuple of (should_accept, reason, relevant_indices, should_continue, continuation_reason, reasoning_breakdown):
             - should_accept: True to ACCEPT results, False to REJECT
             - reason: LLM's explanation for accept/reject decision
             - relevant_indices: List of result indices to keep (e.g., [0, 2, 5])
             - should_continue: True to search for more results, False to stop
+            - continuation_reason: LLM's explanation for continue/stop decision
             - reasoning_breakdown: Dict with filtering_strategy, interesting_decisions, patterns_noticed
         """
         if not sample_results:
-            return (False, "No results to evaluate", [], False, {})
+            return (False, "No results to evaluate", [], False, "No results to evaluate", {})
 
         # Build numbered sample text (Result #0, Result #1, etc.)
         results_text = "\n\n".join([

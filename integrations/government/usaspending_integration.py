@@ -259,7 +259,7 @@ class USASpendingIntegration(DatabaseIntegration):
 
     async def execute_search(
         self,
-        params: Dict,
+        query_params: Dict,
         api_key: Optional[str] = None,
         limit: int = 100
     ) -> QueryResult:
@@ -276,7 +276,7 @@ class USASpendingIntegration(DatabaseIntegration):
         """
 
         # Build request body (filter out empty arrays - API rejects them)
-        filters = params.get("filters", {})
+        filters = query_params.get("filters", {})
         cleaned_filters = {
             k: v for k, v in filters.items()
             if v is not None and (not isinstance(v, list) or len(v) > 0)
@@ -284,7 +284,7 @@ class USASpendingIntegration(DatabaseIntegration):
 
         request_body = {
             "filters": cleaned_filters,
-            "fields": params.get("fields", [
+            "fields": query_params.get("fields", [
                 "Award ID",
                 "Recipient Name",
                 "Award Amount",
@@ -293,7 +293,7 @@ class USASpendingIntegration(DatabaseIntegration):
                 "Awarding Agency",
                 "Description"
             ]),
-            "limit": limit or params.get("limit", 100),
+            "limit": limit or query_params.get("limit", 100),
             "page": 1,
             "sort": "Award Amount",
             "order": "desc"
@@ -317,7 +317,7 @@ class USASpendingIntegration(DatabaseIntegration):
                             source="USAspending",
                             total=0,
                             results=[],
-                            query_params=params,
+                            query_params=query_params,
                             error=f"HTTP {response.status}: {error_text}"
                         )
 
@@ -343,7 +343,7 @@ class USASpendingIntegration(DatabaseIntegration):
                         status_code=response.status,
                         response_time_ms=0,  # aiohttp doesn't provide this easily
                         error_message=None,
-                        request_params={"filters": params.get("filters", {}), "limit": limit}
+                        request_params={"filters": query_params.get("filters", {}), "limit": limit}
                     )
 
                     return QueryResult(
@@ -351,11 +351,11 @@ class USASpendingIntegration(DatabaseIntegration):
                         source="USAspending",
                         total=len(results),
                         results=results,
-                        query_params=params,
+                        query_params=query_params,
                         response_time_ms=0,
                         metadata={
                             "page_metadata": data.get("page_metadata", {}),
-                            "request_filters": params.get("filters", {}),
+                            "request_filters": query_params.get("filters", {}),
                             "spending_level": data.get("spending_level", "awards")
                         }
                     )
@@ -366,7 +366,7 @@ class USASpendingIntegration(DatabaseIntegration):
                 source="USAspending",
                 total=0,
                 results=[],
-                query_params=params,
+                query_params=query_params,
                 error="Request timeout after 30 seconds"
             )
         except Exception as e:
@@ -375,7 +375,7 @@ class USASpendingIntegration(DatabaseIntegration):
                 source="USAspending",
                 total=0,
                 results=[],
-                query_params=params,
+                query_params=query_params,
                 error=f"Search failed: {str(e)}"
             )
 

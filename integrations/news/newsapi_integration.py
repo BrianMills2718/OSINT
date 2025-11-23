@@ -223,27 +223,27 @@ Return JSON:
 
     async def execute_search(
         self,
-        params: Dict,
-        api_key: Optional[str],
+        query_params: Dict,
+        api_key: Optional[str] = None,
         limit: int = 50
     ) -> QueryResult:
         """
         Execute NewsAPI search via /v2/everything endpoint.
 
         Args:
-            params: Query parameters from generate_query()
+            query_params: Query parameters from generate_query()
             api_key: NewsAPI API key (from .env)
             limit: Maximum results to return
 
         Returns:
             QueryResult with news articles found
         """
-        query = params.get("query", "")
-        from_date = params.get("from_date")
-        to_date = params.get("to_date")
-        language = params.get("language", "en")
-        sort_by = params.get("sort_by", "relevancy")
-        limit = min(params.get("limit", 50), limit, 100)  # Cap at 100 (API max)
+        query = query_params.get("query", "")
+        from_date = query_params.get("from_date")
+        to_date = query_params.get("to_date")
+        language = query_params.get("language", "en")
+        sort_by = query_params.get("sort_by", "relevancy")
+        limit = min(query_params.get("limit", 50), limit, 100)  # Cap at 100 (API max)
 
         if not query:
             return QueryResult(
@@ -251,7 +251,7 @@ Return JSON:
                 source="NewsAPI",
                 total=0,
                 results=[],
-                query_params=params,
+                query_params=query_params,
                 error="No search query provided"
             )
 
@@ -268,7 +268,7 @@ Return JSON:
                 source="NewsAPI",
                 total=0,
                 results=[],
-                query_params=params,
+                query_params=query_params,
                 error="NewsAPI key not found. Set NEWSAPI_API_KEY in .env file."
             )
 
@@ -310,7 +310,7 @@ Return JSON:
                     source="NewsAPI",
                     total=0,
                     results=[],
-                    query_params=params,
+                    query_params=query_params,
                     error=f"NewsAPI error ({error_code}): {error_message}"
                 )
 
@@ -346,7 +346,7 @@ Return JSON:
                 source="NewsAPI",
                 total=len(documents),
                 results=documents,
-                query_params=params,
+                query_params=query_params,
                 response_time_ms=int(response.elapsed.total_seconds() * 1000),
                 metadata={"total_results_available": total_results}
             )
@@ -358,7 +358,7 @@ Return JSON:
                     source="NewsAPI",
                     total=0,
                     results=[],
-                    query_params=params,
+                    query_params=query_params,
                     error="NewsAPI rate limit exceeded (100 requests/day on free tier)"
                 )
             elif e.response.status_code == 401:
@@ -367,7 +367,7 @@ Return JSON:
                     source="NewsAPI",
                     total=0,
                     results=[],
-                    query_params=params,
+                    query_params=query_params,
                     error="NewsAPI authentication failed. Check API key in .env"
                 )
             else:
@@ -376,7 +376,7 @@ Return JSON:
                     source="NewsAPI",
                     total=0,
                     results=[],
-                    query_params=params,
+                    query_params=query_params,
                     error=f"NewsAPI HTTP error: {str(e)}"
                 )
 
@@ -386,6 +386,6 @@ Return JSON:
                 source="NewsAPI",
                 total=0,
                 results=[],
-                query_params=params,
+                query_params=query_params,
                 error=f"NewsAPI search failed: {str(e)}"
             )

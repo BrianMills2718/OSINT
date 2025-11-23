@@ -273,8 +273,8 @@ Return JSON:
 
     async def execute_search(
         self,
-        params: Dict,
-        api_key: Optional[str],
+        query_params: Dict,
+        api_key: Optional[str] = None,
         limit: int = 20
     ) -> QueryResult:
         """
@@ -288,11 +288,11 @@ Return JSON:
         Returns:
             QueryResult with filings/documents found
         """
-        query_type = params.get("query_type", "company_filings")
-        company_name = params.get("company_name")
-        form_types = params.get("form_types", [])
-        keywords = params.get("keywords")
-        limit = min(params.get("limit", 20), limit)
+        query_type = query_params.get("query_type", "company_filings")
+        company_name = query_params.get("company_name")
+        form_types = query_params.get("form_types", [])
+        keywords = query_params.get("keywords")
+        limit = min(query_params.get("limit", 20), limit)
 
         try:
             user_agent = self._get_user_agent()
@@ -308,7 +308,7 @@ Return JSON:
                         source="SEC EDGAR",
                         total=0,
                         results=[],
-                        query_params=params,
+                        query_params=query_params,
                         error=f"Company '{company_name}' not found in SEC database"
                     )
 
@@ -382,7 +382,7 @@ Return JSON:
                     source="SEC EDGAR",
                     total=len(documents),
                     results=documents,
-                    query_params=params,
+                    query_params=query_params,
                     response_time_ms=int(response.elapsed.total_seconds() * 1000)
                 )
 
@@ -392,7 +392,7 @@ Return JSON:
                     source="SEC EDGAR",
                     total=0,
                     results=[],
-                    query_params=params,
+                    query_params=query_params,
                     error=f"Query type '{query_type}' not yet implemented or missing company_name"
                 )
 
@@ -403,7 +403,7 @@ Return JSON:
                     source="SEC EDGAR",
                     total=0,
                     results=[],
-                    query_params=params,
+                    query_params=query_params,
                     error="SEC EDGAR rate limit exceeded (10 requests/second). Please wait and retry."
                 )
             else:
@@ -412,7 +412,7 @@ Return JSON:
                     source="SEC EDGAR",
                     total=0,
                     results=[],
-                    query_params=params,
+                    query_params=query_params,
                     error=f"SEC EDGAR API error: {str(e)}"
                 )
 
@@ -422,6 +422,6 @@ Return JSON:
                 source="SEC EDGAR",
                 total=0,
                 results=[],
-                query_params=params,
+                query_params=query_params,
                 error=f"SEC EDGAR search failed: {str(e)}"
             )
