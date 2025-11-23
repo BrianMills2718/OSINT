@@ -10,6 +10,7 @@ from abc import ABC, abstractmethod
 from typing import Dict, List, Optional, Any
 from dataclasses import dataclass
 from enum import Enum
+from pydantic import BaseModel, Field, field_validator
 
 
 class DatabaseCategory(Enum):
@@ -52,8 +53,47 @@ class DatabaseMetadata:
     requires_api_key: bool            # Whether API key is required
     cost_per_query_estimate: float   # Estimated cost in USD per query
     typical_response_time: float     # Typical response time in seconds
-    rate_limit_daily: Optional[int]  # Daily rate limit, None if unknown
     description: str                  # Brief description for users
+    requires_stealth: bool = False    # Whether bot detection bypass needed
+    rate_limit_daily: Optional[int] = None  # Daily rate limit, None if unknown
+
+
+class SearchResult(BaseModel):
+    """
+    Standardized search result format enforced via Pydantic.
+
+    ALL integrations must return results with these required fields.
+    This prevents the field mapping bugs we've been fixing.
+
+    Required fields:
+        - title: Human-readable title/name of the result
+        - url: Link to the full result (web page, PDF, etc.)
+        - snippet: Brief excerpt/summary (max 500 chars recommended)
+
+    Optional fields:
+        - metadata: Dict of source-specific additional data
+    """
+    title: str = Field(..., description="Title of the result", min_length=1)
+    url: str = Field(..., description="URL link to full result")
+    snippet: str = Field(default="", description="Brief excerpt or summary")
+    metadata: Optional[Dict[str, Any]] = Field(default_factory=dict, description="Source-specific metadata")
+
+    @field_validator('title')
+    @classmethod
+    def title_not_empty(cls, v: str) -> str:
+        """Ensure title is not just whitespace."""
+        if not v or not v.strip():
+            raise ValueError("title cannot be empty or whitespace")
+        return v.strip()
+
+    @field_validator('snippet')
+    @classmethod
+    def snippet_max_length(cls, v: str) -> str:
+        """Recommend keeping snippets under 500 chars."""
+        if len(v) > 500:
+            # Don't fail, just truncate and warn
+            return v[:497] + "..."
+        return v
 
 
 class QueryResult:
@@ -62,6 +102,9 @@ class QueryResult:
 
     All database integrations return this consistent format, making it easy
     to aggregate and display results from different sources.
+
+    Results are validated using the SearchResult Pydantic model to ensure
+    all integrations return the required fields (title, url, snippet).
     """
 
     def __init__(self,
@@ -72,7 +115,8 @@ class QueryResult:
                  query_params: Dict,
                  error: Optional[str] = None,
                  response_time_ms: float = 0,
-                 metadata: Optional[Dict] = None):
+                 metadata: Optional[Dict] = None,
+                 validate: bool = True):
         """
         Initialize a QueryResult.
 
@@ -85,15 +129,37 @@ class QueryResult:
             error: Error message if success=False
             response_time_ms: Time taken for the query in milliseconds
             metadata: Optional database-specific metadata
+            validate: Whether to validate results using SearchResult model (default True)
+
+        Raises:
+            ValueError: If validate=True and any result is missing required fields
         """
         self.success = success
         self.source = source
         self.total = total
-        self.results = results
         self.query_params = query_params
         self.error = error
         self.response_time_ms = response_time_ms
         self.metadata = metadata or {}
+
+        # Validate results if requested (skip validation for error cases)
+        if validate and success and results:
+            validated_results = []
+            for i, result in enumerate(results):
+                try:
+                    # Validate using Pydantic model
+                    search_result = SearchResult(**result)
+                    # Convert back to dict for storage
+                    validated_results.append(search_result.model_dump())
+                except Exception as e:
+                    raise ValueError(
+                        f"{source} result #{i} missing required fields: {e}\n"
+                        f"Result was: {result}\n"
+                        f"Required fields: title (str), url (str), snippet (str, optional)"
+                    )
+            self.results = validated_results
+        else:
+            self.results = results
 
     def to_dict(self) -> Dict:
         """Convert to dictionary for serialization."""

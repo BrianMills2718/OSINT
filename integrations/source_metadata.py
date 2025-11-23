@@ -44,6 +44,36 @@ SOURCE_METADATA = {
         max_queries_recommended=10
     ),
 
+    'USAspending': SourceMetadata(
+        name='USAspending',
+        description='Historical federal spending data: awarded contracts, grants, loans, budget information',
+        characteristics={
+            'historical_spending': True,
+            'post_award_data': True,  # NOT pre-award opportunities
+            'structured_data': True,
+            'rich_metadata': True,
+            'budget_data': True,
+            'recipient_tracking': True,
+            'geographic_data': True,
+            'time_series': True,
+            'award_amounts': True,
+            'date_format': 'YYYY-MM-DD',
+            'requires_verification': False  # Official government data
+        },
+        query_strategies=[
+            'recipient_name_search',  # Find awards to specific companies/orgs
+            'agency_spending_analysis',  # Track agency budgets and spending
+            'award_amount_filter',  # Filter by dollar ranges
+            'time_period_comparison',  # Compare spending across fiscal years
+            'award_type_filter',  # Contracts vs grants vs loans
+            'keyword_description_search',  # Search award descriptions
+            'geographic_spending',  # Spending by state/location
+            'disaster_emergency_tracking'  # COVID, Infrastructure spending via def_codes
+        ],
+        typical_result_count=100,  # Rich dataset, returns more results
+        max_queries_recommended=7  # Historical data, moderate saturation
+    ),
+
     'DVIDS': SourceMetadata(
         name='DVIDS',
         description='Department of Defense news and media (Defense Visual Information Distribution Service)',
