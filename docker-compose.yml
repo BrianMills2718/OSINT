@@ -38,10 +38,11 @@ services:
       - ./config.yaml:/app/config.yaml:ro
       - ./data:/app/data
       - ./prompts:/app/prompts:ro
+      - ./.streamlit:/app/.streamlit:ro
     environment:
       - PYTHONUNBUFFERED=1
     shm_size: 2gb
-    command: ["streamlit", "run", "apps/unified_search_app.py", "--server.address", "0.0.0.0"]
+    command: ["streamlit", "run", "apps/streamlit_app.py", "--server.address", "0.0.0.0", "--server.headless", "true"]
 
 # Optional: Add a volume for persistent data
 volumes:

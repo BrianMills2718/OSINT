@@ -1,0 +1,121 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:16-alpine
+    container_name: sigint-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: sigint_research
+      POSTGRES_USER: sigint
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}  # Set in .env
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./backups:/backups
+    ports:
+      - "127.0.0.1:5432:5432"  # Only accessible from localhost
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U sigint"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # Research Engine (API/Backend)
+  research:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: sigint-research
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    volumes:
+      - ./.env:/app/.env:ro
+      - ./config.yaml:/app/config.yaml:ro
+      - ./data:/app/data
+      - ./prompts:/app/prompts:ro
+    environment:
+      - PYTHONUNBUFFERED=1
+      - DATABASE_URL=postgresql://sigint:${POSTGRES_PASSWORD}@postgres:5432/sigint_research
+    shm_size: 2gb
+    # No ports exposed (accessed via nginx)
+
+  # Streamlit Web UI
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: sigint-web
+    restart: unless-stopped
+    depends_on:
+      - postgres
+      - research
+    ports:
+      - "127.0.0.1:8501:8501"  # Only accessible via nginx
+    volumes:
+      - ./.env:/app/.env:ro
+      - ./config.yaml:/app/config.yaml:ro
+      - ./data:/app/data
+      - ./prompts:/app/prompts:ro
+    environment:
+      - PYTHONUNBUFFERED=1
+      - DATABASE_URL=postgresql://sigint:${POSTGRES_PASSWORD}@postgres:5432/sigint_research
+    shm_size: 2gb
+    command: ["streamlit", "run", "apps/unified_search_app.py", "--server.address", "0.0.0.0", "--server.headless", "true"]
+
+  # Nginx Reverse Proxy
+  nginx:
+    image: nginx:alpine
+    container_name: sigint-nginx
+    restart: unless-stopped
+    depends_on:
+      - web
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/nginx.conf:ro
+      - ./nginx/ssl:/etc/nginx/ssl:ro
+      - /etc/letsencrypt:/etc/letsencrypt:ro
+    command: [nginx, '-g', 'daemon off;']
+
+  # Automated Backups (runs daily at 2am)
+  backup:
+    image: postgres:16-alpine
+    container_name: sigint-backup
+    depends_on:
+      - postgres
+    volumes:
+      - ./backups:/backups
+    environment:
+      - POSTGRES_HOST=postgres
+      - POSTGRES_DB=sigint_research
+      - POSTGRES_USER=sigint
+      - POSTGRES_PASSWORD=${POSTGRES_PASSWORD}
+    entrypoint: |
+      sh -c '
+      while true; do
+        # Wait until 2am
+        sleep $$(($(date -d "tomorrow 02:00" +%s) - $(date +%s)))
+
+        # Backup database
+        BACKUP_FILE=/backups/backup_$(date +%Y%m%d_%H%M%S).sql
+        pg_dump -h postgres -U sigint sigint_research > $$BACKUP_FILE
+        gzip $$BACKUP_FILE
+
+        # Delete backups older than 30 days
+        find /backups -name "backup_*.sql.gz" -mtime +30 -delete
+
+        echo "Backup completed: $$BACKUP_FILE.gz"
+      done
+      '
+
+volumes:
+  postgres_data:
+    driver: local
+
+networks:
+  default:
+    name: sigint-network
