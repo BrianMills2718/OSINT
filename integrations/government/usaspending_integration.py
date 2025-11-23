@@ -267,9 +267,9 @@ class USASpendingIntegration(DatabaseIntegration):
         Execute search against USAspending API.
 
         Args:
-            params: Query parameters from generate_query()
+            query_params: Query parameters from generate_query()
             api_key: Not used (USAspending is public)
-            limit: Maximum results (overrides params['limit'] if provided)
+            limit: Maximum results (overrides query_params['limit'] if provided)
 
         Returns:
             QueryResult with normalized spending data

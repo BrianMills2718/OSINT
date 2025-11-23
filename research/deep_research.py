@@ -331,6 +331,8 @@ class SimpleDeepResearch:
                     env_var_name = "BRAVE_SEARCH_API_KEY"
                 elif integration_id == "newsapi":
                     env_var_name = "NEWSAPI_API_KEY"
+                elif integration_id == "twitter":
+                    env_var_name = "RAPIDAPI_KEY"  # Twitter uses RapidAPI twitter-api45
 
                 api_key = os.getenv(env_var_name)
                 if not api_key:
@@ -1304,6 +1306,44 @@ class SimpleDeepResearch:
             # On error, return tasks as-is (FIFO order)
             return tasks
 
+    def _fuzzy_match_source(self, llm_name: str) -> Optional[str]:
+        """
+        Fuzzy match LLM-generated source name to registered source.
+
+        Handles variations like:
+        - "USASpending.gov" → "USAspending"
+        - "SEC EDGAR" → "SEC EDGAR" (exact)
+        - "congress.gov" → "Congress.gov"
+
+        Args:
+            llm_name: Source name from LLM (may have .gov suffix, different case)
+
+        Returns:
+            Matched tool name (e.g., "search_usaspending"), or None if no match
+        """
+        # 1. Try exact match
+        if llm_name in self.display_to_tool_map:
+            return self.display_to_tool_map[llm_name]
+
+        # 2. Try case-insensitive match
+        for display_name, tool_name in self.display_to_tool_map.items():
+            if display_name.lower() == llm_name.lower():
+                return tool_name
+
+        # 3. Try removing common suffixes (.gov, .com, .org)
+        for suffix in [".gov", ".com", ".org"]:
+            if llm_name.endswith(suffix):
+                base_name = llm_name[:-len(suffix)]
+                # Try exact match on base
+                if base_name in self.display_to_tool_map:
+                    return self.display_to_tool_map[base_name]
+                # Try case-insensitive on base
+                for display_name, tool_name in self.display_to_tool_map.items():
+                    if display_name.lower() == base_name.lower():
+                        return tool_name
+
+        return None
+
     def _map_hypothesis_sources(self, hypothesis: Dict) -> List[str]:
         """
         Map hypothesis source display names to MCP tool names (Phase 3B).
@@ -1320,7 +1360,8 @@ class SimpleDeepResearch:
         tool_names = []
 
         for display_name in display_sources:
-            tool_name = self.display_to_tool_map.get(display_name)
+            # Try fuzzy matching (handles "USASpending.gov" → "USAspending")
+            tool_name = self._fuzzy_match_source(display_name)
             if tool_name:
                 tool_names.append(tool_name)
             else:
