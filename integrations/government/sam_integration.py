@@ -323,6 +323,29 @@ class SAMIntegration(DatabaseIntegration):
             opportunities = data.get("opportunitiesData", data.get("results", []))
             total = data.get("totalRecords", data.get("total", len(opportunities)))
 
+            # Transform results to match SearchResult schema
+            # FIX: SAM.gov returns 'uiLink' but Pydantic expects 'url'
+            transformed_results = []
+            for opp in opportunities[:limit]:
+                # Build transformed result with proper field mapping
+                transformed = {
+                    "title": opp.get("title", "Untitled"),
+                    "url": opp.get("uiLink") or opp.get("url", ""),  # Map uiLink → url
+                    "snippet": opp.get("description", "")[:500],  # Limit snippet length
+                    "date": opp.get("postedDate") or opp.get("publishedDate"),
+                    "metadata": {
+                        "noticeId": opp.get("noticeId"),
+                        "solicitationNumber": opp.get("solicitationNumber"),
+                        "organizationName": opp.get("organizationName") or opp.get("fullParentPathName"),
+                        "type": opp.get("type"),
+                        "naicsCode": opp.get("naicsCode"),
+                        "classificationCode": opp.get("classificationCode"),
+                        "responseDeadLine": opp.get("responseDeadLine"),
+                        "archiveDate": opp.get("archiveDate")
+                    }
+                }
+                transformed_results.append(transformed)
+
             # Mask API key in params for logging
             log_params = params.copy()
             if "api_key" in log_params:
@@ -334,7 +357,7 @@ class SAMIntegration(DatabaseIntegration):
                 endpoint=endpoint,
                 status_code=response.status_code,
                 response_time_ms=response_time_ms,
-                error_message=None,
+                result_count=len(transformed_results),
                 request_params=log_params
             )
 
@@ -342,7 +365,7 @@ class SAMIntegration(DatabaseIntegration):
                 success=True,
                 source="SAM.gov",
                 total=total,
-                results=opportunities[:limit],
+                results=transformed_results,
                 query_params=query_params,
                 response_time_ms=response_time_ms,
                 metadata={

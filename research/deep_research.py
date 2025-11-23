@@ -31,9 +31,12 @@ from config_loader import config
 from dotenv import load_dotenv
 import aiohttp
 
-# MCP imports
-from fastmcp import Client
-from integrations.mcp import government_mcp, social_mcp
+# Registry import for dynamic tool loading
+from integrations.registry import registry
+
+# NOTE: MCP servers exist for external tool access (Claude Desktop integration)
+# but deep_research.py calls integrations directly via registry.
+# This eliminates the redundant MCP layer for internal use.
 
 # Execution logging
 from research.execution_logger import ExecutionLogger
@@ -251,58 +254,118 @@ class SimpleDeepResearch:
         else:
             self.max_time_per_task_seconds = time_budget
 
-        # Load API keys from environment
-        self.api_keys = {
-            "sam": os.getenv("SAM_GOV_API_KEY"),
-            "dvids": os.getenv("DVIDS_API_KEY"),
-            "usajobs": os.getenv("USAJOBS_API_KEY"),
-            "brave_search": os.getenv("BRAVE_SEARCH_API_KEY"),
-        }
+        # Load tools dynamically from registry (single source of truth)
+        self._load_tools_from_registry()
 
-        # MCP tool configuration
-        self.mcp_tools = [
-            {"name": "search_sam", "server": government_mcp.mcp, "api_key_name": "sam"},
-            {"name": "search_dvids", "server": government_mcp.mcp, "api_key_name": "dvids"},
-            {"name": "search_usajobs", "server": government_mcp.mcp, "api_key_name": "usajobs"},
-            {"name": "search_clearancejobs", "server": government_mcp.mcp, "api_key_name": None},
-            {"name": "search_twitter", "server": social_mcp.mcp, "api_key_name": None},
-            {"name": "search_reddit", "server": social_mcp.mcp, "api_key_name": None},
-            {"name": "search_discord", "server": social_mcp.mcp, "api_key_name": None},
-        ]
+    def _load_tools_from_registry(self):
+        """
+        Dynamically load all enabled integrations from the registry.
 
-        # Web search tools (non-MCP)
-        self.web_tools = [
-            {"name": "brave_search", "type": "web", "api_key_name": "brave_search"}
-        ]
+        This replaces hardcoded tool lists with a single source of truth.
+        Registry contains all integrations (SAM, DVIDS, SEC EDGAR, Congress, etc.)
+        and this method builds the necessary mapping dictionaries.
 
-        # Human-friendly labels and descriptions for each tool
-        self.tool_name_to_display = {
-            "search_sam": "SAM.gov",
-            "search_dvids": "DVIDS",
-            "search_usajobs": "USAJobs",
-            "search_clearancejobs": "ClearanceJobs",
-            "search_twitter": "Twitter",
-            "search_reddit": "Reddit",
-            "search_discord": "Discord",
-            "brave_search": "Brave Search"
-        }
+        Architecture:
+        - All integrations loaded from registry (single source of truth)
+        - Backward compatibility: Some integrations still use MCP servers
+        - New integrations: Called directly through registry (no MCP)
+        - Gradual migration: Old integrations will transition to direct calls
+        """
+        # Initialize data structures
+        self.integrations = {}  # integration_id -> integration instance
+        self.tool_name_to_display = {}  # search_sam -> SAM.gov
+        self.display_to_tool_map = {}  # SAM.gov -> search_sam
+        self.tool_descriptions = {}  # search_sam -> description
+        self.api_keys = {}  # integration_id -> API key from environment
+
+        # NOTE: MCP servers (government_mcp, social_mcp) exist for EXTERNAL tool access
+        # (Claude Desktop, etc.) but deep_research.py calls integrations DIRECTLY.
+        # This eliminates redundant layer with zero internal benefit.
+        #
+        # MCP servers are still available at integrations/mcp/ for external use.
+
+        # Build mcp_tools and web_tools for backward compatibility
+        self.mcp_tools = []
+        self.web_tools = []
+
+        # Load all enabled integrations from registry
+        enabled_integrations = registry.get_all_enabled()
+
+        for integration_id, integration in enabled_integrations.items():
+            metadata = integration.metadata
+
+            # Store integration instance for direct access
+            self.integrations[integration_id] = integration
+
+            # Build tool name (e.g., "search_sam", "search_sec_edgar")
+            tool_name = f"search_{integration_id}"
+
+            # Build display name from metadata (e.g., "SAM.gov", "SEC EDGAR")
+            display_name = metadata.name
+
+            # Build mappings
+            self.tool_name_to_display[tool_name] = display_name
+            self.display_to_tool_map[display_name] = tool_name
+            self.tool_descriptions[tool_name] = metadata.description
+
+            # Load API key if required
+            api_key = None
+            if metadata.requires_api_key:
+                # Convention: API keys are named like SAM_GOV_API_KEY, USAJOBS_API_KEY
+                env_var_name = f"{integration_id.upper()}_API_KEY"
+
+                # Special cases for non-standard naming
+                if integration_id == "sam":
+                    env_var_name = "SAM_GOV_API_KEY"
+                elif integration_id == "usajobs":
+                    env_var_name = "USAJOBS_API_KEY"
+                elif integration_id == "congress":
+                    env_var_name = "CONGRESS_API_KEY"
+                elif integration_id == "sec_edgar":
+                    env_var_name = "SEC_EDGAR_API_KEY"
+                elif integration_id == "fec":
+                    env_var_name = "FEC_API_KEY"
+                elif integration_id == "courtlistener":
+                    env_var_name = "COURTLISTENER_API_KEY"
+                elif integration_id == "brave_search":
+                    env_var_name = "BRAVE_SEARCH_API_KEY"
+                elif integration_id == "newsapi":
+                    env_var_name = "NEWSAPI_API_KEY"
+
+                api_key = os.getenv(env_var_name)
+                if not api_key:
+                    logging.warning(f"⚠️  {display_name} requires API key but {env_var_name} not found in environment")
+
+            self.api_keys[integration_id] = api_key
+
+            # Build backward-compatible tool structures
+            # ALL integrations now call directly (no MCP layer for internal use)
+            tool_config = {
+                "name": tool_name,
+                "server": None,  # ALL use direct integration calls
+                "api_key_name": integration_id if metadata.requires_api_key else None,
+                "integration_id": integration_id  # Link to registry
+            }
+
+            # Categorize as MCP or web tool (for backward compatibility)
+            if integration_id == "brave_search":
+                self.web_tools.append({"name": tool_name, "type": "web", "api_key_name": integration_id})
+            else:
+                self.mcp_tools.append(tool_config)
+
+        # Build reverse mapping for backwards compatibility
         self.tool_display_to_name = {v: k for k, v in self.tool_name_to_display.items()}
 
-        # Build reverse source map: display name → tool name (Phase 3B)
-        self.display_to_tool_map = {
-            display: tool_name
-            for tool_name, display in self.tool_name_to_display.items()
-        }
-        self.tool_descriptions = {
-            "search_sam": "U.S. federal contracting opportunities and awards. Search government procurement, RFPs, solicitations, contract listings.",
-            "search_dvids": "Military multimedia archive with photos and videos of military operations, ceremonies, exercises.",
-            "search_usajobs": "Federal job listings. Current government positions and hiring announcements.",
-            "search_clearancejobs": "Defense contractor jobs requiring security clearances. Private sector positions at aerospace and defense companies.",
-            "search_twitter": "Social media posts and announcements from official accounts and public figures. Good for real-time updates and official statements.",
-            "search_reddit": "Community discussions and OSINT analysis. Good for investigative threads, technical discussions, and community insights on government programs and contractors.",
-            "search_discord": "OSINT community knowledge and technical tips from specialized servers. Good for specialized OSINT techniques and community expertise.",
-            "brave_search": "General web search. Good for official documentation, reference articles, news, and background information."
-        }
+        # Log what was loaded
+        logging.info(f"✅ Loaded {len(self.integrations)} integrations from registry:")
+        logging.info(f"   • All {len(self.mcp_tools)} integrations use direct calls (no MCP layer)")
+        logging.info(f"   • {len(self.web_tools)} categorized as web tools")
+
+        for integration_id, integration in self.integrations.items():
+            tool_name = f"search_{integration_id}"
+            display_name = self.tool_name_to_display[tool_name]
+            api_status = "🔑" if integration.metadata.requires_api_key else "🆓"
+            logging.info(f"  {api_status} {display_name} ({integration_id})")
 
     def _emit_progress(self, event: str, message: str, task_id: Optional[int] = None, data: Optional[Dict] = None):
         """Emit progress update for live streaming."""
@@ -2724,11 +2787,72 @@ class SimpleDeepResearch:
                 except Exception as log_error:
                     logging.warning(f"Failed to log API call: {log_error}")
 
-            # Call MCP tool via in-memory client and measure response time
+            # Call integration - two paths: MCP (old) vs Direct (new)
             start_time = time.time()
-            async with Client(server) as client:
-                result = await client.call_tool(tool_name, args)
-            response_time_ms = (time.time() - start_time) * 1000
+
+            if server is None:
+                # NEW ARCHITECTURE: Direct integration call (no MCP)
+                # Get integration from registry
+                integration_id = tool_config.get("integration_id")
+                if not integration_id:
+                    raise ValueError(f"Tool {tool_name} has no server and no integration_id")
+
+                integration = self.integrations.get(integration_id)
+                if not integration:
+                    raise ValueError(f"Integration {integration_id} not found in registry")
+
+                # Call integration directly using DatabaseIntegration interface
+                # 1. Check relevance
+                is_relevant = await integration.is_relevant(query)
+                if not is_relevant:
+                    logging.warning(f"{source_name} not relevant for query: {query}")
+                    result_data = {
+                        "success": False,
+                        "source": source_name,
+                        "total": 0,
+                        "results": [],
+                        "error": "Source not relevant for this query"
+                    }
+                else:
+                    # 2. Generate query parameters
+                    query_params = await integration.generate_query(query)
+                    if not query_params:
+                        logging.warning(f"{source_name} failed to generate query for: {query}")
+                        result_data = {
+                            "success": False,
+                            "source": source_name,
+                            "total": 0,
+                            "results": [],
+                            "error": "Failed to generate query parameters"
+                        }
+                    else:
+                        # 3. Execute search
+                        query_result = await integration.execute_search(
+                            query_params=query_params,
+                            api_key=api_key,
+                            limit=integration_limit
+                        )
+
+                        # Convert QueryResult to dict format expected by caller
+                        result_data = {
+                            "success": query_result.success,
+                            "source": query_result.source,
+                            "total": query_result.total,
+                            "results": query_result.results,
+                            "error": query_result.error
+                        }
+
+                response_time_ms = (time.time() - start_time) * 1000
+
+            else:
+                # OLD ARCHITECTURE: MCP server call (backward compatibility)
+                async with Client(server) as client:
+                    result = await client.call_tool(tool_name, args)
+                response_time_ms = (time.time() - start_time) * 1000
+
+                # Parse result (FastMCP returns ToolResult with content)
+                import json
+                result_data = json.loads(result.content[0].text)
 
             # Log time breakdown for API call
             if logger and task_id is not None:
@@ -2745,12 +2869,8 @@ class SimpleDeepResearch:
                 except Exception as log_error:
                     logging.warning(f"Failed to log time breakdown: {log_error}")
 
-            # Parse result (FastMCP returns ToolResult with content)
-            import json
-            result_data = json.loads(result.content[0].text)
-
-            # Get source name from result_data
-            source_name = result_data.get("source", tool_name)
+            # Get source name from result_data (may be overridden by integration)
+            source_name = result_data.get("source", source_name)
 
             # Add source field to each individual result for proper tracking
             results_with_source = []
