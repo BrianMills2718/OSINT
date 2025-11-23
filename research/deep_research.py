@@ -2487,9 +2487,13 @@ class SimpleDeepResearch:
         # Should never reach here, but return empty if all retries exhausted
         return []
 
-    async def _select_relevant_sources(self, query: str) -> Tuple[List[str], str]:
+    async def _select_relevant_sources(self, query: str, task_id: Optional[int] = None) -> Tuple[List[str], str]:
         """
         Use a single LLM call to choose the most relevant sources (MCP tools + web tools) for this task.
+
+        Args:
+            query: Research question
+            task_id: Task ID for logging (optional)
 
         Returns:
             Tuple of (selected_sources, reason):
@@ -2552,6 +2556,24 @@ class SimpleDeepResearch:
                 source for source in selected_sources
                 if source in self.tool_name_to_display
             ]
+
+            # Log sources that were NOT selected
+            all_sources = list(self.tool_name_to_display.keys())
+            not_selected = [s for s in all_sources if s not in valid_sources]
+            if not_selected and self.logger and task_id is not None:
+                for source in not_selected:
+                    source_display = self.tool_name_to_display.get(source, source)
+                    try:
+                        self.logger.log_source_skipped(
+                            task_id=task_id,
+                            hypothesis_id=None,
+                            source_name=source_display,
+                            reason="not_selected_by_llm",
+                            stage="source_selection",
+                            details={"selection_reasoning": reason}
+                        )
+                    except Exception as log_error:
+                        logging.warning(f"Failed to log source skipped: {log_error}")
 
             if reason:
                 logging.info(f"Source selection rationale: {reason}")
@@ -2878,7 +2900,7 @@ class SimpleDeepResearch:
                     print(f"📋 Phase 2: Using adjusted sources: {', '.join([self.tool_name_to_display.get(s, s) for s in selected_sources])}")
                 else:
                     # Get LLM-selected sources for this query (includes both MCP and web tools)
-                    selected_sources, source_selection_reason = await self._select_relevant_sources(task.query)
+                    selected_sources, source_selection_reason = await self._select_relevant_sources(task.query, task_id=task.id)
 
                 # Log source selection if logger enabled
                 if self.logger:

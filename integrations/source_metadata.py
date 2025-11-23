@@ -184,6 +184,34 @@ SOURCE_METADATA = {
         max_queries_recommended=3  # Limited by no keyword search
     ),
 
+    'SEC EDGAR': SourceMetadata(
+        name='SEC EDGAR',
+        description='Corporate financial filings, 10-K/10-Q reports, insider trading (Form 4), executive compensation',
+        characteristics={
+            'financial_data': True,
+            'corporate_filings': True,
+            'insider_trading': True,
+            'executive_compensation': True,
+            'structured_data': True,
+            'historical_records': True,
+            'company_search': True,
+            'free_access': True,
+            'requires_user_agent': True,  # Needs email in User-Agent header
+            'requires_verification': False  # Official SEC data
+        },
+        query_strategies=[
+            'company_name_search',  # Search by company name (with CIK lookup)
+            'filing_type_filter',  # Filter by form type (10-K, 10-Q, 8-K, Form 4, etc.)
+            'recent_filings',  # Get latest filings for a company
+            'insider_trading_tracking',  # Track Form 4 filings (insider buys/sells)
+            'executive_compensation',  # DEF 14A proxy statements
+            'financial_statements',  # 10-K annual, 10-Q quarterly reports
+            'material_events'  # 8-K current reports (major events)
+        ],
+        typical_result_count=10,  # Usually returns 10-20 filings
+        max_queries_recommended=5  # Corporate data, moderate saturation
+    ),
+
     'Federal Register': SourceMetadata(
         name='Federal Register',
         description='Official daily publication of U.S. federal rules, proposed rules, notices, and executive orders',
