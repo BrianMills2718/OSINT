@@ -1,0 +1,141 @@
+You are analyzing a research question to determine if the Wayback Machine (Internet Archive) is relevant and, if so, what URLs and timestamps to check for historical snapshots.
+
+RESEARCH QUESTION:
+{{ research_question }}
+
+WAYBACK MACHINE CHARACTERISTICS:
+The Wayback Machine is Internet Archive's historical web page snapshot service.
+
+Strengths:
+- 736 billion web pages archived since 1996
+- Historical snapshots showing what websites looked like in the past
+- Recover deleted or changed content
+- Track how websites, messaging, or positions evolved over time
+- Accountability research (prove what was said/published)
+- Point-in-time evidence for investigations
+
+Ideal Use Cases:
+- "What did [company/org website] say about X in [year]?"
+- "Show me the deleted content from [website]"
+- "How has [organization]'s stance on X changed over time?"
+- "What was on [website] before they updated it?"
+- "Historical versions of privacy policies, terms of service, about pages"
+- Tracking website changes for accountability journalism
+
+Limitations:
+- Web pages ONLY (not government documents, filings, databases, or APIs)
+- Snapshots may be incomplete (not all resources like images/CSS captured)
+- Not all websites are archived (robots.txt can block archiving)
+- Cannot archive new pages on demand (archiving happens independently)
+- Point-in-time snapshots (not real-time monitoring)
+- No keyword search within archived pages (must know URL)
+
+What Wayback Machine DOES NOT Have:
+- Government filings or contracts (use SAM.gov, SEC EDGAR)
+- News articles (use NewsAPI, Brave Search)
+- Social media posts (use Twitter, Reddit integrations)
+- Job postings (use USAJobs, ClearanceJobs)
+- Database records or structured data
+
+DECISION CRITERIA:
+
+Is Relevant:
+- Seeking historical website content or deleted pages
+- Tracking changes to websites over time
+- Accountability research (what was claimed/published)
+- Recovery of removed content
+- Timeline of website evolution
+
+NOT Relevant:
+- Only seeking current/live data
+- Only seeking government filings, news, or structured data
+- No specific website/domain in question
+- Seeking content within archived pages (Wayback doesn't support keyword search)
+
+TASK:
+1. Determine if Wayback Machine is relevant for this question
+2. If relevant, extract or infer the website URLs to check
+3. Determine if a specific historical timestamp is needed (YYYYMMDD format)
+
+URL EXTRACTION GUIDANCE:
+- If question mentions specific domain/website → use that URL
+- If question mentions company/org → infer their official website
+- If question about specific pages → construct full URLs (e.g., example.com/about, example.com/privacy)
+- Check multiple URLs if relevant (homepage, about page, specific sections)
+- Limit to 10 URLs maximum (most important pages)
+
+TIMESTAMP GUIDANCE:
+- If question specifies date/year → convert to YYYYMMDD (e.g., "2020" → "20200101")
+- If question says "before [event]" → estimate date before event
+- If question says "current vs historical" → use null (get most recent snapshot)
+- If no date mentioned → use null (get most recent available)
+
+EXAMPLES:
+
+Example 1 - Historical Content:
+Question: "What did Boeing's website say about the 737 MAX safety in 2018?"
+Response:
+{
+  "relevant": true,
+  "reasoning": "Seeking historical website content from specific year - perfect use case for Wayback Machine",
+  "urls": ["https://www.boeing.com", "https://www.boeing.com/commercial/737max", "https://www.boeing.com/safety"],
+  "timestamp": "20180701",
+  "description": "Checking Boeing website snapshots from mid-2018 for 737 MAX safety messaging"
+}
+
+Example 2 - Deleted Content:
+Question: "What was on Cambridge Analytica's about page before they shut down?"
+Response:
+{
+  "relevant": true,
+  "reasoning": "Company shut down, seeking deleted content - Wayback Machine preserves historical snapshots",
+  "urls": ["https://cambridgeanalytica.org", "https://cambridgeanalytica.org/about"],
+  "timestamp": null,
+  "description": "Retrieving archived snapshots of Cambridge Analytica website before shutdown"
+}
+
+Example 3 - Government Filings (NOT Relevant):
+Question: "What government contracts does Lockheed Martin have?"
+Response:
+{
+  "relevant": false,
+  "reasoning": "Seeking government contract data (use SAM.gov), not historical website content",
+  "urls": [],
+  "timestamp": null,
+  "description": ""
+}
+
+Example 4 - News Coverage (NOT Relevant):
+Question: "What is the media saying about AI regulation?"
+Response:
+{
+  "relevant": false,
+  "reasoning": "Seeking news coverage (use NewsAPI), not historical website snapshots",
+  "urls": [],
+  "timestamp": null,
+  "description": ""
+}
+
+Example 5 - Timeline Tracking:
+Question: "How has SpaceX's Starship page evolved since 2019?"
+Response:
+{
+  "relevant": true,
+  "reasoning": "Tracking website evolution over time - comparing historical snapshots shows changes",
+  "urls": ["https://www.spacex.com/vehicles/starship"],
+  "timestamp": "20190101",
+  "description": "Tracking SpaceX Starship page changes from 2019 to present"
+}
+
+YOUR RESPONSE:
+Analyze the research question and return JSON following this schema:
+
+{
+  "relevant": true/false,
+  "reasoning": "1-2 sentences explaining why Wayback Machine is/isn't relevant",
+  "urls": ["https://example.com", "https://example.com/about"],
+  "timestamp": "YYYYMMDD" or null,
+  "description": "Brief description of what we're looking for (1 sentence)"
+}
+
+Return ONLY valid JSON, no additional text.

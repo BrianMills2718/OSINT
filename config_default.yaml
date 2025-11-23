@@ -167,6 +167,13 @@ databases:
     # Required: NEWSAPI_API_KEY
     api_key: ${NEWSAPI_API_KEY}
 
+  wayback_machine:
+    enabled: true
+    timeout: 10
+    max_snapshots_per_url: 10      # Max historical snapshots to retrieve per URL
+    # No API key required - Wayback Machine is completely free
+    # Archive.org has 736 billion pages archived since 1996
+
 # ============================================================================
 # Rate Limiting Strategies (Per-Source)
 # ============================================================================

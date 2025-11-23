@@ -34,6 +34,9 @@ from integrations.social.brave_search_integration import BraveSearchIntegration
 # Import news integrations
 from integrations.news.newsapi_integration import NewsAPIIntegration
 
+# Import archive integrations
+from integrations.archive.wayback_integration import WaybackMachineIntegration
+
 # Twitter integration requires twitterexplorer_sigint (not yet installed)
 try:
     from integrations.social.twitter_integration import TwitterIntegration
@@ -96,6 +99,9 @@ class IntegrationRegistry:
         # Web search & news
         self._try_register("brave_search", BraveSearchIntegration)
         self._try_register("newsapi", NewsAPIIntegration)
+
+        # Archive sources
+        self._try_register("wayback_machine", WaybackMachineIntegration)
 
         # Future social media sources (Phase 3)
         # self._try_register("telegram", TelegramIntegration)
