@@ -153,6 +153,18 @@ Bad examples:
 
 ---
 
+## READER TRUST & TRANSPARENCY
+
+Your goal: Help readers assess the reliability of each claim.
+
+Readers need to judge credibility themselves. Your job is to give them context:
+- What type of source made this claim?
+- How many independent sources confirm it?
+- What's the source's potential bias or motivation?
+- Is this firsthand reporting or secondhand?
+
+---
+
 ## SYNTHESIS GUIDANCE
 
 **Temporal Precision**:
@@ -167,16 +179,24 @@ Bad examples:
 - If results extend beyond or fall short of query scope, note this in limitations_noted
 - Example: Query asked about "government contracts" but only DoD contracts were found
 
+**Research Limitations Section**:
+While writing the report, identify what information is MISSING that would strengthen the research:
+1. **Missing Perspectives**: Whose voice/viewpoint is absent? (government officials, stakeholders, experts)
+2. **Information Gaps**: What evidence/data would strengthen findings? (polling, official docs, statistics)
+3. **Source Limitations**: What biases/limitations exist in the sources used? (e.g., "relied on English-language Western media")
+
+Include these in the `synthesis_quality_check.limitations_noted` field.
+
 **What NOT to Include in Final Report**:
-- ❌ Information gaps (these go to metadata.json and logs, not user-facing report)
-- ❌ Contradictions requiring resolution (debugging data for logs)
 - ❌ LLM decision-making process details (goes to execution_log.jsonl)
 
 **Focus on**:
 - ✅ Clear, verifiable claims with inline citations
+- ✅ Source transparency (type, bias, confirmation)
 - ✅ Intelligent source grouping with reliability context
 - ✅ Entity relationships and connections
 - ✅ Timeline of key events (if dates available)
+- ✅ Research limitations (missing perspectives, gaps, source limitations)
 - ✅ Clean, useful report for investigator
 
 ---
