@@ -330,7 +330,7 @@ class SAMIntegration(DatabaseIntegration):
                 # Build transformed result with proper field mapping
                 transformed = {
                     "title": opp.get("title", "Untitled"),
-                    "url": opp.get("uiLink") or opp.get("url", ""),  # Map uiLink → url
+                    "url": opp.get("uiLink") or opp.get("url") or None,  # Explicit None if missing (URL is optional)
                     "snippet": opp.get("description", "")[:500],  # Limit snippet length
                     "date": opp.get("postedDate") or opp.get("publishedDate"),
                     "metadata": {

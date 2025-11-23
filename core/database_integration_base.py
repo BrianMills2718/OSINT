@@ -68,15 +68,15 @@ class SearchResult(BaseModel):
 
     Required fields:
         - title: Human-readable title/name of the result
-        - url: Link to the full result (web page, PDF, etc.)
-        - snippet: Brief excerpt/summary (max 500 chars recommended)
 
     Optional fields:
+        - url: Link to the full result (web page, PDF, etc.) - may be None if source doesn't provide one
+        - snippet: Brief excerpt/summary (max 500 chars recommended)
         - date: Publication/creation date (ISO format string or None)
         - metadata: Dict of source-specific additional data
     """
     title: str = Field(..., description="Title of the result", min_length=1)
-    url: str = Field(..., description="URL link to full result")
+    url: Optional[str] = Field(default=None, description="URL link to full result (may be None if unavailable)")
     snippet: str = Field(default="", description="Brief excerpt or summary")
     date: Optional[str] = Field(default=None, description="Publication or creation date")
     metadata: Optional[Dict[str, Any]] = Field(default_factory=dict, description="Source-specific metadata")
