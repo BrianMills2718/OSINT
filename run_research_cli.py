@@ -16,7 +16,7 @@ async def main():
 
     engine = SimpleDeepResearch(
         max_tasks=20,              # Unleashed - up to 20 tasks
-        max_time_minutes=120,      # 2 hours total
+        max_time_minutes=45,       # 45 minutes total (user configured)
         max_retries_per_task=3,    # More retries
         max_concurrent_tasks=4,    # More parallelism
         progress_callback=show_progress,

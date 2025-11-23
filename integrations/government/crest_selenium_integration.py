@@ -41,9 +41,10 @@ class CRESTSeleniumIntegration(DatabaseIntegration):
             category=DatabaseCategory.GOV_GENERAL,
             requires_api_key=False,
             cost_per_query_estimate=0.001,
-            typical_response_time=15.0,  # Slower due to visible browser
+            typical_response_time=27.0,  # Slower: visible browser + form interaction
             description="CIA's declassified document reading room (Selenium/undetected-chromedriver)",
             requires_stealth=True,
+            stealth_method="selenium",  # Selenium required - Playwright blocked by Akamai
             rate_limit_daily=None
         )
 
@@ -54,29 +55,31 @@ class CRESTSeleniumIntegration(DatabaseIntegration):
     async def generate_query(self, research_question: str) -> Optional[Dict]:
         """Generate CREST search parameters using LLM."""
         prompt = render_prompt(
-            "integrations/crest_query_generation.j2",
+            "integrations/crest_query.j2",
             research_question=research_question
         )
 
         schema = {
             "type": "object",
             "properties": {
-                "keyword": {
-                    "type": "string",
-                    "description": "Search keyword for CIA documents"
-                },
-                "max_pages": {
-                    "type": "integer",
-                    "description": "Maximum pages to scrape (1-5)",
-                    "minimum": 1,
-                    "maximum": 5
+                "relevant": {
+                    "type": "boolean",
+                    "description": "Is this question relevant for CIA declassified documents?"
                 },
                 "reasoning": {
                     "type": "string",
-                    "description": "Brief explanation of query strategy"
+                    "description": "Why is/isn't this relevant for CREST?"
+                },
+                "keyword": {
+                    "type": "string",
+                    "description": "Search keyword (single term or short phrase, 2-4 words max)"
+                },
+                "max_pages": {
+                    "type": "integer",
+                    "description": "Number of result pages to fetch (1-3, each page has ~20 docs)"
                 }
             },
-            "required": ["keyword", "max_pages", "reasoning"],
+            "required": ["relevant", "reasoning", "keyword", "max_pages"],
             "additionalProperties": False
         }
 
@@ -95,9 +98,12 @@ class CRESTSeleniumIntegration(DatabaseIntegration):
 
         result = json.loads(response.choices[0].message.content)
 
+        if not result.get("relevant", False):
+            return None
+
         return {
-            "keyword": result["keyword"],
-            "max_pages": min(result["max_pages"], 3)  # Limit to 3 pages max
+            "keyword": result.get("keyword", ""),
+            "max_pages": min(result.get("max_pages", 1), 3)  # Cap at 3 pages
         }
 
     async def execute_search(self,
@@ -127,105 +133,96 @@ class CRESTSeleniumIntegration(DatabaseIntegration):
         driver = None
 
         try:
+            from selenium.webdriver.common.by import By
+            from selenium.webdriver.common.keys import Keys
+            from selenium.webdriver.support.ui import WebDriverWait
+            from selenium.webdriver.support import expected_conditions as EC
+
             # Create undetected Chrome driver (visible browser)
             driver = StealthBrowser.create_selenium_browser(headless=False)
 
-            # Fetch multiple pages
-            for page_num in range(max_pages):
+            # Step 1: Visit homepage (more human-like)
+            driver.get("https://www.cia.gov/readingroom/")
+            time.sleep(3)
+
+            # Step 2: Use search form
+            search_input = driver.find_element(By.NAME, "search_block_form")
+            search_input.clear()
+            search_input.send_keys(keyword)
+            search_input.send_keys(Keys.RETURN)
+            time.sleep(4)  # Wait for search results
+
+            # Extract document links from search results
+            # CREST uses .search-result items, not table.views-table
+            doc_links = []
+
+            try:
+                # Find all document links in search results
+                result_links = driver.find_elements(By.CSS_SELECTOR, 'a[href*="/document/"]')
+
+                for link in result_links[:limit]:  # Limit to requested number
+                    href = link.get_attribute("href")
+                    if href and "/readingroom/document/" in href:
+                        doc_links.append({
+                            "title": link.text.strip(),
+                            "url": href
+                        })
+
+            except Exception as e:
+                print(f"Error extracting search results: {e}")
+
+            # Visit each document to get snippet (limited to limit)
+            for doc_link in doc_links:
                 if len(documents) >= limit:
                     break
 
-                # Construct search URL
-                encoded_keyword = quote(keyword)
-                search_url = f"https://www.cia.gov/readingroom/advanced-search-view?keyword={encoded_keyword}&page={page_num}"
-
-                driver.get(search_url)
-                time.sleep(3)  # Wait for page load and be respectful
-
-                # Check if we got the results table (not redirected to homepage)
                 try:
-                    from selenium.webdriver.common.by import By
-                    from selenium.webdriver.support.ui import WebDriverWait
-                    from selenium.webdriver.support import expected_conditions as EC
+                    driver.get(doc_link['url'])
+                    time.sleep(2)  # Be respectful
 
-                    # Wait for results table
-                    table = WebDriverWait(driver, 10).until(
-                        EC.presence_of_element_located((By.CSS_SELECTOR, "table.views-table"))
-                    )
-                except Exception:
-                    # No results or redirected
-                    break
-
-                # Extract document links from table
-                rows = driver.find_elements(By.CSS_SELECTOR, "table.views-table tr")
-                doc_links = []
-
-                for row in rows[1:]:  # Skip header row
-                    try:
-                        title_cell = row.find_element(By.CSS_SELECTOR, ".views-field-label")
-                        link = title_cell.find_element(By.TAG_NAME, "a")
-                        href = link.get_attribute("href")
-
-                        if href and "/readingroom/document/" in href:
-                            doc_links.append({
-                                "title": link.text.strip(),
-                                "url": href
-                            })
-                    except Exception:
-                        continue
-
-                # Visit each document to get snippet (limited to limit)
-                for doc_link in doc_links:
-                    if len(documents) >= limit:
-                        break
+                    # Extract document content
+                    title = ""
+                    snippet = ""
+                    metadata = {}
 
                     try:
-                        driver.get(doc_link['url'])
-                        time.sleep(2)  # Be respectful
+                        title_elem = driver.find_element(By.CSS_SELECTOR, "h1.documentFirstHeading")
+                        title = title_elem.text.strip()
+                    except:
+                        title = doc_link['title']
 
-                        # Extract document content
-                        title = ""
+                    try:
+                        body = driver.find_element(By.CSS_SELECTOR, ".field-name-body .field-item")
+                        snippet = body.text.strip()[:500] + "..."
+                    except:
                         snippet = ""
-                        metadata = {}
 
-                        try:
-                            title_elem = driver.find_element(By.CSS_SELECTOR, "h1.documentFirstHeading")
-                            title = title_elem.text.strip()
-                        except:
-                            title = doc_link['title']
+                    # Extract metadata fields
+                    try:
+                        fields = driver.find_elements(By.CSS_SELECTOR, ".field-label-inline")
+                        for field in fields:
+                            try:
+                                label = field.find_element(By.CSS_SELECTOR, ".field-label")
+                                item = field.find_element(By.CSS_SELECTOR, ".field-item")
+                                key = label.text.strip().replace(':', '')
+                                metadata[key] = item.text.strip()
+                            except:
+                                continue
+                    except:
+                        pass
 
-                        try:
-                            body = driver.find_element(By.CSS_SELECTOR, ".field-name-body .field-item")
-                            snippet = body.text.strip()[:500] + "..."
-                        except:
-                            snippet = ""
+                    # Create document dictionary
+                    doc = {
+                        "title": title or doc_link['title'],
+                        "url": doc_link['url'],
+                        "snippet": snippet,
+                        "metadata": metadata
+                    }
+                    documents.append(doc)
 
-                        # Extract metadata fields
-                        try:
-                            fields = driver.find_elements(By.CSS_SELECTOR, ".field-label-inline")
-                            for field in fields:
-                                try:
-                                    label = field.find_element(By.CSS_SELECTOR, ".field-label")
-                                    item = field.find_element(By.CSS_SELECTOR, ".field-item")
-                                    key = label.text.strip().replace(':', '')
-                                    metadata[key] = item.text.strip()
-                                except:
-                                    continue
-                        except:
-                            pass
-
-                        # Create document dictionary
-                        doc = {
-                            "title": title or doc_link['title'],
-                            "url": doc_link['url'],
-                            "snippet": snippet,
-                            "metadata": metadata
-                        }
-                        documents.append(doc)
-
-                    except Exception as e:
-                        print(f"Failed to fetch document {doc_link['url']}: {e}")
-                        continue
+                except Exception as e:
+                    print(f"Failed to fetch document {doc_link['url']}: {e}")
+                    continue
 
             # Close browser
             if driver:
@@ -236,7 +233,7 @@ class CRESTSeleniumIntegration(DatabaseIntegration):
             # Log successful request
             log_request(
                 api_name="CREST (Selenium)",
-                endpoint="https://www.cia.gov/readingroom/advanced-search-view",
+                endpoint=f"https://www.cia.gov/readingroom/search/site/{keyword}",
                 status_code=200 if documents else 0,
                 response_time_ms=response_time_ms,
                 error_message=None,
@@ -251,8 +248,8 @@ class CRESTSeleniumIntegration(DatabaseIntegration):
                 query_params=query_params,
                 response_time_ms=response_time_ms,
                 metadata={
-                    "pages_scraped": page_num + 1,
-                    "method": "selenium_undetected_chromedriver"
+                    "method": "selenium_undetected_chromedriver",
+                    "bot_detection": "bypassed_via_search_form"
                 }
             )
 
@@ -264,7 +261,7 @@ class CRESTSeleniumIntegration(DatabaseIntegration):
 
             log_request(
                 api_name="CREST (Selenium)",
-                endpoint="https://www.cia.gov/readingroom/advanced-search-view",
+                endpoint=f"https://www.cia.gov/readingroom/search/site/{keyword}",
                 status_code=0,
                 response_time_ms=response_time_ms,
                 error_message=str(e),

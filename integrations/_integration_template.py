@@ -58,8 +58,17 @@ class NewSourceIntegration(DatabaseIntegration):
             requires_api_key=True,          # True if API key required
             cost_per_query_estimate=0.001,  # LLM cost only (API usually free)
             typical_response_time=2.0,      # Typical response time in seconds
+            description="Brief 1-sentence description of data source",
+            requires_stealth=False,         # True if bot detection bypass needed
+            stealth_method=None,            # "playwright" | "selenium" | None
             rate_limit_daily=None,          # Daily limit, None if unknown
-            description="Brief 1-sentence description of data source"
+            # Stealth method selection:
+            # - None: No bot detection (standard HTTP/API)
+            # - "playwright": Fast headless automation (playwright-stealth)
+            #   Use for: Moderate bot detection (basic Cloudflare, etc.)
+            # - "selenium": Visible browser automation (undetected-chromedriver)
+            #   Use for: Aggressive bot detection (Akamai Bot Manager, etc.)
+            #   Note: Slower (~3x) but more reliable for strict protections
         )
 
     async def is_relevant(self, research_question: str) -> bool:

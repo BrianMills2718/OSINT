@@ -69,7 +69,7 @@ class StealthBrowser:
         return browser
 
     @staticmethod
-    async def create_stealth_page(browser):
+    async def create_stealth_page(browser, extra_stealth: bool = False):
         """
         Create a stealth-patched page from browser.
 
@@ -81,6 +81,7 @@ class StealthBrowser:
 
         Args:
             browser: Playwright browser instance
+            extra_stealth: Enable extra anti-detection measures for aggressive bot detection (Akamai, etc.)
 
         Returns:
             Page with stealth patches applied
@@ -90,7 +91,7 @@ class StealthBrowser:
 
         Example:
             >>> browser = await create_playwright_browser()
-            >>> page = await create_stealth_page(browser)
+            >>> page = await create_stealth_page(browser, extra_stealth=True)
             >>> await page.goto('https://cia.gov/readingroom')
         """
         try:
@@ -101,7 +102,17 @@ class StealthBrowser:
                 "Install: pip install playwright-stealth"
             )
 
-        page = await browser.new_page()
+        import random
+
+        # Create new page with realistic user agent
+        user_agents = [
+            'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36',
+            'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/141.0.0.0 Safari/537.36',
+            'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36',
+            'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/142.0.0.0 Safari/537.36'
+        ]
+
+        page = await browser.new_page(user_agent=random.choice(user_agents))
 
         # Apply stealth patches using playwright-stealth 2.0+ API
         stealth_config = Stealth()
@@ -117,11 +128,65 @@ class StealthBrowser:
             'Sec-Fetch-Dest': 'document',
             'Sec-Fetch-Mode': 'navigate',
             'Sec-Fetch-Site': 'none',
-            'Sec-Fetch-User': '?1'
+            'Sec-Fetch-User': '?1',
+            'Cache-Control': 'max-age=0'
         })
 
-        # Set realistic viewport
-        await page.set_viewport_size({"width": 1920, "height": 1080})
+        # Set realistic viewport (randomize slightly)
+        viewports = [
+            {"width": 1920, "height": 1080},
+            {"width": 1366, "height": 768},
+            {"width": 1536, "height": 864},
+            {"width": 2560, "height": 1440}
+        ]
+        await page.set_viewport_size(random.choice(viewports))
+
+        # Extra stealth for aggressive bot detection (Akamai, Cloudflare)
+        if extra_stealth:
+            # Remove navigator.webdriver (backup if stealth plugin fails)
+            await page.add_init_script("""
+                Object.defineProperty(navigator, 'webdriver', {
+                    get: () => undefined
+                });
+
+                // Spoof plugins
+                Object.defineProperty(navigator, 'plugins', {
+                    get: () => [1, 2, 3, 4, 5]
+                });
+
+                // Spoof languages
+                Object.defineProperty(navigator, 'languages', {
+                    get: () => ['en-US', 'en']
+                });
+
+                // Randomize canvas fingerprint
+                const originalToDataURL = HTMLCanvasElement.prototype.toDataURL;
+                HTMLCanvasElement.prototype.toDataURL = function(type) {
+                    if (type === 'image/png' && this.width === 16 && this.height === 16) {
+                        return originalToDataURL.apply(this, arguments);
+                    }
+                    const shift = Math.floor(Math.random() * 10) - 5;
+                    const context = this.getContext('2d');
+                    const imageData = context.getImageData(0, 0, this.width, this.height);
+                    for (let i = 0; i < imageData.data.length; i += 4) {
+                        imageData.data[i] = Math.min(255, Math.max(0, imageData.data[i] + shift));
+                    }
+                    context.putImageData(imageData, 0, 0);
+                    return originalToDataURL.apply(this, arguments);
+                };
+
+                // Spoof WebGL vendor
+                const getParameter = WebGLRenderingContext.prototype.getParameter;
+                WebGLRenderingContext.prototype.getParameter = function(parameter) {
+                    if (parameter === 37445) {
+                        return 'Intel Inc.';
+                    }
+                    if (parameter === 37446) {
+                        return 'Intel Iris OpenGL Engine';
+                    }
+                    return getParameter.apply(this, arguments);
+                };
+            """)
 
         return page
 

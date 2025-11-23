@@ -55,6 +55,7 @@ class DatabaseMetadata:
     typical_response_time: float     # Typical response time in seconds
     description: str                  # Brief description for users
     requires_stealth: bool = False    # Whether bot detection bypass needed
+    stealth_method: Optional[str] = None  # Stealth method: "playwright", "selenium", or None
     rate_limit_daily: Optional[int] = None  # Daily rate limit, None if unknown
 
 

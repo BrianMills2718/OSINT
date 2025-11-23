@@ -46,14 +46,15 @@ class CRESTIntegration(DatabaseIntegration):
     @property
     def metadata(self) -> DatabaseMetadata:
         return DatabaseMetadata(
-            name="CIA CREST",
-            id="crest",
+            name="CIA CREST (Playwright - EXPERIMENTAL)",
+            id="crest_playwright",
             category=DatabaseCategory.GOV_GENERAL,
             requires_api_key=False,
             cost_per_query_estimate=0.001,  # LLM cost only
-            typical_response_time=10.0,     # seconds (scraping is slow)
-            description="CIA's declassified document reading room (FOIA records, 1940s-1990s)",
+            typical_response_time=10.0,     # seconds (when it works)
+            description="CIA's declassified document reading room (BLOCKED by Akamai - use crest_selenium)",
             requires_stealth=True,          # Akamai Bot Manager protection
+            stealth_method="playwright",    # Currently BLOCKED - Akamai defeats playwright-stealth
             rate_limit_daily=None           # Self-imposed: be respectful
         )
 
@@ -178,7 +179,7 @@ class CRESTIntegration(DatabaseIntegration):
         try:
             # Use stealth browser to bypass Akamai Bot Manager
             browser = await StealthBrowser.create_playwright_browser(headless=True)
-            page = await StealthBrowser.create_stealth_page(browser)
+            page = await StealthBrowser.create_stealth_page(browser, extra_stealth=True)
 
             # Fetch multiple pages if requested
             for page_num in range(max_pages):

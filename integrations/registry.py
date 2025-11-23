@@ -21,12 +21,18 @@ try:
 except ImportError:
     CLEARANCEJOBS_AVAILABLE = False
 
-# CREST integration requires Playwright (optional dependency)
+# CREST integrations (Playwright and Selenium versions)
 try:
     from integrations.government.crest_integration import CRESTIntegration
-    CREST_AVAILABLE = True
+    CREST_PLAYWRIGHT_AVAILABLE = True
 except ImportError:
-    CREST_AVAILABLE = False
+    CREST_PLAYWRIGHT_AVAILABLE = False
+
+try:
+    from integrations.government.crest_selenium_integration import CRESTSeleniumIntegration
+    CREST_SELENIUM_AVAILABLE = True
+except ImportError:
+    CREST_SELENIUM_AVAILABLE = False
 
 # Import social integrations
 from integrations.social.discord_integration import DiscordIntegration
@@ -87,8 +93,13 @@ class IntegrationRegistry:
         self._try_register("usajobs", USAJobsIntegration)
         if CLEARANCEJOBS_AVAILABLE:
             self._try_register("clearancejobs", ClearanceJobsIntegration)
-        if CREST_AVAILABLE:
-            self._try_register("crest", CRESTIntegration)
+
+        # CREST - both Playwright (experimental/blocked) and Selenium (working)
+        if CREST_PLAYWRIGHT_AVAILABLE:
+            self._try_register("crest_playwright", CRESTIntegration)
+        if CREST_SELENIUM_AVAILABLE:
+            self._try_register("crest_selenium", CRESTSeleniumIntegration)
+
         self._try_register("fbi_vault", FBIVaultIntegration)
         self._try_register("federal_register", FederalRegisterIntegration)
         self._try_register("congress", CongressIntegration)

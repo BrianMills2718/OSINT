@@ -60,8 +60,8 @@ async def main():
 
     if query_params:
         print(f"✅ Query generated:")
-        print(f"   Keywords: {query_params.get('keywords')}")
-        print(f"   Date Range: {query_params.get('date_range')}")
+        print(f"   Keyword: {query_params.get('keyword')}")
+        print(f"   Max Pages: {query_params.get('max_pages')}")
     else:
         print("❌ Query generation returned None (not relevant)")
 
@@ -71,9 +71,8 @@ async def main():
     print("NOTE: CREST uses web scraping - may take a few seconds")
 
     search_params = {
-        "keywords": "UFO unidentified flying object",
-        "date_range": None,
-        "limit": 5
+        "keyword": "UFO",
+        "max_pages": 1
     }
 
     result = await integration.execute_search(search_params, api_key=None, limit=5)
