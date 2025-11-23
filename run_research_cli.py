@@ -4,6 +4,7 @@
 import asyncio
 import sys
 from research.deep_research import SimpleDeepResearch, ResearchProgress
+from config_loader import config
 
 def show_progress(progress: ResearchProgress):
     """Display progress updates."""
@@ -14,11 +15,14 @@ async def main():
 
     print(f"Starting research: {question}\n")
 
+    # Load config from config.yaml
+    deep_config = config.get("research", {}).get("deep_research", {})
+
     engine = SimpleDeepResearch(
-        max_tasks=20,              # Unleashed - up to 20 tasks
-        max_time_minutes=45,       # 45 minutes total (user configured)
-        max_retries_per_task=3,    # More retries
-        max_concurrent_tasks=4,    # More parallelism
+        max_tasks=deep_config.get("max_tasks", 20),
+        max_time_minutes=deep_config.get("max_time_minutes", 120),
+        max_retries_per_task=deep_config.get("max_retries_per_task", 3),
+        max_concurrent_tasks=deep_config.get("max_concurrent_tasks", 4),
         progress_callback=show_progress,
         save_output=True,
         output_dir="data/research_output"

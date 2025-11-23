@@ -326,9 +326,12 @@ class USASpendingIntegration(DatabaseIntegration):
                     # Normalize results
                     results = []
                     for award in data.get("results", []):
+                        # Build title with fallback chain (handle None values)
+                        title = award.get("Description") or award.get("Award ID") or "USAspending Award"
+
                         # Build normalized result
                         normalized = {
-                            "title": award.get("Description", award.get("Award ID", "Unknown Award")),
+                            "title": title,
                             "url": self._build_award_url(award.get("Award ID", "")),
                             "snippet": self._build_snippet(award),
                             "metadata": award,  # Full award data
