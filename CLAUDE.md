@@ -471,150 +471,45 @@ pip list | grep playwright
 
 **Last Updated**: 2025-11-22
 **Current Branch**: `master`
-**Current Phase**: Research Quality Improvements
-**Status**: Implementing source selection bug fixes and enhanced logging
+**Current Phase**: Maintenance and optimization
+**Status**: Core research quality improvements complete
 
 ---
 
 ## CURRENT STATUS
 
-**Recent Fixes** (2025-11-22):
-- ✅ Follow-up task redundancy fixed (global task context added)
-- ✅ Docker infrastructure complete (Chrome + Playwright pre-installed)
-
-**Active Investigation** (2025-11-22):
-- 🔍 Reddit source selection bug (selected but barely queried: 3 vs 59 for Discord)
-- 🔍 Source skipping logic (why are selected sources not executed?)
-- 🔍 Logging gaps (need visibility into all LLM decisions)
+**Recently Completed** (2025-11-22):
+- ✅ Query saturation enhancement (LLM-based quality assessment)
+- ✅ Hypothesis diversity enforcement (context-aware generation)
+- ✅ Report synthesis improvements (inline citations, source grouping, verification context)
+- ✅ Discord parser robustness (0.14% error rate handled gracefully)
+- ✅ Timeout configuration (45-min total research budget)
 
 ---
 
 ## NEXT PLANNED WORK
 
-### HIGH PRIORITY (In Progress)
+### HIGH PRIORITY
 
-**1. Query Quality Assessment (Saturation Enhancement)** 🔄 **IN PROGRESS**
-- **Problem**: Reddit/other sources generating overly specific queries → 0 results
-- **Root Cause**: Queries too restrictive (multiple AND operators, overly specific)
-- **Solution**: Enhance saturation prompt with general query quality assessment
-- **Approach** (LLM intelligence, not hardcoded heuristics):
-  - Saturation LLM analyzes query_history: results_total, results_accepted, effectiveness
-  - Uses prose reasoning to identify issues (0 results, low acceptance, wrong domain, etc.)
-  - Suggests improvements based on source_metadata (what this source supports)
-  - No predefined quality categories - LLM reasons intelligently
-  - Single LLM call (no extra analysis call) - efficient
-- **Architecture Principles**:
-  - ✅ Give LLM goal + context, let it reason (not hardcoded categories)
-  - ✅ Leverage existing query_history metrics (results_total, effectiveness)
-  - ✅ Use source_metadata for source-specific capabilities
-  - ✅ Prose reasoning (not structured "quality_issues" categories)
-- **Implementation**:
-  - Enhance prompts/deep_research/source_saturation.j2 with query quality guidance
-  - Remove separate zero_result_analysis.j2 (too narrow)
-  - Keep simple schema - reasoning field explains quality assessment
-- **Files**: prompts/deep_research/source_saturation.j2, research/deep_research.py
-- **Status**: ✅ COMPLETE (2025-11-22) - Saturation prompt enhanced, zero-result analysis removed
-
-**2. Hypothesis Diversity Enhancement** ✅ **COMPLETE**
-- **Problem**: Multiple hypotheses within same task may investigate overlapping angles
-- **Root Cause**: Hypothesis generation LLM doesn't see existing tasks or other hypotheses
-- **Solution Implemented** (2025-11-22):
-  - ✅ Updated `_generate_hypotheses()` method signature to accept `all_tasks` and `existing_hypotheses`
-  - ✅ Modified both call sites (lines 653, 870) to pass context
-  - ✅ Enhanced hypothesis_generation.j2 template with "CONTEXT - AVOID DUPLICATION" section
-  - ✅ Added diversity guidance referencing existing tasks and hypotheses
-  - ✅ Verified imports and prompt rendering work correctly
-- **Architecture**:
-  - ✅ Extends existing pattern from follow-up generation (clean, no code duplication)
-  - ✅ No hardcoded similarity checks or overlap thresholds
-  - ✅ Declarative - LLM uses context to ensure diversity via reasoning
-  - ✅ Scales to new sources - no source-specific logic
-- **Files Modified**:
-  - research/deep_research.py (method signature, 2 call sites, context formatting)
-  - prompts/deep_research/hypothesis_generation.j2 (context section, enhanced diversity guidance)
-- **Status**: ✅ COMPLETE (2025-11-22) - Implementation complete, imports verified
-
-**3. Report Synthesis Quality Enhancement** ✅ **COMPLETE**
-- **Problem**: Final reports lacked inline citations and intelligent source grouping
-- **Root Cause**: Synthesis used free-form markdown without structured schema enforcement
-- **Solution Implemented** (2025-11-22, commits 8b2b020, 9de7ac1):
-  - ✅ Structured JSON schema in synthesis prompt (Jinja2 template)
-  - ✅ LLM-driven source grouping with intelligent group names (NO hardcoded labels)
-  - ✅ Python post-processor for JSON → Markdown (NO decision logic, just formatting)
-  - ✅ Inline citations mandatory for all claims (schema enforcement)
-  - ✅ Quality validation (all_claims_have_citations check)
-  - ✅ **NEW (9de7ac1)**: SOURCE VERIFICATION CONTEXT section - helps readers distinguish evidentiary strength (primary vs secondary sources, official vs reported, verification levels)
-- **Architecture**:
-  - ✅ Schema = structure, LLM = intelligence (no hardcoded source categories)
-  - ✅ Every claim has inline citations for verifiability
-  - ✅ Source grouping emerges from data (LLM decides group names like "Official Government Sources")
-  - ✅ Configuration via prompt template (schema is declarative, in Jinja2, not Python)
-  - ✅ Goal-oriented guidance (explains WHAT to achieve, not HOW - LLM decides)
-  - ❌ NO information gaps in final report (user preference: debugging data stays in logs)
-- **Files Modified**:
-  - prompts/deep_research/report_synthesis.j2 (210 lines, complete rewrite + verification context)
-  - research/deep_research.py (+154 lines: formatter + updated synthesis call)
-  - tests/test_synthesis_formatter.py (new validation test)
-- **Validation**: 10/11 test checks passed (inline citations, source grouping, reliability context all working)
-- **Status**: ✅ COMPLETE (2025-11-22) - Implemented, tested, documented, enhanced with source verification
-
-**4. Enhanced Structured Logging** 📋 **APPROVED - NOT STARTED**
+**1. Enhanced Structured Logging** 📋 **NOT STARTED**
 - **Goal**: Detailed visibility into ALL decisions and time usage
-- **New event types needed**:
-  ```python
-  {
-    "event_type": "source_skipped",
-    "source": "Reddit",
-    "reason": "is_relevant returned False" | "generate_query failed" | "timeout",
-    "task_id": 0,
-    "hypothesis_id": 1
-  }
-
-  {
-    "event_type": "zero_results_analysis",
-    "source": "SAM.gov",
-    "query": "...",
-    "llm_assessment": "Query too specific - no violations exist",
-    "should_reformulate": false
-  }
-
-  {
-    "event_type": "time_breakdown",
-    "task_id": 0,
-    "hypothesis_id": 1,
-    "source": "Brave",
-    "time_query_generation_ms": 234,
-    "time_api_call_ms": 1523,
-    "time_filtering_ms": 456,
-    "total_time_ms": 2213
-  }
-  ```
+- **New event types needed**: source_skipped, zero_results_analysis, time_breakdown
 - **Files**: research/execution_logger.py, research/deep_research.py
 
 ### MEDIUM PRIORITY
 
-**4. Discord Parser Robustness** 📋 **CHECK IF FIXED**
-- **Status**: User reports "the problem that caused that has been fixed"
-- **Action**: Verify fix is in place for malformed JSON lines (0.14% error rate)
-- **Action**: Add try/catch if not already present
-- **Files**: integrations/social/discord_integration.py
-
-**5. Time Budget Configuration** 📋 **APPROVED**
-- **Goal**: Set very high defaults + detailed time logging
-- **Actions**:
-  - Increase config.yaml defaults: `max_time_minutes: 240` (4 hours)
-  - Add time breakdown logging (see #3 above)
-  - Skip dynamic budgeting (user confirmed: overengineered)
-- **Files**: config.yaml, research/deep_research.py
+**2. Source Context Documentation** 📋 **NOT STARTED**
+- **Goal**: Better explain what each source provides in prompts
+- **Example**: "Reddit provides: r/defense, r/govcontracts, r/Intelligence discussions"
+- **Files**: prompts/deep_research/hypothesis_generation.j2
 
 ### LOW PRIORITY
 
-**6. Source Context Documentation** 📋 **NOT STARTED**
-- **Goal**: Better explain what each source provides in prompts
-- **Add to hypothesis_generation.j2**:
-  - "Reddit provides: r/defense, r/govcontracts, r/Intelligence, r/geopolitics discussions"
-  - "Discord provides: Bellingcat OSINT server, Project OWL geopolitics, OSINT community"
-- **Files**: prompts/deep_research/hypothesis_generation.j2
+**3. Time Budget Increase** 📋 **OPTIONAL**
+- **Current**: 45 min total (user configured)
+- **Proposal**: Increase to 240 min (4 hours) for exhaustive research mode
+- **Note**: Current 45-min budget sufficient for most queries
+- **Files**: run_research_cli.py, config.yaml
 
 ---
 
