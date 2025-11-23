@@ -152,10 +152,20 @@ databases:
     password: ${REDDIT_PASSWORD}
     user_agent: "SIGINT_Platform/1.0"
 
-  # Web Search
+  # Web Search & News
   brave_search:
     enabled: true
     timeout: 10
+
+  newsapi:
+    enabled: true
+    timeout: 10
+    max_results_per_query: 100    # NewsAPI max per request
+    rate_limit_daily: 100          # Free tier: 100 requests/day
+    max_age_days: 30               # Free tier: articles up to 1 month old
+    # API key loaded from .env
+    # Required: NEWSAPI_API_KEY
+    api_key: ${NEWSAPI_API_KEY}
 
 # ============================================================================
 # Rate Limiting Strategies (Per-Source)

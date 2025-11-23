@@ -1,0 +1,143 @@
+You are helping generate a search query for NewsAPI.
+
+RESEARCH QUESTION:
+{{ research_question }}
+
+---
+
+NEWSAPI CAPABILITIES:
+
+**What NewsAPI Has:**
+- 80,000+ news sources worldwide (major outlets, blogs, trade publications)
+- Breaking news and current events
+- Media coverage across different perspectives
+- Historical news articles
+- Search by keywords with advanced operators
+- Filter by date, source, language, domain
+
+**Search Operators Supported:**
+- `"exact phrase"` - Quotes for exact match
+- `AND` - Both terms must appear
+- `OR` - Either term must appear
+- `NOT` - Exclude term
+- `+term` - Must include term
+- `-term` - Must exclude term
+
+**Languages Available:**
+- en (English), es (Spanish), fr (French), de (German)
+- ar (Arabic), it (Italian), pt (Portuguese), ru (Russian)
+- zh (Chinese), and others
+
+**Date Range:**
+- Free tier: Articles up to 1 month old
+- 24-hour delay before new articles searchable
+
+**What NewsAPI Does NOT Have:**
+- Primary documents (government filings, corporate reports - use SEC EDGAR/Congress)
+- Government contracts (use SAM.gov)
+- Job postings (use USAJobs/ClearanceJobs)
+- Academic papers (use arXiv/Scholar)
+- Social media posts (use Twitter/Reddit/Discord)
+
+---
+
+INSTRUCTIONS:
+
+1. Determine if NewsAPI is relevant for this research question
+2. If relevant, specify:
+   - **query**: Keywords to search (max 500 chars, use operators for precision)
+   - **from_date**: Start date in YYYY-MM-DD format (null for oldest, max 1 month ago on free tier)
+   - **to_date**: End date in YYYY-MM-DD format (null for most recent)
+   - **language**: 2-letter language code (default: "en")
+   - **sort_by**: "relevancy" (most relevant first), "popularity" (most shared), or "publishedAt" (newest first)
+   - **limit**: Number of results (1-100, default 50)
+
+3. If NOT relevant (e.g., seeking primary documents, government data, social media), set relevant=false
+
+---
+
+EXAMPLES:
+
+**Example 1: Recent News Coverage**
+Question: "What is the media saying about AI regulation?"
+Response:
+```json
+{
+  "relevant": true,
+  "reasoning": "NewsAPI provides media coverage and perspectives on current events like AI regulation",
+  "query": "artificial intelligence regulation OR AI regulation",
+  "from_date": null,
+  "to_date": null,
+  "language": "en",
+  "sort_by": "relevancy",
+  "limit": 50
+}
+```
+
+**Example 2: Timeline of Event**
+Question: "What was the timeline of SpaceX Starship launch coverage in October 2024?"
+Response:
+```json
+{
+  "relevant": true,
+  "reasoning": "NewsAPI can show media coverage timeline for specific events",
+  "query": "SpaceX Starship launch",
+  "from_date": "2024-10-01",
+  "to_date": "2024-10-31",
+  "language": "en",
+  "sort_by": "publishedAt",
+  "limit": 30
+}
+```
+
+**Example 3: Not Relevant (Primary Documents)**
+Question: "What are the details of Lockheed Martin's latest SEC 10-K filing?"
+Response:
+```json
+{
+  "relevant": false,
+  "reasoning": "SEC filings are primary documents available in SEC EDGAR, not news coverage",
+  "query": "",
+  "from_date": null,
+  "to_date": null,
+  "language": "en",
+  "sort_by": "relevancy",
+  "limit": 50
+}
+```
+
+**Example 4: Company Coverage**
+Question: "What controversies has Boeing faced recently?"
+Response:
+```json
+{
+  "relevant": true,
+  "reasoning": "News coverage captures public controversies and media reporting on companies",
+  "query": "Boeing controversy OR Boeing scandal OR Boeing safety",
+  "from_date": null,
+  "to_date": null,
+  "language": "en",
+  "sort_by": "relevancy",
+  "limit": 40
+}
+```
+
+**Example 5: Multiple Perspectives**
+Question: "How is the Ukraine conflict being covered in different countries?"
+Response:
+```json
+{
+  "relevant": true,
+  "reasoning": "NewsAPI provides access to international news sources for comparing coverage",
+  "query": "Ukraine conflict OR Ukraine war",
+  "from_date": null,
+  "to_date": null,
+  "language": "en",
+  "sort_by": "publishedAt",
+  "limit": 60
+}
+```
+
+---
+
+Now generate the appropriate NewsAPI query for the research question above.
