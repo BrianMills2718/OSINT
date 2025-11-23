@@ -479,6 +479,7 @@ pip list | grep playwright
 ## CURRENT STATUS
 
 **Recently Completed** (2025-11-22):
+- ✅ Saturation logic redesign (strategy-based persistence vs metrics-based stopping) - **COMPLETE**
 - ✅ Query saturation enhancement (LLM-based quality assessment)
 - ✅ Hypothesis diversity enforcement (context-aware generation)
 - ✅ Report synthesis improvements (inline citations, source grouping, verification context) - **VERIFIED WORKING**
@@ -520,7 +521,7 @@ pip list | grep playwright
 - Sequential hypothesis execution with coverage assessment
 - LLM-powered follow-up generation (addresses info gaps)
 - Manager LLM prioritizes pending tasks (P1-P10)
-- Saturation detection (stops when research complete)
+- **NEW**: Strategy-based saturation (tries different approaches when queries fail, not metrics-based stopping)
 
 **Integrations**: 8 working
 - Government: SAM.gov, DVIDS, USAJobs, ClearanceJobs
@@ -548,6 +549,15 @@ pip list | grep playwright
 ---
 
 ## RECENT CHANGES (Last 7 Days)
+
+**2025-11-22**: Saturation logic redesign (commit 32fb777)
+- ✅ Removed "effectiveness dropping" as stop criterion
+- ✅ Reframed zero results as "try different strategy" not "source exhausted"
+- ✅ Added strategies_tried field to track query diversity
+- ✅ max_queries_recommended now guidance, not hard limit
+- Philosophy: When queries fail, humans try different strategies - not give up
+- Files modified: prompts/deep_research/source_saturation.j2 (53 lines), research/deep_research.py, research/execution_logger.py
+- Impact: System will persist with different search strategies instead of stopping on declining metrics
 
 **2025-11-22**: Source context documentation enhancement
 - ✅ Added comprehensive source descriptions to hypothesis_generation.j2
