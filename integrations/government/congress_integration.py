@@ -7,10 +7,12 @@ hearings, and legislative activity from the Library of Congress API.
 """
 
 import json
+import os
 from typing import Dict, Optional, List
 from datetime import datetime, timedelta
 import asyncio
 import requests
+from dotenv import load_dotenv
 from llm_utils import acompletion
 from core.prompt_loader import render_prompt
 
@@ -22,6 +24,9 @@ from core.database_integration_base import (
 )
 from core.api_request_tracker import log_request
 from config_loader import config
+
+# Load environment variables
+load_dotenv()
 
 
 class CongressIntegration(DatabaseIntegration):
@@ -63,15 +68,26 @@ class CongressIntegration(DatabaseIntegration):
 
     async def is_relevant(self, research_question: str) -> bool:
         """
-        Quick relevance check - always return True, let generate_query() LLM decide.
+        Quick relevance check using keywords.
+
+        Congress.gov is relevant for legislative and congressional questions.
+        Use keyword matching for speed.
 
         Args:
             research_question: The user's research question
 
         Returns:
-            Always True - relevance determined by generate_query()
+            True if question relates to Congress/legislation
         """
-        return True
+        legislative_keywords = [
+            "congress", "bill", "legislation", "law", "senate", "house",
+            "representative", "senator", "vote", "amendment", "committee",
+            "hearing", "resolution", "act", "legislative", "lawmaker",
+            "capitol", "congressional", "member of congress", "moc"
+        ]
+
+        question_lower = research_question.lower()
+        return any(keyword in question_lower for keyword in legislative_keywords)
 
     async def generate_query(self, research_question: str) -> Optional[Dict]:
         """
@@ -178,8 +194,8 @@ class CongressIntegration(DatabaseIntegration):
         limit = min(params.get("limit", 100), limit, 250)
 
         if not api_key:
-            db_config = config.get_database_config("congress")
-            api_key = db_config.get("api_key")
+            # Try loading from environment variable
+            api_key = os.getenv("CONGRESS_API_KEY")
 
         if not api_key:
             return QueryResult(
@@ -207,17 +223,23 @@ class CongressIntegration(DatabaseIntegration):
             else:
                 base_url = f"https://api.congress.gov/v3/bill/{congress_num}"
 
-            # Make request
-            response = requests.get(
-                base_url,
-                params={
-                    "api_key": api_key,
-                    "format": "json",
-                    "limit": limit,
-                    "offset": 0
-                },
-                timeout=30
+            # Make request (async)
+            start_time = datetime.now()
+            loop = asyncio.get_event_loop()
+            response = await loop.run_in_executor(
+                None,
+                lambda: requests.get(
+                    base_url,
+                    params={
+                        "api_key": api_key,
+                        "format": "json",
+                        "limit": limit,
+                        "offset": 0
+                    },
+                    timeout=30
+                )
             )
+            response_time_ms = (datetime.now() - start_time).total_seconds() * 1000
 
             response.raise_for_status()
             data = response.json()
@@ -228,15 +250,16 @@ class CongressIntegration(DatabaseIntegration):
             if endpoint == "bill":
                 bills = data.get("bills", [])
                 for bill in bills:
-                    # Filter by keywords if provided
+                    # Note: Congress API doesn't support keyword search
+                    # Returns all bills from specified congress
+                    # Keyword filtering happens in LLM relevance filter instead
                     title = bill.get("title", "")
-                    if keywords and keywords.lower() not in title.lower():
-                        continue
 
                     doc = {
                         "title": f"{bill.get('type', '')} {bill.get('number', '')} - {title}",
                         "url": bill.get("url", ""),
                         "snippet": f"Introduced: {bill.get('introducedDate', 'N/A')} | Latest Action: {bill.get('latestAction', {}).get('text', 'N/A')[:200]}",
+                        "date": bill.get('introducedDate'),  # Date bill was introduced
                         "metadata": {
                             "bill_type": bill.get("type"),
                             "bill_number": bill.get("number"),
@@ -289,7 +312,8 @@ class CongressIntegration(DatabaseIntegration):
                 source="Congress.gov",
                 total=len(documents),
                 results=documents,
-                query_params=params
+                query_params=params,
+                response_time_ms=response_time_ms
             )
 
         except requests.exceptions.HTTPError as e:

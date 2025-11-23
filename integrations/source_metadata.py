@@ -161,25 +161,27 @@ SOURCE_METADATA = {
 
     'Congress.gov': SourceMetadata(
         name='Congress.gov',
-        description='U.S. Congressional bills, members, votes, and legislative records',
+        description='U.S. Congressional bills, resolutions, votes, and legislative records',
         characteristics={
             'official_government_data': True,
             'legislative_focus': True,
             'structured_data': True,
             'historical_records': True,
             'member_tracking': True,
+            'no_keyword_search': True,  # API lists bills by congress number, not keyword
+            'requires_api_key': True,
             'requires_verification': False  # Official government data
         },
         query_strategies=[
-            'bill_search',
-            'member_search',
-            'keyword_search',
-            'congress_number_filter',
-            'committee_search',
-            'vote_tracking'
+            'congress_number_filter',  # Primary: Filter by congress (118th, 117th, etc.)
+            'bill_type_filter',  # Filter by HR, S, etc.
+            'chamber_filter',  # House vs Senate
+            'list_recent_bills',  # List all bills from congress (no keyword search)
+            'member_sponsorship',  # Track bills by sponsor (requires member endpoint)
+            'vote_tracking'  # Track votes (requires vote endpoint)
         ],
-        typical_result_count=50,
-        max_queries_recommended=5  # Legislative data, moderate saturation
+        typical_result_count=20,  # Default API response
+        max_queries_recommended=3  # Limited by no keyword search
     ),
 
     'Federal Register': SourceMetadata(
