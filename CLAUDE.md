@@ -482,6 +482,7 @@ pip list | grep playwright
 - ✅ Cross-task deduplication (global URL dedup before synthesis) - **COMPLETE**
 - ✅ Cost visibility (estimated LLM calls and cost before research starts) - **COMPLETE**
 - ✅ Saturation logic redesign (strategy-based persistence vs metrics-based stopping) - **COMPLETE**
+- ✅ Coverage assessment redesign (angle-based exploration vs metrics-based thresholds) - **COMPLETE**
 - ✅ Query saturation enhancement (LLM-based quality assessment)
 - ✅ Hypothesis diversity enforcement (context-aware generation)
 - ✅ Report synthesis improvements (inline citations, source grouping, verification context) - **VERIFIED WORKING**
