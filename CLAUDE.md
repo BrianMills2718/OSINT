@@ -479,6 +479,8 @@ pip list | grep playwright
 ## CURRENT STATUS
 
 **Recently Completed** (2025-11-22):
+- ✅ Cross-task deduplication (global URL dedup before synthesis) - **COMPLETE**
+- ✅ Cost visibility (estimated LLM calls and cost before research starts) - **COMPLETE**
 - ✅ Saturation logic redesign (strategy-based persistence vs metrics-based stopping) - **COMPLETE**
 - ✅ Query saturation enhancement (LLM-based quality assessment)
 - ✅ Hypothesis diversity enforcement (context-aware generation)
@@ -549,6 +551,14 @@ pip list | grep playwright
 ---
 
 ## RECENT CHANGES (Last 7 Days)
+
+**2025-11-22**: Cross-task deduplication + cost visibility (commit ef376ce)
+- ✅ Global deduplication removes duplicate URLs across all tasks before synthesis
+- ✅ Displays dedup stats: "X → Y results (Z cross-task duplicates removed)"
+- ✅ Cost estimate shown before research starts (~240-300 LLM calls, $0.12-$0.24 typical)
+- ✅ Breakdown by category: query generation, hypothesis, analysis, synthesis
+- Files modified: research/deep_research.py (75 lines added)
+- Impact: Fixes inflated result counts, gives users cost transparency
 
 **2025-11-22**: Saturation logic redesign (commit 32fb777)
 - ✅ Removed "effectiveness dropping" as stop criterion
