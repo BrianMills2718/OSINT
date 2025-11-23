@@ -14,6 +14,9 @@ from integrations.government.federal_register import FederalRegisterIntegration
 from integrations.government.congress_integration import CongressIntegration
 from integrations.government.sec_edgar_integration import SECEdgarIntegration
 
+# Import legal integrations
+from integrations.legal.courtlistener_integration import CourtListenerIntegration
+
 # ClearanceJobs integration requires Playwright (optional dependency)
 try:
     from integrations.government.clearancejobs_integration import ClearanceJobsIntegration
@@ -104,6 +107,9 @@ class IntegrationRegistry:
         self._try_register("federal_register", FederalRegisterIntegration)
         self._try_register("congress", CongressIntegration)
         self._try_register("sec_edgar", SECEdgarIntegration)
+
+        # Legal sources
+        self._try_register("courtlistener", CourtListenerIntegration)
 
         # Social media sources
         self._try_register("discord", DiscordIntegration)

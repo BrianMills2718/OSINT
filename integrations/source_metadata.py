@@ -237,6 +237,35 @@ SOURCE_METADATA = {
         max_queries_recommended=8  # Regulatory data, good for monitoring topics
     ),
 
+    'CourtListener': SourceMetadata(
+        name='CourtListener',
+        description='Federal and state court opinions, RECAP filings, judicial disclosures (Free Law Project)',
+        characteristics={
+            'legal_opinions': True,
+            'court_filings': True,
+            'federal_courts': True,
+            'state_courts': True,
+            'historical_depth': True,  # Opinions back to 1754
+            'full_text_search': True,
+            'structured_data': True,
+            'free_access': True,
+            'requires_api_key': True,  # Free API key required
+            'requires_verification': False  # Official court documents
+        },
+        query_strategies=[
+            'case_name_search',  # Search by party names (e.g., "United States v. Google")
+            'full_text_keyword',  # Search opinion text for legal concepts
+            'court_filter',  # Filter by jurisdiction (SCOTUS, Circuit, District)
+            'date_range_litigation',  # Track litigation over time periods
+            'corporate_litigation_history',  # Find all cases involving a company
+            'bankruptcy_filings',  # RECAP bankruptcy court documents
+            'government_enforcement',  # DOJ, SEC, FTC enforcement actions
+            'class_action_tracking'  # Track class action lawsuits
+        ],
+        typical_result_count=50,  # Varies by query specificity
+        max_queries_recommended=6  # Legal research, moderate depth needed
+    ),
+
     'Twitter': SourceMetadata(
         name='Twitter',
         description='Social media platform (real-time news, announcements, discussions)',
