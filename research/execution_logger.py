@@ -502,7 +502,8 @@ class ExecutionLogger:
         queries_executed: int,
         results_accepted: int,
         saturation_reasoning: str,
-        decision_confidence: int = None
+        decision_confidence: int = None,
+        strategies_tried: list = None
     ):
         """
         Log completion of source saturation (Phase 1: Query Saturation).
@@ -517,6 +518,7 @@ class ExecutionLogger:
             results_accepted: Number of results accepted (after deduplication)
             saturation_reasoning: LLM reasoning for saturation decision
             decision_confidence: Confidence score 0-100 (if LLM saturation)
+            strategies_tried: List of different strategies attempted (helps assess strategy diversity)
         """
         self._write_entry(task_id, "source_saturation_complete", {
             "hypothesis_id": hypothesis_id,
@@ -525,7 +527,8 @@ class ExecutionLogger:
             "queries_executed": queries_executed,
             "results_accepted": results_accepted,
             "saturation_reasoning": saturation_reasoning,
-            "decision_confidence": decision_confidence
+            "decision_confidence": decision_confidence,
+            "strategies_tried": strategies_tried
         })
 
     def log_zero_result_analysis(

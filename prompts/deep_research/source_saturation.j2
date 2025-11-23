@@ -76,48 +76,49 @@ When suggesting next_query, ensure it:
 
 DECISION FRAMEWORK:
 
-**SATURATED** if:
-1. High confidence we've found all relevant information that exists
-2. Recent queries yielding only duplicates or off-topic results
-3. Information clearly doesn't exist in this source
-4. Queries are repeating similar patterns without new results
-5. Diminishing returns evident (effectiveness dropping)
+Your goal: Determine if the information likely exists in this source AND if you've tried enough different strategies to find it.
 
-**CONTINUE** if:
-1. Reasonable chance different query formulation could find more
-2. Identified gaps that could be addressed with targeted queries
-3. Source characteristics suggest more depth available
-4. Haven't tried key query strategies yet
-5. Recent queries still productive (finding new results)
+**Human Investigation Principle:**
+When queries fail or results decline, humans try different search strategies - not give up. Zero results or effectiveness drops mean "current approach isn't working" not "source exhausted."
 
-SATURATION GUIDANCE:
-- **Query effectiveness**: Are we getting better or worse results over time?
-- **Terminology learning**: Have we found keywords/phrases that work well?
-- **Information existence**: Does the info likely exist in this source given its nature?
-- **Diminishing returns**: Are new queries adding meaningful value?
-- **Pattern recognition**: If 3+ queries yield no new results → likely saturated
-- **Quality decline**: If results declining in relevance/quality → likely saturated
-- **Duplicate signals**: If hitting mostly duplicates → likely saturated
-- **Source depth**: Consider source characteristics (e.g., Twitter saturates quickly, SAM.gov has deep archives)
+**SATURATED** - Only when BOTH true:
+1. **Strategy diversity exhausted**: You've tried multiple different query formulations/strategies (not just variations of the same approach)
+2. **High existence confidence**: Strong evidence this information doesn't exist in this source given its nature and characteristics
 
-IMPORTANT CONSIDERATIONS:
-- Be **adaptive**: Different sources saturate at different rates
-- Be **evidence-based**: Use query history trends, not arbitrary thresholds
-- Be **goal-oriented**: Focus on addressing the hypothesis, not exhaustive searching
-- Be **resource-aware**: Balance thoroughness with efficiency
+**CONTINUE** - If EITHER true:
+1. **Strategy diversity available**: Different query strategies, terminology, or angles you haven't tried yet
+2. **Existence plausible**: Information could reasonably exist here, you just haven't found the right query approach
+
+**Critical Thinking Questions:**
+- Does this type of information likely exist given the source's nature? (government docs, social discussions, news coverage)
+- Have I tried fundamentally different strategies, or just variations of the same approach?
+- What strategies from source_metadata haven't I tried yet?
+- If I were a human investigator, what different angle would I try next?
+
+**What NOT to use as stop signals:**
+- ❌ Effectiveness dropping (normal - means try different strategy)
+- ❌ Zero results on current query (means current approach wrong, not source exhausted)
+- ❌ Low acceptance rate alone (could be query formulation issue)
+- ❌ Hitting max_queries_recommended (this is guidance, not hard limit if gaps remain)
+
+**What ARE stop signals:**
+- ✅ Tried 3+ fundamentally different strategies AND all failed
+- ✅ Information type incompatible with source nature (e.g., classified docs on Twitter)
+- ✅ Hitting only duplicates across multiple different query approaches
 
 Return JSON:
 {
     "decision": "SATURATED" or "CONTINUE",
-    "reasoning": "2-4 sentences explaining your decision. Include: (1) query quality analysis from patterns above (zero results, low acceptance, etc.), (2) whether issues stem from source limitations or query formulation, (3) saturation confidence based on evidence",
-    "confidence": 0-100,  // Confidence in this decision (0=uncertain, 100=very confident)
-    "existence_confidence": 0-100,  // Confidence information exists in source (0=unlikely, 100=very likely)
-    "next_query_suggestion": "If CONTINUE, specific query to try next (empty if SATURATED)",
-    "next_query_reasoning": "If CONTINUE, why this query should work (empty if SATURATED)",
-    "expected_value": "high" | "medium" | "low",  // Expected value of next query
-    "remaining_gaps": [...]  // Updated list of specific info gaps still unaddressed (can be same as input or modified)
+    "reasoning": "2-4 sentences. If CONTINUE: What different strategy to try and why it might work. If SATURATED: What strategies you tried and why info likely doesn't exist.",
+    "confidence": 0-100,  // Confidence in this decision
+    "existence_confidence": 0-100,  // Does this info likely exist in this source? (0=unlikely, 100=very likely)
+    "strategies_tried": ["list", "of", "different", "strategies", "attempted"],  // Helps assess strategy diversity
+    "next_query_suggestion": "If CONTINUE, specific query using DIFFERENT strategy than previous attempts (empty if SATURATED)",
+    "next_query_reasoning": "If CONTINUE, what makes this strategy different and why it should work (empty if SATURATED)",
+    "expected_value": "high" | "medium" | "low",
+    "remaining_gaps": [...]
 }
 
-**If CONTINUE**: Provide a SPECIFIC, ACTIONABLE query that targets identified gaps or uses a different strategy than previous queries. Do not repeat failed approaches.
+**If CONTINUE**: Suggest a query using a fundamentally different strategy/angle than previous attempts. Explain what makes it different.
 
-**If SATURATED**: Explain what led to saturation (e.g., repeated duplicates, exhausted strategies, info doesn't exist).
+**If SATURATED**: List the different strategies you tried and explain why the information likely doesn't exist in this source.

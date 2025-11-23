@@ -1499,6 +1499,7 @@ class SimpleDeepResearch:
                 "reasoning": "...",
                 "confidence": 0-100,
                 "existence_confidence": 0-100,
+                "strategies_tried": ["list", "of", "strategies"],  # Strategy diversity assessment
                 "next_query_suggestion": "...",  # if CONTINUE
                 "next_query_reasoning": "...",   # if CONTINUE
                 "expected_value": "high" | "medium" | "low",
@@ -1540,6 +1541,11 @@ class SimpleDeepResearch:
                             "reasoning": {"type": "string"},
                             "confidence": {"type": "integer", "minimum": 0, "maximum": 100},
                             "existence_confidence": {"type": "integer", "minimum": 0, "maximum": 100},
+                            "strategies_tried": {
+                                "type": "array",
+                                "items": {"type": "string"},
+                                "description": "List of different strategies attempted (helps assess strategy diversity)"
+                            },
                             "next_query_suggestion": {"type": "string"},
                             "next_query_reasoning": {"type": "string"},
                             "expected_value": {"type": "string", "enum": ["high", "medium", "low"]},
@@ -1549,7 +1555,7 @@ class SimpleDeepResearch:
                                 "description": "Updated list of information gaps still unaddressed"
                             }
                         },
-                        "required": ["decision", "reasoning", "confidence"]
+                        "required": ["decision", "reasoning", "confidence", "strategies_tried"]
                     }
                 }
             }
@@ -1646,7 +1652,8 @@ class SimpleDeepResearch:
                                 queries_executed=len(query_history),
                                 results_accepted=len(all_results),
                                 saturation_reasoning=query_decision['reasoning'],
-                                decision_confidence=query_decision.get('confidence', 0)
+                                decision_confidence=query_decision.get('confidence', 0),
+                                strategies_tried=query_decision.get('strategies_tried', [])
                             )
                         break
 
