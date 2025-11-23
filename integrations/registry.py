@@ -18,6 +18,9 @@ from integrations.government.fec_integration import FECIntegration
 # Import legal integrations
 from integrations.legal.courtlistener_integration import CourtListenerIntegration
 
+# Import investigative integrations
+from integrations.investigative.icij_offshore_leaks import ICIJOffshoreLeaksIntegration
+
 # ClearanceJobs integration requires Playwright (optional dependency)
 try:
     from integrations.government.clearancejobs_integration import ClearanceJobsIntegration
@@ -112,6 +115,9 @@ class IntegrationRegistry:
 
         # Legal sources
         self._try_register("courtlistener", CourtListenerIntegration)
+
+        # Investigative sources
+        self._try_register("icij_offshore_leaks", ICIJOffshoreLeaksIntegration)
 
         # Social media sources
         self._try_register("discord", DiscordIntegration)

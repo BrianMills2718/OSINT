@@ -295,6 +295,36 @@ SOURCE_METADATA = {
         max_queries_recommended=7  # Follow-the-money investigations need depth
     ),
 
+    'ICIJ Offshore Leaks': SourceMetadata(
+        name='ICIJ Offshore Leaks',
+        description='Panama Papers, Paradise Papers, Pandora Papers - 810K+ offshore entities and shell companies',
+        characteristics={
+            'leaked_documents': True,
+            'investigative_journalism': True,
+            'offshore_entities': True,
+            'shell_companies': True,
+            'tax_havens': True,
+            'beneficial_ownership': True,
+            'financial_secrecy': True,
+            'multi_leak_coverage': True,  # Panama, Paradise, Pandora Papers
+            'historical_leaks': True,  # Data from 1970s-2020s
+            'requires_api_key': False,  # Free public database
+            'requires_verification': False  # ICIJ is authoritative source
+        },
+        query_strategies=[
+            'person_offshore_search',  # Find offshore connections for individuals
+            'company_shell_entities',  # Uncover corporate shell companies and subsidiaries
+            'intermediary_tracking',  # Find law firms/banks that set up offshore structures
+            'jurisdiction_analysis',  # Analyze entities by tax haven (BVI, Panama, Cayman)
+            'leak_source_filter',  # Search specific leaks (Panama vs Paradise Papers)
+            'beneficial_owner_discovery',  # Uncover true owners behind shell companies
+            'politician_investigation',  # Track politicians' offshore holdings
+            'corruption_investigation'  # Follow money trails through tax havens
+        ],
+        typical_result_count=20,  # Varies by entity prominence
+        max_queries_recommended=5  # Focused offshore investigations
+    ),
+
     'Twitter': SourceMetadata(
         name='Twitter',
         description='Social media platform (real-time news, announcements, discussions)',
