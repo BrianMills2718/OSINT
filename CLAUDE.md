@@ -481,9 +481,12 @@ pip list | grep playwright
 **Recently Completed** (2025-11-22):
 - ✅ Query saturation enhancement (LLM-based quality assessment)
 - ✅ Hypothesis diversity enforcement (context-aware generation)
-- ✅ Report synthesis improvements (inline citations, source grouping, verification context)
+- ✅ Report synthesis improvements (inline citations, source grouping, verification context) - **VERIFIED WORKING**
 - ✅ Discord parser robustness (0.14% error rate handled gracefully)
 - ✅ Timeout configuration (45-min total research budget)
+- ✅ Enhanced structured logging (source_skipped, time_breakdown) - **COMPLETE**
+- ✅ CREST Selenium integration (bypasses Akamai Bot Manager) - **WORKING**
+- ✅ Metadata-driven stealth selection (playwright/selenium per-source) - **COMPLETE**
 
 ---
 
@@ -491,10 +494,7 @@ pip list | grep playwright
 
 ### HIGH PRIORITY
 
-**1. Enhanced Structured Logging** 📋 **NOT STARTED**
-- **Goal**: Detailed visibility into ALL decisions and time usage
-- **New event types needed**: source_skipped, zero_results_analysis, time_breakdown
-- **Files**: research/execution_logger.py, research/deep_research.py
+**All high-priority quality improvements complete!**
 
 ### MEDIUM PRIORITY
 
