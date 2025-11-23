@@ -35,6 +35,9 @@ from integrations.social.brave_search_integration import BraveSearchIntegration
 # Import news integrations
 from integrations.news.newsapi_integration import NewsAPIIntegration
 
+# Import nonprofit integrations
+from integrations.nonprofit.propublica_integration import ProPublicaIntegration
+
 # Import archive integrations
 from integrations.archive.wayback_integration import WaybackMachineIntegration
 
@@ -101,6 +104,9 @@ class IntegrationRegistry:
         # Web search & news
         self._try_register("brave_search", BraveSearchIntegration)
         self._try_register("newsapi", NewsAPIIntegration)
+
+        # Nonprofit sources
+        self._try_register("propublica", ProPublicaIntegration)
 
         # Archive sources
         self._try_register("wayback_machine", WaybackMachineIntegration)

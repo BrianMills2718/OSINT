@@ -292,6 +292,33 @@ SOURCE_METADATA = {
         typical_result_count=10,
         max_queries_recommended=5  # Broad coverage, moderate saturation
     ),
+
+    'ProPublica Nonprofit Explorer': SourceMetadata(
+        name='ProPublica Nonprofit Explorer',
+        description='IRS Form 990 data for U.S. nonprofits: revenue, expenses, executive compensation, grants',
+        characteristics={
+            'financial_data': True,
+            'nonprofit_focus': True,
+            'irs_data': True,
+            'executive_compensation': True,
+            'tax_filings': True,
+            'searchable_by_state': True,
+            'searchable_by_category': True,
+            'searchable_by_tax_code': True,
+            'requires_verification': False  # Official IRS data
+        },
+        query_strategies=[
+            'organization_name_search',  # Search by nonprofit name
+            'keyword_mission_search',  # Search by mission/activity keywords
+            'state_filter',  # Filter by state location
+            'tax_code_filter',  # 501(c)(3), 501(c)(4), etc.
+            'category_filter',  # NTEE categories (health, education, etc.)
+            'dark_money_investigation',  # 501(c)(4) political nonprofits
+            'foundation_grants'  # Search for foundations and their grants
+        ],
+        typical_result_count=50,  # Rich dataset of 1.8M+ nonprofits
+        max_queries_recommended=7  # Financial data, good for investigations
+    ),
 }
 
 

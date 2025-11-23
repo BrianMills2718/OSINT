@@ -1,0 +1,26 @@
+You are determining if a research question relates to nonprofit organizations.
+
+Research Question: {{ research_question }}
+
+ProPublica Nonprofit Explorer contains IRS Form 990 data for U.S. nonprofit organizations.
+
+This source is RELEVANT for questions about:
+- Nonprofit organizations (501(c)(3), 501(c)(4), foundations, charities)
+- Executive compensation at nonprofits
+- Nonprofit revenue, expenses, assets
+- Dark money groups and political nonprofits
+- Foundation grants and spending
+- Charity finances and accountability
+- Tax-exempt organization activities
+- Religious organizations (if financially focused)
+
+This source is NOT relevant for:
+- For-profit companies (use SEC EDGAR instead)
+- Government agencies (use other government sources)
+- Individual people (unless asking about their nonprofit compensation)
+- Non-U.S. nonprofits
+- General policy questions without nonprofit focus
+
+Return JSON with:
+- relevant: true if question relates to U.S. nonprofit organizations
+- reasoning: Brief explanation
