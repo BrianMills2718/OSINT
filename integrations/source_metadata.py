@@ -182,6 +182,31 @@ SOURCE_METADATA = {
         max_queries_recommended=5  # Legislative data, moderate saturation
     ),
 
+    'Federal Register': SourceMetadata(
+        name='Federal Register',
+        description='Official daily publication of U.S. federal rules, proposed rules, notices, and executive orders',
+        characteristics={
+            'official_government_data': True,
+            'regulatory_focus': True,
+            'daily_publication': True,
+            'structured_data': True,
+            'agency_specific': True,
+            'document_types': ['RULE', 'PRORULE', 'NOTICE', 'PRESDOCU'],
+            'date_searchable': True,
+            'requires_verification': False  # Official government publication
+        },
+        query_strategies=[
+            'keyword_search',  # General term search
+            'agency_filter',  # Filter by specific agencies
+            'document_type_filter',  # Rules vs notices vs presidential docs
+            'date_range_search',  # Recent vs historical
+            'topic_monitoring',  # Track specific regulatory topics over time
+            'proposed_vs_final'  # Distinguish between proposed and final rules
+        ],
+        typical_result_count=100,  # Daily publication, rich dataset
+        max_queries_recommended=8  # Regulatory data, good for monitoring topics
+    ),
+
     'Twitter': SourceMetadata(
         name='Twitter',
         description='Social media platform (real-time news, announcements, discussions)',

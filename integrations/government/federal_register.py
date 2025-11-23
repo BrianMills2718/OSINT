@@ -257,15 +257,21 @@ class FederalRegisterIntegration(DatabaseIntegration):
                 if not snippet and doc.get("full_text_xml_url"):
                     snippet = f"Full text available at {doc.get('full_text_xml_url')}"
 
+                # Extract agency names from agencies array
+                agencies = doc.get("agencies", [])
+                agency_names = [a.get("name") if isinstance(a, dict) else str(a) for a in agencies]
+
                 transformed = {
                     "title": doc.get("title", "Untitled Document"),
                     "url": url,
                     "snippet": snippet[:500] if snippet else "",
+                    "date": doc.get("publication_date"),  # Add top-level date field
                     "metadata": {
                         "document_number": doc.get("document_number"),
                         "type": doc.get("type"),
                         "publication_date": doc.get("publication_date"),
-                        "agencies": doc.get("agencies", []),
+                        "agencies": agency_names,
+                        "agency": agency_names[0] if agency_names else None,  # First agency for display
                         "citation": doc.get("citation"),
                         "pdf_url": doc.get("pdf_url"),
                         "html_url": doc.get("html_url")

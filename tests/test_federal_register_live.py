@@ -60,9 +60,10 @@ async def main():
 
     if query_params:
         print(f"✅ Query generated:")
-        print(f"   Query: {query_params.get('query')}")
+        print(f"   Term: {query_params.get('term')}")
         print(f"   Agencies: {query_params.get('agencies')}")
         print(f"   Document Types: {query_params.get('document_types')}")
+        print(f"   Date Range: {query_params.get('date_range_days')} days")
     else:
         print("❌ Query generation returned None (not relevant)")
 
@@ -71,10 +72,10 @@ async def main():
     print("-" * 80)
 
     search_params = {
-        "query": "artificial intelligence",
+        "term": "artificial intelligence",
         "agencies": [],
         "document_types": ["RULE", "PRORULE"],
-        "limit": 5
+        "date_range_days": 180
     }
 
     result = await integration.execute_search(search_params, api_key=None, limit=5)

@@ -71,11 +71,13 @@ class SearchResult(BaseModel):
         - snippet: Brief excerpt/summary (max 500 chars recommended)
 
     Optional fields:
+        - date: Publication/creation date (ISO format string or None)
         - metadata: Dict of source-specific additional data
     """
     title: str = Field(..., description="Title of the result", min_length=1)
     url: str = Field(..., description="URL link to full result")
     snippet: str = Field(default="", description="Brief excerpt or summary")
+    date: Optional[str] = Field(default=None, description="Publication or creation date")
     metadata: Optional[Dict[str, Any]] = Field(default_factory=dict, description="Source-specific metadata")
 
     @field_validator('title')
