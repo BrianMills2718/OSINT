@@ -498,18 +498,16 @@ pip list | grep playwright
 
 ### MEDIUM PRIORITY
 
-**2. Source Context Documentation** 📋 **NOT STARTED**
-- **Goal**: Better explain what each source provides in prompts
-- **Example**: "Reddit provides: r/defense, r/govcontracts, r/Intelligence discussions"
-- **Files**: prompts/deep_research/hypothesis_generation.j2
+**Source Context Documentation** 📋 **NOT STARTED**
+- **Goal**: Add source descriptions to hypothesis_generation.j2
+- **Current**: Shows only names: "Brave Search, Discord, Reddit, SAM.gov..."
+- **Needed**: Add what each provides: "Reddit provides: r/defense, r/govcontracts discussions..."
+- **Why**: Help LLM choose appropriate sources when generating hypotheses
+- **Files**: prompts/deep_research/hypothesis_generation.j2, research/deep_research.py
 
 ### LOW PRIORITY
 
-**3. Time Budget Increase** 📋 **OPTIONAL**
-- **Current**: 45 min total (user configured)
-- **Proposal**: Increase to 240 min (4 hours) for exhaustive research mode
-- **Note**: Current 45-min budget sufficient for most queries
-- **Files**: run_research_cli.py, config.yaml
+*No pending low-priority tasks*
 
 ---
 
