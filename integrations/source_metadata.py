@@ -266,6 +266,35 @@ SOURCE_METADATA = {
         max_queries_recommended=6  # Legal research, moderate depth needed
     ),
 
+    'FEC': SourceMetadata(
+        name='FEC',
+        description='Federal Election Commission campaign finance data: contributions, expenditures, PACs, Super PACs',
+        characteristics={
+            'official_government_data': True,
+            'campaign_finance': True,
+            'itemized_contributions': True,
+            'pac_spending': True,
+            'super_pac_data': True,
+            'candidate_financials': True,
+            'independent_expenditures': True,
+            'real_time_updates': True,  # Filings appear within days
+            'requires_api_key': True,  # Same api.data.gov key as Congress.gov
+            'requires_verification': False  # Official FEC data
+        },
+        query_strategies=[
+            'candidate_fundraising',  # Track how much candidates have raised
+            'donor_search',  # Find all donations from specific individual/organization
+            'recipient_search',  # Find all donations TO specific candidate/committee
+            'pac_super_pac_tracking',  # Monitor PAC and Super PAC activity
+            'independent_expenditures',  # Track outside spending (ads for/against candidates)
+            'industry_donations',  # Track donations from specific industries
+            'committee_search',  # Find and analyze specific committees
+            'party_comparison'  # Compare fundraising across parties
+        ],
+        typical_result_count=100,  # Rich dataset, many transactions
+        max_queries_recommended=7  # Follow-the-money investigations need depth
+    ),
+
     'Twitter': SourceMetadata(
         name='Twitter',
         description='Social media platform (real-time news, announcements, discussions)',
