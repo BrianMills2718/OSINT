@@ -1,0 +1,139 @@
+Generate query parameters for USAspending.gov API.
+
+USAspending.gov provides: Historical U.S. federal spending data including awarded contracts, grants, loans, and budget information.
+
+API FILTER PARAMETERS:
+
+1. keywords (array of strings, optional):
+   Search terms for award descriptions. Examples: ["cybersecurity"], ["AI", "artificial intelligence"]
+
+2. award_type_codes (array of strings, REQUIRED):
+   Filter by award type. **CRITICAL API RULES:**
+   - This field is REQUIRED (at least 1 code)
+   - All codes MUST be from the SAME group (cannot mix contracts + grants, etc.)
+   - If question doesn't specify, use contracts: ["A", "B", "C", "D"]
+
+   Valid code groups (choose ONE group only):
+   Contracts:
+     - "A" = BPA (Blanket Purchase Agreement)
+     - "B" = Purchase Order
+     - "C" = Delivery Order
+     - "D" = Definitive Contract
+   Financial Assistance:
+     - "02" = Block Grant
+     - "03" = Formula Grant
+     - "04" = Project Grant
+     - "05" = Cooperative Agreement
+     - "06" = Direct Payment
+     - "07" = Direct Loan
+     - "08" = Guaranteed/Insured Loan
+     - "09" = Insurance
+     - "10" = Direct Payment with Unrestricted Use
+     - "11" = Other Financial Assistance
+   IDVs (Indefinite Delivery Vehicles):
+     - IDV types for umbrella contracts
+
+3. time_period (array of objects, optional):
+   Time range filters. Format:
+   [{"start_date": "YYYY-MM-DD", "end_date": "YYYY-MM-DD"}]
+   Examples:
+   - FY2023: [{"start_date": "2022-10-01", "end_date": "2023-09-30"}]
+   - Last 2 years: [{"start_date": "2022-01-01", "end_date": "2023-12-31"}]
+   - Can specify multiple ranges if needed
+
+4. agencies (array of objects, optional):
+   Agency filters. Format:
+   [{"type": "awarding" | "funding", "tier": "toptier" | "subtier", "name": "Agency Name"}]
+   Examples:
+   - [{"type": "awarding", "tier": "toptier", "name": "Department of Defense"}]
+   - [{"type": "funding", "tier": "toptier", "name": "Department of Homeland Security"}]
+
+5. recipient_search_text (array of strings, optional):
+   Company or organization names. Examples: ["Lockheed Martin"], ["SpaceX", "Space Exploration Technologies"]
+
+6. award_amounts (array of objects, optional):
+   Amount range filters. Format:
+   [{"lower_bound": number, "upper_bound": number}]
+   Examples:
+   - [{"lower_bound": 1000000, "upper_bound": 10000000}] (between $1M-$10M)
+   - [{"lower_bound": 100000000}] (over $100M)
+
+FIELD SELECTION (choose relevant fields to return):
+
+Base fields (available for all award types):
+- "Award ID" - Unique award identifier
+- "Recipient Name" - Organization receiving the award
+- "Recipient UEI" - Unique Entity Identifier
+- "Award Amount" - Total award amount
+- "Start Date" - Award start date
+- "End Date" - Award end date (if applicable)
+- "Description" - Award description
+- "Awarding Agency" - Agency that awarded
+- "Awarding Agency Code" - Agency code
+- "Funding Agency" - Agency providing funds
+- "Funding Sub Agency" - Sub-agency providing funds
+- "Place of Performance State Code" - State where work performed
+- "Place of Performance Country Code" - Country code
+- "Last Modified Date" - Last update date
+- "def_codes" - Disaster/Emergency Fund codes (COVID, Infrastructure, etc.)
+- "COVID-19 Obligations" - COVID spending
+- "COVID-19 Outlays" - COVID outlays
+- "Infrastructure Obligations" - Infrastructure spending
+- "Infrastructure Outlays" - Infrastructure outlays
+
+Contract-specific fields (when award_type_codes includes A, B, C, or D):
+- "Contract Award Type" - Type of contract
+- "NAICS Code" - Industry classification
+- "NAICS Description" - Industry description
+- "PSC Code" - Product/Service Code
+- "PSC Description" - Product/Service description
+- "Solicitation Identifier" - Original solicitation ID
+
+Grant/Loan-specific fields (when award_type_codes includes 02-11):
+- "Assistance Type" - Type of assistance
+- "CFDA Number" - Catalog of Federal Domestic Assistance number
+- "CFDA Title" - CFDA program title
+
+QUERY STRATEGY GUIDELINES:
+
+1. For historical contractor analysis: Use recipient_search_text + award_type_codes for contracts
+2. For spending trends: Use time_period + agencies + keywords
+3. For budget analysis: Use agencies + time_period + award_amounts
+4. For disaster spending: Request def_codes fields and filter by keywords
+5. For geographic analysis: Request Place of Performance fields
+
+LIMIT PARAMETER:
+- Set limit between 1-500 based on expected result volume
+- Use 100 as default for most queries
+- Use 500 for broad exploratory queries
+- Use 50 for targeted specific queries
+
+Research Question: {{ research_question }}
+
+Decide if USAspending is relevant for this question.
+If relevant, generate appropriate filters and field selection.
+If not relevant (e.g., about future opportunities or job postings), return relevant: false.
+
+Return JSON:
+{% raw %}
+{
+  "relevant": boolean,
+  "filters": {
+    "keywords": array of strings (optional),
+    "award_type_codes": array of strings (optional),
+    "time_period": array of objects (optional),
+    "agencies": array of objects (optional),
+    "recipient_search_text": array of strings (optional),
+    "award_amounts": array of objects (optional)
+  },
+  "fields": array of strings (required if relevant),
+  "limit": integer (1-500),
+  "reasoning": "Brief explanation of query strategy and why these filters/fields were chosen"
+}
+{% endraw %}
+
+IMPORTANT:
+- Include all filters in the filters object, even if empty arrays
+- Choose fields relevant to the research question
+- Set appropriate limit based on query specificity
+- Provide clear reasoning for your choices

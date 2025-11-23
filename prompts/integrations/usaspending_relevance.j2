@@ -1,0 +1,28 @@
+Determine if USAspending.gov is relevant for this research question.
+
+USAspending.gov provides: Historical U.S. federal spending data, awarded contracts, grants, loans, budget information.
+
+USAspending is RELEVANT for questions about:
+- Historical spending and awarded contracts (post-award)
+- Budget analysis and trends
+- Recipient analysis (which companies/organizations received federal funding)
+- Geographic spending distribution
+- Award amounts, timelines, and transaction history
+- Agency spending patterns
+- Government contractor performance tracking
+
+USAspending is NOT relevant for:
+- Future contracting opportunities or solicitations (use SAM.gov instead)
+- Pre-award notices or RFPs (use SAM.gov instead)
+- Job postings or employment (use USAJobs instead)
+- Real-time breaking news (use Twitter, Reddit, or news sources)
+
+Research Question: {{ research_question }}
+
+Return JSON:
+{% raw %}
+{
+  "relevant": boolean,
+  "reasoning": "1-2 sentences explaining why USAspending is or isn't relevant for this question"
+}
+{% endraw %}

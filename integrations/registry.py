@@ -6,6 +6,7 @@ from config_loader import config
 
 # Import government integrations
 from integrations.government.sam_integration import SAMIntegration
+from integrations.government.usaspending_integration import USASpendingIntegration
 from integrations.government.dvids_integration import DVIDSIntegration
 from integrations.government.usajobs_integration import USAJobsIntegration
 from integrations.government.fbi_vault import FBIVaultIntegration
@@ -78,6 +79,7 @@ class IntegrationRegistry:
         """
         # Government sources
         self._try_register("sam", SAMIntegration)
+        self._try_register("usaspending", USASpendingIntegration)
         self._try_register("dvids", DVIDSIntegration)
         self._try_register("usajobs", USAJobsIntegration)
         if CLEARANCEJOBS_AVAILABLE:
