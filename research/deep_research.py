@@ -331,6 +331,55 @@ class SimpleDeepResearch:
         return elapsed >= self.max_time_minutes
 
 
+    def _display_cost_estimate(self):
+        """Display estimated LLM call count and cost before starting research."""
+        # Estimate based on config
+        avg_tasks = min(5, self.max_tasks)  # Typically 3-5 tasks decomposed
+        avg_hypotheses_per_task = 4  # Typically 3-5
+        avg_sources_per_hypothesis = 6  # Typically 5-8 sources
+        avg_queries_per_source = 5  # With new saturation logic, could be 3-10+
+
+        # LLM call breakdown
+        task_decomposition = 1
+        manager_calls = avg_tasks  # Re-prioritize after each task
+        hypothesis_generation = avg_tasks
+        query_generation = avg_tasks * avg_hypotheses_per_task * avg_sources_per_hypothesis
+        saturation_checks = query_generation  # 1 saturation check per query generation
+        relevance_filtering = avg_tasks * avg_hypotheses_per_task
+        coverage_assessment = avg_tasks
+        follow_up_generation = avg_tasks
+        entity_extraction = avg_tasks
+        entity_filtering = 1
+        synthesis = 1
+
+        total_estimated_calls = (
+            task_decomposition + manager_calls + hypothesis_generation +
+            query_generation + saturation_checks + relevance_filtering +
+            coverage_assessment + follow_up_generation + entity_extraction +
+            entity_filtering + synthesis
+        )
+
+        # Cost estimation (very rough)
+        # gpt-4o-mini: ~$0.15 per 1M input tokens, ~$0.60 per 1M output tokens
+        # Average call: ~1K input tokens, ~500 output tokens = $0.0005
+        avg_cost_per_call = 0.0005
+        estimated_cost = total_estimated_calls * avg_cost_per_call
+
+        print("\n" + "="*60)
+        print("📊 ESTIMATED RESEARCH SCOPE")
+        print("="*60)
+        print(f"Expected LLM calls: ~{total_estimated_calls:,}")
+        print(f"Breakdown:")
+        print(f"  • Query generation & saturation: ~{query_generation + saturation_checks:,}")
+        print(f"  • Hypothesis generation: ~{hypothesis_generation}")
+        print(f"  • Task management: ~{manager_calls + coverage_assessment + follow_up_generation}")
+        print(f"  • Analysis & synthesis: ~{relevance_filtering + entity_extraction + entity_filtering + synthesis}")
+        print(f"\nEstimated cost: ${estimated_cost:.2f} - ${estimated_cost * 2:.2f}")
+        print(f"(Actual may vary based on query complexity and saturation)")
+        print(f"\nTime budget: {self.max_time_minutes} minutes")
+        print(f"Task limit: {self.max_tasks} tasks")
+        print("="*60 + "\n")
+
     async def research(self, question: str) -> Dict:
         """
         Conduct deep research on complex question.
@@ -387,6 +436,9 @@ class SimpleDeepResearch:
             self.logger = None
 
         self._emit_progress("research_started", f"Starting deep research: {question}")
+
+        # Display cost estimate before starting
+        self._display_cost_estimate()
 
         # Step 1: Decompose question into initial tasks
         try:
@@ -4841,6 +4893,29 @@ class SimpleDeepResearch:
                         'snippet': r.get('snippet', r.get('description', ''))[:300],
                         'url': r.get('url', '')
                     })
+
+        # Global cross-task deduplication by URL
+        original_count = len(all_results)
+        deduplicated_results = []
+        seen_urls = set()
+
+        for result in all_results:
+            url = result.get('url', '').strip()
+            if not url:
+                # No URL - keep result as-is (can't deduplicate)
+                deduplicated_results.append(result)
+                continue
+
+            if url not in seen_urls:
+                seen_urls.add(url)
+                deduplicated_results.append(result)
+            # else: skip duplicate
+
+        duplicate_count = original_count - len(deduplicated_results)
+        if duplicate_count > 0:
+            print(f"🔗 Global deduplication: {original_count} → {len(deduplicated_results)} results ({duplicate_count} cross-task duplicates removed)")
+
+        all_results = deduplicated_results
 
         # Task 2: LLM-based entity filtering (replaces Python blacklist)
         # Count entity occurrences across tasks for filtering
