@@ -1,0 +1,55 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+.venv/
+venv/
+env/
+ENV/
+
+# Data and outputs
+data/research_output/
+data/logs/
+data/articles/
+data/exports/
+*.log
+*.jsonl
+
+# Development
+.git/
+.gitignore
+*.md
+docs/
+archive/
+tests/
+test_*.py
+*_test.py
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+*.bak
+
+# Credentials (should be mounted as volume)
+.env
+*.key
+*.pem
+
+# Docker itself
+Dockerfile
+docker-compose.yml
+.dockerignore

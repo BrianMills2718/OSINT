@@ -1,0 +1,49 @@
+version: '3.8'
+
+services:
+  research:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: sigint-research
+    volumes:
+      # Mount .env file for API keys
+      - ./.env:/app/.env:ro
+      # Mount config
+      - ./config.yaml:/app/config.yaml:ro
+      # Persist research output
+      - ./data:/app/data
+      # Mount prompts for easy editing
+      - ./prompts:/app/prompts:ro
+    environment:
+      - PYTHONUNBUFFERED=1
+      # Enable GUI for visible browser (optional)
+      - DISPLAY=${DISPLAY:-:99}
+    # For headless Chrome/Chromium
+    shm_size: 2gb
+    # Network mode for accessing host display (optional)
+    network_mode: bridge
+    command: ["python3", "apps/ai_research.py", "What is DARPA?"]
+
+  # Streamlit web UI
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: sigint-web
+    ports:
+      - "8501:8501"
+    volumes:
+      - ./.env:/app/.env:ro
+      - ./config.yaml:/app/config.yaml:ro
+      - ./data:/app/data
+      - ./prompts:/app/prompts:ro
+    environment:
+      - PYTHONUNBUFFERED=1
+    shm_size: 2gb
+    command: ["streamlit", "run", "apps/unified_search_app.py", "--server.address", "0.0.0.0"]
+
+# Optional: Add a volume for persistent data
+volumes:
+  research_data:
+    driver: local
