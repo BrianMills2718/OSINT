@@ -343,8 +343,14 @@ class SimpleDeepResearch:
         task_decomposition = 1
         manager_calls = avg_tasks  # Re-prioritize after each task
         hypothesis_generation = avg_tasks
-        query_generation = avg_tasks * avg_hypotheses_per_task * avg_sources_per_hypothesis
-        saturation_checks = query_generation  # 1 saturation check per query generation
+
+        # Query generation + saturation: Each source execution involves multiple query cycles
+        # Per source: initial query (1) + (avg_queries_per_source * 2 LLM calls per cycle)
+        # Each cycle: saturation check (1) + next query gen (1) = 2 calls
+        source_executions = avg_tasks * avg_hypotheses_per_task * avg_sources_per_hypothesis
+        calls_per_source = avg_queries_per_source * 2  # Rough estimate
+        query_and_saturation_total = source_executions * calls_per_source
+
         relevance_filtering = avg_tasks * avg_hypotheses_per_task
         coverage_assessment = avg_tasks
         follow_up_generation = avg_tasks
@@ -354,7 +360,7 @@ class SimpleDeepResearch:
 
         total_estimated_calls = (
             task_decomposition + manager_calls + hypothesis_generation +
-            query_generation + saturation_checks + relevance_filtering +
+            query_and_saturation_total + relevance_filtering +
             coverage_assessment + follow_up_generation + entity_extraction +
             entity_filtering + synthesis
         )
@@ -370,14 +376,15 @@ class SimpleDeepResearch:
         print("="*60)
         print(f"Expected LLM calls: ~{total_estimated_calls:,}")
         print(f"Breakdown:")
-        print(f"  • Query generation & saturation: ~{query_generation + saturation_checks:,}")
+        print(f"  • Query generation & saturation: ~{query_and_saturation_total:,}")
         print(f"  • Hypothesis generation: ~{hypothesis_generation}")
         print(f"  • Task management: ~{manager_calls + coverage_assessment + follow_up_generation}")
         print(f"  • Analysis & synthesis: ~{relevance_filtering + entity_extraction + entity_filtering + synthesis}")
         print(f"\nEstimated cost: ${estimated_cost:.2f} - ${estimated_cost * 2:.2f}")
-        print(f"(Actual may vary based on query complexity and saturation)")
+        print(f"(Varies with query complexity, saturation behavior, and actual task count)")
         print(f"\nTime budget: {self.max_time_minutes} minutes")
         print(f"Task limit: {self.max_tasks} tasks")
+        print(f"Avg queries per source: {avg_queries_per_source} (with new saturation logic)")
         print("="*60 + "\n")
 
     async def research(self, question: str) -> Dict:
