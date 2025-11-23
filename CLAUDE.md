@@ -487,6 +487,7 @@ pip list | grep playwright
 - ✅ Enhanced structured logging (source_skipped, time_breakdown) - **COMPLETE**
 - ✅ CREST Selenium integration (bypasses Akamai Bot Manager) - **WORKING**
 - ✅ Metadata-driven stealth selection (playwright/selenium per-source) - **COMPLETE**
+- ✅ Source context documentation (comprehensive descriptions in hypothesis_generation.j2) - **COMPLETE**
 
 ---
 
@@ -498,16 +499,15 @@ pip list | grep playwright
 
 ### MEDIUM PRIORITY
 
-**Source Context Documentation** 📋 **NOT STARTED**
-- **Goal**: Add source descriptions to hypothesis_generation.j2
-- **Current**: Shows only names: "Brave Search, Discord, Reddit, SAM.gov..."
-- **Needed**: Add what each provides: "Reddit provides: r/defense, r/govcontracts discussions..."
-- **Why**: Help LLM choose appropriate sources when generating hypotheses
-- **Files**: prompts/deep_research/hypothesis_generation.j2, research/deep_research.py
+**All medium-priority improvements complete!**
 
 ### LOW PRIORITY
 
-*No pending low-priority tasks*
+**Time Budget Increase** 📋 **OPTIONAL**
+- **Current**: 45 min total (user configured)
+- **Proposal**: Increase to 240 min (4 hours) for exhaustive research mode
+- **Note**: Current 45-min budget sufficient for most queries
+- **User Decision**: Whether to increase default budget
 
 ---
 
@@ -548,6 +548,13 @@ pip list | grep playwright
 ---
 
 ## RECENT CHANGES (Last 7 Days)
+
+**2025-11-22**: Source context documentation enhancement
+- ✅ Added comprehensive source descriptions to hypothesis_generation.j2
+- ✅ 15 integrations now have detailed "what this contains" explanations
+- ✅ Enhanced source selection strategy with practical use cases
+- Files modified: prompts/deep_research/hypothesis_generation.j2 (37 lines added)
+- Impact: LLM can make better source selections when generating hypotheses by understanding source capabilities
 
 **2025-11-22**: Reddit underutilization fix (commit 503b13d)
 - ✅ Replaced hardcoded keyword filtering with LLM-based relevance check

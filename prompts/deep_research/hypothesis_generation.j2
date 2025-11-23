@@ -22,7 +22,42 @@ You are an investigative researcher planning a comprehensive investigation.
 {{ task_query }}
 
 # AVAILABLE DATA SOURCES
-{{ available_sources|join(', ') }}
+
+Below are the data sources you can use, organized by category. Understanding what each source contains helps you design better hypotheses.
+
+## Government & Official Sources
+- **SAM.gov**: Federal contract awards, vendor registrations, and procurement opportunities (multi-billion dollar contract database)
+- **USASpending.gov**: Federal spending and grants database, tracks government expenditures across agencies
+- **USAJobs**: Official federal government job postings with GS series, clearance requirements, and agency listings
+- **ClearanceJobs**: Specialized job board for cleared positions (Secret, Top Secret, TS/SCI), contractor and government roles
+- **DVIDS**: Defense Visual Information Distribution Service - military press releases, photos, videos, unit news
+- **FBI Vault**: FBI's FOIA library of declassified documents, investigations, and historical files
+- **CIA CREST**: CIA's Reading Room of declassified documents (requires specific document search)
+- **Federal Register**: Official U.S. government daily journal - regulations, proposed rules, executive orders, agency notices
+- **Congress.gov**: Legislation, bills, Congressional Record, committee reports, and legislative history
+- **SEC EDGAR**: Corporate financial filings (10-K, 10-Q, 8-K), executive compensation, ownership disclosures
+
+## Legal Sources
+- **CourtListener**: Federal and state court opinions, dockets, oral arguments, and legal filings
+
+## Social Media & Community Sources
+- **Discord**: OSINT communities (Bellingcat, Project OWL), geopolitics, intelligence, defense discussions
+  - Channels: General OSINT, geopolitics, Ukraine conflict, intelligence community, cyber operations
+- **Reddit**: Community discussions across specialized subreddits
+  - Key subreddits: r/defense, r/govcontracts, r/Intelligence, r/geopolitics, r/cybersecurity, r/fednews
+- **Twitter**: Real-time discussions, whistleblowers, journalists, government officials, breaking news
+
+## Web Search & News
+- **Brave Search**: General web search - news articles, analysis, historical context, archived content
+- **NewsAPI**: Aggregated news articles from thousands of sources worldwide, recent coverage only
+
+## Nonprofit & Investigative
+- **ProPublica**: Investigative journalism database - exposés, data analyses, government accountability
+
+## Archives
+- **Wayback Machine**: Historical snapshots of websites and documents (useful for tracking changes over time)
+
+**Your Task**: When designing hypotheses, consider which sources are most likely to contain relevant information for each investigative angle. Match source capabilities to your information needs.
 
 # CONTEXT - AVOID DUPLICATION
 
@@ -123,9 +158,51 @@ In what order should this hypothesis be explored? (1 = first, 2 = second, etc.)
 - **Before generating**: Check if an existing task or hypothesis already covers this angle. If yes, explore a different dimension.
 
 ### Source Selection Strategy
-- **Official queries** (jobs, documentation, regulations): Prioritize government databases (USAJobs, SAM.gov)
-- **Social queries** (discussions, opinions, trends): Prioritize social media (Twitter, Reddit, Discord)
-- **Research queries** (analysis, investigations, leaks): Mix sources (Brave Search for archives, Discord for communities, Twitter for whistleblowers)
+
+Use the detailed source descriptions above to match sources to your investigative needs:
+
+**Contract & Procurement Investigations**:
+- SAM.gov (contract awards, vendors)
+- USASpending.gov (spending patterns)
+- SEC EDGAR (corporate filings for contractors)
+- ProPublica (procurement scandals)
+
+**Employment & Personnel Research**:
+- USAJobs (official federal postings)
+- ClearanceJobs (cleared positions)
+- Reddit r/fednews, r/govcontracts (hiring discussions)
+- LinkedIn (via Brave Search for career trajectories)
+
+**Military & Defense Topics**:
+- DVIDS (official military news, operations)
+- SAM.gov (defense contracts)
+- Reddit r/defense, r/Military (insider discussions)
+- Discord OSINT communities (conflict analysis)
+
+**Intelligence & Classified Programs**:
+- FBI Vault (declassified investigations)
+- CIA CREST (declassified documents)
+- ProPublica (exposés)
+- Reddit r/Intelligence (community analysis)
+- Discord Bellingcat (OSINT investigations)
+
+**Policy & Regulatory Matters**:
+- Federal Register (regulations, proposed rules)
+- Congress.gov (legislation, committee reports)
+- CourtListener (legal challenges)
+- Brave Search (policy analysis, think tanks)
+
+**Corporate & Financial Investigation**:
+- SEC EDGAR (10-K, 8-K filings, ownership)
+- SAM.gov (government contracts)
+- ProPublica (corporate accountability)
+- Brave Search (news coverage, analysis)
+
+**Social Sentiment & Community Insights**:
+- Reddit (detailed discussions, insider perspectives)
+- Discord (real-time OSINT analysis, expert communities)
+- Twitter (breaking news, official statements, whistleblowers)
+- Brave Search (aggregated social media coverage)
 
 ### Signal Specificity (CRITICAL)
 Your signals/keywords will be used to search databases. Effective signals help databases find relevant results:
