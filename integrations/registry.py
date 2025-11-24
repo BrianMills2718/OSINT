@@ -1,8 +1,12 @@
 """Central registry for all data source integrations."""
 
 from typing import Dict, List, Type, Optional
+import logging
 from core.database_integration_base import DatabaseIntegration
 from config_loader import config
+
+# Set up logger for this module
+logger = logging.getLogger(__name__)
 
 # Import government integrations
 from integrations.government.sam_integration import SAMIntegration
@@ -159,6 +163,8 @@ class IntegrationRegistry:
         try:
             self.register(integration_id, integration_class)
         except Exception as e:
+            # Registration failed - log but don't crash
+            logger.warning(f"Failed to register {integration_id}: {e}", exc_info=True)
             print(f"Warning: Failed to register {integration_id}: {e}")
             # Don't crash - let other integrations continue
 
@@ -195,6 +201,8 @@ class IntegrationRegistry:
             temp_instance = integration_class()
             metadata = temp_instance.metadata
         except Exception as e:
+            # Metadata validation failed - log and re-raise
+            logger.error(f"Integration '{integration_id}' failed to instantiate or get metadata: {e}", exc_info=True)
             raise ValueError(
                 f"Integration '{integration_id}' failed to instantiate or get metadata: {e}"
             )
@@ -284,7 +292,8 @@ class IntegrationRegistry:
             self._cached_instances[integration_id] = instance
             return instance
         except Exception as e:
-            # Log error but don't crash
+            # Instantiation failed - log and return None
+            logger.warning(f"Failed to instantiate {integration_id}: {e}", exc_info=True)
             print(f"Warning: Failed to instantiate {integration_id}: {e}")
             return None
 
@@ -371,6 +380,8 @@ class IntegrationRegistry:
                     if not available:
                         reason = "Instantiation failed"
                 except Exception as e:
+                    # Availability check failed
+                    logger.debug(f"Availability check failed for {integration_id}: {e}", exc_info=True)
                     reason = str(e)
             else:
                 reason = "Disabled in config"
@@ -429,6 +440,8 @@ class IntegrationRegistry:
                     metadata.category
                 )
             except Exception as e:
+                # Metadata validation failed during structural check
+                logger.warning(f"Metadata validation failed for {integration_id}: {e}", exc_info=True)
                 results['metadata_valid'] = False
                 results['error'] = f"Metadata validation failed: {e}"
 
@@ -441,6 +454,8 @@ class IntegrationRegistry:
                 is_async = inspect.iscoroutinefunction(instance.generate_query) if has_generate_query else False
                 results['query_generation'] = has_generate_query and is_async
             except Exception as e:
+                # Query generation check failed
+                logger.debug(f"Query generation check failed for {integration_id}: {e}", exc_info=True)
                 results['query_generation'] = False
                 results['error'] = results.get('error', '') + f" | Query generation check failed: {e}"
 
@@ -451,10 +466,14 @@ class IntegrationRegistry:
                 is_async = inspect.iscoroutinefunction(instance.execute_search) if has_execute_search else False
                 results['graceful_errors'] = has_execute_search and is_async
             except Exception as e:
+                # Execute search check failed
+                logger.debug(f"Execute search check failed for {integration_id}: {e}", exc_info=True)
                 results['graceful_errors'] = False
                 results['error'] = results.get('error', '') + f" | Execute search check failed: {e}"
 
         except Exception as e:
+            # Overall validation failed - log and record error
+            logger.error(f"Structural validation failed for {integration_id}: {e}", exc_info=True)
             results['error'] = str(e)
             # Fill in any missing results
             for key in ['instantiation', 'metadata_valid', 'query_generation', 'graceful_errors']:
