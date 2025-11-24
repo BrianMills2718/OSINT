@@ -6,6 +6,7 @@ Integrates ClearanceJobs, DVIDS, and SAM.gov APIs
 
 import streamlit as st
 import sys
+import logging
 import os
 from dotenv import load_dotenv
 

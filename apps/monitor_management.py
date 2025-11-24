@@ -3,6 +3,7 @@
 
 import streamlit as st
 import sys
+import logging
 from pathlib import Path
 import json
 import yaml
@@ -13,6 +14,9 @@ import pandas as pd
 # Add parent directory to path
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
+
+# Set up logger for this module
+logger = logging.getLogger(__name__)
 
 def render_monitor_management_tab():
     """Render the Monitor Management tab."""

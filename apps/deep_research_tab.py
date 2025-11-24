@@ -6,6 +6,7 @@ Integrates SimpleDeepResearch engine with live progress display.
 
 import streamlit as st
 import asyncio
+import logging
 import os
 import sys
 from pathlib import Path
@@ -20,6 +21,9 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
+
+# Set up logger for this module
+logger = logging.getLogger(__name__)
 
 def render_deep_research_tab(openai_api_key_from_ui):
     """Render the Deep Research tab in Streamlit UI."""

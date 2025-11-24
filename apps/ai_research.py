@@ -323,7 +323,7 @@ async def execute_search_via_registry(source_id: str, research_question: str, ap
 
     except Exception as e:
         response_time_ms = (datetime.now() - start_time).total_seconds() * 1000
-        logger.exception(f"Exception during search for {source_id}:")
+        logger.exception(f"Exception during search for {source_id}:", exc_info=True)
         return {
             "success": False,
             "total": 0,
