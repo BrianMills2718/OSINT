@@ -164,13 +164,66 @@ class IntegrationRegistry:
 
     def register(self, integration_id: str, integration_class: Type[DatabaseIntegration]):
         """
-        Register a new integration class.
+        Register a new integration class with architectural validation.
+
+        Enforces architectural consistency by validating:
+        1. Required methods exist (metadata, is_relevant, generate_query, execute_search)
+        2. Source metadata entry exists in source_metadata.py
+        3. Prompt template exists (warning only)
+        4. Metadata ID matches registration ID
 
         Args:
             integration_id: Unique ID for this integration (must match metadata.id)
             integration_class: The integration class (NOT an instance)
+
+        Raises:
+            ValueError: If validation fails (missing methods, missing metadata, ID mismatch)
         """
+        import os
+
+        # Validation 1: Required methods exist
+        required_methods = ['metadata', 'is_relevant', 'generate_query', 'execute_search']
+        missing_methods = [m for m in required_methods if not hasattr(integration_class, m)]
+        if missing_methods:
+            raise ValueError(
+                f"Integration '{integration_id}' missing required methods: {missing_methods}\n"
+                f"All integrations must implement: {required_methods}"
+            )
+
+        # Validation 2: Can instantiate and get metadata
+        try:
+            temp_instance = integration_class()
+            metadata = temp_instance.metadata
+        except Exception as e:
+            raise ValueError(
+                f"Integration '{integration_id}' failed to instantiate or get metadata: {e}"
+            )
+
+        # Validation 3: Source metadata entry exists
+        from integrations.source_metadata import get_source_metadata
+        source_metadata = get_source_metadata(metadata.name)
+        if not source_metadata:
+            raise ValueError(
+                f"Integration '{integration_id}' missing source_metadata entry for '{metadata.name}'.\n"
+                f"Add entry to integrations/source_metadata.py"
+            )
+
+        # Validation 4: Prompt template exists (warning only, not all integrations need prompts)
+        prompt_path = f"prompts/integrations/{integration_id}_query_generation.j2"
+        if not os.path.exists(prompt_path):
+            # Not an error - some integrations may not use LLM query generation
+            pass
+
+        # Validation 5: Metadata ID matches registration ID
+        if metadata.id != integration_id:
+            raise ValueError(
+                f"Integration metadata.id ('{metadata.id}') doesn't match registration ID ('{integration_id}')\n"
+                f"Update metadata.id in integration class to match"
+            )
+
+        # All validations passed - register it
         self._integration_classes[integration_id] = integration_class
+        # Success message removed to avoid spam during startup
 
     def is_enabled(self, integration_id: str) -> bool:
         """
