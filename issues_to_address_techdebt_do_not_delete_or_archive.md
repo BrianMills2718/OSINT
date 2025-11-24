@@ -47,29 +47,7 @@ This file tracks ongoing technical issues, bugs, and tech debt that need to be a
 
 ## Low Priority
 
-### NewsAPI 426 Upgrade Required Errors
-**Discovered**: 2025-11-24
-**Severity**: Low (news coverage affected but not critical)
-**Status**: INVESTIGATING
-
-**Symptoms**:
-- HTTP 426 errors: "Upgrade Required" from NewsAPI
-- Error observed in production research runs
-- Previous fix (commit 3beaf75) may need review
-
-**Impact**:
-- Missing news coverage from NewsAPI source
-- Other news sources (Brave Search) available as fallback
-- Not blocking core research functionality
-
-**Next Steps**:
-1. Investigate NewsAPI response to understand 426 error
-2. Check API tier limitations or required parameters
-3. Review previous fix (commit 3beaf75) for completeness
-4. Test with valid API key and different query patterns
-
-**Files**:
-- `integrations/news/newsapi_integration.py`
+**No low priority issues currently open.**
 
 ---
 
@@ -86,6 +64,11 @@ This file tracks ongoing technical issues, bugs, and tech debt that need to be a
 **ClearanceJobs Scraper** (commit ed54624)
 - "Search not submitted" Playwright errors → Already fixed (HTTP scraper)
 - Test: 5/5 passed - Documented working correctly
+
+**NewsAPI 426 Errors** (commit 3beaf75)
+- HTTP 426 "Upgrade Required" errors → Already fixed (30-day limit enforcement)
+- Constraint enforcement working: Old dates automatically adjusted
+- Test: 2/2 passed (90-day and 7-day queries both succeed)
 
 ---
 
