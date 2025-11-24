@@ -254,29 +254,50 @@ class IntegrationRegistry:
         """
         Get an integration class by ID.
 
+        Automatically normalizes source names (e.g., "Twitter" -> "twitter",
+        "Brave Search" -> "brave_search") using normalize_source_name().
+
         Args:
-            integration_id: Integration ID
+            integration_id: Integration ID or display name
 
         Returns:
             Integration class (NOT instance)
 
         Raises:
-            ValueError: If integration not found
+            ValueError: If integration not found after normalization
         """
-        if integration_id not in self._integration_classes:
-            raise ValueError(f"Unknown integration: {integration_id}")
-        return self._integration_classes[integration_id]
+        # First try direct lookup (fast path for canonical IDs)
+        if integration_id in self._integration_classes:
+            return self._integration_classes[integration_id]
+
+        # Normalize and retry (handles "Twitter" -> "twitter", "Brave Search" -> "brave_search")
+        normalized_id = self.normalize_source_name(integration_id)
+        if normalized_id and normalized_id in self._integration_classes:
+            return self._integration_classes[normalized_id]
+
+        # Still not found - raise with helpful message
+        raise ValueError(f"Unknown integration: {integration_id} (normalized: {normalized_id})")
 
     def get_instance(self, integration_id: str) -> Optional[DatabaseIntegration]:
         """
         Get an integration instance (lazy instantiation + caching).
 
+        Automatically normalizes source names (e.g., "Twitter" -> "twitter",
+        "Brave Search" -> "brave_search") using normalize_source_name().
+
         Args:
-            integration_id: Integration ID
+            integration_id: Integration ID or display name
 
         Returns:
             Integration instance, or None if disabled or unavailable
         """
+        # Normalize integration_id first (handles "Twitter" -> "twitter", etc.)
+        original_id = integration_id
+        if integration_id not in self._integration_classes:
+            normalized_id = self.normalize_source_name(integration_id)
+            if normalized_id:
+                integration_id = normalized_id
+
         # Check feature flag
         if not self.is_enabled(integration_id):
             return None
@@ -293,8 +314,8 @@ class IntegrationRegistry:
             return instance
         except Exception as e:
             # Instantiation failed - log and return None
-            logger.warning(f"Failed to instantiate {integration_id}: {e}", exc_info=True)
-            print(f"Warning: Failed to instantiate {integration_id}: {e}")
+            logger.warning(f"Failed to instantiate {original_id} (normalized: {integration_id}): {e}", exc_info=True)
+            print(f"Warning: Failed to instantiate {original_id}: {e}")
             return None
 
     def get_all(self) -> Dict[str, Type[DatabaseIntegration]]:
