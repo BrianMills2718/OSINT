@@ -8,6 +8,9 @@ Generate search parameters for the Federal Register API:
   **IMPORTANT**: Only use these exact 4 document types. Invalid types will cause API errors.
   Valid types: ["RULE", "PRORULE", "NOTICE", "PRESDOCU"]
 - agencies: Agency slugs if specific agencies mentioned (array of strings like ["environmental-protection-agency", "homeland-security-department"], or empty array)
+  **IMPORTANT**: Use exact Federal Register agency slugs. Invalid slugs will cause API errors.
+  **NEVER use slugs like "office-of-management-and-budget" or "national-science-and-technology-council" - these don't exist!**
+  Valid examples: ["defense-department", "homeland-security-department", "environmental-protection-agency"]
 - date_range_days: How many days back to search (integer 1-730, default 180 for 6 months)
 
 Guidelines:
@@ -18,15 +21,18 @@ Guidelines:
   * ["PRORULE"] = proposed rules only
   * ["RULE", "PRORULE"] = all rules
   * ["NOTICE"] = notices only
-- agencies: Use Federal Register agency slugs. Common ones:
-  * environmental-protection-agency (EPA)
-  * homeland-security-department (DHS)
+- agencies: Use Federal Register agency slugs. Common ones (USE EXACT SLUGS):
   * defense-department (DoD)
+  * homeland-security-department (DHS)
+  * environmental-protection-agency (EPA)
   * health-and-human-services-department (HHS)
   * food-and-drug-administration (FDA)
   * securities-and-exchange-commission (SEC)
   * federal-trade-commission (FTC)
-  * Only specify if question explicitly mentions the agency
+  * treasury-department (Treasury)
+  * justice-department (DoJ)
+  * commerce-department (Commerce)
+  * **IMPORTANT**: Only specify if question explicitly mentions the agency, otherwise use empty array []
 - date_range_days: Use 90 for "recent", 180 for default, 365 for "past year", 730 for maximum
 
 If this question is not about federal regulations or government policy, return relevant: false.

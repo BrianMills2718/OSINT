@@ -229,6 +229,20 @@ SOURCE_METADATA = {
             'structured_data': True,
             'agency_specific': True,
             'document_types': ['RULE', 'PRORULE', 'NOTICE', 'PRESDOCU'],
+            'common_agency_slugs': [
+                'defense-department',
+                'homeland-security-department',
+                'environmental-protection-agency',
+                'securities-and-exchange-commission',
+                'food-and-drug-administration',
+                'federal-trade-commission',
+                'health-and-human-services-department',
+                'treasury-department',
+                'justice-department',
+                'commerce-department',
+                'energy-department',
+                'transportation-department'
+            ],
             'date_searchable': True,
             'requires_verification': False  # Official government publication
         },

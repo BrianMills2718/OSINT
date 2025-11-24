@@ -214,6 +214,24 @@ class FederalRegisterIntegration(DatabaseIntegration):
                 # Update query_params with filtered types
                 query_params["document_types"] = filtered_types
 
+            # Safety net: Validate agency slugs against metadata
+            # This prevents API errors from invalid agency slugs (e.g., "office-of-management-and-budget")
+            if metadata and query_params.get("agencies"):
+                valid_agencies = metadata.characteristics.get('common_agency_slugs', [])
+                requested_agencies = query_params.get("agencies", [])
+
+                # Filter out invalid agency slugs
+                filtered_agencies = [a for a in requested_agencies if a in valid_agencies]
+
+                # Log if we filtered anything (defensive)
+                if len(filtered_agencies) < len(requested_agencies):
+                    invalid = [a for a in requested_agencies if a not in valid_agencies]
+                    print(f"[INFO] Federal Register: Filtered invalid agency slugs: {invalid}")
+                    print(f"[INFO] Valid agency slugs are: {valid_agencies}")
+
+                # Update query_params with filtered agencies
+                query_params["agencies"] = filtered_agencies
+
             # Build request parameters
             params = {
                 "per_page": min(limit, 1000),  # Max 1000 per request
