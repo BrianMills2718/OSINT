@@ -472,13 +472,24 @@ pip list | grep playwright
 **Last Updated**: 2025-11-24
 **Current Branch**: `master`
 **Current Phase**: Production-ready research system - **29 integrations working**
-**Status**: GovInfo added, ClearanceJobs optimized (10x), tech debt cleanup complete
+**Status**: Critical bugs fixed, temporal context system operational, all validation tests passing
 
 ---
 
 ## CURRENT STATUS
 
-**Recently Completed** (2025-11-24 - Latest Session):
+**Recently Completed** (2025-11-24 - Current Session):
+- ✅ **P0 Bug Fixes + Temporal Context Architecture** - **COMPLETE** (commit 3a39a92)
+  - **ExecutionLogger variable shadowing fixed** (commit b75478d): Resolved P0 crash caused by `logger` parameter shadowing module-level logger - 24 lines changed across method signature, body, and call sites
+  - **Automatic temporal context injection** (commit 7309e66): System now auto-injects `current_date`, `current_year`, `current_datetime` into ALL prompts - prevents LLM temporal confusion on date-related queries
+  - **USAspending relevance prompt strengthened** (commit 74acfe1): Added explicit contractor/contract guidance - "defense contractors" queries now correctly return True
+  - **Configurable temporal context directives** (commit 8000d0e): Templates opt-in with `{# temporal_context: true #}` - header auto-prepended, zero duplication
+  - **Argparse CLI fix** (commit 3a39a92): `run_research_cli.py` now accepts `--max-tasks`, `--max-time-minutes`, `--max-retries`, `--max-concurrent` parameters that override config.yaml
+  - **Temporal context rollout** (commit 3a39a92): Added directive to SAM.gov, FEC, Federal Register, GovInfo query generation templates
+  - **Validation results**: USAspending now returns 17 results (was 0), ExecutionLogger crash completely resolved, all fixes tested and working
+  - Files modified: research/deep_research.py, core/prompt_loader.py, run_research_cli.py, 5 prompt templates
+
+**Previously Completed** (2025-11-24 - Earlier Session):
 - ✅ GovInfo.gov integration (GAO reports, IG audits, Congressional oversight) - **COMPLETE** (commit af93483)
   - 10+ collections: GAOREPORTS, CRPT, CHRG, USCOURTS, CFR, PLAW
   - LLM-driven collection selection with date filtering
