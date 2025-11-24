@@ -479,6 +479,12 @@ pip list | grep playwright
 ## CURRENT STATUS
 
 **Recently Completed** (2025-11-24 - Current Session):
+- ✅ **Registry Source Name Normalization Fix** - **COMPLETE** (commit d2254a7)
+  - **Problem**: LLM returns display names ("Twitter", "Brave Search", "NewsAPI") but registry only recognized lowercase IDs ("twitter", "brave_search", "newsapi")
+  - **Solution**: Added automatic normalization to `get()` and `get_instance()` methods
+  - **Impact**: Eliminates "Unknown integration" errors during hypothesis execution
+  - **Validated**: All display names now correctly resolve (Twitter→twitter, Brave Search→brave_search, etc.)
+  - Files: integrations/registry.py (29 insertions, 8 deletions)
 - ✅ **Consolidation Refactor: Single Source of Truth Architecture** - **COMPLETE** (commit 92e03b7)
   - **DatabaseMetadata is now the SINGLE SOURCE OF TRUTH** for all source configuration
   - **Deleted source_metadata.py** (646 lines) - all data merged into DatabaseMetadata
