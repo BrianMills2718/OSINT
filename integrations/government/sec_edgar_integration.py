@@ -14,6 +14,7 @@ import asyncio
 import requests
 import re
 from bs4 import BeautifulSoup
+import logging
 from llm_utils import acompletion
 from core.prompt_loader import render_prompt
 
@@ -25,6 +26,9 @@ from core.database_integration_base import (
 )
 from core.api_request_tracker import log_request
 from config_loader import config
+
+# Set up logger for this module
+logger = logging.getLogger(__name__)
 
 
 # Common company name aliases and variations for defense contractors
@@ -220,7 +224,8 @@ Return JSON:
             return result.get("relevant", True)  # Default to True on parsing failure
 
         except Exception as e:
-            # On error, default to True (let query generation handle filtering)
+            # Catch-all at integration boundary - acceptable to return default instead of crashing
+            logger.error(f"SEC EDGAR relevance check failed: {e}, defaulting to True", exc_info=True)
             print(f"[WARN] SEC EDGAR relevance check failed: {e}, defaulting to True")
             return True
 
@@ -377,6 +382,8 @@ Return JSON:
             return None
 
         except Exception as e:
+            # Catch-all at integration boundary - acceptable to return None instead of crashing
+            logger.error(f"CIK lookup failed for '{company_name}': {e}", exc_info=True)
             print(f"[WARN] CIK lookup failed for '{company_name}': {e}")
             return None
 
@@ -415,6 +422,8 @@ Return JSON:
             return text_content
 
         except Exception as e:
+            # Catch-all at integration boundary - acceptable to return None instead of crashing
+            logger.error(f"Failed to fetch document content from {doc_url}: {e}", exc_info=True)
             print(f"[WARN] Failed to fetch document content from {doc_url}: {e}")
             return None
 
@@ -480,6 +489,8 @@ Return JSON:
             return content[:3000] + "\n\n[Note: No specific sections identified - showing document preview]"
 
         except Exception as e:
+            # Catch-all at integration boundary - acceptable to return None instead of crashing
+            logger.error(f"Section extraction failed: {e}", exc_info=True)
             print(f"[WARN] Section extraction failed: {e}")
             return None
 
@@ -553,6 +564,8 @@ Return JSON:
             )
 
         except Exception as e:
+            # Catch-all at integration boundary - acceptable to return error instead of crashing
+            logger.error(f"SEC EDGAR CIK search failed: {e}", exc_info=True)
             return QueryResult(
                 success=False,
                 source="SEC EDGAR",
@@ -607,6 +620,8 @@ Return JSON:
             return await self._search_by_cik(cik)
 
         except Exception as e:
+            # Catch-all at integration boundary - acceptable to return error instead of crashing
+            logger.error(f"SEC EDGAR ticker search failed: {e}", exc_info=True)
             return QueryResult(
                 success=False,
                 source="SEC EDGAR",
@@ -688,6 +703,8 @@ Return JSON:
             return await self._search_by_cik(cik)
 
         except Exception as e:
+            # Catch-all at integration boundary - acceptable to return error instead of crashing
+            logger.error(f"SEC EDGAR fuzzy search failed: {e}", exc_info=True)
             return QueryResult(
                 success=False,
                 source="SEC EDGAR",
@@ -897,6 +914,8 @@ Return JSON:
                 )
 
         except Exception as e:
+            # Catch-all at integration boundary - acceptable to return error instead of crashing
+            logger.error(f"SEC EDGAR search failed: {e}", exc_info=True)
             return QueryResult(
                 success=False,
                 source="SEC EDGAR",

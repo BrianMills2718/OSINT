@@ -11,6 +11,7 @@ from typing import Dict, Optional
 from datetime import datetime
 import asyncio
 import requests
+import logging
 from llm_utils import acompletion
 from core.prompt_loader import render_prompt
 
@@ -22,6 +23,9 @@ from core.database_integration_base import (
 )
 from core.api_request_tracker import log_request
 from config_loader import config
+
+# Set up logger for this module
+logger = logging.getLogger(__name__)
 
 
 class FederalRegisterIntegration(DatabaseIntegration):
@@ -357,7 +361,9 @@ class FederalRegisterIntegration(DatabaseIntegration):
             )
 
         except Exception as e:
+            # Catch-all at integration boundary - acceptable to return error instead of crashing
             response_time_ms = (datetime.now() - start_time).total_seconds() * 1000
+            logger.error(f"Federal Register search failed: {e}", exc_info=True)
 
             # Log failed request
             log_request(

@@ -14,6 +14,7 @@ from pathlib import Path
 from typing import Dict, List, Optional, Any
 from datetime import datetime, timedelta
 from dotenv import load_dotenv
+import logging
 
 import sys
 sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(__file__))))
@@ -29,6 +30,9 @@ from llm_utils import acompletion
 
 # Load environment variables
 load_dotenv()
+
+# Set up logger for this module
+logger = logging.getLogger(__name__)
 
 # Lazy import Telethon (only when needed)
 TelegramClient = None
@@ -183,7 +187,8 @@ Return JSON:
             return result.get("relevant", True)
 
         except Exception as e:
-            # On error, default to True (let query generation filter)
+            # Catch-all at integration boundary - acceptable to return default instead of crashing
+            logger.error(f"Telegram relevance check failed: {e}, defaulting to True", exc_info=True)
             print(f"[WARN] Telegram relevance check failed: {e}, defaulting to True")
             return True
 
@@ -255,6 +260,8 @@ Return JSON:
             return result
 
         except Exception as e:
+            # Catch-all at integration boundary - acceptable to return None instead of crashing
+            logger.error(f"Telegram query generation failed: {e}", exc_info=True)
             print(f"[ERROR] Telegram query generation failed: {e}")
             return None
 
@@ -315,7 +322,9 @@ Return JSON:
             )
 
         except Exception as e:
+            # Catch-all at integration boundary - acceptable to return error instead of crashing
             response_time_ms = (datetime.now() - start_time).total_seconds() * 1000
+            logger.error(f"Telegram search failed: {e}", exc_info=True)
             return QueryResult(
                 success=False,
                 source="Telegram",
@@ -358,6 +367,8 @@ Return JSON:
                     })
 
         except Exception as e:
+            # Catch-all at integration boundary - acceptable to return partial results instead of crashing
+            logger.error(f"Telegram channel search failed: {e}", exc_info=True)
             print(f"[WARN] Channel search failed: {e}")
 
         return results
@@ -394,6 +405,8 @@ Return JSON:
                     })
 
         except Exception as e:
+            # Catch-all at integration boundary - acceptable to return empty results instead of crashing
+            logger.error(f"Telegram failed to get messages from @{channel_username}: {e}", exc_info=True)
             print(f"[WARN] Failed to get messages from @{channel_username}: {e}")
 
         return results
@@ -443,12 +456,16 @@ Return JSON:
 
                                     if len(results) >= limit:
                                         break
-                        except:
+                        except Exception as e:
+                            # Catch-all for individual channel failures - acceptable to continue with other channels
+                            logger.error(f"Telegram failed to search channel {chat.username}: {e}", exc_info=True)
                             continue
 
                     if len(results) >= limit:
                         break
-            except:
+            except Exception as e:
+                # Catch-all for keyword search failures - acceptable to continue with other keywords
+                logger.error(f"Telegram failed to search keyword {keyword}: {e}", exc_info=True)
                 continue
 
         return results[:limit]
@@ -483,6 +500,8 @@ Return JSON:
             }]
 
         except Exception as e:
+            # Catch-all at integration boundary - acceptable to return empty results instead of crashing
+            logger.error(f"Telegram failed to get info for @{channel_username}: {e}", exc_info=True)
             print(f"[WARN] Failed to get info for @{channel_username}: {e}")
             return []
 
@@ -491,5 +510,6 @@ Return JSON:
         if self.client and self._authenticated:
             try:
                 asyncio.get_event_loop().run_until_complete(self.client.disconnect())
-            except:
-                pass
+            except Exception as e:
+                # Don't raise in __del__ - can cause interpreter crashes
+                logging.error(f"Telegram client disconnect failed in __del__: {e}", exc_info=True)

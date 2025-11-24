@@ -332,6 +332,30 @@ Return JSON with your decision:
                     }
                     documents.append(doc)
 
+            elif endpoint == "hearing":
+                hearings = data.get("hearings", [])
+                for hearing in hearings:
+                    # Hearing summary from list endpoint doesn't include title/description
+                    # Build informative title from available metadata
+                    chamber = hearing.get("chamber", "")
+                    number = hearing.get("number", "")
+                    jacket_number = hearing.get("jacketNumber", "")
+
+                    doc = {
+                        "title": f"Hearing {number} - {chamber} (Congress {congress_num})",
+                        "url": hearing.get("url", ""),
+                        "snippet": f"Chamber: {chamber} | Number: {number} | Jacket: {jacket_number} | Updated: {hearing.get('updateDate', 'N/A')}",
+                        "date": hearing.get("updateDate"),
+                        "metadata": {
+                            "chamber": chamber,
+                            "number": number,
+                            "jacket_number": jacket_number,
+                            "congress": hearing.get("congress"),
+                            "update_date": hearing.get("updateDate")
+                        }
+                    }
+                    documents.append(doc)
+
             # Limit results to limit
             documents = documents[:limit]
 
