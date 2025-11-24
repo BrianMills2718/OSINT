@@ -215,7 +215,7 @@ class CRESTSeleniumIntegration(DatabaseIntegration):
                                 metadata[key] = item.text.strip()
                             except Exception as e:
                                 # Individual field parsing failed - skip this field
-                                logger.debug(f"CREST: Failed to parse metadata field: {e}")
+                                logger.debug(f"CREST: Failed to parse metadata field: {e}", exc_info=True)
                                 continue
                     except Exception as e:
                         # Metadata extraction failed - acceptable to continue without metadata
