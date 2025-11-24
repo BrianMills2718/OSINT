@@ -95,7 +95,8 @@ class USASpendingIntegration(DatabaseIntegration):
 
         prompt = render_prompt(
             "integrations/usaspending_relevance.j2",
-            research_question=research_question
+            research_question=research_question,
+            current_date=datetime.now().strftime("%Y-%m-%d")
         )
 
         try:
