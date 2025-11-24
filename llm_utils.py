@@ -33,6 +33,9 @@ from datetime import datetime
 # See: issues_to_address_techdebt_do_not_delete_or_archive.md - "LiteLLM Async Logging Worker Timeout"
 logging.getLogger('LiteLLM').setLevel(logging.CRITICAL)
 
+# Set up logger for this module
+logger = logging.getLogger(__name__)
+
 # Import config (will use default if config.yaml doesn't exist)
 try:
     from config_loader import config
@@ -220,10 +223,11 @@ class UnifiedLLM:
                     attempt_model, messages, response_format, timeout=timeout, **kwargs
                 )
             except Exception as e:
+                # Model failure - try fallback if available
                 last_error = e
                 if attempt_model != models_to_try[-1]:
-                    logging.warning(
-                        f"Model {attempt_model} failed: {e}. Trying fallback..."
+                    logger.warning(
+                        f"Model {attempt_model} failed: {e}. Trying fallback...", exc_info=True
                     )
                 continue
 
@@ -258,6 +262,7 @@ class UnifiedLLM:
             try:
                 return await cls._execute_completion(model, messages, response_format, timeout=timeout, **kwargs)
             except Exception as e:
+                # Retry logic for 503 errors - acceptable to catch all and retry
                 last_error = e
 
                 # Check if this is a retryable 503 error
@@ -265,11 +270,12 @@ class UnifiedLLM:
                 is_503 = '503' in error_str or 'overloaded' in error_str or 'unavailable' in error_str
 
                 if is_503 and attempt < max_retries:
-                    logging.info(f"Model {model} returned 503 (overloaded), retrying in {retry_delay}s...")
+                    logger.info(f"Model {model} returned 503 (overloaded), retrying in {retry_delay}s...")
                     await asyncio.sleep(retry_delay)
                     continue
 
-                # Non-503 error or final attempt - propagate
+                # Non-503 error or final attempt - propagate with logging
+                logger.error(f"LLM completion failed after {attempt + 1} attempts: {e}", exc_info=True)
                 raise
 
         # Should never reach here, but just in case
@@ -397,8 +403,9 @@ async def acompletion(model: str, messages: List[Dict[str, str]], timeout: Optio
         if cost > 0:
             _track_cost(model, cost, start_time)
     except Exception as e:
-        # Cost tracking failed - log but don't fail the request
-        logging.debug(f"Cost tracking failed: {e}")
+        # Cost tracking failure - acceptable to continue without cost data
+        # This is best-effort only and shouldn't fail the LLM request
+        logger.debug(f"Cost tracking failed: {e}", exc_info=True)
 
     return response
 
