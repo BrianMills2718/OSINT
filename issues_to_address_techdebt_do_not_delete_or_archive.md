@@ -47,7 +47,45 @@ This file tracks ongoing technical issues, bugs, and tech debt that need to be a
 
 ## Low Priority
 
-**No low priority issues currently open.**
+### NewsAPI 426 Upgrade Required Errors
+**Discovered**: 2025-11-24
+**Severity**: Low (news coverage affected but not critical)
+**Status**: INVESTIGATING
+
+**Symptoms**:
+- HTTP 426 errors: "Upgrade Required" from NewsAPI
+- Error observed in production research runs
+- Previous fix (commit 3beaf75) may need review
+
+**Impact**:
+- Missing news coverage from NewsAPI source
+- Other news sources (Brave Search) available as fallback
+- Not blocking core research functionality
+
+**Next Steps**:
+1. Investigate NewsAPI response to understand 426 error
+2. Check API tier limitations or required parameters
+3. Review previous fix (commit 3beaf75) for completeness
+4. Test with valid API key and different query patterns
+
+**Files**:
+- `integrations/news/newsapi_integration.py`
+
+---
+
+## Recently Resolved (2025-11-24)
+
+**Federal Register Agency Validation** (commit 6c219fa)
+- Invalid agency slugs causing 400 errors → Fixed with 3-layer validation
+- Test: 3/3 passed
+
+**SEC EDGAR Company Lookup** (commit 2ddc5f1)
+- Major defense contractors not found → Fixed with name normalization + aliases
+- Test: 6/6 passed (Northrop Grumman, Raytheon/RTX, etc.)
+
+**ClearanceJobs Scraper** (commit ed54624)
+- "Search not submitted" Playwright errors → Already fixed (HTTP scraper)
+- Test: 5/5 passed - Documented working correctly
 
 ---
 
@@ -70,4 +108,4 @@ This file tracks ongoing technical issues, bugs, and tech debt that need to be a
 
 ---
 
-**Last Updated**: 2025-11-23
+**Last Updated**: 2025-11-24
