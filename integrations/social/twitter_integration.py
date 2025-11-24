@@ -6,6 +6,7 @@ Provides access to Twitter search for social media intelligence gathering.
 """
 
 import json
+import logging
 import asyncio
 from typing import Dict, Optional
 from datetime import datetime
@@ -23,6 +24,9 @@ from config_loader import config
 
 # Import Twitter API client
 from experiments.twitterexplorer_sigint.api_client import execute_api_step
+
+# Set up logger for this module
+logger = logging.getLogger(__name__)
 
 
 class TwitterIntegration(DatabaseIntegration):
@@ -305,8 +309,8 @@ Return JSON with your decision:
             return result.get("relevant", True)  # Default to True if parsing fails
 
         except Exception as e:
-            # On error, default to True (let query generation and filtering handle it)
-            print(f"[WARN] Twitter relevance check failed: {e}, defaulting to True")
+            # Fallback on error - acceptable to default to True
+            logger.warning(f"Twitter relevance check failed, defaulting to True: {e}", exc_info=True)
             return True
 
     async def generate_query(self, research_question: str) -> Optional[Dict]:
@@ -650,6 +654,8 @@ Return JSON with your decision:
             )
 
         except Exception as e:
+            # Catch-all at integration boundary - acceptable to return error instead of crashing
+            logger.error(f"Twitter search failed: {e}", exc_info=True)
             response_time_ms = (datetime.now() - start_time).total_seconds() * 1000
 
             # Log failed request
