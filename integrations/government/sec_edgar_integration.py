@@ -27,6 +27,82 @@ from core.api_request_tracker import log_request
 from config_loader import config
 
 
+# Common company name aliases and variations for defense contractors
+# Maps: normalized search name → list of possible SEC database variations
+COMPANY_ALIASES = {
+    # Defense contractors
+    "northrop grumman": ["NORTHROP GRUMMAN", "NORTHROP GRUMMAN CORP"],
+    "raytheon": ["RAYTHEON", "RAYTHEON TECHNOLOGIES", "RTX CORP", "RAYTHEON CO"],
+    "lockheed martin": ["LOCKHEED MARTIN", "LOCKHEED MARTIN CORP"],
+    "boeing": ["BOEING CO", "BOEING"],
+    "general dynamics": ["GENERAL DYNAMICS", "GENERAL DYNAMICS CORP"],
+    "l3harris": ["L3HARRIS", "L3HARRIS TECHNOLOGIES", "HARRIS CORP"],
+    "bae systems": ["BAE SYSTEMS", "BAE SYSTEMS PLC"],
+    "huntington ingalls": ["HUNTINGTON INGALLS", "HUNTINGTON INGALLS INDUSTRIES"],
+    "leidos": ["LEIDOS", "LEIDOS HOLDINGS"],
+    "booz allen": ["BOOZ ALLEN", "BOOZ ALLEN HAMILTON"],
+    "caci": ["CACI", "CACI INTERNATIONAL"],
+    "saic": ["SAIC", "SCIENCE APPLICATIONS INTERNATIONAL"],
+    "textron": ["TEXTRON", "TEXTRON INC"],
+    "kratos": ["KRATOS", "KRATOS DEFENSE"],
+    "anduril": ["ANDURIL", "ANDURIL INDUSTRIES"],
+    "palantir": ["PALANTIR", "PALANTIR TECHNOLOGIES"],
+    # Tech companies (common in research queries)
+    "microsoft": ["MICROSOFT", "MICROSOFT CORP"],
+    "amazon": ["AMAZON", "AMAZON COM INC"],
+    "google": ["ALPHABET", "GOOGLE", "ALPHABET INC"],
+    "meta": ["META", "META PLATFORMS", "FACEBOOK"],
+    "apple": ["APPLE", "APPLE INC"],
+}
+
+
+def normalize_company_name(name: str) -> str:
+    """
+    Normalize company name for matching.
+
+    Strips common suffixes and standardizes format.
+
+    Args:
+        name: Raw company name
+
+    Returns:
+        Normalized name (lowercase, no suffixes)
+    """
+    if not name:
+        return ""
+
+    # Convert to lowercase
+    normalized = name.lower().strip()
+
+    # Remove common suffixes
+    suffixes_to_remove = [
+        " corporation",
+        " corp",
+        " incorporated",
+        " inc",
+        " company",
+        " co",
+        " llc",
+        " ltd",
+        " limited",
+        " plc",
+        " group",
+        " holdings",
+        " industries",
+        " technologies",
+        " systems",
+        " solutions",
+        ",",
+        ".",
+    ]
+
+    for suffix in suffixes_to_remove:
+        if normalized.endswith(suffix):
+            normalized = normalized[:-len(suffix)].strip()
+
+    return normalized
+
+
 class SECEdgarIntegration(DatabaseIntegration):
     """
     Integration for SEC EDGAR - U.S. Securities and Exchange Commission filings.
@@ -238,7 +314,12 @@ Return JSON:
 
     async def _search_company_cik(self, company_name: str) -> Optional[str]:
         """
-        Look up CIK (Central Index Key) by company name.
+        Look up CIK (Central Index Key) by company name with fuzzy matching and aliases.
+
+        Uses multi-strategy approach:
+        1. Exact match on normalized name
+        2. Alias lookup for known companies
+        3. Fuzzy partial matching
 
         Args:
             company_name: Company name to search
@@ -259,14 +340,40 @@ Return JSON:
             response.raise_for_status()
             data = response.json()
 
-            # Search for company name (case-insensitive)
+            # Normalize input company name
+            normalized_input = normalize_company_name(company_name)
+
+            # Strategy 1: Try exact match on normalized name
+            for entry in data.values():
+                title = entry.get("title", "")
+                normalized_title = normalize_company_name(title)
+
+                if normalized_input == normalized_title:
+                    cik = str(entry.get("cik_str")).zfill(10)
+                    print(f"[INFO] SEC EDGAR: Found exact match: '{company_name}' → '{title}' (CIK: {cik})")
+                    return cik
+
+            # Strategy 2: Try alias lookup for known companies
+            if normalized_input in COMPANY_ALIASES:
+                aliases = COMPANY_ALIASES[normalized_input]
+                for alias in aliases:
+                    for entry in data.values():
+                        title = entry.get("title", "")
+                        if alias.lower() in title.lower():
+                            cik = str(entry.get("cik_str")).zfill(10)
+                            print(f"[INFO] SEC EDGAR: Found via alias: '{company_name}' → '{title}' (alias: '{alias}', CIK: {cik})")
+                            return cik
+
+            # Strategy 3: Fuzzy partial matching (fallback)
             company_lower = company_name.lower()
             for entry in data.values():
                 title = entry.get("title", "").lower()
                 if company_lower in title or title in company_lower:
-                    cik = str(entry.get("cik_str")).zfill(10)  # Pad to 10 digits
+                    cik = str(entry.get("cik_str")).zfill(10)
+                    print(f"[INFO] SEC EDGAR: Found via fuzzy match: '{company_name}' → '{title}' (CIK: {cik})")
                     return cik
 
+            print(f"[INFO] SEC EDGAR: No match found for '{company_name}' (tried exact, alias, fuzzy)")
             return None
 
         except Exception as e:
