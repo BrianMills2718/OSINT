@@ -191,13 +191,17 @@ class CRESTSeleniumIntegration(DatabaseIntegration):
                     try:
                         title_elem = driver.find_element(By.CSS_SELECTOR, "h1.documentFirstHeading")
                         title = title_elem.text.strip()
-                    except:
+                    except Exception as e:
+                        # Element not found - use fallback title
+                        logger.warning(f"CREST: Title element not found, using fallback: {e}", exc_info=True)
                         title = doc_link['title']
 
                     try:
                         body = driver.find_element(By.CSS_SELECTOR, ".field-name-body .field-item")
                         snippet = body.text.strip()[:500] + "..."
-                    except:
+                    except Exception as e:
+                        # Body element not found - acceptable to continue without snippet
+                        logger.warning(f"CREST: Body element not found: {e}", exc_info=True)
                         snippet = ""
 
                     # Extract metadata fields
@@ -209,9 +213,13 @@ class CRESTSeleniumIntegration(DatabaseIntegration):
                                 item = field.find_element(By.CSS_SELECTOR, ".field-item")
                                 key = label.text.strip().replace(':', '')
                                 metadata[key] = item.text.strip()
-                            except:
+                            except Exception as e:
+                                # Individual field parsing failed - skip this field
+                                logger.debug(f"CREST: Failed to parse metadata field: {e}")
                                 continue
-                    except:
+                    except Exception as e:
+                        # Metadata extraction failed - acceptable to continue without metadata
+                        logger.warning(f"CREST: Metadata extraction failed: {e}", exc_info=True)
                         pass
 
                     # Create document dictionary
