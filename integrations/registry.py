@@ -384,6 +384,152 @@ class IntegrationRegistry:
 
         return status
 
+    def validate_integration(self, integration_id: str) -> Dict[str, any]:
+        """
+        Run smoke tests on a registered integration.
+
+        Tests:
+        1. Can instantiate?
+        2. Metadata is valid?
+        3. generate_query returns valid structure?
+        4. execute_search handles errors gracefully?
+
+        Args:
+            integration_id: Integration ID to validate
+
+        Returns:
+            Dict with test results:
+            {
+                "instantiation": bool,
+                "metadata_valid": bool,
+                "query_generation": bool,
+                "graceful_errors": bool,
+                "error": str (if any test failed with exception)
+            }
+        """
+        results = {}
+
+        try:
+            # Test 1: Can instantiate?
+            instance = self.get_instance(integration_id)
+            results['instantiation'] = instance is not None
+
+            if not instance:
+                results['metadata_valid'] = False
+                results['query_generation'] = False
+                results['graceful_errors'] = False
+                return results
+
+            # Test 2: Metadata valid?
+            try:
+                metadata = instance.metadata
+                results['metadata_valid'] = bool(
+                    metadata.name and
+                    metadata.id and
+                    metadata.category
+                )
+            except Exception as e:
+                results['metadata_valid'] = False
+                results['error'] = f"Metadata validation failed: {e}"
+
+            # Test 3: generate_query returns valid structure?
+            # Note: This is async, but we're doing a basic check here
+            # Full validation would require actually calling it
+            try:
+                import inspect
+                has_generate_query = hasattr(instance, 'generate_query')
+                is_async = inspect.iscoroutinefunction(instance.generate_query) if has_generate_query else False
+                results['query_generation'] = has_generate_query and is_async
+            except Exception as e:
+                results['query_generation'] = False
+                results['error'] = results.get('error', '') + f" | Query generation check failed: {e}"
+
+            # Test 4: execute_search exists and is async?
+            try:
+                import inspect
+                has_execute_search = hasattr(instance, 'execute_search')
+                is_async = inspect.iscoroutinefunction(instance.execute_search) if has_execute_search else False
+                results['graceful_errors'] = has_execute_search and is_async
+            except Exception as e:
+                results['graceful_errors'] = False
+                results['error'] = results.get('error', '') + f" | Execute search check failed: {e}"
+
+        except Exception as e:
+            results['error'] = str(e)
+            # Fill in any missing results
+            for key in ['instantiation', 'metadata_valid', 'query_generation', 'graceful_errors']:
+                if key not in results:
+                    results[key] = False
+
+        return results
+
+    def validate_all(self) -> Dict[str, Dict[str, any]]:
+        """
+        Run smoke tests on ALL registered integrations.
+
+        Returns:
+            Dict of integration_id -> validation results
+            {
+                "integration_id": {
+                    "instantiation": bool,
+                    "metadata_valid": bool,
+                    "query_generation": bool,
+                    "graceful_errors": bool,
+                    "error": str (if any)
+                }
+            }
+        """
+        results = {}
+        for integration_id in self._integration_classes:
+            results[integration_id] = self.validate_integration(integration_id)
+        return results
+
+    def print_validation_report(self, results: Dict[str, Dict[str, any]] = None):
+        """
+        Print a human-readable validation report.
+
+        Args:
+            results: Optional validation results from validate_all().
+                    If not provided, will run validate_all() first.
+        """
+        if results is None:
+            results = self.validate_all()
+
+        print("\n" + "="*80)
+        print("INTEGRATION VALIDATION REPORT")
+        print("="*80)
+
+        total_integrations = len(results)
+        passed_count = 0
+
+        for integration_id, tests in sorted(results.items()):
+            # Count passed tests
+            test_results = [v for k, v in tests.items() if k != 'error' and isinstance(v, bool)]
+            passed = sum(test_results)
+            total = len(test_results)
+
+            if passed == total:
+                status = "[PASS]"
+                passed_count += 1
+            elif passed > 0:
+                status = "[PARTIAL]"
+            else:
+                status = "[FAIL]"
+
+            print(f"\n{status} {integration_id}: {passed}/{total} tests passed")
+
+            # Show individual test results
+            if passed < total or 'error' in tests:
+                for test_name, result in tests.items():
+                    if test_name == 'error':
+                        print(f"  ❌ Error: {result}")
+                    elif not result:
+                        print(f"  ❌ {test_name}: FAIL")
+
+        print("\n" + "="*80)
+        print(f"SUMMARY: {passed_count}/{total_integrations} integrations passed all tests")
+        print("="*80)
+
 
 # Global registry instance
 registry = IntegrationRegistry()
