@@ -42,7 +42,9 @@ class ClearanceJobsIntegration(DatabaseIntegration):
             cost_per_query_estimate=0.001,  # LLM cost only
             typical_response_time=0.5,  # HTTP requests (was 5.0 for Playwright)
             rate_limit_daily=None,
-            description="Security clearance job postings requiring TS/SCI, Secret, Top Secret, and other clearances"
+            description="Security clearance job postings requiring TS/SCI, Secret, Top Secret, and other clearances",
+            requires_stealth=False,  # Server-side rendered, no bot detection
+            stealth_method=None  # Uses simple HTTP requests (not browser automation)
         )
 
     async def is_relevant(self, research_question: str) -> bool:
