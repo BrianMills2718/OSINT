@@ -7,6 +7,7 @@ hearings, and legislative activity from the Library of Congress API.
 """
 
 import json
+import logging
 import os
 from typing import Dict, Optional, List
 from datetime import datetime, timedelta
@@ -27,6 +28,9 @@ from config_loader import config
 
 # Load environment variables
 load_dotenv()
+
+# Set up logger for this module
+logger = logging.getLogger(__name__)
 
 
 class CongressIntegration(DatabaseIntegration):
@@ -127,7 +131,7 @@ Return JSON with your decision:
 
         except Exception as e:
             # On error, default to True (let query generation and filtering handle it)
-            print(f"[WARN] Congress.gov relevance check failed: {e}, defaulting to True")
+            logger.warning(f"Congress relevance check failed, defaulting to True: {e}", exc_info=True)
             return True
 
     async def generate_query(self, research_question: str) -> Optional[Dict]:
@@ -398,6 +402,8 @@ Return JSON with your decision:
             )
 
         except Exception as e:
+            # Catch-all at integration boundary - acceptable to return error instead of crashing
+            logger.error(f"Congress operation failed: {e}", exc_info=True)
             return QueryResult(
                 success=False,
                 source="Congress.gov",

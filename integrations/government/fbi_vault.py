@@ -8,6 +8,7 @@ with SeleniumBase UC Mode to bypass Cloudflare protection.
 """
 
 import json
+import logging
 import asyncio
 from typing import Dict, Optional
 from datetime import datetime
@@ -301,6 +302,8 @@ class FBIVaultIntegration(DatabaseIntegration):
             )
 
         except Exception as e:
+            # Catch-all at integration boundary - acceptable to return error instead of crashing
+            logger.error(f"FBI Vault search failed: {e}", exc_info=True)
             response_time_ms = (datetime.now() - start_time).total_seconds() * 1000
 
             # Log failed request

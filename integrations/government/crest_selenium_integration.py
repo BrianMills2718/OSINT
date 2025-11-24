@@ -7,6 +7,7 @@ for better Akamai Bot Manager evasion.
 """
 
 import json
+import logging
 from typing import Dict, Optional, List
 from urllib.parse import quote
 import time
@@ -169,6 +170,8 @@ class CRESTSeleniumIntegration(DatabaseIntegration):
                         })
 
             except Exception as e:
+                # Catch-all at integration boundary - acceptable to return error instead of crashing
+                logger.error(f"CREST Selenium operation failed: {e}", exc_info=True)
                 print(f"Error extracting search results: {e}")
 
             # Visit each document to get snippet (limited to limit)
@@ -221,6 +224,8 @@ class CRESTSeleniumIntegration(DatabaseIntegration):
                     documents.append(doc)
 
                 except Exception as e:
+                    # Catch-all at integration boundary - acceptable to return error instead of crashing
+                    logger.error(f"CREST Selenium operation failed: {e}", exc_info=True)
                     print(f"Failed to fetch document {doc_link['url']}: {e}")
                     continue
 
@@ -254,6 +259,8 @@ class CRESTSeleniumIntegration(DatabaseIntegration):
             )
 
         except Exception as e:
+            # Catch-all at integration boundary - acceptable to return error instead of crashing
+            logger.error(f"CREST Selenium operation failed: {e}", exc_info=True)
             if driver:
                 driver.quit()
 
