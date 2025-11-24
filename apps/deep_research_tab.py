@@ -508,6 +508,8 @@ def render_deep_research_tab(openai_api_key_from_ui):
                     )
 
         except Exception as e:
+            # Deep research failed
+            logger.error(f"Deep research failed: {e}", exc_info=True)
             st.error(f"❌ Deep research failed: {str(e)}")
             st.exception(e)
 

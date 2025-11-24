@@ -328,6 +328,8 @@ class ICIJOffshoreLeaksIntegration(DatabaseIntegration):
             )
 
         except requests.exceptions.HTTPError as e:
+            # ICIJ Offshore Leaks HTTP error
+            logger.error(f"ICIJ Offshore Leaks HTTP error: {e}", exc_info=True)
             response_time_ms = (datetime.now() - start_time).total_seconds() * 1000
             status_code = e.response.status_code if e.response else 0
 

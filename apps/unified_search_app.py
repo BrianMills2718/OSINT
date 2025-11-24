@@ -213,6 +213,8 @@ with st.sidebar:
             else:
                 st.info("No API requests logged yet. Use the app and stats will appear here.")
         except Exception as e:
+            # Stats loading failed
+            logger.warning(f"Stats loading failed: {e}", exc_info=True)
             st.caption(f"Stats unavailable: {str(e)}")
 
 # Create main tabs - New UX with User Guide first, then primary features
@@ -276,6 +278,8 @@ with tab5:
             from clearancejobs_search import render_clearancejobs_tab
             render_clearancejobs_tab(results_per_page, enable_rate_limiting)
         except ImportError as e:
+            # ClearanceJobs import failed - expected in some environments
+            logger.info(f"ClearanceJobs integration unavailable: {e}", exc_info=True)
             st.warning("⚠️ **ClearanceJobs Integration Unavailable**")
             st.info("""
             The ClearanceJobs integration requires Playwright, which is not available in this environment.

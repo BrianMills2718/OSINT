@@ -113,6 +113,8 @@ def render_active_monitors(monitor_configs):
                     st.caption(f"Total results: {result_count}")
 
         except Exception as e:
+            # Monitor loading failed
+            logger.error(f"Error loading monitor {config_file.name}: {e}", exc_info=True)
             st.error(f"Error loading monitor {config_file.name}: {str(e)}")
 
 
@@ -135,6 +137,8 @@ def run_monitor_now(config_file):
             st.success("✅ Monitor run complete! Check your email for alerts.")
 
         except Exception as e:
+            # Monitor execution failed
+            logger.error(f"Monitor run failed: {e}", exc_info=True)
             st.error(f"❌ Monitor run failed: {str(e)}")
             with st.expander("Error details"):
                 st.exception(e)
@@ -295,6 +299,8 @@ def check_service_status():
     except subprocess.TimeoutExpired:
         st.error("❌ Command timed out")
     except Exception as e:
+        # Service check failed
+        logger.warning(f"Cannot check service status: {e}", exc_info=True)
         st.error(f"❌ Cannot check service: {str(e)}")
         st.caption("💡 Tip: Service control requires systemd and proper permissions")
 
@@ -318,4 +324,6 @@ def view_service_logs():
             st.caption("💡 Tip: Run manually instead: `.venv/bin/python3 monitoring/scheduler.py`")
 
     except Exception as e:
+        # Log viewing failed
+        logger.warning(f"Cannot view service logs: {e}", exc_info=True)
         st.error(f"❌ Cannot view logs: {str(e)}")

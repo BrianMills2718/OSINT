@@ -521,6 +521,8 @@ def render_ai_research_tab(openai_api_key_from_ui, dvids_api_key, sam_api_key, u
                             st.caption(selected.get('reasoning', 'No reasoning provided'))
 
             except Exception as e:
+                # Query generation failed
+                logger.error(f"Query generation failed: {e}", exc_info=True)
                 st.error(f"❌ Failed to generate queries: {str(e)}")
                 return
 
@@ -578,6 +580,8 @@ def render_ai_research_tab(openai_api_key_from_ui, dvids_api_key, sam_api_key, u
                 st.markdown(summary)
 
             except Exception as e:
+                # Summary generation failed
+                logger.error(f"Summary generation failed: {e}", exc_info=True)
                 st.error(f"❌ Failed to generate summary: {str(e)}")
 
         # Step 4: Display detailed results
