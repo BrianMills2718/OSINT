@@ -10,7 +10,11 @@ from abc import ABC, abstractmethod
 from typing import Dict, List, Optional, Any
 from dataclasses import dataclass
 from enum import Enum
+import logging
 from pydantic import BaseModel, Field, field_validator
+
+# Set up logger for this module
+logger = logging.getLogger(__name__)
 
 
 class DatabaseCategory(Enum):
@@ -155,6 +159,8 @@ class QueryResult:
                     # Convert back to dict for storage
                     validated_results.append(search_result.model_dump())
                 except Exception as e:
+                    # Result validation failed - log and re-raise
+                    logger.error(f"{source} result #{i} missing required fields: {e}", exc_info=True)
                     raise ValueError(
                         f"{source} result #{i} missing required fields: {e}\n"
                         f"Result was: {result}\n"

@@ -102,7 +102,8 @@ class ScopingAgent:
             return needs_clarify
 
         except Exception as e:
-            logging.warning(f"Clarity scoring failed: {e}, assuming query is clear")
+            # Clarity scoring failed - assume query is clear (conservative)
+            logging.warning(f"Clarity scoring failed: {e}, assuming query is clear", exc_info=True)
             return False  # Conservative: assume clear on error
 
     async def generate_brief(self, query: str) -> ResearchBrief:

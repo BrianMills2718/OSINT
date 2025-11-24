@@ -24,6 +24,7 @@ import json
 import subprocess
 import tempfile
 import os
+import logging
 from typing import Dict, List, Any, Optional
 from datetime import datetime
 from llm_utils import acompletion
@@ -31,6 +32,9 @@ from llm_utils import acompletion
 from core.database_integration_base import QueryResult
 from core.api_request_tracker import log_request
 from config_loader import config
+
+# Set up logger for this module
+logger = logging.getLogger(__name__)
 
 
 class AdaptiveAnalyzer:
@@ -305,6 +309,8 @@ Return a brief plan (3-5 bullet points) describing the analysis approach.
             return response.choices[0].message.content
 
         except Exception as e:
+            # LLM planning failed - non-critical, continue with fallback
+            logger.warning(f"Adaptive analysis planning failed: {e}", exc_info=True)
             print(f"      ⚠️  Planning failed: {e}")
             return "Perform basic statistical analysis on available data."
 
@@ -382,6 +388,8 @@ Return ONLY the Python code, no explanations.
             return code
 
         except Exception as e:
+            # Code generation failed - return fallback code
+            logger.error(f"Adaptive analysis code generation failed: {e}", exc_info=True)
             print(f"      ⚠️  Code generation failed: {e}")
             return "print('Analysis failed: Unable to generate code')"
 
@@ -470,6 +478,8 @@ Return ONLY the Python code, no explanations.
             }
 
         except Exception as e:
+            # Code execution failed unexpectedly
+            logger.error(f"Adaptive analysis code execution failed: {e}", exc_info=True)
             if os.path.exists(script_path):
                 os.unlink(script_path)
             return {
@@ -522,6 +532,8 @@ Return ONLY the corrected Python code, no explanations.
             return code
 
         except Exception as e:
+            # Code refinement failed - return original code
+            logger.warning(f"Adaptive analysis code refinement failed: {e}", exc_info=True)
             print(f"      ⚠️  Code refinement failed: {e}")
             return original_code  # Return original if refinement fails
 
@@ -585,6 +597,8 @@ Example: ["Job postings increased 23% over 3 months", "California has 45% of all
             return result.get("insights", [])
 
         except Exception as e:
+            # Insight extraction failed - use fallback
+            logger.warning(f"Adaptive analysis insight extraction failed: {e}", exc_info=True)
             print(f"      ⚠️  Insight extraction failed: {e}")
             # Fallback: return output split by lines
             lines = [line.strip() for line in output.split('\n') if line.strip()]

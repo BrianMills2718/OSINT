@@ -130,7 +130,8 @@ class ResearchSupervisor:
                             break
 
             except Exception as e:
-                logging.warning(f"Error checking {integration_id} metadata: {e}")
+                # Metadata check failed for this integration - skip it
+                logging.warning(f"Error checking {integration_id} metadata: {e}", exc_info=True)
                 continue
 
         # Fallback: if no matches, use all sources (shotgun mode)

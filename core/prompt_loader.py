@@ -41,10 +41,14 @@ Reference:
 """
 
 import os
+import logging
 from pathlib import Path
 from typing import Dict, Any
 from datetime import datetime
 from jinja2 import Environment, FileSystemLoader, TemplateNotFound, Template
+
+# Set up logger for this module
+logger = logging.getLogger(__name__)
 
 
 # Determine prompts directory relative to this file
@@ -139,8 +143,9 @@ def render_prompt(template_name: str, **kwargs: Any) -> str:
         rendered: str = template.render(**context)
         return rendered
     except TemplateNotFound as e:
-        # Provide helpful error with full path
+        # Template not found - log and re-raise with helpful context
         full_path = PROMPTS_DIR / template_name
+        logger.error(f"Template not found: {template_name} (expected at {full_path})", exc_info=True)
         raise TemplateNotFound(
             f"Template not found: {template_name}\n"
             f"Expected location: {full_path}\n"
@@ -208,8 +213,12 @@ def validate_template(template_name: str) -> tuple[bool, str]:
 
         return (True, "")
     except TemplateNotFound as e:
+        # Template not found during validation
+        logger.warning(f"Template validation failed - not found: {template_name}", exc_info=True)
         return (False, f"Template not found: {template_name}")
     except Exception as e:
+        # Template has syntax errors
+        logger.error(f"Template validation failed - syntax error in {template_name}: {e}", exc_info=True)
         return (False, f"Template syntax error: {str(e)}")
 
 

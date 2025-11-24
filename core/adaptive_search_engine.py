@@ -390,7 +390,8 @@ Return as JSON array of strings:
             return entities
 
         except Exception as e:
-            logger.error(f"Entity extraction failed: {e}")
+            # Entity extraction failed - return empty list
+            logger.error(f"Entity extraction failed: {e}", exc_info=True)
             return []
 
     def _calculate_quality(self, results: List[Dict]) -> float:

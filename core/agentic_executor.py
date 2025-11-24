@@ -13,6 +13,7 @@ Architecture:
 
 import asyncio
 import json
+import logging
 from typing import Dict, List, Tuple, Optional
 from datetime import datetime
 from llm_utils import acompletion
@@ -21,6 +22,9 @@ from core.parallel_executor import ParallelExecutor
 from core.database_integration_base import DatabaseIntegration, QueryResult
 from core.api_request_tracker import log_request
 from config_loader import config
+
+# Set up logger for this module
+logger = logging.getLogger(__name__)
 
 
 class AgenticExecutor(ParallelExecutor):
@@ -353,6 +357,8 @@ class AgenticExecutor(ParallelExecutor):
             return new_result
 
         except Exception as e:
+            # Query refinement failed - return original result
+            logger.warning(f"Query refinement failed for {db.metadata.name}: {e}", exc_info=True)
             print(f"      ⚠️  {db.metadata.name}: Refinement error: {e}")
             return old_result
 
@@ -429,5 +435,7 @@ Include a "refinement_reasoning" field explaining your change.
             return result
 
         except Exception as e:
+            # LLM refinement failed - return None to skip refinement
+            logger.error(f"LLM query refinement failed: {e}", exc_info=True)
             print(f"        ⚠️  LLM refinement failed: {e}")
             return None

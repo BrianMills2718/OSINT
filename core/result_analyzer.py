@@ -13,6 +13,7 @@ Enables:
 """
 
 import json
+import logging
 from typing import Dict, List, Any, Optional
 from datetime import datetime
 from collections import Counter
@@ -22,6 +23,9 @@ from core.database_integration_base import QueryResult
 from core.api_request_tracker import log_request
 from config_loader import config
 from core.adaptive_analyzer import AdaptiveAnalyzer
+
+# Set up logger for this module
+logger = logging.getLogger(__name__)
 
 
 class ResultAnalyzer:
@@ -95,6 +99,8 @@ class ResultAnalyzer:
                 else:
                     print(f"    ⚠️  Adaptive: {adaptive['error']}")
             except Exception as e:
+                # Adaptive analysis failed - non-critical, continue without it
+                logger.warning(f"Adaptive analysis failed: {e}", exc_info=True)
                 print(f"    ⚠️  Adaptive analysis failed: {e}")
 
         # Qualitative analysis (LLM-powered)
@@ -375,6 +381,8 @@ Return JSON with these fields:
             return json.loads(response.choices[0].message.content)
 
         except Exception as e:
+            # Qualitative analysis failed - return fallback
+            logger.error(f"Qualitative analysis failed: {e}", exc_info=True)
             print(f"    ⚠️  Qualitative analysis failed: {e}")
             return {
                 "key_findings": ["Analysis unavailable"],
@@ -513,6 +521,8 @@ Return JSON with:
             }
 
         except Exception as e:
+            # Synthesis failed - return fallback
+            logger.error(f"Answer synthesis failed: {e}", exc_info=True)
             print(f"    ⚠️  Synthesis failed: {e}")
             return {
                 "answer": qual.get("answer_preview", "Unable to synthesize answer"),

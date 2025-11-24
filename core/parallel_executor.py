@@ -13,6 +13,9 @@ from datetime import datetime
 from core.database_integration_base import DatabaseIntegration, QueryResult
 from core.api_request_tracker import log_request
 
+# Set up logger for this module
+logger = logging.getLogger(__name__)
+
 
 class ParallelExecutor:
     """
@@ -204,6 +207,8 @@ class ParallelExecutor:
         try:
             return await db.is_relevant(question)
         except Exception as e:
+            # Relevance check error - non-critical, log and continue
+            logger.warning(f"Relevance check failed for {db.metadata.name}: {e}", exc_info=True)
             print(f"⚠️ Relevance check failed for {db.metadata.name}: {e}")
             return False
 
@@ -312,6 +317,8 @@ class ParallelExecutor:
             return enriched
 
         except Exception as e:
+            # Query generation error - log with full trace
+            logger.error(f"Query generation error for {db.metadata.name}: {e}", exc_info=True)
             print(f"⚠️ Query generation error for {db.metadata.name}: {e}")
             return None
 
@@ -390,6 +397,7 @@ class ParallelExecutor:
             return await db.execute_search(params, api_key, limit)
         except Exception as e:
             # Catch any uncaught exceptions and return error result
+            logger.error(f"Search execution error for {db.metadata.name}: {e}", exc_info=True)
             return QueryResult(
                 success=False,
                 source=db.metadata.name,

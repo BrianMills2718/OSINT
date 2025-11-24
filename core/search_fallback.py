@@ -9,10 +9,14 @@ This is NOT integration-specific - ANY integration can use it.
 """
 
 from typing import Dict, Optional, Callable, List, Any, TYPE_CHECKING
+import logging
 from core.database_integration_base import QueryResult
 
 if TYPE_CHECKING:
     from integrations.source_metadata import SourceMetadata
+
+# Set up logger for this module
+logger = logging.getLogger(__name__)
 
 
 async def execute_with_fallback(
@@ -141,7 +145,8 @@ async def execute_with_fallback(
                 })
 
         except Exception as e:
-            # Strategy failed with error
+            # Strategy failed with error - log and continue to next strategy
+            logger.warning(f"Search fallback strategy '{method_name}' failed for {source_name}: {e}", exc_info=True)
             attempts.append({
                 'method': method_name,
                 'param': param_name,
