@@ -8,12 +8,16 @@ Server-side rendered pages allow simple BeautifulSoup parsing.
 
 import re
 import time
+import logging
 from typing import Dict
 from datetime import datetime
 
 import requests
 from bs4 import BeautifulSoup
 from urllib.parse import quote
+
+# Set up logger for this module
+logger = logging.getLogger(__name__)
 
 
 async def search_clearancejobs(
@@ -165,6 +169,8 @@ async def search_clearancejobs(
         }
 
     except requests.Timeout:
+        # Specific timeout handling - acceptable to return error dict
+        logger.warning(f"ClearanceJobs request timed out after 15 seconds for keywords: {keywords}")
         return {
             "success": False,
             "total": 0,
@@ -172,6 +178,8 @@ async def search_clearancejobs(
             "error": "Request timeout after 15 seconds"
         }
     except Exception as e:
+        # Catch-all for unexpected errors - log with full stack trace
+        logger.error(f"ClearanceJobs search failed for keywords '{keywords}': {e}", exc_info=True)
         return {
             "success": False,
             "total": 0,

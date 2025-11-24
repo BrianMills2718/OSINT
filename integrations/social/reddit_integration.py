@@ -7,6 +7,7 @@ Provides access to Reddit search for social media intelligence gathering.
 
 import json
 import asyncio
+import logging
 import os
 from typing import Dict, Optional, List
 from datetime import datetime
@@ -26,6 +27,9 @@ from core.prompt_loader import render_prompt
 
 # Load environment variables
 load_dotenv()
+
+# Set up logger for this module
+logger = logging.getLogger(__name__)
 
 
 class RedditIntegration(DatabaseIntegration):
@@ -157,8 +161,9 @@ Return JSON with your decision:
             return result.get("relevant", True)  # Default to True if parsing fails
 
         except Exception as e:
-            # On error, default to True (let query generation and filtering handle it)
-            print(f"[WARN] Reddit relevance check failed: {e}, defaulting to True")
+            # Fallback on LLM failure - acceptable to default to True
+            # This lets query generation and filtering handle the decision
+            logger.warning(f"Reddit relevance check failed, defaulting to True: {e}", exc_info=True)
             return True
 
     async def generate_query(self, research_question: str, param_hints: Optional[Dict] = None) -> Optional[Dict]:
@@ -392,7 +397,12 @@ Return JSON with your decision:
             )
 
         except Exception as e:
+            # Catch-all for unexpected errors at integration boundary
+            # This is acceptable - return error instead of crashing
             response_time_ms = (datetime.now() - start_time).total_seconds() * 1000
+
+            # Log the error with full stack trace
+            logger.error(f"Reddit search failed: {e}", exc_info=True)
 
             # Log failed request
             log_request(

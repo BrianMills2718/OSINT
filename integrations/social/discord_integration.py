@@ -9,6 +9,7 @@ and stored in data/exports/.
 
 import json
 import re
+import logging
 from pathlib import Path
 from typing import Dict, List, Optional, Any
 from datetime import datetime
@@ -17,6 +18,9 @@ import asyncio
 import sys
 import os
 sys.path.append(os.path.dirname(os.path.dirname(os.path.dirname(__file__))))
+
+# Set up logger for this module
+logger = logging.getLogger(__name__)
 
 from core.database_integration_base import (
     DatabaseIntegration,
@@ -141,8 +145,9 @@ class DiscordIntegration(DatabaseIntegration):
             keywords = [term.lower() for term in result.get("terms", [])]
 
         except Exception as e:
-            # Fallback to simple extraction on error
-            print(f"Warning: LLM keyword extraction failed ({e}), using simple extraction")
+            # Fallback to simple extraction on LLM failure
+            # This is acceptable - query generation can fallback gracefully
+            logger.warning(f"Discord LLM keyword extraction failed, using simple fallback: {e}", exc_info=True)
             keywords = self._extract_keywords(research_question)
 
         if not keywords:
@@ -205,8 +210,12 @@ class DiscordIntegration(DatabaseIntegration):
             )
 
         except Exception as e:
+            # Catch-all for unexpected errors in search execution
+            # This is acceptable at integration boundary - return error instead of crashing
             end_time = datetime.now()
             response_time_ms = (end_time - start_time).total_seconds() * 1000
+
+            logger.error(f"Discord search failed: {e}", exc_info=True)
 
             return QueryResult(
                 success=False,
@@ -358,18 +367,21 @@ class DiscordIntegration(DatabaseIntegration):
 
             except json.JSONDecodeError as e:
                 # Skip malformed files (0.14% of exports have DiscordChatExporter bugs)
-                # Log warning but continue searching other files
+                # This is acceptable - continue searching other export files
                 # See: CLAUDE.md - Discord Parsing Investigation (2025-11-18)
-                import logging
-                logging.warning(
+                logger.warning(
                     f"Discord export malformed (skipping): {export_file.name[:60]}... "
                     f"Error: {str(e)[:80]}"
                 )
                 continue
             except Exception as e:
-                # Skip other problematic files
-                import logging
-                logging.warning(f"Discord export error (skipping): {export_file.name[:60]}... Error: {str(e)[:80]}")
+                # Skip other problematic files and log the error
+                # This is acceptable in file iteration - one bad file shouldn't stop all searching
+                logger.warning(
+                    f"Discord export error (skipping): {export_file.name[:60]}... "
+                    f"Error: {str(e)[:80]}",
+                    exc_info=True
+                )
                 continue
 
         # Sort by score (best matches first), then by recency
