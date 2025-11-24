@@ -43,6 +43,7 @@ Reference:
 import os
 from pathlib import Path
 from typing import Dict, Any
+from datetime import datetime
 from jinja2 import Environment, FileSystemLoader, TemplateNotFound, Template
 
 
@@ -64,14 +65,46 @@ _jinja_env = Environment(
 )
 
 
+def _get_system_context() -> Dict[str, Any]:
+    """
+    Get system context variables automatically injected into all prompts.
+
+    These variables are available in ALL templates without manual passing.
+    User-provided kwargs can override these if needed.
+
+    Returns:
+        Dict of system context variables:
+        - current_date: Today's date in YYYY-MM-DD format
+        - current_year: Current year as integer
+        - current_datetime: Full datetime string
+
+    Example template usage:
+        IMPORTANT: Today's date is {{ current_date }}. Your training data may be outdated.
+    """
+    now = datetime.now()
+    return {
+        "current_date": now.strftime("%Y-%m-%d"),
+        "current_year": now.year,
+        "current_datetime": now.strftime("%Y-%m-%d %H:%M:%S")
+    }
+
+
 def render_prompt(template_name: str, **kwargs: Any) -> str:
     """
     Render a Jinja2 prompt template with provided variables.
 
+    AUTOMATIC SYSTEM CONTEXT: All templates automatically receive:
+    - current_date: Today's date (YYYY-MM-DD)
+    - current_year: Current year (int)
+    - current_datetime: Full datetime string
+
+    These are injected automatically to prevent LLM temporal confusion.
+    User-provided kwargs can override these if needed.
+
     Args:
         template_name: Path to template relative to prompts/ directory
                       (e.g., "deep_research/query_reformulation.j2")
-        **kwargs: Template variables to render
+        **kwargs: Template variables to render (merged with system context)
 
     Returns:
         Rendered prompt string
@@ -88,6 +121,7 @@ def render_prompt(template_name: str, **kwargs: Any) -> str:
         ...     original_query="cybersecurity contracts",
         ...     results_count=5
         ... )
+        # Template automatically has access to {{ current_date }}, etc.
 
         >>> prompt = render_prompt(
         ...     "integrations/government/usajobs_query_generation.j2",
@@ -96,8 +130,13 @@ def render_prompt(template_name: str, **kwargs: Any) -> str:
         ... )
     """
     try:
+        # Merge system context with user-provided kwargs
+        # User kwargs can override system context if needed
+        context = _get_system_context()
+        context.update(kwargs)
+
         template: Template = _jinja_env.get_template(template_name)
-        rendered: str = template.render(**kwargs)
+        rendered: str = template.render(**context)
         return rendered
     except TemplateNotFound as e:
         # Provide helpful error with full path
