@@ -61,10 +61,23 @@ class NewsAPIIntegration(DatabaseIntegration):
             id="newsapi",
             category=DatabaseCategory.NEWS,
             requires_api_key=True,
+            api_key_env_var="NEWSAPI_KEY",
             cost_per_query_estimate=0.001,  # LLM cost only (API is free tier)
             typical_response_time=2.0,      # seconds
             rate_limit_daily=db_config.get("rate_limit_daily", 100),  # Free tier limit
-            description="News aggregation from 80,000+ sources worldwide with keyword search and filtering"
+            description="News aggregation from 80,000+ sources worldwide with keyword search and filtering",
+
+            # Query generation guidance
+            query_strategies=['keyword_search', 'source_filter', 'date_range_filter', 'language_filter'],
+            characteristics={
+                'historical_data_limit_days': 30,  # Free tier only keeps 30 days
+                'full_text_search': True,
+                'date_filtering': True,
+                'supports_multiple_keywords': True,
+                'max_results_per_request': 100
+            },
+            typical_result_count=50,
+            max_queries_recommended=5
         )
 
     async def is_relevant(self, research_question: str) -> bool:
@@ -249,11 +262,10 @@ Return JSON:
         sort_by = query_params.get("sort_by", "relevancy")
         limit = min(query_params.get("limit", 50), limit, 100)  # Cap at 100 (API max)
 
-        # Safety net: Enforce free tier's 30-day historical limit
+        # Safety net: Enforce free tier's 30-day historical limit (single source of truth)
         # This prevents 426 errors when LLM generates dates older than allowed
-        from integrations.source_metadata import get_source_metadata
-        metadata = get_source_metadata("NewsAPI")
-        if metadata and from_date:
+        metadata = self.metadata
+        if from_date:
             historical_limit_days = metadata.characteristics.get('historical_data_limit_days', 30)
             cutoff_date = (datetime.now() - timedelta(days=historical_limit_days)).strftime("%Y-%m-%d")
             if from_date < cutoff_date:

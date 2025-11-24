@@ -53,14 +53,40 @@ class SAMIntegration(DatabaseIntegration):
     @property
     def metadata(self) -> DatabaseMetadata:
         return DatabaseMetadata(
+            # Core Identity
             name="SAM.gov",
             id="sam",
             category=DatabaseCategory.CONTRACTS,
+            description="U.S. federal government contracting opportunities and solicitations",
+
+            # API Configuration
             requires_api_key=True,
-            cost_per_query_estimate=0.001,  # LLM cost only
-            typical_response_time=2.5,      # seconds (often slow)
-            rate_limit_daily=None,          # Unknown, but strict
-            description="U.S. federal government contracting opportunities and solicitations"
+            api_key_env_var="SAM_GOV_API_KEY",
+
+            # Performance & Limits
+            cost_per_query_estimate=0.001,
+            typical_response_time=2.5,
+            rate_limit_daily=None,  # Unknown, but strict
+            default_result_limit=50,
+
+            # Query Generation Guidance
+            query_strategies=[
+                'exact_contract_id',
+                'agency_name_keyword_date',
+                'naics_code_filter',
+                'contractor_name',
+                'award_amount_range'
+            ],
+            characteristics={
+                'requires_formal_names': True,  # "Department of Defense" not "DoD"
+                'date_format': 'YYYY-MM-DD',
+                'rich_metadata': True,
+                'structured_data': True,
+                'naics_codes': True,
+                'contract_ids': True
+            },
+            typical_result_count=50,
+            max_queries_recommended=10
         )
 
     async def is_relevant(self, research_question: str) -> bool:

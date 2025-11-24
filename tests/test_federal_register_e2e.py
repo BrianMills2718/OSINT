@@ -13,7 +13,6 @@ import sys
 sys.path.insert(0, '/home/brian/sam_gov')
 
 from integrations.registry import IntegrationRegistry
-from integrations.source_metadata import SOURCE_METADATA
 from integrations.government.federal_register import FederalRegisterIntegration
 
 
@@ -27,23 +26,27 @@ async def main():
     registry = IntegrationRegistry()
 
     if 'federal_register' in registry._integration_classes:
-        print("✅ Federal Register registered in IntegrationRegistry")
+        print("[PASS] Federal Register registered in IntegrationRegistry")
     else:
-        print("❌ Federal Register NOT in registry")
+        print("[FAIL] Federal Register NOT in registry")
         return
 
-    # Test 2: Source metadata check
-    print("\n[TEST 2] Source Metadata Check")
+    # Test 2: Integration metadata check (single source of truth)
+    print("\n[TEST 2] Integration Metadata Check")
     print("-" * 80)
 
-    if 'Federal Register' in SOURCE_METADATA:
-        metadata = SOURCE_METADATA['Federal Register']
-        print(f"✅ Federal Register in source metadata")
-        print(f"   Description: {metadata.description}")
+    integration = FederalRegisterIntegration()
+    metadata = integration.metadata
+
+    if metadata:
+        print(f"[PASS] Federal Register metadata found")
+        print(f"   Name: {metadata.name}")
+        print(f"   Description: {metadata.description[:60]}...")
         print(f"   Max queries recommended: {metadata.max_queries_recommended}")
-        print(f"   Characteristics: {list(metadata.characteristics.keys())[:5]}...")
+        if metadata.characteristics:
+            print(f"   Characteristics: {list(metadata.characteristics.keys())[:5]}...")
     else:
-        print("❌ Federal Register NOT in source metadata")
+        print("[FAIL] Federal Register metadata NOT found")
         return
 
     # Test 3: Integration instantiation

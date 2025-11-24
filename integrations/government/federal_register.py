@@ -64,7 +64,27 @@ class FederalRegisterIntegration(DatabaseIntegration):
             cost_per_query_estimate=0.001,  # LLM cost only
             typical_response_time=1.5,      # seconds
             rate_limit_daily=None,          # No official limit
-            description="Official daily publication of U.S. federal rules, proposed rules, and notices"
+            description="Official daily publication of U.S. federal rules, proposed rules, and notices",
+
+            # Query generation guidance
+            query_strategies=['keyword_search', 'agency_filter', 'document_type_filter', 'date_range_filter'],
+            characteristics={
+                'document_types': ['RULE', 'PRORULE', 'NOTICE', 'PRESDOCU'],
+                'common_agency_slugs': [
+                    'defense-department', 'homeland-security-department', 'environmental-protection-agency',
+                    'health-and-human-services-department', 'transportation-department', 'energy-department',
+                    'commerce-department', 'treasury-department', 'justice-department', 'state-department',
+                    'interior-department', 'agriculture-department', 'labor-department', 'education-department',
+                    'housing-and-urban-development-department', 'veterans-affairs-department',
+                    'securities-and-exchange-commission', 'federal-communications-commission',
+                    'federal-trade-commission', 'consumer-financial-protection-bureau'
+                ],
+                'structured_data': True,
+                'date_filtering': True,
+                'full_text_search': True
+            },
+            typical_result_count=50,
+            max_queries_recommended=5
         )
 
     async def is_relevant(self, research_question: str) -> bool:
@@ -197,10 +217,9 @@ class FederalRegisterIntegration(DatabaseIntegration):
         endpoint = "https://www.federalregister.gov/api/v1/documents.json"
 
         try:
-            # Safety net: Validate document types against metadata
+            # Safety net: Validate document types against metadata (single source of truth)
             # This prevents API errors from invalid document type codes
-            from integrations.source_metadata import get_source_metadata
-            metadata = get_source_metadata("Federal Register")
+            metadata = self.metadata
 
             if metadata and query_params.get("document_types"):
                 valid_types = metadata.characteristics.get('document_types', [])

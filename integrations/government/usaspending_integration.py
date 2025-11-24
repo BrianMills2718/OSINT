@@ -64,11 +64,41 @@ class USASpendingIntegration(DatabaseIntegration):
             name="USAspending",
             id="usaspending",
             category=DatabaseCategory.CONTRACTS,
+            description="Historical federal spending data: awarded contracts, grants, loans, budget information",
+
             requires_api_key=False,
-            cost_per_query_estimate=0.001,  # LLM cost only
-            typical_response_time=1.5,      # seconds
-            rate_limit_daily=None,          # No known limit
-            description="U.S. federal spending data: awarded contracts, grants, loans, and budget information"
+            api_key_env_var=None,
+
+            cost_per_query_estimate=0.001,
+            typical_response_time=1.5,
+            rate_limit_daily=None,
+            default_result_limit=100,
+
+            query_strategies=[
+                'recipient_name_search',
+                'agency_spending_analysis',
+                'award_amount_filter',
+                'time_period_comparison',
+                'award_type_filter',
+                'keyword_description_search',
+                'geographic_spending',
+                'disaster_emergency_tracking'
+            ],
+            characteristics={
+                'historical_spending': True,
+                'post_award_data': True,
+                'structured_data': True,
+                'rich_metadata': True,
+                'budget_data': True,
+                'recipient_tracking': True,
+                'geographic_data': True,
+                'time_series': True,
+                'award_amounts': True,
+                'date_format': 'YYYY-MM-DD',
+                'requires_verification': False
+            },
+            typical_result_count=100,
+            max_queries_recommended=7
         )
 
     async def is_relevant(self, research_question: str) -> bool:

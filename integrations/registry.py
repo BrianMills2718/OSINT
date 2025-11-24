@@ -1,8 +1,13 @@
-"""Central registry for all data source integrations."""
+"""Central registry for all data source integrations.
+
+This is the SINGLE ACCESS POINT for all integration-related queries.
+Do NOT build parallel data structures elsewhere - use registry methods.
+"""
 
 from typing import Dict, List, Type, Optional
 import logging
-from core.database_integration_base import DatabaseIntegration
+import os
+from core.database_integration_base import DatabaseIntegration, DatabaseMetadata
 from config_loader import config
 
 # Set up logger for this module
@@ -180,9 +185,9 @@ class IntegrationRegistry:
 
         Enforces architectural consistency by validating:
         1. Required methods exist (metadata, is_relevant, generate_query, execute_search)
-        2. Source metadata entry exists in source_metadata.py
-        3. Prompt template exists (warning only)
-        4. Metadata ID matches registration ID
+        2. Can instantiate and get metadata
+        3. Metadata ID matches registration ID
+        4. Prompt template exists (warning only)
 
         Args:
             integration_id: Unique ID for this integration (must match metadata.id)
@@ -191,8 +196,6 @@ class IntegrationRegistry:
         Raises:
             ValueError: If validation fails (missing methods, missing metadata, ID mismatch)
         """
-        import os
-
         # Validation 1: Required methods exist
         required_methods = ['metadata', 'is_relevant', 'generate_query', 'execute_search']
         missing_methods = [m for m in required_methods if not hasattr(integration_class, m)]
@@ -213,13 +216,11 @@ class IntegrationRegistry:
                 f"Integration '{integration_id}' failed to instantiate or get metadata: {e}"
             )
 
-        # Validation 3: Source metadata entry exists
-        from integrations.source_metadata import get_source_metadata
-        source_metadata = get_source_metadata(metadata.name)
-        if not source_metadata:
+        # Validation 3: Metadata ID matches registration ID
+        if metadata.id != integration_id:
             raise ValueError(
-                f"Integration '{integration_id}' missing source_metadata entry for '{metadata.name}'.\n"
-                f"Add entry to integrations/source_metadata.py"
+                f"Integration metadata.id ('{metadata.id}') doesn't match registration ID ('{integration_id}')\n"
+                f"Update metadata.id in integration class to match"
             )
 
         # Validation 4: Prompt template exists (warning only, not all integrations need prompts)
@@ -227,13 +228,6 @@ class IntegrationRegistry:
         if not os.path.exists(prompt_path):
             # Not an error - some integrations may not use LLM query generation
             pass
-
-        # Validation 5: Metadata ID matches registration ID
-        if metadata.id != integration_id:
-            raise ValueError(
-                f"Integration metadata.id ('{metadata.id}') doesn't match registration ID ('{integration_id}')\n"
-                f"Update metadata.id in integration class to match"
-            )
 
         # All validations passed - register it
         self._integration_classes[integration_id] = integration_class
@@ -554,6 +548,176 @@ class IntegrationRegistry:
         print("\n" + "="*80)
         print(f"SUMMARY: {passed_count}/{total_integrations} integrations passed all tests")
         print("="*80)
+
+
+    # ==========================================================================
+    # HELPER METHODS - Single access point for all source-related queries
+    # Use these instead of building parallel data structures in other modules
+    # ==========================================================================
+
+    def get_metadata(self, integration_id: str) -> Optional[DatabaseMetadata]:
+        """
+        Get complete metadata for an integration.
+
+        This is the SINGLE SOURCE OF TRUTH for all source configuration.
+
+        Args:
+            integration_id: Integration ID (e.g., "sam", "govinfo")
+
+        Returns:
+            DatabaseMetadata or None if not found/not enabled
+        """
+        instance = self.get_instance(integration_id)
+        if instance:
+            return instance.metadata
+        return None
+
+    def get_display_name(self, integration_id: str) -> str:
+        """
+        Get human-readable display name for an integration.
+
+        Args:
+            integration_id: Integration ID (e.g., "sam")
+
+        Returns:
+            Display name (e.g., "SAM.gov") or integration_id if not found
+        """
+        metadata = self.get_metadata(integration_id)
+        return metadata.name if metadata else integration_id
+
+    def get_all_metadata(self) -> Dict[str, DatabaseMetadata]:
+        """
+        Get metadata for all enabled integrations.
+
+        Returns:
+            Dict of integration_id -> DatabaseMetadata
+        """
+        result = {}
+        for integration_id in self._integration_classes:
+            metadata = self.get_metadata(integration_id)
+            if metadata:
+                result[integration_id] = metadata
+        return result
+
+    def normalize_source_name(self, name: str) -> Optional[str]:
+        """
+        Normalize any source name variation to canonical integration_id.
+
+        Handles:
+        - Integration IDs: "sam" -> "sam"
+        - Display names: "SAM.gov" -> "sam"
+        - Case variations: "GOVINFO" -> "govinfo"
+        - Common suffixes: "USASpending.gov" -> "usaspending"
+
+        This is the ONE function that should be used for all LLM output
+        normalization. Do NOT implement normalization elsewhere.
+
+        Args:
+            name: Source name from LLM or user (any format)
+
+        Returns:
+            Canonical integration_id or None if no match found
+        """
+        if not name:
+            return None
+
+        # Build lookup maps on first call (cached via instance)
+        if not hasattr(self, '_name_lookup_cache'):
+            self._name_lookup_cache = {}
+            self._display_to_id_cache = {}
+
+            for integration_id in self._integration_classes:
+                metadata = self.get_metadata(integration_id)
+                if metadata:
+                    # Map integration_id -> itself
+                    self._name_lookup_cache[integration_id.lower()] = integration_id
+                    # Map display_name -> integration_id
+                    self._display_to_id_cache[metadata.name.lower()] = integration_id
+
+        # 1. Try exact match on integration_id
+        name_lower = name.lower()
+        if name_lower in self._name_lookup_cache:
+            return self._name_lookup_cache[name_lower]
+
+        # 2. Try exact match on display name
+        if name_lower in self._display_to_id_cache:
+            return self._display_to_id_cache[name_lower]
+
+        # 3. Handle search_ prefix (legacy tool naming convention)
+        if name_lower.startswith("search_"):
+            base = name_lower[7:]  # Remove "search_" prefix
+            if base in self._name_lookup_cache:
+                return self._name_lookup_cache[base]
+
+        # 4. Try removing common suffixes (.gov, .com, .org)
+        for suffix in [".gov", ".com", ".org"]:
+            if name_lower.endswith(suffix):
+                base = name_lower[:-len(suffix)]
+                if base in self._name_lookup_cache:
+                    return self._name_lookup_cache[base]
+                if base in self._display_to_id_cache:
+                    return self._display_to_id_cache[base]
+
+        # 5. Try fuzzy match (contains)
+        for display_lower, integration_id in self._display_to_id_cache.items():
+            if display_lower in name_lower or name_lower in display_lower:
+                return integration_id
+
+        return None
+
+    def get_api_key(self, integration_id: str) -> Optional[str]:
+        """
+        Get API key for an integration from environment.
+
+        Uses the api_key_env_var field from DatabaseMetadata.
+
+        Args:
+            integration_id: Integration ID
+
+        Returns:
+            API key string or None if not required/not found
+        """
+        metadata = self.get_metadata(integration_id)
+        if not metadata or not metadata.requires_api_key:
+            return None
+
+        env_var = metadata.api_key_env_var
+        if not env_var:
+            # Fallback to convention: INTEGRATION_ID_API_KEY
+            env_var = f"{integration_id.upper()}_API_KEY"
+
+        return os.getenv(env_var)
+
+    def get_api_key_status(self) -> Dict[str, Dict[str, any]]:
+        """
+        Get API key status for all integrations (for debugging/UI).
+
+        Returns:
+            Dict of integration_id -> {
+                "requires_key": bool,
+                "env_var": str,
+                "has_key": bool
+            }
+        """
+        status = {}
+        for integration_id in self._integration_classes:
+            metadata = self.get_metadata(integration_id)
+            if metadata:
+                env_var = metadata.api_key_env_var or f"{integration_id.upper()}_API_KEY"
+                status[integration_id] = {
+                    "requires_key": metadata.requires_api_key,
+                    "env_var": env_var if metadata.requires_api_key else None,
+                    "has_key": bool(os.getenv(env_var)) if metadata.requires_api_key else True
+                }
+        return status
+
+    def clear_caches(self):
+        """Clear all internal caches (useful after dynamic registration)."""
+        self._cached_instances.clear()
+        if hasattr(self, '_name_lookup_cache'):
+            del self._name_lookup_cache
+        if hasattr(self, '_display_to_id_cache'):
+            del self._display_to_id_cache
 
 
 # Global registry instance

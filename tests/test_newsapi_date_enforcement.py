@@ -17,7 +17,6 @@ from datetime import datetime, timedelta
 sys.path.append(os.path.dirname(os.path.dirname(__file__)))
 
 from integrations.news.newsapi_integration import NewsAPIIntegration
-from integrations.source_metadata import get_source_metadata
 
 
 async def test_metadata_constraint():
@@ -26,10 +25,12 @@ async def test_metadata_constraint():
     print("TEST 1: Source Metadata Constraint")
     print("="*80)
 
-    metadata = get_source_metadata("NewsAPI")
+    # Use integration's metadata property (single source of truth)
+    integration = NewsAPIIntegration()
+    metadata = integration.metadata
 
     if not metadata:
-        print("❌ FAIL: NewsAPI metadata not found")
+        print("[FAIL] NewsAPI metadata not found")
         return False
 
     limit = metadata.characteristics.get('historical_data_limit_days')
@@ -134,11 +135,11 @@ async def main():
         print(f"Tests passed: {sum(results)}/{len(results)}")
 
         if all(results):
-            print("\n✅ ALL TESTS PASSED - Fix is architecturally clean:")
-            print("   1. Constraint declared in source_metadata.py (single source of truth)")
+            print("\n[PASS] ALL TESTS PASSED - Fix is architecturally clean:")
+            print("   1. Constraint declared in DatabaseMetadata.characteristics (single source of truth)")
             print("   2. LLM informed via prompt template (generates compliant queries)")
             print("   3. Safety net enforced in execute_search() (defense in depth)")
-            print("\nNo hardcoded magic numbers, no code smell! 🎉")
+            print("\nNo hardcoded magic numbers, no code smell!")
         else:
             print("\n❌ SOME TESTS FAILED")
 

@@ -46,21 +46,51 @@ class DatabaseCategory(Enum):
 @dataclass
 class DatabaseMetadata:
     """
-    Metadata about a database integration.
+    Complete metadata about a database integration.
 
-    This provides information about the database that can be used for
-    routing, cost estimation, and user display.
+    This is the SINGLE SOURCE OF TRUTH for all integration configuration.
+    All fields that describe a source should be here - not scattered across
+    multiple files (source_metadata.py, deep_research.py hardcoding, etc.)
+
+    Used for:
+    - Routing and relevance filtering
+    - Cost estimation and rate limiting
+    - User display and LLM prompts
+    - Query generation guidance
+    - API key management
     """
-    name: str                          # Display name (e.g., "ClearanceJobs")
-    id: str                           # Unique identifier (e.g., "clearancejobs")
+    # === Core Identity ===
+    name: str                          # Display name (e.g., "SAM.gov")
+    id: str                           # Unique identifier / integration_id (e.g., "sam")
     category: DatabaseCategory        # Category for filtering
+    description: str                  # Brief description for users/LLMs
+
+    # === API Configuration ===
     requires_api_key: bool            # Whether API key is required
-    cost_per_query_estimate: float   # Estimated cost in USD per query
-    typical_response_time: float     # Typical response time in seconds
-    description: str                  # Brief description for users
-    requires_stealth: bool = False    # Whether bot detection bypass needed
-    stealth_method: Optional[str] = None  # Stealth method: "playwright", "selenium", or None
+    api_key_env_var: Optional[str] = None  # Environment variable name (e.g., "SAM_GOV_API_KEY")
+
+    # === Performance & Limits ===
+    cost_per_query_estimate: float = 0.001  # Estimated cost in USD per query
+    typical_response_time: float = 2.0      # Typical response time in seconds
     rate_limit_daily: Optional[int] = None  # Daily rate limit, None if unknown
+    default_result_limit: int = 50          # Default max results per query
+
+    # === Stealth/Bot Detection ===
+    requires_stealth: bool = False    # Whether bot detection bypass needed
+    stealth_method: Optional[str] = None  # "playwright", "selenium", or None
+
+    # === Query Generation Guidance (merged from source_metadata.py) ===
+    query_strategies: Optional[List[str]] = None  # Valid query approaches for this source
+    characteristics: Optional[Dict[str, Any]] = None  # Source-specific traits for LLM context
+    typical_result_count: int = 50    # Typical number of results returned
+    max_queries_recommended: int = 5  # Max queries before diminishing returns
+
+    def __post_init__(self):
+        """Set defaults for optional collections."""
+        if self.query_strategies is None:
+            self.query_strategies = []
+        if self.characteristics is None:
+            self.characteristics = {}
 
 
 class SearchResult(BaseModel):

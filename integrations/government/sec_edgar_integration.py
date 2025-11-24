@@ -141,7 +141,24 @@ class SECEdgarIntegration(DatabaseIntegration):
             cost_per_query_estimate=0.001,  # LLM cost only
             typical_response_time=1.0,      # seconds (SEC APIs are fast)
             rate_limit_daily=None,          # No daily limit, just 10/sec
-            description="SEC corporate filings including foreign subsidiary disclosures (Exhibit 21), financial statements, offshore entity structures, insider trading, and executive compensation. NOT for government contracts - use SAM.gov/USAspending for contracts."
+            description="SEC corporate filings including foreign subsidiary disclosures (Exhibit 21), financial statements, offshore entity structures, insider trading, and executive compensation. NOT for government contracts - use SAM.gov/USAspending for contracts.",
+
+            # Query generation guidance
+            query_strategies=['cik_lookup', 'ticker_lookup', 'company_name_search', 'form_type_filter'],
+            characteristics={
+                'supports_fallback': True,
+                'search_strategies': [
+                    {'method': 'cik', 'reliability': 'high', 'param': 'cik'},
+                    {'method': 'ticker', 'reliability': 'high', 'param': 'ticker'},
+                    {'method': 'name_exact', 'reliability': 'medium', 'param': 'company_name'},
+                    {'method': 'name_fuzzy', 'reliability': 'low', 'param': 'company_name'},
+                ],
+                'structured_data': True,
+                'rich_metadata': True,
+                'date_filtering': True
+            },
+            typical_result_count=20,
+            max_queries_recommended=5
         )
 
     def _get_user_agent(self) -> str:
@@ -735,11 +752,11 @@ Return JSON:
             QueryResult with filings/documents found
         """
         from core.search_fallback import execute_with_fallback
-        from integrations.source_metadata import get_source_metadata
 
-        metadata = get_source_metadata("SEC EDGAR")
+        # Use self.metadata (single source of truth)
+        metadata = self.metadata
 
-        # Check if fallback is supported
+        # Check if fallback is supported (configured in DatabaseMetadata.characteristics)
         if metadata and metadata.characteristics.get('supports_fallback'):
             # Define search methods for fallback
             search_methods = {

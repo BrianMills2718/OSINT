@@ -13,7 +13,6 @@ import os
 sys.path.append(os.path.dirname(os.path.dirname(__file__)))
 
 from integrations.government.sec_edgar_integration import SECEdgarIntegration
-from integrations.source_metadata import get_source_metadata
 
 
 async def test_fallback_metadata_configured():
@@ -22,10 +21,12 @@ async def test_fallback_metadata_configured():
     print("TEST 1: SEC EDGAR Fallback Metadata")
     print("="*80)
 
-    metadata = get_source_metadata("SEC EDGAR")
+    # Use integration.metadata (single source of truth)
+    integration = SECEdgarIntegration()
+    metadata = integration.metadata
 
     if not metadata:
-        print("❌ FAIL: SEC EDGAR metadata not found")
+        print("[FAIL] SEC EDGAR metadata not found")
         return False
 
     supports_fallback = metadata.characteristics.get('supports_fallback')
@@ -35,11 +36,11 @@ async def test_fallback_metadata_configured():
     print(f"Search strategies: {len(search_strategies)}")
 
     if supports_fallback and len(search_strategies) == 4:
-        print("\n✅ PASS: SEC EDGAR metadata configured for fallback")
+        print("\n[PASS] SEC EDGAR metadata configured for fallback")
         print(f"  Strategies: {[s['method'] for s in search_strategies]}")
         return True
     else:
-        print("\n❌ FAIL: SEC EDGAR metadata not properly configured")
+        print("\n[FAIL] SEC EDGAR metadata not properly configured")
         return False
 
 

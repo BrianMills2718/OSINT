@@ -13,7 +13,6 @@ import sys
 sys.path.insert(0, '/home/brian/sam_gov')
 
 from integrations.registry import IntegrationRegistry
-from integrations.source_metadata import SOURCE_METADATA
 from integrations.nonprofit.propublica_integration import ProPublicaIntegration
 
 
@@ -27,33 +26,32 @@ async def main():
     registry = IntegrationRegistry()
 
     if 'propublica' in registry._integration_classes:
-        print("✅ ProPublica registered in IntegrationRegistry")
+        print("[PASS] ProPublica registered in IntegrationRegistry")
     else:
-        print("❌ ProPublica NOT in registry")
+        print("[FAIL] ProPublica NOT in registry")
         return
 
-    # Test 2: Source metadata check
-    print("\n[TEST 2] Source Metadata Check")
-    print("-" * 80)
-
-    if 'ProPublica Nonprofit Explorer' in SOURCE_METADATA:
-        metadata = SOURCE_METADATA['ProPublica Nonprofit Explorer']
-        print(f"✅ ProPublica in source metadata")
-        print(f"   Description: {metadata.description}")
-        print(f"   Max queries recommended: {metadata.max_queries_recommended}")
-        print(f"   Characteristics: {list(metadata.characteristics.keys())[:5]}...")
-    else:
-        print("❌ ProPublica NOT in source metadata")
-        return
-
-    # Test 3: Integration instantiation
-    print("\n[TEST 3] Integration Instantiation")
+    # Test 2: Integration instantiation and metadata (single source of truth)
+    print("\n[TEST 2] Integration Metadata Check")
     print("-" * 80)
 
     integration = ProPublicaIntegration()
-    print(f"✅ Integration created: {integration.metadata.name}")
-    print(f"   ID: {integration.metadata.id}")
-    print(f"   Category: {integration.metadata.category}")
+    metadata = integration.metadata
+
+    if metadata:
+        print(f"[PASS] ProPublica metadata found")
+        print(f"   Name: {metadata.name}")
+        print(f"   ID: {metadata.id}")
+        print(f"   Description: {metadata.description[:60]}...")
+        print(f"   Max queries recommended: {metadata.max_queries_recommended}")
+        if metadata.characteristics:
+            print(f"   Characteristics: {list(metadata.characteristics.keys())[:5]}...")
+    else:
+        print("[FAIL] ProPublica metadata NOT found")
+        return
+
+    print(f"\n[PASS] Integration created: {metadata.name}")
+    print(f"   Category: {metadata.category}")
 
     # Test 4: Quick relevance check
     print("\n[TEST 4] Relevance Check")

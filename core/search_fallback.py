@@ -10,10 +10,7 @@ This is NOT integration-specific - ANY integration can use it.
 
 from typing import Dict, Optional, Callable, List, Any, TYPE_CHECKING
 import logging
-from core.database_integration_base import QueryResult
-
-if TYPE_CHECKING:
-    from integrations.source_metadata import SourceMetadata
+from core.database_integration_base import QueryResult, DatabaseMetadata
 
 # Set up logger for this module
 logger = logging.getLogger(__name__)
@@ -23,7 +20,7 @@ async def execute_with_fallback(
     source_name: str,
     query_params: Dict,
     search_methods: Dict[str, Callable],
-    metadata: 'SourceMetadata'
+    metadata: DatabaseMetadata
 ) -> QueryResult:
     """
     Generic fallback executor - tries search strategies in declared order.
@@ -38,13 +35,13 @@ async def execute_with_fallback(
         query_params: Query params from generate_query() containing strategy parameters
         search_methods: Dict mapping strategy names to async search functions
                        e.g., {'cik': self._search_by_cik, 'ticker': self._search_by_ticker}
-        metadata: SourceMetadata with search_strategies configuration
+        metadata: DatabaseMetadata with search_strategies in characteristics
 
     Returns:
         QueryResult from first successful strategy, or error if all fail
 
     Example metadata configuration:
-        'SEC_EDGAR': SourceMetadata(
+        DatabaseMetadata(
             characteristics={
                 'search_strategies': [
                     {'method': 'cik', 'reliability': 'high', 'param': 'cik'},

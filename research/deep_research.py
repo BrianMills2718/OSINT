@@ -300,76 +300,41 @@ class SimpleDeepResearch:
             # Store integration instance for direct access
             self.integrations[integration_id] = integration
 
-            # Use integration_id as canonical name (no search_ prefix)
-            # This ensures LLM outputs match validation exactly
-            display_name = metadata.name
-
             # Build mappings: integration_id <-> display_name
-            self.tool_name_to_display[integration_id] = display_name
-            self.display_to_tool_map[display_name] = integration_id
+            # NOTE: These are kept for backward compatibility but should eventually
+            # be replaced with registry.get_display_name() and registry.normalize_source_name()
+            self.tool_name_to_display[integration_id] = metadata.name
+            self.display_to_tool_map[metadata.name] = integration_id
             self.tool_descriptions[integration_id] = metadata.description
 
-            # Load API key if required
-            api_key = None
-            if metadata.requires_api_key:
-                # Convention: API keys are named like SAM_GOV_API_KEY, USAJOBS_API_KEY
-                env_var_name = f"{integration_id.upper()}_API_KEY"
+            # Get API key from registry (uses api_key_env_var from metadata)
+            # This replaces the hardcoded if/elif chain that was here
+            self.api_keys[integration_id] = registry.get_api_key(integration_id)
 
-                # Special cases for non-standard naming
-                if integration_id == "sam":
-                    env_var_name = "SAM_GOV_API_KEY"
-                elif integration_id == "usajobs":
-                    env_var_name = "USAJOBS_API_KEY"
-                elif integration_id == "congress":
-                    env_var_name = "CONGRESS_API_KEY"
-                elif integration_id == "govinfo":
-                    env_var_name = "DATA_GOV_API_KEY"  # GovInfo uses api.data.gov (same as Congress.gov)
-                elif integration_id == "sec_edgar":
-                    env_var_name = "SEC_EDGAR_API_KEY"
-                elif integration_id == "fec":
-                    env_var_name = "FEC_API_KEY"
-                elif integration_id == "courtlistener":
-                    env_var_name = "COURTLISTENER_API_KEY"
-                elif integration_id == "brave_search":
-                    env_var_name = "BRAVE_SEARCH_API_KEY"
-                elif integration_id == "newsapi":
-                    env_var_name = "NEWSAPI_API_KEY"
-                elif integration_id == "twitter":
-                    env_var_name = "RAPIDAPI_KEY"  # Twitter uses RapidAPI twitter-api45
-
-                api_key = os.getenv(env_var_name)
-                if not api_key:
-                    logger.warning(f"⚠️  {display_name} requires API key but {env_var_name} not found in environment")
-
-            self.api_keys[integration_id] = api_key
-
-            # Build tool config using integration_id as the canonical name
-            # ALL integrations now call directly (no MCP layer for internal use)
+            # Build tool config - all integrations use same structure now
             tool_config = {
-                "name": integration_id,  # Use integration_id directly (no search_ prefix)
+                "name": integration_id,
                 "server": None,  # ALL use direct integration calls
                 "api_key_name": integration_id if metadata.requires_api_key else None,
-                "integration_id": integration_id  # Redundant but kept for clarity
+                "integration_id": integration_id
             }
 
-            # Categorize as MCP or web tool (for backward compatibility)
-            if integration_id == "brave_search":
-                self.web_tools.append({"name": integration_id, "type": "web", "api_key_name": integration_id})
-            else:
-                self.mcp_tools.append(tool_config)
+            # All tools go in mcp_tools now (web_tools distinction eliminated)
+            self.mcp_tools.append(tool_config)
 
         # Build reverse mapping for backwards compatibility
+        # TODO: Remove this - use registry.normalize_source_name() instead
         self.tool_display_to_name = {v: k for k, v in self.tool_name_to_display.items()}
 
         # Log what was loaded
-        logger.info(f"✅ Loaded {len(self.integrations)} integrations from registry:")
-        logger.info(f"   • All {len(self.mcp_tools)} integrations use direct calls (no MCP layer)")
-        logger.info(f"   • {len(self.web_tools)} categorized as web tools")
+        logger.info(f"✅ Loaded {len(self.integrations)} integrations from registry (all use direct calls)")
 
         for integration_id, integration in self.integrations.items():
-            display_name = self.tool_name_to_display[integration_id]
+            display_name = registry.get_display_name(integration_id)
+            api_key = self.api_keys.get(integration_id)
             api_status = "🔑" if integration.metadata.requires_api_key else "🆓"
-            logger.info(f"  {api_status} {display_name} ({integration_id})")
+            key_status = "✓" if api_key else "✗" if integration.metadata.requires_api_key else ""
+            logger.info(f"  {api_status}{key_status} {display_name} ({integration_id})")
 
     def _emit_progress(self, event: str, message: str, task_id: Optional[int] = None, data: Optional[Dict] = None):
         """Emit progress update for live streaming."""
@@ -1330,39 +1295,21 @@ class SimpleDeepResearch:
         """
         Fuzzy match LLM-generated source name to registered source.
 
-        Handles variations like:
-        - "USASpending.gov" → "USAspending"
-        - "SEC EDGAR" → "SEC EDGAR" (exact)
-        - "congress.gov" → "Congress.gov"
+        Uses registry.normalize_source_name() which is the SINGLE source of truth
+        for all source name normalization. Handles:
+        - Integration IDs: "usaspending" → "usaspending"
+        - Display names: "USASpending" → "usaspending"
+        - Case variations: "GOVINFO" → "govinfo"
+        - Common suffixes: "USASpending.gov" → "usaspending"
 
         Args:
-            llm_name: Source name from LLM (may have .gov suffix, different case)
+            llm_name: Source name from LLM (any format)
 
         Returns:
-            Matched integration_id (e.g., "usaspending"), or None if no match
+            Matched integration_id, or None if no match
         """
-        # 1. Try exact match
-        if llm_name in self.display_to_tool_map:
-            return self.display_to_tool_map[llm_name]
-
-        # 2. Try case-insensitive match
-        for display_name, tool_name in self.display_to_tool_map.items():
-            if display_name.lower() == llm_name.lower():
-                return tool_name
-
-        # 3. Try removing common suffixes (.gov, .com, .org)
-        for suffix in [".gov", ".com", ".org"]:
-            if llm_name.endswith(suffix):
-                base_name = llm_name[:-len(suffix)]
-                # Try exact match on base
-                if base_name in self.display_to_tool_map:
-                    return self.display_to_tool_map[base_name]
-                # Try case-insensitive on base
-                for display_name, tool_name in self.display_to_tool_map.items():
-                    if display_name.lower() == base_name.lower():
-                        return tool_name
-
-        return None
+        # Use registry's normalize function (single source of truth)
+        return registry.normalize_source_name(llm_name)
 
     def _map_hypothesis_sources(self, hypothesis: Dict) -> List[str]:
         """
@@ -1767,18 +1714,16 @@ class SimpleDeepResearch:
         Returns:
             List of accepted results from all queries
         """
-        from integrations.source_metadata import SOURCE_METADATA
-
         query_history = []
         all_results = []
         seen_result_urls = set()  # Track URLs for within-source deduplication
         start_time = time.time()
 
-        # Get source-specific limits
+        # Get source-specific limits - use registry as single source of truth
         max_queries = self.max_queries_per_source.get(source_name, 5)
         max_time = self.max_time_per_source_seconds
-        source_metadata_obj = SOURCE_METADATA.get(source_name)
-        source_metadata = asdict(source_metadata_obj) if source_metadata_obj else {}
+        metadata = registry.get_metadata(source_name)
+        source_metadata = asdict(metadata) if metadata else {}
 
         # Log saturation start
         if self.logger:
@@ -2701,12 +2646,10 @@ class SimpleDeepResearch:
             - selected_sources: List of integration IDs (e.g., ["dvids", "sam", "brave_search"])
             - reason: LLM's explanation for why these sources were selected
         """
-        # Combine MCP tools and web tools for LLM selection
-        all_selectable_tools = self.mcp_tools + self.web_tools
-
+        # All tools are in mcp_tools now (unified list)
         options_text = "\n".join([
             f"- {self.tool_name_to_display[tool['name']]} ({tool['name']}): {self.tool_descriptions[tool['name']]}"
-            for tool in all_selectable_tools
+            for tool in self.mcp_tools
         ])
 
         prompt = render_prompt(
@@ -2723,7 +2666,7 @@ class SimpleDeepResearch:
                     "type": "array",
                     "items": {"type": "string"},
                     "minItems": 1,  # Always return at least one source
-                    "maxItems": len(all_selectable_tools)
+                    "maxItems": len(self.mcp_tools)
                 },
                 "reason": {
                     "type": "string",
@@ -3247,35 +3190,22 @@ class SimpleDeepResearch:
                         }
                     )
 
-                # Separate MCP tools from web tools
-                selected_mcp_tools = [s for s in selected_sources if s in [tool["name"] for tool in self.mcp_tools]]
-                selected_web_tools = [s for s in selected_sources if s in [tool["name"] for tool in self.web_tools]]
+                # All selected sources are in mcp_tools now (no web_tools distinction)
+                selected_tool_names = [s for s in selected_sources if s in [tool["name"] for tool in self.mcp_tools]]
 
-                # Search MCP tools if any selected
-                mcp_results = []
-                if selected_mcp_tools:
-                    # Pass selected MCP tool names to avoid duplicate selection call
-                    # Use default limit (will be overridden per-tool in _search_mcp_tools_selected)
-                    mcp_results = await self._search_mcp_tools_selected(
+                # Search all selected tools
+                all_results = []
+                if selected_tool_names:
+                    all_results = await self._search_mcp_tools_selected(
                         task.query,
-                        selected_mcp_tools,
+                        selected_tool_names,
                         limit=config.default_result_limit,
                         task_id=task.id,
                         attempt=task.retry_count,
                         param_adjustments=task.param_adjustments
                     )
 
-                # Conditionally search Brave if selected by LLM
-                web_results = []
-                if "brave_search" in selected_web_tools:
-                    print(f"🌐 Brave Search selected by LLM, executing web search...")
-                    brave_limit = config.get_integration_limit('bravesearch')  # Task 1: Use per-integration limit
-                    web_results = await self._search_brave(task.query, max_results=brave_limit)
-                else:
-                    print(f"⊘ Brave Search not selected for this task")
-
-                # Combine MCP results with web results
-                all_results = mcp_results + web_results
+                # Note: brave_search is now handled like any other integration in _search_mcp_tools_selected
                 combined_total = len(all_results)
 
                 # Validate result relevance, filter to relevant results, decide if continue
@@ -3492,7 +3422,7 @@ class SimpleDeepResearch:
                     # Get available sources (all tools minus rate-limited ones)
                     available_sources = [
                         self.tool_name_to_display[tool["name"]]
-                        for tool in (self.mcp_tools + self.web_tools)
+                        for tool in self.mcp_tools
                         if self.tool_name_to_display.get(tool["name"], tool["name"]) not in self.rate_limited_sources
                     ]
 

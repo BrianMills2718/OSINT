@@ -69,11 +69,43 @@ class GovInfoIntegration(DatabaseIntegration):
             name="GovInfo",
             id="govinfo",
             category=DatabaseCategory.GOV_GENERAL,
+            description="Government publications: GAO reports, IG audits, Congressional hearings, court opinions, federal regulations",
+
             requires_api_key=True,
-            cost_per_query_estimate=0.001,  # LLM cost only
-            typical_response_time=2.0,      # seconds
-            rate_limit_daily=120000,        # 5000/hour * 24 hours
-            description="Government publications: GAO reports, IG audits, Congressional hearings, court opinions, federal regulations"
+            api_key_env_var="DATA_GOV_API_KEY",
+
+            cost_per_query_estimate=0.001,
+            typical_response_time=2.0,
+            rate_limit_daily=120000,
+            default_result_limit=30,
+
+            query_strategies=[
+                'collection_specific',
+                'keyword_search',
+                'agency_oversight',
+                'congressional_activity',
+                'court_opinions',
+                'regulatory_documents',
+                'date_range_filter',
+                'topic_investigation'
+            ],
+            characteristics={
+                'official_publications': True,
+                'oversight_reports': True,
+                'audit_reports': True,
+                'congressional_documents': True,
+                'court_opinions': True,
+                'federal_regulations': True,
+                'public_laws': True,
+                'full_text_search': True,
+                'structured_data': True,
+                'rich_metadata': True,
+                '150_plus_collections': True,
+                'requires_verification': False,
+                'date_filtering': True
+            },
+            typical_result_count=30,
+            max_queries_recommended=6
         )
 
     async def is_relevant(self, research_question: str) -> bool:
