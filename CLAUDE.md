@@ -490,7 +490,7 @@ pip list | grep playwright
 - ✅ NewsAPI 426 error fix (3-layer architecture: metadata → prompt → code) - **COMPLETE** (commit 3beaf75)
 - ✅ Generic search fallback pattern (reusable, metadata-driven) - **COMPLETE** (commit 7407125)
 - ✅ Codebase cleanup (removed 84k+ lines of old experimental code) - **COMPLETE**
-- ✅ Comprehensive TODO documentation (TODO_ARCHITECTURE.md) - **COMPLETE** (commit 93f1814)
+- ✅ Comprehensive TODO documentation (archived to archive/2025-11-23/docs/TODO_ARCHITECTURE.md) - **COMPLETE** (commit 93f1814)
 
 **Previously Completed** (2025-11-22/23):
 - ✅ Telegram integration (4 query patterns, session-based auth) - **COMPLETE** (2025-11-23)
@@ -515,7 +515,7 @@ pip list | grep playwright
 
 ### HIGH PRIORITY
 
-**No high-priority architectural work pending** - All planned improvements from TODO_ARCHITECTURE.md are complete.
+**No high-priority architectural work pending** - All planned improvements from TODO_ARCHITECTURE.md (archived) are complete.
 
 **New Files Created**:
 - core/search_fallback.py (140 lines) - Generic fallback helper
