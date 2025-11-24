@@ -7,6 +7,7 @@ judicial financial disclosures, and oral arguments via the Free Law Project API.
 """
 
 import json
+import logging
 import os
 from typing import Dict, Optional
 from datetime import datetime, timedelta
@@ -24,6 +25,9 @@ from core.database_integration_base import (
 )
 from core.api_request_tracker import log_request
 from config_loader import config
+
+# Set up logger for this module
+logger = logging.getLogger(__name__)
 
 # Load environment variables
 load_dotenv()
@@ -133,6 +137,8 @@ Return JSON with your decision:
             return result.get("relevant", True)  # Default to True if parsing fails
 
         except Exception as e:
+            # Exception in integration - log with full trace
+            logger.error(f"Operation failed: {e}", exc_info=True)
             # On error, default to True (let query generation and filtering handle it)
             print(f"[WARN] CourtListener relevance check failed: {e}, defaulting to True")
             return True
@@ -442,6 +448,8 @@ Return JSON with your decision:
             )
 
         except Exception as e:
+            # Exception in integration - log with full trace
+            logger.error(f"Operation failed: {e}", exc_info=True)
             response_time_ms = (datetime.now() - start_time).total_seconds() * 1000
 
             # Log failed request

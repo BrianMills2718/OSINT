@@ -6,6 +6,7 @@ Provides access to declassified CIA documents from the CIA Reading Room.
 """
 
 import asyncio
+import logging
 import json
 from typing import Dict, Optional, List
 from urllib.parse import quote
@@ -273,6 +274,8 @@ class CRESTIntegration(DatabaseIntegration):
                         documents.append(doc)
 
                     except Exception as e:
+                        # Exception in integration - log with full trace
+                        logger.error(f"Operation failed: {e}", exc_info=True)
                         # Skip failed documents
                         print(f"Failed to fetch document {doc_link['url']}: {e}")
                         continue
@@ -296,6 +299,8 @@ class CRESTIntegration(DatabaseIntegration):
                 )
 
         except Exception as e:
+            # Exception in integration - log with full trace
+            logger.error(f"Operation failed: {e}", exc_info=True)
             return QueryResult(
                 success=False,
                 source="CIA CREST",

@@ -7,6 +7,7 @@ Provides access to federal government contracting opportunities from SAM.gov
 """
 
 import json
+import logging
 from typing import Dict, Optional
 from datetime import datetime, timedelta
 import asyncio
@@ -22,6 +23,9 @@ from core.database_integration_base import (
 )
 from core.api_request_tracker import log_request
 from config_loader import config
+
+# Set up logger for this module
+logger = logging.getLogger(__name__)
 
 
 class SAMIntegration(DatabaseIntegration):
@@ -378,6 +382,8 @@ class SAMIntegration(DatabaseIntegration):
             )
 
         except requests.HTTPError as e:
+            # SAM.gov HTTP error - log with full trace
+            logger.error(f"SAM.gov HTTP error: {e}", exc_info=True)
             response_time_ms = (datetime.now() - start_time).total_seconds() * 1000
             status_code = e.response.status_code if e.response else 0
 
@@ -402,6 +408,8 @@ class SAMIntegration(DatabaseIntegration):
             )
 
         except Exception as e:
+            # SAM.gov search failed unexpectedly
+            logger.error(f"SAM.gov search failed: {e}", exc_info=True)
             response_time_ms = (datetime.now() - start_time).total_seconds() * 1000
 
             # Log failed request

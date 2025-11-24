@@ -8,6 +8,7 @@ and other major financial leak investigations.
 """
 
 import json
+import logging
 from typing import Dict, Optional
 from datetime import datetime
 import asyncio
@@ -23,6 +24,9 @@ from core.database_integration_base import (
 )
 from core.api_request_tracker import log_request
 from config_loader import config
+
+# Set up logger for this module
+logger = logging.getLogger(__name__)
 
 
 class ICIJOffshoreLeaksIntegration(DatabaseIntegration):
@@ -348,6 +352,8 @@ class ICIJOffshoreLeaksIntegration(DatabaseIntegration):
             )
 
         except Exception as e:
+            # Exception in integration - log with full trace
+            logger.error(f"Operation failed: {e}", exc_info=True)
             response_time_ms = (datetime.now() - start_time).total_seconds() * 1000
 
             # Log failed request
