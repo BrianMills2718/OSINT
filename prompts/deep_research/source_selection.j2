@@ -3,7 +3,7 @@ Select which sources should be queried for this research subtask.
 Original research question: "{{ research_question }}"
 Task query: "{{ query }}"
 
-Available sources:
+Available sources (use the ID in parentheses):
 {{ options_text }}
 
 Guidelines:
@@ -11,10 +11,13 @@ Guidelines:
 - For each source you select, explain what specific information it might provide for this query
 - When uncertain, it's better to include a source than to exclude it
 - Aim for 3-6 sources that best match the query's needs
-- Consider both specialized sources (SAM.gov, DVIDS, USAJobs, ClearanceJobs) and general sources (Twitter, Reddit, Discord, Brave Search)
+- Consider both specialized sources and general sources
+
+IMPORTANT: Return the source ID (the value in parentheses), NOT the display name.
+For example, use "govinfo" not "GovInfo", use "sam" not "SAM.gov".
 
 Return a JSON object with:
 {
-  "sources": ["tool_name1", "tool_name2", ...],
+  "sources": ["source_id_1", "source_id_2", ...],
   "reason": "Brief explanation of why these sources were selected"
 }

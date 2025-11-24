@@ -300,16 +300,14 @@ class SimpleDeepResearch:
             # Store integration instance for direct access
             self.integrations[integration_id] = integration
 
-            # Build tool name (e.g., "search_sam", "search_sec_edgar")
-            tool_name = f"search_{integration_id}"
-
-            # Build display name from metadata (e.g., "SAM.gov", "SEC EDGAR")
+            # Use integration_id as canonical name (no search_ prefix)
+            # This ensures LLM outputs match validation exactly
             display_name = metadata.name
 
-            # Build mappings
-            self.tool_name_to_display[tool_name] = display_name
-            self.display_to_tool_map[display_name] = tool_name
-            self.tool_descriptions[tool_name] = metadata.description
+            # Build mappings: integration_id <-> display_name
+            self.tool_name_to_display[integration_id] = display_name
+            self.display_to_tool_map[display_name] = integration_id
+            self.tool_descriptions[integration_id] = metadata.description
 
             # Load API key if required
             api_key = None
@@ -345,18 +343,18 @@ class SimpleDeepResearch:
 
             self.api_keys[integration_id] = api_key
 
-            # Build backward-compatible tool structures
+            # Build tool config using integration_id as the canonical name
             # ALL integrations now call directly (no MCP layer for internal use)
             tool_config = {
-                "name": tool_name,
+                "name": integration_id,  # Use integration_id directly (no search_ prefix)
                 "server": None,  # ALL use direct integration calls
                 "api_key_name": integration_id if metadata.requires_api_key else None,
-                "integration_id": integration_id  # Link to registry
+                "integration_id": integration_id  # Redundant but kept for clarity
             }
 
             # Categorize as MCP or web tool (for backward compatibility)
             if integration_id == "brave_search":
-                self.web_tools.append({"name": tool_name, "type": "web", "api_key_name": integration_id})
+                self.web_tools.append({"name": integration_id, "type": "web", "api_key_name": integration_id})
             else:
                 self.mcp_tools.append(tool_config)
 
@@ -369,8 +367,7 @@ class SimpleDeepResearch:
         logger.info(f"   • {len(self.web_tools)} categorized as web tools")
 
         for integration_id, integration in self.integrations.items():
-            tool_name = f"search_{integration_id}"
-            display_name = self.tool_name_to_display[tool_name]
+            display_name = self.tool_name_to_display[integration_id]
             api_status = "🔑" if integration.metadata.requires_api_key else "🆓"
             logger.info(f"  {api_status} {display_name} ({integration_id})")
 
@@ -1342,7 +1339,7 @@ class SimpleDeepResearch:
             llm_name: Source name from LLM (may have .gov suffix, different case)
 
         Returns:
-            Matched tool name (e.g., "search_usaspending"), or None if no match
+            Matched integration_id (e.g., "usaspending"), or None if no match
         """
         # 1. Try exact match
         if llm_name in self.display_to_tool_map:
@@ -1375,7 +1372,7 @@ class SimpleDeepResearch:
             hypothesis: Hypothesis dict with search_strategy.sources (display names)
 
         Returns:
-            List of MCP tool names (e.g., ["search_usajobs", "search_twitter"])
+            List of integration IDs (e.g., ["usajobs", "twitter"])
 
         Logs errors for unknown sources and skips them.
         """
@@ -1523,7 +1520,7 @@ class SimpleDeepResearch:
 
         Args:
             hypothesis: Hypothesis dict with statement, confidence, search_strategy
-            source_tool_name: MCP tool name (e.g., "search_usajobs")
+            source_tool_name: Integration ID (e.g., "usajobs")
             research_question: Original research question
             task_query: Task query this hypothesis belongs to
 
@@ -2701,7 +2698,7 @@ class SimpleDeepResearch:
 
         Returns:
             Tuple of (selected_sources, reason):
-            - selected_sources: List of tool names (e.g., ["search_dvids", "search_sam", "brave_search"])
+            - selected_sources: List of integration IDs (e.g., ["dvids", "sam", "brave_search"])
             - reason: LLM's explanation for why these sources were selected
         """
         # Combine MCP tools and web tools for LLM selection
@@ -2755,11 +2752,26 @@ class SimpleDeepResearch:
             selected_sources = result.get("sources", [])
             reason = result.get("reason", "")
 
-            # Keep only valid tool names (both MCP and web)
-            valid_sources = [
-                source for source in selected_sources
-                if source in self.tool_name_to_display
-            ]
+            # Normalize source names to integration_id
+            # Accept both integration_id ("govinfo") and display_name ("GovInfo")
+            valid_sources = []
+            for source in selected_sources:
+                if source in self.tool_name_to_display:
+                    # Already an integration_id
+                    valid_sources.append(source)
+                elif source in self.display_to_tool_map:
+                    # Display name - convert to integration_id
+                    valid_sources.append(self.display_to_tool_map[source])
+                elif source.lower() in [k.lower() for k in self.tool_name_to_display]:
+                    # Case-insensitive match for integration_id
+                    matched = next(k for k in self.tool_name_to_display if k.lower() == source.lower())
+                    valid_sources.append(matched)
+                elif source.lower() in [k.lower() for k in self.display_to_tool_map]:
+                    # Case-insensitive match for display_name
+                    matched_display = next(k for k in self.display_to_tool_map if k.lower() == source.lower())
+                    valid_sources.append(self.display_to_tool_map[matched_display])
+                else:
+                    logger.warning(f"Unknown source '{source}' returned by LLM - skipping")
 
             # Log sources that were NOT selected
             all_sources = list(self.tool_name_to_display.keys())
@@ -2836,18 +2848,9 @@ class SimpleDeepResearch:
                 args["api_key"] = api_key
 
             # Add param_hints if available for this tool (Task 4: Twitter pagination control)
-            if param_adjustments:
-                # Map source keys to tool names
-                source_map = {
-                    "reddit": "search_reddit",
-                    "usajobs": "search_usajobs",
-                    "twitter": "search_twitter"  # Task 4: Added Twitter pagination control
-                }
-                # Find matching hints for this tool
-                for source_key, tool_name_key in source_map.items():
-                    if tool_name == tool_name_key and source_key in param_adjustments:
-                        args["param_hints"] = param_adjustments[source_key]
-                        break
+            # tool_name is now integration_id directly (e.g., "reddit", "twitter")
+            if param_adjustments and tool_name in param_adjustments:
+                args["param_hints"] = param_adjustments[tool_name]
 
             # Log API call
             source_name = self.tool_name_to_display.get(tool_name, tool_name)
