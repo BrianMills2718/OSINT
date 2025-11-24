@@ -46,6 +46,9 @@ from core.prompt_loader import render_prompt
 
 load_dotenv()
 
+# Set up logger for this module
+logger = logging.getLogger(__name__)
+
 
 class ResourceManager:
     """
@@ -217,7 +220,7 @@ class SimpleDeepResearch:
         if "enabled" in hyp_config and "mode" not in hyp_config:
             if hyp_config["enabled"]:
                 self.hypothesis_mode = "planning"  # Legacy behavior preserved
-                logging.warning("⚠️  hypothesis_branching.enabled is deprecated, use mode: 'planning' instead")
+                logger.warning("⚠️  hypothesis_branching.enabled is deprecated, use mode: 'planning' instead")
             else:
                 self.hypothesis_mode = "off"
         else:
@@ -338,7 +341,7 @@ class SimpleDeepResearch:
 
                 api_key = os.getenv(env_var_name)
                 if not api_key:
-                    logging.warning(f"⚠️  {display_name} requires API key but {env_var_name} not found in environment")
+                    logger.warning(f"⚠️  {display_name} requires API key but {env_var_name} not found in environment")
 
             self.api_keys[integration_id] = api_key
 
@@ -361,15 +364,15 @@ class SimpleDeepResearch:
         self.tool_display_to_name = {v: k for k, v in self.tool_name_to_display.items()}
 
         # Log what was loaded
-        logging.info(f"✅ Loaded {len(self.integrations)} integrations from registry:")
-        logging.info(f"   • All {len(self.mcp_tools)} integrations use direct calls (no MCP layer)")
-        logging.info(f"   • {len(self.web_tools)} categorized as web tools")
+        logger.info(f"✅ Loaded {len(self.integrations)} integrations from registry:")
+        logger.info(f"   • All {len(self.mcp_tools)} integrations use direct calls (no MCP layer)")
+        logger.info(f"   • {len(self.web_tools)} categorized as web tools")
 
         for integration_id, integration in self.integrations.items():
             tool_name = f"search_{integration_id}"
             display_name = self.tool_name_to_display[tool_name]
             api_status = "🔑" if integration.metadata.requires_api_key else "🆓"
-            logging.info(f"  {api_status} {display_name} ({integration_id})")
+            logger.info(f"  {api_status} {display_name} ({integration_id})")
 
     def _emit_progress(self, event: str, message: str, task_id: Optional[int] = None, data: Optional[Dict] = None):
         """Emit progress update for live streaming."""
@@ -523,8 +526,11 @@ class SimpleDeepResearch:
                 f"Created {len(self.task_queue)} initial tasks",
                 data={"tasks": [{"id": t.id, "query": t.query} for t in self.task_queue]}
             )
+        # Critical failure - task decomposition is required to proceed
         except Exception as e:
+            # Critical failure - task decomposition is required to proceed
             import traceback
+            logger.error(f"Failed to decompose question: {type(e).__name__}: {str(e)}", exc_info=True)
             error_msg = f"Failed to decompose question: {type(e).__name__}: {str(e)}"
             self._emit_progress(
                 "decomposition_failed",
@@ -575,8 +581,9 @@ class SimpleDeepResearch:
                             completed_tasks=len(self.completed_tasks),
                             saturation_result=saturation_check
                         )
+                    # Logging failure - non-critical, execution continues
                     except Exception as log_error:
-                        logging.warning(f"Failed to log saturation assessment: {log_error}")
+                        logger.warning(f"Failed to log saturation assessment: {log_error}", exc_info=True)
 
                 # Act on saturation decision (if stopping allowed)
                 if (self.allow_saturation_stop and
@@ -665,9 +672,10 @@ class SimpleDeepResearch:
                         try:
                             with open(raw_file, 'w', encoding='utf-8') as f:
                                 json.dump(accumulated_dict, f, indent=2, ensure_ascii=False)
-                            logging.info(f"Task {task.id} timed out; persisted partial results ({len(task.accumulated_results)}) to {raw_file}")
+                            logger.info(f"Task {task.id} timed out; persisted partial results ({len(task.accumulated_results)}) to {raw_file}")
+                        # Persistence failure - non-critical, data may be lost but execution continues
                         except Exception as persist_error:
-                            logging.warning(f"Failed to persist partial results for timed-out task {task.id}: {persist_error}")
+                            logger.warning(f"Failed to persist partial results for timed-out task {task.id}: {persist_error}", exc_info=True)
                     # Log timeout as a task completion record
                     if self.logger:
                         try:
@@ -682,8 +690,9 @@ class SimpleDeepResearch:
                                 retry_count=task.retry_count,
                                 elapsed_seconds=task_timeout
                             )
+                        # Logging failure - non-critical, execution continues
                         except Exception as log_error:
-                            logging.warning(f"Failed to log task timeout for task {task.id}: {log_error}")
+                            logger.warning(f"Failed to log task timeout for task {task.id}: {log_error}", exc_info=True)
                     continue
 
                 # Handle other exceptions
@@ -712,9 +721,10 @@ class SimpleDeepResearch:
                         try:
                             with open(raw_file, 'w', encoding='utf-8') as f:
                                 json.dump(accumulated_dict, f, indent=2, ensure_ascii=False)
-                            logging.info(f"Task {task.id} exception; persisted partial results ({len(task.accumulated_results)}) to {raw_file}")
+                            logger.info(f"Task {task.id} exception; persisted partial results ({len(task.accumulated_results)}) to {raw_file}")
+                        # Persistence failure - non-critical, data may be lost but execution continues
                         except Exception as persist_error:
-                            logging.warning(f"Failed to persist partial results for errored task {task.id}: {persist_error}")
+                            logger.warning(f"Failed to persist partial results for errored task {task.id}: {persist_error}", exc_info=True)
                     # Log exception as task completion record
                     if self.logger:
                         try:
@@ -729,8 +739,9 @@ class SimpleDeepResearch:
                                 retry_count=task.retry_count,
                                 elapsed_seconds=0
                             )
+                        # Logging failure - non-critical, execution continues
                         except Exception as log_error:
-                            logging.warning(f"Failed to log task exception for task {task.id}: {log_error}")
+                            logger.warning(f"Failed to log task exception for task {task.id}: {log_error}", exc_info=True)
                     continue
 
                 success = success_or_exception
@@ -754,10 +765,11 @@ class SimpleDeepResearch:
 
                             # Update entity graph with found entities
                             await self._update_entity_graph(entities_found)
+                        # Entity extraction failure - non-critical, task can continue without entities
                         except Exception as entity_error:
                             # Log error but don't fail task - entity extraction is non-critical
                             import traceback
-                            logging.error(
+                            logger.error(
                                 f"Entity extraction failed for task {task.id}: {type(entity_error).__name__}: {str(entity_error)}\n"
                                 f"Traceback: {traceback.format_exc()}"
                             )
@@ -784,9 +796,10 @@ class SimpleDeepResearch:
                                     )
                                     follow_up.hypotheses = hypotheses_result
                                     print(f"   ✓ Follow-up {follow_up.id}: Generated {len(hypotheses_result['hypotheses'])} hypothesis/hypotheses")
+                                # LLM call failed - hypothesis generation is optional, can proceed without
                                 except Exception as e:
                                     print(f"   ⚠️  Follow-up {follow_up.id}: Hypothesis generation failed - {type(e).__name__}: {e}")
-                                    logging.warning(f"Hypothesis generation failed for follow-up {follow_up.id}: {type(e).__name__}: {e}")
+                                    logger.warning(f"Hypothesis generation failed for follow-up {follow_up.id}: {type(e).__name__}: {e}", exc_info=True)
                                     # Continue without hypotheses - don't fail follow-up creation
                                     follow_up.hypotheses = None
 
@@ -836,8 +849,11 @@ class SimpleDeepResearch:
             self._emit_progress("synthesis_started", "Synthesizing final report...")
             report = await self._synthesize_report(question)
             self._emit_progress("synthesis_complete", "Report complete")
+        # Critical failure - report synthesis is the final output
         except Exception as e:
+            # Critical failure - report synthesis is the final output
             import traceback
+            logger.error(f"Failed to synthesize report: {type(e).__name__}: {str(e)}", exc_info=True)
             error_msg = f"Failed to synthesize report: {type(e).__name__}: {str(e)}"
             self._emit_progress(
                 "synthesis_failed",
@@ -897,10 +913,11 @@ class SimpleDeepResearch:
                 output_path = self._save_research_output(question, result)
                 result["output_directory"] = output_path
                 print(f"\n💾 Research output saved to: {output_path}")
+            # Output persistence failure - non-critical, research completed
             except Exception as e:
-                logging.error(f"Failed to save research output: {type(e).__name__}: {str(e)}")
+                logger.error(f"Failed to save research output: {type(e).__name__}: {str(e)}", exc_info=True)
                 import traceback
-                logging.error(traceback.format_exc())
+                logger.error(traceback.format_exc(), exc_info=True)
                 # Attempt a minimal fallback save to preserve artifacts
                 try:
                     from pathlib import Path
@@ -919,8 +936,9 @@ class SimpleDeepResearch:
                     _json.dump({"error": f"{type(e).__name__}: {str(e)}", "research_question": question}, metadata_file.open("w", encoding="utf-8"), indent=2, ensure_ascii=False)
                     result["output_directory"] = str(output_path)
                     print(f"\n⚠️  Partial output saved to: {output_path}")
+                # LLM fallback model failure - expected possibility, try next model in chain
                 except Exception as fallback_error:
-                    logging.error(f"Fallback save failed: {type(fallback_error).__name__}: {fallback_error}")
+                    logger.error(f"Fallback save failed: {type(fallback_error).__name__}: {fallback_error}", exc_info=True)
 
         # Log run completion
         if self.logger:
@@ -1003,7 +1021,10 @@ class SimpleDeepResearch:
                     )
                     task.hypotheses = hypotheses_result
                     print(f"   ✓ Task {task.id}: Generated {len(hypotheses_result['hypotheses'])} hypothesis/hypotheses")
+                # LLM call failed - hypothesis generation is optional, can proceed without
                 except Exception as e:
+                    # LLM call failed - hypothesis generation is optional, can proceed without
+                    logger.warning(f"Hypothesis generation failed for task {task.id}: {type(e).__name__}: {e}", exc_info=True)
                     print(f"   ⚠️  Task {task.id}: Hypothesis generation failed - {type(e).__name__}: {e}")
                     # Continue without hypotheses - don't fail task creation
                     task.hypotheses = None
@@ -1300,11 +1321,12 @@ class SimpleDeepResearch:
 
             return tasks
 
+        # Task prioritization failure - acceptable to fall back to FIFO order
         except Exception as e:
-            logging.error(f"Task prioritization failed: {type(e).__name__}: {e}")
+            logger.error(f"Task prioritization failed: {type(e).__name__}: {e}", exc_info=True)
             print(f"⚠️  Prioritization failed, using default priority order")
             import traceback
-            logging.error(traceback.format_exc())
+            logger.error(traceback.format_exc(), exc_info=True)
             # On error, return tasks as-is (FIFO order)
             return tasks
 
@@ -1367,7 +1389,7 @@ class SimpleDeepResearch:
             if tool_name:
                 tool_names.append(tool_name)
             else:
-                logging.warning(f"⚠️  Hypothesis {hypothesis.get('id', '?')} specified unknown source '{display_name}' - skipping")
+                logger.warning(f"⚠️  Hypothesis {hypothesis.get('id', '?')} specified unknown source '{display_name}' - skipping")
 
         return tool_names
 
@@ -1574,8 +1596,9 @@ class SimpleDeepResearch:
 
             return result["query"]
 
+        # Query reformulation failure - acceptable to proceed with existing query
         except Exception as e:
-            logging.error(f"❌ Hypothesis {hypothesis['id']} query generation failed for {source_display_name}: {type(e).__name__}: {e}")
+            logger.error(f"❌ Hypothesis {hypothesis['id']} query generation failed for {source_display_name}: {type(e).__name__}: {e}", exc_info=True)
             return None
 
     async def _generate_initial_query(
@@ -1822,8 +1845,9 @@ class SimpleDeepResearch:
                             )
                         break
 
+            # Query reformulation failure - acceptable to proceed with existing query
             except Exception as e:
-                logging.error(f"Error generating query for {source_name}: {e}")
+                logger.error(f"Error generating query for {source_name}: {e}", exc_info=True)
                 if self.logger:
                     self.logger.log_source_saturation_complete(
                         task_id=task_id,
@@ -1839,7 +1863,7 @@ class SimpleDeepResearch:
             # Validate query suggestion exists
             query = query_decision.get('next_query_suggestion', '').strip()
             if not query:
-                logging.warning(f"Empty query suggestion from LLM for {source_name}")
+                logger.warning(f"Empty query suggestion from LLM for {source_name}")
                 if self.logger:
                     self.logger.log_source_saturation_complete(
                         task_id=task_id,
@@ -1870,7 +1894,7 @@ class SimpleDeepResearch:
                 # Map display name → tool name
                 tool_name = self.tool_display_to_name.get(source_name)
                 if not tool_name:
-                    logging.error(f"Unknown source: {source_name}")
+                    logger.error(f"Unknown source: {source_name}")
                     query_history.append({
                         'query': query,
                         'reasoning': query_reasoning,
@@ -1902,7 +1926,7 @@ class SimpleDeepResearch:
                         results = tool_result.get("results", [])
                     else:
                         error_msg = tool_result.get('error', 'Unknown error')
-                        logging.error(f"MCP tool {source_name} failed: {error_msg}")
+                        logger.error(f"MCP tool {source_name} failed: {error_msg}")
                         query_history.append({
                             'query': query,
                             'reasoning': query_reasoning,
@@ -1918,8 +1942,9 @@ class SimpleDeepResearch:
                     # Brave search path (non-MCP)
                     results = await self._search_brave(query, max_results=limit)
 
+            # Query reformulation failure - acceptable to proceed with existing query
             except Exception as e:
-                logging.error(f"Source query failed for {source_name}: {e}")
+                logger.error(f"Source query failed for {source_name}: {e}", exc_info=True)
                 # Track failed attempt and continue
                 query_history.append({
                     'query': query,
@@ -2030,7 +2055,7 @@ class SimpleDeepResearch:
         # Map hypothesis sources (display names → tool names)
         source_tool_names = self._map_hypothesis_sources(hypothesis)
         if not source_tool_names:
-            logging.warning(f"⚠️  Hypothesis {hypothesis_id}: No valid sources to search")
+            logger.warning(f"⚠️  Hypothesis {hypothesis_id}: No valid sources to search")
             return []
 
         # Execute sources (saturation mode or single-shot mode)
@@ -2055,8 +2080,9 @@ class SimpleDeepResearch:
                     print(f"   ✓ {source_display}: {len(source_results)} results (after saturation)")
                     all_results.extend(source_results)
 
+                # LLM call failed - hypothesis generation is optional, can proceed without
                 except Exception as e:
-                    logging.error(f"❌ Hypothesis {hypothesis_id} saturation failed for {source_display}: {type(e).__name__}: {e}")
+                    logger.error(f"❌ Hypothesis {hypothesis_id} saturation failed for {source_display}: {type(e).__name__}: {e}", exc_info=True)
                     continue  # Continue with other sources
         else:
             # OLD: Single-shot mode (one query per source)
@@ -2108,8 +2134,9 @@ class SimpleDeepResearch:
                         print(f"   ✓ {source_display}: {len(results)} results")
                         all_results.extend(results)
 
+                # Query reformulation failure - acceptable to proceed with existing query
                 except Exception as e:
-                    logging.error(f"❌ Hypothesis {hypothesis_id} search failed for {source_display}: {type(e).__name__}: {e}")
+                    logger.error(f"❌ Hypothesis {hypothesis_id} search failed for {source_display}: {type(e).__name__}: {e}", exc_info=True)
                     continue  # Continue with other sources
 
         # Filter hypothesis results for relevance (only in single-shot mode)
@@ -2155,8 +2182,9 @@ class SimpleDeepResearch:
                 # Phase 3C: Add delta metrics
                 "delta_metrics": delta_metrics
             })
+        # LLM call failed - hypothesis generation is optional, can proceed without
         except Exception as e:
-            logging.warning(f"Failed to record hypothesis run summary for {hypothesis_id}: {e}")
+            logger.warning(f"Failed to record hypothesis run summary for {hypothesis_id}: {e}", exc_info=True)
 
         return deduplicated
 
@@ -2300,15 +2328,16 @@ class SimpleDeepResearch:
             }
 
             # Log coverage decision
-            logging.info(f"📊 Coverage assessment (Task {task.id}):")
-            logging.info(f"   Decision: {decision['decision'].upper()}")
-            logging.info(f"   Assessment: {decision['assessment'][:150]}...")
-            logging.info(f"   Facts: {decision['facts']['results_new']} new, {decision['facts']['results_duplicate']} dup")
+            logger.info(f"📊 Coverage assessment (Task {task.id}):")
+            logger.info(f"   Decision: {decision['decision'].upper()}")
+            logger.info(f"   Assessment: {decision['assessment'][:150]}...")
+            logger.info(f"   Facts: {decision['facts']['results_new']} new, {decision['facts']['results_duplicate']} dup")
 
             return decision
 
+        # Coverage assessment failure - acceptable to continue without saturation check
         except Exception as e:
-            logging.error(f"❌ Coverage assessment failed: {type(e).__name__}: {e}")
+            logger.error(f"❌ Coverage assessment failed: {type(e).__name__}: {e}", exc_info=True)
             # Fallback: continue if under hard ceilings
             return {
                 "decision": "continue" if (executed_count < self.max_hypotheses_to_execute and time_elapsed_seconds < self.max_time_per_task_seconds) else "stop",
@@ -2390,7 +2419,7 @@ class SimpleDeepResearch:
             all_results = []
             for i, result in enumerate(results_by_hypothesis):
                 if isinstance(result, Exception):
-                    logging.error(f"❌ Hypothesis {i+1} execution failed: {type(result).__name__}: {result}")
+                    logger.error(f"❌ Hypothesis {i+1} execution failed: {type(result).__name__}: {result}")
                 else:
                     all_results.extend(result)
 
@@ -2435,8 +2464,9 @@ class SimpleDeepResearch:
             print(f"\n✅ Hypothesis execution complete: {len(deduplicated)} total unique results")
             return deduplicated
 
+        # LLM call failed - hypothesis generation is optional, can proceed without
         except Exception as e:
-            logging.error(f"❌ Hypothesis execution failed: {type(e).__name__}: {e}")
+            logger.error(f"❌ Hypothesis execution failed: {type(e).__name__}: {e}", exc_info=True)
             return []
 
     async def _execute_hypotheses_sequential(
@@ -2515,8 +2545,9 @@ class SimpleDeepResearch:
 
                 print(f"   Results: {len(hypothesis_results)} from hypothesis ({len(all_results)} total unique)")
 
+            # LLM call failed - hypothesis generation is optional, can proceed without
             except Exception as e:
-                logging.error(f"❌ Hypothesis {i+1} execution failed: {type(e).__name__}: {e}")
+                logger.error(f"❌ Hypothesis {i+1} execution failed: {type(e).__name__}: {e}", exc_info=True)
                 continue
 
             # Skip coverage assessment for first hypothesis (need baseline)
@@ -2550,8 +2581,9 @@ class SimpleDeepResearch:
                     print(f"   Coverage assessment: CONTINUE")
                     print(f"   Assessment: {decision['assessment'][:100]}...")
 
+            # LLM call failed - hypothesis generation is optional, can proceed without
             except Exception as e:
-                logging.error(f"❌ Coverage assessment failed: {type(e).__name__}: {e}")
+                logger.error(f"❌ Coverage assessment failed: {type(e).__name__}: {e}", exc_info=True)
                 # Continue execution on assessment error (don't block progress)
 
         # Store coverage decisions in task metadata for reporting
@@ -2579,7 +2611,7 @@ class SimpleDeepResearch:
         """
         api_key = os.getenv('BRAVE_SEARCH_API_KEY')
         if not api_key:
-            logging.warning("BRAVE_SEARCH_API_KEY not found, skipping web search")
+            logger.warning("BRAVE_SEARCH_API_KEY not found, skipping web search")
             return []
 
         # Use ResourceManager to ensure only 1 Brave Search call at a time (1 req/sec limit)
@@ -2603,7 +2635,7 @@ class SimpleDeepResearch:
                     # Rate limiting: 1 request per second (Brave Search free tier limit)
                     if attempt > 0:
                         delay = retry_delays[attempt - 1]
-                        logging.info(f"Brave Search: Waiting {delay}s before retry {attempt}/{max_retries}")
+                        logger.info(f"Brave Search: Waiting {delay}s before retry {attempt}/{max_retries}")
                         await asyncio.sleep(delay)
                     else:
                         # Always wait 1 second between calls to respect rate limit
@@ -2615,15 +2647,15 @@ class SimpleDeepResearch:
                             # Handle rate limiting
                             if resp.status == 429:
                                 if attempt < max_retries - 1:
-                                    logging.warning(f"Brave Search: HTTP 429 (rate limit), retry {attempt + 1}/{max_retries}")
+                                    logger.warning(f"Brave Search: HTTP 429 (rate limit), retry {attempt + 1}/{max_retries}")
                                     continue  # Retry with exponential backoff
                                 else:
-                                    logging.error(f"Brave Search: HTTP 429 after {max_retries} retries, giving up")
+                                    logger.error(f"Brave Search: HTTP 429 after {max_retries} retries, giving up")
                                     return []
 
                             # Handle other errors
                             if resp.status != 200:
-                                logging.error(f"Brave Search API error: HTTP {resp.status}")
+                                logger.error(f"Brave Search API error: HTTP {resp.status}")
                                 return []
 
                             data = await resp.json()
@@ -2641,17 +2673,18 @@ class SimpleDeepResearch:
                             'date': item.get('published_date')
                         })
 
-                    logging.info(f"Brave Search: {len(results)} results for query: {query}")
+                    logger.info(f"Brave Search: {len(results)} results for query: {query}")
                     return results
 
                 except asyncio.TimeoutError:
-                    logging.error(f"Brave Search timeout for query: {query}")
+                    logger.error(f"Brave Search timeout for query: {query}")
                     if attempt < max_retries - 1:
                         continue  # Retry
                     return []
 
+                # Query reformulation failure - acceptable to proceed with existing query
                 except Exception as e:
-                    logging.error(f"Brave Search error: {type(e).__name__}: {str(e)}")
+                    logger.error(f"Brave Search error: {type(e).__name__}: {str(e)}", exc_info=True)
                     if attempt < max_retries - 1:
                         continue  # Retry
                     return []
@@ -2744,17 +2777,19 @@ class SimpleDeepResearch:
                             stage="source_selection",
                             details={"selection_reasoning": reason}
                         )
+                    # Logging failure - non-critical, execution continues
                     except Exception as log_error:
-                        logging.warning(f"Failed to log source skipped: {log_error}")
+                        logger.warning(f"Failed to log source skipped: {log_error}", exc_info=True)
 
             if reason:
-                logging.info(f"Source selection rationale: {reason}")
+                logger.info(f"Source selection rationale: {reason}")
                 print(f"📋 Source selection reasoning: {reason}")
 
             return (valid_sources, reason)
 
+        # Exception caught - error logged, execution continues
         except Exception as e:
-            logging.error(f"Source selection failed: {type(e).__name__}: {str(e)}")
+            logger.error(f"Source selection failed: {type(e).__name__}: {str(e)}", exc_info=True)
             # Fallback: return all MCP tools (downstream filtering will still apply)
             return ([tool["name"] for tool in self.mcp_tools], f"Error during source selection: {type(e).__name__}")
 
@@ -2827,8 +2862,9 @@ class SimpleDeepResearch:
                         timeout=30,
                         retry_count=0
                     )
+                # Logging failure - non-critical, execution continues
                 except Exception as log_error:
-                    logging.warning(f"Failed to log API call: {log_error}")
+                    logger.warning(f"Failed to log API call: {log_error}", exc_info=True)
 
             # Call integration - two paths: MCP (old) vs Direct (new)
             start_time = time.time()
@@ -2848,7 +2884,7 @@ class SimpleDeepResearch:
                 # 1. Check relevance
                 is_relevant = await integration.is_relevant(query)
                 if not is_relevant:
-                    logging.warning(f"{source_name} not relevant for query: {query}")
+                    logger.warning(f"{source_name} not relevant for query: {query}")
 
                     # Log source skipped (Enhanced Structured Logging)
                     if logger and task_id is not None:
@@ -2861,8 +2897,9 @@ class SimpleDeepResearch:
                                 stage="is_relevant",
                                 details={"query": query}
                             )
+                        # Logging failure - non-critical, execution continues
                         except Exception as log_error:
-                            logging.warning(f"Failed to log source_skipped: {log_error}")
+                            logger.warning(f"Failed to log source_skipped: {log_error}", exc_info=True)
 
                     result_data = {
                         "success": False,
@@ -2889,11 +2926,12 @@ class SimpleDeepResearch:
                                 success=query_params is not None,
                                 metadata={"tool_name": tool_name}
                             )
+                        # Logging failure - non-critical, execution continues
                         except Exception as log_error:
-                            logging.warning(f"Failed to log time breakdown: {log_error}")
+                            logger.warning(f"Failed to log time breakdown: {log_error}", exc_info=True)
 
                     if not query_params:
-                        logging.warning(f"{source_name} failed to generate query for: {query}")
+                        logger.warning(f"{source_name} failed to generate query for: {query}")
 
                         # Log source skipped (Enhanced Structured Logging)
                         if logger and task_id is not None:
@@ -2906,8 +2944,9 @@ class SimpleDeepResearch:
                                     stage="generate_query",
                                     details={"query": query}
                                 )
+                            # Logging failure - non-critical, execution continues
                             except Exception as log_error:
-                                logging.warning(f"Failed to log source_skipped: {log_error}")
+                                logger.warning(f"Failed to log source_skipped: {log_error}", exc_info=True)
 
                         result_data = {
                             "success": False,
@@ -2957,8 +2996,9 @@ class SimpleDeepResearch:
                         success=True,  # Will be updated if error found
                         metadata={"tool_name": tool_name, "attempt": attempt}
                     )
+                # Logging failure - non-critical, execution continues
                 except Exception as log_error:
-                    logging.warning(f"Failed to log time breakdown: {log_error}")
+                    logger.warning(f"Failed to log time breakdown: {log_error}", exc_info=True)
 
             # Get source name from result_data (may be overridden by integration)
             source_name = result_data.get("source", source_name)
@@ -2987,8 +3027,9 @@ class SimpleDeepResearch:
                         results=results_with_source,
                         error=error
                     )
+                # Logging failure - non-critical, execution continues
                 except Exception as log_error:
-                    logging.warning(f"Failed to log raw response: {log_error}")
+                    logger.warning(f"Failed to log raw response: {log_error}", exc_info=True)
 
             # Circuit breaker: Detect 429 rate limits and check config before adding
             if error and ("429" in str(error) or "rate limit" in str(error).lower()):
@@ -2997,13 +3038,13 @@ class SimpleDeepResearch:
                 if rate_config["use_circuit_breaker"]:
                     if not rate_config["is_critical"]:
                         self.rate_limited_sources.add(source_name)
-                        logging.warning(f"⚠️  {source_name} rate limited - added to circuit breaker")
+                        logger.warning(f"⚠️  {source_name} rate limited - added to circuit breaker")
                         print(f"⚠️  {source_name} rate limited - skipping for remaining tasks")
                     else:
-                        logging.warning(f"⚠️  {source_name} rate limited but CRITICAL - will continue retrying")
+                        logger.warning(f"⚠️  {source_name} rate limited but CRITICAL - will continue retrying")
                         print(f"⚠️  {source_name} rate limited (CRITICAL - continuing retries)")
                 else:
-                    logging.info(f"ℹ️  {source_name} rate limited (no circuit breaker configured - will retry)")
+                    logger.info(f"ℹ️  {source_name} rate limited (no circuit breaker configured - will retry)")
                     print(f"ℹ️  {source_name} rate limited (will retry)")
 
             return {
@@ -3015,8 +3056,9 @@ class SimpleDeepResearch:
                 "error": error
             }
 
+        # Exception caught - error logged, execution continues
         except Exception as e:
-            logging.error(f"MCP tool {tool_name} failed: {type(e).__name__}: {str(e)}")
+            logger.error(f"MCP tool {tool_name} failed: {type(e).__name__}: {str(e)}", exc_info=True)
 
             # Log failed API call
             if logger and task_id is not None:
@@ -3031,8 +3073,9 @@ class SimpleDeepResearch:
                         results=[],
                         error=str(e)
                     )
+                # Logging failure - non-critical, execution continues
                 except Exception as log_error:
-                    logging.warning(f"Failed to log error response: {log_error}")
+                    logger.warning(f"Failed to log error response: {log_error}", exc_info=True)
 
             return {
                 "tool": tool_name,
@@ -3092,8 +3135,9 @@ class SimpleDeepResearch:
                             stage="execute_search",
                             details={"message": "Circuit breaker active - source previously rate limited"}
                         )
+                    # Logging failure - non-critical, execution continues
                     except Exception as log_error:
-                        logging.warning(f"Failed to log source skipped: {log_error}")
+                        logger.warning(f"Failed to log source skipped: {log_error}", exc_info=True)
 
         if skip_rate_limited_names:
             skipped_display = [self.tool_name_to_display[name] for name in skip_rate_limited_names]
@@ -3261,8 +3305,9 @@ class SimpleDeepResearch:
                                 "results_kept": len(relevant_indices)
                             }
                         )
+                    # Logging failure - non-critical, execution continues
                     except Exception as log_error:
-                        logging.warning(f"Failed to log time breakdown: {log_error}")
+                        logger.warning(f"Failed to log time breakdown: {log_error}", exc_info=True)
 
                 decision_str = "ACCEPT" if should_accept else "REJECT"
                 continue_str = "CONTINUE" if should_continue else "STOP"
@@ -3332,8 +3377,9 @@ class SimpleDeepResearch:
                             passes=should_accept,
                             reasoning_breakdown=reasoning_breakdown  # Bug fix: include detailed reasoning
                         )
+                    # Logging failure - non-critical, execution continues
                     except Exception as log_error:
-                        logging.warning(f"Failed to log relevance scoring: {log_error}")
+                        logger.warning(f"Failed to log relevance scoring: {log_error}", exc_info=True)
 
                 # LLM continuation decision: should we search for more?
                 # Continue if: LLM says continue AND we have retries left
@@ -3355,8 +3401,9 @@ class SimpleDeepResearch:
                                 kept=len(filtered_results),
                                 discarded=discarded_count
                             )
+                        # Logging failure - non-critical, execution continues
                         except Exception as log_error:
-                            logging.warning(f"Failed to log filter decision: {log_error}")
+                            logger.warning(f"Failed to log filter decision: {log_error}", exc_info=True)
 
                     self._emit_progress(
                         "task_retry",
@@ -3492,7 +3539,7 @@ class SimpleDeepResearch:
                         # Override selected_sources for next retry (skip LLM source selection)
                         # Store adjusted sources in task metadata for next iteration
                         task.param_adjustments["_adjusted_sources"] = adjusted_sources
-                        logging.info(f"Phase 2: Source re-selection applied - next retry will use: {[self.tool_name_to_display.get(s, s) for s in adjusted_sources]}")
+                        logger.info(f"Phase 2: Source re-selection applied - next retry will use: {[self.tool_name_to_display.get(s, s) for s in adjusted_sources]}")
 
                     # Phase 0: Log reformulation with full source context (for instrumentation)
                     if self.logger:
@@ -3508,8 +3555,9 @@ class SimpleDeepResearch:
                                 sources_with_zero_results=sources_with_zero_results,
                                 sources_with_low_quality=sources_with_low_quality
                             )
+                        # Logging failure - non-critical, execution continues
                         except Exception as log_error:
-                            logging.warning(f"Failed to log reformulation: {log_error}")
+                            logger.warning(f"Failed to log reformulation: {log_error}", exc_info=True)
 
                     # Update task with new query and params
                     task.query = new_query
@@ -3541,9 +3589,10 @@ class SimpleDeepResearch:
                             else:
                                 print(f"   ⚠️  No hypothesis results found")
 
+                        # Hypothesis processing failure - non-critical, continue with other hypotheses
                         except Exception as hyp_error:
                             # Log but don't fail task - hypothesis execution is supplementary
-                            logging.error(f"❌ Hypothesis execution failed for Task {task.id}: {type(hyp_error).__name__}: {hyp_error}")
+                            logger.error(f"❌ Hypothesis execution failed for Task {task.id}: {type(hyp_error).__name__}: {hyp_error}", exc_info=True)
                             print(f"   ⚠️  Hypothesis execution failed, continuing with normal results")
 
                     # Priority 2: Don't extract entities here, will do at end from accumulated results
@@ -3561,8 +3610,9 @@ class SimpleDeepResearch:
                                 kept=len(filtered_results) if filtered_results else 0,
                                 discarded=discarded_count
                             )
+                        # Logging failure - non-critical, execution continues
                         except Exception as log_error:
-                            logging.warning(f"Failed to log filter decision: {log_error}")
+                            logger.warning(f"Failed to log filter decision: {log_error}", exc_info=True)
 
                     # Use ALL accumulated results (not just last batch)
                     result_dict = {
@@ -3597,9 +3647,10 @@ class SimpleDeepResearch:
                     try:
                         with open(raw_file, 'w', encoding='utf-8') as f:
                             json.dump(accumulated_dict, f, indent=2, ensure_ascii=False)
-                        logging.info(f"Task {task.id} accumulated results ({len(task.accumulated_results)} total) persisted to {raw_file}")
+                        logger.info(f"Task {task.id} accumulated results ({len(task.accumulated_results)} total) persisted to {raw_file}")
+                    # Persistence failure - non-critical, data may be lost but execution continues
                     except Exception as persist_error:
-                        logging.warning(f"Failed to persist task {task.id} results: {persist_error}")
+                        logger.warning(f"Failed to persist task {task.id} results: {persist_error}", exc_info=True)
 
                     # Priority 2: Entity extraction moved to end of task (after retry loop)
                     # Will extract from accumulated_results, not current batch
@@ -3670,9 +3721,11 @@ class SimpleDeepResearch:
 
                     return False
 
+            # Exception caught - error logged, execution continues
             except Exception as e:
-                # Execution error - capture full traceback for debugging
+                # Task execution failure - log and potentially retry
                 import traceback
+                logger.error(f"Task {task.id} execution failed: {type(e).__name__}: {str(e)}", exc_info=True)
                 error_details = {
                     "error_type": type(e).__name__,
                     "error_message": str(e),
@@ -3716,9 +3769,10 @@ class SimpleDeepResearch:
                         try:
                             with open(raw_file, 'w', encoding='utf-8') as f:
                                 json.dump(accumulated_dict, f, indent=2, ensure_ascii=False)
-                            logging.info(f"Task {task.id} failed; persisted partial results ({len(task.accumulated_results)}) to {raw_file}")
+                            logger.info(f"Task {task.id} failed; persisted partial results ({len(task.accumulated_results)}) to {raw_file}")
+                        # Persistence failure - non-critical, data may be lost but execution continues
                         except Exception as persist_error:
-                            logging.warning(f"Failed to persist partial results for task {task.id}: {persist_error}")
+                            logger.warning(f"Failed to persist partial results for task {task.id}: {persist_error}", exc_info=True)
 
                     # Log task failure to execution logger for visibility
                     if self.logger:
@@ -3735,8 +3789,9 @@ class SimpleDeepResearch:
                                 retry_count=task.retry_count,
                                 elapsed_seconds=0
                             )
+                        # Logging failure - non-critical, execution continues
                         except Exception as log_error:
-                            logging.warning(f"Failed to log task failure for task {task.id}: {log_error}")
+                            logger.warning(f"Failed to log task failure for task {task.id}: {log_error}", exc_info=True)
 
                     return False
 
@@ -3810,8 +3865,9 @@ class SimpleDeepResearch:
             result = json.loads(response.choices[0].message.content)
             return result.get("entities", [])
 
+        # Exception caught - error logged, execution continues
         except Exception as e:
-            logging.error(f"Entity extraction failed: {type(e).__name__}: {str(e)}")
+            logger.error(f"Entity extraction failed: {type(e).__name__}: {str(e)}", exc_info=True)
             return []
 
     def _get_sources(self, results: List[Dict]) -> List[str]:
@@ -3948,9 +4004,9 @@ class SimpleDeepResearch:
 
             should_accept = (decision == "ACCEPT")
 
-            logging.info(f"Result relevance: {decision} - {reason}")
-            logging.info(f"Filtered indices: {relevant_indices} ({len(relevant_indices)} results kept)")
-            logging.info(f"Continue searching: {should_continue} - {continuation_reason}")
+            logger.info(f"Result relevance: {decision} - {reason}")
+            logger.info(f"Filtered indices: {relevant_indices} ({len(relevant_indices)} results kept)")
+            logger.info(f"Continue searching: {should_continue} - {continuation_reason}")
             # Emit reasoning trace for transparency
             self._emit_progress(
                 "relevance_scoring",
@@ -3966,8 +4022,9 @@ class SimpleDeepResearch:
 
             return (should_accept, reason, relevant_indices, should_continue, continuation_reason, reasoning_breakdown)
 
+        # Exception caught - error logged, execution continues
         except Exception as e:
-            logging.error(f"Relevance validation failed: {type(e).__name__}: {str(e)}")
+            logger.error(f"Relevance validation failed: {type(e).__name__}: {str(e)}", exc_info=True)
             # On error, assume relevant and keep all results (don't want to fail good results)
             # But still allow continuation to try finding better results
             all_indices = list(range(len(sample_results)))
@@ -4262,8 +4319,10 @@ class SimpleDeepResearch:
                             break
                     except ValueError:
                         continue
-            except Exception:
+            # Date validation failure - non-critical, flag and include result
+            except Exception as e:
                 # Date parsing failed - keep result but flag
+                logger.warning(f"Date validation failed for result: {e}", exc_info=True)
                 result['_date_warning'] = 'date_parse_failed'
                 validated_results.append(result)
                 continue
@@ -4271,7 +4330,7 @@ class SimpleDeepResearch:
             if future_date_found:
                 # Reject future-dated result
                 rejected_count += 1
-                logging.warning(
+                logger.warning(
                     f"Rejected result with future date: '{date_str}' in '{result.get('title', 'Unknown')}' "
                     f"(source: {result.get('source', 'Unknown')})"
                 )
@@ -4281,7 +4340,7 @@ class SimpleDeepResearch:
             validated_results.append(result)
 
         if rejected_count > 0:
-            logging.info(f"📅 Date validation: Rejected {rejected_count}/{len(results)} results with future dates")
+            logger.info(f"📅 Date validation: Rejected {rejected_count}/{len(results)} results with future dates")
 
         return validated_results
 
@@ -4311,7 +4370,7 @@ class SimpleDeepResearch:
             decision = latest_coverage.get("decision", "continue")
             gaps = latest_coverage.get("gaps_identified", [])
             if decision == "stop" and not gaps:
-                logging.info(f"Skipping follow-ups for task {task.id}: Coverage assessment shows sufficient coverage (no critical gaps)")
+                logger.info(f"Skipping follow-ups for task {task.id}: Coverage assessment shows sufficient coverage (no critical gaps)")
                 return False
 
         # Codex fix: Check TOTAL workload (completed + pending + would-be follow-ups)
@@ -4343,7 +4402,7 @@ class SimpleDeepResearch:
         coverage_decisions = parent_task.metadata.get("coverage_decisions", [])
         if not coverage_decisions:
             # No coverage data available - skip follow-ups (can't do gap analysis)
-            logging.info(f"No coverage data for task {parent_task.id} - skipping follow-ups")
+            logger.info(f"No coverage data for task {parent_task.id} - skipping follow-ups")
             return []
 
         # Get latest coverage assessment
@@ -4423,10 +4482,11 @@ class SimpleDeepResearch:
             )
 
             result = json.loads(response.choices[0].message.content)
-            logging.info(f"Follow-up generation for task {parent_task.id}: {result['decision_reasoning']}")
+            logger.info(f"Follow-up generation for task {parent_task.id}: {result['decision_reasoning']}")
 
+        # Follow-up generation failure - acceptable to continue without follow-ups
         except Exception as e:
-            logging.error(f"Follow-up generation failed for task {parent_task.id}: {type(e).__name__}: {e}")
+            logger.error(f"Follow-up generation failed for task {parent_task.id}: {type(e).__name__}: {e}", exc_info=True)
             return []
 
         # Build set of existing queries for deduplication
@@ -4439,7 +4499,7 @@ class SimpleDeepResearch:
         for task_data in result["follow_up_tasks"]:
             # Skip if duplicate query already exists
             if task_data["query"].lower() in existing_queries:
-                logging.info(f"Skipping duplicate follow-up query: {task_data['query']}")
+                logger.info(f"Skipping duplicate follow-up query: {task_data['query']}")
                 continue
 
             follow_up = ResearchTask(
@@ -4499,9 +4559,10 @@ class SimpleDeepResearch:
                     task_id = int(raw_file.stem.split("_")[1])
                     with open(raw_file, 'r', encoding='utf-8') as f:
                         aggregated_results_by_task[task_id] = json.load(f)
-                    logging.info(f"Loaded raw task file: {raw_file.name}")
+                    logger.info(f"Loaded raw task file: {raw_file.name}")
+                # Exception caught - error logged, execution continues
                 except Exception as e:
-                    logging.warning(f"Failed to load raw task file {raw_file.name}: {e}")
+                    logger.warning(f"Failed to load raw task file {raw_file.name}: {e}", exc_info=True)
 
         # Fallback: if a per-task raw file is missing, synthesize it from per-source files
         # This prevents losing data when a task never wrote task_{id}_results.json
@@ -4526,15 +4587,16 @@ class SimpleDeepResearch:
                             merged_results.extend(data.get("results", []))
                         else:
                             logging.debug(f"Skipping unrecognized raw format: {src_file.name}")
+                    # Exception caught - error logged, execution continues
                     except Exception as e:
-                        logging.warning(f"Failed to load per-source file {src_file.name}: {e}")
+                        logger.warning(f"Failed to load per-source file {src_file.name}: {e}", exc_info=True)
 
                 if merged_results:
                     aggregated_results_by_task[task_id] = {
                         "total_results": len(merged_results),
                         "results": merged_results
                     }
-                    logging.info(f"Synthesized task_{task_id}_results from per-source files ({len(merged_results)} items)")
+                    logger.info(f"Synthesized task_{task_id}_results from per-source files ({len(merged_results)} items)")
 
         # 2. Merge with results_by_task from memory (in case some tasks didn't write raw files)
         for task_id, result_dict in self.results_by_task.items():
@@ -4584,7 +4646,7 @@ class SimpleDeepResearch:
         # Log deduplication stats (Codex Fix #2: Add console output for visibility)
         duplicates_removed = len(aggregated_results_list) - len(deduplicated_results_list)
         if duplicates_removed > 0:
-            logging.info(f"Deduplication: Removed {duplicates_removed} duplicate results ({len(aggregated_results_list)} → {len(deduplicated_results_list)})")
+            logger.info(f"Deduplication: Removed {duplicates_removed} duplicate results ({len(aggregated_results_list)} → {len(deduplicated_results_list)})")
             print(f"\n📊 Deduplication: Removed {duplicates_removed} duplicates ({len(aggregated_results_list)} → {len(deduplicated_results_list)} unique results)")
 
         # Use deduplicated list for counts and output
@@ -4727,7 +4789,7 @@ class SimpleDeepResearch:
         with open(metadata_file, 'w', encoding='utf-8') as f:
             json.dump(metadata, f, indent=2, ensure_ascii=False)
 
-        logging.info(f"Research output saved to: {output_path}")
+        logger.info(f"Research output saved to: {output_path}")
         return str(output_path)
 
     def _generate_global_coverage_summary(self) -> str:
@@ -4950,11 +5012,12 @@ class SimpleDeepResearch:
 
             return result
 
+        # Exception caught - error logged, execution continues
         except Exception as e:
-            logging.error(f"Saturation detection failed: {type(e).__name__}: {e}")
+            logger.error(f"Saturation detection failed: {type(e).__name__}: {e}", exc_info=True)
             print(f"⚠️  Saturation check failed, defaulting to continue")
             import traceback
-            logging.error(traceback.format_exc())
+            logger.error(traceback.format_exc(), exc_info=True)
             # On error, assume not saturated (continue research)
             return {
                 "saturated": False,
@@ -5234,8 +5297,9 @@ class SimpleDeepResearch:
                 # Replace entity graph with filtered version
                 self.entity_graph = filtered_entity_graph
 
+            # Integration execution failure - log and continue with other integrations
             except Exception as e:
-                logging.error(f"Entity filtering failed: {type(e).__name__}: {str(e)}")
+                logger.error(f"Entity filtering failed: {type(e).__name__}: {str(e)}", exc_info=True)
                 print(f"⚠️  Entity filtering failed (using all entities): {type(e).__name__}")
                 # On error, keep all entities (don't want to lose valid data)
 
@@ -5426,10 +5490,11 @@ class SimpleDeepResearch:
                 print(f"⚠️  WARNING: LLM reported not all claims have citations!")
 
         except json.JSONDecodeError as e:
-            logging.error(f"Synthesis JSON parsing failed: {e}")
+            logger.error(f"Synthesis JSON parsing failed: {e}")
             report = f"# Research Report\n\nFailed to parse synthesis JSON.\n\nError: {e}\n\n## Raw Statistics\n\n- Tasks Executed: {len(self.completed_tasks)}\n- Tasks Failed: {len(self.failed_tasks)}\n"
+        # Critical failure - report synthesis is the final output
         except Exception as e:
-            logging.error(f"Synthesis failed: {type(e).__name__}: {e}")
+            logger.error(f"Synthesis failed: {type(e).__name__}: {e}", exc_info=True)
             report = f"# Research Report\n\nFailed to synthesize final report.\n\nError: {type(e).__name__}: {e}\n\n## Raw Statistics\n\n- Tasks Executed: {len(self.completed_tasks)}\n- Tasks Failed: {len(self.failed_tasks)}\n"
 
         return report
