@@ -17,6 +17,7 @@ Rename to <source_name>_integration.py (e.g., newsource_integration.py)
 """
 
 import json
+import logging
 from typing import Dict, Optional
 from datetime import datetime
 import asyncio
@@ -32,6 +33,9 @@ from core.database_integration_base import (
 )
 from core.api_request_tracker import log_request
 from config_loader import config
+
+# Set up logger for this module
+logger = logging.getLogger(__name__)
 
 
 class NewSourceIntegration(DatabaseIntegration):
@@ -296,6 +300,8 @@ class NewSourceIntegration(DatabaseIntegration):
             )
 
         except requests.HTTPError as e:
+            # NewSource HTTP error
+            logger.error(f"NewSource HTTP error: {e}", exc_info=True)
             response_time_ms = (datetime.now() - start_time).total_seconds() * 1000
             status_code = e.response.status_code if e.response else 0
 
@@ -320,6 +326,8 @@ class NewSourceIntegration(DatabaseIntegration):
             )
 
         except Exception as e:
+            # NewSource search failed
+            logger.error(f"NewSource search failed: {e}", exc_info=True)
             response_time_ms = (datetime.now() - start_time).total_seconds() * 1000
 
             # Log failed request
