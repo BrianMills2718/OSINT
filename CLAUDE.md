@@ -471,14 +471,15 @@ pip list | grep playwright
 
 **Last Updated**: 2025-11-23
 **Current Branch**: `master`
-**Current Phase**: Maintenance and optimization
-**Status**: Twitter integration expansion complete, all quality improvements complete
+**Current Phase**: Production-ready - P0 regressions fixed
+**Status**: Config loading fixed, USAspending fixed, all quality improvements complete, system production-ready
 
 ---
 
 ## CURRENT STATUS
 
 **Recently Completed** (2025-11-22/23):
+- ✅ Telegram integration (4 query patterns, session-based auth) - **COMPLETE** (2025-11-23)
 - ✅ Twitter integration expansion (20/20 endpoints, 100% coverage) - **COMPLETE** (2025-11-23)
 - ✅ Cross-task deduplication (global URL dedup before synthesis) - **COMPLETE**
 - ✅ Cost visibility (estimated LLM calls and cost before research starts) - **COMPLETE**
@@ -528,9 +529,9 @@ All planned improvements complete. System configured for long-running research:
 - Manager LLM prioritizes pending tasks (P1-P10)
 - **NEW**: Strategy-based saturation (tries different approaches when queries fail, not metrics-based stopping)
 
-**Integrations**: 8 working
+**Integrations**: 22 working (9 core + 13 additional)
 - Government: SAM.gov, DVIDS, USAJobs, ClearanceJobs
-- Social: Twitter, Reddit, Discord
+- Social: Twitter (20 endpoints), Reddit, Discord, Telegram (4 patterns)
 - Web: Brave Search
 
 **Key Features**:
@@ -554,6 +555,14 @@ All planned improvements complete. System configured for long-running research:
 ---
 
 ## RECENT CHANGES (Last 7 Days)
+
+**2025-11-23**: P0 regression fixes (commits df6a8c5, be3ba12)
+- ✅ Config loading regression: run_research_cli.py now reads config.yaml (was hardcoded to 45 min)
+- ✅ USAspending validation regression: Fixed None title handling (Description or Award ID or fallback)
+- ✅ Config API fix: Use get_raw_config() instead of get() method
+- Root cause: Parameter hardcoding in CLI entry point ignored user's config.yaml settings
+- Files modified: run_research_cli.py (17 lines), integrations/government/usaspending_integration.py (9 lines)
+- Impact: User can now configure max_time_minutes, max_tasks via config.yaml; USAspending queries functional again
 
 **2025-11-23**: Enhanced structured logging + Quick wins (commits a948fde, 80daaef, fd09d4b)
 - ✅ Source skipping visibility: Log when is_relevant() returns False or generate_query() returns None
@@ -587,6 +596,18 @@ All planned improvements complete. System configured for long-running research:
 - ✅ Enhanced source selection strategy with practical use cases
 - Files modified: prompts/deep_research/hypothesis_generation.j2 (37 lines added)
 - Impact: LLM can make better source selections when generating hypotheses by understanding source capabilities
+
+**2025-11-23**: Telegram integration - **COMPLETE**
+- ✅ New integration added (22 total sources, 9 core integrations)
+- ✅ 4 query patterns: channel_search, channel_messages, global_search, channel_info
+- ✅ LLM-driven pattern selection via Gemini structured output
+- ✅ Session-based authentication (SMS code first run, then cached)
+- ✅ Telethon library integration with lazy import pattern
+- ✅ Authentication working (SMS code 21698, session saved to data/telegram_sessions/)
+- ✅ Full system test: Telegram registered, appropriate source selection (not used for defense contracting query - correct LLM behavior)
+- Files created: integrations/social/telegram_integration.py (503 lines), prompts/integrations/telegram_query_generation.j2 (110 lines), tests/test_telegram_integration.py (136 lines)
+- Files modified: integrations/registry.py (6 lines), .env (3 lines: API credentials)
+- Impact: Fills OSINT gap for encrypted messaging platforms, complements Twitter/Reddit/Discord, production-ready with session persistence
 
 **2025-11-23**: Twitter integration expansion - **COMPLETE**
 - ✅ Expanded from 1 to 20 endpoints (100% coverage of TwitterExplorer API)
