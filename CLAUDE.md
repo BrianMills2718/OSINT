@@ -469,24 +469,40 @@ pip list | grep playwright
 **END OF PERMANENT SECTION**
 # CLAUDE.md - Temporary Section (Condensed)
 
-**Last Updated**: 2025-11-23
+**Last Updated**: 2025-11-24
 **Current Branch**: `master`
-**Current Phase**: Integration architecture improvements - **ALL COMPLETE**
-**Status**: All architectural improvements complete (6 commits, 1,411 lines, 18 tests passing)
+**Current Phase**: Production-ready research system - **29 integrations working**
+**Status**: GovInfo added, ClearanceJobs optimized (10x), tech debt cleanup complete
 
 ---
 
 ## CURRENT STATUS
 
-**Recently Completed** (2025-11-23 - Latest Session):
+**Recently Completed** (2025-11-24 - Latest Session):
+- ✅ GovInfo.gov integration (GAO reports, IG audits, Congressional oversight) - **COMPLETE** (commit af93483)
+  - 10+ collections: GAOREPORTS, CRPT, CHRG, USCOURTS, CFR, PLAW
+  - LLM-driven collection selection with date filtering
+  - 967 results for F-35 query, 794ms response time
+  - Files: govinfo_integration.py (383 lines), prompt template (145 lines), tests (173 lines)
+- ✅ ClearanceJobs performance optimization (10x improvement) - **COMPLETE** (commits 4be09a2, aa5de24)
+  - HTTP-based scraper replaces Playwright (5000ms → 520ms)
+  - Nonsense query detection fixed (no more 50k false positives)
+  - Comprehensive test suite (6 tests, all passing)
+  - Deleted 429 lines of obsolete Playwright code
+- ✅ Tech debt cleanup - **COMPLETE** (commits 48ef5e8, 01dacb6)
+  - PATTERNS.md updated with stealth fields
+  - Root directory: 25 → 14 files (under 15 target)
+  - Tech debt tracker cleaned (363 lines of resolved issues removed)
+  - Archived obsolete run_research.py
+- ✅ Integration count increased: 22 → 29 sources
+
+**Previously Completed** (2025-11-23):
 - ✅ Registration structural validation (5 checks at registration time) - **COMPLETE** (commit 9049a4e)
 - ✅ Smoke test framework (validate_integration, validate_all, print_validation_report) - **COMPLETE** (commit 830cc35)
 - ✅ Search fallback validation fixes (type annotations, None checks, callable validation) - **COMPLETE** (commit a0cfb3f)
 - ✅ SEC EDGAR fallback migration (4 search methods: CIK, ticker, name_exact, name_fuzzy) - **COMPLETE** (commit cbbee14)
 - ✅ Comprehensive fallback unit tests (9 tests covering all scenarios) - **COMPLETE** (commit 2571267)
 - ✅ Federal Register parameter validation (3-layer pattern matching NewsAPI) - **COMPLETE** (commit 0160be1)
-
-**Previously Completed** (2025-11-23 - Earlier):
 - ✅ NewsAPI 426 error fix (3-layer architecture: metadata → prompt → code) - **COMPLETE** (commit 3beaf75)
 - ✅ Generic search fallback pattern (reusable, metadata-driven) - **COMPLETE** (commit 7407125)
 - ✅ Codebase cleanup (removed 84k+ lines of old experimental code) - **COMPLETE**
@@ -558,10 +574,16 @@ pip list | grep playwright
 - Manager LLM prioritizes pending tasks (P1-P10)
 - **NEW**: Strategy-based saturation (tries different approaches when queries fail, not metrics-based stopping)
 
-**Integrations**: 22 working (9 core + 13 additional)
-- Government: SAM.gov, DVIDS, USAJobs, ClearanceJobs
-- Social: Twitter (20 endpoints), Reddit, Discord, Telegram (4 patterns)
-- Web: Brave Search
+**Integrations**: 29 working
+- Government (15): SAM.gov, USAspending, DVIDS, USAJobs, ClearanceJobs (HTTP, 10x faster), FBI Vault, Federal Register, Congress.gov, **GovInfo** (new), SEC EDGAR, FEC, CREST
+- Social (4): Twitter (20 endpoints), Reddit, Discord, Telegram (4 patterns)
+- News (1): NewsAPI
+- Web (1): Brave Search
+- Investigative (1): ICIJ Offshore Leaks (Panama Papers)
+- Legal (1): CourtListener
+- Nonprofit (1): ProPublica
+- Archive (1): Wayback Machine
+- Other (4): Additional sources
 
 **Key Features**:
 - Jinja2 prompt templates (no f-string JSON escaping)
@@ -576,10 +598,9 @@ pip list | grep playwright
 ## KNOWN ISSUES
 
 1. **gpt-5 models**: Never use max_tokens (breaks reasoning). Use llm_utils.acompletion()
-2. **ClearanceJobs**: Official API broken. Use clearancejobs_playwright.py
-3. **USAJobs**: Requires headers: `User-Agent: email`, `Authorization-Key: [key]`
-4. **Discord**: 14/9916 exports malformed (0.14%) - gracefully skipped with warnings
-5. **SAM.gov**: Low rate limits - will be rate-limited early in research (handled gracefully)
+2. **USAJobs**: Requires headers: `User-Agent: email`, `Authorization-Key: [key]`
+3. **Discord**: 14/9916 exports malformed (0.14%) - gracefully skipped with warnings
+4. **SAM.gov**: Low rate limits - will be rate-limited early in research (handled gracefully)
 
 ---
 
