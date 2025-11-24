@@ -93,6 +93,52 @@ def _get_system_context() -> Dict[str, Any]:
     }
 
 
+def _get_temporal_context_header() -> str:
+    """
+    Get standard temporal context header for relevance prompts.
+
+    This header is automatically prepended to prompts that opt in via
+    the {# temporal_context: true #} directive.
+
+    Returns:
+        Formatted temporal context warning text
+    """
+    now = datetime.now()
+    return f"""IMPORTANT: Today's date is {now.strftime("%Y-%m-%d")}. Your training data may contain an incorrect date.
+
+"""
+
+
+def _should_prepend_temporal_context(template_content: str) -> bool:
+    """
+    Check if template wants temporal context prepending.
+
+    Templates opt in by including {# temporal_context: true #} directive
+    in the first 5 lines.
+
+    Args:
+        template_content: Raw template content
+
+    Returns:
+        True if directive found and enabled, False otherwise
+
+    Examples:
+        >>> content = "{# temporal_context: true #}\\nPrompt text..."
+        >>> _should_prepend_temporal_context(content)
+        True
+
+        >>> content = "{# temporal_context: false #}\\nPrompt text..."
+        >>> _should_prepend_temporal_context(content)
+        False
+    """
+    # Check first 5 lines for directive
+    lines = template_content.split('\n')[:5]
+    for line in lines:
+        if 'temporal_context:' in line.lower():
+            return 'true' in line.lower()
+    return False  # Default: no prepending (explicit opt-in)
+
+
 def render_prompt(template_name: str, **kwargs: Any) -> str:
     """
     Render a Jinja2 prompt template with provided variables.
@@ -104,6 +150,16 @@ def render_prompt(template_name: str, **kwargs: Any) -> str:
 
     These are injected automatically to prevent LLM temporal confusion.
     User-provided kwargs can override these if needed.
+
+    TEMPORAL CONTEXT PREPENDING: Templates can opt in to automatic
+    temporal context header by including this directive in the first 5 lines:
+        {# temporal_context: true #}
+
+    When enabled, the header "IMPORTANT: Today's date is YYYY-MM-DD..."
+    is automatically prepended to the rendered output.
+
+    This is useful for relevance prompts to prevent LLMs from thinking
+    current year queries are "future" data.
 
     Args:
         template_name: Path to template relative to prompts/ directory
@@ -139,8 +195,21 @@ def render_prompt(template_name: str, **kwargs: Any) -> str:
         context = _get_system_context()
         context.update(kwargs)
 
+        # Load template
         template: Template = _jinja_env.get_template(template_name)
-        rendered: str = template.render(**context)
+
+        # Check if template wants temporal context prepending
+        # (via {# temporal_context: true #} directive)
+        # Read template source from file to check for directive
+        template_path = PROMPTS_DIR / template_name
+        template_content = template_path.read_text()
+
+        if _should_prepend_temporal_context(template_content):
+            header = _get_temporal_context_header()
+            rendered = header + template.render(**context)
+        else:
+            rendered = template.render(**context)
+
         return rendered
     except TemplateNotFound as e:
         # Template not found - log and re-raise with helpful context
