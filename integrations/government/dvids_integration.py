@@ -383,6 +383,7 @@ Return JSON with your decision:
             )
 
         except requests.HTTPError as e:
+            logger.error(f"DVIDS HTTP error: {e}", exc_info=True)
             response_time_ms = (datetime.now() - start_time).total_seconds() * 1000
             status_code = e.response.status_code if e.response else 0
 

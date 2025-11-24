@@ -768,10 +768,9 @@ class SimpleDeepResearch:
                         # Entity extraction failure - non-critical, task can continue without entities
                         except Exception as entity_error:
                             # Log error but don't fail task - entity extraction is non-critical
-                            import traceback
                             logger.error(
-                                f"Entity extraction failed for task {task.id}: {type(entity_error).__name__}: {str(entity_error)}\n"
-                                f"Traceback: {traceback.format_exc()}"
+                                f"Entity extraction failed for task {task.id}: {type(entity_error).__name__}: {str(entity_error)}",
+                                exc_info=True
                             )
                             print(f"⚠️  Entity extraction failed (non-critical): {type(entity_error).__name__}: {str(entity_error)}")
                             # Task remains COMPLETED despite entity extraction failure
@@ -5490,6 +5489,7 @@ class SimpleDeepResearch:
                 print(f"⚠️  WARNING: LLM reported not all claims have citations!")
 
         except json.JSONDecodeError as e:
+            logger.error(f"Synthesis JSON parsing failed: {e}", exc_info=True)
             logger.error(f"Synthesis JSON parsing failed: {e}")
             report = f"# Research Report\n\nFailed to parse synthesis JSON.\n\nError: {e}\n\n## Raw Statistics\n\n- Tasks Executed: {len(self.completed_tasks)}\n- Tasks Failed: {len(self.failed_tasks)}\n"
         # Critical failure - report synthesis is the final output

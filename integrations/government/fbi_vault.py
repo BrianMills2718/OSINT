@@ -229,8 +229,8 @@ class FBIVaultIntegration(DatabaseIntegration):
                 })
 
             except Exception as e:
-                # Skip malformed results
-                print(f"    Warning: Skipping malformed result: {e}")
+                # Skip malformed results in parsing loop - acceptable to continue
+                logger.warning(f"FBI Vault: Skipping malformed result: {e}", exc_info=True)
                 continue
 
         return (results, page_source)

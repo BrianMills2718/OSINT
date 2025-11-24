@@ -894,6 +894,8 @@ Return JSON:
                 )
 
         except requests.exceptions.HTTPError as e:
+            # HTTP errors from SEC EDGAR API
+            logger.error(f"SEC EDGAR HTTP error: {e}", exc_info=True)
             if e.response.status_code == 429:
                 return QueryResult(
                     success=False,

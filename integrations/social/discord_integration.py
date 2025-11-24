@@ -371,7 +371,8 @@ class DiscordIntegration(DatabaseIntegration):
                 # See: CLAUDE.md - Discord Parsing Investigation (2025-11-18)
                 logger.warning(
                     f"Discord export malformed (skipping): {export_file.name[:60]}... "
-                    f"Error: {str(e)[:80]}"
+                    f"Error: {str(e)[:80]}",
+                    exc_info=True
                 )
                 continue
             except Exception as e:

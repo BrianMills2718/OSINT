@@ -367,6 +367,7 @@ Return JSON:
             )
 
         except requests.exceptions.HTTPError as e:
+            logger.error(f"NewsAPI HTTP error: {e}", exc_info=True)
             if e.response.status_code == 429:
                 return QueryResult(
                     success=False,

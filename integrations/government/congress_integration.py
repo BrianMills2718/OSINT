@@ -386,6 +386,7 @@ Return JSON with your decision:
             )
 
         except requests.exceptions.HTTPError as e:
+            logger.error(f"Congress.gov HTTP error: {e}", exc_info=True)
             error_msg = f"HTTP {e.response.status_code}: {e.response.reason}"
             if e.response.status_code == 401:
                 error_msg = "Invalid API key. Get one at: https://api.congress.gov/sign-up/"

@@ -375,6 +375,7 @@ Return JSON with your decision:
 
         except ValueError as e:
             # Configuration error
+            logger.error(f"Reddit configuration error: {e}", exc_info=True)
             response_time_ms = (datetime.now() - start_time).total_seconds() * 1000
 
             log_request(

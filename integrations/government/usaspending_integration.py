@@ -7,6 +7,7 @@ grants, loans, and other financial assistance from USAspending.gov.
 """
 
 import json
+import logging
 from typing import Dict, Optional, List
 from datetime import datetime
 import asyncio
@@ -22,6 +23,8 @@ from core.database_integration_base import (
 )
 from core.api_request_tracker import log_request
 from config_loader import config
+
+logger = logging.getLogger(__name__)
 
 
 class USASpendingIntegration(DatabaseIntegration):
@@ -106,7 +109,9 @@ class USASpendingIntegration(DatabaseIntegration):
             return result.get("relevant", True)  # Default True on parsing failure
 
         except Exception as e:
-            print(f"[WARN] USAspending relevance check failed: {e}, defaulting to True")
+            # Fallback on LLM failure - acceptable to default to True
+            # This lets query generation and filtering handle the decision
+            logger.warning(f"USAspending relevance check failed: {e}, defaulting to True", exc_info=True)
             return True
 
     async def generate_query(self, research_question: str) -> Optional[Dict]:
@@ -254,7 +259,9 @@ class USASpendingIntegration(DatabaseIntegration):
             }
 
         except Exception as e:
-            print(f"[ERROR] USAspending query generation failed: {e}")
+            # Catch-all for query generation failures at integration boundary
+            # This is acceptable - return None instead of crashing
+            logger.error(f"USAspending query generation failed: {e}", exc_info=True)
             return None
 
     async def execute_search(
@@ -373,6 +380,9 @@ class USASpendingIntegration(DatabaseIntegration):
                 error="Request timeout after 30 seconds"
             )
         except Exception as e:
+            # Catch-all for unexpected errors at integration boundary
+            # This is acceptable - return error instead of crashing
+            logger.error(f"USAspending search failed: {e}", exc_info=True)
             return QueryResult(
                 success=False,
                 source="USAspending",
