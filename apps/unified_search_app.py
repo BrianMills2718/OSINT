@@ -70,7 +70,9 @@ with st.sidebar:
         try:
             if hasattr(st, 'secrets') and "OPENAI_API_KEY" in st.secrets:
                 openai_default = st.secrets["OPENAI_API_KEY"]
-        except:
+        except Exception as e:
+            # Streamlit secrets access error - non-critical
+            logger.warning(f"Failed to load OpenAI API key from secrets: {e}", exc_info=True)
             pass
         if not openai_default:
             openai_default = os.getenv("OPENAI_API_KEY", "")
@@ -87,7 +89,9 @@ with st.sidebar:
         try:
             if hasattr(st, 'secrets') and "DVIDS_API_KEY" in st.secrets:
                 dvids_default = st.secrets["DVIDS_API_KEY"]
-        except:
+        except Exception as e:
+            # Streamlit secrets access error - non-critical
+            logger.warning(f"Failed to load DVIDS API key from secrets: {e}", exc_info=True)
             pass
         if dvids_default == "key-68f319e8dc377":  # Still using demo key
             env_key = os.getenv("DVIDS_API_KEY", "")
@@ -106,7 +110,9 @@ with st.sidebar:
         try:
             if hasattr(st, 'secrets') and "SAM_GOV_API_KEY" in st.secrets:
                 sam_default = st.secrets["SAM_GOV_API_KEY"]
-        except:
+        except Exception as e:
+            # Streamlit secrets access error - non-critical
+            logger.warning(f"Failed to load SAM.gov API key from secrets: {e}", exc_info=True)
             pass
         if not sam_default:
             sam_default = os.getenv("SAM_GOV_API_KEY", "")
@@ -123,7 +129,9 @@ with st.sidebar:
         try:
             if hasattr(st, 'secrets') and "RAPIDAPI_KEY" in st.secrets:
                 rapidapi_default = st.secrets["RAPIDAPI_KEY"]
-        except:
+        except Exception as e:
+            # Streamlit secrets access error - non-critical
+            logger.warning(f"Failed to load RapidAPI key from secrets: {e}", exc_info=True)
             pass
         if not rapidapi_default:
             rapidapi_default = os.getenv("RAPIDAPI_KEY", "")
@@ -145,7 +153,9 @@ with st.sidebar:
     try:
         if hasattr(st, 'secrets') and "USAJOBS_API_KEY" in st.secrets:
             usajobs_default = st.secrets["USAJOBS_API_KEY"]
-    except:
+    except Exception as e:
+        # Streamlit secrets access error - non-critical
+        logger.warning(f"Failed to load USAJobs API key from secrets: {e}", exc_info=True)
         pass
     if not usajobs_default:
         usajobs_default = os.getenv("USAJOBS_API_KEY", "")

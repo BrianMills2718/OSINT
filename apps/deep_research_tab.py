@@ -38,7 +38,9 @@ def render_deep_research_tab(openai_api_key_from_ui):
     elif hasattr(st, 'secrets') and "OPENAI_API_KEY" in st.secrets:
         try:
             openai_api_key = st.secrets["OPENAI_API_KEY"]
-        except:
+        except Exception as e:
+            # Streamlit secrets access error - non-critical, fall back to env
+            logger.warning(f"Failed to load OpenAI API key from Streamlit secrets: {e}", exc_info=True)
             pass
     else:
         openai_api_key = os.getenv("OPENAI_API_KEY")

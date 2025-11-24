@@ -30,20 +30,26 @@ from integrations.investigative.icij_offshore_leaks import ICIJOffshoreLeaksInte
 try:
     from integrations.government.clearancejobs_integration import ClearanceJobsIntegration
     CLEARANCEJOBS_AVAILABLE = True
-except ImportError:
+except ImportError as e:
+    # Optional dependency missing - integration will be unavailable
+    logger.debug(f"ClearanceJobs integration unavailable: {e}", exc_info=True)
     CLEARANCEJOBS_AVAILABLE = False
 
 # CREST integrations (Playwright and Selenium versions)
 try:
     from integrations.government.crest_integration import CRESTIntegration
     CREST_PLAYWRIGHT_AVAILABLE = True
-except ImportError:
+except ImportError as e:
+    # Optional dependency missing - integration will be unavailable
+    logger.debug(f"CREST Playwright integration unavailable: {e}", exc_info=True)
     CREST_PLAYWRIGHT_AVAILABLE = False
 
 try:
     from integrations.government.crest_selenium_integration import CRESTSeleniumIntegration
     CREST_SELENIUM_AVAILABLE = True
-except ImportError:
+except ImportError as e:
+    # Optional dependency missing - integration will be unavailable
+    logger.debug(f"CREST Selenium integration unavailable: {e}", exc_info=True)
     CREST_SELENIUM_AVAILABLE = False
 
 # Import social integrations

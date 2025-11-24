@@ -273,7 +273,9 @@ Return JSON:
                             # Parse timestamp (YYYYMMDDhhmmss)
                             dt = datetime.strptime(snapshot_timestamp[:14], "%Y%m%d%H%M%S")
                             formatted_date = dt.strftime("%Y-%m-%d %H:%M:%S UTC")
-                        except:
+                        except Exception as e:
+                            # Timestamp parsing error - use raw value
+                            logger.warning(f"Failed to parse Wayback timestamp '{snapshot_timestamp}': {e}", exc_info=True)
                             formatted_date = snapshot_timestamp
                     else:
                         formatted_date = "Unknown date"
