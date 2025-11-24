@@ -8,8 +8,11 @@ in order of reliability until one succeeds.
 This is NOT integration-specific - ANY integration can use it.
 """
 
-from typing import Dict, Optional, Callable, List, Any
+from typing import Dict, Optional, Callable, List, Any, TYPE_CHECKING
 from core.database_integration_base import QueryResult
+
+if TYPE_CHECKING:
+    from integrations.source_metadata import SourceMetadata
 
 
 async def execute_with_fallback(
@@ -58,6 +61,13 @@ async def execute_with_fallback(
             "SEC EDGAR", query_params, search_methods, metadata
         )
     """
+    # Validation: metadata must be provided
+    if not metadata:
+        raise ValueError(
+            f"{source_name}: No metadata provided. "
+            f"Cannot use fallback without metadata configuration."
+        )
+
     # Get declared strategies from metadata
     strategies = metadata.characteristics.get('search_strategies', [])
 
@@ -97,6 +107,15 @@ async def execute_with_fallback(
         # Execute this strategy
         search_func = search_methods[method_name]
         param_value = query_params[param_name]
+
+        # Validate search_func is callable
+        if not callable(search_func):
+            attempts.append({
+                'method': method_name,
+                'skipped': True,
+                'reason': f'Search method {method_name} is not callable'
+            })
+            continue
 
         try:
             result = await search_func(param_value)
