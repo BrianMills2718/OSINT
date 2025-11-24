@@ -2884,7 +2884,7 @@ class SimpleDeepResearch:
                 # 1. Check relevance
                 is_relevant = await integration.is_relevant(query)
                 if not is_relevant:
-                    logger.warning(f"{source_name} not relevant for query: {query}")
+                    logging.warning(f"{source_name} not relevant for query: {query}")
 
                     # Log source skipped (Enhanced Structured Logging)
                     if logger and task_id is not None:
@@ -3058,7 +3058,7 @@ class SimpleDeepResearch:
 
         # Exception caught - error logged, execution continues
         except Exception as e:
-            logger.error(f"MCP tool {tool_name} failed: {type(e).__name__}: {str(e)}", exc_info=True)
+            logging.error(f"MCP tool {tool_name} failed: {type(e).__name__}: {str(e)}", exc_info=True)
 
             # Log failed API call
             if logger and task_id is not None:
