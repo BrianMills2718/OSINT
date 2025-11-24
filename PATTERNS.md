@@ -123,14 +123,22 @@ class NewSourceIntegration(DatabaseIntegration):
     @property
     def metadata(self) -> DatabaseMetadata:
         return DatabaseMetadata(
-            id="newsource",
             name="New Source",
+            id="newsource",
             category=DatabaseCategory.GOV_GENERAL,
             requires_api_key=True,
             cost_per_query_estimate=0.001,
             typical_response_time=2.0,
+            description="Brief 1-sentence description",
+            requires_stealth=False,         # True if bot detection bypass needed
+            stealth_method=None,            # "playwright" | "selenium" | None
             rate_limit_daily=None,
-            description="Brief description"
+            # Stealth method selection:
+            # - None: No bot detection (standard HTTP/API)
+            # - "playwright": Fast headless automation (playwright-stealth)
+            #   Use for: Moderate bot detection (basic Cloudflare, etc.)
+            # - "selenium": Visible browser automation (undetected-chromedriver)
+            #   Use for: Aggressive bot detection (Akamai Bot Manager, etc.)
         )
 
     async def is_relevant(self, research_question: str) -> bool:
