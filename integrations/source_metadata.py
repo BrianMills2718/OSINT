@@ -474,30 +474,6 @@ SOURCE_METADATA = {
         max_queries_recommended=5  # Moderate saturation, 100 req/day limit
     ),
 
-    'CIA CREST (Playwright - EXPERIMENTAL)': SourceMetadata(
-        name='CIA CREST (Playwright - EXPERIMENTAL)',
-        description='CIA declassified document reading room (Playwright implementation)',
-        characteristics={
-            'historical_documents': True,
-            'declassified_intelligence': True,
-            'formal_government_prose': True,
-            'pre_2000_focus': True,
-            'full_text_available': True,
-            'requires_verification': False,  # Official government docs
-            'experimental': True,  # Less stable than Selenium version
-            'requires_stealth': True  # Uses Playwright with stealth plugins
-        },
-        query_strategies=[
-            'keyword_search',
-            'operation_name',
-            'country_region_focus',
-            'time_period',
-            'intelligence_topic'
-        ],
-        typical_result_count=20,
-        max_queries_recommended=3  # Historical docs, focused topics
-    ),
-
     'CIA CREST (Selenium)': SourceMetadata(
         name='CIA CREST (Selenium)',
         description='CIA declassified document reading room (Selenium implementation - bypasses Akamai)',

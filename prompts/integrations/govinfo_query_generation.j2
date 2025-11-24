@@ -1,0 +1,145 @@
+You are generating a search query for GovInfo.gov, the U.S. Government Publishing Office's digital repository.
+
+RESEARCH QUESTION:
+{{ research_question }}
+
+==============================================================================
+GOVINFO OVERVIEW
+==============================================================================
+
+GovInfo provides official publications from all three branches of the Federal
+Government, including oversight reports, audits, investigations, hearings,
+court opinions, and regulatory documents.
+
+AVAILABLE COLLECTIONS (choose 1-3 most relevant):
+
+**Oversight & Audits:**
+- GAOREPORTS: GAO (Government Accountability Office) audits, investigations, testimonies
+  Use for: Government waste, fraud, program effectiveness, agency oversight
+  Example: "GAO report on defense contracting waste"
+
+**Congressional Documents:**
+- CRPT: Congressional committee reports (House/Senate committee findings)
+  Use for: Investigation reports, policy recommendations, oversight findings
+  Example: "Senate Armed Services Committee report on F-35 program"
+
+- CHRG: Congressional hearing transcripts
+  Use for: Testimony, Q&A sessions, expert witnesses
+  Example: "Hearing on cybersecurity threats to critical infrastructure"
+
+- CREC: Congressional Record (daily proceedings, floor speeches)
+  Use for: Statements, debates, legislative history
+  Example: "Senator's speech on defense authorization bill"
+
+**Legal & Regulatory:**
+- USCOURTS: Federal court opinions (appellate, district, bankruptcy)
+  Use for: Legal precedents, contractor lawsuits, fraud cases
+  Example: "Court opinion on False Claims Act case against Lockheed"
+
+- CFR: Code of Federal Regulations
+  Use for: Federal regulations, compliance requirements
+  Example: "FAR regulations on government contracting"
+
+- PLAW: Public and Private Laws (enacted legislation)
+  Use for: Final law text, legislative intent
+  Example: "National Defense Authorization Act for Fiscal Year 2024"
+
+**Other:**
+- CDIR: Congressional Directory (member biographies, committees)
+- BILLS/BILLSTATUS: Congressional bills (NOTE: Use Congress.gov integration instead for bills)
+
+==============================================================================
+COLLECTION SELECTION STRATEGY
+==============================================================================
+
+**For government accountability questions:**
+→ Use GAOREPORTS (primary) + CRPT (secondary)
+Example: "Defense contractor fraud" → GAOREPORTS, CRPT
+
+**For policy/legislative questions:**
+→ Use CRPT (primary) + CHRG (secondary)
+Example: "Congressional oversight of FBI" → CRPT, CHRG
+
+**For legal/compliance questions:**
+→ Use USCOURTS (primary) + CFR (secondary)
+Example: "False Claims Act settlements" → USCOURTS, CRPT
+
+**For regulatory questions:**
+→ Use CFR (primary) + GAOREPORTS (secondary)
+Example: "Federal acquisition regulations" → CFR, GAOREPORTS
+
+**For investigative questions:**
+→ Use GAOREPORTS + CRPT + CHRG (broad search)
+Example: "Corporate offshore tax havens" → GAOREPORTS, CRPT, CHRG
+
+==============================================================================
+QUERY CONSTRUCTION GUIDELINES
+==============================================================================
+
+1. **Use specific, concrete keywords** (not vague terms)
+   Good: "Lockheed Martin F-35 cost overruns"
+   Bad: "defense contractor issues"
+
+2. **Include entity names** when researching organizations/people
+   Good: "Boeing 737 MAX FAA oversight"
+   Bad: "airplane safety oversight"
+
+3. **Use domain terminology**
+   - GAO reports use terms like: "audit", "investigation", "testimony", "recommendations"
+   - Court opinions use: "plaintiff", "defendant", "settlement", "fraud"
+   - Congressional reports use: "committee", "findings", "oversight", "hearing"
+
+4. **Date range selection:**
+   - Recent oversight (1-2 years): Current issues, ongoing investigations
+   - Historical analysis (5-10 years): Pattern identification, long-term trends
+   - null (all time): Comprehensive research, establishing precedents
+
+5. **Sort selection:**
+   - "publishdate": Most recent documents first (default for news/current events)
+   - "score": Most relevant documents first (default for research/analysis)
+   - "lastModified": Recently updated documents (for tracking changes)
+
+==============================================================================
+RELEVANCE DECISION
+==============================================================================
+
+**GovInfo IS relevant when question involves:**
+✓ Government oversight, audits, investigations
+✓ Congressional hearings, committee reports
+✓ Federal court cases, legal precedents
+✓ Government regulations, compliance
+✓ Agency reports, testimonies
+✓ Official government publications
+
+**GovInfo is NOT relevant when question involves:**
+✗ Current legislation/bills in progress (use Congress.gov instead)
+✗ Breaking news/current events (use NewsAPI instead)
+✗ Social media discussions (use Twitter/Reddit instead)
+✗ International documents (unless US court/regulatory involvement)
+✗ State/local government (GovInfo is federal only)
+
+==============================================================================
+YOUR TASK
+==============================================================================
+
+Analyze the research question and generate a GovInfo search query.
+
+Return JSON with:
+{
+  "relevant": true/false,
+  "query": "specific search keywords",
+  "collections": ["COLLECTION1", "COLLECTION2"],  // 1-3 most relevant
+  "date_range_years": 5,  // 1-10 or null for all time
+  "sort_by": "publishdate",  // "publishdate" | "score" | "lastModified"
+  "reasoning": "Brief explanation of query strategy and collection choices"
+}
+
+If NOT relevant, return:
+{
+  "relevant": false,
+  "query": "",
+  "collections": [],
+  "date_range_years": null,
+  "sort_by": "score",
+  "reasoning": "Explain why GovInfo is not the right source for this question"
+}

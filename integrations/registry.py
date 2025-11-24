@@ -12,6 +12,7 @@ from integrations.government.usajobs_integration import USAJobsIntegration
 from integrations.government.fbi_vault import FBIVaultIntegration
 from integrations.government.federal_register import FederalRegisterIntegration
 from integrations.government.congress_integration import CongressIntegration
+from integrations.government.govinfo_integration import GovInfoIntegration
 from integrations.government.sec_edgar_integration import SECEdgarIntegration
 from integrations.government.fec_integration import FECIntegration
 
@@ -108,15 +109,14 @@ class IntegrationRegistry:
         if CLEARANCEJOBS_AVAILABLE:
             self._try_register("clearancejobs", ClearanceJobsIntegration)
 
-        # CREST - both Playwright (experimental/blocked) and Selenium (working)
-        if CREST_PLAYWRIGHT_AVAILABLE:
-            self._try_register("crest_playwright", CRESTIntegration)
+        # CREST - Selenium only (Playwright version blocked by Akamai Bot Manager)
         if CREST_SELENIUM_AVAILABLE:
             self._try_register("crest_selenium", CRESTSeleniumIntegration)
 
         self._try_register("fbi_vault", FBIVaultIntegration)
         self._try_register("federal_register", FederalRegisterIntegration)
         self._try_register("congress", CongressIntegration)
+        self._try_register("govinfo", GovInfoIntegration)
         self._try_register("sec_edgar", SECEdgarIntegration)
         self._try_register("fec", FECIntegration)
 
