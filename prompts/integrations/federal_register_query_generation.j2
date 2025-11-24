@@ -5,6 +5,8 @@ Research Question: {{ research_question }}
 Generate search parameters for the Federal Register API:
 - term: Search term for document titles/text (string, keep focused)
 - document_types: Types of documents (array from: "RULE" (final rule), "PRORULE" (proposed rule), "NOTICE" (notice), "PRESDOCU" (presidential document), or empty array for all)
+  **IMPORTANT**: Only use these exact 4 document types. Invalid types will cause API errors.
+  Valid types: ["RULE", "PRORULE", "NOTICE", "PRESDOCU"]
 - agencies: Agency slugs if specific agencies mentioned (array of strings like ["environmental-protection-agency", "homeland-security-department"], or empty array)
 - date_range_days: How many days back to search (integer 1-730, default 180 for 6 months)
 

@@ -193,6 +193,27 @@ class FederalRegisterIntegration(DatabaseIntegration):
         endpoint = "https://www.federalregister.gov/api/v1/documents.json"
 
         try:
+            # Safety net: Validate document types against metadata
+            # This prevents API errors from invalid document type codes
+            from integrations.source_metadata import get_source_metadata
+            metadata = get_source_metadata("Federal Register")
+
+            if metadata and query_params.get("document_types"):
+                valid_types = metadata.characteristics.get('document_types', [])
+                requested_types = query_params.get("document_types", [])
+
+                # Filter out invalid types
+                filtered_types = [dt for dt in requested_types if dt in valid_types]
+
+                # Log if we filtered anything (defensive)
+                if len(filtered_types) < len(requested_types):
+                    invalid = [dt for dt in requested_types if dt not in valid_types]
+                    print(f"[INFO] Federal Register: Filtered invalid document types: {invalid}")
+                    print(f"[INFO] Valid types are: {valid_types}")
+
+                # Update query_params with filtered types
+                query_params["document_types"] = filtered_types
+
             # Build request parameters
             params = {
                 "per_page": min(limit, 1000),  # Max 1000 per request
@@ -203,7 +224,7 @@ class FederalRegisterIntegration(DatabaseIntegration):
             if query_params.get("term"):
                 params["conditions[term]"] = query_params["term"]
 
-            # Add document types if specified
+            # Add document types if specified (now validated)
             if query_params.get("document_types") and len(query_params["document_types"]) > 0:
                 for doc_type in query_params["document_types"]:
                     params["conditions[type][]"] = doc_type
