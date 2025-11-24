@@ -68,26 +68,67 @@ class CongressIntegration(DatabaseIntegration):
 
     async def is_relevant(self, research_question: str) -> bool:
         """
-        Quick relevance check using keywords.
+        LLM-based relevance check for Congress.gov.
 
-        Congress.gov is relevant for legislative and congressional questions.
-        Use keyword matching for speed.
+        Uses LLM to determine if Congressional records, bills, hearings, or
+        legislative documents might have relevant information for the research question.
 
         Args:
             research_question: The user's research question
 
         Returns:
-            True if question relates to Congress/legislation
+            True if Congress.gov might have relevant information, False otherwise
         """
-        legislative_keywords = [
-            "congress", "bill", "legislation", "law", "senate", "house",
-            "representative", "senator", "vote", "amendment", "committee",
-            "hearing", "resolution", "act", "legislative", "lawmaker",
-            "capitol", "congressional", "member of congress", "moc"
-        ]
+        from llm_utils import acompletion
+        from dotenv import load_dotenv
+        import json
 
-        question_lower = research_question.lower()
-        return any(keyword in question_lower for keyword in legislative_keywords)
+        load_dotenv()
+
+        prompt = f"""Is Congress.gov relevant for researching this question?
+
+RESEARCH QUESTION:
+{research_question}
+
+CONGRESS.GOV CHARACTERISTICS:
+Strengths:
+- Bills, resolutions, and legislative text
+- Congressional hearings and testimony (including GAO reports to Congress)
+- Committee reports and legislative analysis
+- Roll call votes and legislative history
+- Member information and sponsored bills
+- Congressional Record (floor speeches, debates)
+
+Limitations:
+- Only U.S. Congressional activities (not executive or judicial)
+- No contractor databases or procurement records
+- No job listings or employment data
+- Limited to legislative process documentation
+
+DECISION CRITERIA:
+- Is relevant: If seeking bills, hearings, legislative analysis, GAO testimony, Congressional oversight, or legislative history
+- NOT relevant: If ONLY seeking executive orders, court cases, contracts, or non-legislative information
+
+Return JSON with your decision:
+{{
+  "relevant": true/false,
+  "reasoning": "1-2 sentences explaining why Congress.gov is/isn't relevant for this question"
+}}"""
+
+        try:
+            response = await acompletion(
+                model="gpt-4o-mini",
+                messages=[{"role": "user", "content": prompt}],
+                response_format={"type": "json_object"}
+            )
+
+            result = json.loads(response.choices[0].message.content)
+            return result.get("relevant", True)  # Default to True if parsing fails
+
+        except Exception as e:
+            # On error, default to True (let query generation and filtering handle it)
+            print(f"[WARN] Congress.gov relevance check failed: {e}, defaulting to True")
+            return True
 
     async def generate_query(self, research_question: str) -> Optional[Dict]:
         """

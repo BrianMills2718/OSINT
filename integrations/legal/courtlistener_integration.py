@@ -73,32 +73,69 @@ class CourtListenerIntegration(DatabaseIntegration):
 
     async def is_relevant(self, research_question: str) -> bool:
         """
-        Quick relevance check - does question relate to legal/court matters?
+        LLM-based relevance check for CourtListener.
 
-        We check for litigation/court-related keywords to avoid wasting LLM calls
-        on questions that clearly aren't about legal matters.
+        Uses LLM to determine if court opinions, legal filings, or judicial
+        decisions might have relevant information for the research question.
 
         Args:
             research_question: The user's research question
 
         Returns:
-            True if question might be about legal/court matters, False otherwise
+            True if CourtListener might have relevant information, False otherwise
         """
-        legal_keywords = [
-            "lawsuit", "litigation", "court", "judge", "judicial", "opinion",
-            "case", "cases", "ruling", "verdict", "decision", "appeal", "appeals",
-            "bankruptcy", "filing", "docket", "plaintiff", "defendant",
-            "supreme court", "circuit court", "district court", "appellate",
-            "legal", "law", "attorney", "lawyer", "trial", "settlement",
-            "judgment", "injunction", "motion", "brief", "precedent",
-            "constitutional", "statute", "regulation challenged", "sued", "suing",
-            "civil suit", "criminal case", "prosecutor", "conviction",
-            "antitrust", "securities fraud", "patent", "copyright", "trademark",
-            "class action", "arbitration", "discovery", "deposition"
-        ]
+        from llm_utils import acompletion
+        from dotenv import load_dotenv
+        import json
 
-        question_lower = research_question.lower()
-        return any(keyword in question_lower for keyword in legal_keywords)
+        load_dotenv()
+
+        prompt = f"""Is CourtListener relevant for researching this question?
+
+RESEARCH QUESTION:
+{research_question}
+
+COURTLISTENER CHARACTERISTICS:
+Strengths:
+- Federal and state court opinions (Supreme Court, Circuit Courts, District Courts)
+- RECAP filings (PACER documents)
+- Judicial financial disclosures
+- Legal precedent and case law
+- Litigation history and rulings
+- Patent, trademark, copyright cases
+- Antitrust, securities fraud, class action lawsuits
+- Contract disputes and business litigation
+
+Limitations:
+- Only judicial branch documents (not legislative or executive)
+- No proposed regulations or agency rules
+- No contractor databases or procurement records
+- Limited to legal proceedings and court documents
+
+DECISION CRITERIA:
+- Is relevant: If seeking court opinions, litigation history, legal precedent, judicial decisions, or legal disputes
+- NOT relevant: If ONLY seeking legislation, regulations, contracts, or non-judicial information
+
+Return JSON with your decision:
+{{
+  "relevant": true/false,
+  "reasoning": "1-2 sentences explaining why CourtListener is/isn't relevant for this question"
+}}"""
+
+        try:
+            response = await acompletion(
+                model="gpt-4o-mini",
+                messages=[{"role": "user", "content": prompt}],
+                response_format={"type": "json_object"}
+            )
+
+            result = json.loads(response.choices[0].message.content)
+            return result.get("relevant", True)  # Default to True if parsing fails
+
+        except Exception as e:
+            # On error, default to True (let query generation and filtering handle it)
+            print(f"[WARN] CourtListener relevance check failed: {e}, defaulting to True")
+            return True
 
     async def generate_query(self, research_question: str) -> Optional[Dict]:
         """

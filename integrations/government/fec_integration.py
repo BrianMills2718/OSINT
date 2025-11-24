@@ -75,28 +75,71 @@ class FECIntegration(DatabaseIntegration):
 
     async def is_relevant(self, research_question: str) -> bool:
         """
-        Quick relevance check - does question relate to campaign finance/politics?
+        LLM-based relevance check for FEC.
+
+        Uses LLM to determine if Federal Election Commission data (campaign
+        finance, political donations, PACs, lobbying) might have relevant information.
 
         Args:
             research_question: The user's research question
 
         Returns:
-            True if question relates to campaign finance, False otherwise
+            True if FEC might have relevant information, False otherwise
         """
-        campaign_keywords = [
-            "campaign", "donation", "donate", "contribution", "contributor",
-            "fundraising", "finance", "pac", "super pac", "political action",
-            "election", "candidate", "senator", "representative", "congress",
-            "politician", "political", "lobby", "lobbying", "lobbyist",
-            "expenditure", "spending", "money in politics", "dark money",
-            "fec", "federal election", "campaign finance", "political donation",
-            "donor", "donors", "funded", "funding", "bankroll", "bankrolled",
-            "backed by", "supported by", "financed", "financing",
-            "raised", "raise", "raising", "war chest", "coffers"
-        ]
+        from llm_utils import acompletion
+        from dotenv import load_dotenv
+        import json
 
-        question_lower = research_question.lower()
-        return any(keyword in question_lower for keyword in campaign_keywords)
+        load_dotenv()
+
+        prompt = f"""Is the Federal Election Commission (FEC) database relevant for researching this question?
+
+RESEARCH QUESTION:
+{research_question}
+
+FEC CHARACTERISTICS:
+Strengths:
+- Campaign contributions and donors
+- PAC (Political Action Committee) donations
+- Super PAC expenditures
+- Individual and corporate political donations
+- Campaign finance disclosures
+- Lobbying activities and expenditures
+- Political fundraising data
+- Candidate financial reports
+- Money in politics tracking
+
+Limitations:
+- Only election and campaign finance data
+- No policy positions or voting records
+- No legislation or bills
+- No government contracts or procurement
+- Limited to federal elections (not state/local)
+
+DECISION CRITERIA:
+- Is relevant: If seeking campaign finance, political donations, PAC funding, lobbying, or money in politics
+- NOT relevant: If ONLY seeking legislation, voting records, contracts, or non-financial political information
+
+Return JSON with your decision:
+{{
+  "relevant": true/false,
+  "reasoning": "1-2 sentences explaining why FEC is/isn't relevant for this question"
+}}"""
+
+        try:
+            response = await acompletion(
+                model="gpt-4o-mini",
+                messages=[{"role": "user", "content": prompt}],
+                response_format={"type": "json_object"}
+            )
+
+            result = json.loads(response.choices[0].message.content)
+            return result.get("relevant", True)  # Default to True if parsing fails
+
+        except Exception as e:
+            # On error, default to True (let query generation and filtering handle it)
+            print(f"[WARN] FEC relevance check failed: {e}, defaulting to True")
+            return True
 
     async def generate_query(self, research_question: str) -> Optional[Dict]:
         """

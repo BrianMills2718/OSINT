@@ -57,29 +57,68 @@ class DVIDSIntegration(DatabaseIntegration):
 
     async def is_relevant(self, research_question: str) -> bool:
         """
-        Quick relevance check for DVIDS.
+        LLM-based relevance check for DVIDS.
 
-        DVIDS contains: Military media, photos, videos, news, operations, training
-        DVIDS does NOT contain: Contract solicitations, procurement, awards, RFPs
+        Uses LLM to determine if Defense Visual Information Distribution Service
+        (military media, photos, videos, news) might have relevant content.
 
         Args:
             research_question: The user's research question
 
         Returns:
-            False if asking about contracts/procurement, True for military content
+            True if DVIDS might have relevant information, False otherwise
         """
-        # Quick keyword check for contract-related queries
-        question_lower = research_question.lower()
-        contract_keywords = [
-            "contract", "solicitation", "rfp", "procurement", "award",
-            "vendor", "bidding", "idiq", "gwac", "schedule", "naics", "psc"
-        ]
+        from llm_utils import acompletion
+        from dotenv import load_dotenv
+        import json
 
-        # If query is about contracts, DVIDS is not relevant
-        if any(keyword in question_lower for keyword in contract_keywords):
-            return False
+        load_dotenv()
 
-        return True
+        prompt = f"""Is DVIDS (Defense Visual Information Distribution Service) relevant for researching this question?
+
+RESEARCH QUESTION:
+{research_question}
+
+DVIDS CHARACTERISTICS:
+Strengths:
+- Military photos, videos, and news releases
+- Combat operations and training exercises
+- Military equipment demonstrations and deployments
+- Service member interviews and features
+- Unit activities and ceremonies
+- Official DoD media content
+- Visual documentation of military activities
+
+Limitations:
+- No contract solicitations or procurement documents
+- No RFPs, awards, or vendor information
+- No financial data or spending records
+- Limited to visual media and news content
+
+DECISION CRITERIA:
+- Is relevant: If seeking military operations, training, equipment visuals, news, or official DoD media content
+- NOT relevant: If ONLY seeking contracts, procurement, financial data, or non-visual military information
+
+Return JSON with your decision:
+{{
+  "relevant": true/false,
+  "reasoning": "1-2 sentences explaining why DVIDS is/isn't relevant for this question"
+}}"""
+
+        try:
+            response = await acompletion(
+                model="gpt-4o-mini",
+                messages=[{"role": "user", "content": prompt}],
+                response_format={"type": "json_object"}
+            )
+
+            result = json.loads(response.choices[0].message.content)
+            return result.get("relevant", True)  # Default to True if parsing fails
+
+        except Exception as e:
+            # On error, default to True (let query generation and filtering handle it)
+            print(f"[WARN] DVIDS relevance check failed: {e}, defaulting to True")
+            return True
 
     async def generate_query(self, research_question: str) -> Optional[Dict]:
         """

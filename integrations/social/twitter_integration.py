@@ -243,34 +243,71 @@ class TwitterIntegration(DatabaseIntegration):
 
     async def is_relevant(self, research_question: str) -> bool:
         """
-        Quick relevance check for Twitter.
+        LLM-based relevance check for Twitter.
 
-        Twitter is useful for: Public discourse, breaking news, leaks, social movements
-        Twitter is NOT useful for: Structured data (contracts, jobs, procurement)
+        Uses LLM to determine if Twitter (public discourse, breaking news, leaks,
+        social movements) might have relevant content for the research question.
 
         Args:
             research_question: The user's research question
 
         Returns:
-            False if asking about structured data (contracts/jobs), True for social/news queries
+            True if Twitter might have relevant information, False otherwise
         """
-        # Quick keyword check for structured data queries where Twitter isn't helpful
-        question_lower = research_question.lower()
+        from llm_utils import acompletion
+        from dotenv import load_dotenv
+        import json
 
-        # Contract/procurement queries - Twitter rarely has official solicitations
-        contract_keywords = ["contract", "solicitation", "rfp", "procurement", "award", "bidding", "idiq", "gwac"]
-        if any(keyword in question_lower for keyword in contract_keywords):
-            # Check if also asking about discourse/news about contracts (Twitter IS relevant for that)
-            discourse_keywords = ["discussion", "news", "announcement", "opinion", "reaction", "controversy"]
-            if not any(keyword in question_lower for keyword in discourse_keywords):
-                return False
+        load_dotenv()
 
-        # Job posting queries - Twitter has job ads but better sources exist (USAJobs, ClearanceJobs)
-        job_keywords = ["jobs available", "job openings", "hiring for", "recruiting for"]
-        if any(keyword in question_lower for keyword in job_keywords):
-            return False
+        prompt = f"""Is Twitter relevant for researching this question?
 
-        return True
+RESEARCH QUESTION:
+{research_question}
+
+TWITTER CHARACTERISTICS:
+Strengths:
+- Real-time breaking news and announcements
+- Public discourse and opinions
+- Leaks and whistleblower information
+- Social movements and activism
+- Expert commentary and analysis
+- Reactions to news events
+- Controversies and scandals
+- Company/government official statements
+- Network analysis (who follows/mentions whom)
+
+Limitations:
+- No official contract solicitations or RFPs
+- Job postings better found elsewhere (USAJobs, ClearanceJobs)
+- No structured procurement data
+- Information reliability varies (requires verification)
+- Not a source for official documents
+
+DECISION CRITERIA:
+- Is relevant: If seeking public discourse, breaking news, opinions, leaks, reactions, controversies, or social intelligence
+- NOT relevant: If ONLY seeking official solicitations, structured job listings, or formal procurement documents with no value from public discourse
+
+Return JSON with your decision:
+{{
+  "relevant": true/false,
+  "reasoning": "1-2 sentences explaining why Twitter is/isn't relevant for this question"
+}}"""
+
+        try:
+            response = await acompletion(
+                model="gpt-4o-mini",
+                messages=[{"role": "user", "content": prompt}],
+                response_format={"type": "json_object"}
+            )
+
+            result = json.loads(response.choices[0].message.content)
+            return result.get("relevant", True)  # Default to True if parsing fails
+
+        except Exception as e:
+            # On error, default to True (let query generation and filtering handle it)
+            print(f"[WARN] Twitter relevance check failed: {e}, defaulting to True")
+            return True
 
     async def generate_query(self, research_question: str) -> Optional[Dict]:
         """
