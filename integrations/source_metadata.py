@@ -473,6 +473,127 @@ SOURCE_METADATA = {
         typical_result_count=50,  # Good coverage from many sources
         max_queries_recommended=5  # Moderate saturation, 100 req/day limit
     ),
+
+    'CIA CREST (Playwright - EXPERIMENTAL)': SourceMetadata(
+        name='CIA CREST (Playwright - EXPERIMENTAL)',
+        description='CIA declassified document reading room (Playwright implementation)',
+        characteristics={
+            'historical_documents': True,
+            'declassified_intelligence': True,
+            'formal_government_prose': True,
+            'pre_2000_focus': True,
+            'full_text_available': True,
+            'requires_verification': False,  # Official government docs
+            'experimental': True,  # Less stable than Selenium version
+            'requires_stealth': True  # Uses Playwright with stealth plugins
+        },
+        query_strategies=[
+            'keyword_search',
+            'operation_name',
+            'country_region_focus',
+            'time_period',
+            'intelligence_topic'
+        ],
+        typical_result_count=20,
+        max_queries_recommended=3  # Historical docs, focused topics
+    ),
+
+    'CIA CREST (Selenium)': SourceMetadata(
+        name='CIA CREST (Selenium)',
+        description='CIA declassified document reading room (Selenium implementation - bypasses Akamai)',
+        characteristics={
+            'historical_documents': True,
+            'declassified_intelligence': True,
+            'formal_government_prose': True,
+            'pre_2000_focus': True,
+            'full_text_available': True,
+            'requires_verification': False,  # Official government docs
+            'requires_stealth': True,  # Uses Selenium with undetected-chromedriver
+            'bypasses_bot_detection': True  # Successfully bypasses Akamai Bot Manager
+        },
+        query_strategies=[
+            'keyword_search',
+            'operation_name',
+            'country_region_focus',
+            'time_period',
+            'intelligence_topic'
+        ],
+        typical_result_count=20,
+        max_queries_recommended=3  # Historical docs, focused topics
+    ),
+
+    'FBI Vault': SourceMetadata(
+        name='FBI Vault',
+        description='FBI FOIA document releases and investigation files',
+        characteristics={
+            'historical_documents': True,
+            'foia_releases': True,
+            'investigation_files': True,
+            'formal_government_prose': True,
+            'full_text_available': False,  # PDFs available but not full-text searchable
+            'requires_verification': False,  # Official government docs
+            'requires_stealth': True  # Uses SeleniumBase to bypass Cloudflare
+        },
+        query_strategies=[
+            'keyword_search',
+            'subject_name',  # Person or organization name
+            'case_name',  # Investigation name
+            'topic_search',  # General topic (espionage, organized crime, etc.)
+            'historical_event'  # Specific events or operations
+        ],
+        typical_result_count=15,
+        max_queries_recommended=3  # Focused investigation files
+    ),
+
+    'Telegram': SourceMetadata(
+        name='Telegram',
+        description='Telegram channels and messages: news sources, leak channels, OSINT communities',
+        characteristics={
+            'real_time_messaging': True,
+            'channels_and_groups': True,
+            'leak_channels': True,  # Whistleblower and insider info
+            'news_aggregation': True,
+            'osint_communities': True,
+            'encrypted_platform': True,
+            'requires_authentication': True,  # Requires phone number verification
+            'global_reach': True,
+            'public_channels_only': True,  # Only searches public channels
+            'requires_verification': True  # Unofficial sources, verify claims
+        },
+        query_strategies=[
+            'channel_search',  # Find channels by name/keyword
+            'channel_messages',  # Get messages from specific channel
+            'global_search',  # Search across all accessible channels
+            'channel_info',  # Get channel metadata
+            'keyword_tracking'  # Track keywords over time
+        ],
+        typical_result_count=30,
+        max_queries_recommended=5  # Dynamic platform, moderate saturation
+    ),
+
+    'Wayback Machine': SourceMetadata(
+        name='Wayback Machine',
+        description='Internet Archive web snapshots: historical website captures from 1996-present',
+        characteristics={
+            'historical_web_content': True,
+            'snapshots_over_time': True,
+            'deleted_content_recovery': True,
+            'website_changes_tracking': True,
+            'global_web_coverage': True,
+            'structured_data': False,  # Raw HTML/website captures
+            'date_specific_queries': True,
+            'requires_verification': True  # Archived content may be outdated
+        },
+        query_strategies=[
+            'url_snapshot',  # Get specific URL at specific time
+            'url_timeline',  # Get all snapshots of URL over time
+            'domain_archive',  # Get all snapshots of domain
+            'date_range_search',  # Find snapshots within date range
+            'change_detection'  # Compare snapshots to detect changes
+        ],
+        typical_result_count=25,
+        max_queries_recommended=4  # Historical archiving, moderate saturation
+    ),
 }
 
 
