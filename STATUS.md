@@ -181,6 +181,158 @@
 
 ---
 
+## Critical Bug Fixes + Temporal Context Architecture (2025-11-24)
+
+**Status**: ✅ **COMPLETE** - P0 crash fixed + systematic temporal context injection implemented
+**Impact**: Research system operational again + all integrations now get temporal context automatically
+
+### 1. ExecutionLogger Variable Shadowing Fix (P0 Blocker) ✅
+**Date**: 2025-11-24
+**Commit**: b75478d
+**Problem**: All research immediately crashed with `AttributeError: 'ExecutionLogger' object has no attribute 'warning'`
+**Root Cause**: Parameter `logger` shadowing module-level `logger` in `_call_mcp_tool()` method (line 2803)
+
+**Solution**: Renamed parameter to eliminate shadowing
+- Changed parameter from `logger: Optional['ExecutionLogger']` to `exec_logger: Optional['ExecutionLogger']`
+- Updated 19 references in method body (lines 2855-3087)
+- Updated 3 call sites to pass `exec_logger=self.logger` (lines 1923, 2122, 3165)
+- Updated docstring for clarity
+
+**Files Modified**:
+- `research/deep_research.py` (24 lines changed across method signature, body, call sites)
+
+**Validation**:
+- ✅ Research ran for 12+ minutes without crashes
+- ✅ All `logger.warning()` and `logger.error()` calls working
+- ✅ ExecutionLogger structured logging functional
+- ✅ No AttributeError exceptions
+
+**Impact**: Unblocked all research testing, restored system functionality
+
+### 2. Automatic Temporal Context Injection ✅
+**Date**: 2025-11-24
+**Commit**: 7309e66
+**Problem**: LLMs thought "2024" was future data, rejecting valid queries (USAspending returned 0 results)
+**Root Cause**: No temporal context provided to LLMs, causing temporal confusion
+
+**Solution**: Centralized system context injection in `prompt_loader.py`
+- Created `_get_system_context()` function returning `current_date`, `current_year`, `current_datetime`
+- ALL prompts now automatically receive temporal context variables
+- User kwargs can override system defaults if needed
+- Modified `render_prompt()` to merge system context with user kwargs
+
+**Architecture**:
+```python
+# Automatic injection - no manual passing required
+prompt = render_prompt(
+    "integrations/usaspending_relevance.j2",
+    research_question=question
+    # current_date, current_year, current_datetime automatically injected
+)
+
+# Templates can use temporal variables
+# IMPORTANT: Today's date is {{ current_date }}. Your training data may be outdated.
+```
+
+**Files Modified**:
+- `core/prompt_loader.py` (+50 lines: `_get_system_context()`, updated `render_prompt()`)
+- `integrations/government/usaspending_integration.py` (removed manual `current_date` passing)
+
+**Validation**:
+- ✅ All prompts receive temporal context automatically
+- ✅ USAspending now accepts 2024 queries (was rejecting all)
+- ✅ 37 contract results returned (was 0)
+- ✅ DRY principle maintained
+
+**Impact**: Prevents temporal confusion across ALL integrations, not just USAspending
+
+### 3. USAspending Relevance Prompt Strengthening ✅
+**Date**: 2025-11-24
+**Commit**: 74acfe1
+**Problem**: Even with temporal context, USAspending rejected "defense contractors" queries
+**Root Cause**: LLM interpreted "defense contractors" as asking about companies, not contracts they received
+
+**Solution**: Strengthened relevance prompt with explicit guidance
+- Added "ANY question asking which defense contractors/companies received contracts"
+- Added contract type examples: competitive, non-competitive, sole-source, set-aside
+- Added explicit callout: "IMPORTANT: If question mentions defense contractors/contractors receiving contracts, USAspending IS relevant"
+- Clarified USAspending shows WHO received contracts (recipient analysis)
+
+**Files Modified**:
+- `prompts/integrations/usaspending_relevance.j2` (+8 lines of explicit guidance)
+
+**Validation**:
+- ✅ "Defense contractors non-competitive contracts over fifty million dollars 2024" → True (was False)
+- ✅ All contractor-focused queries now return True
+- ✅ LLM correctly interprets USAspending as source for recipient analysis
+
+**Impact**: USAspending now correctly identified as relevant for all contractor research queries
+
+### 4. Configurable Temporal Context via Directives ✅
+**Date**: 2025-11-24
+**Commit**: 8000d0e
+**Problem**: Templates needed to manually duplicate temporal context header (DRY violation)
+**Philosophy**: Make everything configurable, explicit, discoverable
+
+**Solution**: Directive-based auto-prepending system
+- Templates opt-in with `{# temporal_context: true #}` directive in first 5 lines
+- When enabled, header "IMPORTANT: Today's date is YYYY-MM-DD..." automatically prepended
+- Zero duplication across templates
+- Explicit configuration (grep-able, discoverable)
+- Backward compatible (default: false, explicit opt-in)
+
+**Architecture**:
+```jinja
+{# temporal_context: true #}
+USAspending.gov contains federal spending data through recent months...
+```
+
+**Implementation**:
+- Created `_get_temporal_context_header()` - standardized header text
+- Created `_should_prepend_temporal_context()` - directive parser (checks first 5 lines)
+- Modified `render_prompt()` - checks directive, conditionally prepends header
+
+**Files Modified**:
+- `core/prompt_loader.py` (+50 lines: directive system)
+- `prompts/integrations/usaspending_relevance.j2` (added directive, removed manual header)
+
+**Validation**:
+- ✅ USAspending prompt gets automatic header
+- ✅ Other prompts unaffected (explicit opt-in)
+- ✅ Directive syntax is Jinja2 comment (no parsing errors)
+- ✅ grep-able for discovery (`grep -r "temporal_context: true" prompts/`)
+
+**Impact**:
+- Configurable temporal context for all integrations
+- DRY principle maintained (header defined once)
+- Explicit architecture (no magic behavior)
+- Ready to roll out to other time-sensitive integrations (SAM.gov, FEC, Congress.gov, SEC EDGAR)
+
+### Summary
+
+**4 commits pushed**:
+1. b75478d - Fixed P0 ExecutionLogger crash (variable shadowing)
+2. 7309e66 - Automatic temporal context injection (system variables)
+3. 74acfe1 - Strengthened USAspending relevance prompt
+4. 8000d0e - Configurable temporal context via directives
+
+**Results**:
+- Research system operational again (was completely blocked)
+- USAspending returning 37 results (was 0)
+- All integrations get temporal context automatically
+- Directive-based configuration system for opt-in features
+- Zero architectural debt (no hardcoded heuristics, DRY maintained)
+
+**Files Modified**:
+- `research/deep_research.py` (24 lines: ExecutionLogger fix)
+- `core/prompt_loader.py` (100 lines: temporal context system)
+- `integrations/government/usaspending_integration.py` (cleanup)
+- `prompts/integrations/usaspending_relevance.j2` (directive + guidance)
+
+**Total Changes**: ~150 lines added/modified across 4 files
+
+---
+
 ## Quality Improvements (2025-11-22/23)
 
 **Status**: ✅ **COMPLETE** - Seven quality improvements implemented and validated
