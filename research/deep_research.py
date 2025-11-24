@@ -1387,7 +1387,10 @@ class SimpleDeepResearch:
         # If exists: Add hypothesis_id to existing result's hypothesis_ids array
         # If new: Tag with hypothesis_id field
 
+        # Use dict for O(1) URL lookup instead of O(n) linear search
+        url_to_result = {}  # Maps URL -> result dict
         deduplicated = []
+
         for result in results:
             url = result.get("url")
             if not url:
@@ -1396,12 +1399,8 @@ class SimpleDeepResearch:
                 deduplicated.append(result)
                 continue
 
-            # Check for duplicate URL in current batch
-            existing = None
-            for r in deduplicated:
-                if r.get("url") == url:
-                    existing = r
-                    break
+            # Check for duplicate URL in current batch (O(1) dict lookup)
+            existing = url_to_result.get(url)
 
             if existing:
                 # Duplicate within batch - add to hypothesis_ids
@@ -1411,9 +1410,10 @@ class SimpleDeepResearch:
                 elif hypothesis_id not in existing["hypothesis_ids"]:
                     existing["hypothesis_ids"].append(hypothesis_id)
             else:
-                # New result - tag with hypothesis_id
+                # New result - tag with hypothesis_id and add to index
                 result["hypothesis_id"] = hypothesis_id
                 deduplicated.append(result)
+                url_to_result[url] = result  # Index by URL for O(1) lookup
 
         return deduplicated
 
