@@ -321,6 +321,8 @@ class SimpleDeepResearch:
                     env_var_name = "USAJOBS_API_KEY"
                 elif integration_id == "congress":
                     env_var_name = "CONGRESS_API_KEY"
+                elif integration_id == "govinfo":
+                    env_var_name = "DATA_GOV_API_KEY"  # GovInfo uses api.data.gov (same as Congress.gov)
                 elif integration_id == "sec_edgar":
                     env_var_name = "SEC_EDGAR_API_KEY"
                 elif integration_id == "fec":
