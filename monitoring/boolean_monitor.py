@@ -300,7 +300,8 @@ class BooleanMonitor:
                 logger.warning(f"  {integration.metadata.name}: Search failed: {result.error}")
 
         except Exception as e:
-            logger.error(f"Error searching {source} for '{keyword}': {str(e)}")
+            # Boolean monitor search error - non-critical, return empty results
+            logger.error(f"Error searching {source} for '{keyword}': {str(e)}", exc_info=True)
             # Return empty list on error (don't crash entire monitor)
 
         return results
@@ -478,7 +479,8 @@ Examples:
                     logger.info(f"  ✗ EXCLUDE: {title[:60]}... | Reason: {reasoning[:40]}")
 
             except Exception as e:
-                logger.warning(f"Error evaluating result relevance: {str(e)}")
+                # Relevance evaluation error - keep result by default
+                logger.warning(f"Error evaluating result relevance: {str(e)}", exc_info=True)
                 # On error, keep the result (don't filter out due to technical issues)
                 result['filtered'] = False
                 result['filter_reason'] = f"Could not evaluate (error: {str(e)[:50]}), kept by default"
@@ -630,14 +632,16 @@ Found {len(new_results)} new results:
                     logger.info(f"Email sent successfully to {self.config.alert_email} (no auth)")
 
             except smtplib.SMTPException as e:
-                logger.warning(f"Failed to send email via SMTP: {str(e)}")
+                # SMTP error - alert disabled but monitor continues
+                logger.warning(f"Failed to send email via SMTP: {str(e)}", exc_info=True)
                 logger.info("Email alert disabled - results logged above")
             except ConnectionRefusedError:
                 logger.warning(f"SMTP connection refused to {smtp_host}:{smtp_port}")
                 logger.info("Email alert disabled - results logged above")
 
         except Exception as e:
-            logger.error(f"Error preparing email alert: {str(e)}")
+            # Email preparation error - alert disabled but monitor continues
+            logger.error(f"Error preparing email alert: {str(e)}", exc_info=True)
             logger.info("Email alert disabled - results logged above")
 
     def _save_results(self, results: List[Dict]):

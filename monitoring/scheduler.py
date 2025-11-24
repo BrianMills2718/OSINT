@@ -129,7 +129,8 @@ class MonitorScheduler:
                     logger.info(f"Scheduled '{monitor.config.name}' - Daily at {hour}:00")
 
                 except ValueError as e:
-                    logger.error(f"Invalid schedule format '{schedule}' for monitor '{monitor.config.name}': {e}")
+                    # Invalid schedule format - skip this monitor
+                    logger.error(f"Invalid schedule format '{schedule}' for monitor '{monitor.config.name}': {e}", exc_info=True)
 
             else:
                 logger.warning(f"Unknown schedule format '{schedule}' for monitor '{monitor.config.name}'")
@@ -228,7 +229,8 @@ async def main():
                 else:
                     logger.info(f"Skipping disabled monitor: {monitor.config.name}")
             except Exception as e:
-                logger.error(f"Error running {config_file.name}: {str(e)}")
+                # Monitor execution error - continue with other monitors
+                logger.error(f"Error running {config_file.name}: {str(e)}", exc_info=True)
 
         logger.info("All monitors completed")
     else:
