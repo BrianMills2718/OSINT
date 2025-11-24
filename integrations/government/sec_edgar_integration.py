@@ -12,6 +12,8 @@ from typing import Dict, Optional, List
 from datetime import datetime
 import asyncio
 import requests
+import re
+from bs4 import BeautifulSoup
 from llm_utils import acompletion
 from core.prompt_loader import render_prompt
 
@@ -271,6 +273,109 @@ Return JSON:
             print(f"[WARN] CIK lookup failed for '{company_name}': {e}")
             return None
 
+    async def _fetch_document_content(self, doc_url: str, form_type: str) -> Optional[str]:
+        """
+        Fetch and extract relevant content from SEC document.
+
+        Args:
+            doc_url: URL to SEC document (HTML format)
+            form_type: Type of form (10-K, 10-Q, etc.)
+
+        Returns:
+            Extracted text content or None if fetch fails
+        """
+        try:
+            user_agent = self._get_user_agent()
+            response = requests.get(
+                doc_url,
+                headers={"User-Agent": user_agent},
+                timeout=30  # Longer timeout for document downloads
+            )
+
+            response.raise_for_status()
+
+            # Parse HTML
+            soup = BeautifulSoup(response.text, 'html.parser')
+
+            # Extract text content
+            # SEC documents are typically in <document> tags or standard HTML
+            text_content = soup.get_text(separator='\n', strip=True)
+
+            # Limit size (first 50KB of text to avoid overwhelming)
+            if len(text_content) > 50000:
+                text_content = text_content[:50000] + "\n\n[Content truncated - document exceeds 50KB]"
+
+            return text_content
+
+        except Exception as e:
+            print(f"[WARN] Failed to fetch document content from {doc_url}: {e}")
+            return None
+
+    async def _extract_relevant_sections(
+        self,
+        content: str,
+        form_type: str,
+        keywords: Optional[str] = None
+    ) -> Optional[str]:
+        """
+        Extract relevant sections from SEC filing content using pattern matching.
+
+        Args:
+            content: Full document text
+            form_type: Type of form (10-K, 10-Q, etc.)
+            keywords: Optional keywords to search for (e.g., "offshore", "subsidiaries", "tax")
+
+        Returns:
+            Extracted relevant sections or None
+        """
+        if not content:
+            return None
+
+        try:
+            extracted_sections = []
+
+            # Common patterns for important sections
+            section_patterns = {
+                "subsidiaries": r"(?i)(exhibit\s+21|list\s+of\s+subsidiaries|subsidiaries\s+of|foreign\s+subsidiaries).*?(?=\n\s*\n|\nexhibit|\nitem\s+\d+|$)",
+                "offshore": r"(?i)(offshore|tax\s+haven|foreign\s+jurisdiction|international\s+tax|transfer\s+pricing).*?(?:\n.*?){0,20}",
+                "tax": r"(?i)(note\s+\d+.*?income\s+tax|provision\s+for\s+income\s+tax|tax\s+rate\s+reconciliation|deferred\s+tax).*?(?:\n.*?){0,30}",
+                "segments": r"(?i)(note\s+\d+.*?segment|segment\s+information|geographic\s+information|foreign\s+operations).*?(?:\n.*?){0,30}",
+            }
+
+            # If keywords provided, focus on those patterns
+            if keywords:
+                keywords_lower = keywords.lower()
+                for pattern_name, pattern in section_patterns.items():
+                    if pattern_name in keywords_lower or any(kw in pattern_name for kw in keywords_lower.split()):
+                        matches = re.finditer(pattern, content, re.DOTALL)
+                        for match in matches:
+                            section_text = match.group(0)
+                            if len(section_text) > 200:  # Only include substantial sections
+                                extracted_sections.append(f"--- {pattern_name.upper()} SECTION ---\n{section_text[:2000]}")
+
+            # If no keyword matches or no keywords, try all patterns
+            if not extracted_sections:
+                for pattern_name, pattern in section_patterns.items():
+                    matches = re.finditer(pattern, content, re.DOTALL)
+                    for match in matches:
+                        section_text = match.group(0)
+                        if len(section_text) > 200:
+                            extracted_sections.append(f"--- {pattern_name.upper()} SECTION ---\n{section_text[:2000]}")
+                            if len(extracted_sections) >= 3:  # Limit to 3 sections
+                                break
+                    if len(extracted_sections) >= 3:
+                        break
+
+            if extracted_sections:
+                return "\n\n".join(extracted_sections)
+
+            # If no structured sections found, return first 3000 chars
+            return content[:3000] + "\n\n[Note: No specific sections identified - showing document preview]"
+
+        except Exception as e:
+            print(f"[WARN] Section extraction failed: {e}")
+            return None
+
     async def execute_search(
         self,
         query_params: Dict,
@@ -336,7 +441,16 @@ Return JSON:
 
                 documents = []
 
-                for i in range(min(len(forms), limit)):
+                # Fetch content for first 3 documents (balance depth vs speed)
+                docs_to_extract = min(3, limit)
+
+                # When filtering by form type, iterate through more forms to find matches
+                max_iterations = min(len(forms), limit * 10 if form_types else limit)
+
+                for i in range(max_iterations):
+                    if i >= len(forms):
+                        break
+
                     form = forms[i]
 
                     # Filter by form type if specified
@@ -355,10 +469,28 @@ Return JSON:
                     # Build filing viewer URL
                     filing_url = f"https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK={cik}&type={form}&dateb=&owner=exclude&count=100"
 
+                    # Extract content for first few documents
+                    snippet = f"Report Date: {report_date} | Accession: {accession}"
+                    extracted_content = None
+
+                    if len(documents) < docs_to_extract:
+                        print(f"[INFO] Fetching content from {form} filing ({filing_date})...")
+                        content = await self._fetch_document_content(doc_url, form)
+                        if content:
+                            extracted_content = await self._extract_relevant_sections(
+                                content,
+                                form,
+                                keywords
+                            )
+                            if extracted_content:
+                                # Update snippet with preview of extracted content
+                                preview = extracted_content[:300].replace('\n', ' ')
+                                snippet = f"{preview}... [Full extraction in metadata]"
+
                     doc = {
                         "title": f"{form} Filing - {data.get('name', company_name)} ({filing_date})",
                         "url": doc_url,
-                        "snippet": f"Report Date: {report_date} | Accession: {accession}",
+                        "snippet": snippet,
                         "date": filing_date,
                         "metadata": {
                             "form_type": form,
@@ -369,7 +501,8 @@ Return JSON:
                             "company_name": data.get("name"),
                             "ticker": data.get("tickers", [None])[0] if data.get("tickers") else None,
                             "exchange": data.get("exchanges", [None])[0] if data.get("exchanges") else None,
-                            "filing_viewer_url": filing_url
+                            "filing_viewer_url": filing_url,
+                            "extracted_content": extracted_content  # NEW: Include extracted sections
                         }
                     }
                     documents.append(doc)
