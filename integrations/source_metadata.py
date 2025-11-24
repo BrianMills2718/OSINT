@@ -437,6 +437,35 @@ SOURCE_METADATA = {
         typical_result_count=50,  # Rich dataset of 1.8M+ nonprofits
         max_queries_recommended=7  # Financial data, good for investigations
     ),
+
+    'NewsAPI': SourceMetadata(
+        name='NewsAPI',
+        description='News aggregation from 80,000+ sources worldwide: breaking news, media coverage, public discourse',
+        characteristics={
+            'news_articles': True,
+            'media_coverage': True,
+            'public_discourse': True,
+            '80k_sources': True,
+            'keyword_search': True,
+            'date_filtering': True,
+            'language_filtering': True,
+            'historical_data_limit_days': 30,  # Free tier: articles up to 1 month old only
+            'search_delay_hours': 24,  # Free tier: 24-hour delay before articles searchable
+            'free_tier_rate_limit': 100,  # 100 requests/day on free tier
+            'requires_verification': False  # News articles (not primary documents)
+        },
+        query_strategies=[
+            'keyword_search',  # Search by keywords (supports AND/OR/NOT, quotes)
+            'topic_coverage',  # Find media coverage of specific topics
+            'source_filtering',  # Filter by specific news sources
+            'date_range_recent',  # Recent news only (last 30 days on free tier)
+            'language_specific',  # Filter by language
+            'trending_topics',  # Sort by popularity to find trending stories
+            'timeline_analysis'  # Track how coverage evolved (within 30-day window)
+        ],
+        typical_result_count=50,  # Good coverage from many sources
+        max_queries_recommended=5  # Moderate saturation, 100 req/day limit
+    ),
 }
 
 

@@ -245,6 +245,17 @@ Return JSON:
         sort_by = query_params.get("sort_by", "relevancy")
         limit = min(query_params.get("limit", 50), limit, 100)  # Cap at 100 (API max)
 
+        # Safety net: Enforce free tier's 30-day historical limit
+        # This prevents 426 errors when LLM generates dates older than allowed
+        from integrations.source_metadata import get_source_metadata
+        metadata = get_source_metadata("NewsAPI")
+        if metadata and from_date:
+            historical_limit_days = metadata.characteristics.get('historical_data_limit_days', 30)
+            cutoff_date = (datetime.now() - timedelta(days=historical_limit_days)).strftime("%Y-%m-%d")
+            if from_date < cutoff_date:
+                from_date = cutoff_date
+                # Note: This is transparent to the LLM - we just enforce the constraint
+
         if not query:
             return QueryResult(
                 success=False,

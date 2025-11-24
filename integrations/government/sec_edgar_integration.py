@@ -61,7 +61,7 @@ class SECEdgarIntegration(DatabaseIntegration):
             cost_per_query_estimate=0.001,  # LLM cost only
             typical_response_time=1.0,      # seconds (SEC APIs are fast)
             rate_limit_daily=None,          # No daily limit, just 10/sec
-            description="SEC corporate filings, financial statements, insider trading, and company information"
+            description="SEC corporate filings including foreign subsidiary disclosures (Exhibit 21), financial statements, offshore entity structures, insider trading, and executive compensation. NOT for government contracts - use SAM.gov/USAspending for contracts."
         )
 
     def _get_user_agent(self) -> str:

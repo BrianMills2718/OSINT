@@ -28,9 +28,11 @@ NEWSAPI CAPABILITIES:
 - ar (Arabic), it (Italian), pt (Portuguese), ru (Russian)
 - zh (Chinese), and others
 
-**Date Range:**
-- Free tier: Articles up to 1 month old
-- 24-hour delay before new articles searchable
+**Date Range (IMPORTANT FREE TIER LIMITATION):**
+- Free tier: Articles up to **30 days old maximum** (enforced by API)
+- Requesting articles older than 30 days will result in 426 error
+- Calculate `from_date` as: today minus 30 days (YYYY-MM-DD format)
+- 24-hour delay before new articles searchable (use yesterday as `to_date` max)
 
 **What NewsAPI Does NOT Have:**
 - Primary documents (government filings, corporate reports - use SEC EDGAR/Congress)
@@ -46,8 +48,9 @@ INSTRUCTIONS:
 1. Determine if NewsAPI is relevant for this research question
 2. If relevant, specify:
    - **query**: Keywords to search (max 500 chars, use operators for precision)
-   - **from_date**: Start date in YYYY-MM-DD format (null for oldest, max 1 month ago on free tier)
-   - **to_date**: End date in YYYY-MM-DD format (null for most recent)
+   - **from_date**: Start date in YYYY-MM-DD format (null for last 30 days, or calculate: today - 30 days)
+     - CRITICAL: Free tier only supports articles from last 30 days. Do NOT use dates older than 30 days ago!
+   - **to_date**: End date in YYYY-MM-DD format (null for most recent, or use yesterday's date)
    - **language**: 2-letter language code (default: "en")
    - **sort_by**: "relevancy" (most relevant first), "popularity" (most shared), or "publishedAt" (newest first)
    - **limit**: Number of results (1-100, default 50)

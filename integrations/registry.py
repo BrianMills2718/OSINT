@@ -68,6 +68,13 @@ try:
 except ImportError:
     REDDIT_AVAILABLE = False
 
+# Telegram integration requires Telethon
+try:
+    from integrations.social.telegram_integration import TelegramIntegration
+    TELEGRAM_AVAILABLE = True
+except ImportError:
+    TELEGRAM_AVAILABLE = False
+
 
 class IntegrationRegistry:
     """
@@ -125,6 +132,8 @@ class IntegrationRegistry:
             self._try_register("twitter", TwitterIntegration)
         if REDDIT_AVAILABLE:
             self._try_register("reddit", RedditIntegration)
+        if TELEGRAM_AVAILABLE:
+            self._try_register("telegram", TelegramIntegration)
 
         # Web search & news
         self._try_register("brave_search", BraveSearchIntegration)
@@ -135,9 +144,6 @@ class IntegrationRegistry:
 
         # Archive sources
         self._try_register("wayback_machine", WaybackMachineIntegration)
-
-        # Future social media sources (Phase 3)
-        # self._try_register("telegram", TelegramIntegration)
 
     def _try_register(self, integration_id: str, integration_class: Type[DatabaseIntegration]):
         """

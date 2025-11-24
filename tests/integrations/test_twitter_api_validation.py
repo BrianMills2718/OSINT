@@ -4,7 +4,7 @@ Phase 1, Task 1.2: Test API Client with Real Request
 Validates that api_client.py works with current twitter-api45 API
 """
 
-from twitterexplorer_sigint.api_client import execute_api_step
+from experiments.twitterexplorer_sigint.api_client import execute_api_step
 from dotenv import load_dotenv
 import os
 import json

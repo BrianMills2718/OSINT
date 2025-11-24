@@ -1,49 +1,211 @@
-Generate search parameters for Twitter.
+Generate query parameters for Twitter using the most appropriate endpoint.
 
-Twitter provides: Real-time social media posts and public discussions.
+Twitter provides: Real-time social media posts, user profiles, follower networks, and discussion threads.
 
-API Parameters:
-- query (string, required):
-    Twitter search query. Supports boolean operators:
-    OR (alternatives), AND (required terms), NOT (exclusions), quotes for exact phrases
-    Example: "JTTF OR counterterrorism" or "FBI AND hiring"
+## Available Query Patterns and Endpoints
 
-- search_type (enum, required):
-    Search filter type. Valid options:
-    "Latest" = Most recent tweets
-    "Top" = Most popular/engaging tweets
-    "Media" = Tweets with images/videos
-    "People" = User profiles (for finding accounts, not tweets)
+You can use ANY of these query patterns depending on what the research question needs:
 
-- max_pages (integer, required):
-    Number of result pages to fetch. Range: 1-5
-    Each page contains approximately 20 tweets.
+1. **search_tweets** (search.php)
+   - Purpose: Search for tweets by keywords or hashtags
+   - When to use: Finding public discussion, breaking news, trending topics
+   - Required: query (search terms with boolean operators)
+   - Optional: search_type ("Latest"|"Top"|"Media"|"People")
 
-Research Question: {{ research_question }}
+2. **user_profile** (screenname.php)
+   - Purpose: Get detailed information about a specific user
+   - When to use: Identifying key voices, verifying accounts, profile analysis
+   - Required: screenname (Twitter handle without @)
 
-Generate an effective Twitter search query for this research question.
+3. **user_timeline** (timeline.php)
+   - Purpose: Get a user's recent tweets and retweets
+   - When to use: Tracking influencer activity, monitoring key accounts
+   - Required: screenname (Twitter handle without @)
 
-Twitter is useful for:
-- Public discourse and opinions on government programs, policies, leaks
-- Breaking news, whistleblower revelations, investigative journalism
-- Official government accounts and announcements
-- Activism, protests, social movements
-- Expert commentary from journalists, researchers, former officials
-- Real-time reactions to events
+4. **user_followers** (followers.php)
+   - Purpose: Get list of users who follow an account
+   - When to use: Network analysis, finding related accounts, influence mapping
+   - Required: screenname
 
-Create a search query that will find relevant tweets by:
-- Using boolean operators (OR for alternatives, AND for required terms)
-- Choosing the appropriate search_type (Latest for breaking news, Top for popular discussions)
-- Setting max_pages based on how much context you need (1-3 pages typical)
+5. **user_following** (following.php)
+   - Purpose: Get list of users an account follows
+   - When to use: Network analysis, finding communities, identifying interests
+   - Required: screenname
+
+6. **tweet_details** (tweet.php)
+   - Purpose: Get full details of a specific tweet
+   - When to use: Analyzing specific posts, extracting media, checking engagement
+   - Required: id (tweet ID from URL)
+
+7. **tweet_replies** (latest_replies.php)
+   - Purpose: Get replies to a specific tweet
+   - When to use: Conversation tracking, community response analysis
+   - Required: id (tweet ID)
+
+8. **tweet_thread** (tweet_thread.php)
+   - Purpose: Get all tweets in a thread
+   - When to use: Following multi-part statements, context gathering
+   - Required: id (tweet ID of first tweet in thread)
+
+9. **retweet_users** (retweets.php)
+   - Purpose: Get users who retweeted a specific tweet
+   - When to use: Amplification analysis, finding supporters/promoters
+   - Required: id (tweet ID)
+
+10. **trending_topics** (trends.php)
+    - Purpose: Get trending topics by country
+    - When to use: Identifying emerging narratives, breaking news discovery
+    - Required: country (e.g., "UnitedStates", "UnitedKingdom")
+
+11. **user_media** (usermedia.php)
+    - Purpose: Get tweets with media (photos/videos) from a user
+    - When to use: Visual content analysis, multimedia investigations
+    - Required: screenname
+
+12. **list_timeline** (listtimeline.php)
+    - Purpose: Get tweets from a Twitter list
+    - When to use: Curated source monitoring, community tracking
+    - Required: list_id
+
+13. **user_affiliates** (affilates.php)
+    - Purpose: Get users affiliated with an account
+    - When to use: Finding related accounts, organization mapping, affiliation analysis
+    - Required: screenname
+
+14. **check_follow_relationship** (checkfollow.php)
+    - Purpose: Check if one user follows another
+    - When to use: Verify connections, validate network claims, relationship verification
+    - Required: user, follows
+
+15. **check_retweet_status** (checkretweet.php)
+    - Purpose: Check if a user retweeted a specific tweet
+    - When to use: Verify amplification, check engagement, validate sharing behavior
+    - Required: screenname, tweet_id
+
+16. **bulk_user_lookup** (screennames.php)
+    - Purpose: Get profiles for multiple users by IDs
+    - When to use: Batch profile retrieval, network analysis at scale, efficient user lookups
+    - Required: rest_ids (comma-separated IDs)
+
+17. **list_members** (list_members.php)
+    - Purpose: Get members of a Twitter list
+    - When to use: Curated community analysis, list membership mapping, group identification
+    - Required: list_id
+
+18. **list_followers** (list_followers.php)
+    - Purpose: Get followers of a Twitter list
+    - When to use: List audience analysis, community reach assessment, follower tracking
+    - Required: list_id
+
+19. **community_timeline** (community_timeline.php)
+    - Purpose: Get posts from a Twitter Community
+    - When to use: Community monitoring, closed group analysis, niche discussion tracking
+    - Required: community_id
+
+20. **spaces_details** (spaces.php)
+    - Purpose: Get details about a Twitter Spaces audio room
+    - When to use: Live audio monitoring, speaker identification, community event tracking
+    - Required: id (Space ID)
+
+## Relationship-Based Investigation Patterns
+
+For complex investigations, you might suggest using these multi-step patterns (note these would require multiple queries):
+
+- **Follower Network Analysis**: Get followers + following to map influence
+- **Conversation Tracking**: Search → Get replies → Analyze threads
+- **Amplification Analysis**: Find tweets → Get retweeters → Identify promoters
+- **Author Deep Dive**: Profile → Timeline → Network for comprehensive analysis
+
+## Research Question
+{{ research_question }}
+
+## Instructions
+
+1. **Analyze the research question** to determine what type of information is needed
+2. **Select the most appropriate query pattern** from the list above
+3. **Generate the required parameters** for that endpoint
+4. **Explain your reasoning** for choosing this pattern and these parameters
+
+**Decision Tree**:
+- Does the question ask about a **specific user/account**? → Use user_profile, user_timeline, user_followers, or user_following
+- Does it ask about **general discussion/tweets on a topic**? → Use search_tweets
+- Does it ask about **a specific tweet or thread**? → Use tweet_details, tweet_replies, or tweet_thread
+- Does it ask about **trending topics or breaking news**? → Use trending_topics or search_tweets with Latest
+- Does it ask about **who is amplifying/sharing content**? → Use retweet_users
+- Does it ask about **visual content**? → Use user_media or search_tweets with Media
 
 Return JSON:
 {% raw %}
 {
-  "query": string,
-  "search_type": "Latest" | "Top" | "Media" | "People",
+  "pattern": "search_tweets" | "user_profile" | "user_timeline" | "user_followers" | "user_following" | "tweet_details" | "tweet_replies" | "tweet_thread" | "retweet_users" | "trending_topics" | "user_media" | "list_timeline" | "user_affiliates" | "check_follow_relationship" | "check_retweet_status" | "bulk_user_lookup" | "list_members" | "list_followers" | "community_timeline" | "spaces_details",
+  "endpoint": string,
+  "params": {
+    // Pattern-specific parameters
+    // For search_tweets: {"query": str, "search_type": str}
+    // For user_*: {"screenname": str}
+    // For tweet_*: {"id": str}
+    // For trending_topics: {"country": str}
+    // etc.
+  },
   "max_pages": integer,
   "reasoning": string
 }
 {% endraw %}
 
-The "reasoning" field should explain your query strategy - why you chose these specific search terms, operators, and search_type to find relevant tweets.
+**Examples**:
+
+Query: "What is @bellingcat saying about Ukraine?"
+Response:
+{% raw %}
+{
+  "pattern": "user_timeline",
+  "endpoint": "timeline.php",
+  "params": {"screenname": "bellingcat"},
+  "max_pages": 3,
+  "reasoning": "Question asks about a specific account's tweets. Use user_timeline to get recent posts from @bellingcat and filter for Ukraine discussion."
+}
+{% endraw %}
+
+Query: "Who are the key OSINT analysts on Twitter?"
+Response:
+{% raw %}
+{
+  "pattern": "search_tweets",
+  "endpoint": "search.php",
+  "params": {
+    "query": "OSINT analyst OR intelligence analyst",
+    "search_type": "People"
+  },
+  "max_pages": 2,
+  "reasoning": "Question asks for user discovery. Use search_tweets with search_type='People' to find accounts matching OSINT/intelligence keywords."
+}
+{% endraw %}
+
+Query: "What are people saying about the new FISA reforms?"
+Response:
+{% raw %}
+{
+  "pattern": "search_tweets",
+  "endpoint": "search.php",
+  "params": {
+    "query": "FISA reform OR FISA reauthorization",
+    "search_type": "Latest"
+  },
+  "max_pages": 3,
+  "reasoning": "Question asks about general discussion. Use search_tweets with Latest to find recent tweets about FISA reforms."
+}
+{% endraw %}
+
+Query: "Who follows @DefenseNews?"
+Response:
+{% raw %}
+{
+  "pattern": "user_followers",
+  "endpoint": "followers.php",
+  "params": {"screenname": "DefenseNews"},
+  "max_pages": 2,
+  "reasoning": "Question explicitly asks for followers. Use user_followers endpoint to get list of accounts following @DefenseNews."
+}
+{% endraw %}
+
+Now generate the query parameters for the research question above.
