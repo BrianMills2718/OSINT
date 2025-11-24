@@ -1,0 +1,123 @@
+Generate query parameters for Telegram using the most appropriate search pattern.
+
+Telegram provides: Public channels, news sources, leak channels, OSINT communities, official government/military announcements.
+
+## Available Query Patterns
+
+You can use ANY of these query patterns depending on what the research question needs:
+
+1. **channel_search**
+   - Purpose: Search for public channels by name or username
+   - When to use: Finding relevant Telegram channels
+   - Required: query (channel name or topic)
+   - Example: "OSINT channels" or "Bellingcat"
+
+2. **channel_messages**
+   - Purpose: Get recent messages from a specific channel
+   - When to use: Monitoring a known channel (e.g., @bellingcat, @CITeam_en, @OpenSourceIntel)
+   - Required: channel_username (without @ symbol)
+   - Example: "bellingcat", "CITeam_en"
+
+3. **global_search**
+   - Purpose: Search for messages across channels by keywords
+   - When to use: Finding discussions on a topic across multiple channels
+   - Required: keywords (array of search terms)
+   - Example: ["Ukraine", "HIMARS"] or ["contract", "Anduril"]
+
+4. **channel_info**
+   - Purpose: Get details about a specific channel
+   - When to use: Channel verification, metadata lookup, understanding channel scope
+   - Required: channel_username (without @ symbol)
+   - Example: "bellingcat"
+
+## Research Question
+{{ research_question }}
+
+## Instructions
+
+1. **Analyze the research question** to determine what type of information is needed
+2. **Select the most appropriate query pattern** from the list above
+3. **Generate the required parameters** for that pattern
+4. **Explain your reasoning** for choosing this pattern and these parameters
+
+**Decision Tree**:
+- Does the question ask about **a specific channel** (e.g., "@bellingcat")? → Use channel_messages or channel_info
+- Does it ask to **find channels** on a topic? → Use channel_search
+- Does it ask about **discussions or messages** on a topic (no specific channel)? → Use global_search
+- Does it ask for **channel details or verification**? → Use channel_info
+
+**Important Notes**:
+- Telegram channels use @ symbol in URLs but not in API calls (e.g., @bellingcat → "bellingcat")
+- Popular OSINT channels: bellingcat, CITeam_en, OpenSourceIntel, OSINT_Defender
+- Official government channels often have verified badges
+- Limit parameter: 10-100 (default 50)
+
+Return JSON:
+{% raw %}
+{
+  "pattern": "channel_search" | "channel_messages" | "global_search" | "channel_info",
+  "params": {
+    // Pattern-specific parameters
+    // For channel_search: {"query": str, "limit": int}
+    // For channel_messages: {"channel_username": str, "limit": int}
+    // For global_search: {"keywords": [str, str, ...], "limit": int}
+    // For channel_info: {"channel_username": str}
+  },
+  "reasoning": string
+}
+{% endraw %}
+
+**Examples**:
+
+Query: "What is Bellingcat saying about the Ukraine conflict?"
+Response:
+{% raw %}
+{
+  "pattern": "channel_messages",
+  "params": {
+    "channel_username": "bellingcat",
+    "limit": 50
+  },
+  "reasoning": "Question asks about a specific channel (@bellingcat) and their recent content. Use channel_messages to get their latest posts."
+}
+{% endraw %}
+
+Query: "Find OSINT-focused Telegram channels"
+Response:
+{% raw %}
+{
+  "pattern": "channel_search",
+  "params": {
+    "query": "OSINT intelligence analysis",
+    "limit": 20
+  },
+  "reasoning": "Question asks to discover channels on a topic. Use channel_search to find channels matching OSINT keywords."
+}
+{% endraw %}
+
+Query: "What are people saying about the F-35 program?"
+Response:
+{% raw %}
+{
+  "pattern": "global_search",
+  "params": {
+    "keywords": ["F-35", "Joint Strike Fighter", "Lockheed Martin"],
+    "limit": 50
+  },
+  "reasoning": "Question asks about discussions on a topic across channels. Use global_search to find messages containing F-35-related keywords."
+}
+{% endraw %}
+
+Query: "How many members does the Bellingcat channel have?"
+Response:
+{% raw %}
+{
+  "pattern": "channel_info",
+  "params": {
+    "channel_username": "bellingcat"
+  },
+  "reasoning": "Question asks for channel metadata. Use channel_info to get member count and other channel details."
+}
+{% endraw %}
+
+Now generate the query parameters for the research question above.

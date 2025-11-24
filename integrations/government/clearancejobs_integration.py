@@ -25,11 +25,11 @@ from config_loader import config
 
 class ClearanceJobsIntegration(DatabaseIntegration):
     """
-    ClearanceJobs integration - wraps Playwright scraper.
+    ClearanceJobs integration - uses HTTP requests for server-side rendered pages.
 
-    Unlike API-based integrations, this uses browser automation
-    to scrape ClearanceJobs.com. The official API is broken
-    (returns all 57k jobs regardless of query), so we use Playwright.
+    The official API is broken (returns all 57k jobs regardless of query),
+    but the website pages are server-side rendered, so we use direct HTTP
+    requests with BeautifulSoup parsing (10x faster than browser automation).
     """
 
     @property
@@ -40,7 +40,7 @@ class ClearanceJobsIntegration(DatabaseIntegration):
             category=DatabaseCategory.JOBS,
             requires_api_key=False,
             cost_per_query_estimate=0.001,  # LLM cost only
-            typical_response_time=5.0,  # Slower due to Playwright
+            typical_response_time=0.5,  # HTTP requests (was 5.0 for Playwright)
             rate_limit_daily=None,
             description="Security clearance job postings requiring TS/SCI, Secret, Top Secret, and other clearances"
         )
@@ -141,8 +141,8 @@ class ClearanceJobsIntegration(DatabaseIntegration):
         Returns:
             QueryResult with standardized format
         """
-        # Lazy import - use the FIXED scraper (not the broken one)
-        from integrations.government.clearancejobs_playwright_fixed import search_clearancejobs
+        # Use HTTP-based scraper (10x faster than Playwright, same results)
+        from integrations.government.clearancejobs_http import search_clearancejobs
         import asyncio
 
         # Retry configuration (3 attempts with exponential backoff)

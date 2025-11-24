@@ -12,7 +12,7 @@ from datetime import datetime
 # Add parent directory to path for imports
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-from integrations.government.clearancejobs_playwright import search_clearancejobs
+from integrations.government.clearancejobs_http import search_clearancejobs
 
 
 def render_clearancejobs_tab(results_per_page, enable_rate_limiting):

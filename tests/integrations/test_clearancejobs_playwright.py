@@ -8,7 +8,7 @@ Run this immediately after Playwright installation completes to verify it works.
 import asyncio
 
 try:
-    from integrations.clearancejobs_playwright import search_clearancejobs
+    from integrations.government.clearancejobs_http import search_clearancejobs
     PLAYWRIGHT_INSTALLED = True
 except ImportError as e:
     PLAYWRIGHT_INSTALLED = False

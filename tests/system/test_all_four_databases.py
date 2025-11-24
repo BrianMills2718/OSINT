@@ -25,7 +25,7 @@ from core.parallel_executor import ParallelExecutor
 
 # Try to import Playwright - it may not be installed yet
 try:
-    from integrations.clearancejobs_playwright import search_clearancejobs
+    from integrations.government.clearancejobs_http import search_clearancejobs
     PLAYWRIGHT_AVAILABLE = True
 except ImportError:
     PLAYWRIGHT_AVAILABLE = False
