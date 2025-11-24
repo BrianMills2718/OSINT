@@ -8,6 +8,7 @@ historical snapshots.
 """
 
 import json
+import logging
 from typing import Dict, Optional, List
 from datetime import datetime
 import requests
@@ -22,6 +23,9 @@ from core.database_integration_base import (
 )
 from core.api_request_tracker import log_request
 from config_loader import config
+
+# Set up logger for this module
+logger = logging.getLogger(__name__)
 
 
 class WaybackMachineIntegration(DatabaseIntegration):
@@ -117,8 +121,8 @@ Return JSON:
             return result.get("relevant", True)  # Default to True on parsing failure
 
         except Exception as e:
-            # On error, default to True (let query generation handle filtering)
-            print(f"[WARN] Wayback Machine relevance check failed: {e}, defaulting to True")
+            # Wayback Machine relevance check failed - non-critical, default to True
+            logger.warning(f"Wayback Machine relevance check failed: {e}, defaulting to True", exc_info=True)
             return True
 
     async def generate_query(self, research_question: str) -> Optional[Dict]:
@@ -311,6 +315,8 @@ Return JSON:
             )
 
         except requests.exceptions.HTTPError as e:
+            # Wayback Machine HTTP error
+            logger.error(f"Wayback Machine HTTP error: {e}", exc_info=True)
             return QueryResult(
                 success=False,
                 source="Wayback Machine",
@@ -321,6 +327,8 @@ Return JSON:
             )
 
         except Exception as e:
+            # Wayback Machine search failed
+            logger.error(f"Wayback Machine search failed: {e}", exc_info=True)
             return QueryResult(
                 success=False,
                 source="Wayback Machine",

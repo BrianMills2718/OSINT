@@ -7,6 +7,7 @@ for ClearanceJobs.com.
 """
 
 import json
+import logging
 from typing import Dict, Optional
 from datetime import datetime
 
@@ -21,6 +22,9 @@ from core.prompt_loader import render_prompt
 # from integrations.government.clearancejobs_playwright import search_clearancejobs
 from llm_utils import acompletion
 from config_loader import config
+
+# Set up logger for this module
+logger = logging.getLogger(__name__)
 
 
 class ClearanceJobsIntegration(DatabaseIntegration):
@@ -201,10 +205,10 @@ class ClearanceJobsIntegration(DatabaseIntegration):
                     continue
 
             except Exception as e:
-                # Exception case - store error and retry if attempts remain
+                # ClearanceJobs search exception - retry if attempts remain
+                logger.warning(f"ClearanceJobs attempt {attempt + 1} threw exception: {e}, retrying in {retry_delays[attempt]}s...", exc_info=True)
                 last_error = str(e)
                 if attempt < max_retries - 1:
-                    print(f"  ClearanceJobs attempt {attempt + 1} threw exception: {last_error}, retrying in {retry_delays[attempt]}s...")
                     await asyncio.sleep(retry_delays[attempt])
                     continue
 
