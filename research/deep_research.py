@@ -1920,7 +1920,7 @@ class SimpleDeepResearch:
                         param_adjustments=None,
                         task_id=task_id,
                         attempt=0,
-                        logger=self.logger
+                        exec_logger=self.logger
                     )
                     if tool_result.get("success"):
                         results = tool_result.get("results", [])
@@ -2119,7 +2119,7 @@ class SimpleDeepResearch:
                             param_adjustments=None,  # No param hints in direct hypothesis execution
                             task_id=task.id,
                             attempt=0,
-                            logger=self.logger
+                            exec_logger=self.logger
                         )
 
                         if tool_result.get("success"):
@@ -2800,7 +2800,7 @@ class SimpleDeepResearch:
         param_adjustments: Optional[Dict[str, Dict]] = None,
         task_id: Optional[int] = None,
         attempt: int = 0,
-        logger: Optional['ExecutionLogger'] = None
+        exec_logger: Optional['ExecutionLogger'] = None
     ) -> Dict:
         """
         Call a single MCP tool (extracted as class method for reuse).
@@ -2811,7 +2811,7 @@ class SimpleDeepResearch:
             param_adjustments: Optional param hints for source-specific adjustments
             task_id: Task ID for logging
             attempt: Retry attempt number
-            logger: Execution logger instance
+            exec_logger: Execution logger instance (ExecutionLogger)
 
         Returns:
             Dict with 'success', 'results', 'source', 'total', 'error' keys
@@ -2852,9 +2852,9 @@ class SimpleDeepResearch:
 
             # Log API call
             source_name = self.tool_name_to_display.get(tool_name, tool_name)
-            if logger and task_id is not None:
+            if exec_logger and task_id is not None:
                 try:
-                    logger.log_api_call(
+                    exec_logger.log_api_call(
                         task_id=task_id,
                         attempt=attempt,
                         source_name=source_name,
@@ -2887,9 +2887,9 @@ class SimpleDeepResearch:
                     logging.warning(f"{source_name} not relevant for query: {query}")
 
                     # Log source skipped (Enhanced Structured Logging)
-                    if logger and task_id is not None:
+                    if exec_logger and task_id is not None:
                         try:
-                            logger.log_source_skipped(
+                            exec_logger.log_source_skipped(
                                 task_id=task_id,
                                 hypothesis_id=None,  # Set by caller if hypothesis execution
                                 source_name=source_name,
@@ -2915,9 +2915,9 @@ class SimpleDeepResearch:
                     query_gen_time_ms = int((time.time() - query_gen_start) * 1000)
 
                     # Log query generation timing (Enhanced Structured Logging)
-                    if logger and task_id is not None:
+                    if exec_logger and task_id is not None:
                         try:
-                            logger.log_time_breakdown(
+                            exec_logger.log_time_breakdown(
                                 task_id=task_id,
                                 hypothesis_id=None,  # Set by caller if hypothesis execution
                                 source_name=source_name,
@@ -2934,9 +2934,9 @@ class SimpleDeepResearch:
                         logger.warning(f"{source_name} failed to generate query for: {query}")
 
                         # Log source skipped (Enhanced Structured Logging)
-                        if logger and task_id is not None:
+                        if exec_logger and task_id is not None:
                             try:
-                                logger.log_source_skipped(
+                                exec_logger.log_source_skipped(
                                     task_id=task_id,
                                     hypothesis_id=None,  # Set by caller if hypothesis execution
                                     source_name=source_name,
@@ -2985,9 +2985,9 @@ class SimpleDeepResearch:
                 result_data = json.loads(result.content[0].text)
 
             # Log time breakdown for API call
-            if logger and task_id is not None:
+            if exec_logger and task_id is not None:
                 try:
-                    logger.log_time_breakdown(
+                    exec_logger.log_time_breakdown(
                         task_id=task_id,
                         hypothesis_id=None,  # Set by caller if hypothesis execution
                         source_name=source_name,
@@ -3016,9 +3016,9 @@ class SimpleDeepResearch:
             # Log raw response
             success = result_data.get("success", False)
             error = result_data.get("error")
-            if logger and task_id is not None:
+            if exec_logger and task_id is not None:
                 try:
-                    logger.log_raw_response(
+                    exec_logger.log_raw_response(
                         task_id=task_id,
                         attempt=attempt,
                         source_name=source_name,
@@ -3061,10 +3061,10 @@ class SimpleDeepResearch:
             logging.error(f"MCP tool {tool_name} failed: {type(e).__name__}: {str(e)}", exc_info=True)
 
             # Log failed API call
-            if logger and task_id is not None:
+            if exec_logger and task_id is not None:
                 try:
                     source_name = self.tool_name_to_display.get(tool_name, tool_name)
-                    logger.log_raw_response(
+                    exec_logger.log_raw_response(
                         task_id=task_id,
                         attempt=attempt,
                         source_name=source_name,
@@ -3162,7 +3162,7 @@ class SimpleDeepResearch:
 
         # Call filtered MCP tools in parallel (skip irrelevant sources) using class method
         mcp_results = await asyncio.gather(*[
-            self._call_mcp_tool(tool, query, param_adjustments, task_id=task_id, attempt=attempt, logger=self.logger)
+            self._call_mcp_tool(tool, query, param_adjustments, task_id=task_id, attempt=attempt, exec_logger=self.logger)
             for tool in filtered_tools
         ])
 
