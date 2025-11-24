@@ -197,7 +197,14 @@ SOURCE_METADATA = {
             'company_search': True,
             'free_access': True,
             'requires_user_agent': True,  # Needs email in User-Agent header
-            'requires_verification': False  # Official SEC data
+            'requires_verification': False,  # Official SEC data
+            'supports_fallback': True,  # Uses intelligent search fallback (CIK → ticker → name)
+            'search_strategies': [
+                {'method': 'cik', 'reliability': 'high', 'param': 'cik'},
+                {'method': 'ticker', 'reliability': 'high', 'param': 'ticker'},
+                {'method': 'name_exact', 'reliability': 'medium', 'param': 'company_name'},
+                {'method': 'name_fuzzy', 'reliability': 'low', 'param': 'company_name'},
+            ]
         },
         query_strategies=[
             'company_name_search',  # Search by company name (with CIK lookup)
