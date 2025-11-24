@@ -202,24 +202,24 @@ Return JSON:
 
     async def execute_search(
         self,
-        params: Dict,
-        api_key: Optional[str],
+        query_params: Dict,
+        api_key: Optional[str] = None,
         limit: int = 10
     ) -> QueryResult:
         """
         Execute Wayback Machine availability check for URLs.
 
         Args:
-            params: Query parameters from generate_query()
+            query_params: Query parameters from generate_query()
             api_key: Not used (Wayback Machine is free)
             limit: Maximum snapshots to return
 
         Returns:
             QueryResult with archived snapshots found
         """
-        urls = params.get("urls", [])
-        timestamp = params.get("timestamp")
-        description = params.get("description", "")
+        urls = query_params.get("urls", [])
+        timestamp = query_params.get("timestamp")
+        description = query_params.get("description", "")
 
         if not urls:
             return QueryResult(
@@ -227,7 +227,7 @@ Return JSON:
                 source="Wayback Machine",
                 total=0,
                 results=[],
-                query_params=params,
+                query_params=query_params,
                 error="No URLs provided to check in Wayback Machine"
             )
 
@@ -297,7 +297,7 @@ Return JSON:
                     source="Wayback Machine",
                     total=0,
                     results=[],
-                    query_params=params,
+                    query_params=query_params,
                     metadata={"note": "None of the requested URLs have archived snapshots available"}
                 )
 
@@ -306,7 +306,7 @@ Return JSON:
                 source="Wayback Machine",
                 total=len(documents),
                 results=documents,
-                query_params=params,
+                query_params=query_params,
                 response_time_ms=int(response.elapsed.total_seconds() * 1000) if response else 0
             )
 
@@ -316,7 +316,7 @@ Return JSON:
                 source="Wayback Machine",
                 total=0,
                 results=[],
-                query_params=params,
+                query_params=query_params,
                 error=f"Wayback Machine HTTP error: {str(e)}"
             )
 
@@ -326,6 +326,6 @@ Return JSON:
                 source="Wayback Machine",
                 total=0,
                 results=[],
-                query_params=params,
+                query_params=query_params,
                 error=f"Wayback Machine search failed: {str(e)}"
             )
