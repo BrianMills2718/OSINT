@@ -22,6 +22,17 @@ llm:
   # Default model for all operations (can be overridden per-operation)
   default_model: "gemini/gemini-2.5-flash"
 
+  # Temporal Context Injection
+  # Automatically injects current date into ALL LLM calls to prevent temporal confusion.
+  # This ensures the LLM knows today's date when interpreting queries about "recent",
+  # "2024", "this year", etc., and correctly labels timeline events.
+  temporal_context:
+    enabled: true              # Global toggle (default: true - all LLM calls get date)
+    format: "structured"       # Format options:
+                               #   "structured" - Detailed instructions for date handling
+                               #   "simple" - Single line with date
+                               #   "minimal" - Just "Today: YYYY-MM-DD"
+
   # Operation-specific model configurations
   # Each can have: model, temperature, max_tokens
 

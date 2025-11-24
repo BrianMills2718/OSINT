@@ -6,6 +6,27 @@ Provides centralized Jinja2 environment for loading LLM prompt templates,
 eliminating f-string/JSON template conflicts by using Jinja2's {{ }} syntax
 for variables while allowing literal { } for JSON examples.
 
+TEMPORAL CONTEXT ARCHITECTURE:
+    Temporal context (telling the LLM what today's date is) is handled at
+    TWO levels:
+
+    1. LLM CALL LEVEL (llm_utils.py) - AUTOMATIC
+       All LLM calls automatically receive a system message with the current
+       date. This is configurable via config.yaml:
+
+           llm:
+             temporal_context:
+               enabled: true
+               format: "structured"  # or "simple" or "minimal"
+
+       This ensures ALL LLM calls know the current date without requiring
+       template-by-template opt-in. See llm_utils.py for details.
+
+    2. TEMPLATE LEVEL (here) - OPTIONAL
+       Templates automatically receive {{ current_date }}, {{ current_year }},
+       and {{ current_datetime }} variables for explicit use in prompts.
+       Example: "Find contracts awarded in {{ current_year }}."
+
 Usage:
     from core.prompt_loader import render_prompt
 
@@ -34,6 +55,7 @@ Key Benefits:
     - Prompts version-controlled separately from code
     - Templates are testable and parseable
     - Clean separation of concerns
+    - Automatic temporal context at LLM call level (no template changes needed)
 
 Reference:
     - docs/FSTRING_JSON_METHODOLOGY.md
@@ -76,6 +98,11 @@ def _get_system_context() -> Dict[str, Any]:
     These variables are available in ALL templates without manual passing.
     User-provided kwargs can override these if needed.
 
+    NOTE: This is SEPARATE from the LLM-level temporal context injection in
+    llm_utils.py. These variables are for templates that want to explicitly
+    reference the date (e.g., "Find documents from {{ current_year }}").
+    The automatic system message injection happens at the LLM call level.
+
     Returns:
         Dict of system context variables:
         - current_date: Today's date in YYYY-MM-DD format
@@ -83,7 +110,7 @@ def _get_system_context() -> Dict[str, Any]:
         - current_datetime: Full datetime string
 
     Example template usage:
-        IMPORTANT: Today's date is {{ current_date }}. Your training data may be outdated.
+        Find all contracts awarded in {{ current_year }}.
     """
     now = datetime.now()
     return {
@@ -91,52 +118,6 @@ def _get_system_context() -> Dict[str, Any]:
         "current_year": now.year,
         "current_datetime": now.strftime("%Y-%m-%d %H:%M:%S")
     }
-
-
-def _get_temporal_context_header() -> str:
-    """
-    Get standard temporal context header for relevance prompts.
-
-    This header is automatically prepended to prompts that opt in via
-    the {# temporal_context: true #} directive.
-
-    Returns:
-        Formatted temporal context warning text
-    """
-    now = datetime.now()
-    return f"""IMPORTANT: Today's date is {now.strftime("%Y-%m-%d")}. Your training data may contain an incorrect date.
-
-"""
-
-
-def _should_prepend_temporal_context(template_content: str) -> bool:
-    """
-    Check if template wants temporal context prepending.
-
-    Templates opt in by including {# temporal_context: true #} directive
-    in the first 5 lines.
-
-    Args:
-        template_content: Raw template content
-
-    Returns:
-        True if directive found and enabled, False otherwise
-
-    Examples:
-        >>> content = "{# temporal_context: true #}\\nPrompt text..."
-        >>> _should_prepend_temporal_context(content)
-        True
-
-        >>> content = "{# temporal_context: false #}\\nPrompt text..."
-        >>> _should_prepend_temporal_context(content)
-        False
-    """
-    # Check first 5 lines for directive
-    lines = template_content.split('\n')[:5]
-    for line in lines:
-        if 'temporal_context:' in line.lower():
-            return 'true' in line.lower()
-    return False  # Default: no prepending (explicit opt-in)
 
 
 def render_prompt(template_name: str, **kwargs: Any) -> str:
@@ -148,18 +129,13 @@ def render_prompt(template_name: str, **kwargs: Any) -> str:
     - current_year: Current year (int)
     - current_datetime: Full datetime string
 
-    These are injected automatically to prevent LLM temporal confusion.
+    These are available for templates that need to explicitly reference dates.
     User-provided kwargs can override these if needed.
 
-    TEMPORAL CONTEXT PREPENDING: Templates can opt in to automatic
-    temporal context header by including this directive in the first 5 lines:
-        {# temporal_context: true #}
-
-    When enabled, the header "IMPORTANT: Today's date is YYYY-MM-DD..."
-    is automatically prepended to the rendered output.
-
-    This is useful for relevance prompts to prevent LLMs from thinking
-    current year queries are "future" data.
+    NOTE: Temporal context (telling the LLM what today's date is) is now
+    injected automatically at the LLM call level in llm_utils.py, NOT here.
+    This ensures ALL LLM calls receive temporal context without requiring
+    template-by-template opt-in. See llm_utils.py for configuration.
 
     Args:
         template_name: Path to template relative to prompts/ directory
@@ -195,22 +171,10 @@ def render_prompt(template_name: str, **kwargs: Any) -> str:
         context = _get_system_context()
         context.update(kwargs)
 
-        # Load template
+        # Load and render template
         template: Template = _jinja_env.get_template(template_name)
+        return template.render(**context)
 
-        # Check if template wants temporal context prepending
-        # (via {# temporal_context: true #} directive)
-        # Read template source from file to check for directive
-        template_path = PROMPTS_DIR / template_name
-        template_content = template_path.read_text()
-
-        if _should_prepend_temporal_context(template_content):
-            header = _get_temporal_context_header()
-            rendered = header + template.render(**context)
-        else:
-            rendered = template.render(**context)
-
-        return rendered
     except TemplateNotFound as e:
         # Template not found - log and re-raise with helpful context
         full_path = PROMPTS_DIR / template_name

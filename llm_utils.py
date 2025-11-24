@@ -23,9 +23,113 @@ import litellm
 import asyncio
 import json
 import math
-from typing import List, Dict, Any, Optional
+from typing import List, Dict, Any, Optional, Union
 import logging
 from datetime import datetime
+
+# ============================================================================
+# Temporal Context Injection
+# ============================================================================
+# All LLM calls receive the current date to prevent temporal confusion.
+# This is injected at the LLM call level, not the template level, ensuring
+# consistent coverage across all prompts without template-by-template opt-in.
+#
+# Configuration (config.yaml):
+#   llm:
+#     temporal_context:
+#       enabled: true              # Global toggle
+#       format: "structured"       # "structured" | "simple" | "minimal"
+#
+# Per-call override:
+#   await acompletion(model, messages, temporal_context=False)
+# ============================================================================
+
+TEMPORAL_CONTEXT_FORMATS = {
+    "structured": """Current date: {date}
+
+When processing dates, generating timelines, or interpreting temporal references:
+- Today's date is {date} (year: {year})
+- Interpret "recent", "current", or "this year" relative to {date}
+- When creating timelines, use actual dates from source documents
+- Do not mislabel dates - a 2025 event should be labeled 2025, not 2024
+- Distinguish between historical events and current/ongoing developments""",
+
+    "simple": "Current date: {date}. Use this as reference for all temporal interpretations.",
+
+    "minimal": "Today: {date}"
+}
+
+
+def _get_temporal_context_message() -> Optional[Dict[str, str]]:
+    """
+    Generate temporal context system message based on config.
+
+    Returns:
+        System message dict with temporal context, or None if disabled
+    """
+    # Check if config is available
+    if not HAS_CONFIG or config is None:
+        # Default to enabled with simple format when no config
+        format_template = TEMPORAL_CONTEXT_FORMATS["simple"]
+    else:
+        raw_config = config.get_raw_config()
+        temporal_config = raw_config.get("llm", {}).get("temporal_context", {})
+
+        # Check if enabled (default: True)
+        if not temporal_config.get("enabled", True):
+            return None
+
+        # Get format (default: structured)
+        format_name = temporal_config.get("format", "structured")
+        format_template = TEMPORAL_CONTEXT_FORMATS.get(format_name, TEMPORAL_CONTEXT_FORMATS["structured"])
+
+    # Generate the message with current date
+    now = datetime.now()
+    content = format_template.format(
+        date=now.strftime("%Y-%m-%d"),
+        year=now.strftime("%Y"),
+        datetime=now.strftime("%Y-%m-%d %H:%M:%S")
+    )
+
+    return {"role": "system", "content": content}
+
+
+def _inject_temporal_context(
+    messages: List[Dict[str, str]],
+    temporal_context: Optional[bool] = None
+) -> List[Dict[str, str]]:
+    """
+    Inject temporal context into messages if enabled.
+
+    Args:
+        messages: Original message list
+        temporal_context: Override flag (None=use config, True=force on, False=force off)
+
+    Returns:
+        Messages with temporal context prepended (if enabled)
+    """
+    # Determine if we should inject
+    if temporal_context is False:
+        # Explicitly disabled for this call
+        return messages
+
+    if temporal_context is True:
+        # Explicitly enabled - always inject
+        pass
+    else:
+        # Use config default
+        if HAS_CONFIG and config is not None:
+            raw_config = config.get_raw_config()
+            temporal_config = raw_config.get("llm", {}).get("temporal_context", {})
+            if not temporal_config.get("enabled", True):
+                return messages
+
+    # Generate and prepend temporal context
+    temporal_msg = _get_temporal_context_message()
+    if temporal_msg:
+        return [temporal_msg] + list(messages)
+
+    return messages
 
 # Suppress LiteLLM's async logging worker timeout errors
 # These occur when our task timeouts cancel tasks before LiteLLM's logging completes
@@ -373,18 +477,37 @@ class UnifiedLLM:
 
 
 # Convenience function matching litellm.acompletion signature
-async def acompletion(model: str, messages: List[Dict[str, str]], timeout: Optional[float] = None, **kwargs) -> Any:
+async def acompletion(
+    model: str,
+    messages: List[Dict[str, str]],
+    timeout: Optional[float] = None,
+    temporal_context: Optional[bool] = None,
+    **kwargs
+) -> Any:
     """
     Drop-in replacement for litellm.acompletion that supports gpt-5-mini.
+
+    Automatically injects temporal context (current date) into all LLM calls
+    to prevent temporal confusion. This can be controlled via config or per-call.
 
     Args:
         model: Model name
         messages: List of message dicts
         timeout: Timeout in seconds (default: from config or 60s)
+        temporal_context: Override temporal context injection
+                         None = use config (default: enabled)
+                         True = force enable
+                         False = force disable
         **kwargs: Additional parameters
 
     Returns:
         Response object
+
+    Config (config.yaml):
+        llm:
+          temporal_context:
+            enabled: true           # Global toggle (default: true)
+            format: "structured"    # "structured" | "simple" | "minimal"
     """
     # Get timeout from config if not specified
     if timeout is None:
@@ -394,8 +517,11 @@ async def acompletion(model: str, messages: List[Dict[str, str]], timeout: Optio
         else:
             timeout = 60  # Fallback default
 
+    # Inject temporal context (current date) into messages
+    messages_with_context = _inject_temporal_context(messages, temporal_context)
+
     start_time = datetime.now()
-    response = await UnifiedLLM.acompletion(model, messages, timeout=timeout, **kwargs)
+    response = await UnifiedLLM.acompletion(model, messages_with_context, timeout=timeout, **kwargs)
 
     # Calculate and track cost using LiteLLM's built-in function
     try:
