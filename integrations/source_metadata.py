@@ -570,6 +570,38 @@ SOURCE_METADATA = {
         typical_result_count=25,
         max_queries_recommended=4  # Historical archiving, moderate saturation
     ),
+
+    'GovInfo': SourceMetadata(
+        name='GovInfo',
+        description='U.S. Government Publishing Office: GAO reports, IG audits, Congressional hearings, court opinions, federal regulations',
+        characteristics={
+            'official_publications': True,
+            'oversight_reports': True,  # GAO, IG investigations
+            'audit_reports': True,
+            'congressional_documents': True,  # Reports, hearings, Congressional Record
+            'court_opinions': True,  # Federal court decisions
+            'federal_regulations': True,  # CFR, Federal Register
+            'public_laws': True,
+            'full_text_search': True,
+            'structured_data': True,
+            'rich_metadata': True,
+            '150_plus_collections': True,
+            'requires_verification': False,  # Official government documents
+            'date_filtering': True
+        },
+        query_strategies=[
+            'collection_specific',  # Target specific collections (GAO, CHRG, CRPT, etc.)
+            'keyword_search',  # Full-text search across all collections
+            'agency_oversight',  # Find audits/reports about specific agencies
+            'congressional_activity',  # Hearings, reports, Congressional Record
+            'court_opinions',  # Search federal court decisions
+            'regulatory_documents',  # CFR, Federal Register entries
+            'date_range_filter',  # Find documents within timeframe
+            'topic_investigation'  # Track investigations on specific topics
+        ],
+        typical_result_count=30,  # Rich dataset with 150+ collections
+        max_queries_recommended=6  # Broad coverage, moderate saturation
+    ),
 }
 
 
