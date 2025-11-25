@@ -19,82 +19,38 @@ from integrations.registry import registry
 
 def test_single_integration_validation():
     """Test validating a single integration."""
-    print("\n" + "="*80)
-    print("TEST 1: Single Integration Validation (SAM.gov)")
-    print("="*80)
-
     results = registry.validate_integration("sam")
 
-    print(f"\nValidation results for 'sam':")
-    for test_name, result in results.items():
-        if test_name == 'error':
-            print(f"  ❌ {test_name}: {result}")
-        else:
-            status = "✅" if result else "❌"
-            print(f"  {status} {test_name}: {result}")
-
-    # Check expected results
+    # Check expected keys exist
     expected_keys = ['instantiation', 'metadata_valid', 'query_generation', 'graceful_errors']
     missing = [k for k in expected_keys if k not in results]
+    assert not missing, f"Missing expected keys: {missing}"
 
-    if missing:
-        print(f"\n❌ FAIL: Missing expected keys: {missing}")
-        return False
-
-    # SAM.gov should pass all tests (it's a working integration)
-    all_passed = all(results.get(k, False) for k in expected_keys)
-
-    if all_passed:
-        print("\n✅ PASS: SAM.gov passed all validation tests")
-        return True
-    else:
-        print("\n⚠️  WARNING: SAM.gov failed some tests (might be expected)")
-        return True  # Don't fail test - just report
+    # SAM.gov should pass instantiation and metadata at minimum
+    assert results.get('instantiation', False), "SAM.gov instantiation failed"
+    assert results.get('metadata_valid', False), "SAM.gov metadata validation failed"
 
 
 def test_all_integrations_validation():
     """Test validating all integrations."""
-    print("\n" + "="*80)
-    print("TEST 2: All Integrations Validation")
-    print("="*80)
-
     results = registry.validate_all()
 
-    print(f"\nValidated {len(results)} integrations")
+    # Should have results for all registered integrations
+    assert len(results) > 0, "validate_all() returned no results"
 
-    # Count results
-    passed = sum(1 for r in results.values()
-                 if all(r.get(k, False) for k in ['instantiation', 'metadata_valid', 'query_generation', 'graceful_errors']))
-    partial = sum(1 for r in results.values()
-                  if any(r.get(k, False) for k in ['instantiation', 'metadata_valid', 'query_generation', 'graceful_errors'])
-                  and not all(r.get(k, False) for k in ['instantiation', 'metadata_valid', 'query_generation', 'graceful_errors']))
-    failed = sum(1 for r in results.values()
-                 if not any(r.get(k, False) for k in ['instantiation', 'metadata_valid', 'query_generation', 'graceful_errors']))
-
-    print(f"\nResults breakdown:")
-    print(f"  ✅ Passed all tests: {passed}")
-    print(f"  ⚠️  Partial pass: {partial}")
-    print(f"  ❌ Failed all tests: {failed}")
-
-    if len(results) > 0:
-        print("\n✅ PASS: validate_all() returned results")
-        return True
-    else:
-        print("\n❌ FAIL: validate_all() returned no results")
-        return False
+    # At least some integrations should pass instantiation
+    passed_instantiation = sum(1 for r in results.values() if r.get('instantiation', False))
+    assert passed_instantiation > 0, "No integrations passed instantiation"
 
 
-def test_validation_report_formatting():
+def test_validation_report_formatting(capsys):
     """Test the print_validation_report() method."""
-    print("\n" + "="*80)
-    print("TEST 3: Validation Report Formatting")
-    print("="*80)
-
     # Run validation and print report
     registry.print_validation_report()
 
-    print("\n✅ PASS: Report printed successfully")
-    return True
+    # Capture output and verify it contains expected content
+    captured = capsys.readouterr()
+    assert "Integration Validation Report" in captured.out or len(captured.out) > 0
 
 
 def main():
