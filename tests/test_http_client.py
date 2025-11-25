@@ -318,16 +318,24 @@ class TestHttpPostJson:
 # Optional integration tests (require network)
 @pytest.mark.integration
 class TestHttpClientIntegration:
-    """Integration tests using real HTTP endpoints."""
+    """Integration tests using real HTTP endpoints.
+
+    These tests hit external services and may fail due to network issues.
+    They are marked with pytest.mark.integration for selective running.
+    """
 
     @pytest.mark.asyncio
+    @pytest.mark.integration
     async def test_real_get_request(self) -> None:
-        """Test with real HTTP endpoint."""
+        """Test with real HTTP endpoint (may fail if httpbin.org is down)."""
         response = await http_get(
             "https://httpbin.org/get",
             params={"test": "value"},
             timeout=30
         )
+        # Skip assertion if service is unavailable (503, 502, etc.)
+        if response.status_code in (502, 503, 504):
+            pytest.skip(f"httpbin.org returned {response.status_code} - service temporarily unavailable")
         assert response.success
         assert response.status_code == 200
 
