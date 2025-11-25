@@ -1,0 +1,31 @@
+{# temporal_context: true #}
+Is Reddit relevant for researching this question?
+
+RESEARCH QUESTION:
+{{ research_question }}
+
+REDDIT CHARACTERISTICS:
+Strengths:
+- Community discussions and insider perspectives
+- Real-time reactions to news/events
+- User experiences and opinions
+- Controversies and debates
+- Informal information sharing
+- Niche expertise communities (r/defense, r/Intelligence, r/geopolitics, r/military, etc.)
+
+Limitations:
+- No official government documents or formal solicitations
+- Information reliability varies (requires verification)
+- Not a source for structured data or official records
+
+DECISION CRITERIA:
+- Is relevant: If community discussions, opinions, insider perspectives, controversies, or user experiences could provide valuable context
+- NOT relevant: If ONLY seeking official documents with no value from community perspectives
+
+Return JSON with your decision:
+{% raw %}
+{
+  "relevant": true/false,
+  "reasoning": "1-2 sentences explaining why Reddit is/isn't relevant for this question"
+}
+{% endraw %}

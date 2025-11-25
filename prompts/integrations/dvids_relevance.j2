@@ -1,0 +1,33 @@
+{# temporal_context: true #}
+Is DVIDS (Defense Visual Information Distribution Service) relevant for researching this question?
+
+RESEARCH QUESTION:
+{{ research_question }}
+
+DVIDS CHARACTERISTICS:
+Strengths:
+- Military photos, videos, and news releases
+- Combat operations and training exercises
+- Military equipment demonstrations and deployments
+- Service member interviews and features
+- Unit activities and ceremonies
+- Official DoD media content
+- Visual documentation of military activities
+
+Limitations:
+- No contract solicitations or procurement documents
+- No RFPs, awards, or vendor information
+- No financial data or spending records
+- Limited to visual media and news content
+
+DECISION CRITERIA:
+- Is relevant: If seeking military operations, training, equipment visuals, news, or official DoD media content
+- NOT relevant: If ONLY seeking contracts, procurement, financial data, or non-visual military information
+
+Return JSON with your decision:
+{% raw %}
+{
+  "relevant": true/false,
+  "reasoning": "1-2 sentences explaining why DVIDS is/isn't relevant for this question"
+}
+{% endraw %}

@@ -251,52 +251,15 @@ class TwitterIntegration(DatabaseIntegration):
 
         Uses LLM to determine if Twitter (public discourse, breaking news, leaks,
         social movements) might have relevant content for the research question.
-
-        Args:
-            research_question: The user's research question
-
-        Returns:
-            True if Twitter might have relevant information, False otherwise
         """
         from llm_utils import acompletion
-        from dotenv import load_dotenv
+        from core.prompt_loader import render_prompt
         import json
 
-        load_dotenv()
-
-        prompt = f"""Is Twitter relevant for researching this question?
-
-RESEARCH QUESTION:
-{research_question}
-
-TWITTER CHARACTERISTICS:
-Strengths:
-- Real-time breaking news and announcements
-- Public discourse and opinions
-- Leaks and whistleblower information
-- Social movements and activism
-- Expert commentary and analysis
-- Reactions to news events
-- Controversies and scandals
-- Company/government official statements
-- Network analysis (who follows/mentions whom)
-
-Limitations:
-- No official contract solicitations or RFPs
-- Job postings better found elsewhere (USAJobs, ClearanceJobs)
-- No structured procurement data
-- Information reliability varies (requires verification)
-- Not a source for official documents
-
-DECISION CRITERIA:
-- Is relevant: If seeking public discourse, breaking news, opinions, leaks, reactions, controversies, or social intelligence
-- NOT relevant: If ONLY seeking official solicitations, structured job listings, or formal procurement documents with no value from public discourse
-
-Return JSON with your decision:
-{{
-  "relevant": true/false,
-  "reasoning": "1-2 sentences explaining why Twitter is/isn't relevant for this question"
-}}"""
+        prompt = render_prompt(
+            "integrations/twitter_relevance.j2",
+            research_question=research_question
+        )
 
         try:
             response = await acompletion(
@@ -306,10 +269,9 @@ Return JSON with your decision:
             )
 
             result = json.loads(response.choices[0].message.content)
-            return result.get("relevant", True)  # Default to True if parsing fails
+            return result.get("relevant", True)
 
         except Exception as e:
-            # Fallback on error - acceptable to default to True
             logger.warning(f"Twitter relevance check failed, defaulting to True: {e}", exc_info=True)
             return True
 

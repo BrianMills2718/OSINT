@@ -1,0 +1,36 @@
+{# temporal_context: true #}
+Is the Federal Election Commission (FEC) database relevant for researching this question?
+
+RESEARCH QUESTION:
+{{ research_question }}
+
+FEC CHARACTERISTICS:
+Strengths:
+- Campaign contributions and donors
+- PAC (Political Action Committee) donations
+- Super PAC expenditures
+- Individual and corporate political donations
+- Campaign finance disclosures
+- Lobbying activities and expenditures
+- Political fundraising data
+- Candidate financial reports
+- Money in politics tracking
+
+Limitations:
+- Only election and campaign finance data
+- No policy positions or voting records
+- No legislation or bills
+- No government contracts or procurement
+- Limited to federal elections (not state/local)
+
+DECISION CRITERIA:
+- Is relevant: If seeking campaign finance, political donations, PAC funding, lobbying, or money in politics
+- NOT relevant: If ONLY seeking legislation, voting records, contracts, or non-financial political information
+
+Return JSON with your decision:
+{% raw %}
+{
+  "relevant": true/false,
+  "reasoning": "1-2 sentences explaining why FEC is/isn't relevant for this question"
+}
+{% endraw %}

@@ -65,49 +65,15 @@ class DVIDSIntegration(DatabaseIntegration):
 
         Uses LLM to determine if Defense Visual Information Distribution Service
         (military media, photos, videos, news) might have relevant content.
-
-        Args:
-            research_question: The user's research question
-
-        Returns:
-            True if DVIDS might have relevant information, False otherwise
         """
         from llm_utils import acompletion
-        from dotenv import load_dotenv
+        from core.prompt_loader import render_prompt
         import json
 
-        load_dotenv()
-
-        prompt = f"""Is DVIDS (Defense Visual Information Distribution Service) relevant for researching this question?
-
-RESEARCH QUESTION:
-{research_question}
-
-DVIDS CHARACTERISTICS:
-Strengths:
-- Military photos, videos, and news releases
-- Combat operations and training exercises
-- Military equipment demonstrations and deployments
-- Service member interviews and features
-- Unit activities and ceremonies
-- Official DoD media content
-- Visual documentation of military activities
-
-Limitations:
-- No contract solicitations or procurement documents
-- No RFPs, awards, or vendor information
-- No financial data or spending records
-- Limited to visual media and news content
-
-DECISION CRITERIA:
-- Is relevant: If seeking military operations, training, equipment visuals, news, or official DoD media content
-- NOT relevant: If ONLY seeking contracts, procurement, financial data, or non-visual military information
-
-Return JSON with your decision:
-{{
-  "relevant": true/false,
-  "reasoning": "1-2 sentences explaining why DVIDS is/isn't relevant for this question"
-}}"""
+        prompt = render_prompt(
+            "integrations/dvids_relevance.j2",
+            research_question=research_question
+        )
 
         try:
             response = await acompletion(
@@ -117,10 +83,9 @@ Return JSON with your decision:
             )
 
             result = json.loads(response.choices[0].message.content)
-            return result.get("relevant", True)  # Default to True if parsing fails
+            return result.get("relevant", True)
 
         except Exception as e:
-            # Fallback on error - acceptable to default to True
             logger.warning(f"DVIDS relevance check failed, defaulting to True: {e}", exc_info=True)
             return True
 

@@ -1,0 +1,35 @@
+{# temporal_context: true #}
+Is SEC EDGAR relevant for researching this question?
+
+RESEARCH QUESTION:
+{{ research_question }}
+
+SEC EDGAR CHARACTERISTICS:
+Strengths:
+- Corporate filings (10-K annual reports, 10-Q quarterly reports, 8-K current reports)
+- Financial statements and data (revenue, assets, liabilities via XBRL)
+- Insider trading reports (Form 3, 4, 5)
+- Proxy statements (executive compensation, board composition)
+- Merger and acquisition filings
+- IPO documents (S-1 registration statements)
+- Company ownership and structure
+- Historical filings back to 1994
+
+Limitations:
+- Only covers publicly-traded companies and entities required to file with SEC
+- Does not include private companies (unless recently went public)
+- No government contract details (use SAM.gov for that)
+- No job postings (use USAJobs/ClearanceJobs for that)
+- Financial data only (not operational/product details unless disclosed)
+
+DECISION CRITERIA:
+- Is relevant: If seeking corporate financial data, SEC filings, insider trading, or public company information
+- NOT relevant: If ONLY seeking operational details, private companies, government contracts, or employment data
+
+Return JSON:
+{% raw %}
+{
+  "relevant": true/false,
+  "reasoning": "1-2 sentences explaining why SEC EDGAR is/isn't relevant"
+}
+{% endraw %}

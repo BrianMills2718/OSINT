@@ -76,48 +76,15 @@ class CongressIntegration(DatabaseIntegration):
 
         Uses LLM to determine if Congressional records, bills, hearings, or
         legislative documents might have relevant information for the research question.
-
-        Args:
-            research_question: The user's research question
-
-        Returns:
-            True if Congress.gov might have relevant information, False otherwise
         """
         from llm_utils import acompletion
-        from dotenv import load_dotenv
+        from core.prompt_loader import render_prompt
         import json
 
-        load_dotenv()
-
-        prompt = f"""Is Congress.gov relevant for researching this question?
-
-RESEARCH QUESTION:
-{research_question}
-
-CONGRESS.GOV CHARACTERISTICS:
-Strengths:
-- Bills, resolutions, and legislative text
-- Congressional hearings and testimony (including GAO reports to Congress)
-- Committee reports and legislative analysis
-- Roll call votes and legislative history
-- Member information and sponsored bills
-- Congressional Record (floor speeches, debates)
-
-Limitations:
-- Only U.S. Congressional activities (not executive or judicial)
-- No contractor databases or procurement records
-- No job listings or employment data
-- Limited to legislative process documentation
-
-DECISION CRITERIA:
-- Is relevant: If seeking bills, hearings, legislative analysis, GAO testimony, Congressional oversight, or legislative history
-- NOT relevant: If ONLY seeking executive orders, court cases, contracts, or non-legislative information
-
-Return JSON with your decision:
-{{
-  "relevant": true/false,
-  "reasoning": "1-2 sentences explaining why Congress.gov is/isn't relevant for this question"
-}}"""
+        prompt = render_prompt(
+            "integrations/congress_relevance.j2",
+            research_question=research_question
+        )
 
         try:
             response = await acompletion(
@@ -127,10 +94,9 @@ Return JSON with your decision:
             )
 
             result = json.loads(response.choices[0].message.content)
-            return result.get("relevant", True)  # Default to True if parsing fails
+            return result.get("relevant", True)
 
         except Exception as e:
-            # On error, default to True (let query generation and filtering handle it)
             logger.warning(f"Congress relevance check failed, defaulting to True: {e}", exc_info=True)
             return True
 

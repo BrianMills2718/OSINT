@@ -185,50 +185,14 @@ class SECEdgarIntegration(DatabaseIntegration):
 
         Uses LLM to determine if SEC EDGAR might have relevant information
         for the research question, considering EDGAR's strengths and limitations.
-
-        Args:
-            research_question: The user's research question
-
-        Returns:
-            True if relevant, False otherwise
         """
         from llm_utils import acompletion
-        from dotenv import load_dotenv
+        from core.prompt_loader import render_prompt
 
-        load_dotenv()
-
-        prompt = f"""Is SEC EDGAR relevant for researching this question?
-
-RESEARCH QUESTION:
-{research_question}
-
-SEC EDGAR CHARACTERISTICS:
-Strengths:
-- Corporate filings (10-K annual reports, 10-Q quarterly reports, 8-K current reports)
-- Financial statements and data (revenue, assets, liabilities via XBRL)
-- Insider trading reports (Form 3, 4, 5)
-- Proxy statements (executive compensation, board composition)
-- Merger and acquisition filings
-- IPO documents (S-1 registration statements)
-- Company ownership and structure
-- Historical filings back to 1994
-
-Limitations:
-- Only covers publicly-traded companies and entities required to file with SEC
-- Does not include private companies (unless recently went public)
-- No government contract details (use SAM.gov for that)
-- No job postings (use USAJobs/ClearanceJobs for that)
-- Financial data only (not operational/product details unless disclosed)
-
-DECISION CRITERIA:
-- Is relevant: If seeking corporate financial data, SEC filings, insider trading, or public company information
-- NOT relevant: If ONLY seeking operational details, private companies, government contracts, or employment data
-
-Return JSON:
-{{
-  "relevant": true/false,
-  "reasoning": "1-2 sentences explaining why SEC EDGAR is/isn't relevant"
-}}"""
+        prompt = render_prompt(
+            "integrations/sec_edgar_relevance.j2",
+            research_question=research_question
+        )
 
         try:
             response = await acompletion(
@@ -238,12 +202,10 @@ Return JSON:
             )
 
             result = json.loads(response.choices[0].message.content)
-            return result.get("relevant", True)  # Default to True on parsing failure
+            return result.get("relevant", True)
 
         except Exception as e:
-            # Catch-all at integration boundary - acceptable to return default instead of crashing
             logger.error(f"SEC EDGAR relevance check failed: {e}, defaulting to True", exc_info=True)
-            print(f"[WARN] SEC EDGAR relevance check failed: {e}, defaulting to True")
             return True
 
     async def generate_query(self, research_question: str) -> Optional[Dict]:

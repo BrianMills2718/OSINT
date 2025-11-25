@@ -83,52 +83,15 @@ class FECIntegration(DatabaseIntegration):
 
         Uses LLM to determine if Federal Election Commission data (campaign
         finance, political donations, PACs, lobbying) might have relevant information.
-
-        Args:
-            research_question: The user's research question
-
-        Returns:
-            True if FEC might have relevant information, False otherwise
         """
         from llm_utils import acompletion
-        from dotenv import load_dotenv
+        from core.prompt_loader import render_prompt
         import json
 
-        load_dotenv()
-
-        prompt = f"""Is the Federal Election Commission (FEC) database relevant for researching this question?
-
-RESEARCH QUESTION:
-{research_question}
-
-FEC CHARACTERISTICS:
-Strengths:
-- Campaign contributions and donors
-- PAC (Political Action Committee) donations
-- Super PAC expenditures
-- Individual and corporate political donations
-- Campaign finance disclosures
-- Lobbying activities and expenditures
-- Political fundraising data
-- Candidate financial reports
-- Money in politics tracking
-
-Limitations:
-- Only election and campaign finance data
-- No policy positions or voting records
-- No legislation or bills
-- No government contracts or procurement
-- Limited to federal elections (not state/local)
-
-DECISION CRITERIA:
-- Is relevant: If seeking campaign finance, political donations, PAC funding, lobbying, or money in politics
-- NOT relevant: If ONLY seeking legislation, voting records, contracts, or non-financial political information
-
-Return JSON with your decision:
-{{
-  "relevant": true/false,
-  "reasoning": "1-2 sentences explaining why FEC is/isn't relevant for this question"
-}}"""
+        prompt = render_prompt(
+            "integrations/fec_relevance.j2",
+            research_question=research_question
+        )
 
         try:
             response = await acompletion(
@@ -138,11 +101,9 @@ Return JSON with your decision:
             )
 
             result = json.loads(response.choices[0].message.content)
-            return result.get("relevant", True)  # Default to True if parsing fails
+            return result.get("relevant", True)
 
         except Exception as e:
-            # Fallback on error - acceptable to default to True
-            # This lets query generation and filtering handle the decision
             logger.warning(f"FEC relevance check failed, defaulting to True: {e}", exc_info=True)
             return True
 

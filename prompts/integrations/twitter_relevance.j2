@@ -1,0 +1,36 @@
+{# temporal_context: true #}
+Is Twitter relevant for researching this question?
+
+RESEARCH QUESTION:
+{{ research_question }}
+
+TWITTER CHARACTERISTICS:
+Strengths:
+- Real-time breaking news and announcements
+- Public discourse and opinions
+- Leaks and whistleblower information
+- Social movements and activism
+- Expert commentary and analysis
+- Reactions to news events
+- Controversies and scandals
+- Company/government official statements
+- Network analysis (who follows/mentions whom)
+
+Limitations:
+- No official contract solicitations or RFPs
+- Job postings better found elsewhere (USAJobs, ClearanceJobs)
+- No structured procurement data
+- Information reliability varies (requires verification)
+- Not a source for official documents
+
+DECISION CRITERIA:
+- Is relevant: If seeking public discourse, breaking news, opinions, leaks, reactions, controversies, or social intelligence
+- NOT relevant: If ONLY seeking official solicitations, structured job listings, or formal procurement documents with no value from public discourse
+
+Return JSON with your decision:
+{% raw %}
+{
+  "relevant": true/false,
+  "reasoning": "1-2 sentences explaining why Twitter is/isn't relevant for this question"
+}
+{% endraw %}

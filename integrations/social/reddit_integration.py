@@ -109,46 +109,14 @@ class RedditIntegration(DatabaseIntegration):
 
         Uses LLM to determine if Reddit communities might have valuable information
         for the research question, considering Reddit's strengths and limitations.
-
-        Args:
-            research_question: The user's research question
-
-        Returns:
-            True if Reddit might have relevant discussions/information, False otherwise
         """
         from llm_utils import acompletion
-        from dotenv import load_dotenv
+        from core.prompt_loader import render_prompt
 
-        load_dotenv()
-
-        prompt = f"""Is Reddit relevant for researching this question?
-
-RESEARCH QUESTION:
-{research_question}
-
-REDDIT CHARACTERISTICS:
-Strengths:
-- Community discussions and insider perspectives
-- Real-time reactions to news/events
-- User experiences and opinions
-- Controversies and debates
-- Informal information sharing
-- Niche expertise communities (r/defense, r/Intelligence, r/geopolitics, r/military, etc.)
-
-Limitations:
-- No official government documents or formal solicitations
-- Information reliability varies (requires verification)
-- Not a source for structured data or official records
-
-DECISION CRITERIA:
-- Is relevant: If community discussions, opinions, insider perspectives, controversies, or user experiences could provide valuable context
-- NOT relevant: If ONLY seeking official documents with no value from community perspectives
-
-Return JSON with your decision:
-{{
-  "relevant": true/false,
-  "reasoning": "1-2 sentences explaining why Reddit is/isn't relevant for this question"
-}}"""
+        prompt = render_prompt(
+            "integrations/reddit_relevance.j2",
+            research_question=research_question
+        )
 
         try:
             response = await acompletion(
@@ -158,11 +126,9 @@ Return JSON with your decision:
             )
 
             result = json.loads(response.choices[0].message.content)
-            return result.get("relevant", True)  # Default to True if parsing fails
+            return result.get("relevant", True)
 
         except Exception as e:
-            # Fallback on LLM failure - acceptable to default to True
-            # This lets query generation and filtering handle the decision
             logger.warning(f"Reddit relevance check failed, defaulting to True: {e}", exc_info=True)
             return True
 

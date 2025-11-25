@@ -1,0 +1,32 @@
+{# temporal_context: true #}
+Is Congress.gov relevant for researching this question?
+
+RESEARCH QUESTION:
+{{ research_question }}
+
+CONGRESS.GOV CHARACTERISTICS:
+Strengths:
+- Bills, resolutions, and legislative text
+- Congressional hearings and testimony (including GAO reports to Congress)
+- Committee reports and legislative analysis
+- Roll call votes and legislative history
+- Member information and sponsored bills
+- Congressional Record (floor speeches, debates)
+
+Limitations:
+- Only U.S. Congressional activities (not executive or judicial)
+- No contractor databases or procurement records
+- No job listings or employment data
+- Limited to legislative process documentation
+
+DECISION CRITERIA:
+- Is relevant: If seeking bills, hearings, legislative analysis, GAO testimony, Congressional oversight, or legislative history
+- NOT relevant: If ONLY seeking executive orders, court cases, contracts, or non-legislative information
+
+Return JSON with your decision:
+{% raw %}
+{
+  "relevant": true/false,
+  "reasoning": "1-2 sentences explaining why Congress.gov is/isn't relevant for this question"
+}
+{% endraw %}
