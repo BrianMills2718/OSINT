@@ -9,8 +9,7 @@ This MCP server wraps 4 social media and web search integrations as FastMCP tool
 - Reddit: Reddit search for discussions and news
 
 Design: Thin wrapper layer that reuses existing DatabaseIntegration classes.
-No duplication - all configuration, error handling, and API logic comes from
-the DatabaseIntegration implementations.
+Uses shared mcp_utils.execute_mcp_search() to eliminate boilerplate.
 
 Usage:
     # In-memory (CLI/Streamlit)
@@ -21,16 +20,11 @@ Usage:
 
     # STDIO (AI assistants like Claude Desktop)
     python -m integrations.mcp.social_mcp
-
-    # HTTP (remote clients)
-    # mcp.run(transport="http", host="0.0.0.0", port=8000)
 """
 
-import json
-import os
 from typing import Dict, Optional
-from dotenv import load_dotenv
 from fastmcp import FastMCP
+from dotenv import load_dotenv
 
 # Load environment variables
 load_dotenv()
@@ -40,6 +34,9 @@ from integrations.social.twitter_integration import TwitterIntegration
 from integrations.social.brave_search_integration import BraveSearchIntegration
 from integrations.social.discord_integration import DiscordIntegration
 from integrations.social.reddit_integration import RedditIntegration
+
+# Import shared MCP utilities
+from integrations.mcp.mcp_utils import execute_mcp_search
 
 # Create MCP server
 mcp = FastMCP(
@@ -59,10 +56,6 @@ mcp = FastMCP(
 )
 
 
-# =============================================================================
-# Twitter - Social Media Search
-# =============================================================================
-
 @mcp.tool
 async def search_twitter(
     research_question: str,
@@ -76,9 +69,6 @@ async def search_twitter(
     useful for breaking news, public discourse, whistleblower revelations,
     and expert commentary.
 
-    This tool uses an LLM to understand your research question and generate
-    appropriate search parameters for the Twitter API (via RapidAPI).
-
     Args:
         research_question: Natural language query (e.g., "JTTF counterterrorism
             operations" or "NSA whistleblower revelations")
@@ -88,454 +78,91 @@ async def search_twitter(
             (e.g., {"search_type": "Top", "max_pages": 2})
 
     Returns:
-        dict: Search results with structure:
-            - success: bool
-            - source: "Twitter"
-            - total: int (total tweets returned)
-            - results: list of tweets with metadata
-            - query_params: dict (generated search parameters)
-            - response_time_ms: float
-            - error: str (if success=False)
-
-    Example:
-        >>> await search_twitter(
-        ...     research_question="FBI domestic terrorism threat assessment",
-        ...     limit=10
-        ... )
-        {
-            "success": True,
-            "source": "Twitter",
-            "total": 10,
-            "results": [
-                {
-                    "title": "Breaking: FBI releases domestic terrorism...",
-                    "url": "https://twitter.com/username/status/123...",
-                    "date": "2024-03-15",
-                    "author": "username",
-                    "verified": True,
-                    "favorites": 245,
-                    "retweets": 89,
-                    ...
-                }
-            ],
-            "query_params": {
-                "query": "FBI OR domestic terrorism OR threat assessment",
-                "search_type": "Latest"
-            },
-            "response_time_ms": 3214.56
-        }
-
-    Note:
-        Requires RapidAPI subscription for twitter-api45 service.
+        dict: Search results with success, source, total, results, query_params, error
     """
-    # Get API key from environment if not provided
-    if not api_key:
-        api_key = os.getenv("RAPIDAPI_KEY")
+    return await execute_mcp_search(
+        TwitterIntegration, research_question, "RAPIDAPI_KEY", api_key, limit, param_hints
+    )
 
-    # Create integration instance
-    integration = TwitterIntegration()
-
-    # Generate query parameters using LLM with rejection reasoning wrapper
-    enriched = await integration.generate_query_with_reasoning(research_question)
-
-    if not enriched.get("relevant", False):
-        return {
-            "success": False,
-            "source": "Twitter",
-            "total": 0,
-            "results": [],
-            "error": f"Research question not relevant for Twitter: {enriched.get('rejection_reason', 'No reason provided')}",
-            "metadata": {
-                "rejection_reasoning": enriched.get("rejection_reason"),
-                "suggested_reformulation": enriched.get("suggested_reformulation")
-            }
-        }
-
-    query_params = enriched.get("query_params")
-    if query_params is None:
-        return {
-            "success": False,
-            "source": "Twitter",
-            "total": 0,
-            "results": [],
-            "error": "Wrapper returned relevant=True but query_params is None (wrapper bug)"
-        }
-
-    # Execute search (with optional param_hints)
-    result = await integration.execute_search(query_params, api_key, limit, param_hints)
-
-    # Convert QueryResult to dict
-    return {
-        "success": result.success,
-        "source": result.source,
-        "total": result.total,
-        "results": result.results,
-        "query_params": result.query_params,
-        "response_time_ms": result.response_time_ms,
-        "error": result.error,
-        "metadata": result.metadata
-    }
-
-
-# =============================================================================
-# Brave Search - Web Search
-# =============================================================================
 
 @mcp.tool
 async def search_brave(
     research_question: str,
     api_key: Optional[str] = None,
-    limit: int = 10
+    limit: int = 20
 ) -> dict:
-    """Search the web for investigative journalism, analysis, and leaked documents.
+    """Search the web using Brave Search for investigative journalism sources.
 
-    Brave Search provides access to open web content not available in structured
-    government databases:
-    - Investigative journalism & analysis
-    - Leaked documents & whistleblower reports
-    - Court filings & legal documents
-    - Advocacy group reports
-    - News coverage of government programs
-
-    This tool uses an LLM to understand your research question and generate
-    appropriate search parameters for the Brave Search API.
+    Brave Search provides access to web content including news articles,
+    blog posts, leaked documents, investigative journalism, and analysis
+    that may not be in specialized databases.
 
     Args:
-        research_question: Natural language query (e.g., "NSA surveillance
-            programs leaked documents")
-        api_key: Brave Search API key (optional, uses BRAVE_SEARCH_API_KEY env var
-            if not provided)
-        limit: Maximum number of results to return (default: 10, max: 20)
+        research_question: Natural language query (e.g., "Panama Papers offshore
+            shell companies" or "NSO Group Pegasus spyware investigations")
+        api_key: Brave API key (optional, uses BRAVE_API_KEY env var if not provided)
+        limit: Maximum number of results to return (default: 20, max: 100)
 
     Returns:
-        dict: Search results with structure:
-            - success: bool
-            - source: "Brave Search"
-            - total: int (total results returned)
-            - results: list of web pages with metadata
-            - query_params: dict (generated search parameters)
-            - response_time_ms: float
-            - error: str (if success=False)
-
-    Example:
-        >>> await search_brave(
-        ...     research_question="ICE detention facilities human rights violations",
-        ...     limit=10
-        ... )
-        {
-            "success": True,
-            "source": "Brave Search",
-            "total": 10,
-            "results": [
-                {
-                    "title": "Report: Human Rights Violations at ICE Facilities",
-                    "url": "https://example.org/ice-report",
-                    "description": "Investigation reveals widespread abuse...",
-                    "age": "2 weeks ago",
-                    "source": "Brave Search"
-                }
-            ],
-            "query_params": {
-                "query": "ICE detention violations report",
-                "count": 10,
-                "freshness": "pm"
-            },
-            "response_time_ms": 1234.56
-        }
-
-    Note:
-        Free tier: 2,000 queries/month. Paid tier: $5 per 1,000 queries.
+        dict: Search results with success, source, total, results, query_params, error
     """
-    # Get API key from environment if not provided
-    if not api_key:
-        api_key = os.getenv("BRAVE_SEARCH_API_KEY")
+    return await execute_mcp_search(
+        BraveSearchIntegration, research_question, "BRAVE_API_KEY", api_key, limit
+    )
 
-    # Create integration instance
-    integration = BraveSearchIntegration()
-
-    # Generate query parameters using LLM with rejection reasoning wrapper
-    enriched = await integration.generate_query_with_reasoning(research_question)
-
-    if not enriched.get("relevant", False):
-        return {
-            "success": False,
-            "source": "Brave Search",
-            "total": 0,
-            "results": [],
-            "error": f"Research question not relevant for Brave Search: {enriched.get('rejection_reason', 'No reason provided')}",
-            "metadata": {
-                "rejection_reasoning": enriched.get("rejection_reason"),
-                "suggested_reformulation": enriched.get("suggested_reformulation")
-            }
-        }
-
-    query_params = enriched.get("query_params")
-    if query_params is None:
-        return {
-            "success": False,
-            "source": "Brave Search",
-            "total": 0,
-            "results": [],
-            "error": "Wrapper returned relevant=True but query_params is None (wrapper bug)"
-        }
-
-    # Execute search
-    result = await integration.execute_search(query_params, api_key, limit)
-
-    # Convert QueryResult to dict
-    return {
-        "success": result.success,
-        "source": result.source,
-        "total": result.total,
-        "results": result.results,
-        "query_params": result.query_params,
-        "response_time_ms": result.response_time_ms,
-        "error": result.error,
-        "metadata": result.metadata
-    }
-
-
-# =============================================================================
-# Discord - OSINT Community Discussions
-# =============================================================================
 
 @mcp.tool
 async def search_discord(
     research_question: str,
-    limit: int = 10
+    api_key: Optional[str] = None,
+    limit: int = 20
 ) -> dict:
-    """Search Discord OSINT community discussions for expert analysis and breaking news.
+    """Search Discord exports for OSINT community discussions.
 
-    Discord provides access to community discussions from OSINT servers including:
-    - Bellingcat: OSINT investigative journalism community
-    - Project OWL: Geopolitical analysis and intelligence discussions
-    - Other OSINT and intelligence community servers
-
-    This tool searches local exported Discord message history (no API key required).
-    It uses an LLM to extract key search terms from your research question.
+    Searches local exports from Discord OSINT communities including
+    Bellingcat, Project OWL, and other investigative journalism servers.
+    Contains expert discussions, methodology sharing, and breaking analysis.
 
     Args:
-        research_question: Natural language query (e.g., "ukraine intelligence
-            analysis" or "bellingcat geolocation techniques")
-        limit: Maximum number of results to return (default: 10, max: 50)
+        research_question: Natural language query (e.g., "satellite imagery
+            analysis techniques" or "Russian military unit identification")
+        api_key: Not required (searches local exports)
+        limit: Maximum number of results to return (default: 20, max: 100)
 
     Returns:
-        dict: Search results with structure:
-            - success: bool
-            - source: "Discord"
-            - total: int (total messages found)
-            - results: list of Discord messages with metadata
-            - query_params: dict (generated search parameters)
-            - response_time_ms: float
-            - error: str (if success=False)
-
-    Example:
-        >>> await search_discord(
-        ...     research_question="satellite imagery analysis techniques",
-        ...     limit=5
-        ... )
-        {
-            "success": True,
-            "source": "Discord",
-            "total": 5,
-            "results": [
-                {
-                    "title": "Discord message from @analyst",
-                    "content": "For satellite imagery analysis, I recommend...",
-                    "url": "https://discord.com/channels/...",
-                    "timestamp": "2024-03-15T10:30:00",
-                    "author": "analyst",
-                    "server": "Bellingcat",
-                    "channel": "geospatial-analysis",
-                    "score": 0.75,
-                    "matched_keywords": ["satellite", "imagery", "analysis"]
-                }
-            ],
-            "query_params": {
-                "keywords": ["satellite", "imagery", "analysis", "geolocation"]
-            },
-            "response_time_ms": 543.21
-        }
-
-    Note:
-        Searches local exported Discord message history. No API key required.
-        Discord exports must be present in data/exports/ directory.
+        dict: Search results with success, source, total, results, query_params, error
     """
-    # Create integration instance (uses local exports)
-    integration = DiscordIntegration()
+    return await execute_mcp_search(
+        DiscordIntegration, research_question, "DISCORD_API_KEY", api_key, limit
+    )
 
-    # Generate query parameters using LLM with rejection reasoning wrapper
-    enriched = await integration.generate_query_with_reasoning(research_question)
-
-    if not enriched.get("relevant", False):
-        return {
-            "success": False,
-            "source": "Discord",
-            "total": 0,
-            "results": [],
-            "error": f"Research question not relevant for Discord: {enriched.get('rejection_reason', 'No reason provided')}",
-            "metadata": {
-                "rejection_reasoning": enriched.get("rejection_reason"),
-                "suggested_reformulation": enriched.get("suggested_reformulation")
-            }
-        }
-
-    query_params = enriched.get("query_params")
-    if query_params is None:
-        return {
-            "success": False,
-            "source": "Discord",
-            "total": 0,
-            "results": [],
-            "error": "Wrapper returned relevant=True but query_params is None (wrapper bug)"
-        }
-
-    # Execute search (no API key needed)
-    result = await integration.execute_search(query_params, api_key=None, limit=limit)
-
-    # Convert QueryResult to dict
-    return {
-        "success": result.success,
-        "source": result.source,
-        "total": result.total,
-        "results": result.results,
-        "query_params": result.query_params,
-        "response_time_ms": result.response_time_ms,
-        "error": result.error,
-        "metadata": result.metadata
-    }
-
-
-# =============================================================================
-# Reddit - Community Discussions
-# =============================================================================
 
 @mcp.tool
 async def search_reddit(
     research_question: str,
-    limit: int = 25,
-    param_hints: Optional[Dict] = None
+    api_key: Optional[str] = None,
+    limit: int = 20
 ) -> dict:
-    """Search Reddit for community discussions, expert commentary, and news reactions.
+    """Search Reddit for community discussions and expert commentary.
 
-    Reddit provides access to community discussions organized into topic-specific
-    subreddits, including:
-    - Intelligence & Security: r/Intelligence, r/natsec, r/NSA, r/CIA, r/FBI
-    - OSINT & Journalism: r/OSINT, r/journalism, r/Whistleblowers, r/Leaks
-    - Geopolitics: r/geopolitics, r/UkrainianConflict, r/syriancivilwar
-    - General News: r/news, r/worldnews, r/neutralnews
-
-    This tool uses an LLM to understand your research question and generate
-    appropriate search parameters including relevant subreddits.
+    Reddit provides access to specialized subreddits covering defense,
+    intelligence, cybersecurity, and investigative topics with expert
+    commentary and insider perspectives.
 
     Args:
-        research_question: Natural language query (e.g., "NSA surveillance
-            program discussions" or "intelligence community whistleblower reactions")
-        limit: Maximum number of results to return (default: 25, max: 100)
-        param_hints: Optional parameter hints to override LLM-generated values
-            (e.g., {"time_filter": "year"} to expand time range)
+        research_question: Natural language query (e.g., "defense contractor
+            insider perspectives" or "clearance processing times")
+        api_key: Not required (uses public Reddit API)
+        limit: Maximum number of results to return (default: 20, max: 100)
 
     Returns:
-        dict: Search results with structure:
-            - success: bool
-            - source: "Reddit"
-            - total: int (total posts returned)
-            - results: list of Reddit posts with metadata
-            - query_params: dict (generated search parameters)
-            - response_time_ms: float
-            - error: str (if success=False)
-
-    Example:
-        >>> await search_reddit(
-        ...     research_question="FBI domestic extremism classifications",
-        ...     limit=10
-        ... )
-        {
-            "success": True,
-            "source": "Reddit",
-            "total": 10,
-            "results": [
-                {
-                    "title": "New FBI memo on domestic extremism leaked",
-                    "url": "https://reddit.com/r/Intelligence/...",
-                    "date": "2024-03-15",
-                    "description": "The FBI has updated its classifications...",
-                    "subreddit": "Intelligence",
-                    "author": "throwaway123",
-                    "score": 342,
-                    "num_comments": 89,
-                    ...
-                }
-            ],
-            "query_params": {
-                "query": "FBI AND domestic extremism",
-                "subreddits": ["Intelligence", "natsec", "FBI"],
-                "sort": "relevance",
-                "time_filter": "month"
-            },
-            "response_time_ms": 2154.32
-        }
-
-    Note:
-        Requires Reddit API credentials configured in config.yaml.
-        Credentials: client_id, client_secret, username, password.
+        dict: Search results with success, source, total, results, query_params, error
     """
-    # Create integration instance
-    integration = RedditIntegration()
-
-    # Generate query parameters using LLM with rejection reasoning wrapper
-    enriched = await integration.generate_query_with_reasoning(research_question)
-
-    if not enriched.get("relevant", False):
-        return {
-            "success": False,
-            "source": "Reddit",
-            "total": 0,
-            "results": [],
-            "error": f"Research question not relevant for Reddit: {enriched.get('rejection_reason', 'No reason provided')}",
-            "metadata": {
-                "rejection_reasoning": enriched.get("rejection_reason"),
-                "suggested_reformulation": enriched.get("suggested_reformulation")
-            }
-        }
-
-    query_params = enriched.get("query_params")
-    if query_params is None:
-        return {
-            "success": False,
-            "source": "Reddit",
-            "total": 0,
-            "results": [],
-            "error": "Wrapper returned relevant=True but query_params is None (wrapper bug)"
-        }
-
-    # Apply param_hints if provided (override LLM-generated values)
-    if param_hints:
-        query_params.update(param_hints)
-
-    # Execute search (credentials from config)
-    result = await integration.execute_search(query_params, api_key=None, limit=limit)
-
-    # Convert QueryResult to dict
-    return {
-        "success": result.success,
-        "source": result.source,
-        "total": result.total,
-        "results": result.results,
-        "query_params": result.query_params,
-        "response_time_ms": result.response_time_ms,
-        "error": result.error,
-        "metadata": result.metadata
-    }
+    return await execute_mcp_search(
+        RedditIntegration, research_question, "REDDIT_API_KEY", api_key, limit
+    )
 
 
-# =============================================================================
-# Server Execution
-# =============================================================================
-
+# Run server when executed directly
 if __name__ == "__main__":
-    # Run MCP server with STDIO transport (for Claude Desktop, Cursor, etc.)
     mcp.run()
-
-    # Alternative: HTTP transport (for remote clients)
-    # mcp.run(transport="http", host="0.0.0.0", port=8001)

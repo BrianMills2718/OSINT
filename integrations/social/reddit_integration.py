@@ -63,11 +63,11 @@ class RedditIntegration(DatabaseIntegration):
     - PRAW handles rate limiting automatically
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Initialize Reddit client with lazy loading."""
         self._reddit_client = None
 
-    def _get_reddit_client(self):
+    def _get_reddit_client(self) -> Optional[object]:
         """Lazy initialize Reddit client on first use."""
         if self._reddit_client is None:
             # Get credentials from environment variables (loaded from .env)

@@ -40,7 +40,7 @@ class DiscordIntegration(DatabaseIntegration):
     requiring Discord API access or bot tokens.
     """
 
-    def __init__(self, exports_dir: str = "data/exports"):
+    def __init__(self, exports_dir: str = "data/exports") -> None:
         """
         Initialize Discord integration.
 
@@ -405,7 +405,7 @@ class DiscordIntegration(DatabaseIntegration):
 
 
 # Test function for development
-async def test_discord_integration():
+async def test_discord_integration() -> None:
     """Test Discord integration with sample query."""
     integration = DiscordIntegration()
 

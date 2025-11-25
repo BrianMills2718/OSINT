@@ -5,7 +5,7 @@ Configuration loader for AI Research System.
 Provides centralized configuration management with:
 - YAML file loading
 - Environment variable overrides
-- Validation
+- Pydantic schema validation
 - Singleton pattern
 - LiteLLM provider flexibility
 """
@@ -15,6 +15,9 @@ import yaml
 from pathlib import Path
 from typing import Dict, Any, Optional, List
 import logging
+
+from config_schema import AppConfig, validate_config
+from pydantic import ValidationError
 
 
 class Config:
@@ -44,6 +47,7 @@ class Config:
 
     _instance = None
     _config = None
+    _validated_config: Optional[AppConfig] = None
 
     def __new__(cls):
         if cls._instance is None:
@@ -102,31 +106,25 @@ class Config:
         if os.getenv("RESEARCH_TIMEOUT"):
             self._config["timeouts"]["total_search"] = int(os.getenv("RESEARCH_TIMEOUT"))
 
-    def _validate(self):
-        """Validate configuration values."""
-        # Validate required sections
-        required_sections = ["llm", "execution", "timeouts", "databases"]
-        for section in required_sections:
-            if section not in self._config:
-                raise ValueError(f"Missing required config section: {section}")
+    def _validate(self) -> None:
+        """
+        Validate configuration using pydantic schema.
 
-        # Validate execution values
-        if self._config["execution"]["max_concurrent"] < 1:
-            raise ValueError("max_concurrent must be >= 1")
-
-        if self._config["execution"]["max_refinements"] < 0:
-            raise ValueError("max_refinements must be >= 0")
-
-        # Validate timeouts
-        for timeout_name, timeout_value in self._config["timeouts"].items():
-            if timeout_value < 0:
-                raise ValueError(f"Timeout {timeout_name} must be >= 0")
-
-        # Validate cost management
-        if "cost_management" in self._config:
-            max_cost = self._config["cost_management"].get("max_cost_per_query", 0)
-            if max_cost < 0:
-                raise ValueError("max_cost_per_query must be >= 0")
+        Raises:
+            ValueError: If validation fails with human-readable error message
+        """
+        try:
+            # Validate against pydantic schema
+            self._validated_config = validate_config(self._config)
+        except ValidationError as e:
+            # Convert pydantic errors to human-readable format
+            errors = []
+            for error in e.errors():
+                field_path = ".".join(str(p) for p in error["loc"])
+                msg = error["msg"]
+                errors.append(f"  - {field_path}: {msg}")
+            error_summary = "\n".join(errors)
+            raise ValueError(f"Configuration validation failed:\n{error_summary}") from e
 
     # ========================================================================
     # LLM Configuration
@@ -372,13 +370,35 @@ class Config:
     # Utility Methods
     # ========================================================================
 
-    def reload(self):
+    def reload(self) -> None:
         """Reload configuration from files."""
         self._load_config()
 
     def get_raw_config(self) -> Dict[str, Any]:
         """Get raw configuration dict (for debugging)."""
         return self._config.copy()
+
+    @property
+    def validated(self) -> AppConfig:
+        """
+        Get the validated pydantic configuration model.
+
+        Provides type-safe access to all configuration with IDE autocomplete.
+
+        Returns:
+            AppConfig: Validated configuration model
+
+        Example:
+            >>> config.validated.llm.default_model
+            'gemini/gemini-2.5-flash'
+            >>> config.validated.research.deep_research.max_tasks
+            15
+            >>> config.validated.timeouts.llm_request
+            180
+        """
+        if self._validated_config is None:
+            raise RuntimeError("Configuration not loaded. Call _load_config() first.")
+        return self._validated_config
 
 
 # Global singleton instance

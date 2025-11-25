@@ -102,12 +102,12 @@ class IntegrationRegistry:
     - Import isolation (individual integration failures don't crash registry)
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         self._integration_classes: Dict[str, Type[DatabaseIntegration]] = {}
         self._cached_instances: Dict[str, DatabaseIntegration] = {}
         self._register_defaults()
 
-    def _register_defaults(self):
+    def _register_defaults(self) -> None:
         """
         Register all built-in integrations with import isolation.
 
@@ -160,7 +160,7 @@ class IntegrationRegistry:
         # Archive sources
         self._try_register("wayback_machine", WaybackMachineIntegration)
 
-    def _try_register(self, integration_id: str, integration_class: Type[DatabaseIntegration]):
+    def _try_register(self, integration_id: str, integration_class: Type[DatabaseIntegration]) -> None:
         """
         Try to register an integration, catching and logging any errors.
 
@@ -179,7 +179,7 @@ class IntegrationRegistry:
             print(f"Warning: Failed to register {integration_id}: {e}")
             # Don't crash - let other integrations continue
 
-    def register(self, integration_id: str, integration_class: Type[DatabaseIntegration]):
+    def register(self, integration_id: str, integration_class: Type[DatabaseIntegration]) -> None:
         """
         Register a new integration class with architectural validation.
 
@@ -525,7 +525,7 @@ class IntegrationRegistry:
             results[integration_id] = self.validate_integration(integration_id)
         return results
 
-    def print_validation_report(self, results: Dict[str, Dict[str, any]] = None):
+    def print_validation_report(self, results: Optional[Dict[str, Dict[str, any]]] = None) -> None:
         """
         Print a human-readable validation report.
 
@@ -733,7 +733,7 @@ class IntegrationRegistry:
                 }
         return status
 
-    def clear_caches(self):
+    def clear_caches(self) -> None:
         """Clear all internal caches (useful after dynamic registration)."""
         self._cached_instances.clear()
         if hasattr(self, '_name_lookup_cache'):

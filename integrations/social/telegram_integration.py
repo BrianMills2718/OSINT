@@ -40,7 +40,7 @@ functions = None
 types = None
 
 
-def _import_telethon():
+def _import_telethon() -> None:
     """Lazy import Telethon to avoid import errors if not installed."""
     global TelegramClient, functions, types
     if TelegramClient is None:
@@ -85,7 +85,7 @@ class TelegramIntegration(DatabaseIntegration):
     First run requires phone verification (SMS code).
     """
 
-    def __init__(self):
+    def __init__(self) -> None:
         """Initialize Telegram integration."""
         _import_telethon()
 
@@ -113,7 +113,7 @@ class TelegramIntegration(DatabaseIntegration):
             description="Telegram channels and messages: news sources, leak channels, OSINT communities"
         )
 
-    async def _ensure_client(self):
+    async def _ensure_client(self) -> None:
         """Ensure Telegram client is connected and authenticated."""
         if self.client is not None and self._authenticated:
             return
@@ -505,7 +505,7 @@ Return JSON:
             print(f"[WARN] Failed to get info for @{channel_username}: {e}")
             return []
 
-    def __del__(self):
+    def __del__(self) -> None:
         """Cleanup: disconnect Telegram client."""
         if self.client and self._authenticated:
             try:

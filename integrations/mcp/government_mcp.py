@@ -10,8 +10,7 @@ This MCP server wraps 5 government data source integrations as FastMCP tools:
 - FBI Vault: FOIA document releases
 
 Design: Thin wrapper layer that reuses existing DatabaseIntegration classes.
-No duplication - all configuration, error handling, and API logic comes from
-the DatabaseIntegration implementations.
+Uses shared mcp_utils.execute_mcp_search() to eliminate boilerplate.
 
 Usage:
     # In-memory (CLI/Streamlit)
@@ -22,16 +21,11 @@ Usage:
 
     # STDIO (AI assistants like Claude Desktop)
     python -m integrations.mcp.government_mcp
-
-    # HTTP (remote clients)
-    # mcp.run(transport="http", host="0.0.0.0", port=8000)
 """
 
-import json
-import os
-from typing import Dict, Optional
-from dotenv import load_dotenv
+from typing import Optional
 from fastmcp import FastMCP
+from dotenv import load_dotenv
 
 # Load environment variables
 load_dotenv()
@@ -42,6 +36,9 @@ from integrations.government.dvids_integration import DVIDSIntegration
 from integrations.government.usajobs_integration import USAJobsIntegration
 from integrations.government.clearancejobs_integration import ClearanceJobsIntegration
 from integrations.government.fbi_vault import FBIVaultIntegration
+
+# Import shared MCP utilities
+from integrations.mcp.mcp_utils import execute_mcp_search
 
 # Create MCP server
 mcp = FastMCP(
@@ -62,10 +59,6 @@ mcp = FastMCP(
 )
 
 
-# =============================================================================
-# SAM.gov - Federal Contracting Opportunities
-# =============================================================================
-
 @mcp.tool
 async def search_sam(
     research_question: str,
@@ -78,10 +71,6 @@ async def search_sam(
     for finding federal contracting opportunities including solicitations,
     presolicitations, and sources sought notices.
 
-    This tool uses an LLM to understand your research question and generate
-    appropriate search parameters for the SAM.gov API. It then executes the
-    search and returns structured results.
-
     Args:
         research_question: Natural language query (e.g., "cybersecurity contracts
             from Department of Defense")
@@ -89,95 +78,12 @@ async def search_sam(
         limit: Maximum number of results to return (default: 10, max: 1000)
 
     Returns:
-        dict: Search results with structure:
-            - success: bool
-            - source: "SAM.gov"
-            - total: int (total matching opportunities)
-            - results: list of contracting opportunities
-            - query_params: dict (generated search parameters)
-            - response_time_ms: float
-            - error: str (if success=False)
-
-    Example:
-        >>> await search_sam(
-        ...     research_question="cybersecurity contracts from FBI",
-        ...     limit=5
-        ... )
-        {
-            "success": True,
-            "source": "SAM.gov",
-            "total": 42,
-            "results": [
-                {
-                    "title": "Cybersecurity Assessment Services",
-                    "solicitationNumber": "FBI-24-1234",
-                    "type": "Solicitation",
-                    "organizationName": "Federal Bureau of Investigation",
-                    ...
-                }
-            ],
-            "query_params": {
-                "keywords": "cybersecurity",
-                "organization": "Federal Bureau of Investigation"
-            },
-            "response_time_ms": 2341.56
-        }
+        dict: Search results with success, source, total, results, query_params, error
     """
-    # Get API key from environment if not provided
-    if not api_key:
-        api_key = os.getenv("SAM_GOV_API_KEY")
+    return await execute_mcp_search(
+        SAMIntegration, research_question, "SAM_GOV_API_KEY", api_key, limit
+    )
 
-    # Create integration instance (reuse existing implementation)
-    integration = SAMIntegration()
-
-    # Generate query parameters using LLM with rejection reasoning wrapper
-    enriched = await integration.generate_query_with_reasoning(research_question)
-
-    # Check if LLM determined not relevant
-    if not enriched.get("relevant", False):
-        # Return error with full rejection metadata for reformulation
-        return {
-            "success": False,
-            "source": "SAM.gov",
-            "total": 0,
-            "results": [],
-            "error": f"Research question not relevant for SAM.gov: {enriched.get('rejection_reason', 'No reason provided')}",
-            "metadata": {
-                "rejection_reasoning": enriched.get("rejection_reason"),
-                "suggested_reformulation": enriched.get("suggested_reformulation")
-            }
-        }
-
-    # Extract clean params for execute_search()
-    query_params = enriched.get("query_params")
-    if query_params is None:
-        return {
-            "success": False,
-            "source": "SAM.gov",
-            "total": 0,
-            "results": [],
-            "error": "Wrapper returned relevant=True but query_params is None (wrapper bug)"
-        }
-
-    # Execute search using existing DatabaseIntegration logic
-    result = await integration.execute_search(query_params, api_key, limit)
-
-    # Convert QueryResult to dict
-    return {
-        "success": result.success,
-        "source": result.source,
-        "total": result.total,
-        "results": result.results,
-        "query_params": result.query_params,
-        "response_time_ms": result.response_time_ms,
-        "error": result.error,
-        "metadata": result.metadata
-    }
-
-
-# =============================================================================
-# DVIDS - Military Media
-# =============================================================================
 
 @mcp.tool
 async def search_dvids(
@@ -191,440 +97,97 @@ async def search_dvids(
     source for U.S. military media including combat footage, training imagery,
     humanitarian operations, and public affairs content.
 
-    This tool uses an LLM to understand your research question and generate
-    appropriate search parameters for the DVIDS API.
-
     Args:
         research_question: Natural language query (e.g., "F-35 training exercises")
         api_key: DVIDS API key (optional, uses DVIDS_API_KEY env var if not provided)
-        limit: Maximum number of results to return (default: 10, max: 50)
+        limit: Maximum number of results to return (default: 10, max: 100)
 
     Returns:
-        dict: Search results with structure:
-            - success: bool
-            - source: "DVIDS"
-            - total: int (total matching media items)
-            - results: list of media items (photos, videos, news)
-            - query_params: dict (generated search parameters)
-            - response_time_ms: float
-            - error: str (if success=False)
-
-    Example:
-        >>> await search_dvids(
-        ...     research_question="Navy ship deployments",
-        ...     limit=5
-        ... )
-        {
-            "success": True,
-            "source": "DVIDS",
-            "total": 156,
-            "results": [
-                {
-                    "id": "12345",
-                    "title": "USS Lincoln Carrier Strike Group Deploys",
-                    "type": "news",
-                    "branch": "Navy",
-                    "date": "2024-03-15",
-                    ...
-                }
-            ],
-            "query_params": {
-                "keywords": "Navy OR ship OR deployment",
-                "media_types": ["image", "video", "news"],
-                "branches": ["Navy"]
-            },
-            "response_time_ms": 1876.32
-        }
+        dict: Search results with success, source, total, results, query_params, error
     """
-    # Get API key from environment if not provided
-    if not api_key:
-        api_key = os.getenv("DVIDS_API_KEY")
+    return await execute_mcp_search(
+        DVIDSIntegration, research_question, "DVIDS_API_KEY", api_key, limit
+    )
 
-    # Create integration instance
-    integration = DVIDSIntegration()
-
-    # Generate query parameters using LLM with rejection reasoning wrapper
-    enriched = await integration.generate_query_with_reasoning(research_question)
-
-    if not enriched.get("relevant", False):
-        return {
-            "success": False,
-            "source": "DVIDS",
-            "total": 0,
-            "results": [],
-            "error": f"Research question not relevant for DVIDS: {enriched.get('rejection_reason', 'No reason provided')}",
-            "metadata": {
-                "rejection_reasoning": enriched.get("rejection_reason"),
-                "suggested_reformulation": enriched.get("suggested_reformulation")
-            }
-        }
-
-    query_params = enriched.get("query_params")
-    if query_params is None:
-        return {
-            "success": False,
-            "source": "DVIDS",
-            "total": 0,
-            "results": [],
-            "error": "Wrapper returned relevant=True but query_params is None (wrapper bug)"
-        }
-
-    # Execute search
-    result = await integration.execute_search(query_params, api_key, limit)
-
-    # Convert QueryResult to dict
-    return {
-        "success": result.success,
-        "source": result.source,
-        "total": result.total,
-        "results": result.results,
-        "query_params": result.query_params,
-        "response_time_ms": result.response_time_ms,
-        "error": result.error,
-        "metadata": result.metadata
-    }
-
-
-# =============================================================================
-# USAJobs - Federal Government Jobs
-# =============================================================================
 
 @mcp.tool
 async def search_usajobs(
     research_question: str,
     api_key: Optional[str] = None,
-    limit: int = 10,
-    param_hints: Optional[Dict] = None
+    limit: int = 10
 ) -> dict:
     """Search USAJobs for federal government job listings.
 
-    USAJobs is the official employment site for the U.S. federal government,
-    listing positions across all federal agencies and departments.
-
-    This tool uses an LLM to understand your research question and generate
-    appropriate search parameters for the USAJobs API.
+    USAJobs is the official job site of the U.S. Federal Government, listing
+    civilian positions across all federal agencies including DoD, intelligence
+    community, and law enforcement.
 
     Args:
-        research_question: Natural language query (e.g., "intelligence analyst
-            jobs in Washington DC")
+        research_question: Natural language query (e.g., "cybersecurity analyst
+            positions at NSA")
         api_key: USAJobs API key (optional, uses USAJOBS_API_KEY env var if not provided)
         limit: Maximum number of results to return (default: 10, max: 500)
-        param_hints: Optional parameter hints to override LLM-generated values
-            (e.g., {"keywords": "cybersecurity"} to use broad single keyword)
 
     Returns:
-        dict: Search results with structure:
-            - success: bool
-            - source: "USAJobs"
-            - total: int (total matching jobs)
-            - results: list of job listings
-            - query_params: dict (generated search parameters)
-            - response_time_ms: float
-            - error: str (if success=False)
-
-    Example:
-        >>> await search_usajobs(
-        ...     research_question="cybersecurity analyst jobs at FBI",
-        ...     limit=5
-        ... )
-        {
-            "success": True,
-            "source": "USAJobs",
-            "total": 12,
-            "results": [
-                {
-                    "PositionTitle": "Cybersecurity Analyst",
-                    "OrganizationName": "Federal Bureau of Investigation",
-                    "PositionLocation": [{"LocationName": "Washington, DC"}],
-                    "JobGrade": [{"Code": "GS"}],
-                    ...
-                }
-            ],
-            "query_params": {
-                "keywords": "cybersecurity analyst",
-                "organization": "FBI",
-                "location": "Washington, DC"
-            },
-            "response_time_ms": 1543.21
-        }
+        dict: Search results with success, source, total, results, query_params, error
     """
-    # Get API key from environment if not provided
-    if not api_key:
-        api_key = os.getenv("USAJOBS_API_KEY")
+    return await execute_mcp_search(
+        USAJobsIntegration, research_question, "USAJOBS_API_KEY", api_key, limit
+    )
 
-    # Create integration instance
-    integration = USAJobsIntegration()
-
-    # Generate query parameters using LLM with rejection reasoning wrapper
-    enriched = await integration.generate_query_with_reasoning(research_question)
-
-    if not enriched.get("relevant", False):
-        return {
-            "success": False,
-            "source": "USAJobs",
-            "total": 0,
-            "results": [],
-            "error": f"Research question not relevant for USAJobs: {enriched.get('rejection_reason', 'No reason provided')}",
-            "metadata": {
-                "rejection_reasoning": enriched.get("rejection_reason"),
-                "suggested_reformulation": enriched.get("suggested_reformulation")
-            }
-        }
-
-    query_params = enriched.get("query_params")
-    if query_params is None:
-        return {
-            "success": False,
-            "source": "USAJobs",
-            "total": 0,
-            "results": [],
-            "error": "Wrapper returned relevant=True but query_params is None (wrapper bug)"
-        }
-
-    # Apply param_hints if provided (override LLM-generated values)
-    if param_hints:
-        query_params.update(param_hints)
-
-    # Execute search
-    result = await integration.execute_search(query_params, api_key, limit)
-
-    # Convert QueryResult to dict
-    return {
-        "success": result.success,
-        "source": result.source,
-        "total": result.total,
-        "results": result.results,
-        "query_params": result.query_params,
-        "response_time_ms": result.response_time_ms,
-        "error": result.error,
-        "metadata": result.metadata
-    }
-
-
-# =============================================================================
-# ClearanceJobs - Security Clearance Jobs
-# =============================================================================
 
 @mcp.tool
 async def search_clearancejobs(
     research_question: str,
+    api_key: Optional[str] = None,
     limit: int = 10
 ) -> dict:
     """Search ClearanceJobs for security clearance job postings.
 
-    ClearanceJobs.com specializes in job postings requiring TS/SCI, Secret,
-    Top Secret, and other government security clearances.
-
-    This tool uses an LLM to understand your research question and generate
-    appropriate search parameters. Results are obtained via browser automation
-    (Playwright) since the official API is broken.
+    ClearanceJobs is the leading job board for positions requiring security
+    clearances, covering defense contractors, intelligence agencies, and
+    government positions requiring TS/SCI, Secret, or other clearances.
 
     Args:
-        research_question: Natural language query (e.g., "SIGINT analyst with
-            TS/SCI clearance")
+        research_question: Natural language query (e.g., "TS/SCI cyber positions
+            at defense contractors")
+        api_key: Not required (uses web scraping)
         limit: Maximum number of results to return (default: 10, max: 50)
 
     Returns:
-        dict: Search results with structure:
-            - success: bool
-            - source: "ClearanceJobs"
-            - total: int (total matching jobs)
-            - results: list of job listings
-            - query_params: dict (generated search parameters)
-            - response_time_ms: float
-            - error: str (if success=False)
-
-    Example:
-        >>> await search_clearancejobs(
-        ...     research_question="penetration tester with TS clearance",
-        ...     limit=5
-        ... )
-        {
-            "success": True,
-            "source": "ClearanceJobs",
-            "total": 23,
-            "results": [
-                {
-                    "title": "Senior Penetration Tester",
-                    "company": "Defense Contractor Inc.",
-                    "location": "Fort Meade, MD",
-                    "clearance": "TS/SCI",
-                    "posted": "2 days ago",
-                    ...
-                }
-            ],
-            "query_params": {
-                "keywords": "penetration tester OR ethical hacker"
-            },
-            "response_time_ms": 5432.10
-        }
-
-    Note:
-        This integration uses Playwright for browser automation, so it's slower
-        than API-based integrations (typically 5-8 seconds). Results require
-        Playwright dependencies to be installed.
+        dict: Search results with success, source, total, results, query_params, error
     """
-    # Create integration instance
-    integration = ClearanceJobsIntegration()
+    return await execute_mcp_search(
+        ClearanceJobsIntegration, research_question, "CLEARANCEJOBS_API_KEY", api_key, limit
+    )
 
-    # Generate query parameters using LLM with rejection reasoning wrapper
-    enriched = await integration.generate_query_with_reasoning(research_question)
-
-    if not enriched.get("relevant", False):
-        return {
-            "success": False,
-            "source": "ClearanceJobs",
-            "total": 0,
-            "results": [],
-            "error": f"Research question not relevant for ClearanceJobs: {enriched.get('rejection_reason', 'No reason provided')}",
-            "metadata": {
-                "rejection_reasoning": enriched.get("rejection_reason"),
-                "suggested_reformulation": enriched.get("suggested_reformulation")
-            }
-        }
-
-    query_params = enriched.get("query_params")
-    if query_params is None:
-        return {
-            "success": False,
-            "source": "ClearanceJobs",
-            "total": 0,
-            "results": [],
-            "error": "Wrapper returned relevant=True but query_params is None (wrapper bug)"
-        }
-
-    # Execute search (no API key needed)
-    result = await integration.execute_search(query_params, api_key=None, limit=limit)
-
-    # Convert QueryResult to dict
-    return {
-        "success": result.success,
-        "source": result.source,
-        "total": result.total,
-        "results": result.results,
-        "query_params": result.query_params,
-        "response_time_ms": result.response_time_ms,
-        "error": result.error,
-        "metadata": result.metadata
-    }
-
-
-# =============================================================================
-# FBI Vault - FOIA Document Releases
-# =============================================================================
 
 @mcp.tool
 async def search_fbi_vault(
     research_question: str,
+    api_key: Optional[str] = None,
     limit: int = 10
 ) -> dict:
-    """Search FBI Vault for FOIA document releases and investigation files.
+    """Search FBI Vault for FOIA document releases.
 
-    FBI Vault is the FBI's FOIA Library containing documents released under
-    the Freedom of Information Act, including investigation files, memos,
-    reports, and declassified materials.
-
-    This tool uses an LLM to understand your research question and generate
-    appropriate search parameters. Results are obtained via browser automation
-    (SeleniumBase UC Mode) to bypass Cloudflare protection.
+    The FBI Vault contains over 6,700 declassified documents released under
+    FOIA, including files on historical figures, organizations, events,
+    and government programs.
 
     Args:
-        research_question: Natural language query (e.g., "domestic terrorism
-            threat assessments")
-        limit: Maximum number of results to return (default: 10, max: 50)
+        research_question: Natural language query (e.g., "COINTELPRO documents"
+            or "Hoover files on civil rights leaders")
+        api_key: Not required (public access)
+        limit: Maximum number of results to return (default: 10, max: 100)
 
     Returns:
-        dict: Search results with structure:
-            - success: bool
-            - source: "FBI Vault"
-            - total: int (total matching documents)
-            - results: list of documents
-            - query_params: dict (generated search parameters)
-            - response_time_ms: float
-            - error: str (if success=False)
-
-    Example:
-        >>> await search_fbi_vault(
-        ...     research_question="organized crime investigations",
-        ...     limit=5
-        ... )
-        {
-            "success": True,
-            "source": "FBI Vault",
-            "total": 15,
-            "results": [
-                {
-                    "title": "Organized Crime Investigation Files",
-                    "url": "https://vault.fbi.gov/organized-crime",
-                    "snippet": "Investigation files related to organized crime...",
-                    "date": "2022-06-15",
-                    "document_type": "Folder",
-                    ...
-                }
-            ],
-            "query_params": {
-                "query": "organized crime"
-            },
-            "response_time_ms": 3876.54
-        }
-
-    Note:
-        This integration uses SeleniumBase UC Mode for Cloudflare bypass, so it's
-        slower than API-based integrations (typically 3-5 seconds). Requires
-        SeleniumBase and Chrome/Chromium to be installed.
+        dict: Search results with success, source, total, results, query_params, error
     """
-    # Create integration instance
-    integration = FBIVaultIntegration()
-
-    # Generate query parameters using LLM with rejection reasoning wrapper
-    enriched = await integration.generate_query_with_reasoning(research_question)
-
-    if not enriched.get("relevant", False):
-        return {
-            "success": False,
-            "source": "FBI Vault",
-            "total": 0,
-            "results": [],
-            "error": f"Research question not relevant for FBI Vault: {enriched.get('rejection_reason', 'No reason provided')}",
-            "metadata": {
-                "rejection_reasoning": enriched.get("rejection_reason"),
-                "suggested_reformulation": enriched.get("suggested_reformulation")
-            }
-        }
-
-    query_params = enriched.get("query_params")
-    if query_params is None:
-        return {
-            "success": False,
-            "source": "FBI Vault",
-            "total": 0,
-            "results": [],
-            "error": "Wrapper returned relevant=True but query_params is None (wrapper bug)"
-        }
-
-    # Execute search (no API key needed)
-    result = await integration.execute_search(query_params, api_key=None, limit=limit)
-
-    # Convert QueryResult to dict
-    return {
-        "success": result.success,
-        "source": result.source,
-        "total": result.total,
-        "results": result.results,
-        "query_params": result.query_params,
-        "response_time_ms": result.response_time_ms,
-        "error": result.error,
-        "metadata": result.metadata
-    }
+    return await execute_mcp_search(
+        FBIVaultIntegration, research_question, "FBI_VAULT_API_KEY", api_key, limit
+    )
 
 
-# =============================================================================
-# Server Execution
-# =============================================================================
-
+# Run server when executed directly
 if __name__ == "__main__":
-    # Run MCP server with STDIO transport (for Claude Desktop, Cursor, etc.)
     mcp.run()
-
-    # Alternative: HTTP transport (for remote clients)
-    # mcp.run(transport="http", host="0.0.0.0", port=8000)
