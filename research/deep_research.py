@@ -49,6 +49,7 @@ from research.mixins import (
     EntityAnalysisMixin,
     HypothesisMixin,
     QueryGenerationMixin,
+    QueryReformulationMixin,
     ReportSynthesizerMixin,
     ResultFilterMixin,
     SourceExecutorMixin
@@ -141,6 +142,7 @@ class SimpleDeepResearch(
     EntityAnalysisMixin,
     HypothesisMixin,
     QueryGenerationMixin,
+    QueryReformulationMixin,
     ReportSynthesizerMixin,
     ResultFilterMixin,
     SourceExecutorMixin
@@ -161,6 +163,7 @@ class SimpleDeepResearch(
     - EntityAnalysisMixin: Entity extraction and relationship graph
     - HypothesisMixin: Hypothesis generation and coverage assessment
     - QueryGenerationMixin: Query generation for hypothesis execution
+    - QueryReformulationMixin: Query reformulation for improved results
     - ReportSynthesizerMixin: Report synthesis and formatting
     - ResultFilterMixin: Result validation and filtering
     - SourceExecutorMixin: Source and hypothesis execution
@@ -2525,222 +2528,6 @@ class SimpleDeepResearch(
         return list(sources)
 
     # NOTE: _validate_result_relevance moved to ResultFilterMixin
-
-    async def _reformulate_for_relevance(
-        self,
-        original_query: str,
-        research_question: str,
-        results_count: int,
-        source_performance: Optional[List[Dict]] = None,
-        available_sources: Optional[List[str]] = None
-    ) -> Dict[str, Any]:
-        """
-        Reformulate query to get MORE RELEVANT results.
-
-        Phase 2: LLM intelligently re-selects sources based on performance.
-
-        Args:
-            original_query: Current query
-            research_question: Original research question
-            results_count: Number of results found
-            source_performance: List of dicts with source performance data (name, status, results_returned, results_kept, quality_rate, error_type)
-            available_sources: List of available source names (all sources minus rate-limited)
-
-        Returns Dict with:
-        - query: New query text
-        - param_adjustments: Dict of source-specific parameter hints (e.g., {"reddit": {"time_filter": "year"}})
-        - source_adjustments: (Optional) Dict with keep/drop/add lists for source re-selection
-        """
-        prompt = render_prompt(
-            "deep_research/query_reformulation_relevance.j2",
-            research_question=research_question,
-            original_query=original_query,
-            results_count=results_count,
-            source_performance=source_performance or [],
-            available_sources=available_sources or []
-        )
-
-        schema = {
-            "type": "object",
-            "properties": {
-                "query": {
-                    "type": "string",
-                    "description": "Reformulated query text"
-                },
-                "source_adjustments": {
-                    "type": "object",
-                    "description": "Phase 2: Optional source re-selection based on performance",
-                    "properties": {
-                        "keep": {
-                            "type": "array",
-                            "items": {"type": "string"},
-                            "description": "Sources that performed well (high quality, keep querying)"
-                        },
-                        "drop": {
-                            "type": "array",
-                            "items": {"type": "string"},
-                            "description": "Sources with poor performance (0% quality, errors, off-topic - stop querying)"
-                        },
-                        "add": {
-                            "type": "array",
-                            "items": {"type": "string"},
-                            "description": "Sources not yet tried that might perform better"
-                        },
-                        "reasoning": {
-                            "type": "string",
-                            "description": "Why you made these source selection decisions"
-                        }
-                    },
-                    "required": ["keep", "drop", "add", "reasoning"],
-                    "additionalProperties": False
-                },
-                "param_adjustments": {
-                    "type": "object",
-                    "description": "Source-specific parameter hints",
-                    "properties": {
-                        "reddit": {
-                            "type": "object",
-                            "properties": {
-                                "time_filter": {
-                                    "type": "string",
-                                    "enum": ["hour", "day", "week", "month", "year", "all"]
-                                }
-                            },
-                            "required": ["time_filter"],
-                            "additionalProperties": False
-                        },
-                        "usajobs": {
-                            "type": "object",
-                            "properties": {
-                                "keywords": {"type": "string"}
-                            },
-                            "required": ["keywords"],
-                            "additionalProperties": False
-                        },
-                        "twitter": {
-                            "type": "object",
-                            "properties": {
-                                "search_type": {
-                                    "type": "string",
-                                    "enum": ["Latest", "Top", "People", "Photos", "Videos"]
-                                },
-                                "max_pages": {
-                                    "type": "integer",
-                                    "minimum": 1,
-                                    "maximum": 3
-                                }
-                            },
-                            "required": ["search_type", "max_pages"],
-                            "additionalProperties": False
-                        }
-                    },
-                    "required": ["reddit", "usajobs", "twitter"],
-                    "additionalProperties": False
-                }
-            },
-            "required": ["query", "param_adjustments"],
-            "additionalProperties": False
-        }
-
-        response = await acompletion(
-            model=config.get_model("query_generation"),
-            messages=[{"role": "user", "content": prompt}],
-            response_format={
-                "type": "json_schema",
-                "json_schema": {
-                    "strict": True,
-                    "name": "query_reformulation_relevance",
-                    "schema": schema
-                }
-            }
-        )
-
-        return json.loads(response.choices[0].message.content)
-
-    async def _reformulate_query_simple(self, original_query: str, results_count: int) -> Dict[str, Any]:
-        """
-        Reformulate query when it returns insufficient results.
-
-        Returns Dict with:
-        - query: New query text
-        - param_adjustments: Dict of source-specific parameter hints
-        """
-        prompt = render_prompt(
-            "deep_research/query_reformulation_simple.j2",
-            original_query=original_query,
-            results_count=results_count
-        )
-
-        schema = {
-            "type": "object",
-            "properties": {
-                "query": {
-                    "type": "string",
-                    "description": "Reformulated query text (broader and simpler)"
-                },
-                "param_adjustments": {
-                    "type": "object",
-                    "description": "Source-specific parameter hints",
-                    "properties": {
-                        "reddit": {
-                            "type": "object",
-                            "properties": {
-                                "time_filter": {
-                                    "type": "string",
-                                    "enum": ["hour", "day", "week", "month", "year", "all"]
-                                }
-                            },
-                            "required": ["time_filter"],
-                            "additionalProperties": False
-                        },
-                        "usajobs": {
-                            "type": "object",
-                            "properties": {
-                                "keywords": {"type": "string"}
-                            },
-                            "required": ["keywords"],
-                            "additionalProperties": False
-                        },
-                        "twitter": {
-                            "type": "object",
-                            "properties": {
-                                "search_type": {
-                                    "type": "string",
-                                    "enum": ["Latest", "Top", "People", "Photos", "Videos"]
-                                },
-                                "max_pages": {
-                                    "type": "integer",
-                                    "minimum": 1,
-                                    "maximum": 3
-                                }
-                            },
-                            "required": ["search_type", "max_pages"],
-                            "additionalProperties": False
-                        }
-                    },
-                    "required": ["reddit", "usajobs", "twitter"],
-                    "additionalProperties": False
-                }
-            },
-            "required": ["query", "param_adjustments"],
-            "additionalProperties": False
-        }
-
-        response = await acompletion(
-            model=config.get_model("query_generation"),
-            messages=[{"role": "user", "content": prompt}],
-            response_format={
-                "type": "json_schema",
-                "json_schema": {
-                    "strict": True,
-                    "name": "query_reformulation_simple",
-                    "schema": schema
-                }
-            }
-        )
-
-        return json.loads(response.choices[0].message.content)
-
     # NOTE: _update_entity_graph moved to EntityAnalysisMixin
 
     # NOTE: _validate_result_dates moved to ResultFilterMixin
