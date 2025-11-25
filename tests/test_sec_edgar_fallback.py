@@ -12,7 +12,7 @@ import os
 # Add parent directory to path
 sys.path.append(os.path.dirname(os.path.dirname(__file__)))
 
-from integrations.government.sec_edgar_integration import SECEdgarIntegration
+from integrations.government.sec_edgar import SECEdgarIntegration
 
 
 async def test_fallback_metadata_configured():

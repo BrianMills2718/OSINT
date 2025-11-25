@@ -13,7 +13,7 @@ import asyncio
 import sys
 sys.path.insert(0, '/home/brian/sam_gov')
 
-from integrations.government.sec_edgar_integration import SECEdgarIntegration
+from integrations.government.sec_edgar import SECEdgarIntegration
 
 
 async def main():

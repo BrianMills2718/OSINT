@@ -13,7 +13,7 @@ from pathlib import Path
 # Add parent directory to path for imports
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-from integrations.government.sec_edgar_integration import SECEdgarIntegration
+from integrations.government.sec_edgar import SECEdgarIntegration
 from dotenv import load_dotenv
 
 load_dotenv()

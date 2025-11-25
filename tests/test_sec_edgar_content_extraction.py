@@ -13,7 +13,7 @@ import os
 # Add parent directory to path
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
-from integrations.government.sec_edgar_integration import SECEdgarIntegration
+from integrations.government.sec_edgar import SECEdgarIntegration
 from dotenv import load_dotenv
 
 load_dotenv()

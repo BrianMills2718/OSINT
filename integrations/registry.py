@@ -22,7 +22,7 @@ from integrations.government.fbi_vault import FBIVaultIntegration
 from integrations.government.federal_register import FederalRegisterIntegration
 from integrations.government.congress_integration import CongressIntegration
 from integrations.government.govinfo_integration import GovInfoIntegration
-from integrations.government.sec_edgar_integration import SECEdgarIntegration
+from integrations.government.sec_edgar import SECEdgarIntegration
 from integrations.government.fec_integration import FECIntegration
 
 # Import legal integrations
