@@ -8,7 +8,7 @@ Extracted from SimpleDeepResearch to reduce god class complexity.
 
 import json
 import logging
-from datetime import datetime
+from datetime import datetime, timezone
 from typing import Dict, List, TYPE_CHECKING
 
 from core.prompt_loader import render_prompt
@@ -456,7 +456,7 @@ class ReportSynthesizerMixin:
             hypothesis_findings=hypothesis_findings,
             key_documents=key_documents,
             timeline=timeline,
-            current_date=datetime.utcnow().date().isoformat()
+            current_date=datetime.now(timezone.utc).date().isoformat()
         )
 
         report = None

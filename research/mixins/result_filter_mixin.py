@@ -8,7 +8,7 @@ Extracted from SimpleDeepResearch to reduce god class complexity.
 
 import json
 import logging
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from typing import Dict, List, Tuple, TYPE_CHECKING
 
 from core.prompt_loader import render_prompt
@@ -197,7 +197,7 @@ class ResultFilterMixin:
         Added: 2025-11-18 (Codex recommendation)
         """
         # Timezone buffer: Allow dates up to 1 day in future (accounts for UTC offsets)
-        now = datetime.utcnow()
+        now = datetime.now(timezone.utc)
         max_valid_date = now + timedelta(days=1)
 
         validated_results = []
@@ -219,7 +219,8 @@ class ResultFilterMixin:
                 # Common formats: "Nov 17, 2025", "2025-11-17", "November 17, 2025"
                 for fmt in ["%b %d, %Y", "%Y-%m-%d", "%B %d, %Y", "%Y/%m/%d"]:
                     try:
-                        parsed_date = datetime.strptime(date_str.strip(), fmt)
+                        # Parse and make timezone-aware (assume UTC for comparison)
+                        parsed_date = datetime.strptime(date_str.strip(), fmt).replace(tzinfo=timezone.utc)
                         if parsed_date > max_valid_date:
                             future_date_found = True
                             break

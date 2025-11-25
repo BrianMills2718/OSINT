@@ -10,7 +10,7 @@ Tests:
 import asyncio
 import json
 import pytest
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 from unittest.mock import AsyncMock, MagicMock, patch
 
 
@@ -46,7 +46,7 @@ class TestValidateResultDates:
 
     def test_valid_past_dates_pass(self):
         """Results with valid past dates pass through."""
-        yesterday = (datetime.utcnow() - timedelta(days=1)).strftime("%Y-%m-%d")
+        yesterday = (datetime.now(timezone.utc) - timedelta(days=1)).strftime("%Y-%m-%d")
         results = [
             {"title": "Valid date", "date": yesterday, "url": "https://example.com"},
             {"title": "Old date", "published_date": "2024-01-15"}
@@ -60,7 +60,7 @@ class TestValidateResultDates:
 
     def test_future_dates_rejected(self):
         """Results with future dates are rejected."""
-        future_date = (datetime.utcnow() + timedelta(days=30)).strftime("%Y-%m-%d")
+        future_date = (datetime.now(timezone.utc) + timedelta(days=30)).strftime("%Y-%m-%d")
         results = [
             {"title": "Future dated", "date": future_date, "url": "https://example.com"},
             {"title": "Valid", "date": "2024-06-15"}
@@ -74,7 +74,7 @@ class TestValidateResultDates:
     def test_timezone_buffer_allows_recent_dates(self):
         """Dates within 1 day buffer (timezone tolerance) pass."""
         # A date just slightly in the future (timezone edge case)
-        tomorrow = (datetime.utcnow() + timedelta(hours=12)).strftime("%Y-%m-%d")
+        tomorrow = (datetime.now(timezone.utc) + timedelta(hours=12)).strftime("%Y-%m-%d")
         results = [{"title": "Timezone edge", "date": tomorrow}]
         validated = self.host._validate_result_dates(results)
 
