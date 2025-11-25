@@ -40,13 +40,16 @@ INSTRUCTIONS:
 
 1. Determine if SEC EDGAR is relevant for this research question
 2. If relevant, specify:
-   - **query_type**: "company_filings" (get filings for specific company), "company_search" (find company by name), or "form_search" (search across all companies by form type)
-   - **company_name**: Full company name (e.g., "Apple Inc", "Lockheed Martin Corporation") if searching for specific company
+   - **query_type**: "company_filings" (get filings for specific company) or "company_search" (find company by name)
+   - **company_name**: Full company name (e.g., "Apple Inc", "Lockheed Martin Corporation") - REQUIRED for searches
    - **form_types**: Array of SEC form types to filter (e.g., ["10-K", "10-Q"] for financial reports, ["4"] for insider trading, ["8-K"] for major events)
    - **keywords**: Keywords to search within filings (optional, for filtering results)
    - **limit**: Number of results (1-100, default 20)
 
-3. If NOT relevant (e.g., seeking private company data, government contracts, job postings), set relevant=false
+3. **CRITICAL**: SEC EDGAR requires a specific company name. Generic keyword searches without a company are NOT supported.
+   If the question doesn't mention a specific publicly-traded company, set relevant=false.
+
+4. If NOT relevant (e.g., no specific company, private company, government contracts, job postings), set relevant=false
 
 ---
 

@@ -315,11 +315,19 @@ class USASpendingIntegration(DatabaseIntegration):
         """
 
         # Build request body (filter out empty arrays - API rejects them)
+        # Also: keywords filter requires minimum 3 items per API spec
         filters = query_params.get("filters", {})
-        cleaned_filters = {
-            k: v for k, v in filters.items()
-            if v is not None and (not isinstance(v, list) or len(v) > 0)
-        }
+        cleaned_filters = {}
+        for k, v in filters.items():
+            if v is None:
+                continue
+            if isinstance(v, list) and len(v) == 0:
+                continue
+            # API requires minimum 3 keywords - drop filter if fewer
+            if k == "keywords" and isinstance(v, list) and len(v) < 3:
+                logger.debug(f"Dropping keywords filter (only {len(v)} items, API requires 3+)")
+                continue
+            cleaned_filters[k] = v
 
         request_body = {
             "filters": cleaned_filters,

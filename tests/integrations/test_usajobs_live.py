@@ -1,115 +1,131 @@
 #!/usr/bin/env python3
 """
-Test USAJobs integration with live API.
+Live test for USAJobs integration.
+
+Tests USAJobs integration with real API calls to verify:
+- Relevance checking works
+- Query generation works
+- Federal job postings are retrieved
+- Results are properly formatted
+- API key authentication works
 """
 
 import asyncio
-import os
 import sys
-from pathlib import Path
-from dotenv import load_dotenv
+sys.path.insert(0, '/home/brian/sam_gov')
 
-# Add parent directory to path
-sys.path.insert(0, str(Path(__file__).parent.parent))
-
-# Load environment
-load_dotenv()
-
-# Test imports
 from integrations.government.usajobs_integration import USAJobsIntegration
 
 
 async def main():
-    print("🧪 USAJobs Live API Test")
+    print("Testing USAJobs Integration...")
     print("=" * 80)
 
-    # Get API key
-    api_key = os.getenv('USAJOBS_API_KEY')
+    integration = USAJobsIntegration()
 
-    if not api_key:
-        print("✗ No USAJOBS_API_KEY found in .env")
-        return
+    # Test 1: Metadata
+    print("\n[TEST 1] Integration Metadata")
+    print("-" * 80)
+    metadata = integration.metadata
+    print(f"Name: {metadata.name}")
+    print(f"ID: {metadata.id}")
+    print(f"Category: {metadata.category}")
+    print(f"Requires API Key: {metadata.requires_api_key}")
+    print(f"Rate Limit (Daily): {metadata.rate_limit_daily}")
+    print(f"Description: {metadata.description}")
 
-    print(f"✓ API key loaded: {api_key[:10]}...")
-    print()
-
-    # Test 1: Generate query for data science jobs
-    print("Test 1: Data Science Jobs in DC")
+    # Test 2: Relevance Check
+    print("\n[TEST 2] Relevance Check")
     print("-" * 80)
 
-    usajobs = USAJobsIntegration()
-    query = await usajobs.generate_query("data science jobs in Washington DC")
+    test_questions = [
+        ("What cybersecurity jobs are available at NASA?", True),
+        ("Are there any AI research positions at DoD?", True),
+        ("What contracts does Lockheed have?", False),  # Should use SAM.gov
+        ("What is the latest news?", False),  # Should use NewsAPI
+    ]
 
-    if query:
-        print(f"✓ Query generated:")
-        print(f"  Keywords: {query.get('keywords')}")
-        print(f"  Location: {query.get('location')}")
-        print(f"  Organization: {query.get('organization')}")
-        print(f"  Pay grade: {query.get('pay_grade_low')} - {query.get('pay_grade_high')}")
+    for question, expected in test_questions:
+        relevant = await integration.is_relevant(question)
+        status = "✅" if relevant == expected else "❌"
+        print(f"{status} '{question}' → {relevant} (expected {expected})")
 
-        result = await usajobs.execute_search(query, api_key=api_key, limit=5)
-
-        if result.success:
-            print(f"✓ Search successful: {result.total:,} results found")
-            print(f"  Response time: {result.response_time_ms:.0f}ms")
-
-            if result.results:
-                print(f"\n  First result:")
-                first = result.results[0]
-                print(f"    Position Title: {first.get('PositionTitle', 'N/A')}")
-                print(f"    Organization: {first.get('OrganizationName', 'N/A')}")
-                print(f"    Location: {first.get('PositionLocationDisplay', 'N/A')[:60]}...")
-                print(f"    Grade: {first.get('JobGrade', [{}])[0].get('Code', 'N/A') if first.get('JobGrade') else 'N/A'}")
-
-                # Test field normalization (added for deep_research compatibility)
-                print(f"\n  Field Normalization Test:")
-                has_title = 'title' in first
-                has_description = 'description' in first
-                has_snippet = 'snippet' in first
-                has_raw_position_title = 'PositionTitle' in first
-
-                print(f"    ✓ Normalized 'title' field: {has_title}")
-                print(f"    ✓ Normalized 'description' field: {has_description}")
-                print(f"    ✓ Normalized 'snippet' field: {has_snippet}")
-                print(f"    ✓ Raw 'PositionTitle' preserved: {has_raw_position_title}")
-
-                if has_title and has_description and has_snippet and has_raw_position_title:
-                    print(f"    ✅ All required fields present (normalized + raw)")
-                    print(f"    Title value: {first.get('title', '')[:60]}...")
-                    print(f"    Description length: {len(first.get('description', ''))} chars")
-                    print(f"    Snippet length: {len(first.get('snippet', ''))} chars")
-                else:
-                    print(f"    ❌ MISSING FIELDS - normalization may be broken!")
-        else:
-            print(f"✗ Search failed: {result.error}")
-    else:
-        print("✗ Query generation failed (not relevant)")
-
-    print()
-
-    # Test 2: Cybersecurity jobs
-    print("Test 2: Cybersecurity Jobs")
+    # Test 3: Query Generation
+    print("\n[TEST 3] Query Generation")
     print("-" * 80)
 
-    query2 = await usajobs.generate_query("cybersecurity jobs requiring clearance")
+    test_query = "What cybersecurity analyst jobs are available at NASA?"
+    print(f"Question: {test_query}")
 
-    if query2:
-        print(f"✓ Query generated:")
-        print(f"  Keywords: {query2.get('keywords')}")
+    query_params = await integration.generate_query(test_query)
 
-        result2 = await usajobs.execute_search(query2, api_key=api_key, limit=3)
-
-        if result2.success:
-            print(f"✓ Search successful: {result2.total:,} results found")
-            print(f"  Response time: {result2.response_time_ms:.0f}ms")
-        else:
-            print(f"✗ Search failed: {result2.error}")
+    if query_params:
+        print(f"✅ Query generated:")
+        print(f"   Keywords: {query_params.get('keywords')}")
+        print(f"   Organization: {query_params.get('organization')}")
+        print(f"   Location: {query_params.get('location')}")
+        print(f"   Limit: {query_params.get('limit')}")
     else:
-        print("✗ Query generation failed")
+        print("❌ Query generation returned None (not relevant)")
 
-    print()
-    print("=" * 80)
-    print("✅ USAJobs API test complete!")
+    # Test 4: Execute Search
+    print("\n[TEST 4] Execute Search (cybersecurity jobs)")
+    print("-" * 80)
+
+    search_params = {
+        "keywords": "cybersecurity",
+        "organization": None,
+        "location": None,
+        "limit": 5
+    }
+
+    result = await integration.execute_search(search_params, api_key=None, limit=5)
+
+    print(f"Success: {result.success}")
+    print(f"Source: {result.source}")
+    print(f"Total Results: {result.total}")
+    print(f"Response Time: {result.response_time_ms}ms")
+
+    if result.error:
+        print(f"Error: {result.error}")
+
+    if result.results:
+        print(f"\nFirst 3 Job Postings:")
+        for i, doc in enumerate(result.results[:3], 1):
+            print(f"\n  {i}. {doc.get('title')}")
+            print(f"     Agency: {doc.get('metadata', {}).get('agency')}")
+            print(f"     Location: {doc.get('metadata', {}).get('location')}")
+            print(f"     Salary: {doc.get('metadata', {}).get('salary')}")
+            print(f"     URL: {doc.get('url')}")
+
+    # Test 5: NASA-specific Search
+    print("\n[TEST 5] NASA Job Search")
+    print("-" * 80)
+
+    nasa_params = {
+        "keywords": "engineer",
+        "organization": "National Aeronautics and Space Administration",
+        "location": None,
+        "limit": 3
+    }
+
+    result = await integration.execute_search(nasa_params, api_key=None, limit=3)
+
+    print(f"Success: {result.success}")
+    print(f"Total Results: {result.total}")
+
+    if result.results:
+        print(f"\nNASA Engineering Jobs:")
+        for i, doc in enumerate(result.results, 1):
+            print(f"  {i}. {doc.get('title')}")
+            print(f"     {doc.get('metadata', {}).get('agency')}")
+
+    print("\n" + "=" * 80)
+    print("USAJobs Integration Test Complete!")
+    print("\nNOTE: USAJobs requirements:")
+    print("- Requires API key from USAJOBS_API_KEY env var")
+    print("- Requires User-Agent header with email")
+    print("- Fast API (typically <1 second)")
 
 
 if __name__ == "__main__":

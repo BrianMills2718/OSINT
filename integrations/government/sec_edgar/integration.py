@@ -181,7 +181,7 @@ class SECEdgarIntegration(DatabaseIntegration):
                     "query_type": {
                         "type": "string",
                         "description": "Type of search to perform",
-                        "enum": ["company_filings", "company_search", "form_search"]
+                        "enum": ["company_filings", "company_search"]
                     },
                     "company_name": {
                         "type": ["string", "null"],
@@ -217,9 +217,15 @@ class SECEdgarIntegration(DatabaseIntegration):
         if not result.get("relevant", False):
             return None
 
+        # SEC EDGAR requires a company name - can't do generic keyword searches
+        company_name = result.get("company_name")
+        if not company_name:
+            logger.debug("SEC EDGAR: No company name provided, returning not relevant")
+            return None
+
         return {
             "query_type": result.get("query_type", "company_filings"),
-            "company_name": result.get("company_name"),
+            "company_name": company_name,
             "form_types": result.get("form_types", []),
             "keywords": result.get("keywords"),
             "limit": min(result.get("limit", 20), 100)  # Cap at 100

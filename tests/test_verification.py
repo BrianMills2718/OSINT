@@ -68,7 +68,14 @@ async def test_integration(integration_id: str, integration):
         "twitter": "defense technology news",
         "reddit": "military technology discussions",
         "discord": "OSINT intelligence analysis",
-        "brave_search": "defense contractors"
+        "brave_search": "defense contractors",
+        "sec_edgar": "What are Apple's recent 10-K filings?",
+        "usaspending": "defense contracts awarded to Lockheed Martin",
+        "newsapi": "artificial intelligence technology news",
+        "propublica": "nonprofit organizations in education",
+        "courtlistener": "federal court technology cases",
+        "icij_offshore_leaks": "offshore companies Panama Papers",
+        "wayback_machine": "archived government websites"
     }
 
     query_text = test_queries.get(integration_id, "government technology")
