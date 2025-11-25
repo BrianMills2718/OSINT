@@ -54,6 +54,7 @@ class ProPublicaIntegration(DatabaseIntegration):
 
     @property
     def metadata(self) -> DatabaseMetadata:
+        """Return metadata describing this integration."""
         return DatabaseMetadata(
             name="ProPublica Nonprofit Explorer",
             id="propublica",

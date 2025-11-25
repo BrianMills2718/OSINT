@@ -54,6 +54,7 @@ class NewsAPIIntegration(DatabaseIntegration):
 
     @property
     def metadata(self) -> DatabaseMetadata:
+        """Return metadata describing this integration."""
         db_config = config.get_database_config("newsapi")
 
         return DatabaseMetadata(

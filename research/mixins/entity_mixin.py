@@ -117,8 +117,10 @@ class EntityAnalysisMixin:
             # Convert "2210 Series" and "2210 series" to the same key
             normalized_entities = [e.strip().lower() for e in entities if e.strip()]
 
-            # For now, simple co-occurrence tracking
-            # TODO: Use LLM to extract actual relationships
+            # Co-occurrence tracking: entities appearing in the same result are related.
+            # This is a fast heuristic that works well for investigative research.
+            # Future enhancement: LLM-based relationship extraction for richer semantics
+            # (e.g., "contractor for", "acquired by", "subsidiary of").
             for i, entity1 in enumerate(normalized_entities):
                 if entity1 not in self.entity_graph:
                     self.entity_graph[entity1] = []

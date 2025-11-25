@@ -60,6 +60,7 @@ class USASpendingIntegration(DatabaseIntegration):
 
     @property
     def metadata(self) -> DatabaseMetadata:
+        """Return metadata describing this integration."""
         return DatabaseMetadata(
             name="USAspending",
             id="usaspending",

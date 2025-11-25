@@ -103,6 +103,7 @@ class IntegrationRegistry:
     """
 
     def __init__(self) -> None:
+        """Initialize registry with empty class and instance caches, then register defaults."""
         self._integration_classes: Dict[str, Type[DatabaseIntegration]] = {}
         self._cached_instances: Dict[str, DatabaseIntegration] = {}
         self._register_defaults()

@@ -1,44 +1,11 @@
 {# temporal_context: true #}
 Generate search parameters for Discord.
 
-Discord provides: Community discussions from OSINT/intelligence servers (Bellingcat, Project OWL, etc.).
-Content type: Informal discussions, breaking news reactions, expert analysis, geopolitical commentary.
-NOT: Job listings, contracts, official government documents, formal reports.
-
-AVAILABLE SERVERS:
-- Bellingcat: Open-source investigations, geolocation, verification
-- Project OWL: OSINT community - Middle East, Ukraine, geopolitics
-- Other intelligence/security communities
-
-API Parameters:
-- keywords (array of strings, required):
-    Key search terms or phrases for topic-based discussions.
-    Messages matching ANY keyword will be returned (OR search).
-
-    QUERY TIPS:
-    - Use terms people would actually SAY in discussions (informal language)
-    - Include acronyms and abbreviations common in OSINT (e.g., "OSINT", "GEOINT", "HUMINT")
-    - Preserve multi-word concepts as single terms (e.g., "domestic terrorism")
-    - Include relevant locations, people, or organization names
-    - 3-8 terms recommended (balance breadth vs relevance)
-
-    GOOD EXAMPLES:
-    - ["Ukraine", "Bakhmut", "Wagner", "drone footage"]
-    - ["F-35", "stealth", "radar cross section", "Taiwan"]
-    - ["China", "South China Sea", "military buildup", "satellite imagery"]
-
-    AVOID:
-    - Generic terms like "information" or "discussion"
-    - Contract/procurement language (not in Discord)
-    - Overly formal language
+Discord provides: Community discussions from OSINT and intelligence-focused servers. Content is informal discussions, not official documents or job listings.
 
 Research Question: {{ research_question }}
 
-RELEVANCE CRITERIA:
-✅ RELEVANT: Geopolitics, military conflicts, OSINT techniques, breaking news, intelligence analysis
-❌ NOT RELEVANT: Job searches, contracts, procurement, formal government documents
-
-Extract terms that would appear in INFORMAL DISCUSSIONS about this topic.
+Generate search terms that would find relevant discussions about this topic.
 
 Return JSON:
 {% raw %}

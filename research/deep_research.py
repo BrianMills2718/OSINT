@@ -3062,7 +3062,9 @@ class SimpleDeepResearch(
                             [registry.get_display_name(s) for s in selected_sources]
                         ))
                         sources_succeeded = self._get_sources(task.accumulated_results)
-                        elapsed_seconds = 0  # TODO: Track per-task timing
+                        # Per-task timing not tracked (research-level timing in self.start_time)
+                        # Task execution time varies based on retries, hypotheses, and source count
+                        elapsed_seconds = 0
 
                         self.logger.log_task_complete(
                             task_id=task.id,

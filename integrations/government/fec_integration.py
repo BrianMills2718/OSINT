@@ -66,6 +66,7 @@ class FECIntegration(DatabaseIntegration):
 
     @property
     def metadata(self) -> DatabaseMetadata:
+        """Return metadata describing this integration."""
         return DatabaseMetadata(
             name="FEC",
             id="fec",

@@ -55,6 +55,7 @@ class NewSourceIntegration(DatabaseIntegration):
 
     @property
     def metadata(self) -> DatabaseMetadata:
+        """Return metadata describing this integration."""
         return DatabaseMetadata(
             name="NewSource",              # Display name
             id="newsource",                 # Unique ID (lowercase, no spaces)

@@ -46,6 +46,7 @@ class CRESTIntegration(DatabaseIntegration):
 
     @property
     def metadata(self) -> DatabaseMetadata:
+        """Return metadata describing this integration."""
         return DatabaseMetadata(
             name="CIA CREST (Playwright - EXPERIMENTAL)",
             id="crest_playwright",

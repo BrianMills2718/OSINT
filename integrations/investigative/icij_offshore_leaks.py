@@ -68,6 +68,7 @@ class ICIJOffshoreLeaksIntegration(DatabaseIntegration):
 
     @property
     def metadata(self) -> DatabaseMetadata:
+        """Return metadata describing this integration."""
         return DatabaseMetadata(
             name="ICIJ Offshore Leaks",
             id="icij_offshore_leaks",

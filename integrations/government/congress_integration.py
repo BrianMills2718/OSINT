@@ -59,6 +59,7 @@ class CongressIntegration(DatabaseIntegration):
 
     @property
     def metadata(self) -> DatabaseMetadata:
+        """Return metadata describing this integration."""
         return DatabaseMetadata(
             name="Congress.gov",
             id="congress",

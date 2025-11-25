@@ -50,6 +50,7 @@ class WaybackMachineIntegration(DatabaseIntegration):
 
     @property
     def metadata(self) -> DatabaseMetadata:
+        """Return metadata describing this integration."""
         return DatabaseMetadata(
             name="Wayback Machine",
             id="wayback_machine",

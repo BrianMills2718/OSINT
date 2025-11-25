@@ -60,6 +60,7 @@ class BraveSearchIntegration(DatabaseIntegration):
 
     @property
     def metadata(self) -> DatabaseMetadata:
+        """Return metadata describing this integration."""
         return DatabaseMetadata(
             name="Brave Search",
             id="brave_search",

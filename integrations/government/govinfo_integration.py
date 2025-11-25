@@ -65,6 +65,7 @@ class GovInfoIntegration(DatabaseIntegration):
 
     @property
     def metadata(self) -> DatabaseMetadata:
+        """Return metadata describing this integration."""
         return DatabaseMetadata(
             name="GovInfo",
             id="govinfo",

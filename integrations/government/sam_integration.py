@@ -52,6 +52,7 @@ class SAMIntegration(DatabaseIntegration):
 
     @property
     def metadata(self) -> DatabaseMetadata:
+        """Return metadata describing this integration."""
         return DatabaseMetadata(
             # Core Identity
             name="SAM.gov",

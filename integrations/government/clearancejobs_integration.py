@@ -38,6 +38,7 @@ class ClearanceJobsIntegration(DatabaseIntegration):
 
     @property
     def metadata(self) -> DatabaseMetadata:
+        """Return metadata describing this integration."""
         return DatabaseMetadata(
             name="ClearanceJobs",
             id="clearancejobs",

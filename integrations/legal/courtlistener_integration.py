@@ -64,6 +64,7 @@ class CourtListenerIntegration(DatabaseIntegration):
 
     @property
     def metadata(self) -> DatabaseMetadata:
+        """Return metadata describing this integration."""
         return DatabaseMetadata(
             name="CourtListener",
             id="courtlistener",

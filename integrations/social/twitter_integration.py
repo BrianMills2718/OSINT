@@ -234,6 +234,7 @@ class TwitterIntegration(DatabaseIntegration):
 
     @property
     def metadata(self) -> DatabaseMetadata:
+        """Return metadata describing this integration."""
         return DatabaseMetadata(
             name="Twitter",
             id="twitter",

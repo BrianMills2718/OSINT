@@ -50,6 +50,7 @@ class FBIVaultIntegration(DatabaseIntegration):
 
     @property
     def metadata(self) -> DatabaseMetadata:
+        """Return metadata describing this integration."""
         return DatabaseMetadata(
             name="FBI Vault",
             id="fbi_vault",
