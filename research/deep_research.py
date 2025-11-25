@@ -352,11 +352,17 @@ class SimpleDeepResearch:
 
     def _display_cost_estimate(self):
         """Display estimated LLM call count and cost before starting research."""
-        # Estimate based on config
+        # Load estimation parameters from config (user-configurable, not hardcoded)
+        raw_config = config.get_raw_config()
+        deep_config = raw_config.get("research", {}).get("deep_research", {})
+        cost_config = deep_config.get("cost_estimation", {})
+
+        # All estimation parameters come from config with sensible defaults
         avg_tasks = min(5, self.max_tasks)  # Typically 3-5 tasks decomposed
-        avg_hypotheses_per_task = 4  # Typically 3-5
-        avg_sources_per_hypothesis = 6  # Typically 5-8 sources
-        avg_queries_per_source = 5  # With new saturation logic, could be 3-10+
+        avg_hypotheses_per_task = cost_config.get("avg_hypotheses_per_task", 4)
+        avg_sources_per_hypothesis = cost_config.get("avg_sources_per_hypothesis", 6)
+        avg_queries_per_source = cost_config.get("avg_queries_per_source", 5)
+        avg_cost_per_call = cost_config.get("avg_cost_per_llm_call", 0.0005)
 
         # LLM call breakdown
         task_decomposition = 1
@@ -384,10 +390,7 @@ class SimpleDeepResearch:
             entity_filtering + synthesis
         )
 
-        # Cost estimation (very rough)
-        # gpt-4o-mini: ~$0.15 per 1M input tokens, ~$0.60 per 1M output tokens
-        # Average call: ~1K input tokens, ~500 output tokens = $0.0005
-        avg_cost_per_call = 0.0005
+        # Cost estimation based on config
         estimated_cost = total_estimated_calls * avg_cost_per_call
 
         print("\n" + "="*60)

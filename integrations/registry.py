@@ -246,8 +246,9 @@ class IntegrationRegistry:
         try:
             db_config = config.get_database_config(integration_id)
             return db_config.get("enabled", True)  # Default to enabled if not specified
-        except Exception:
+        except Exception as e:
             # If config doesn't exist or fails to load, default to enabled
+            logger.warning(f"Failed to check if {integration_id} is enabled, defaulting to True: {e}", exc_info=True)
             return True
 
     def get(self, integration_id: str) -> Type[DatabaseIntegration]:
