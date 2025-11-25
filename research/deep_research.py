@@ -275,10 +275,9 @@ class SimpleDeepResearch:
         - Gradual migration: Old integrations will transition to direct calls
         """
         # Initialize data structures
+        # NOTE: All name lookups use registry.get_display_name() and registry.normalize_source_name()
+        # No parallel data structures needed - registry is single source of truth
         self.integrations = {}  # integration_id -> integration instance
-        self.tool_name_to_display = {}  # search_sam -> SAM.gov
-        self.display_to_tool_map = {}  # SAM.gov -> search_sam
-        self.tool_descriptions = {}  # search_sam -> description
         self.api_keys = {}  # integration_id -> API key from environment
 
         # NOTE: MCP servers (government_mcp, social_mcp) exist for EXTERNAL tool access
@@ -287,7 +286,7 @@ class SimpleDeepResearch:
         #
         # MCP servers are still available at integrations/mcp/ for external use.
 
-        # Build mcp_tools and web_tools for backward compatibility
+        # Build mcp_tools list for backward compatibility
         self.mcp_tools = []
         self.web_tools = []
 
@@ -300,15 +299,7 @@ class SimpleDeepResearch:
             # Store integration instance for direct access
             self.integrations[integration_id] = integration
 
-            # Build mappings: integration_id <-> display_name
-            # NOTE: These are kept for backward compatibility but should eventually
-            # be replaced with registry.get_display_name() and registry.normalize_source_name()
-            self.tool_name_to_display[integration_id] = metadata.name
-            self.display_to_tool_map[metadata.name] = integration_id
-            self.tool_descriptions[integration_id] = metadata.description
-
             # Get API key from registry (uses api_key_env_var from metadata)
-            # This replaces the hardcoded if/elif chain that was here
             self.api_keys[integration_id] = registry.get_api_key(integration_id)
 
             # Build tool config - all integrations use same structure now
@@ -321,10 +312,6 @@ class SimpleDeepResearch:
 
             # All tools go in mcp_tools now (web_tools distinction eliminated)
             self.mcp_tools.append(tool_config)
-
-        # Build reverse mapping for backwards compatibility
-        # TODO: Remove this - use registry.normalize_source_name() instead
-        self.tool_display_to_name = {v: k for k, v in self.tool_name_to_display.items()}
 
         # Log what was loaded
         logger.info(f"✅ Loaded {len(self.integrations)} integrations from registry (all use direct calls)")
@@ -1474,7 +1461,7 @@ class SimpleDeepResearch:
         Returns:
             Query string optimized for this source, or None on error
         """
-        source_display_name = self.tool_name_to_display.get(source_tool_name, source_tool_name)
+        source_display_name = registry.get_display_name(source_tool_name)
 
         # Render prompt with hypothesis context
         prompt = render_prompt(
@@ -1832,8 +1819,8 @@ class SimpleDeepResearch:
 
             try:
                 # Call source API using existing infrastructure
-                # Map display name → tool name
-                tool_name = self.tool_display_to_name.get(source_name)
+                # Map display name → tool name (use registry's normalize function)
+                tool_name = registry.normalize_source_name(source_name)
                 if not tool_name:
                     logger.error(f"Unknown source: {source_name}")
                     query_history.append({
@@ -2007,7 +1994,7 @@ class SimpleDeepResearch:
             print(f"   🔄 Query saturation enabled - iterative querying per source")
             for tool_name in source_tool_names:
                 try:
-                    source_display = self.tool_name_to_display.get(tool_name, tool_name)
+                    source_display = registry.get_display_name(tool_name)
                     print(f"   🔍 Saturating {source_display}...")
 
                     # Execute with saturation (multiple queries until LLM determines saturation)
@@ -2042,7 +2029,7 @@ class SimpleDeepResearch:
                         continue  # Query generation failed, skip this source
 
                     # Execute search (single-shot, no retries)
-                    source_display = self.tool_name_to_display.get(tool_name, tool_name)
+                    source_display = registry.get_display_name(tool_name)
                     print(f"   🔍 Searching {source_display}: '{query}'")
 
                     # Use existing search infrastructure
@@ -2119,7 +2106,7 @@ class SimpleDeepResearch:
                 "hypothesis_id": hypothesis_id,
                 "statement": hypothesis.get("statement", ""),
                 "results_count": len(deduplicated),
-                "sources": [self.tool_name_to_display.get(s, s) for s in source_tool_names],
+                "sources": [registry.get_display_name(s) for s in source_tool_names],
                 # Phase 3C: Add delta metrics
                 "delta_metrics": delta_metrics
             })
@@ -2536,12 +2523,9 @@ class SimpleDeepResearch:
 
     def _get_available_source_names(self) -> List[str]:
         """Get list of available database integration display names for hypothesis generation."""
-        # Map MCP tool names to display names (used in prompts)
-        display_names = []
-        for tool_name in self.tool_name_to_display.values():
-            if tool_name not in display_names:
-                display_names.append(tool_name)
-        return sorted(display_names)
+        # Get display names from registry (single source of truth)
+        display_names = [registry.get_display_name(id) for id in self.integrations]
+        return sorted(set(display_names))  # Use set for dedup
 
     async def _search_brave(self, query: str, max_results: int = 20) -> List[Dict]:
         """
@@ -2647,8 +2631,9 @@ class SimpleDeepResearch:
             - reason: LLM's explanation for why these sources were selected
         """
         # All tools are in mcp_tools now (unified list)
+        # Use registry for display names and descriptions (single source of truth)
         options_text = "\n".join([
-            f"- {self.tool_name_to_display[tool['name']]} ({tool['name']}): {self.tool_descriptions[tool['name']]}"
+            f"- {registry.get_display_name(tool['name'])} ({tool['name']}): {registry.get_metadata(tool['name']).description if registry.get_metadata(tool['name']) else ''}"
             for tool in self.mcp_tools
         ])
 
@@ -2695,33 +2680,22 @@ class SimpleDeepResearch:
             selected_sources = result.get("sources", [])
             reason = result.get("reason", "")
 
-            # Normalize source names to integration_id
-            # Accept both integration_id ("govinfo") and display_name ("GovInfo")
+            # Normalize source names to integration_id using registry (single source of truth)
+            # Handles: integration_id, display_name, case variations, common suffixes
             valid_sources = []
             for source in selected_sources:
-                if source in self.tool_name_to_display:
-                    # Already an integration_id
-                    valid_sources.append(source)
-                elif source in self.display_to_tool_map:
-                    # Display name - convert to integration_id
-                    valid_sources.append(self.display_to_tool_map[source])
-                elif source.lower() in [k.lower() for k in self.tool_name_to_display]:
-                    # Case-insensitive match for integration_id
-                    matched = next(k for k in self.tool_name_to_display if k.lower() == source.lower())
-                    valid_sources.append(matched)
-                elif source.lower() in [k.lower() for k in self.display_to_tool_map]:
-                    # Case-insensitive match for display_name
-                    matched_display = next(k for k in self.display_to_tool_map if k.lower() == source.lower())
-                    valid_sources.append(self.display_to_tool_map[matched_display])
+                normalized = registry.normalize_source_name(source)
+                if normalized:
+                    valid_sources.append(normalized)
                 else:
                     logger.warning(f"Unknown source '{source}' returned by LLM - skipping")
 
             # Log sources that were NOT selected
-            all_sources = list(self.tool_name_to_display.keys())
+            all_sources = list(self.integrations.keys())
             not_selected = [s for s in all_sources if s not in valid_sources]
             if not_selected and self.logger and task_id is not None:
                 for source in not_selected:
-                    source_display = self.tool_name_to_display.get(source, source)
+                    source_display = registry.get_display_name(source)
                     try:
                         self.logger.log_source_skipped(
                             task_id=task_id,
@@ -2779,7 +2753,7 @@ class SimpleDeepResearch:
             api_key = self.api_keys.get(api_key_name) if api_key_name else None
 
             # Get per-integration limit (Task 1: Per-Integration Limits)
-            source_name = self.tool_name_to_display.get(tool_name, tool_name)
+            source_name = registry.get_display_name(tool_name)
             integration_limit = config.get_integration_limit(source_name.lower().replace('.', '').replace(' ', ''))
 
             # Build tool arguments
@@ -2796,7 +2770,7 @@ class SimpleDeepResearch:
                 args["param_hints"] = param_adjustments[tool_name]
 
             # Log API call
-            source_name = self.tool_name_to_display.get(tool_name, tool_name)
+            source_name = registry.get_display_name(tool_name)
             if exec_logger and task_id is not None:
                 try:
                     exec_logger.log_api_call(
@@ -3008,7 +2982,7 @@ class SimpleDeepResearch:
             # Log failed API call
             if exec_logger and task_id is not None:
                 try:
-                    source_name = self.tool_name_to_display.get(tool_name, tool_name)
+                    source_name = registry.get_display_name(tool_name)
                     exec_logger.log_raw_response(
                         task_id=task_id,
                         attempt=attempt,
@@ -3065,7 +3039,7 @@ class SimpleDeepResearch:
         # Circuit breaker: Skip rate-limited sources
         skip_rate_limited_names = set()
         for tool in candidate_tools:
-            source_display_name = self.tool_name_to_display.get(tool["name"], tool["name"])
+            source_display_name = registry.get_display_name(tool["name"])
             if source_display_name in self.rate_limited_sources:
                 skip_rate_limited_names.add(tool["name"])
 
@@ -3085,7 +3059,7 @@ class SimpleDeepResearch:
                         logger.warning(f"Failed to log source skipped: {log_error}", exc_info=True)
 
         if skip_rate_limited_names:
-            skipped_display = [self.tool_name_to_display[name] for name in skip_rate_limited_names]
+            skipped_display = [registry.get_display_name(name) for name in skip_rate_limited_names]
             print(f"⊘ Skipping rate-limited sources (circuit breaker): {', '.join(skipped_display)}")
 
         # Filter tools to only those not rate-limited
@@ -3099,7 +3073,7 @@ class SimpleDeepResearch:
             return []
 
         # Emit progress: starting MCP tool searches
-        display_names = [self.tool_name_to_display[tool["name"]] for tool in filtered_tools]
+        display_names = [registry.get_display_name(tool["name"]) for tool in filtered_tools]
         print(f"🔍 Searching {len(filtered_tools)} MCP sources: {', '.join(display_names)}")
 
         all_results = []
@@ -3163,7 +3137,7 @@ class SimpleDeepResearch:
                     # Use LLM-adjusted sources (skip source selection LLM call)
                     selected_sources = adjusted_sources
                     source_selection_reason = f"Phase 2: Using LLM-adjusted sources from previous retry"
-                    print(f"📋 Phase 2: Using adjusted sources: {', '.join([self.tool_name_to_display.get(s, s) for s in selected_sources])}")
+                    print(f"📋 Phase 2: Using adjusted sources: {', '.join([registry.get_display_name(s) for s in selected_sources])}")
                 else:
                     # Get LLM-selected sources for this query (includes both MCP and web tools)
                     selected_sources, source_selection_reason = await self._select_relevant_sources(task.query, task_id=task.id)
@@ -3171,11 +3145,17 @@ class SimpleDeepResearch:
                 # Log source selection if logger enabled
                 if self.logger:
                     # Get human-readable source names
-                    selected_display_names = [self.tool_name_to_display.get(s, s) for s in selected_sources]
+                    selected_display_names = [registry.get_display_name(s) for s in selected_sources]
+                    # Build tool_descriptions dict from registry (single source of truth)
+                    tool_descs = {
+                        id: registry.get_metadata(id).description
+                        for id in self.integrations
+                        if registry.get_metadata(id)
+                    }
                     self.logger.log_source_selection(
                         task_id=task.id,
                         query=task.query,
-                        tool_descriptions=self.tool_descriptions,
+                        tool_descriptions=tool_descs,
                         selected_sources=selected_display_names,
                         reasoning=source_selection_reason
                     )
@@ -3356,27 +3336,14 @@ class SimpleDeepResearch:
                     sources_with_low_quality = []
 
                     for source in selected_sources:
-                        source_display = self.tool_name_to_display.get(source, source)
+                        source_display = registry.get_display_name(source)
                         source_results = [r for r in all_results if r.get('source') == source_display]
 
                         if not source_results:
-                            # Check if error or just no results
-                            # mcp_results is from _search_mcp_tools_selected() - check if this source failed
-                            if source in selected_mcp_tools:
-                                # Find this source in mcp_results (parallel gather results)
-                                # Guard against missing 'tool' key (can happen with malformed MCP responses)
-                                source_failed = any(
-                                    tool_result.get("tool") == source and not tool_result.get("success", False)
-                                    for tool_result in mcp_results
-                                    if isinstance(tool_result, dict)  # Ensure it's a dict
-                                )
-                                if source_failed:
-                                    sources_with_errors.append(source_display)
-                                else:
-                                    sources_with_zero_results.append(source_display)
-                            else:
-                                # Web search returned zero results
-                                sources_with_zero_results.append(source_display)
+                            # Source returned no results - classify as zero results
+                            # Note: We can't distinguish errors from empty results at this point
+                            # since _search_mcp_tools_selected returns transformed results, not raw status
+                            sources_with_zero_results.append(source_display)
                         else:
                             # Check if any results from this source were kept
                             source_has_kept_results = any(
@@ -3390,7 +3357,7 @@ class SimpleDeepResearch:
                     # Phase 2: Build source performance data for LLM source re-selection
                     source_performance = []
                     for source in selected_sources:
-                        source_display = self.tool_name_to_display.get(source, source)
+                        source_display = registry.get_display_name(source)
                         source_results = [r for r in all_results if r.get('source') == source_display]
                         kept_indices = [i for i, r in enumerate(all_results) if r.get('source') == source_display and i in relevant_indices]
 
@@ -3421,9 +3388,9 @@ class SimpleDeepResearch:
 
                     # Get available sources (all tools minus rate-limited ones)
                     available_sources = [
-                        self.tool_name_to_display[tool["name"]]
+                        registry.get_display_name(tool["name"])
                         for tool in self.mcp_tools
-                        if self.tool_name_to_display.get(tool["name"], tool["name"]) not in self.rate_limited_sources
+                        if registry.get_display_name(tool["name"]) not in self.rate_limited_sources
                     ]
 
                     # Reformulate query to find more results
@@ -3456,22 +3423,22 @@ class SimpleDeepResearch:
                         # Convert display names back to tool names for next source selection
                         adjusted_sources = []
 
-                        # Add "keep" sources
+                        # Add "keep" sources (use registry's normalize function)
                         for display_name in keep_sources:
-                            tool_name = self.tool_display_to_name.get(display_name)
+                            tool_name = registry.normalize_source_name(display_name)
                             if tool_name:
                                 adjusted_sources.append(tool_name)
 
-                        # Add "add" sources
+                        # Add "add" sources (use registry's normalize function)
                         for display_name in add_sources:
-                            tool_name = self.tool_display_to_name.get(display_name)
+                            tool_name = registry.normalize_source_name(display_name)
                             if tool_name and tool_name not in adjusted_sources:
                                 adjusted_sources.append(tool_name)
 
                         # Override selected_sources for next retry (skip LLM source selection)
                         # Store adjusted sources in task metadata for next iteration
                         task.param_adjustments["_adjusted_sources"] = adjusted_sources
-                        logger.info(f"Phase 2: Source re-selection applied - next retry will use: {[self.tool_name_to_display.get(s, s) for s in adjusted_sources]}")
+                        logger.info(f"Phase 2: Source re-selection applied - next retry will use: {[registry.get_display_name(s) for s in adjusted_sources]}")
 
                     # Phase 0: Log reformulation with full source context (for instrumentation)
                     if self.logger:
@@ -3603,7 +3570,7 @@ class SimpleDeepResearch:
                     # Log task completion if logger enabled
                     if self.logger:
                         sources_tried = list(set(
-                            [self.tool_name_to_display.get(s, s) for s in selected_sources]
+                            [registry.get_display_name(s) for s in selected_sources]
                         ))
                         sources_succeeded = self._get_sources(task.accumulated_results)
                         elapsed_seconds = 0  # TODO: Track per-task timing
@@ -3637,7 +3604,7 @@ class SimpleDeepResearch:
                     # Log task failure
                     if self.logger:
                         sources_tried = list(set(
-                            [self.tool_name_to_display.get(s, s) for s in selected_sources]
+                            [registry.get_display_name(s) for s in selected_sources]
                         ))
                         self.logger.log_task_complete(
                             task_id=task.id,
@@ -5245,7 +5212,7 @@ class SimpleDeepResearch:
 
         # Task 2B: Separate integrations from discovered websites
         all_sources = list(set(r.get('source', 'Unknown') for r in all_results))
-        integration_names = list(self.tool_name_to_display.values())
+        integration_names = [registry.get_display_name(id) for id in self.integrations]
 
         integrations_used = [s for s in all_sources if s in integration_names]
         websites_found = [s for s in all_sources if s not in integration_names and s != 'Unknown']
