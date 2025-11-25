@@ -1,6 +1,6 @@
 # Test Organization
 
-**101 active test files** organized into 4 categories (72 archived).
+**112 active test files** organized into 5 categories (72 archived).
 
 ## Quick Start
 
@@ -49,6 +49,9 @@ tests/
 │   ├── test_architectural_*.py         # Architecture validation
 │   └── test_search_fallback_*.py       # Fallback behavior
 │
+├── unit/ (11 files)                    # Unit tests for core components
+│   └── mixins/                         # Research mixin tests (95 tests)
+│
 └── archived/ (72 files)                # Diagnostic/deprecated tests
     ├── test_dvids_*_diagnostic.py      # DVIDS 403 investigation (12 files)
     ├── test_fbi_vault_*.py             # FBI Vault bypass tests (3 files)
@@ -91,7 +94,20 @@ tests/
 - Multi-source parallel execution
 - Search fallback behavior
 
-### 5. archived/ (72 files)
+### 5. unit/ (11 files)
+**Purpose**: Unit tests for core components using mocks
+
+**Coverage**:
+- 10 mixin test files covering research/mixins/*.py
+- 95 individual test cases
+- Tests isolation, error handling, edge cases
+
+**Key files**:
+- `test_entity_mixin.py` - Entity extraction
+- `test_hypothesis_mixin.py` - Hypothesis generation/coverage
+- `test_source_executor_mixin.py` - Parallel/sequential execution
+
+### 6. archived/ (72 files)
 **Purpose**: Obsolete, diagnostic, or investigative tests
 
 **Contents**:
@@ -174,6 +190,7 @@ BRAVE_API_KEY=...
 
 ## Recent Changes
 
+- **2025-11-25**: Added 95 unit tests for research mixins (tests/unit/mixins/)
 - **2025-11-25**: Archived 30 obsolete tests (DVIDS 403 investigation, ClearanceJobs Playwright, FBI Vault bypass experiments, fix validation tests)
 - **2025-11-25**: Reorganized test files - moved all *_live.py to integrations/, system tests to system/
 - **2025-11-25**: Moved documentation files (*.txt) to data/docs/
