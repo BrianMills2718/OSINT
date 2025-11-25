@@ -2,70 +2,104 @@
 
 ## Core Principle: Trust the LLM
 
-**Do NOT hardcode heuristics, rules, or prescriptive guidance.**
+The LLM receiving these prompts is intelligent. Give it context and let it reason.
 
-The LLM receiving these prompts is intelligent. Give it:
+Essential elements:
 1. **What the source contains** (factual description)
 2. **The goal** (what we're trying to achieve)
 3. **The output format** (JSON structure)
 
-Let it reason about the best approach.
+## The Key Distinction: Empirical vs Opinion
 
-## Anti-Patterns (FORBIDDEN)
+**GOOD: Empirical/factual guidance** - Based on testing or documentation
+**BAD: Opinion/assumption** - Based on what you think might work
 
+### Query Tips
+
+**GOOD** (empirically tested):
 ```
-❌ QUERY TIPS:
-   - Use proper names when available
-   - Keep queries focused - 1-3 terms work best
-   - Avoid generic terms
+USAJobs API query syntax (tested 2025-10-25):
+- "cybersecurity" returns 44 results
+- "cybersecurity analyst" returns 1 result
+- Three+ keywords returns 0 results
 
-❌ GOOD EXAMPLES:
-   - ["Ukraine", "Bakhmut", "Wagner"]
-
-❌ RELEVANCE CRITERIA:
-   ✅ RELEVANT: Topic A, Topic B
-   ❌ NOT RELEVANT: Topic C, Topic D
-
-❌ AVOID:
-   - Generic terms
-   - Overly complex queries
+The API is sensitive to query complexity.
 ```
 
-These hardcode assumptions and prevent intelligent reasoning.
+**BAD** (just opinion):
+```
+QUERY TIPS:
+- Use proper names when available
+- Keep queries focused
+- Avoid generic terms
+```
 
-## Correct Pattern
+### Examples
+
+**GOOD** (illustrates actual API behavior):
+```
+Query "Northrop Grumman cybersecurity" → 0 results (company filtering broken)
+Query "cybersecurity" → 200+ results
+```
+
+**BAD** (just aesthetic preference):
+```
+GOOD EXAMPLES:
+- ["Ukraine", "Bakhmut", "Wagner"]
+```
+
+### Relevance Guidance
+
+**GOOD** (factual disambiguation between sources):
+```
+SAM.gov has contracting OPPORTUNITIES (pre-award).
+USAspending has awarded CONTRACTS (post-award).
+
+If question says "contracts" without "opportunities/solicitations",
+it likely means awarded contracts → USAspending is relevant.
+```
+
+**BAD** (arbitrary checklist):
+```
+✅ RELEVANT: Espionage, terrorism, organized crime
+❌ NOT RELEVANT: Corporate matters, job listings
+```
+
+## What IS Allowed
+
+- **Factual API constraints** - Max chars, enum values, rate limits
+- **Empirically tested syntax** - Actual test results showing what works/fails
+- **Source disambiguation** - Factual differences between similar sources
+- **Output format** - JSON structure with field descriptions
+
+## What is NOT Allowed
+
+- **Made-up content inventories** - Don't list what you think a source contains
+- **Opinion-based tips** - Don't tell LLM how to write queries based on assumptions
+- **Arbitrary checklists** - Don't enumerate topics you think are relevant
+- **Untested examples** - Don't show "good" queries you haven't verified
+
+## Template Structure
 
 ```jinja
 {# temporal_context: true #}
 Generate search parameters for [Source Name].
 
-[Source Name] provides: [Factual description of what the source contains]
+[Source Name] provides: [Factual description]
+
+[If empirically tested: document actual API behavior]
 
 Research Question: {{ research_question }}
 
-Generate [query/parameters] that would effectively find relevant [documents/results].
+Generate [query/parameters] that would effectively find relevant results.
 
 Return JSON:
 {% raw %}
 {
-  "field1": "description",
-  "field2": "description"
+  "field": "description"
 }
 {% endraw %}
 ```
-
-## What IS Allowed
-
-- **Factual API documentation** - If the API has specific parameter constraints (e.g., max 200 chars, specific enum values), document those
-- **Empirically tested syntax** - If testing revealed that certain query syntax returns 0 results, that's factual (see reddit_query_generation.j2)
-- **Output format specification** - JSON structure with field names
-
-## What is NOT Allowed
-
-- **Made-up content inventories** - Don't list what you think a source contains unless you've verified it
-- **Prescriptive query tips** - Don't tell the LLM how to write queries
-- **Relevance checklists** - Don't enumerate what is/isn't relevant
-- **Examples of "good" queries** - Let the LLM figure out what works
 
 ## Temporal Context
 
