@@ -1,6 +1,6 @@
 # Test Organization
 
-**173 test files** organized into 4 categories for easier navigation.
+**101 active test files** organized into 4 categories (72 archived).
 
 ## Quick Start
 
@@ -29,37 +29,31 @@ tests/
 ├── test_verification.py                # Main comprehensive test (ALL sources)
 ├── test_config_schema.py               # Core config validation tests
 │
-├── integrations/ (95 files)            # Integration-specific tests
+├── integrations/ (68 files)            # Integration-specific tests
 │   ├── test_*_live.py                  # Live API tests (main test for each source)
-│   ├── test_sam_*.py                   # SAM.gov
-│   ├── test_dvids_*.py                 # DVIDS
-│   ├── test_clearancejobs_*.py         # ClearanceJobs
-│   ├── test_twitter_*.py               # Twitter
-│   ├── test_brave_*.py                 # Brave Search
-│   ├── test_usajobs_*.py               # USAJobs
-│   ├── test_sec_edgar_*.py             # SEC EDGAR
-│   ├── test_federal_register_*.py      # Federal Register
-│   ├── test_newsapi_*.py               # NewsAPI
+│   ├── test_dvids_*.py                 # DVIDS (11 files)
+│   ├── test_twitter_*.py               # Twitter (9 files)
+│   ├── test_sec_edgar_*.py             # SEC EDGAR (5 files)
+│   ├── test_clearancejobs_*.py         # ClearanceJobs (3 files)
 │   └── ...                             # Other integrations
 │
-├── features/ (18 files)                # Feature/phase tests
+├── features/ (15 files)                # Feature/phase tests
 │   ├── test_phase3a_*.py               # Phase 3A: Hypothesis generation
 │   ├── test_phase3b_*.py               # Phase 3B: Parallel execution
 │   ├── test_phase3c_*.py               # Phase 3C: Coverage assessment
-│   ├── test_deep_research_*.py         # Deep research workflows
-│   └── test_synthesis_*.py             # Synthesis formatter tests
+│   └── test_deep_research_*.py         # Deep research workflows
 │
 ├── system/ (16 files)                  # System-level tests
 │   ├── test_all_*.py                   # Comprehensive multi-source
 │   ├── test_registry_*.py              # Registry validation
 │   ├── test_architectural_*.py         # Architecture validation
-│   ├── test_search_fallback_*.py       # Fallback behavior
-│   └── test_http_client.py             # HTTP client tests
+│   └── test_search_fallback_*.py       # Fallback behavior
 │
-└── archived/ (42 files)                # Diagnostic/deprecated tests
-    ├── investigate_*.py                # Investigation scripts
-    ├── test_*_diagnostic.py            # Diagnostic tests
-    └── verify_*.py                     # Verification scripts
+└── archived/ (72 files)                # Diagnostic/deprecated tests
+    ├── test_dvids_*_diagnostic.py      # DVIDS 403 investigation (12 files)
+    ├── test_fbi_vault_*.py             # FBI Vault bypass tests (3 files)
+    ├── test_clearancejobs_*.py         # Obsolete Playwright/Puppeteer (4 files)
+    └── test_*_fix.py                   # Fix validation tests
 ```
 
 ---
@@ -71,7 +65,7 @@ tests/
 **Use**: Run this to verify system health
 **Auto-discovers**: All enabled integrations from registry
 
-### 2. integrations/ (95 files)
+### 2. integrations/ (68 files)
 **Purpose**: Test individual data source integrations
 **Pattern**: `test_{source}_*.py`
 **Tests**: Query generation, search execution, QueryResult format
@@ -79,19 +73,14 @@ tests/
 **Key files**:
 - `test_{source}_live.py` - Live API tests (requires API keys)
 - `test_{source}_integration.py` - Integration tests
-- `test_{source}_e2e.py` - End-to-end tests
 
-### 3. features/ (18 files)
+### 3. features/ (15 files)
 **Purpose**: Test specific research system features
 
 **Phase 3 (Hypothesis Branching)**:
 - Phase 3A: Hypothesis generation (planning only)
 - Phase 3B: Parallel hypothesis execution
 - Phase 3C: Coverage-based adaptive stopping
-
-**Other Features**:
-- Deep research workflows
-- Synthesis formatting
 
 ### 4. system/ (16 files)
 **Purpose**: System-level integration tests
@@ -101,15 +90,15 @@ tests/
 - Architectural validation
 - Multi-source parallel execution
 - Search fallback behavior
-- HTTP client and rate limiting
 
-### 5. archived/ (42 files)
+### 5. archived/ (72 files)
 **Purpose**: Obsolete, diagnostic, or investigative tests
 
 **Contents**:
-- One-off investigation scripts
-- Deprecated test files
-- Fix validation tests (after bugs resolved)
+- DVIDS 403 investigation tests (12 files)
+- FBI Vault stealth bypass experiments (3 files)
+- ClearanceJobs Playwright/Puppeteer (4 files, obsoleted by HTTP)
+- One-off fix validation tests
 
 ---
 
@@ -185,7 +174,8 @@ BRAVE_API_KEY=...
 
 ## Recent Changes
 
-- **2025-11-25**: Reorganized 173 test files - moved all *_live.py to integrations/, system tests to system/
+- **2025-11-25**: Archived 30 obsolete tests (DVIDS 403 investigation, ClearanceJobs Playwright, FBI Vault bypass experiments, fix validation tests)
+- **2025-11-25**: Reorganized test files - moved all *_live.py to integrations/, system tests to system/
 - **2025-11-25**: Moved documentation files (*.txt) to data/docs/
 - **2025-11-21**: Organized 125 test files into 4 categories
 - **2025-11-21**: Added `test_congress_live.py` and `test_crest_live.py`
