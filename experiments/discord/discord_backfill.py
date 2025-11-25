@@ -27,6 +27,55 @@ MAX_RETRIES = 3
 RETRY_DELAY_SECONDS = 300  # 5 minutes between retries
 
 
+def validate_json_file(filepath: Path) -> tuple[bool, str]:
+    """
+    Validate that a JSON file is complete and parseable.
+
+    Returns:
+        (True, "") if valid
+        (False, "error message") if invalid
+    """
+    try:
+        with open(filepath, 'r', encoding='utf-8') as f:
+            content = f.read()
+
+        # Check for truncation signs (file should end with proper JSON structure)
+        stripped = content.rstrip()
+        if not stripped.endswith('}'):
+            return (False, "File appears truncated - doesn't end with '}'")
+
+        # Try to parse the JSON
+        json.loads(content)
+        return (True, "")
+
+    except json.JSONDecodeError as e:
+        return (False, f"JSON parse error: {e}")
+    except Exception as e:
+        return (False, f"Error reading file: {e}")
+
+
+def validate_recent_exports(exports_dir: Path, since_time: float) -> tuple[List[Path], List[tuple[Path, str]]]:
+    """
+    Validate all JSON files modified after since_time.
+
+    Returns:
+        (valid_files, invalid_files) where invalid_files is list of (path, error_msg)
+    """
+    valid = []
+    invalid = []
+
+    for json_file in exports_dir.glob("**/*.json"):
+        # Only check files modified after since_time
+        if json_file.stat().st_mtime > since_time:
+            is_valid, error = validate_json_file(json_file)
+            if is_valid:
+                valid.append(json_file)
+            else:
+                invalid.append((json_file, error))
+
+    return valid, invalid
+
+
 def load_state():
     """Load backfill state."""
     if not CONFIG_FILE.exists():
@@ -69,7 +118,7 @@ def export_date_range(server_id: str, token: str, start_date: str, end_date: str
         log_file: Path to log file
 
     Returns:
-        True if successful, False otherwise
+        True if successful AND all exports are valid JSON, False otherwise
     """
     EXPORTS_DIR.mkdir(parents=True, exist_ok=True)
     LOGS_DIR.mkdir(parents=True, exist_ok=True)
@@ -87,6 +136,9 @@ def export_date_range(server_id: str, token: str, start_date: str, end_date: str
 
     print(f"  Exporting {start_date} to {end_date}...")
 
+    # Record start time for validation
+    export_start_time = time.time()
+
     try:
         with open(log_file, 'a') as log:
             log.write(f"\n{'='*80}\n")
@@ -102,7 +154,21 @@ def export_date_range(server_id: str, token: str, start_date: str, end_date: str
             )
 
             if result.returncode == 0:
+                # Validate all newly created JSON files
+                valid_files, invalid_files = validate_recent_exports(EXPORTS_DIR, export_start_time)
+
+                if invalid_files:
+                    log.write(f"\n⚠ Export completed but {len(invalid_files)} file(s) are invalid:\n")
+                    for invalid_path, error in invalid_files:
+                        log.write(f"  - {invalid_path.name}: {error}\n")
+                        # Delete invalid files to prevent future issues
+                        print(f"  ⚠ Deleting invalid export: {invalid_path.name}")
+                        invalid_path.unlink()
+                    log.write(f"\n✗ Deleted {len(invalid_files)} invalid file(s) - marking as failed\n")
+                    return False
+
                 log.write(f"\n✓ Export completed successfully at {datetime.now()}\n")
+                log.write(f"  Validated {len(valid_files)} JSON file(s)\n")
                 return True
             else:
                 log.write(f"\n✗ Export failed with code {result.returncode} at {datetime.now()}\n")
@@ -112,6 +178,16 @@ def export_date_range(server_id: str, token: str, start_date: str, end_date: str
         print(f"  ✗ Export timed out after 1 hour")
         with open(log_file, 'a') as log:
             log.write(f"\n✗ Export timed out at {datetime.now()}\n")
+
+        # Clean up any truncated files created during this export
+        valid_files, invalid_files = validate_recent_exports(EXPORTS_DIR, export_start_time)
+        if invalid_files:
+            for invalid_path, error in invalid_files:
+                print(f"  ⚠ Deleting truncated file: {invalid_path.name}")
+                invalid_path.unlink()
+            with open(log_file, 'a') as log:
+                log.write(f"  Cleaned up {len(invalid_files)} truncated file(s)\n")
+
         return False
     except Exception as e:
         print(f"  ✗ Export failed: {e}")
