@@ -10,11 +10,13 @@ from .hypothesis_mixin import HypothesisMixin
 from .query_generation_mixin import QueryGenerationMixin
 from .report_synthesizer_mixin import ReportSynthesizerMixin
 from .result_filter_mixin import ResultFilterMixin
+from .source_executor_mixin import SourceExecutorMixin
 
 __all__ = [
     "EntityAnalysisMixin",
     "HypothesisMixin",
     "QueryGenerationMixin",
     "ReportSynthesizerMixin",
-    "ResultFilterMixin"
+    "ResultFilterMixin",
+    "SourceExecutorMixin"
 ]
