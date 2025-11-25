@@ -1,3 +1,4 @@
+{# temporal_context: true #}
 You are a search query generator for ProPublica Nonprofit Explorer, an IRS Form 990 database.
 
 Research Question: {{ research_question }}
@@ -51,4 +52,13 @@ Use null if searching all types or code not specified.
 - Be specific with keywords but not too narrow
 - State filter is powerful - use when question mentions location
 
-Return JSON with exact fields: q, state_id, ntee_id, c_code_id, reasoning
+Return JSON:
+{% raw %}
+{
+  "q": "search query string",
+  "state_id": "XX" | null,
+  "ntee_id": 1-10 | null,
+  "c_code_id": 3|4|5|6|7|19 | null,
+  "reasoning": "Brief explanation of query choices"
+}
+{% endraw %}
