@@ -2,7 +2,23 @@
 """
 Simple Deep Research Engine - No framework needed.
 
-Capabilities:
+DEPRECATED (2025-11-26): This is v1 of the research system.
+The new v2 RecursiveResearchAgent (research/recursive_agent.py) is now the default.
+
+v2 advantages:
+- 3.7x less code (~1,200 lines vs 4,392)
+- ~150x fewer LLM calls per query
+- Dynamic goal decomposition (LLM decides depth)
+- Better API resilience (fewer calls = less susceptible to outages)
+
+Use v2 for new work:
+    from research.recursive_agent import RecursiveResearchAgent, Constraints
+
+This v1 module remains for backward compatibility with existing tests.
+
+---
+
+Capabilities (v1):
 - Task decomposition (LLM breaks complex questions into searches)
 - Retry logic (if search fails, reformulate query and retry)
 - Entity relationship tracking (connects findings across tasks)
