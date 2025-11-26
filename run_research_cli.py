@@ -39,6 +39,11 @@ async def main():
     parser.add_argument('--max-tasks', type=int, help='Legacy: maps to --max-goals')
     parser.add_argument('--max-retries', type=int, help='Legacy: ignored in v2 (automatic retry logic)')
 
+    # Export options
+    parser.add_argument('--export', nargs='*', choices=['pdf', 'docx', 'word'],
+                        metavar='FORMAT',
+                        help='Export report to PDF/Word. Use without args for both, or specify: --export pdf docx')
+
     args = parser.parse_args()
 
     print(f"v2 Recursive Research Agent")
@@ -161,6 +166,30 @@ async def main():
         print("\n--- Synthesis Preview ---")
         preview = result.synthesis[:500] + "..." if len(result.synthesis) > 500 else result.synthesis
         print(preview)
+
+    # Export to PDF/Word if requested
+    if args.export is not None:
+        from core.report_exporter import ReportExporter
+
+        # Default to both formats if --export used without args
+        formats = args.export if args.export else ['pdf', 'docx']
+        # Normalize 'word' to 'docx'
+        formats = ['docx' if f == 'word' else f for f in formats]
+
+        report_md = output_dir / "report.md"
+        if report_md.exists():
+            print("\n--- Exporting Report ---")
+            exporter = ReportExporter()
+            export_results = exporter.export_all(
+                source=report_md,
+                output_dir=output_dir,
+                base_name="report",
+                formats=formats
+            )
+            for fmt, path in export_results.items():
+                print(f"  {fmt.upper()}: {path}")
+        else:
+            print("\nWarning: No report.md found, skipping export")
 
     return 0 if result.status == GoalStatus.COMPLETED else 1
 
