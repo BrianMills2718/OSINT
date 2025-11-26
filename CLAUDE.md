@@ -395,6 +395,40 @@ class NewIntegration(DatabaseIntegration):
 4. Test E2E: `python3 apps/ai_research.py "query"`
 5. Update STATUS.md with [PASS]/[BLOCKED]
 
+### Result Transformation (SearchResultBuilder)
+
+**ALWAYS use SearchResultBuilder** for transforming API responses to standardized results.
+
+**Pattern**:
+```python
+from core.result_builder import SearchResultBuilder
+
+# In execute_search():
+for item in api_results:
+    result = (SearchResultBuilder()
+        .title(item.get("name"), default="Untitled")
+        .url(item.get("link"))
+        .snippet(item.get("description"))
+        .date(item.get("created_at"))
+        .metadata({
+            "source_id": item.get("id"),
+            "amount": SearchResultBuilder.safe_amount(item.get("value"))
+        })
+        .build())
+    results.append(result)
+```
+
+**Static helpers** (safe to use in f-strings):
+- `SearchResultBuilder.safe_amount(value, default=0.0)` - Handle None/invalid numbers
+- `SearchResultBuilder.format_amount(value)` - Format as "$1,234.56"
+- `SearchResultBuilder.safe_text(value, default="", max_length=None)` - Handle None/truncate
+- `SearchResultBuilder.safe_date(value)` - Handle None/datetime/date/string
+- `SearchResultBuilder.safe_int(value, default=0)` - Handle None/floats/strings
+
+**Why required**: Prevents TypeError crashes from null API response values. All 25+ integrations use this pattern.
+
+**Reference**: `core/result_builder.py`, `integrations/_integration_template.py`
+
 ---
 
 ## TESTING
@@ -531,6 +565,13 @@ pip list | grep playwright
 ## CURRENT STATUS
 
 **Recently Completed** (2025-11-26 - Current Session):
+- ✅ **SearchResultBuilder Migration** - **COMPLETE** (commits 34b89bf, 3e7df84, 39ba3a2, 741e1c4)
+  - **Problem**: TypeError crashes from null API response values (e.g., FEC amount formatting bug)
+  - **Solution**: Created `core/result_builder.py` with defensive builder pattern
+  - **Migration**: All 25+ integrations now use SearchResultBuilder for result transformation
+  - **Validation**: Registration now warns if new integrations don't use builder
+  - **Testing**: 41 unit tests in `tests/test_result_builder.py`
+  - Files: core/result_builder.py (new), 25 integration files updated, integrations/registry.py
 - ✅ **Source Classification Bug Fix** - **COMPLETE** (commit 80317a3)
   - Fixed HTTP errors being misclassified as "zero results" instead of "errors"
   - Now uses `source_execution_status` dict to distinguish error vs empty
