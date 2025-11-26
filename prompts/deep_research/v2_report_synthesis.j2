@@ -37,6 +37,24 @@ Total: {{ evidence_count }} pieces from {{ source_count }} sources
 {% endfor %}
 {% endif %}
 
+## ENTITIES DISCOVERED
+{% if entity_relationships %}
+Total: {{ entities_discovered }} entities extracted from evidence
+
+{% for entity in entity_relationships %}
+- **{{ entity.name }}**
+{% if entity.related_to %}
+  Related to: {{ entity.related_to | join(', ') }}
+{% endif %}
+{% if entity.evidence %}
+  Evidence: {{ entity.evidence[0][:100] }}...
+{% endif %}
+
+{% endfor %}
+{% else %}
+No entities extracted.
+{% endif %}
+
 ## SYNTHESIS REQUIREMENTS
 
 Create a comprehensive research report with:

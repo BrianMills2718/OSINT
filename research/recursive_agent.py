@@ -18,6 +18,7 @@ from typing import List, Dict, Any, Optional, Union
 from enum import Enum
 
 from dotenv import load_dotenv
+from research.services.entity_analyzer import EntityAnalyzer
 
 load_dotenv()
 
@@ -542,6 +543,11 @@ class RecursiveResearchAgent:
         else:
             self.output_dir = Path(output_dir) if isinstance(output_dir, str) else output_dir
         self.logger = ExecutionLogger(self.output_dir)
+
+        # Entity analyzer for relationship tracking
+        self.entity_analyzer = EntityAnalyzer(
+            progress_callback=lambda event, msg: logger.info(f"[Entity] {event}: {msg}")
+        )
 
         # Will be initialized
         self.registry = None
@@ -1079,6 +1085,20 @@ Return JSON:
             filtered_msg = f" (filtered {original_count}→{len(evidence)})" if len(evidence) != original_count else ""
             print(f"    ✓ {source_id}: {len(evidence)} results{filtered_msg}")
 
+            # Extract entities from results (builds relationship graph)
+            if evidence:
+                results_for_extraction = [
+                    {"title": e.title, "snippet": e.content[:300], "url": e.url}
+                    for e in evidence
+                ]
+                entities = await self.entity_analyzer.extract_and_update(
+                    results=results_for_extraction,
+                    research_question=context.original_objective,
+                    task_query=goal
+                )
+                if entities:
+                    print(f"    📊 Extracted {len(entities)} entities: {', '.join(entities[:5])}")
+
             return GoalResult(
                 goal=goal,
                 status=GoalStatus.COMPLETED if evidence else GoalStatus.FAILED,
@@ -1597,10 +1617,22 @@ Return JSON:
 
     async def _save_result(self, result: GoalResult):
         """Save the final result to disk."""
-        # Save JSON result
+        # Save JSON result (includes entity graph)
+        result_dict = self._result_to_dict(result)
+        result_dict["entity_graph"] = self.entity_analyzer.get_entity_graph()
+        result_dict["entities_discovered"] = len(self.entity_analyzer.get_all_entities())
+
         result_path = self.output_dir / "result.json"
         with open(result_path, 'w') as f:
-            json.dump(self._result_to_dict(result), f, indent=2, default=str)
+            json.dump(result_dict, f, indent=2, default=str)
+
+        # Save entity graph separately for easy access
+        entity_path = self.output_dir / "entities.json"
+        with open(entity_path, 'w') as f:
+            json.dump({
+                "entities": self.entity_analyzer.get_all_entities(),
+                "graph": self.entity_analyzer.get_entity_graph()
+            }, f, indent=2, default=str)
 
         # Generate and save markdown report (LLM-based synthesis)
         print("Generating report synthesis...")
@@ -1671,6 +1703,21 @@ Return JSON:
         # Collect unique sources queried
         sources_queried = list(by_source.keys())
 
+        # Get entity graph for report
+        entity_graph = self.entity_analyzer.get_entity_graph()
+        entities_list = self.entity_analyzer.get_all_entities()
+
+        # Format entity relationships for prompt
+        entity_relationships = []
+        for entity_name, data in entity_graph.items():
+            related = data.get("related_entities", [])
+            evidence = data.get("evidence", [])
+            entity_relationships.append({
+                "name": entity_name,
+                "related_to": related[:5],  # Limit for prompt size
+                "evidence": evidence[:2] if evidence else []
+            })
+
         try:
             # Render prompt with template
             prompt = render_prompt(
@@ -1681,7 +1728,9 @@ Return JSON:
                 evidence_by_source=by_source,
                 sub_results=sub_results_summary,
                 goals_pursued=len(result.sub_results) + 1,
-                sources_queried=sources_queried
+                sources_queried=sources_queried,
+                entities_discovered=len(entities_list),
+                entity_relationships=entity_relationships[:20]  # Top 20 entities
             )
 
             # Call LLM for structured synthesis
