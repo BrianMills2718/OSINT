@@ -299,6 +299,78 @@ class USASpendingIntegration(DatabaseIntegration):
             logger.error(f"USAspending query generation failed: {e}", exc_info=True)
             return None
 
+    # Common abbreviation expansions for USAspending keyword validation
+    KEYWORD_EXPANSIONS = {
+        "ai": "artificial intelligence",
+        "ml": "machine learning",
+        "it": "information technology",
+        "dod": "department of defense",
+        "dhs": "department of homeland security",
+        "va": "veterans affairs",
+        "hhs": "health and human services",
+        "gsa": "general services administration",
+        "nih": "national institutes of health",
+        "fda": "food and drug administration",
+        "epa": "environmental protection agency",
+        "nasa": "national aeronautics space administration",
+        "nsa": "national security agency",
+        "cia": "central intelligence agency",
+        "fbi": "federal bureau investigation",
+        "atf": "alcohol tobacco firearms",
+        "dea": "drug enforcement administration",
+        "ice": "immigration customs enforcement",
+        "cbp": "customs border protection",
+        "tsa": "transportation security administration",
+        "irs": "internal revenue service",
+        "sec": "securities exchange commission",
+        "ftc": "federal trade commission",
+        "fcc": "federal communications commission",
+        "dot": "department of transportation",
+        "doe": "department of energy",
+        "hud": "housing urban development",
+        "usda": "agriculture",
+        "r&d": "research and development",
+        "cyber": "cybersecurity",
+        "c2": "command and control",
+        "isr": "intelligence surveillance reconnaissance",
+        "ew": "electronic warfare",
+        "uav": "unmanned aerial vehicle",
+        "uas": "unmanned aircraft system",
+    }
+
+    def _validate_and_expand_keywords(self, keywords: List[str]) -> List[str]:
+        """
+        Validate and expand keywords to meet USAspending API requirements.
+
+        USAspending API requires each keyword to be at least 3 characters.
+        This method expands common abbreviations and filters out invalid keywords.
+
+        Args:
+            keywords: List of keywords from LLM query generation
+
+        Returns:
+            List of validated/expanded keywords (each ≥3 chars)
+        """
+        if not keywords:
+            return []
+
+        expanded = []
+        for keyword in keywords:
+            keyword_lower = keyword.lower().strip()
+
+            # Check if it's a known abbreviation that needs expansion
+            if keyword_lower in self.KEYWORD_EXPANSIONS:
+                expanded.append(self.KEYWORD_EXPANSIONS[keyword_lower])
+                logger.debug(f"Expanded keyword '{keyword}' → '{self.KEYWORD_EXPANSIONS[keyword_lower]}'")
+            elif len(keyword) >= 3:
+                # Keep keywords that are already long enough
+                expanded.append(keyword)
+            else:
+                # Skip keywords that are too short and have no expansion
+                logger.warning(f"Dropping keyword '{keyword}' (too short, no expansion available)")
+
+        return expanded
+
     async def execute_search(
         self,
         query_params: Dict,
@@ -324,6 +396,13 @@ class USASpendingIntegration(DatabaseIntegration):
 
         # Build request body (filter out empty arrays - API rejects them)
         filters = query_params.get("filters", {})
+
+        # Validate and expand keywords to meet API requirements (min 3 chars)
+        if "keywords" in filters and filters["keywords"]:
+            original_keywords = filters["keywords"]
+            filters["keywords"] = self._validate_and_expand_keywords(original_keywords)
+            if filters["keywords"] != original_keywords:
+                logger.info(f"Keywords expanded: {original_keywords} → {filters['keywords']}")
         cleaned_filters = {}
         for k, v in filters.items():
             if v is None:
