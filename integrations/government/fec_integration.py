@@ -432,7 +432,7 @@ class FECIntegration(DatabaseIntegration):
         transformed_results = []
         for contrib in results[:limit]:
             contributor = contrib.get("contributor_name", "Unknown Contributor")
-            amount = contrib.get("contribution_receipt_amount", 0)
+            amount = contrib.get("contribution_receipt_amount") or 0  # Handle None values
             recipient = contrib.get("committee", {}).get("name", "Unknown Committee")
             date = contrib.get("contribution_receipt_date", "")
 
