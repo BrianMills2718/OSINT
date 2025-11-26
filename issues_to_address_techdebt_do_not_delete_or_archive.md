@@ -14,34 +14,7 @@ This file tracks ongoing technical issues, bugs, and tech debt that need to be a
 
 ## Medium Priority
 
-### FBI Vault Integration - SeleniumBase Chrome Detection
-**Discovered**: 2025-10-20
-**Severity**: Medium (integration blocked but not critical for MVP)
-**Status**: DEFERRED
-
-**Symptoms**:
-- SeleniumBase reports "Chrome not found!" despite Chrome binary existing
-- Chrome installed at: `~/.cache/puppeteer/chrome/linux-131.0.6778.204/chrome-linux64/chrome`
-- Code already passes `binary_location` parameter to SeleniumBase
-
-**Impact**:
-- FBI Vault integration non-functional
-- FOIA documents unavailable
-- Not critical for Phase 1 MVP
-
-**Possible Causes**:
-1. WSL2 environment detection issues
-2. SeleniumBase expecting different Chrome path structure
-3. Permissions issues with Puppeteer cache directory
-
-**Investigation Steps** (when prioritized):
-1. Try manual SeleniumBase installation: `playwright install chromium`
-2. Test Chrome binary directly: `~/.cache/puppeteer/chrome/linux-131.0.6778.204/chrome-linux64/chrome --version`
-3. Check SeleniumBase documentation for WSL2-specific configuration
-4. Try alternative Chrome installation methods
-
-**Files**:
-- `integrations/government/fbi_vault.py` (lines 156-253: _scrape_fbi_vault_sync method)
+**No medium priority issues currently open.**
 
 ---
 
@@ -129,7 +102,16 @@ If v1 is archived, this goes with it automatically.
 
 ---
 
-## Recently Resolved (2025-11-24)
+## Recently Resolved (2025-11-26)
+
+**FBI Vault SeleniumBase Chrome Detection** (verified 2025-11-26)
+- "Chrome not found!" errors → Now working with xvfb fallback
+- Test: 10 results returned in ~11s for "organized crime" query
+- Resolution: Environment/SeleniumBase matured; xvfb fallback handles X11 issues
+
+---
+
+## Previously Resolved (2025-11-24)
 
 **Federal Register Agency Validation** (commit 6c219fa)
 - Invalid agency slugs causing 400 errors → Fixed with 3-layer validation
