@@ -1,0 +1,71 @@
+{# temporal_context: true #}
+Generate search parameters for Exa AI semantic search.
+
+Exa is an AI-powered search engine that understands MEANING, not just keywords.
+Use it when:
+- You need to find conceptually related content (not exact keyword matches)
+- You want to find "companies similar to X" or "content like this URL"
+- The user's query is conceptual/exploratory, not specific fact-finding
+
+Available search patterns:
+
+{% for pattern_id, pattern in query_patterns.items() %}
+{{ pattern_id }}:
+  Description: {{ pattern.description }}
+  Endpoint: {{ pattern.endpoint }}
+  Use when: {{ pattern.use_when }}
+
+{% endfor %}
+
+Category filters available:
+- company: Find company/organization websites
+- research paper: Academic/scientific papers
+- news: News articles
+- pdf: PDF documents
+- github: GitHub repositories
+- tweet: Twitter/X posts
+- personal site: Personal websites/blogs
+- linkedin profile: LinkedIn profiles
+- financial report: Financial/SEC filings
+
+Research Question: {{ research_question }}
+
+Generate the optimal Exa search parameters:
+
+1. Choose the right pattern:
+   - semantic_search: For conceptual queries, exploratory research
+   - find_similar: If you have a specific URL and want similar pages
+
+2. Craft an effective query:
+   - For semantic_search: Describe what you're looking for conceptually
+   - For find_similar: Provide the URL to find similar content to
+
+3. Use category filter if appropriate:
+   - "company" for finding organizations
+   - "news" for recent coverage
+   - "research paper" for academic sources
+   - Leave null for broad search
+
+4. Date filtering:
+   - Use start/end_published_date for time-sensitive queries
+   - Format: YYYY-MM-DD
+   - Leave null if time range doesn't matter
+
+5. Text filters:
+   - include_text: Require this text in results
+   - exclude_text: Filter out results with this text
+
+Return JSON with your search strategy:
+{% raw %}
+{
+  "pattern": "semantic_search or find_similar",
+  "query": "search query or URL",
+  "num_results": 10,
+  "category": "company|news|research paper|pdf|github|tweet|personal site|linkedin profile|financial report|null",
+  "start_published_date": "YYYY-MM-DD or null",
+  "end_published_date": "YYYY-MM-DD or null",
+  "include_text": "required text or null",
+  "exclude_text": "excluded text or null",
+  "reasoning": "Brief explanation of search strategy"
+}
+{% endraw %}

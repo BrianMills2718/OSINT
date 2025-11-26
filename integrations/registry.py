@@ -61,6 +61,9 @@ except ImportError as e:
 from integrations.social.discord_integration import DiscordIntegration
 from integrations.social.brave_search_integration import BraveSearchIntegration
 
+# Import web search integrations
+from integrations.web.exa_integration import ExaIntegration
+
 # Import news integrations
 from integrations.news.newsapi_integration import NewsAPIIntegration
 
@@ -153,6 +156,7 @@ class IntegrationRegistry:
 
         # Web search & news
         self._try_register("brave_search", BraveSearchIntegration)
+        self._try_register("exa", ExaIntegration)
         self._try_register("newsapi", NewsAPIIntegration)
 
         # Nonprofit sources
