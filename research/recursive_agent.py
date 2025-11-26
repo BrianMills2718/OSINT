@@ -238,10 +238,10 @@ class GoalEvent:
 class ExecutionLogger:
     """Structured logging for goal execution."""
 
-    def __init__(self, output_dir: Path):
-        self.output_dir = output_dir
+    def __init__(self, output_dir: Union[str, Path]):
+        self.output_dir = Path(output_dir) if isinstance(output_dir, str) else output_dir
         self.output_dir.mkdir(parents=True, exist_ok=True)
-        self.log_path = output_dir / "execution_log.jsonl"
+        self.log_path = self.output_dir / "execution_log.jsonl"
         self.events: List[GoalEvent] = []
 
     def log(self, event_type: str, goal: str, depth: int,
@@ -283,10 +283,13 @@ class RecursiveResearchAgent:
     def __init__(
         self,
         constraints: Optional[Constraints] = None,
-        output_dir: Optional[Path] = None
+        output_dir: Optional[Union[str, Path]] = None
     ):
         self.constraints = constraints or Constraints()
-        self.output_dir = output_dir or Path(f"data/research_v2/{datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}")
+        if output_dir is None:
+            self.output_dir = Path(f"data/research_v2/{datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}")
+        else:
+            self.output_dir = Path(output_dir) if isinstance(output_dir, str) else output_dir
         self.logger = ExecutionLogger(self.output_dir)
 
         # Will be initialized
