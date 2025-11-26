@@ -469,16 +469,35 @@ pip list | grep playwright
 **END OF PERMANENT SECTION**
 # CLAUDE.md - Temporary Section (Condensed)
 
-**Last Updated**: 2025-11-24
+**Last Updated**: 2025-11-25
 **Current Branch**: `master`
 **Current Phase**: Production-ready research system - **29 integrations working**
-**Status**: Critical bugs fixed, temporal context system operational, all validation tests passing
+**Status**: Error feedback architecture complete, two-layer defense for API validation errors
 
 ---
 
 ## CURRENT STATUS
 
-**Recently Completed** (2025-11-24 - Current Session):
+**Recently Completed** (2025-11-25 - Current Session):
+- ✅ **Error Feedback Architecture** - **COMPLETE** (commit b74600d)
+  - **Problem**: API validation errors (HTTP 422) caused silent failures - e.g., USAspending rejected "AI" keyword (too short)
+  - **Solution**: Two-layer defense system
+    - **Layer 1 (Prevention)**: Document API constraints in query generation prompts - LLM learns to avoid invalid params
+    - **Layer 2 (Cure)**: `_reformulate_on_api_error()` catches validation errors, asks LLM to fix and retries
+  - **Architecture**: Generic, LLM-driven, fail-safe - works with any integration without source-specific code
+  - **Validation**: LLM correctly expands "AI" → "artificial intelligence" when given HTTP 422 error
+  - Files: research/mixins/query_reformulation_mixin.py (+95 lines), research/mixins/mcp_tool_mixin.py (+45 lines), prompts/deep_research/query_reformulation_error.j2 (new, 55 lines)
+- ✅ **Partial Relevance Rule for Multi-Topic Queries** - **COMPLETE** (commit c654393)
+  - **Problem**: Relevance filters rejected queries mentioning multiple topics (e.g., "contractors + lawsuits")
+  - **Solution**: Added "CRITICAL - PARTIAL RELEVANCE RULE" to USAspending, SEC EDGAR, CourtListener prompts
+  - **Impact**: Sources now correctly handle their part of complex queries without rejecting due to unrelated topics
+  - Files: prompts/integrations/usaspending_relevance.j2, sec_edgar_relevance.j2, integrations/legal/courtlistener_integration.py
+- ✅ **USAspending Keyword Constraint Documentation** - **COMPLETE** (commits 01d0302, 0668b60)
+  - Documented 3-char minimum keyword requirement in query generation prompt
+  - LLM now uses "artificial intelligence" instead of "AI"
+  - Files: prompts/integrations/usaspending_query_generation.j2
+
+**Recently Completed** (2025-11-24 - Previous Session):
 - ✅ **Registry Source Name Normalization Fix** - **COMPLETE** (commit d2254a7)
   - **Problem**: LLM returns display names ("Twitter", "Brave Search", "NewsAPI") but registry only recognized lowercase IDs ("twitter", "brave_search", "newsapi")
   - **Solution**: Added automatic normalization to `get()` and `get_instance()` methods
