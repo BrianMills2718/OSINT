@@ -3,8 +3,15 @@
 
 import asyncio
 import argparse
+import logging
 from research.deep_research import SimpleDeepResearch, ResearchProgress
 from config_loader import config
+
+# Configure logging to show INFO level for error reformulation visibility
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(levelname)s:%(name)s:%(message)s'
+)
 
 def show_progress(progress: ResearchProgress):
     """Display progress updates."""
