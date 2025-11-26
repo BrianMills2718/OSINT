@@ -16,6 +16,7 @@ import sys
 sys.path.insert(0, '/home/brian/sam_gov')
 from dotenv import load_dotenv
 load_dotenv()
+import os
 
 from integrations.government.sam_integration import SAMIntegration
 
@@ -86,7 +87,7 @@ async def main():
         "date_range_days": 30
     }
 
-    result = await integration.execute_search(search_params, api_key=None, limit=5)
+    result = await integration.execute_search(search_params, api_key=os.getenv('SAM_GOV_API_KEY'), limit=5)
 
     print(f"Success: {result.success}")
     print(f"Source: {result.source}")

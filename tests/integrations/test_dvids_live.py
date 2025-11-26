@@ -15,6 +15,7 @@ import sys
 sys.path.insert(0, '/home/brian/sam_gov')
 from dotenv import load_dotenv
 load_dotenv()
+import os
 
 from integrations.government.dvids_integration import DVIDSIntegration
 
@@ -79,7 +80,7 @@ async def main():
         "limit": 5
     }
 
-    result = await integration.execute_search(search_params, api_key=None, limit=5)
+    result = await integration.execute_search(search_params, api_key=os.getenv('DVIDS_API_KEY'), limit=5)
 
     print(f"Success: {result.success}")
     print(f"Source: {result.source}")
@@ -107,7 +108,7 @@ async def main():
         "limit": 3
     }
 
-    result = await integration.execute_search(marine_params, api_key=None, limit=3)
+    result = await integration.execute_search(marine_params, api_key=os.getenv('DVIDS_API_KEY'), limit=3)
 
     print(f"Success: {result.success}")
     print(f"Total Results: {result.total}")

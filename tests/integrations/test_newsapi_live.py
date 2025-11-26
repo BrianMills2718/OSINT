@@ -15,6 +15,7 @@ import sys
 sys.path.insert(0, '/home/brian/sam_gov')
 from dotenv import load_dotenv
 load_dotenv()
+import os
 
 from integrations.news.newsapi_integration import NewsAPIIntegration
 
@@ -85,7 +86,7 @@ async def main():
         "limit": 10
     }
 
-    result = await integration.execute_search(search_params, api_key=None, limit=10)
+    result = await integration.execute_search(search_params, api_key=os.getenv('NEWSAPI_API_KEY'), limit=10)
 
     print(f"Success: {result.success}")
     print(f"Source: {result.source}")
@@ -117,7 +118,7 @@ async def main():
         "limit": 5
     }
 
-    result = await integration.execute_search(date_params, api_key=None, limit=5)
+    result = await integration.execute_search(date_params, api_key=os.getenv('NEWSAPI_API_KEY'), limit=5)
 
     print(f"Success: {result.success}")
     print(f"Total Results: {result.total}")
