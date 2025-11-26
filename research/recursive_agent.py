@@ -1546,10 +1546,13 @@ Only filter out results that are clearly off-topic or irrelevant."""
         if not context.constraints.enable_summarization:
             return evidence
 
-        # Find evidence needing summarization
+        # Find evidence needing summarization (store with sequential index for prompt)
         needs_summary = [
-            (i, e) for i, e in enumerate(evidence)
-            if len(e.content) > context.constraints.max_content_before_summarize
+            (seq_idx, orig_idx, e)
+            for seq_idx, (orig_idx, e) in enumerate(
+                (i, e) for i, e in enumerate(evidence)
+                if len(e.content) > context.constraints.max_content_before_summarize
+            )
         ]
 
         if not needs_summary:
@@ -1557,10 +1560,10 @@ Only filter out results that are clearly off-topic or irrelevant."""
 
         from llm_utils import acompletion
 
-        # Batch summarization for efficiency
+        # Batch summarization for efficiency - use sequential indices (0, 1, 2...)
         items_text = "\n\n".join([
-            f"Item #{i}:\nTitle: {e.title}\nContent: {e.content}"
-            for i, e in needs_summary
+            f"Item #{seq_idx}:\nTitle: {e.title}\nContent: {e.content}"
+            for seq_idx, orig_idx, e in needs_summary
         ])
 
         prompt = f"""Summarize each item to ~{context.constraints.summary_target_chars} characters.
@@ -1572,7 +1575,7 @@ CONTEXT: {goal}
 ITEMS TO SUMMARIZE:
 {items_text}
 
-Return JSON:
+Return JSON with item_index matching the Item # shown above:
 {{
     "summaries": [
         {{"item_index": 0, "summary": "Concise summary preserving key facts..."}},
@@ -1592,13 +1595,13 @@ Return JSON:
             result = json.loads(response.choices[0].message.content)
             summaries = {s["item_index"]: s["summary"] for s in result.get("summaries", [])}
 
-            # Apply summaries
+            # Apply summaries using sequential index mapping
             summarized_count = 0
-            for original_idx, e in needs_summary:
-                if original_idx in summaries:
+            for seq_idx, orig_idx, e in needs_summary:
+                if seq_idx in summaries:
                     # Store original in metadata, replace content with summary
                     e.metadata["original_content"] = e.content
-                    e.content = summaries[original_idx]
+                    e.content = summaries[seq_idx]
                     summarized_count += 1
 
             if summarized_count > 0:
