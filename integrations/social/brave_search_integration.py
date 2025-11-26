@@ -183,6 +183,66 @@ class BraveSearchIntegration(DatabaseIntegration):
 
         return query_params
 
+    # Rate limit retry configuration
+    MAX_RETRIES = 3
+    INITIAL_BACKOFF_SECONDS = 2  # Start with 2 seconds
+    MAX_BACKOFF_SECONDS = 60     # Cap at 60 seconds
+
+    async def _make_request_with_retry(
+        self,
+        endpoint: str,
+        params: Dict,
+        api_key: str
+    ) -> requests.Response:
+        """
+        Make HTTP request with automatic retry on 429 rate limit errors.
+
+        Uses exponential backoff: 2s, 4s, 8s (capped at 60s).
+
+        Args:
+            endpoint: API endpoint URL
+            params: Query parameters
+            api_key: API key for authentication
+
+        Returns:
+            Response object on success
+
+        Raises:
+            requests.HTTPError: On non-429 HTTP errors or after max retries
+        """
+        loop = asyncio.get_event_loop()
+        backoff = self.INITIAL_BACKOFF_SECONDS
+
+        for attempt in range(self.MAX_RETRIES + 1):
+            response = await loop.run_in_executor(
+                None,
+                lambda p=params: requests.get(
+                    endpoint,
+                    params=p,
+                    headers={"Accept": "application/json", "X-Subscription-Token": api_key},
+                    timeout=15
+                )
+            )
+
+            # Success - return response
+            if response.status_code == 200:
+                return response
+
+            # Rate limited - retry with backoff
+            if response.status_code == 429 and attempt < self.MAX_RETRIES:
+                logger.warning(f"Brave Search rate limited (429), waiting {backoff}s before retry {attempt + 1}/{self.MAX_RETRIES}")
+                print(f"⏳ Brave Search rate limited, waiting {backoff}s...")
+                await asyncio.sleep(backoff)
+                backoff = min(backoff * 2, self.MAX_BACKOFF_SECONDS)
+                continue
+
+            # Other error or max retries exceeded - raise
+            response.raise_for_status()
+
+        # Should not reach here, but raise if we do
+        response.raise_for_status()
+        return response  # For type checker
+
     async def execute_search(self,
                            query_params: Dict,
                            api_key: Optional[str] = None,
@@ -227,19 +287,8 @@ class BraveSearchIntegration(DatabaseIntegration):
             if query_params.get("country"):
                 params["country"] = query_params["country"]
 
-            # Execute API call
-            # Run blocking requests in thread pool to avoid blocking event loop
-            loop = asyncio.get_event_loop()
-            response = await loop.run_in_executor(
-                None,
-                lambda: requests.get(
-                    endpoint,
-                    params=params,
-                    headers={"Accept": "application/json", "X-Subscription-Token": api_key},
-                    timeout=15
-                )
-            )
-            response.raise_for_status()
+            # Execute API call with automatic retry on rate limit
+            response = await self._make_request_with_retry(endpoint, params, api_key)
             response_time_ms = (datetime.now() - start_time).total_seconds() * 1000
 
             # Parse response
