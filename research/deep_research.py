@@ -1399,15 +1399,16 @@ class SimpleDeepResearch(
 
     async def _search_brave(self, query: str, max_results: int = 20) -> List[Dict]:
         """
-        Search open web using Brave Search API.
+        Search open web using Brave Search API with Exa failover.
 
         Includes rate limiting (1 req/sec) and retry logic for HTTP 429 errors.
         Uses lock to ensure rate limit respected across parallel tasks.
+        If Brave fails with 429 after retries, falls back to Exa semantic search.
         """
         api_key = os.getenv('BRAVE_SEARCH_API_KEY')
         if not api_key:
-            logger.warning("BRAVE_SEARCH_API_KEY not found, skipping web search")
-            return []
+            logger.warning("BRAVE_SEARCH_API_KEY not found, trying Exa failover")
+            return await self._search_exa_fallback(query, max_results)
 
         # Ensure only 1 Brave Search call at a time (1 req/sec limit)
         async with self._brave_lock:
@@ -1445,13 +1446,13 @@ class SimpleDeepResearch(
                                     logger.warning(f"Brave Search: HTTP 429 (rate limit), retry {attempt + 1}/{max_retries}")
                                     continue  # Retry with exponential backoff
                                 else:
-                                    logger.error(f"Brave Search: HTTP 429 after {max_retries} retries, giving up")
-                                    return []
+                                    logger.warning(f"Brave Search: HTTP 429 after {max_retries} retries, falling back to Exa")
+                                    return await self._search_exa_fallback(query, max_results)
 
                             # Handle other errors
                             if resp.status != 200:
                                 logger.error(f"Brave Search API error: HTTP {resp.status}")
-                                return []
+                                return await self._search_exa_fallback(query, max_results)
 
                             data = await resp.json()
 
@@ -1475,17 +1476,73 @@ class SimpleDeepResearch(
                     logger.error(f"Brave Search timeout for query: {query}")
                     if attempt < max_retries - 1:
                         continue  # Retry
-                    return []
+                    return await self._search_exa_fallback(query, max_results)
 
                 # Query reformulation failure - acceptable to proceed with existing query
                 except Exception as e:
                     logger.error(f"Brave Search error: {type(e).__name__}: {str(e)}", exc_info=True)
                     if attempt < max_retries - 1:
                         continue  # Retry
-                    return []
+                    return await self._search_exa_fallback(query, max_results)
 
-        # Should never reach here, but return empty if all retries exhausted
-        return []
+        # Should never reach here, but try Exa as fallback
+        return await self._search_exa_fallback(query, max_results)
+
+    async def _search_exa_fallback(self, query: str, max_results: int = 20) -> List[Dict]:
+        """
+        Fallback to Exa semantic search when Brave fails.
+
+        Args:
+            query: Search query string
+            max_results: Maximum results to return
+
+        Returns:
+            List of results in standard format (same as Brave)
+        """
+        exa_api_key = os.getenv('EXA_API_KEY')
+        if not exa_api_key:
+            logger.warning("EXA_API_KEY not found, cannot use Exa fallback")
+            return []
+
+        try:
+            logger.info(f"Exa fallback: Searching for '{query}'")
+
+            # Use Exa integration directly
+            from integrations.web.exa_integration import ExaIntegration
+            exa = ExaIntegration()
+
+            # Build simple query params for semantic search
+            query_params = {
+                "pattern": "semantic_search",
+                "query": query,
+                "num_results": min(max_results, 25)  # Exa max is 25
+            }
+
+            # Execute search
+            result = await exa.execute_search(query_params, api_key=exa_api_key, limit=max_results)
+
+            if not result.success:
+                logger.error(f"Exa fallback failed: {result.error}")
+                return []
+
+            # Convert Exa results to Brave-compatible format
+            results = []
+            for item in result.results:
+                results.append({
+                    'source': 'Exa (Brave fallback)',
+                    'title': item.get('title', ''),
+                    'description': item.get('description', ''),
+                    'snippet': item.get('description', ''),
+                    'url': item.get('url', ''),
+                    'date': item.get('published_date')
+                })
+
+            logger.info(f"Exa fallback: {len(results)} results for query: {query}")
+            return results
+
+        except Exception as e:
+            logger.error(f"Exa fallback error: {type(e).__name__}: {str(e)}", exc_info=True)
+            return []
 
 
 
