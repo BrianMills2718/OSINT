@@ -6,17 +6,54 @@ CONTEXT:
 
 Use the context to disambiguate acronyms and focus on entities relevant to the research question.
 
-Results:
+Results (numbered for reference):
 {{ results_text }}
 
-Return a JSON list of entity names (3-10 entities). Focus on named entities that:
+**IMPORTANT**: For each entity, provide:
+1. **name**: The entity name (standardized form)
+2. **source_indices**: Which result(s) mention this entity (e.g., [0, 2] if Result #0 and #2 mention it)
+3. **evidence**: Brief quote or paraphrase proving the entity exists in the results
+
+This allows verification - every entity must be traceable back to a source.
+
+Return JSON with this structure:
+{% raw %}
+{
+  "entities": [
+    {
+      "name": "Entity Name",
+      "source_indices": [0, 2],
+      "evidence": "brief quote or paraphrase from results"
+    }
+  ]
+}
+{% endraw %}
+
+Focus on 3-10 named entities that:
 1. Are RELEVANT to the research question
 2. Could be researched further
-3. Match the domain of the research question (e.g., if researching cybersecurity contracts, focus on companies, agencies, programs in that domain)
+3. Are ACTUALLY MENTIONED in the results (not inferred)
+4. Match the domain of the research question
 
-Examples (matching the research domain):
-- Research question about "JSOC operations" → ["Joint Special Operations Command", "CIA", "Operation Cyclone"]
-- Research question about "NSA cybersecurity contracts" → ["National Security Agency", "Palantir", "Booz Allen Hamilton", "Leidos"]
-- Research question about "FBI surveillance programs" → ["Federal Bureau of Investigation", "PRISM", "FISA Court"]
+Example output for "NSA cybersecurity contracts":
+{% raw %}
+{
+  "entities": [
+    {
+      "name": "Palantir Technologies",
+      "source_indices": [0, 3],
+      "evidence": "Palantir awarded $45M NSA contract for data analytics"
+    },
+    {
+      "name": "Booz Allen Hamilton",
+      "source_indices": [1],
+      "evidence": "Booz Allen supports NSA cybersecurity operations"
+    }
+  ]
+}
+{% endraw %}
 
-DO NOT extract generic entities unrelated to the research question.
+DO NOT extract:
+- Generic entities unrelated to the research question
+- Entities not explicitly mentioned in the results (no hallucination)
+- Common words or phrases that aren't named entities

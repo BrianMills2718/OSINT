@@ -195,7 +195,7 @@ class CongressIntegration(DatabaseIntegration):
         limit: int = 100
     ) -> QueryResult:
         """
-        Execute Congress.gov search via API.
+        Execute Congress.gov search via API with keyword filtering and summary fetching.
 
         Args:
             query_params: Query parameters from generate_query()
@@ -203,7 +203,7 @@ class CongressIntegration(DatabaseIntegration):
             limit: Maximum results to return
 
         Returns:
-            QueryResult with bills/records found
+            QueryResult with bills/records found including summaries
         """
         endpoint = query_params.get("endpoint", "bill")
         keywords = query_params.get("keywords", "")
@@ -226,8 +226,11 @@ class CongressIntegration(DatabaseIntegration):
 
         try:
             # Build API URL based on endpoint
-            if endpoint == "bill":
-                # Search all bills in specified congress
+            # Use search endpoint for bills when keywords provided
+            if endpoint == "bill" and keywords:
+                # Use bill search with query parameter
+                base_url = f"https://api.congress.gov/v3/bill"
+            elif endpoint == "bill":
                 base_url = f"https://api.congress.gov/v3/bill/{congress_num}"
             elif endpoint == "member":
                 base_url = f"https://api.congress.gov/v3/member/{congress_num}"
@@ -240,6 +243,21 @@ class CongressIntegration(DatabaseIntegration):
             else:
                 base_url = f"https://api.congress.gov/v3/bill/{congress_num}"
 
+            # Build request params
+            params = {
+                "api_key": api_key,
+                "format": "json",
+                "limit": limit,
+                "offset": 0
+            }
+
+            # Add search query for bills (Congress API supports 'query' parameter)
+            if endpoint == "bill" and keywords:
+                # Search bill titles and text using query parameter
+                params["query"] = keywords
+                # Filter to specific congress if specified
+                params["congress"] = congress_num
+
             # Make request (async)
             start_time = datetime.now()
             loop = asyncio.get_event_loop()
@@ -247,12 +265,7 @@ class CongressIntegration(DatabaseIntegration):
                 None,
                 lambda: requests.get(
                     base_url,
-                    params={
-                        "api_key": api_key,
-                        "format": "json",
-                        "limit": limit,
-                        "offset": 0
-                    },
+                    params=params,
                     timeout=30
                 )
             )
@@ -266,24 +279,39 @@ class CongressIntegration(DatabaseIntegration):
 
             if endpoint == "bill":
                 bills = data.get("bills", [])
-                for bill in bills:
-                    # Note: Congress API doesn't support keyword search
-                    # Returns all bills from specified congress
-                    # Keyword filtering happens in LLM relevance filter instead
+
+                # Fetch summaries for top bills (up to 10 to avoid rate limits)
+                bills_with_summaries = await self._fetch_bill_summaries(
+                    bills[:min(10, len(bills))],
+                    api_key
+                )
+
+                for bill in bills_with_summaries:
                     title = bill.get("title", "")
+                    summary = bill.get("summary", "")
+                    latest_action = bill.get('latestAction', {}).get('text', 'N/A')
+
+                    # Build comprehensive snippet with actual content
+                    snippet_parts = []
+                    if summary:
+                        snippet_parts.append(f"Summary: {summary[:500]}")
+                    snippet_parts.append(f"Latest Action: {latest_action[:200]}")
+                    snippet_parts.append(f"Introduced: {bill.get('introducedDate', 'N/A')}")
 
                     doc = {
                         "title": f"{bill.get('type', '')} {bill.get('number', '')} - {title}",
                         "url": bill.get("url", ""),
-                        "snippet": f"Introduced: {bill.get('introducedDate', 'N/A')} | Latest Action: {bill.get('latestAction', {}).get('text', 'N/A')[:200]}",
-                        "date": bill.get('introducedDate'),  # Date bill was introduced
+                        "description": summary if summary else latest_action,  # Content for relevance filtering
+                        "snippet": " | ".join(snippet_parts),
+                        "date": bill.get('introducedDate'),
                         "metadata": {
                             "bill_type": bill.get("type"),
                             "bill_number": bill.get("number"),
                             "congress": bill.get("congress"),
                             "introduced_date": bill.get("introducedDate"),
                             "sponsors": bill.get("sponsors", []),
-                            "committees": bill.get("committees", [])
+                            "committees": bill.get("committees", []),
+                            "has_summary": bool(summary)
                         }
                     }
                     documents.append(doc)
@@ -298,6 +326,7 @@ class CongressIntegration(DatabaseIntegration):
                     doc = {
                         "title": f"{name} ({member.get('state', '')}-{member.get('party', '')})",
                         "url": member.get("url", ""),
+                        "description": f"{name} - {member.get('chamber', '')} member from {member.get('state', '')}",
                         "snippet": f"Chamber: {member.get('chamber', '')} | District: {member.get('district', 'N/A')}",
                         "metadata": {
                             "member_id": member.get("bioguideId"),
@@ -310,24 +339,33 @@ class CongressIntegration(DatabaseIntegration):
 
             elif endpoint == "hearing":
                 hearings = data.get("hearings", [])
-                for hearing in hearings:
-                    # Hearing summary from list endpoint doesn't include title/description
-                    # Build informative title from available metadata
+
+                # Fetch hearing details for top hearings (up to 10)
+                hearings_with_details = await self._fetch_hearing_details(
+                    hearings[:min(10, len(hearings))],
+                    api_key
+                )
+
+                for hearing in hearings_with_details:
                     chamber = hearing.get("chamber", "")
                     number = hearing.get("number", "")
                     jacket_number = hearing.get("jacketNumber", "")
+                    title = hearing.get("title", f"Hearing {number}")
+                    description = hearing.get("description", "")
 
                     doc = {
-                        "title": f"Hearing {number} - {chamber} (Congress {congress_num})",
+                        "title": f"{title} - {chamber} (Congress {congress_num})",
                         "url": hearing.get("url", ""),
-                        "snippet": f"Chamber: {chamber} | Number: {number} | Jacket: {jacket_number} | Updated: {hearing.get('updateDate', 'N/A')}",
+                        "description": description if description else f"{chamber} hearing #{number}",
+                        "snippet": f"{description[:300] if description else 'No description available'} | Chamber: {chamber} | Updated: {hearing.get('updateDate', 'N/A')}",
                         "date": hearing.get("updateDate"),
                         "metadata": {
                             "chamber": chamber,
                             "number": number,
                             "jacket_number": jacket_number,
                             "congress": hearing.get("congress"),
-                            "update_date": hearing.get("updateDate")
+                            "update_date": hearing.get("updateDate"),
+                            "title": title
                         }
                     }
                     documents.append(doc)
@@ -385,3 +423,154 @@ class CongressIntegration(DatabaseIntegration):
                 query_params=query_params,
                 error=f"Congress.gov API error: {str(e)}"
             )
+
+    async def _fetch_bill_summaries(
+        self,
+        bills: List[Dict],
+        api_key: str
+    ) -> List[Dict]:
+        """
+        Fetch summaries for a list of bills.
+
+        Makes individual API calls to get bill summaries. Limited to first N bills
+        to respect rate limits.
+
+        Args:
+            bills: List of bill dictionaries from list endpoint
+            api_key: Congress.gov API key
+
+        Returns:
+            Bills with 'summary' field populated where available
+        """
+        if not bills:
+            return bills
+
+        loop = asyncio.get_event_loop()
+        enhanced_bills = []
+
+        for bill in bills:
+            # Copy original bill data
+            enhanced_bill = dict(bill)
+
+            try:
+                # Build URL for bill summaries
+                congress = bill.get("congress", 118)
+                bill_type = bill.get("type", "").lower()
+                bill_number = bill.get("number", "")
+
+                if bill_type and bill_number:
+                    summary_url = f"https://api.congress.gov/v3/bill/{congress}/{bill_type}/{bill_number}/summaries"
+
+                    # Fetch summary
+                    response = await loop.run_in_executor(
+                        None,
+                        lambda url=summary_url: requests.get(
+                            url,
+                            params={"api_key": api_key, "format": "json"},
+                            timeout=10
+                        )
+                    )
+
+                    if response.status_code == 200:
+                        data = response.json()
+                        summaries = data.get("summaries", [])
+
+                        # Get most recent summary (they're ordered by update date)
+                        if summaries:
+                            # Prefer CRS summary, fall back to first available
+                            for summary in summaries:
+                                text = summary.get("text", "")
+                                if text:
+                                    # Strip HTML tags for cleaner text
+                                    import re
+                                    clean_text = re.sub(r'<[^>]+>', '', text)
+                                    enhanced_bill["summary"] = clean_text[:1000]  # Limit length
+                                    break
+
+            except Exception as e:
+                # Log but don't fail - summary is optional enhancement
+                logger.debug(f"Failed to fetch summary for bill {bill.get('number')}: {e}")
+
+            enhanced_bills.append(enhanced_bill)
+
+            # Small delay to avoid rate limiting (5000/hour = ~1.4/sec)
+            await asyncio.sleep(0.2)
+
+        return enhanced_bills
+
+    async def _fetch_hearing_details(
+        self,
+        hearings: List[Dict],
+        api_key: str
+    ) -> List[Dict]:
+        """
+        Fetch details for a list of hearings including titles and descriptions.
+
+        Makes individual API calls to get hearing details. Limited to first N hearings
+        to respect rate limits.
+
+        Args:
+            hearings: List of hearing dictionaries from list endpoint
+            api_key: Congress.gov API key
+
+        Returns:
+            Hearings with 'title' and 'description' fields populated where available
+        """
+        if not hearings:
+            return hearings
+
+        loop = asyncio.get_event_loop()
+        enhanced_hearings = []
+
+        for hearing in hearings:
+            # Copy original hearing data
+            enhanced_hearing = dict(hearing)
+
+            try:
+                # The hearing URL from list response points to detail endpoint
+                detail_url = hearing.get("url", "")
+
+                if detail_url:
+                    # Fetch hearing detail
+                    response = await loop.run_in_executor(
+                        None,
+                        lambda url=detail_url: requests.get(
+                            url,
+                            params={"api_key": api_key, "format": "json"},
+                            timeout=10
+                        )
+                    )
+
+                    if response.status_code == 200:
+                        data = response.json()
+                        hearing_detail = data.get("hearing", {})
+
+                        # Extract title and description
+                        title = hearing_detail.get("title", "")
+                        if title:
+                            enhanced_hearing["title"] = title
+
+                        # Try to get description from various fields
+                        description = ""
+                        if hearing_detail.get("description"):
+                            description = hearing_detail["description"]
+                        elif hearing_detail.get("committees"):
+                            committees = hearing_detail["committees"]
+                            if committees:
+                                committee_names = [c.get("name", "") for c in committees if c.get("name")]
+                                if committee_names:
+                                    description = f"Committee: {', '.join(committee_names)}"
+
+                        if description:
+                            enhanced_hearing["description"] = description
+
+            except Exception as e:
+                # Log but don't fail - detail is optional enhancement
+                logger.debug(f"Failed to fetch details for hearing {hearing.get('number')}: {e}")
+
+            enhanced_hearings.append(enhanced_hearing)
+
+            # Small delay to avoid rate limiting
+            await asyncio.sleep(0.2)
+
+        return enhanced_hearings

@@ -115,6 +115,65 @@ Response:
 }
 ```
 
+**Example 5: Defense Contractor Research (Extract Company Name from Context)**
+Question: "Investigate federal AI contracts - major defense contractors like Lockheed Martin, Raytheon"
+Response:
+```json
+{
+  "relevant": true,
+  "reasoning": "Lockheed Martin is a public company with SEC filings - can find AI/ML-related disclosures in 10-K risk factors and contracts sections",
+  "query_type": "company_filings",
+  "company_name": "Lockheed Martin Corporation",
+  "form_types": ["10-K", "8-K"],
+  "keywords": "artificial intelligence",
+  "limit": 10
+}
+```
+
+**Example 6: Research Question Mentions Multiple Companies (Pick One)**
+Question: "How are Palantir and Anduril different in their government work?"
+Response:
+```json
+{
+  "relevant": true,
+  "reasoning": "Palantir is publicly traded (NYSE: PLTR) - can find government contract disclosures and revenue segments in SEC filings. Anduril is private so cannot be searched.",
+  "query_type": "company_filings",
+  "company_name": "Palantir Technologies Inc",
+  "form_types": ["10-K", "10-Q"],
+  "keywords": "government",
+  "limit": 15
+}
+```
+
+**Example 7: No Public Company Identifiable**
+Question: "Federal AI contracts in 2024"
+Response:
+```json
+{
+  "relevant": false,
+  "reasoning": "No specific publicly-traded company mentioned. SEC EDGAR requires a company name - cannot search by topic alone. Use SAM.gov/USAspending for contract data, then look up specific contractors in SEC EDGAR.",
+  "query_type": "company_filings",
+  "company_name": null,
+  "form_types": [],
+  "keywords": null,
+  "limit": 20
+}
+```
+
+---
+
+**IMPORTANT FOR INVESTIGATIVE RESEARCH:**
+
+When the research question mentions a SECTOR (like "defense contractors" or "AI companies") but no specific company:
+1. If any specific company IS mentioned (even as an example like "Lockheed Martin"), use that company name
+2. If you can infer a well-known public company from context (e.g., "Pentagon AI contractors" → Palantir is a major one), use that
+3. If no public company can be identified, return relevant=false - SEC EDGAR cannot do topic-only searches
+
+Common defense/tech companies that ARE public (have SEC filings):
+- Lockheed Martin Corporation, Raytheon Technologies, Northrop Grumman, General Dynamics, Boeing, L3Harris
+- Palantir Technologies, Microsoft Corporation, Amazon Web Services (part of Amazon), Google (Alphabet Inc)
+- Leidos Holdings, CACI International, Booz Allen Hamilton, ManTech International
+
 ---
 
 Now generate the appropriate SEC EDGAR query for the research question above.

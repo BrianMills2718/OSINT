@@ -10,7 +10,7 @@ import asyncio
 import logging
 import time
 from dataclasses import asdict
-from typing import Any, Dict, List, TYPE_CHECKING
+from typing import Any, Dict, List, Set, TYPE_CHECKING
 
 from config_loader import config
 from integrations.registry import registry
@@ -19,6 +19,51 @@ if TYPE_CHECKING:
     from research.deep_research import SimpleDeepResearch, ResearchTask
 
 logger = logging.getLogger(__name__)
+
+
+def _normalize_query(query: str) -> str:
+    """Normalize query for comparison: lowercase, strip, remove extra spaces."""
+    return ' '.join(query.lower().strip().split())
+
+
+def _is_duplicate_query(new_query: str, existing_queries: List[str], threshold: float = 0.8) -> bool:
+    """
+    Check if new_query is too similar to any existing query.
+
+    Uses simple word overlap for fast comparison.
+
+    Args:
+        new_query: Query to check
+        existing_queries: List of previously executed queries
+        threshold: Similarity threshold (0.8 = 80% word overlap)
+
+    Returns:
+        True if query is considered duplicate
+    """
+    new_normalized = _normalize_query(new_query)
+    new_words = set(new_normalized.split())
+
+    if not new_words:
+        return False
+
+    for existing in existing_queries:
+        existing_normalized = _normalize_query(existing)
+        existing_words = set(existing_normalized.split())
+
+        if not existing_words:
+            continue
+
+        # Calculate Jaccard similarity (intersection / union)
+        intersection = len(new_words & existing_words)
+        union = len(new_words | existing_words)
+
+        if union > 0:
+            similarity = intersection / union
+            if similarity >= threshold:
+                logger.info(f"Query '{new_query[:50]}...' is {similarity:.0%} similar to '{existing[:50]}...' - skipping")
+                return True
+
+    return False
 
 
 class SourceExecutorMixin:
@@ -178,6 +223,29 @@ class SourceExecutorMixin:
                 break
 
             query_reasoning = query_decision.get('next_query_reasoning', '')
+
+            # Check for duplicate query across all hypotheses for this task
+            # Get previously executed queries for this source from task
+            if source_name not in task.executed_queries:
+                task.executed_queries[source_name] = []
+
+            existing_queries = task.executed_queries[source_name]
+            if _is_duplicate_query(query, existing_queries):
+                print(f"   Skipping duplicate query for {source_name}: '{query[:50]}...'")
+                if self.logger:
+                    self.logger.log_source_saturation_complete(
+                        task_id=task_id,
+                        hypothesis_id=hypothesis.get('id'),
+                        source_name=source_name,
+                        exit_reason='duplicate_query_skipped',
+                        queries_executed=len(query_history),
+                        results_accepted=len(all_results),
+                        saturation_reasoning=f"Query too similar to previously executed query"
+                    )
+                break  # Skip this source for this hypothesis
+
+            # Track this query as executed
+            task.executed_queries[source_name].append(query)
 
             if self.logger:
                 self.logger.log_query_attempt(

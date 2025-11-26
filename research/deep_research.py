@@ -139,6 +139,8 @@ class ResearchTask:
     priority: int = 5  # 1=highest urgency, 10=lowest (default: medium)
     priority_reasoning: str = ""  # Why this priority level
     estimated_value: int = 50  # Expected information value 0-100
+    # Query deduplication: Track (source, query) pairs executed for this task
+    executed_queries: Dict[str, List[str]] = field(default_factory=dict)  # source_name -> list of queries
     estimated_redundancy: int = 50  # Expected overlap with existing findings 0-100
 
     def __post_init__(self):
