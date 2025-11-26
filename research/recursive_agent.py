@@ -23,6 +23,9 @@ load_dotenv()
 
 logger = logging.getLogger(__name__)
 
+# Concurrency limit for parallel sub-goal execution
+DEFAULT_MAX_CONCURRENT_TASKS = 5
+
 
 # =============================================================================
 # Data Structures
@@ -54,6 +57,7 @@ class Constraints:
     max_cost_dollars: float = 5.0
     max_goals: int = 50
     max_results_per_source: int = 20
+    max_concurrent_tasks: int = DEFAULT_MAX_CONCURRENT_TASKS
 
 
 @dataclass
@@ -432,10 +436,18 @@ class RecursiveResearchAgent:
         # Group by dependency for parallelism
         goal_groups = self._group_by_dependency(sub_goals)
 
+        # Bug fix: Add semaphore to limit concurrent tasks
+        semaphore = asyncio.Semaphore(context.constraints.max_concurrent_tasks)
+
+        async def limited_pursue(sg_description: str, ctx: GoalContext) -> GoalResult:
+            """Pursue a goal with concurrency limiting."""
+            async with semaphore:
+                return await self.pursue_goal(sg_description, ctx)
+
         for group in goal_groups:
-            # Run independent goals in parallel
+            # Run independent goals in parallel (with concurrency limit)
             group_tasks = [
-                self.pursue_goal(
+                limited_pursue(
                     sg.description,
                     child_context.with_evidence(all_evidence)
                 )
@@ -464,9 +476,23 @@ class RecursiveResearchAgent:
             "evidence_count": len(all_evidence)
         })
 
+        # Bug fix: Determine parent status based on child results
+        failed_count = sum(1 for r in sub_results if r.status == GoalStatus.FAILED)
+        completed_count = sum(1 for r in sub_results if r.status == GoalStatus.COMPLETED)
+
+        if failed_count == len(sub_results):
+            # All children failed -> parent fails
+            parent_status = GoalStatus.FAILED
+        elif completed_count == 0 and failed_count > 0:
+            # No successes but some failures -> parent fails
+            parent_status = GoalStatus.FAILED
+        else:
+            # At least some children succeeded -> parent completes
+            parent_status = GoalStatus.COMPLETED
+
         return GoalResult(
             goal=goal,
-            status=GoalStatus.COMPLETED,
+            status=parent_status,
             evidence=all_evidence,
             sub_results=sub_results,
             synthesis=synthesis.synthesis,
@@ -486,7 +512,6 @@ class RecursiveResearchAgent:
         This is the critical decision point.
         """
         from llm_utils import acompletion
-        from core.prompt_loader import render_prompt
 
         # Format sources for prompt
         sources_text = "\n".join([
@@ -554,6 +579,9 @@ Return JSON:
                 messages=[{"role": "user", "content": prompt}],
                 response_format={"type": "json_object"}
             )
+
+            # Track cost (estimate ~$0.0002 per assessment call)
+            context.add_cost(0.0002)
 
             result = json.loads(response.choices[0].message.content)
 
@@ -671,7 +699,7 @@ Return JSON:
 
             return GoalResult(
                 goal=goal,
-                status=GoalStatus.COMPLETED if evidence else GoalStatus.COMPLETED,
+                status=GoalStatus.COMPLETED if evidence else GoalStatus.FAILED,
                 evidence=evidence,
                 confidence=0.8 if evidence else 0.3,
                 reasoning=f"Searched {source_id}, found {len(evidence)} results",
@@ -710,6 +738,9 @@ Return JSON:
                 model="gemini/gemini-2.5-flash",
                 messages=[{"role": "user", "content": full_prompt}]
             )
+
+            # Track cost (estimate ~$0.0003 per analysis call)
+            context.add_cost(0.0003)
 
             analysis = response.choices[0].message.content
 
@@ -800,6 +831,9 @@ Return JSON:
                 response_format={"type": "json_object"}
             )
 
+            # Track cost (estimate ~$0.0003 per decomposition call)
+            context.add_cost(0.0003)
+
             result = json.loads(response.choices[0].message.content)
 
             sub_goals = []
@@ -875,6 +909,9 @@ Return JSON:
                 response_format={"type": "json_object"}
             )
 
+            # Track cost (estimate ~$0.0001 per achievement check)
+            context.add_cost(0.0001)
+
             result = json.loads(response.choices[0].message.content)
             return result.get("achieved", False)
 
@@ -941,6 +978,9 @@ Return JSON:
                 messages=[{"role": "user", "content": prompt}],
                 response_format={"type": "json_object"}
             )
+
+            # Track cost (estimate ~$0.0005 per synthesis call - larger context)
+            context.add_cost(0.0005)
 
             result = json.loads(response.choices[0].message.content)
 
