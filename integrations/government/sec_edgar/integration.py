@@ -87,7 +87,11 @@ class SECEdgarIntegration(DatabaseIntegration):
                 'date_filtering': True
             },
             typical_result_count=20,
-            max_queries_recommended=5
+            max_queries_recommended=5,
+
+            # Rate Limit Recovery - SEC enforces 10 requests/second, short recovery
+            rate_limit_recovery_seconds=30,  # Brief wait, then retry
+            retry_on_rate_limit_within_session=True  # Worth retrying - short recovery
         )
 
     def _get_user_agent(self) -> str:

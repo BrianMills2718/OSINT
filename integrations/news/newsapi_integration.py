@@ -78,7 +78,11 @@ class NewsAPIIntegration(DatabaseIntegration):
                 'max_results_per_request': 100
             },
             typical_result_count=50,
-            max_queries_recommended=5
+            max_queries_recommended=5,
+
+            # Rate Limit Recovery - NewsAPI free tier has strict 100 requests/day
+            rate_limit_recovery_seconds=86400,  # Daily reset (~24 hours)
+            retry_on_rate_limit_within_session=False  # Pointless - daily limit won't reset
         )
 
     async def is_relevant(self, research_question: str) -> bool:

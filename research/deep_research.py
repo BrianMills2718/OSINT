@@ -64,29 +64,6 @@ load_dotenv()
 logger = logging.getLogger(__name__)
 
 
-class ResourceManager:
-    """
-    Centralized manager for API rate limiting and resource gating.
-
-    Ensures all code paths respect rate limits and prevents concurrent
-    access issues with shared state.
-    """
-
-    def __init__(self):
-        # Global Brave Search lock (1 req/sec limit)
-        self.brave_lock = asyncio.Lock()
-
-        # Entity graph lock (prevent concurrent modifications)
-        self.entity_graph_lock = asyncio.Lock()
-
-        # Results lock (prevent concurrent modifications)
-        self.results_lock = asyncio.Lock()
-
-    # Note: execute_with_rate_limit() removed per Codex recommendation
-    # Explicit locks (brave_lock, entity_graph_lock, results_lock) are clearer and sufficient
-    # If needed in future, database integrations already have their own rate limiting
-
-
 class TaskStatus(Enum):
     """Task execution status."""
     PENDING = "pending"
@@ -235,8 +212,9 @@ class SimpleDeepResearch(
         self.save_output = save_output
         self.output_dir = output_dir
 
-        # Resource management
-        self.resource_manager = ResourceManager()
+        # Locks for concurrent access control
+        self._brave_lock = asyncio.Lock()  # Brave Search rate limit (1 req/sec)
+        self._results_lock = asyncio.Lock()  # Protect shared dict writes
 
         # State
         self.task_queue: List[ResearchTask] = []
@@ -757,11 +735,10 @@ class SimpleDeepResearch(
                         # Entity extraction failure - non-critical, task can continue without entities
                         except Exception as entity_error:
                             # Log error but don't fail task - entity extraction is non-critical
-                            logger.error(
-                                f"Entity extraction failed for task {task.id}: {type(entity_error).__name__}: {str(entity_error)}",
+                            logger.warning(
+                                f"Entity extraction failed for task {task.id} (non-critical): {type(entity_error).__name__}: {str(entity_error)}",
                                 exc_info=True
                             )
-                            print(f"⚠️  Entity extraction failed (non-critical): {type(entity_error).__name__}: {str(entity_error)}")
                             # Task remains COMPLETED despite entity extraction failure
                             task.entities_found = []  # Empty list instead of None
 
@@ -786,7 +763,6 @@ class SimpleDeepResearch(
                                     print(f"   ✓ Follow-up {follow_up.id}: Generated {len(hypotheses_result['hypotheses'])} hypothesis/hypotheses")
                                 # LLM call failed - hypothesis generation is optional, can proceed without
                                 except Exception as e:
-                                    print(f"   ⚠️  Follow-up {follow_up.id}: Hypothesis generation failed - {type(e).__name__}: {e}")
                                     logger.warning(f"Hypothesis generation failed for follow-up {follow_up.id}: {type(e).__name__}: {e}", exc_info=True)
                                     # Continue without hypotheses - don't fail follow-up creation
                                     follow_up.hypotheses = None
@@ -1013,7 +989,6 @@ class SimpleDeepResearch(
                 except Exception as e:
                     # LLM call failed - hypothesis generation is optional, can proceed without
                     logger.warning(f"Hypothesis generation failed for task {task.id}: {type(e).__name__}: {e}", exc_info=True)
-                    print(f"   ⚠️  Task {task.id}: Hypothesis generation failed - {type(e).__name__}: {e}")
                     # Continue without hypotheses - don't fail task creation
                     task.hypotheses = None
 
@@ -1179,32 +1154,9 @@ class SimpleDeepResearch(
 
         # Task prioritization failure - acceptable to fall back to FIFO order
         except Exception as e:
-            logger.error(f"Task prioritization failed: {type(e).__name__}: {e}", exc_info=True)
-            print(f"⚠️  Prioritization failed, using default priority order")
-            import traceback
-            logger.error(traceback.format_exc(), exc_info=True)
+            logger.error(f"Task prioritization failed, using default order: {type(e).__name__}: {e}", exc_info=True)
             # On error, return tasks as-is (FIFO order)
             return tasks
-
-    def _fuzzy_match_source(self, llm_name: str) -> Optional[str]:
-        """
-        Fuzzy match LLM-generated source name to registered source.
-
-        Uses registry.normalize_source_name() which is the SINGLE source of truth
-        for all source name normalization. Handles:
-        - Integration IDs: "usaspending" → "usaspending"
-        - Display names: "USASpending" → "usaspending"
-        - Case variations: "GOVINFO" → "govinfo"
-        - Common suffixes: "USASpending.gov" → "usaspending"
-
-        Args:
-            llm_name: Source name from LLM (any format)
-
-        Returns:
-            Matched integration_id, or None if no match
-        """
-        # Use registry's normalize function (single source of truth)
-        return registry.normalize_source_name(llm_name)
 
     def _map_hypothesis_sources(self, hypothesis: Dict) -> List[str]:
         """
@@ -1222,8 +1174,8 @@ class SimpleDeepResearch(
         tool_names = []
 
         for display_name in display_sources:
-            # Try fuzzy matching (handles "USASpending.gov" → "USAspending")
-            tool_name = self._fuzzy_match_source(display_name)
+            # Use registry's normalize function (single source of truth)
+            tool_name = registry.normalize_source_name(display_name)
             if tool_name:
                 tool_names.append(tool_name)
             else:
@@ -1360,15 +1312,15 @@ class SimpleDeepResearch(
         Search open web using Brave Search API.
 
         Includes rate limiting (1 req/sec) and retry logic for HTTP 429 errors.
-        Uses ResourceManager global lock to ensure rate limit respected across parallel tasks.
+        Uses lock to ensure rate limit respected across parallel tasks.
         """
         api_key = os.getenv('BRAVE_SEARCH_API_KEY')
         if not api_key:
             logger.warning("BRAVE_SEARCH_API_KEY not found, skipping web search")
             return []
 
-        # Use ResourceManager to ensure only 1 Brave Search call at a time (1 req/sec limit)
-        async with self.resource_manager.brave_lock:
+        # Ensure only 1 Brave Search call at a time (1 req/sec limit)
+        async with self._brave_lock:
             url = "https://api.search.brave.com/res/v1/web/search"
             headers = {
                 "Accept": "application/json",
@@ -1831,8 +1783,7 @@ class SimpleDeepResearch(
                         # Hypothesis processing failure - non-critical, continue with other hypotheses
                         except Exception as hyp_error:
                             # Log but don't fail task - hypothesis execution is supplementary
-                            logger.error(f"❌ Hypothesis execution failed for Task {task.id}: {type(hyp_error).__name__}: {hyp_error}", exc_info=True)
-                            print(f"   ⚠️  Hypothesis execution failed, continuing with normal results")
+                            logger.warning(f"Hypothesis execution failed for Task {task.id}, continuing: {type(hyp_error).__name__}: {hyp_error}", exc_info=True)
 
                     # Priority 2: Don't extract entities here, will do at end from accumulated results
                     task.status = TaskStatus.COMPLETED
@@ -1864,8 +1815,8 @@ class SimpleDeepResearch(
 
                     task.results = result_dict
 
-                    # Codex fix: Protect shared dict writes with lock
-                    async with self.resource_manager.results_lock:
+                    # Protect shared dict writes with lock
+                    async with self._results_lock:
                         self.results_by_task[task.id] = result_dict
 
                 # Flush accumulated results to disk immediately (survive timeout/cancel)
@@ -2224,10 +2175,7 @@ class SimpleDeepResearch(
 
         # Exception caught - error logged, execution continues
         except Exception as e:
-            logger.error(f"Saturation detection failed: {type(e).__name__}: {e}", exc_info=True)
-            print(f"⚠️  Saturation check failed, defaulting to continue")
-            import traceback
-            logger.error(traceback.format_exc(), exc_info=True)
+            logger.error(f"Saturation detection failed, defaulting to continue: {type(e).__name__}: {e}", exc_info=True)
             # On error, assume not saturated (continue research)
             return {
                 "saturated": False,

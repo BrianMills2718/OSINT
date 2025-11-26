@@ -500,7 +500,6 @@ class ReportSynthesizerMixin:
 
         except json.JSONDecodeError as e:
             logger.error(f"Synthesis JSON parsing failed: {e}", exc_info=True)
-            logger.error(f"Synthesis JSON parsing failed: {e}")
             report = f"# Research Report\n\nFailed to parse synthesis JSON.\n\nError: {e}\n\n## Raw Statistics\n\n- Tasks Executed: {len(self.completed_tasks)}\n- Tasks Failed: {len(self.failed_tasks)}\n"
         # Critical failure - report synthesis is the final output
         except Exception as e:
