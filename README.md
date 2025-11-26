@@ -1,334 +1,255 @@
-# Unified Multi-Source Search Application
+# SigInt Platform - AI-Powered Investigative Research
 
-A comprehensive agentic search system with both Streamlit UI and CLI interfaces that integrates four powerful data sources:
-- **SAM.gov** - Federal government contract opportunities
-- **DVIDS** - U.S. military photos, videos, and news
-- **USAJobs** - Federal government job listings
-- **ClearanceJobs** - Security clearance job search (via Puppeteer)
+An advanced multi-source intelligence platform for investigative journalism and research. Uses LLM-driven hypothesis generation, 29 data source integrations, and automated report synthesis.
 
 ## Features
 
-### 🤖 AI Research Assistant (NEW)
-- **Natural language queries** - Ask questions in plain English
-- **Multi-database search** - Automatically searches all relevant databases
-- **Agentic refinement** - Self-improves queries based on results
-- **Result synthesis** - Combines results into coherent answers
-- **Configurable LLM** - Uses gpt-5-mini by default, supports 100+ models via LiteLLM
-- **Cost tracking** - Monitors API usage and costs
+### Deep Research Engine
+- **Natural language queries** - Ask complex investigative questions in plain English
+- **Hypothesis branching** - LLM generates 3-5 investigative hypotheses per task
+- **Multi-source orchestration** - Automatically queries relevant sources from 29 integrations
+- **Entity extraction** - Identifies people, organizations, and relationships
+- **Report synthesis** - Generates comprehensive markdown reports with citations
+- **Cost tracking** - Monitors LLM API usage and costs
 
-### 📋 SAM.gov
-- Search federal government contract opportunities
-- **Required**: Posted date range (max 1 year)
-- Filter by procurement type (solicitation, presolicitation, etc.)
-- 18 set-aside types (Small Business, 8(a), SDVOSB, etc.)
-- NAICS and PSC classification codes
-- Organization, state, and ZIP code filters
-- Response deadline filtering
-- CSV/JSON export
+### 29 Data Source Integrations
 
-### 📸 DVIDS
-- Search U.S. military photos, videos, news, and media
-- Filter by military branch, country, state, city
-- Date range filtering
-- Media type selection (image, video, audio, news, etc.)
-- Advanced filters: aspect ratio, HD quality, captions
-- Combatant command and unit filters
-- CSV/JSON export with image thumbnails
+**Government (15)**:
+- SAM.gov - Federal contract opportunities
+- USAspending.gov - Awarded federal contracts and spending
+- DVIDS - U.S. military photos, videos, and news
+- USAJobs - Federal government job listings
+- ClearanceJobs - Security clearance job search (HTTP scraper)
+- Federal Register - Federal regulations and notices
+- Congress.gov - Bills, laws, and congressional activity
+- GovInfo - GAO reports, IG audits, congressional hearings
+- SEC EDGAR - Corporate filings and financial data
+- FEC - Campaign finance and political donations
+- CREST - CIA declassified documents
+- FBI Vault - FBI declassified records
+- CourtListener - Federal court opinions
+- ProPublica Nonprofit - Tax-exempt organization data
+- ICIJ Offshore Leaks - Panama Papers, offshore entities
 
-### 💼 USAJobs
-- Search official federal government job listings
-- Filter by keywords, location, organization
-- GS pay grade filtering (1-15)
-- All federal agencies and departments
-- CSV/JSON export
+**Social Media (4)**:
+- Twitter - 20 API endpoints (search, timelines, followers, etc.)
+- Reddit - Subreddit search and posts
+- Discord - Local export search
+- Telegram - Channel search and messages
 
-### 🏢 ClearanceJobs (Puppeteer-based)
-- Search by keywords for security clearance jobs
-- **Note**: Uses Puppeteer web scraping (API is broken)
-- Requires Puppeteer MCP server
-- Returns relevant results (vs 57k irrelevant from API)
+**News & Web (2)**:
+- NewsAPI - 80,000+ news sources worldwide
+- Brave Search - Web search with freshness filtering
 
-## Installation
+**Archive (1)**:
+- Wayback Machine - Historical web page snapshots
 
-1. **Install dependencies:**
-   ```bash
-   pip install -r requirements.txt
-   ```
+## Quick Start
 
-2. **Configure API keys:**
+### 1. Install Dependencies
 
-   Copy the example environment file:
-   ```bash
-   cp .env.example .env
-   ```
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -r requirements.txt
+```
 
-   Edit `.env` and add your API keys:
-   ```bash
-   OPENAI_API_KEY=your-openai-key-here
-   SAM_API_KEY=your-sam-gov-key
-   DVIDS_API_KEY=your-dvids-key
-   USAJOBS_API_KEY=your-usajobs-key
-   ```
+### 2. Configure API Keys
 
-3. **(Optional) Customize configuration:**
-   ```bash
-   cp config_default.yaml config.yaml
-   # Edit config.yaml to change models, timeouts, etc.
-   ```
+```bash
+cp .env.example .env
+# Edit .env with your API keys
+```
 
-## Running the Applications
+Required keys:
+- `OPENAI_API_KEY` - For LLM query generation and synthesis
+- `SAM_API_KEY` - SAM.gov contracts
+- `USAJOBS_API_KEY` - Federal jobs
 
-### Streamlit Web UI
+Optional keys for additional sources:
+- `DVIDS_API_KEY`, `NEWSAPI_KEY`, `BRAVE_API_KEY`
+- `FEC_API_KEY`, `DATA_GOV_API_KEY`
+- `REDDIT_CLIENT_ID/SECRET`, `RAPIDAPI_KEY` (Twitter)
 
+### 3. Run Research
+
+**CLI (Recommended)**:
+```bash
+source .venv/bin/activate
+python3 run_research_cli.py "What defense contracts were awarded for AI in 2024?"
+```
+
+**With options**:
+```bash
+python3 run_research_cli.py \
+  --max-tasks 5 \
+  --max-time-minutes 30 \
+  "Investigate Lockheed Martin lobbying and campaign contributions"
+```
+
+**Streamlit Web UI**:
 ```bash
 streamlit run apps/unified_search_app.py
 ```
 
-The app will open in your browser at `http://localhost:8501`
+## Configuration
 
-### AI Research CLI
+Edit `config.yaml` to customize:
 
-```bash
-# Natural language research query
-python3 apps/ai_research.py "What cybersecurity contracts are available from DoD?"
+```yaml
+research:
+  max_tasks: 5                    # Max research tasks per query
+  max_time_minutes: 45            # Total time budget
+  max_queries_per_source: 5       # Queries before saturation
+  hypothesis_branching: true      # Enable investigative hypotheses
 
-# With custom config
-python3 apps/ai_research.py "Recent data science jobs in DC" --config config.yaml
+llm:
+  model: "gpt-4o-mini"           # Primary model
+  fallback_model: "gemini-2.5-flash"
+  timeout: 180                    # LLM call timeout (seconds)
 ```
 
-## API Keys
+## Output
 
-### OpenAI (for AI Research)
-- **Required**: Yes (for AI Research features)
-- **Get your key**: https://platform.openai.com/api-keys
-- **Used for**: Query generation, refinement, result synthesis
-- **Default model**: gpt-5-mini (configurable)
+Research results are saved to `data/research_output/`:
 
-### SAM.gov
-- **Required**: Yes (for contract searches)
-- **Get your key**: https://sam.gov
-  - Log in to your account
-  - Go to Account Details
-  - Request API Key
+```
+data/research_output/YYYY-MM-DD_HH-MM-SS_query/
+├── report.md           # Final markdown report with citations
+├── results.json        # All results with metadata
+├── metadata.json       # Run configuration and statistics
+├── execution_log.jsonl # Detailed execution trace
+└── raw/                # Raw API responses
+```
 
-### DVIDS
-- **Required**: Yes (for military media searches)
-- **Get your key**: https://www.dvidshub.net/
-- **Default key provided**: `key-68f319e8dc377` (for testing)
+## Architecture
 
-### USAJobs
-- **Required**: Yes (for federal job searches)
-- **Get your key**: https://developer.usajobs.gov/APIRequest/Index
-- **Requires**: Email in User-Agent header
-
-### ClearanceJobs
-- **Required**: No (Puppeteer MCP server required instead)
-- **Note**: Python API library is broken, use Puppeteer integration
-- **See**: `ClearanceJobs/PUPPETEER_FIX.md`
-
-## Usage
-
-### Search Tips
-
-**ClearanceJobs:**
-- Use specific keywords: "cybersecurity analyst", "network engineer"
-- Combine clearance filters for targeted results
-- Filter by major defense hubs: Maryland, Virginia, DC, California, Colorado
-
-**DVIDS:**
-- Search is optional - leave blank to browse all recent media
-- Combine media types to get photos + videos
-- Use date ranges for recent operations or historical content
-- HD filter works best with videos
-
-**SAM.gov:**
-- **Date range is MANDATORY** (max 1 year)
-- Use NAICS codes for specific industries (e.g., 541512 = Computer Systems Design)
-- Set-aside filter helps small businesses find targeted opportunities
-- Response deadline filters show upcoming opportunities
-
-### Advanced Features
-
-**Pagination:**
-- All sources support pagination
-- ClearanceJobs: No limit
-- DVIDS: Max 1000 results (20 pages @ 50/page)
-- SAM.gov: No limit (1000/page max)
-
-**Export Options:**
-- CSV: Tabular data for Excel/analysis
-- JSON: Complete API responses with all fields
-
-**Rate Limiting:**
-- Enable in sidebar to avoid hitting API limits
-- 1 second delay between ClearanceJobs/SAM.gov searches
-- 0.5 second delay for DVIDS
+```
+┌─────────────────────────────────────────────────────────────┐
+│                    User Query                                │
+└─────────────────────────────────────────────────────────────┘
+                              │
+                              ▼
+┌─────────────────────────────────────────────────────────────┐
+│              Task Decomposition LLM                          │
+│         Breaks query into 3-5 research tasks                 │
+└─────────────────────────────────────────────────────────────┘
+                              │
+                              ▼
+┌─────────────────────────────────────────────────────────────┐
+│              For each task:                                  │
+│  ┌────────────────────────────────────────────────────────┐ │
+│  │ Hypothesis Generation LLM → 3-5 investigative angles   │ │
+│  └────────────────────────────────────────────────────────┘ │
+│                            │                                 │
+│  ┌────────────────────────────────────────────────────────┐ │
+│  │ Source Selection LLM → Choose relevant databases        │ │
+│  └────────────────────────────────────────────────────────┘ │
+│                            │                                 │
+│  ┌────────────────────────────────────────────────────────┐ │
+│  │ Query Generation LLM → Source-specific queries          │ │
+│  └────────────────────────────────────────────────────────┘ │
+│                            │                                 │
+│  ┌────────────────────────────────────────────────────────┐ │
+│  │ Source Execution → Parallel API calls to databases      │ │
+│  └────────────────────────────────────────────────────────┘ │
+│                            │                                 │
+│  ┌────────────────────────────────────────────────────────┐ │
+│  │ Relevance Filter LLM → Keep only relevant results       │ │
+│  └────────────────────────────────────────────────────────┘ │
+└─────────────────────────────────────────────────────────────┘
+                              │
+                              ▼
+┌─────────────────────────────────────────────────────────────┐
+│              Report Synthesis LLM                            │
+│    Entity extraction, relationship mapping, citations        │
+└─────────────────────────────────────────────────────────────┘
+                              │
+                              ▼
+┌─────────────────────────────────────────────────────────────┐
+│              Markdown Report with Sources                    │
+└─────────────────────────────────────────────────────────────┘
+```
 
 ## Directory Structure
 
 ```
 sam_gov/
-├── 📚 Documentation
-│   ├── README.md                   # This file
-│   ├── QUICK_START.md              # Quick start guide
-│   ├── CONFIG.md                   # Configuration guide
-│   ├── DIRECTORY_STRUCTURE.md      # Directory layout
-│   └── CLAUDE.md                   # Development tasks
-│
-├── ⚙️  Configuration
-│   ├── config_default.yaml         # Default configuration
-│   ├── config_loader.py            # Configuration loader
-│   └── llm_utils.py                # LLM utilities
-│
-├── 🔧 Core System (core/)
-│   ├── database_integration_base.py   # Base class for integrations
-│   ├── database_registry.py           # Database registry
-│   ├── parallel_executor.py           # Parallel search execution
-│   ├── agentic_executor.py            # Self-improving executor
-│   ├── intelligent_executor.py        # Full AI research assistant
-│   ├── adaptive_analyzer.py           # Code-based analysis
-│   └── result_analyzer.py             # Result synthesis
-│
-├── 🔌 Database Integrations (integrations/)
-│   ├── sam_integration.py             # SAM.gov federal contracts
-│   ├── dvids_integration.py           # Military media/news
-│   ├── usajobs_integration.py         # Federal job listings
-│   ├── clearancejobs_integration.py   # Security clearance jobs (API)
-│   └── clearancejobs_puppeteer.py     # ClearanceJobs scraper (working)
-│
-├── 🖥️  Applications (apps/)
-│   ├── unified_search_app.py          # Streamlit web UI
-│   └── ai_research.py                 # CLI application
-│
-├── 🧪 Tests (tests/)
-│   ├── test_intelligent_research.py   # Full integration test
-│   ├── test_agentic_executor.py       # Executor tests
-│   ├── test_4_databases.py            # Multi-database test
-│   └── test_clearancejobs_puppeteer.py # Puppeteer test
-│
-├── 🛠️  Scripts (scripts/)
-│   └── migrate_to_gpt5mini.sh         # Model migration
-│
-└── 🧬 Experiments (experiments/)
-    ├── tag_management/                # Tag experiments
-    ├── scrapers/                      # Standalone scrapers
-    └── discord/                       # Discord tools
+├── apps/                    # User entry points
+│   ├── ai_research.py       # Legacy CLI
+│   └── unified_search_app.py # Streamlit web UI
+├── run_research_cli.py      # Primary CLI entry point
+├── research/                # Deep research engine
+│   ├── deep_research.py     # Main orchestrator (4,392 lines)
+│   └── mixins/              # Modular components
+├── integrations/            # 29 data source adapters
+│   ├── government/          # SAM, DVIDS, USAJobs, etc.
+│   ├── social/              # Twitter, Reddit, Discord
+│   └── registry.py          # Integration registry
+├── prompts/                 # Jinja2 LLM prompt templates
+│   ├── deep_research/       # Research prompts
+│   └── integrations/        # Source-specific prompts
+├── core/                    # Shared utilities
+│   └── prompt_loader.py     # Jinja2 template engine
+├── data/                    # Runtime data
+│   ├── research_output/     # Generated reports
+│   └── exports/             # Discord/Telegram exports
+├── tests/                   # Test suites
+├── config.yaml              # User configuration
+├── .env                     # API keys (gitignored)
+└── llm_utils.py             # LLM call wrapper
 ```
 
-**Import Paths:**
-```python
-# Core system
-from core.agentic_executor import AgenticExecutor
-from core.intelligent_executor import IntelligentExecutor
+## Example Queries
 
-# Integrations
-from integrations.sam_integration import SAMIntegration
-
-# Config and utilities
-from config_loader import config
-from llm_utils import acompletion
-```
-
-## Troubleshooting
-
-### "No module named X"
+**Defense Contracting**:
 ```bash
-pip install -r requirements.txt
+python3 run_research_cli.py "What AI contracts has the Pentagon awarded in 2024?"
 ```
 
-### Import errors after reorganization
-Make sure you're using new import paths:
-```python
-# Old (broken)
-from agentic_executor import AgenticExecutor
-
-# New (correct)
-from core.agentic_executor import AgenticExecutor
-```
-
-### AI Research returns "No OpenAI API key"
-Create `.env` file with your key:
+**Campaign Finance**:
 ```bash
-echo "OPENAI_API_KEY=your-key-here" > .env
+python3 run_research_cli.py "Track Lockheed Martin campaign contributions and lobbying"
 ```
 
-### SAM.gov returns "PostedFrom and PostedTo are mandatory"
-- SAM.gov requires a date range (max 1 year)
-- Make sure both date fields are filled
-
-### Configuration not loading
-- Check `config_default.yaml` exists
-- Custom config should be `config.yaml` (not tracked by git)
-- Environment variables override config file
-
-### Tests failing
-Run tests from repository root:
+**Investigative Lead Generation**:
 ```bash
-cd /home/brian/sam_gov
-python3 tests/test_intelligent_research.py
+python3 run_research_cli.py \
+  --max-tasks 8 \
+  --max-time-minutes 60 \
+  "Find patterns of no-bid contracts or revolving door hires in defense AI"
 ```
 
-## API Limits
+## Development
 
-| API | Max Results/Page | Total Limit | Rate Limit | Cost |
-|-----|------------------|-------------|------------|------|
-| SAM.gov | 1000 | None | Unknown (strict) | Free |
-| DVIDS | 50 | 1000 | Unknown | Free |
-| USAJobs | 500 | None | Unknown | Free |
-| ClearanceJobs | N/A (Puppeteer) | Unlimited | Manual scraping | Free |
-| OpenAI (gpt-5-mini) | N/A | Usage-based | Standard API | ~$0.001-0.01/query |
-
-## Configuration
-
-The system is fully configurable via `config.yaml`:
-
-- **LLM Models**: Change query generation, analysis, synthesis models
-- **Timeouts**: Adjust API and LLM request timeouts
-- **Execution**: Max concurrent searches, refinement iterations
-- **Provider Fallback**: Auto-retry with alternative models
-- **Cost Management**: Set budget limits and cost tracking
-
-See `CONFIG.md` for detailed configuration guide.
-
-## Testing
-
+**Run tests**:
 ```bash
-# Run full integration test
-python3 tests/test_intelligent_research.py
-
-# Test specific database
-python3 tests/test_4_databases.py
-
-# Test agentic refinement
-python3 tests/test_agentic_executor.py
-
-# Test Puppeteer integration
-python3 tests/test_clearancejobs_puppeteer.py
+source .venv/bin/activate
+python3 tests/test_deep_research_full.py
 ```
 
-## Known Limitations
-
-1. **ClearanceJobs**: Python API broken, requires Puppeteer MCP server
-2. **DVIDS**: Maximum 1000 total results per search
-3. **SAM.gov**: Date range limited to 1 year, strict rate limits
-4. **USAJobs**: Requires specific User-Agent header format
+**Add a new integration**:
+1. Copy `integrations/_integration_template.py`
+2. Implement required methods (`is_relevant`, `generate_query`, `execute_search`)
+3. Create prompt template in `prompts/integrations/`
+4. Register in `integrations/registry.py`
+5. Test with `python3 tests/test_<source>_live.py`
 
 ## Documentation
 
-- **Quick Start**: `QUICK_START.md` - Get up and running fast
-- **Configuration**: `CONFIG.md` - Configure models and providers
-- **Directory Layout**: `DIRECTORY_STRUCTURE.md` - Understand the codebase
-- **Development Tasks**: `CLAUDE.md` - Ongoing development work
-- **Historical Docs**: `docs/archive/` - Previous documentation
+- **CLAUDE.md** - Development guide and principles
+- **STATUS.md** - Current system status and recent changes
+- **ROADMAP.md** - Implementation roadmap
+- **PATTERNS.md** - Code patterns and conventions
+- **INVESTIGATIVE_PLATFORM_VISION.md** - Long-term vision (75 pages)
 
-## Credits
+## Known Limitations
 
-- **SAM.gov API**: https://open.gsa.gov/api/get-opportunities-public-api/
-- **DVIDS API**: https://api.dvidshub.net/docs
-- **USAJobs API**: https://developer.usajobs.gov/
-- **ClearanceJobs**: https://www.clearancejobs.com/
-- **LiteLLM**: https://github.com/BerriAI/litellm
+1. **Brave Search** - Rate limited (429 errors on heavy use)
+2. **SAM.gov** - Low rate limits, handled gracefully
+3. **NewsAPI Free Tier** - 30-day article limit
+4. **Some sources** - Require specific API keys
 
 ## License
 
-This tool is for legitimate research purposes only. Respect all API terms of service and rate limits. Do not use for unauthorized scraping or commercial purposes without proper authorization.
+For legitimate research purposes only. Respect all API terms of service.

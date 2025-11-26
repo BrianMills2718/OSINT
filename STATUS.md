@@ -1,7 +1,8 @@
 # STATUS.md - Component Status Tracker
 
-**Last Updated**: 2025-11-24 (GovInfo Integration + Performance Optimizations - COMPLETE)
-**Current Phase**: 29 integrations working, GovInfo added, ClearanceJobs 10x faster - Research system ready for production use ✅
+**Last Updated**: 2025-11-25 (Temporal Context Fix + Documentation Refresh)
+**Current Phase**: 29 integrations working, temporal context fix validated - Research system production-ready ✅
+**Previous Phase**: GovInfo Integration + Performance Optimizations - COMPLETE ✅
 **Previous Phase**: 22 integrations working, Telegram OSINT source added - COMPLETE ✅
 **Previous Phase**: Quality Improvements (Report Synthesis, Logging, Source Context) - COMPLETE ✅
 **Previous Phase**: Phase 6 (Query Saturation) COMPLETE ✅
@@ -16,6 +17,41 @@
 **Previous Phase**: Phase 1.5 (Adaptive Search & Knowledge Graph) - Week 1 COMPLETE ✅
 **Previous Phase**: Phase 1 (Boolean Monitoring MVP) - 100% COMPLETE + **DEPLOYED IN PRODUCTION** ✅
 **Previous Phase**: Phase 0 (Foundation) - 100% COMPLETE
+
+---
+
+## Recent Updates (2025-11-25)
+
+**Status**: ✅ **COMPLETE** - Temporal context fix + Documentation refresh
+**Impact**: LLM now correctly interprets dates (2025 not 2024), README completely rewritten
+
+### 1. Temporal Context Fix ✅
+**Date**: 2025-11-25
+**Problem**: LLM was interpreting "2024 contracts" as 2022-2023 data due to hardcoded date examples in prompts
+**Root Cause**: Prompt templates had static date examples (e.g., `2022-10-01`) that conflicted with system date injection
+
+**Solution**: Added dynamic Jinja2 date variables to 4 critical prompts:
+- `prompts/deep_research/task_decomposition.j2` - Now interprets "recent" as 2024-2025
+- `prompts/integrations/usaspending_query_generation.j2` - Dynamic fiscal year examples
+- `prompts/integrations/fec_query_generation.j2` - Dynamic election cycle calculation
+- `prompts/integrations/newsapi_query.j2` - Current year reference
+
+**Validation**:
+- ✅ Prompts now render `CURRENT DATE: 2025-11-25 (Year: 2025)`
+- ✅ USAspending returns 2024 contracts (July, Feb, May 2024 verified)
+- ✅ E2E test: 35 results, entities extracted, report synthesized
+- ✅ Enum serialization fix committed (DatabaseCategory to string)
+
+**Commits**: 1dd71c1, 07096d2
+
+### 2. Documentation Refresh ✅
+**Date**: 2025-11-25
+**Goal**: Update all documentation to reflect current system state (29 integrations, deep research)
+
+**Changes**:
+- **README.md**: Complete rewrite - was listing 4 sources (now 29), missing deep research features
+- **STATUS.md**: Updated header with 2025-11-25 temporal context fix
+- Architecture diagram, directory structure, example queries all updated
 
 ---
 
