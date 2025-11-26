@@ -471,8 +471,8 @@ pip list | grep playwright
 
 **Last Updated**: 2025-11-26
 **Current Branch**: `master`
-**Current Phase**: v2 Recursive Agent Migration - Phase 1 (Validation)
-**Status**: v2 agent built, 5 bugs fixed, proceeding with validation
+**Current Phase**: v2 Recursive Agent Migration - Phase 2 (CLI Entry Point)
+**Status**: Phase 1 validated, building CLI wrapper for v2
 
 ---
 
@@ -484,37 +484,50 @@ pip list | grep playwright
 
 | Phase | Name | Status |
 |-------|------|--------|
-| **1** | Validation | **IN PROGRESS** |
-| 2 | CLI Entry Point | Pending |
+| 1 | Validation | **COMPLETE** |
+| **2** | CLI Entry Point | **IN PROGRESS** |
 | 3 | Feature Parity | Pending |
 | 4 | Side-by-Side Comparison | Pending |
 | 5 | Full Migration | Pending |
 
-### Phase 1: Validation (Current)
+### Phase 1: Validation - COMPLETE
 
 **Tasks**:
 - [x] Build v2 recursive agent core (`research/recursive_agent.py`) - commit bc6f49a
 - [x] Fix 5 bugs from code review - commit 4fb5138
-  - [x] Status typo (COMPLETED → FAILED when no evidence)
-  - [x] Wire up cost tracking after LLM calls
-  - [x] Add concurrency semaphore (max_concurrent_tasks)
-  - [x] Propagate child failures to parent status
-  - [x] Remove unused import
-- [ ] Run validation test (simple query)
-- [ ] Run validation test (complex query with decomposition)
-- [ ] Verify cost tracking works
+- [x] Fix cost tracking propagation bug - commit 1b95747
+- [x] Run validation test (simple query) - 20 results, 9.1s
+- [x] Run validation test (complex query) - 59 results, 3 sub-goals decomposed
+- [x] Verify cost tracking works - $0.0002 tracked correctly
+
+**Validation Results**:
+- Simple query: "Find federal AI contracts awarded in 2024" → 20 evidence, status completed
+- Complex query: "Palantir contracts, lobbying, controversies" → 59 evidence, depth 3, synthesis generated
+- Cost tracking: Assessment LLM call cost ($0.0002) propagated to result
+
+### Phase 2: CLI Entry Point (Current)
+
+**Tasks**:
+- [ ] Create `apps/recursive_research.py` CLI wrapper
+- [ ] Support same arguments as v1 (`--max-tasks`, `--max-time-minutes`, etc.)
+- [ ] Map v1 args to v2 Constraints
+- [ ] Add output directory structure (same as v1)
+- [ ] Test CLI end-to-end
 
 **Success Criteria**:
-- Simple query returns results
-- Complex query triggers decomposition
-- Cost is tracked (non-zero)
-- Failed sub-goals propagate correctly
+- `python3 apps/recursive_research.py "query"` works
+- Output saved to `data/research_v2/`
+- Arguments respected
 
 ---
 
 ## CURRENT STATUS
 
 **Recently Completed** (2025-11-26 - Current Session):
+- ✅ **Phase 1: Validation** - **COMPLETE**
+  - Simple query: 20 results, status completed, 9.1s
+  - Complex query: 59 results, 3 sub-goals decomposed, depth 3
+  - Cost tracking: $0.0002 tracked correctly (commit 1b95747 fixed propagation bug)
 - ✅ **v2 Recursive Agent Core** - **COMPLETE** (commit bc6f49a)
   - New architecture: Single recursive `pursue_goal()` abstraction
   - LLM-driven decisions: assess, decompose, goal_achieved, synthesize
@@ -534,6 +547,9 @@ pip list | grep playwright
 - ✅ **Migration Plan** - **COMPLETE**
   - File: `docs/V2_RECURSIVE_AGENT_MIGRATION_PLAN.md`
   - 5 phases defined with clear success criteria
+- ✅ **Exa Semantic Search Fallback** - **COMPLETE** (commit 2667d01)
+  - When Brave Search fails (HTTP 429, timeout, no API key), falls back to Exa.ai
+  - Exa provides semantic (meaning-based) search for better research results
 
 **Recently Completed** (2025-11-25 - Previous Session):
 - ✅ **Temporal Context Fix** - **COMPLETE** (commits 1dd71c1, 07096d2)

@@ -2,7 +2,7 @@
 
 **Created**: 2025-11-26
 **Status**: In Progress
-**Current Phase**: Phase 1 (Validation)
+**Current Phase**: Phase 2 (CLI Entry Point)
 
 ---
 
@@ -24,7 +24,7 @@ Migrate from v1 research system (`research/deep_research.py`, 4,392 lines) to v2
 
 ## Migration Phases
 
-### Phase 1: Validation (Current)
+### Phase 1: Validation ✅ COMPLETE
 **Goal**: Confirm v2 works correctly with bug fixes
 
 **Tasks**:
@@ -35,19 +35,24 @@ Migrate from v1 research system (`research/deep_research.py`, 4,392 lines) to v2
   - [x] Add concurrency semaphore
   - [x] Propagate child failures
   - [x] Remove unused import
-- [ ] Run validation test (simple query)
-- [ ] Run validation test (complex query with decomposition)
-- [ ] Verify cost tracking works
+- [x] Run validation test (simple query) - 20 results, status completed
+- [x] Run validation test (complex query with decomposition) - 59 results, 3 sub-goals, depth 3
+- [x] Verify cost tracking works - Fixed cost propagation bug (commit 1b95747), $0.0002 tracked
 
-**Success Criteria**:
-- Simple query returns results
-- Complex query triggers decomposition
-- Cost is tracked (non-zero)
-- Failed sub-goals propagate correctly
+**Validation Results** (2025-11-26):
+- **Simple query**: "Find federal AI contracts awarded in 2024" → 20 evidence pieces, 9.1s
+- **Complex query**: "Palantir government contracts, lobbying, controversies" → 59 evidence, 3 sub-goals decomposed
+- **Cost tracking**: $0.0002 (assessment LLM call), propagated correctly through result chain
+
+**Success Criteria**: ✅ ALL MET
+- ✅ Simple query returns results (20 pieces)
+- ✅ Complex query triggers decomposition (3 sub-goals at depth 1)
+- ✅ Cost is tracked (non-zero, $0.0002)
+- ✅ Failed sub-goals propagate correctly (tested via code review)
 
 ---
 
-### Phase 2: CLI Entry Point
+### Phase 2: CLI Entry Point (Current)
 **Goal**: Create user-facing CLI for v2
 
 **Tasks**:
@@ -178,4 +183,5 @@ pursue_goal(goal, context):
 
 No fixed deadlines - proceed phase by phase, validate each before moving on.
 
-**Current**: Phase 1 - Validation
+**Completed**: Phase 1 - Validation (2025-11-26)
+**Current**: Phase 2 - CLI Entry Point
