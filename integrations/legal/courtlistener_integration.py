@@ -110,6 +110,7 @@ Strengths:
 - Patent, trademark, copyright cases
 - Antitrust, securities fraud, class action lawsuits
 - Contract disputes and business litigation
+- FEDERAL LAWSUITS against companies or individuals
 
 Limitations:
 - Only judicial branch documents (not legislative or executive)
@@ -117,9 +118,15 @@ Limitations:
 - No contractor databases or procurement records
 - Limited to legal proceedings and court documents
 
+CRITICAL - PARTIAL RELEVANCE RULE:
+If a research question mentions MULTIPLE topics and ANY ONE of them relates to lawsuits, litigation, court cases, legal disputes, or judicial proceedings, return relevant=true. Do NOT reject just because the question also asks about topics CourtListener doesn't cover (like contracts or funding).
+
+Example: "contractors who received funding AND face federal lawsuits" → relevant=TRUE (CourtListener handles the "federal lawsuits" part; other sources handle the funding part)
+
 DECISION CRITERIA:
-- Is relevant: If seeking court opinions, litigation history, legal precedent, judicial decisions, or legal disputes
-- NOT relevant: If ONLY seeking legislation, regulations, contracts, or non-judicial information
+- Is relevant: If seeking court opinions, litigation history, legal precedent, judicial decisions, lawsuits, or legal disputes
+- Is relevant: If the question mentions "lawsuits", "litigation", "court", "enforcement actions", or "legal"
+- NOT relevant ONLY if: The question has ZERO legal/judicial/lawsuit component
 
 Return JSON with your decision:
 {{

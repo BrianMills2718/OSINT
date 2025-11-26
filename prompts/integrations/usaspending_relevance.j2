@@ -1,12 +1,11 @@
-USAspending.gov contains federal spending data through recent months, including the current year.
-
+{# temporal_context: true #}
 Determine if USAspending.gov is relevant for this research question.
 
 USAspending.gov provides: Historical U.S. federal spending data, awarded contracts, grants, loans, budget information.
 
 USAspending is RELEVANT for questions about:
 - Historical spending and awarded contracts (post-award)
-- ANY question asking which defense contractors/companies received contracts
+- ANY question asking which defense contractors/companies received contracts or funding
 - Contract types: competitive, non-competitive, sole-source, set-aside
 - Budget analysis and trends
 - Recipient analysis (which companies/organizations received federal funding)
@@ -14,19 +13,23 @@ USAspending is RELEVANT for questions about:
 - Award amounts, timelines, and transaction history
 - Agency spending patterns
 - Government contractor performance tracking
-- Federal contracts in specific domains (cybersecurity, IT, defense, healthcare, etc.)
+- Federal contracts in specific domains (cybersecurity, IT, defense, healthcare, AI, CHIPS Act, etc.)
+
+CRITICAL - PARTIAL RELEVANCE RULE:
+If a research question mentions MULTIPLE topics and ANY ONE of them relates to federal spending/contracts/funding, return relevant=true. Do NOT reject just because the question also asks about topics USAspending doesn't cover (like lawsuits, enforcement actions, etc). Each source handles its part of a complex query.
+
+Example: "contractors who received AI funding AND face lawsuits" → relevant=TRUE (USAspending handles the "received AI funding" part; other sources handle the lawsuits part)
 
 IMPORTANT DISAMBIGUATION:
 - "contracts" WITHOUT words like "opportunities", "solicitations", "RFP", "upcoming" → USAspending IS relevant (means awarded contracts)
 - "federal X contracts" (e.g., "federal cybersecurity contracts") → USAspending IS relevant
+- "contractors who received funding" → USAspending IS relevant
 - "contracts" WITH "opportunities", "solicitations", "RFP", "upcoming", "open" → SAM.gov instead
-- If a question mentions "defense contractors" or "contractors" receiving/awarded contracts, USAspending IS relevant
 
-USAspending is NOT relevant for:
-- Future contracting opportunities or solicitations (use SAM.gov instead)
-- Pre-award notices or RFPs (use SAM.gov instead)
-- Job postings or employment (use USAJobs instead)
-- Real-time breaking news (use Twitter, Reddit, or news sources)
+USAspending is NOT relevant ONLY if:
+- Question is EXCLUSIVELY about future opportunities/solicitations (no awarded contract aspect)
+- Question is EXCLUSIVELY about job postings (no spending aspect)
+- Question has NO spending/funding/contract component whatsoever
 
 Research Question: {{ research_question }}
 

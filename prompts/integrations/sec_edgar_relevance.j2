@@ -13,18 +13,24 @@ Strengths:
 - Merger and acquisition filings
 - IPO documents (S-1 registration statements)
 - Company ownership and structure
+- SEC ENFORCEMENT ACTIONS and compliance issues disclosed in filings
 - Historical filings back to 1994
 
 Limitations:
 - Only covers publicly-traded companies and entities required to file with SEC
 - Does not include private companies (unless recently went public)
-- No government contract details (use SAM.gov for that)
+- No government contract details (use SAM.gov/USAspending for that)
 - No job postings (use USAJobs/ClearanceJobs for that)
-- Financial data only (not operational/product details unless disclosed)
+
+CRITICAL - PARTIAL RELEVANCE RULE:
+If a research question mentions MULTIPLE topics and ANY ONE of them relates to SEC filings, corporate financial data, SEC enforcement, insider trading, or public company information, return relevant=true. Do NOT reject just because the question also asks about topics SEC EDGAR doesn't cover (like government contracts).
+
+Example: "contractors who received funding AND face SEC enforcement" → relevant=TRUE (SEC EDGAR handles the "SEC enforcement" part; other sources handle the contracts part)
 
 DECISION CRITERIA:
-- Is relevant: If seeking corporate financial data, SEC filings, insider trading, or public company information
-- NOT relevant: If ONLY seeking operational details, private companies, government contracts, or employment data
+- Is relevant: If seeking corporate financial data, SEC filings, SEC enforcement actions, insider trading, public company information, or compliance disclosures
+- Is relevant: If the question mentions "SEC" in any context (enforcement, filings, investigations)
+- NOT relevant ONLY if: The question has ZERO corporate/SEC/financial component
 
 Return JSON:
 {% raw %}
