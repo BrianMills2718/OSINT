@@ -33,6 +33,21 @@ load_dotenv()
 logger = logging.getLogger(__name__)
 
 
+def safe_amount(value, default: float = 0.0) -> float:
+    """
+    Safely extract a numeric amount from API response.
+
+    Handles None, missing keys, empty strings, and type mismatches.
+    Returns default if value cannot be converted to float.
+    """
+    if value is None:
+        return default
+    try:
+        return float(value)
+    except (TypeError, ValueError):
+        return default
+
+
 class FECIntegration(DatabaseIntegration):
     """
     Integration for FEC (Federal Election Commission) campaign finance data.
@@ -432,7 +447,7 @@ class FECIntegration(DatabaseIntegration):
         transformed_results = []
         for contrib in results[:limit]:
             contributor = contrib.get("contributor_name", "Unknown Contributor")
-            amount = contrib.get("contribution_receipt_amount") or 0  # Handle None values
+            amount = safe_amount(contrib.get("contribution_receipt_amount"))
             recipient = contrib.get("committee", {}).get("name", "Unknown Committee")
             date = contrib.get("contribution_receipt_date", "")
 
@@ -595,7 +610,7 @@ class FECIntegration(DatabaseIntegration):
         # Transform results
         transformed_results = []
         for expenditure in results[:limit]:
-            amount = expenditure.get("expenditure_amount", 0)
+            amount = safe_amount(expenditure.get("expenditure_amount"))
             spender = expenditure.get("committee", {}).get("name", "Unknown")
             candidate = expenditure.get("candidate_name", "Unknown")
             support_oppose = expenditure.get("support_oppose_indicator", "")
