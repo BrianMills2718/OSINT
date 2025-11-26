@@ -469,16 +469,73 @@ pip list | grep playwright
 **END OF PERMANENT SECTION**
 # CLAUDE.md - Temporary Section (Condensed)
 
-**Last Updated**: 2025-11-25
+**Last Updated**: 2025-11-26
 **Current Branch**: `master`
-**Current Phase**: Production-ready research system - **29 integrations working**
-**Status**: Temporal context fix validated, documentation refreshed, all systems operational
+**Current Phase**: v2 Recursive Agent Migration - Phase 1 (Validation)
+**Status**: v2 agent built, 5 bugs fixed, proceeding with validation
+
+---
+
+## V2 RECURSIVE AGENT MIGRATION
+
+**Plan Document**: `docs/V2_RECURSIVE_AGENT_MIGRATION_PLAN.md`
+
+### Migration Phases Overview
+
+| Phase | Name | Status |
+|-------|------|--------|
+| **1** | Validation | **IN PROGRESS** |
+| 2 | CLI Entry Point | Pending |
+| 3 | Feature Parity | Pending |
+| 4 | Side-by-Side Comparison | Pending |
+| 5 | Full Migration | Pending |
+
+### Phase 1: Validation (Current)
+
+**Tasks**:
+- [x] Build v2 recursive agent core (`research/recursive_agent.py`) - commit bc6f49a
+- [x] Fix 5 bugs from code review - commit 4fb5138
+  - [x] Status typo (COMPLETED → FAILED when no evidence)
+  - [x] Wire up cost tracking after LLM calls
+  - [x] Add concurrency semaphore (max_concurrent_tasks)
+  - [x] Propagate child failures to parent status
+  - [x] Remove unused import
+- [ ] Run validation test (simple query)
+- [ ] Run validation test (complex query with decomposition)
+- [ ] Verify cost tracking works
+
+**Success Criteria**:
+- Simple query returns results
+- Complex query triggers decomposition
+- Cost is tracked (non-zero)
+- Failed sub-goals propagate correctly
 
 ---
 
 ## CURRENT STATUS
 
-**Recently Completed** (2025-11-25 - Current Session):
+**Recently Completed** (2025-11-26 - Current Session):
+- ✅ **v2 Recursive Agent Core** - **COMPLETE** (commit bc6f49a)
+  - New architecture: Single recursive `pursue_goal()` abstraction
+  - LLM-driven decisions: assess, decompose, goal_achieved, synthesize
+  - Variable depth (LLM decides structure, not hardcoded)
+  - Full context preservation at every level
+  - ~1,200 lines vs v1's 4,392 lines
+  - File: `research/recursive_agent.py`
+- ✅ **Bug Fixes from Code Review** - **COMPLETE** (commit 4fb5138)
+  - Fixed status always returning COMPLETED
+  - Wired up cost tracking to all 5 LLM call sites
+  - Added asyncio.Semaphore for concurrency limiting
+  - Parent now checks child statuses before returning
+  - Removed unused import
+- ✅ **Architecture Documentation** - **COMPLETE** (commit 428fc71)
+  - File: `docs/RECURSIVE_AGENT_ARCHITECTURE.md` (634 lines)
+  - Covers: core loop, 5 components, context preservation, parallelism, constraints
+- ✅ **Migration Plan** - **COMPLETE**
+  - File: `docs/V2_RECURSIVE_AGENT_MIGRATION_PLAN.md`
+  - 5 phases defined with clear success criteria
+
+**Recently Completed** (2025-11-25 - Previous Session):
 - ✅ **Temporal Context Fix** - **COMPLETE** (commits 1dd71c1, 07096d2)
   - **Problem**: LLM was interpreting "2024 contracts" using 2022-2023 dates due to hardcoded examples in prompts
   - **Root Cause**: Prompts had static date examples that conflicted with system date injection
