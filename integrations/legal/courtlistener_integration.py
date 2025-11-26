@@ -23,6 +23,7 @@ from core.database_integration_base import (
     DatabaseCategory,
     QueryResult
 )
+from core.result_builder import SearchResultBuilder
 from core.api_request_tracker import log_request
 from config_loader import config
 
@@ -365,54 +366,61 @@ Return JSON with your decision:
 
                     snippet = " | ".join(snippet_parts) if snippet_parts else "Court opinion"
 
-                    transformed = {
-                        "title": case_name or "Untitled Case",
-                        "url": result.get("absolute_url", "") or f"https://www.courtlistener.com{result.get('url', '')}",
-                        "snippet": snippet[:500] if snippet else "",
-                        "date": date_filed,
-                        "metadata": {
+                    url = result.get("absolute_url") or f"https://www.courtlistener.com{result.get('url', '')}"
+                    transformed = (SearchResultBuilder()
+                        .title(case_name, default="Untitled Case")
+                        .url(url)
+                        .snippet(snippet[:500] if snippet else "")
+                        .date(date_filed)
+                        .metadata({
                             "court": court_name,
                             "date_filed": date_filed,
                             "docket_number": result.get("docketNumber", "") or result.get("docket_number", ""),
                             "citation": result.get("citation", []),
                             "status": result.get("status", ""),
                             "result_type": "opinion"
-                        }
-                    }
+                        })
+                        .build())
 
                 elif result_type == "r":  # RECAP
                     docket = result.get("docket", {})
-                    case_name = docket.get("case_name", "")
-                    court = result.get("court", "")
+                    case_name = SearchResultBuilder.safe_text(docket.get("case_name"))
+                    court = SearchResultBuilder.safe_text(result.get("court"))
                     date_filed = result.get("date_filed", "")
+                    description = SearchResultBuilder.safe_text(result.get("description"))
 
-                    snippet = f"Court: {court} | Filed: {date_filed} | {result.get('description', '')[:200]}"
+                    snippet = f"Court: {court} | Filed: {date_filed} | {description[:200]}"
+                    url = result.get("absolute_url") or f"https://www.courtlistener.com{result.get('url', '')}"
 
-                    transformed = {
-                        "title": case_name or "Untitled Filing",
-                        "url": result.get("absolute_url", "") or f"https://www.courtlistener.com{result.get('url', '')}",
-                        "snippet": snippet[:500] if snippet else "",
-                        "date": date_filed,
-                        "metadata": {
+                    transformed = (SearchResultBuilder()
+                        .title(case_name, default="Untitled Filing")
+                        .url(url)
+                        .snippet(snippet[:500] if snippet else "")
+                        .date(date_filed)
+                        .metadata({
                             "court": court,
                             "date_filed": date_filed,
                             "document_number": result.get("document_number", ""),
-                            "description": result.get("description", ""),
+                            "description": description,
                             "result_type": "recap"
-                        }
-                    }
+                        })
+                        .build())
 
                 else:  # Other types (dockets, oral arguments, etc.)
-                    transformed = {
-                        "title": result.get("case_name", "") or result.get("title", "Untitled Result"),
-                        "url": result.get("absolute_url", "") or f"https://www.courtlistener.com{result.get('url', '')}",
-                        "snippet": str(result)[:500],  # Fallback: show raw data
-                        "date": result.get("date_filed", "") or result.get("date_created", ""),
-                        "metadata": {
+                    title = SearchResultBuilder.safe_text(result.get("case_name") or result.get("title"))
+                    url = result.get("absolute_url") or f"https://www.courtlistener.com{result.get('url', '')}"
+                    date = result.get("date_filed", "") or result.get("date_created", "")
+
+                    transformed = (SearchResultBuilder()
+                        .title(title, default="Untitled Result")
+                        .url(url)
+                        .snippet(str(result)[:500])
+                        .date(date)
+                        .metadata({
                             "result_type": result_type,
                             "raw_result": result
-                        }
-                    }
+                        })
+                        .build())
 
                 transformed_results.append(transformed)
 

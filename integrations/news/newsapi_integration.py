@@ -20,6 +20,7 @@ from core.database_integration_base import (
     DatabaseCategory,
     QueryResult
 )
+from core.result_builder import SearchResultBuilder
 from core.api_request_tracker import log_request
 from config_loader import config
 
@@ -353,24 +354,26 @@ Return JSON:
             documents = []
 
             for article in articles:
-                # Extract article data
+                # Extract article data using defensive builder
                 source_info = article.get("source", {})
-                source_name = source_info.get("name", "Unknown")
+                source_name = SearchResultBuilder.safe_text(source_info.get("name"), default="Unknown")
+                description = SearchResultBuilder.safe_text(article.get("description"))
+                content = SearchResultBuilder.safe_text(article.get("content"))
+                published_at = article.get("publishedAt", "")
 
-                # Build document
-                doc = {
-                    "title": article.get("title", "No title"),
-                    "url": article.get("url", ""),
-                    "snippet": article.get("description", "")[:500] if article.get("description") else "",
-                    "date": article.get("publishedAt", "")[:10] if article.get("publishedAt") else None,  # Extract YYYY-MM-DD
-                    "metadata": {
+                doc = (SearchResultBuilder()
+                    .title(article.get("title"), default="No title")
+                    .url(article.get("url"))
+                    .snippet(description[:500] if description else "")
+                    .date(published_at[:10] if published_at else None)
+                    .metadata({
                         "source": source_name,
                         "author": article.get("author"),
-                        "published_at": article.get("publishedAt"),
+                        "published_at": published_at,
                         "url_to_image": article.get("urlToImage"),
-                        "content_preview": article.get("content", "")[:200] if article.get("content") else None
-                    }
-                }
+                        "content_preview": content[:200] if content else None
+                    })
+                    .build())
                 documents.append(doc)
 
             return QueryResult(

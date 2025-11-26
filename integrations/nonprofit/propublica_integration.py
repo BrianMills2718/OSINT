@@ -21,6 +21,7 @@ from core.database_integration_base import (
     DatabaseCategory,
     QueryResult
 )
+from core.result_builder import SearchResultBuilder
 from core.api_request_tracker import log_request
 from config_loader import config
 
@@ -293,12 +294,12 @@ class ProPublicaIntegration(DatabaseIntegration):
                     # strein format like "501(c)(3)" or "4947(a)(1)"
                     tax_code = strein
 
-                transformed = {
-                    "title": org.get("name", "Unnamed Organization"),
-                    "url": url,
-                    "snippet": snippet[:500] if snippet else "",
-                    "date": None,  # ProPublica doesn't have a single publication date
-                    "metadata": {
+                transformed = (SearchResultBuilder()
+                    .title(org.get("name"), default="Unnamed Organization")
+                    .url(url)
+                    .snippet(snippet[:500] if snippet else "")
+                    .date(None)  # ProPublica doesn't have a single publication date
+                    .metadata({
                         "ein": ein,
                         "city": org.get("city"),
                         "state": org.get("state"),
@@ -309,8 +310,8 @@ class ProPublicaIntegration(DatabaseIntegration):
                         "asset_amount": org.get("asset_amount"),
                         "filing_date": org.get("filing_date"),
                         "subsection_code": org.get("subseccd")
-                    }
-                }
+                    })
+                    .build())
                 transformed_orgs.append(transformed)
 
             return QueryResult(

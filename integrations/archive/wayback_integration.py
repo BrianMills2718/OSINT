@@ -21,6 +21,7 @@ from core.database_integration_base import (
     DatabaseCategory,
     QueryResult
 )
+from core.result_builder import SearchResultBuilder
 from core.api_request_tracker import log_request
 from config_loader import config
 
@@ -281,21 +282,21 @@ Return JSON:
                     else:
                         formatted_date = "Unknown date"
 
-                    # Build document
-                    doc = {
-                        "title": f"Archived Snapshot: {url}",
-                        "url": snapshot_url,
-                        "snippet": f"Snapshot from {formatted_date} (HTTP {snapshot_status})",
-                        "date": snapshot_timestamp[:8] if snapshot_timestamp else None,  # YYYYMMDD
-                        "metadata": {
+                    # Build document using defensive builder
+                    doc = (SearchResultBuilder()
+                        .title(f"Archived Snapshot: {url}", default="Wayback Archive")
+                        .url(snapshot_url)
+                        .snippet(f"Snapshot from {formatted_date} (HTTP {snapshot_status})")
+                        .date(snapshot_timestamp[:8] if snapshot_timestamp else None)
+                        .metadata({
                             "original_url": url,
                             "archive_url": snapshot_url,
                             "snapshot_timestamp": snapshot_timestamp,
                             "snapshot_date": formatted_date,
                             "http_status": snapshot_status,
                             "requested_timestamp": timestamp
-                        }
-                    }
+                        })
+                        .build())
                     documents.append(doc)
 
             if not documents:

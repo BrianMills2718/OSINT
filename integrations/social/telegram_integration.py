@@ -352,20 +352,22 @@ Return JSON:
                 limit=limit
             ))
 
-            # Extract channel information
+            # Extract channel information using defensive builder
             for chat in search_result.chats:
                 if hasattr(chat, 'username') and chat.username:
-                    results.append({
-                        "title": chat.title,
-                        "url": f"https://t.me/{chat.username}",
-                        "snippet": f"Members: {getattr(chat, 'participants_count', 'Unknown')}",
-                        "metadata": {
+                    title = SearchResultBuilder.safe_text(getattr(chat, 'title', ''), default="Telegram Channel")
+                    members = getattr(chat, 'participants_count', 'Unknown')
+                    results.append(SearchResultBuilder()
+                        .title(title, default="Telegram Channel")
+                        .url(f"https://t.me/{chat.username}")
+                        .snippet(f"Members: {members}")
+                        .metadata({
                             "channel_id": chat.id,
                             "username": chat.username,
-                            "members": getattr(chat, 'participants_count', None),
+                            "members": members if members != 'Unknown' else None,
                             "verified": getattr(chat, 'verified', False)
-                        }
-                    })
+                        })
+                        .build())
 
         except Exception as e:
             # Catch-all at integration boundary - acceptable to return partial results instead of crashing
@@ -392,18 +394,20 @@ Return JSON:
 
             for msg in messages:
                 if msg.message:  # Skip empty messages
-                    results.append({
-                        "title": f"@{channel_username}: {msg.message[:100]}...",
-                        "url": f"https://t.me/{channel_username}/{msg.id}",
-                        "snippet": msg.message[:500],
-                        "date": msg.date.isoformat() if msg.date else None,
-                        "metadata": {
+                    msg_text = SearchResultBuilder.safe_text(msg.message)
+                    results.append(SearchResultBuilder()
+                        .title(f"@{channel_username}: {msg_text[:100]}..." if msg_text else "Telegram Message",
+                               default="Telegram Message")
+                        .url(f"https://t.me/{channel_username}/{msg.id}")
+                        .snippet(msg_text[:500] if msg_text else "")
+                        .date(msg.date.isoformat() if msg.date else None)
+                        .metadata({
                             "message_id": msg.id,
                             "channel": channel_username,
                             "views": getattr(msg, 'views', None),
                             "forwards": getattr(msg, 'forwards', None)
-                        }
-                    })
+                        })
+                        .build())
 
         except Exception as e:
             # Catch-all at integration boundary - acceptable to return empty results instead of crashing
@@ -442,18 +446,20 @@ Return JSON:
 
                             for msg in messages:
                                 if msg.message and any(kw.lower() in msg.message.lower() for kw in keywords):
-                                    results.append({
-                                        "title": f"@{chat.username}: {msg.message[:100]}...",
-                                        "url": f"https://t.me/{chat.username}/{msg.id}",
-                                        "snippet": msg.message[:500],
-                                        "date": msg.date.isoformat() if msg.date else None,
-                                        "metadata": {
+                                    msg_text = SearchResultBuilder.safe_text(msg.message)
+                                    results.append(SearchResultBuilder()
+                                        .title(f"@{chat.username}: {msg_text[:100]}..." if msg_text else "Telegram Message",
+                                               default="Telegram Message")
+                                        .url(f"https://t.me/{chat.username}/{msg.id}")
+                                        .snippet(msg_text[:500] if msg_text else "")
+                                        .date(msg.date.isoformat() if msg.date else None)
+                                        .metadata({
                                             "message_id": msg.id,
                                             "channel": chat.username,
                                             "keyword_match": keyword,
                                             "views": getattr(msg, 'views', None)
-                                        }
-                                    })
+                                        })
+                                        .build())
 
                                     if len(results) >= limit:
                                         break
@@ -486,19 +492,21 @@ Return JSON:
                 channel=channel
             ))
 
-            return [{
-                "title": f"Telegram Channel: @{channel_username}",
-                "url": f"https://t.me/{channel_username}",
-                "snippet": full_channel.full_chat.about or "No description",
-                "metadata": {
+            channel_title = SearchResultBuilder.safe_text(getattr(channel, 'title', ''), default=channel_username)
+            description = SearchResultBuilder.safe_text(full_channel.full_chat.about, default="No description")
+            return [SearchResultBuilder()
+                .title(f"Telegram Channel: @{channel_username}", default="Telegram Channel")
+                .url(f"https://t.me/{channel_username}")
+                .snippet(description)
+                .metadata({
                     "channel_id": channel.id,
                     "username": channel_username,
-                    "title": channel.title,
+                    "title": channel_title,
                     "members": getattr(channel, 'participants_count', None),
                     "verified": getattr(channel, 'verified', False),
-                    "description": full_channel.full_chat.about
-                }
-            }]
+                    "description": description
+                })
+                .build()]
 
         except Exception as e:
             # Catch-all at integration boundary - acceptable to return empty results instead of crashing

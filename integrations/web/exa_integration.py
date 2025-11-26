@@ -22,6 +22,7 @@ from core.database_integration_base import (
     DatabaseCategory,
     QueryResult
 )
+from core.result_builder import SearchResultBuilder
 from core.api_request_tracker import log_request
 from config_loader import config
 
@@ -306,18 +307,22 @@ class ExaIntegration(DatabaseIntegration):
             # Parse response
             exa_results = data.get("results", [])
 
-            # Transform to standardized format
+            # Transform to standardized format using defensive builder
             standardized_results = []
             for item in exa_results:
-                standardized_results.append({
-                    "title": item.get("title", ""),
-                    "url": item.get("url", ""),
-                    "description": item.get("text", item.get("snippet", "")),
-                    "published_date": item.get("publishedDate", ""),
-                    "author": item.get("author", ""),
-                    "score": item.get("score", 0),
-                    "source": "Exa"
-                })
+                description = SearchResultBuilder.safe_text(item.get("text") or item.get("snippet"))
+                standardized_results.append(SearchResultBuilder()
+                    .title(item.get("title"), default="Untitled")
+                    .url(item.get("url"))
+                    .snippet(description)
+                    .date(item.get("publishedDate"))
+                    .metadata({
+                        "author": item.get("author", ""),
+                        "score": SearchResultBuilder.safe_amount(item.get("score"), 0),
+                        "source": "Exa",
+                        "description": description
+                    })
+                    .build())
 
             # Log successful request
             log_request(
