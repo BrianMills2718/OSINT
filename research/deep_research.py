@@ -46,17 +46,18 @@ from core.prompt_loader import render_prompt
 
 # Mixins for god class decomposition
 from research.mixins import (
-    EntityAnalysisMixin,
     FollowUpTaskMixin,
     HypothesisMixin,
     MCPToolMixin,
     OutputPersistenceMixin,
     QueryGenerationMixin,
-    QueryReformulationMixin,
     ReportSynthesizerMixin,
     ResultFilterMixin,
     SourceExecutorMixin
 )
+
+# Services (extracted from mixins - composition over inheritance)
+from research.services import QueryReformulator, EntityAnalyzer
 
 load_dotenv()
 
@@ -161,13 +162,11 @@ class ResearchProgress:
 
 
 class SimpleDeepResearch(
-    EntityAnalysisMixin,
     FollowUpTaskMixin,
     HypothesisMixin,
     MCPToolMixin,
     OutputPersistenceMixin,
     QueryGenerationMixin,
-    QueryReformulationMixin,
     ReportSynthesizerMixin,
     ResultFilterMixin,
     SourceExecutorMixin
@@ -254,12 +253,17 @@ class SimpleDeepResearch(
         self.task_queue: List[ResearchTask] = []
         self.completed_tasks: List[ResearchTask] = []
         self.failed_tasks: List[ResearchTask] = []
-        self.entity_graph: Dict[str, List[str]] = {}  # entity -> related entities
         self.results_by_task: Dict[int, Dict] = {}
         self.start_time: Optional[datetime] = None
         self.critical_source_failures: List[str] = []  # Track failed critical sources
         self.rate_limited_sources: set = set()  # Track rate-limited sources (circuit breaker)
         self.logger = None  # Initialized later in research() if save_output=True
+
+        # Services (extracted from mixins - composition over inheritance)
+        self.query_reformulator = QueryReformulator()
+        self.entity_analyzer = EntityAnalyzer(
+            progress_callback=lambda event, msg: self._emit_progress(event, msg)
+        )
 
         # Hypothesis branching configuration (Phase 3A/3B)
         raw_config = config.get_raw_config()
@@ -756,7 +760,7 @@ class SimpleDeepResearch(
                     if task.accumulated_results:
                         try:
                             print(f"🔍 Extracting entities from {len(task.accumulated_results)} accumulated results...")
-                            entities_found = await self._extract_entities(
+                            entities_found = await self.entity_analyzer.extract_entities(
                                 task.accumulated_results,
                                 research_question=self.original_question,
                                 task_query=task.query
@@ -765,7 +769,7 @@ class SimpleDeepResearch(
                             print(f"✓ Found {len(entities_found)} entities: {', '.join(entities_found[:5])}{'...' if len(entities_found) > 5 else ''}")
 
                             # Update entity graph with found entities
-                            await self._update_entity_graph(entities_found)
+                            await self.entity_analyzer.update_entity_graph(entities_found)
                         # Entity extraction failure - non-critical, task can continue without entities
                         except Exception as entity_error:
                             # Log error but don't fail task - entity extraction is non-critical
@@ -894,7 +898,7 @@ class SimpleDeepResearch(
             "tasks_failed": len(self.failed_tasks),
             "failure_details": failure_details,  # NEW: Detailed failure info
             "entities_discovered": list(all_entities),
-            "entity_relationships": self.entity_graph,
+            "entity_relationships": self.entity_analyzer.get_entity_graph(),
             "sources_searched": list(set(r.get('source', 'Unknown') for r in all_results)),
             "total_results": len(all_results),
             "elapsed_minutes": (datetime.now() - self.start_time).total_seconds() / 60
@@ -1720,7 +1724,7 @@ class SimpleDeepResearch(
                     ]
 
                     # Reformulate query to find more results
-                    reformulation = await self._reformulate_for_relevance(
+                    reformulation = await self.query_reformulator.reformulate_for_relevance(
                         original_query=task.query,
                         research_question=self.original_question,
                         results_count=len(filtered_results),

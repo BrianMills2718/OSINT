@@ -341,7 +341,7 @@ class MCPToolMixin:
                                 # Try to reformulate the query
                                 print(f"🔄 {source_name}: Validation error detected, attempting LLM reformulation...")
                                 logger.info(f"[RETRY] {source_name}: Attempting error-based reformulation")
-                                fixed_params = await self._reformulate_on_api_error(
+                                fixed_params = await self.query_reformulator.reformulate_on_api_error(
                                     source_name=source_name,
                                     research_question=query,
                                     original_params=query_params,
