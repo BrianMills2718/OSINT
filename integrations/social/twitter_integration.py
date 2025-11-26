@@ -19,6 +19,7 @@ from core.database_integration_base import (
     DatabaseCategory,
     QueryResult
 )
+from core.result_builder import SearchResultBuilder
 from core.api_request_tracker import log_request
 from config_loader import config
 
@@ -401,7 +402,7 @@ class TwitterIntegration(DatabaseIntegration):
 
     def _transform_tweet_to_standard(self, tweet: Dict) -> Dict:
         """
-        Transform a tweet object to standardized SIGINT format.
+        Transform a tweet object to standardized SIGINT format using defensive builder.
 
         Args:
             tweet: Tweet object from API
@@ -411,34 +412,43 @@ class TwitterIntegration(DatabaseIntegration):
         """
         # Extract user info (can be in different places depending on endpoint)
         user_info = tweet.get('user_info', tweet.get('author', {}))
-        screen_name = user_info.get('screen_name', user_info.get('profile', 'unknown'))
-        tweet_id = tweet.get('tweet_id', tweet.get('id', ''))
-        text = tweet.get('text', tweet.get('display_text', ''))
+        screen_name = SearchResultBuilder.safe_text(
+            user_info.get('screen_name') or user_info.get('profile'), default='unknown'
+        )
+        tweet_id = SearchResultBuilder.safe_text(tweet.get('tweet_id') or tweet.get('id'))
+        text = SearchResultBuilder.safe_text(tweet.get('text') or tweet.get('display_text'))
 
-        return {
-            # Common SIGINT fields (for generic display)
-            "title": text[:100] + ("..." if len(text) > 100 else ""),
-            "url": f"https://twitter.com/{screen_name}/status/{tweet_id}" if tweet_id else "",
-            "date": tweet.get("created_at", ""),
-            "description": text,
+        # Build URL if we have tweet_id
+        url = f"https://twitter.com/{screen_name}/status/{tweet_id}" if tweet_id else ""
 
-            # Twitter-specific metadata
-            "author": screen_name,
-            "author_name": user_info.get("name", ""),
-            "verified": user_info.get("verified", user_info.get("blue_verified", False)),
-            "favorites": tweet.get("favorites", tweet.get("likes", 0)),
-            "retweets": tweet.get("retweets", 0),
-            "replies": tweet.get("replies", 0),
-            "views": tweet.get("views", "0"),
-            "tweet_id": tweet_id,
-            "conversation_id": tweet.get("conversation_id", ""),
-            "lang": tweet.get("lang", ""),
-            "engagement_total": tweet.get("favorites", 0) + tweet.get("retweets", 0) + tweet.get("replies", 0)
-        }
+        favorites = SearchResultBuilder.safe_amount(tweet.get("favorites") or tweet.get("likes"), 0)
+        retweets = SearchResultBuilder.safe_amount(tweet.get("retweets"), 0)
+        replies = SearchResultBuilder.safe_amount(tweet.get("replies"), 0)
+
+        return (SearchResultBuilder()
+            .title(text[:100] + ("..." if len(text) > 100 else "") if text else "", default="Tweet")
+            .url(url)
+            .snippet(text)
+            .date(tweet.get("created_at"))
+            .metadata({
+                "author": screen_name,
+                "author_name": user_info.get("name", ""),
+                "verified": user_info.get("verified", user_info.get("blue_verified", False)),
+                "favorites": int(favorites),
+                "retweets": int(retweets),
+                "replies": int(replies),
+                "views": tweet.get("views", "0"),
+                "tweet_id": tweet_id,
+                "conversation_id": tweet.get("conversation_id", ""),
+                "lang": tweet.get("lang", ""),
+                "engagement_total": int(favorites + retweets + replies),
+                "description": text
+            })
+            .build())
 
     def _transform_user_to_standard(self, user: Dict) -> Dict:
         """
-        Transform a user profile object to standardized SIGINT format.
+        Transform a user profile object to standardized SIGINT format using defensive builder.
 
         Args:
             user: User object from API
@@ -446,25 +456,29 @@ class TwitterIntegration(DatabaseIntegration):
         Returns:
             Standardized result dict
         """
-        screen_name = user.get('screen_name', user.get('profile', 'unknown'))
+        screen_name = SearchResultBuilder.safe_text(
+            user.get('screen_name') or user.get('profile'), default='unknown'
+        )
+        name = SearchResultBuilder.safe_text(user.get("name"), default="Unknown")
+        description = SearchResultBuilder.safe_text(user.get("description") or user.get("desc"))
 
-        return {
-            # Common SIGINT fields
-            "title": f"@{screen_name} - {user.get('name', 'Unknown')}",
-            "url": f"https://twitter.com/{screen_name}",
-            "date": user.get("created_at", ""),
-            "description": user.get("description", user.get("desc", "")),
-
-            # User-specific metadata
-            "author": screen_name,
-            "author_name": user.get("name", ""),
-            "verified": user.get("verified", user.get("blue_verified", False)),
-            "followers_count": user.get("followers_count", user.get("sub_count", 0)),
-            "following_count": user.get("friends_count", user.get("friends", 0)),
-            "tweet_count": user.get("statuses_count", 0),
-            "location": user.get("location", ""),
-            "user_id": user.get("user_id", user.get("id", user.get("rest_id", "")))
-        }
+        return (SearchResultBuilder()
+            .title(f"@{screen_name} - {name}", default="Twitter User")
+            .url(f"https://twitter.com/{screen_name}")
+            .snippet(description)
+            .date(user.get("created_at"))
+            .metadata({
+                "author": screen_name,
+                "author_name": name,
+                "verified": user.get("verified", user.get("blue_verified", False)),
+                "followers_count": int(SearchResultBuilder.safe_amount(user.get("followers_count") or user.get("sub_count"), 0)),
+                "following_count": int(SearchResultBuilder.safe_amount(user.get("friends_count") or user.get("friends"), 0)),
+                "tweet_count": int(SearchResultBuilder.safe_amount(user.get("statuses_count"), 0)),
+                "location": user.get("location", ""),
+                "user_id": user.get("user_id") or user.get("id") or user.get("rest_id", ""),
+                "description": description
+            })
+            .build())
 
     async def execute_search(self,
                            query_params: Dict,

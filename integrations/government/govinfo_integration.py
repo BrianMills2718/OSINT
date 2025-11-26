@@ -22,6 +22,7 @@ from core.database_integration_base import (
     DatabaseCategory,
     QueryResult
 )
+from core.result_builder import SearchResultBuilder
 from core.api_request_tracker import log_request
 from config_loader import config
 
@@ -324,7 +325,6 @@ class GovInfoIntegration(DatabaseIntegration):
             transformed_results = []
             for doc in raw_results[:limit]:
                 # Extract fields from GovInfo response
-                title = doc.get("title", "Untitled Document")
                 package_id = doc.get("packageId", "")
 
                 # Build GovInfo URL
@@ -337,11 +337,12 @@ class GovInfoIntegration(DatabaseIntegration):
                 if not snippet:
                     snippet = doc.get("abstract", "")
 
-                transformed = {
-                    "title": title,
-                    "url": url,
-                    "snippet": snippet[:500] if snippet else "",
-                    "metadata": {
+                transformed = (SearchResultBuilder()
+                    .title(SearchResultBuilder.safe_text(doc.get("title"), default="Untitled Document"))
+                    .url(url)
+                    .snippet(SearchResultBuilder.safe_text(snippet, max_length=500))
+                    .date(SearchResultBuilder.safe_date(doc.get("publishDate")))
+                    .metadata({
                         "package_id": package_id,
                         "collection": doc.get("collectionCode"),
                         "collection_name": doc.get("collectionName"),
@@ -349,8 +350,8 @@ class GovInfoIntegration(DatabaseIntegration):
                         "last_modified": doc.get("lastModified"),
                         "doc_class": doc.get("docClass"),
                         "government_author": doc.get("governmentAuthor1")
-                    }
-                }
+                    })
+                    .build())
                 transformed_results.append(transformed)
 
             # Log successful request

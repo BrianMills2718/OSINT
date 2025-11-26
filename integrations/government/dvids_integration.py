@@ -21,6 +21,7 @@ from core.database_integration_base import (
     DatabaseCategory,
     QueryResult
 )
+from core.result_builder import SearchResultBuilder
 from core.api_request_tracker import log_request
 from config_loader import config
 
@@ -319,20 +320,21 @@ class DVIDSIntegration(DatabaseIntegration):
                 request_params=log_params
             )
 
-            # Transform results to standardized format
+            # Transform results to standardized format using defensive builder
             documents = []
             for item in results[:limit]:
-                doc = {
-                    "title": item.get("title", "Untitled"),
-                    "url": item.get("url", ""),
-                    "snippet": item.get("description", item.get("caption", "")),  # Use description or caption
-                    "metadata": {
+                doc = (SearchResultBuilder()
+                    .title(item.get("title"), default="Untitled")
+                    .url(item.get("url"))
+                    .snippet(item.get("description") or item.get("caption", ""))
+                    .date(item.get("date"))
+                    .metadata({
                         "id": item.get("id"),
                         "type": item.get("type"),
                         "branch": item.get("branch"),
                         "date": item.get("date")
-                    }
-                }
+                    })
+                    .build())
                 documents.append(doc)
 
             return QueryResult(

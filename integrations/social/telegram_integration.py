@@ -25,6 +25,7 @@ from core.database_integration_base import (
     DatabaseCategory,
     QueryResult
 )
+from core.result_builder import SearchResultBuilder
 from core.prompt_loader import render_prompt
 from llm_utils import acompletion
 

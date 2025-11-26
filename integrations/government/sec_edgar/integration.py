@@ -22,6 +22,7 @@ from core.database_integration_base import (
     DatabaseCategory,
     QueryResult
 )
+from core.result_builder import SearchResultBuilder
 from core.api_request_tracker import log_request
 from config_loader import config
 
@@ -359,23 +360,29 @@ class SECEdgarIntegration(DatabaseIntegration):
                     error=f"No filings found for CIK {cik}"
                 )
 
-            # Build results (simplified for fallback - full extraction done later)
+            # Build results using defensive builder (simplified for fallback)
             documents = []
             accession_numbers = filings.get("accessionNumber", [])
             filing_dates = filings.get("filingDate", [])
+            company_name = SearchResultBuilder.safe_text(data.get("name"), default="Unknown")
 
             for i in range(min(10, len(forms))):  # Limit to 10 for fallback
-                doc = {
-                    "title": f"{forms[i]} Filing - {data.get('name', 'Unknown')} ({filing_dates[i] if i < len(filing_dates) else ''})",
-                    "url": f"https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK={cik_padded}",
-                    "snippet": f"Accession: {accession_numbers[i] if i < len(accession_numbers) else 'N/A'}",
-                    "date": filing_dates[i] if i < len(filing_dates) else "",
-                    "metadata": {
-                        "form_type": forms[i],
+                form_type = SearchResultBuilder.safe_text(forms[i])
+                filing_date = filing_dates[i] if i < len(filing_dates) else ""
+                accession = accession_numbers[i] if i < len(accession_numbers) else "N/A"
+
+                doc = (SearchResultBuilder()
+                    .title(f"{form_type} Filing - {company_name} ({filing_date})",
+                           default="SEC Filing")
+                    .url(f"https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK={cik_padded}")
+                    .snippet(f"Accession: {accession}")
+                    .date(filing_date)
+                    .metadata({
+                        "form_type": form_type,
                         "cik": cik_padded,
                         "company_name": data.get("name")
-                    }
-                }
+                    })
+                    .build())
                 documents.append(doc)
 
             return QueryResult(
@@ -675,24 +682,29 @@ class SECEdgarIntegration(DatabaseIntegration):
                                 preview = extracted_content[:300].replace('\n', ' ')
                                 snippet = f"{preview}... [Full extraction in metadata]"
 
-                    doc = {
-                        "title": f"{form} Filing - {data.get('name', company_name)} ({filing_date})",
-                        "url": doc_url,
-                        "snippet": snippet,
-                        "date": filing_date,
-                        "metadata": {
+                    sec_company_name = SearchResultBuilder.safe_text(data.get("name"), default=company_name)
+                    tickers = data.get("tickers", [])
+                    exchanges = data.get("exchanges", [])
+
+                    doc = (SearchResultBuilder()
+                        .title(f"{form} Filing - {sec_company_name} ({filing_date})",
+                               default="SEC Filing")
+                        .url(doc_url)
+                        .snippet(snippet)
+                        .date(filing_date)
+                        .metadata({
                             "form_type": form,
                             "filing_date": filing_date,
                             "report_date": report_date,
                             "accession_number": accession,
                             "cik": cik,
                             "company_name": data.get("name"),
-                            "ticker": data.get("tickers", [None])[0] if data.get("tickers") else None,
-                            "exchange": data.get("exchanges", [None])[0] if data.get("exchanges") else None,
+                            "ticker": tickers[0] if tickers else None,
+                            "exchange": exchanges[0] if exchanges else None,
                             "filing_viewer_url": filing_url,
-                            "extracted_content": extracted_content  # NEW: Include extracted sections
-                        }
-                    }
+                            "extracted_content": extracted_content
+                        })
+                        .build())
                     documents.append(doc)
 
                     if len(documents) >= limit:

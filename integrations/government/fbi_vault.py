@@ -28,6 +28,7 @@ from core.database_integration_base import (
     DatabaseCategory,
     QueryResult
 )
+from core.result_builder import SearchResultBuilder
 from core.api_request_tracker import log_request
 from config_loader import config
 
@@ -217,17 +218,17 @@ class FBIVaultIntegration(DatabaseIntegration):
                 # Determine document type from class
                 doc_type = "Folder" if "contenttype-folder" in item.get('class', []) else "File"
 
-                results.append({
-                    "title": title,
-                    "url": url,
-                    "snippet": snippet,
-                    "date": date,
-                    "source": "FBI Vault",
-                    "metadata": {
+                results.append(SearchResultBuilder()
+                    .title(title, default="FBI Document")
+                    .url(url)
+                    .snippet(snippet)
+                    .date(date)
+                    .metadata({
                         "document_type": doc_type,
-                        "query": query
-                    }
-                })
+                        "query": query,
+                        "source": "FBI Vault"
+                    })
+                    .build())
 
             except Exception as e:
                 # Skip malformed results in parsing loop - acceptable to continue

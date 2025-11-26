@@ -32,6 +32,7 @@ from core.database_integration_base import (
     QueryResult
 )
 from core.api_request_tracker import log_request
+from core.result_builder import SearchResultBuilder  # REQUIRED: Defensive data transformation
 from config_loader import config
 
 # Set up logger for this module
@@ -258,23 +259,27 @@ class NewSourceIntegration(DatabaseIntegration):
             raw_results = data.get("results", [])  # CUSTOMIZE: Path to results
             total = data.get("total_count", len(raw_results))  # CUSTOMIZE: Path to count
 
-            # CRITICAL: Transform to standardized format
-            # This is where you map API-specific fields to title/url/snippet
+            # CRITICAL: Use SearchResultBuilder for defensive data transformation
+            # The builder handles None values, type mismatches, and edge cases
             transformed_results = []
             for doc in raw_results[:limit]:
-                # CUSTOMIZE: Map API fields to standardized format
-                transformed = {
-                    "title": doc.get("api_title_field", "Untitled"),  # ← Required
-                    "url": doc.get("api_url_field", ""),              # ← Required
-                    "snippet": doc.get("api_summary_field", "")[:500], # ← Optional
-                    "metadata": {
+                # CUSTOMIZE: Map API fields using the builder
+                # Builder methods safely handle None/invalid values
+                transformed = (SearchResultBuilder()
+                    .title(doc.get("api_title_field"))  # safe_text handles None
+                    .url(doc.get("api_url_field"))      # safe_url validates URLs
+                    .snippet(doc.get("api_summary_field"), max_length=500)  # truncates safely
+                    .date(doc.get("publish_date"))      # safe_date normalizes dates
+                    .metadata({
                         # CUSTOMIZE: Add source-specific fields here
                         "doc_id": doc.get("id"),
-                        "date": doc.get("publish_date"),
                         "author": doc.get("author")
-                    }
-                }
+                    })
+                    .build())
                 transformed_results.append(transformed)
+
+                # For amounts/currency, use format_amount() which never crashes on None:
+                # title = f"{SearchResultBuilder.format_amount(doc.get('amount'))} contract"
 
             # Log successful request
             log_request(

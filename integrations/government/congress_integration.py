@@ -23,6 +23,7 @@ from core.database_integration_base import (
     DatabaseCategory,
     QueryResult
 )
+from core.result_builder import SearchResultBuilder
 from core.api_request_tracker import log_request
 from config_loader import config
 
@@ -287,9 +288,11 @@ class CongressIntegration(DatabaseIntegration):
                 )
 
                 for bill in bills_with_summaries:
-                    title = bill.get("title", "")
-                    summary = bill.get("summary", "")
-                    latest_action = bill.get('latestAction', {}).get('text', 'N/A')
+                    title = SearchResultBuilder.safe_text(bill.get("title"))
+                    summary = SearchResultBuilder.safe_text(bill.get("summary"))
+                    latest_action = SearchResultBuilder.safe_text(
+                        bill.get('latestAction', {}).get('text'), default='N/A'
+                    )
 
                     # Build comprehensive snippet with actual content
                     snippet_parts = []
@@ -298,43 +301,53 @@ class CongressIntegration(DatabaseIntegration):
                     snippet_parts.append(f"Latest Action: {latest_action[:200]}")
                     snippet_parts.append(f"Introduced: {bill.get('introducedDate', 'N/A')}")
 
-                    doc = {
-                        "title": f"{bill.get('type', '')} {bill.get('number', '')} - {title}",
-                        "url": bill.get("url", ""),
-                        "description": summary if summary else latest_action,  # Content for relevance filtering
-                        "snippet": " | ".join(snippet_parts),
-                        "date": bill.get('introducedDate'),
-                        "metadata": {
+                    bill_type = SearchResultBuilder.safe_text(bill.get("type"))
+                    bill_number = SearchResultBuilder.safe_text(bill.get("number"))
+
+                    doc = (SearchResultBuilder()
+                        .title(f"{bill_type} {bill_number} - {title}" if bill_type or bill_number else title,
+                               default="Untitled Bill")
+                        .url(bill.get("url"))
+                        .snippet(" | ".join(snippet_parts))
+                        .date(bill.get('introducedDate'))
+                        .metadata({
                             "bill_type": bill.get("type"),
                             "bill_number": bill.get("number"),
                             "congress": bill.get("congress"),
                             "introduced_date": bill.get("introducedDate"),
                             "sponsors": bill.get("sponsors", []),
                             "committees": bill.get("committees", []),
-                            "has_summary": bool(summary)
-                        }
-                    }
+                            "has_summary": bool(summary),
+                            "description": summary if summary else latest_action
+                        })
+                        .build())
                     documents.append(doc)
 
             elif endpoint == "member":
                 members = data.get("members", [])
                 for member in members:
-                    name = member.get("name", "")
+                    name = SearchResultBuilder.safe_text(member.get("name"))
                     if keywords and keywords.lower() not in name.lower():
                         continue
 
-                    doc = {
-                        "title": f"{name} ({member.get('state', '')}-{member.get('party', '')})",
-                        "url": member.get("url", ""),
-                        "description": f"{name} - {member.get('chamber', '')} member from {member.get('state', '')}",
-                        "snippet": f"Chamber: {member.get('chamber', '')} | District: {member.get('district', 'N/A')}",
-                        "metadata": {
+                    state = SearchResultBuilder.safe_text(member.get("state"))
+                    party = SearchResultBuilder.safe_text(member.get("party"))
+                    chamber = SearchResultBuilder.safe_text(member.get("chamber"))
+                    district = SearchResultBuilder.safe_text(member.get("district"), default="N/A")
+
+                    doc = (SearchResultBuilder()
+                        .title(f"{name} ({state}-{party})" if name else "Unknown Member",
+                               default="Unknown Member")
+                        .url(member.get("url"))
+                        .snippet(f"Chamber: {chamber} | District: {district}")
+                        .metadata({
                             "member_id": member.get("bioguideId"),
                             "party": member.get("party"),
                             "state": member.get("state"),
-                            "chamber": member.get("chamber")
-                        }
-                    }
+                            "chamber": member.get("chamber"),
+                            "description": f"{name} - {chamber} member from {state}"
+                        })
+                        .build())
                     documents.append(doc)
 
             elif endpoint == "hearing":
@@ -347,27 +360,30 @@ class CongressIntegration(DatabaseIntegration):
                 )
 
                 for hearing in hearings_with_details:
-                    chamber = hearing.get("chamber", "")
-                    number = hearing.get("number", "")
-                    jacket_number = hearing.get("jacketNumber", "")
-                    title = hearing.get("title", f"Hearing {number}")
-                    description = hearing.get("description", "")
+                    chamber = SearchResultBuilder.safe_text(hearing.get("chamber"))
+                    number = SearchResultBuilder.safe_text(hearing.get("number"))
+                    jacket_number = SearchResultBuilder.safe_text(hearing.get("jacketNumber"))
+                    title = SearchResultBuilder.safe_text(hearing.get("title"), default=f"Hearing {number}")
+                    description = SearchResultBuilder.safe_text(hearing.get("description"))
+                    update_date = SearchResultBuilder.safe_text(hearing.get("updateDate"), default="N/A")
 
-                    doc = {
-                        "title": f"{title} - {chamber} (Congress {congress_num})",
-                        "url": hearing.get("url", ""),
-                        "description": description if description else f"{chamber} hearing #{number}",
-                        "snippet": f"{description[:300] if description else 'No description available'} | Chamber: {chamber} | Updated: {hearing.get('updateDate', 'N/A')}",
-                        "date": hearing.get("updateDate"),
-                        "metadata": {
+                    snippet_desc = description[:300] if description else "No description available"
+
+                    doc = (SearchResultBuilder()
+                        .title(f"{title} - {chamber} (Congress {congress_num})", default="Untitled Hearing")
+                        .url(hearing.get("url"))
+                        .snippet(f"{snippet_desc} | Chamber: {chamber} | Updated: {update_date}")
+                        .date(hearing.get("updateDate"))
+                        .metadata({
                             "chamber": chamber,
                             "number": number,
                             "jacket_number": jacket_number,
                             "congress": hearing.get("congress"),
                             "update_date": hearing.get("updateDate"),
-                            "title": title
-                        }
-                    }
+                            "title": title,
+                            "description": description if description else f"{chamber} hearing #{number}"
+                        })
+                        .build())
                     documents.append(doc)
 
             # Limit results to limit

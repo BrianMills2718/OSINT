@@ -22,6 +22,7 @@ from core.database_integration_base import (
     DatabaseCategory,
     QueryResult
 )
+from core.result_builder import SearchResultBuilder
 from core.api_request_tracker import log_request
 from config_loader import config
 
@@ -223,13 +224,13 @@ class CRESTSeleniumIntegration(DatabaseIntegration):
                         logger.warning(f"CREST: Metadata extraction failed: {e}", exc_info=True)
                         pass
 
-                    # Create document dictionary
-                    doc = {
-                        "title": title or doc_link['title'],
-                        "url": doc_link['url'],
-                        "snippet": snippet,
-                        "metadata": metadata
-                    }
+                    # Create document using defensive builder
+                    doc = (SearchResultBuilder()
+                        .title(title or doc_link.get('title'), default="CIA Document")
+                        .url(doc_link.get('url'))
+                        .snippet(snippet)
+                        .metadata(metadata)
+                        .build())
                     documents.append(doc)
 
                 except Exception as e:

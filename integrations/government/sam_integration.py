@@ -22,6 +22,7 @@ from core.database_integration_base import (
     QueryResult
 )
 from core.api_request_tracker import log_request
+from core.result_builder import SearchResultBuilder
 from config_loader import config
 
 # Set up logger for this module
@@ -358,17 +359,17 @@ class SAMIntegration(DatabaseIntegration):
             opportunities = data.get("opportunitiesData", data.get("results", []))
             total = data.get("totalRecords", data.get("total", len(opportunities)))
 
-            # Transform results to match SearchResult schema
+            # Transform results using SearchResultBuilder
             # FIX: SAM.gov returns 'uiLink' but Pydantic expects 'url'
             transformed_results = []
             for opp in opportunities[:limit]:
-                # Build transformed result with proper field mapping
-                transformed = {
-                    "title": opp.get("title", "Untitled"),
-                    "url": opp.get("uiLink") or opp.get("url") or None,  # Explicit None if missing (URL is optional)
-                    "snippet": opp.get("description", "")[:500],  # Limit snippet length
-                    "date": opp.get("postedDate") or opp.get("publishedDate"),
-                    "metadata": {
+                # Build transformed result with defensive value extraction
+                transformed = (SearchResultBuilder()
+                    .title(opp.get("title"))
+                    .url(opp.get("uiLink") or opp.get("url"))
+                    .snippet(opp.get("description"), max_length=500)
+                    .date(opp.get("postedDate") or opp.get("publishedDate"))
+                    .metadata({
                         "noticeId": opp.get("noticeId"),
                         "solicitationNumber": opp.get("solicitationNumber"),
                         "organizationName": opp.get("organizationName") or opp.get("fullParentPathName"),
@@ -377,8 +378,8 @@ class SAMIntegration(DatabaseIntegration):
                         "classificationCode": opp.get("classificationCode"),
                         "responseDeadLine": opp.get("responseDeadLine"),
                         "archiveDate": opp.get("archiveDate")
-                    }
-                }
+                    })
+                    .build())
                 transformed_results.append(transformed)
 
             # Mask API key in params for logging

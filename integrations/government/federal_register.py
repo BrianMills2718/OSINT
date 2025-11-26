@@ -21,6 +21,7 @@ from core.database_integration_base import (
     DatabaseCategory,
     QueryResult
 )
+from core.result_builder import SearchResultBuilder
 from core.api_request_tracker import log_request
 from config_loader import config
 
@@ -309,14 +310,14 @@ class FederalRegisterIntegration(DatabaseIntegration):
                 request_params=params
             )
 
-            # Transform results to standardized format
+            # Transform results to standardized format using defensive builder
             transformed_docs = []
             for doc in documents[:limit]:
                 # Federal Register API returns html_url and pdf_url
-                url = doc.get("html_url", "") or doc.get("pdf_url", "")
+                url = doc.get("html_url") or doc.get("pdf_url")
 
                 # Use abstract as snippet, or truncate full text if available
-                snippet = doc.get("abstract", "")
+                snippet = SearchResultBuilder.safe_text(doc.get("abstract"))
                 if not snippet and doc.get("full_text_xml_url"):
                     snippet = f"Full text available at {doc.get('full_text_xml_url')}"
 
@@ -324,22 +325,22 @@ class FederalRegisterIntegration(DatabaseIntegration):
                 agencies = doc.get("agencies", [])
                 agency_names = [a.get("name") if isinstance(a, dict) else str(a) for a in agencies]
 
-                transformed = {
-                    "title": doc.get("title", "Untitled Document"),
-                    "url": url,
-                    "snippet": snippet[:500] if snippet else "",
-                    "date": doc.get("publication_date"),  # Add top-level date field
-                    "metadata": {
+                transformed = (SearchResultBuilder()
+                    .title(doc.get("title"), default="Untitled Document")
+                    .url(url)
+                    .snippet(snippet, max_length=500)
+                    .date(doc.get("publication_date"))
+                    .metadata({
                         "document_number": doc.get("document_number"),
                         "type": doc.get("type"),
                         "publication_date": doc.get("publication_date"),
                         "agencies": agency_names,
-                        "agency": agency_names[0] if agency_names else None,  # First agency for display
+                        "agency": agency_names[0] if agency_names else None,
                         "citation": doc.get("citation"),
                         "pdf_url": doc.get("pdf_url"),
                         "html_url": doc.get("html_url")
-                    }
-                }
+                    })
+                    .build())
                 transformed_docs.append(transformed)
 
             return QueryResult(

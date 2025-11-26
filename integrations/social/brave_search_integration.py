@@ -22,6 +22,7 @@ from core.database_integration_base import (
     DatabaseCategory,
     QueryResult
 )
+from core.result_builder import SearchResultBuilder
 from core.api_request_tracker import log_request
 from config_loader import config
 
@@ -295,18 +296,20 @@ class BraveSearchIntegration(DatabaseIntegration):
             data = response.json()
             web_results = data.get("web", {}).get("results", [])
 
-            # Transform to standardized format
+            # Transform to standardized format using defensive builder
             standardized_results = []
             for item in web_results[:limit]:
-                standardized_results.append({
-                    "title": item.get("title", ""),
-                    "url": item.get("url", ""),
-                    "description": item.get("description", ""),
-                    "age": item.get("age", ""),  # "X days ago" or date
-                    "language": item.get("language", "en"),
-                    "profile": item.get("profile", {}),  # Site info
-                    "source": "Brave Search"
-                })
+                standardized_results.append(SearchResultBuilder()
+                    .title(item.get("title"), default="Untitled")
+                    .url(item.get("url"))
+                    .snippet(item.get("description"))
+                    .metadata({
+                        "age": item.get("age", ""),
+                        "language": item.get("language", "en"),
+                        "profile": item.get("profile", {}),
+                        "source": "Brave Search"
+                    })
+                    .build())
 
             # Log successful request
             log_request(

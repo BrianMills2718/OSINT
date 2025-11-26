@@ -20,6 +20,7 @@ from core.database_integration_base import (
     DatabaseCategory,
     QueryResult
 )
+from core.result_builder import SearchResultBuilder
 from core.api_request_tracker import log_request
 
 
@@ -265,13 +266,14 @@ class CRESTIntegration(DatabaseIntegration):
                             }
                         """)
 
-                        # Create document dictionary
-                        doc = {
-                            "title": content.get('title', doc_link['title']),
-                            "url": doc_link['url'],
-                            "snippet": content.get('snippet', ''),
-                            "metadata": content.get('metadata', {})
-                        }
+                        # Create document using defensive builder
+                        doc = (SearchResultBuilder()
+                            .title(content.get('title') or doc_link.get('title'),
+                                   default="CIA Document")
+                            .url(doc_link.get('url'))
+                            .snippet(content.get('snippet'))
+                            .metadata(content.get('metadata', {}))
+                            .build())
                         documents.append(doc)
 
                     except Exception as e:

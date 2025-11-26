@@ -17,6 +17,7 @@ from core.database_integration_base import (
     DatabaseCategory,
     QueryResult
 )
+from core.result_builder import SearchResultBuilder
 from core.prompt_loader import render_prompt
 # Lazy import - only load Playwright when actually searching
 # from integrations.government.clearancejobs_playwright import search_clearancejobs
@@ -170,18 +171,19 @@ class ClearanceJobsIntegration(DatabaseIntegration):
 
                 response_time_ms = (datetime.now() - start_time).total_seconds() * 1000
 
-                # Success case - normalize fields and return immediately
+                # Success case - normalize fields using defensive builder
                 if result.get("success"):
-                    # Normalize fields to match expected format:
-                    # - Add 'snippet' field (copy from 'description')
-                    # - Add 'clearance_level' field (copy from 'clearance')
                     normalized_jobs = []
                     for job in result.get("jobs", []):
-                        normalized_job = {
-                            **job,
-                            "snippet": job.get("description", ""),
-                            "clearance_level": job.get("clearance", "")
-                        }
+                        normalized_job = (SearchResultBuilder()
+                            .title(job.get("title"), default="Untitled Position")
+                            .url(job.get("url"))
+                            .snippet(job.get("description"))
+                            .metadata({
+                                **job,  # Keep all raw fields
+                                "clearance_level": job.get("clearance", "")
+                            })
+                            .build())
                         normalized_jobs.append(normalized_job)
 
                     return QueryResult(

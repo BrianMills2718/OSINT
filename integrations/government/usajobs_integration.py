@@ -21,6 +21,7 @@ from core.database_integration_base import (
     DatabaseCategory,
     QueryResult
 )
+from core.result_builder import SearchResultBuilder
 from core.api_request_tracker import log_request
 from config_loader import config
 
@@ -250,20 +251,29 @@ class USAJobsIntegration(DatabaseIntegration):
             jobs = search_result.get("SearchResultItems", [])
             total = search_result.get("SearchResultCount", len(jobs))
 
-            # Extract job details from nested structure and normalize field names
+            # Extract job details from nested structure using defensive builder
             results = []
             for item in jobs[:limit]:
                 matched_obj = item.get("MatchedObjectDescriptor", {})
 
-                # Add normalized fields for compatibility with other integrations
-                # Keep raw fields for specialized consumers
-                normalized = {
-                    **matched_obj,  # Keep all raw fields
-                    "title": matched_obj.get("PositionTitle", ""),
-                    "url": matched_obj.get("PositionURI", "") or matched_obj.get("ApplyURI", [{}])[0].get("ApplicationURI", "") if matched_obj.get("ApplyURI") else "",
-                    "description": (matched_obj.get("QualificationSummary", "") or "")[:500],  # Limit to 500 chars
-                    "snippet": (matched_obj.get("QualificationSummary", "") or "")[:200]  # Shorter snippet
-                }
+                # Extract URL with fallback chain
+                url = matched_obj.get("PositionURI")
+                if not url:
+                    apply_uri = matched_obj.get("ApplyURI", [])
+                    if apply_uri and len(apply_uri) > 0:
+                        url = apply_uri[0].get("ApplicationURI")
+
+                normalized = (SearchResultBuilder()
+                    .title(matched_obj.get("PositionTitle"), default="Untitled Position")
+                    .url(url)
+                    .snippet(matched_obj.get("QualificationSummary"), max_length=200)
+                    .metadata({
+                        **matched_obj,  # Keep all raw fields for specialized consumers
+                        "description": SearchResultBuilder.safe_text(
+                            matched_obj.get("QualificationSummary"), max_length=500
+                        )
+                    })
+                    .build())
 
                 results.append(normalized)
 

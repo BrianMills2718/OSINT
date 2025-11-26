@@ -20,6 +20,7 @@ from core.database_integration_base import (
     DatabaseCategory,
     QueryResult
 )
+from core.result_builder import SearchResultBuilder
 from core.api_request_tracker import log_request
 from config_loader import config
 from llm_utils import acompletion
@@ -292,34 +293,36 @@ class RedditIntegration(DatabaseIntegration):
 
             response_time_ms = (datetime.now() - start_time).total_seconds() * 1000
 
-            # Transform Reddit API format to SIGINT common format
+            # Transform Reddit API format to SIGINT common format using defensive builder
             standardized_results = []
             for submission in search_results:
-                # Extract post data
+                # Extract post data (PRAW uses attributes, not dict access)
                 author_name = submission.author.name if submission.author else "[deleted]"
                 created_dt = datetime.fromtimestamp(submission.created_utc)
+                title = SearchResultBuilder.safe_text(getattr(submission, 'title', ''), default="Reddit Post")
+                selftext = SearchResultBuilder.safe_text(getattr(submission, 'selftext', ''))
+                score = int(SearchResultBuilder.safe_amount(getattr(submission, 'score', 0)))
+                num_comments = int(SearchResultBuilder.safe_amount(getattr(submission, 'num_comments', 0)))
 
-                standardized_results.append({
-                    # Common SIGINT fields (for generic display)
-                    "title": submission.title,
-                    "url": f"https://reddit.com{submission.permalink}",
-                    "date": created_dt.strftime("%Y-%m-%d"),
-                    "description": submission.selftext[:500] if submission.selftext else "",
-
-                    # Reddit-specific metadata
-                    "subreddit": submission.subreddit.display_name,
-                    "author": author_name,
-                    "score": submission.score,
-                    "upvote_ratio": submission.upvote_ratio,
-                    "num_comments": submission.num_comments,
-                    "created_utc": submission.created_utc,
-                    "post_id": submission.id,
-                    "is_self": submission.is_self,
-                    "link_flair_text": submission.link_flair_text,
-
-                    # Engagement metadata (for filtering/sorting)
-                    "engagement_total": submission.score + submission.num_comments
-                })
+                standardized_results.append(SearchResultBuilder()
+                    .title(title, default="Reddit Post")
+                    .url(f"https://reddit.com{submission.permalink}")
+                    .snippet(selftext[:500] if selftext else "")
+                    .date(created_dt.strftime("%Y-%m-%d"))
+                    .metadata({
+                        "description": selftext[:500] if selftext else "",
+                        "subreddit": submission.subreddit.display_name,
+                        "author": author_name,
+                        "score": score,
+                        "upvote_ratio": getattr(submission, 'upvote_ratio', 0),
+                        "num_comments": num_comments,
+                        "created_utc": submission.created_utc,
+                        "post_id": submission.id,
+                        "is_self": getattr(submission, 'is_self', False),
+                        "link_flair_text": getattr(submission, 'link_flair_text', None),
+                        "engagement_total": score + num_comments
+                    })
+                    .build())
 
             # Log successful request
             log_request(

@@ -22,6 +22,7 @@ from core.database_integration_base import (
     QueryResult
 )
 from core.api_request_tracker import log_request
+from core.result_builder import SearchResultBuilder
 from config_loader import config
 
 logger = logging.getLogger(__name__)
@@ -453,21 +454,27 @@ class USASpendingIntegration(DatabaseIntegration):
 
                     data = await response.json()
 
-                    # Normalize results
+                    # Normalize results using SearchResultBuilder
                     results = []
                     for award in data.get("results", []):
                         # Build title with fallback chain (handle None values)
-                        title = award.get("Description") or award.get("Award ID") or "USAspending Award"
+                        title = (
+                            SearchResultBuilder.safe_text(award.get("Description"))
+                            or SearchResultBuilder.safe_text(award.get("Award ID"))
+                            or "USAspending Award"
+                        )
 
-                        # Build normalized result
-                        normalized = {
-                            "title": title,
-                            "url": self._build_award_url(award.get("Award ID", "")),
-                            "snippet": self._build_snippet(award),
-                            "metadata": award,  # Full award data
-                            "source": "USAspending"
-                        }
-                        results.append(normalized)
+                        # Build normalized result using builder pattern
+                        result = (SearchResultBuilder()
+                            .title(title)
+                            .url(self._build_award_url(award.get("Award ID", "")))
+                            .snippet(self._build_snippet(award))
+                            .date(SearchResultBuilder.safe_text(award.get("Start Date")))
+                            .metadata(award)  # Full award data
+                            .add_metadata("source", "USAspending")
+                            .build())
+
+                        results.append(result)
 
                     # Track API request
                     log_request(
@@ -530,24 +537,27 @@ class USASpendingIntegration(DatabaseIntegration):
         parts = []
 
         # Recipient
-        recipient = award.get("Recipient Name", "Unknown Recipient")
+        recipient = SearchResultBuilder.safe_text(
+            award.get("Recipient Name"),
+            default="Unknown Recipient"
+        )
         parts.append(f"Recipient: {recipient}")
 
-        # Amount
+        # Amount - use format_amount which safely handles None
         amount = award.get("Award Amount")
-        if amount:
-            parts.append(f"Amount: ${amount:,.2f}")
+        formatted_amount = SearchResultBuilder.format_amount(amount)
+        parts.append(f"Amount: {formatted_amount}")
 
-        # Dates
-        start_date = award.get("Start Date")
-        end_date = award.get("End Date")
+        # Dates - use safe_text for date strings
+        start_date = SearchResultBuilder.safe_text(award.get("Start Date"))
+        end_date = SearchResultBuilder.safe_text(award.get("End Date"))
         if start_date and end_date:
             parts.append(f"Period: {start_date} to {end_date}")
         elif start_date:
             parts.append(f"Start: {start_date}")
 
         # Agency
-        agency = award.get("Awarding Agency")
+        agency = SearchResultBuilder.safe_text(award.get("Awarding Agency"))
         if agency:
             parts.append(f"Agency: {agency}")
 

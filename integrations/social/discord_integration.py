@@ -28,6 +28,7 @@ from core.database_integration_base import (
     DatabaseCategory,
     QueryResult
 )
+from core.result_builder import SearchResultBuilder
 from core.prompt_loader import render_prompt
 
 
@@ -351,19 +352,30 @@ class DiscordIntegration(DatabaseIntegration):
                         # Higher score = more keywords matched
                         score = len(matched_keywords) / len(keywords)
 
-                        matches.append({
-                            "title": f"Discord message from {msg.get('author', {}).get('name', 'Unknown')}",
-                            "snippet": msg.get("content", ""),  # Standard field name for QueryResult
-                            "content": msg.get("content", ""),   # Keep for backward compatibility
-                            "url": f"https://discord.com/channels/{guild.get('id', '')}/{channel.get('id', '')}/{msg.get('id', '')}",
-                            "timestamp": msg.get("timestamp", ""),
-                            "author": msg.get("author", {}).get("name", "Unknown"),
-                            "server": guild.get("name", "Unknown Server"),
-                            "channel": channel.get("name", "Unknown Channel"),
-                            "category": channel.get("category", ""),
-                            "score": score,
-                            "matched_keywords": matched_keywords
-                        })
+                        author_name = SearchResultBuilder.safe_text(
+                            msg.get('author', {}).get('name'), default='Unknown'
+                        )
+                        content_text = SearchResultBuilder.safe_text(msg.get("content"))
+                        guild_id = SearchResultBuilder.safe_text(guild.get('id'))
+                        channel_id = SearchResultBuilder.safe_text(channel.get('id'))
+                        msg_id = SearchResultBuilder.safe_text(msg.get('id'))
+
+                        matches.append(SearchResultBuilder()
+                            .title(f"Discord message from {author_name}", default="Discord Message")
+                            .url(f"https://discord.com/channels/{guild_id}/{channel_id}/{msg_id}")
+                            .snippet(content_text)
+                            .date(msg.get("timestamp"))
+                            .metadata({
+                                "content": content_text,
+                                "author": author_name,
+                                "server": SearchResultBuilder.safe_text(guild.get("name"), default="Unknown Server"),
+                                "channel": SearchResultBuilder.safe_text(channel.get("name"), default="Unknown Channel"),
+                                "category": channel.get("category", ""),
+                                "score": score,
+                                "matched_keywords": matched_keywords,
+                                "timestamp": msg.get("timestamp", "")
+                            })
+                            .build())
 
             except json.JSONDecodeError as e:
                 # Skip malformed files (0.14% of exports have DiscordChatExporter bugs)
