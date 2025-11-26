@@ -24,6 +24,7 @@ from core.database_integration_base import (
     QueryResult
 )
 from core.api_request_tracker import log_request
+from core.result_builder import SearchResultBuilder, build_result
 from config_loader import config
 
 # Load environment variables
@@ -31,21 +32,6 @@ load_dotenv()
 
 # Set up logger for this module
 logger = logging.getLogger(__name__)
-
-
-def safe_amount(value, default: float = 0.0) -> float:
-    """
-    Safely extract a numeric amount from API response.
-
-    Handles None, missing keys, empty strings, and type mismatches.
-    Returns default if value cannot be converted to float.
-    """
-    if value is None:
-        return default
-    try:
-        return float(value)
-    except (TypeError, ValueError):
-        return default
 
 
 class FECIntegration(DatabaseIntegration):
@@ -443,25 +429,24 @@ class FECIntegration(DatabaseIntegration):
             request_params=params
         )
 
-        # Transform results
+        # Transform results using defensive builder
         transformed_results = []
         for contrib in results[:limit]:
-            contributor = contrib.get("contributor_name", "Unknown Contributor")
-            amount = safe_amount(contrib.get("contribution_receipt_amount"))
-            recipient = contrib.get("committee", {}).get("name", "Unknown Committee")
+            contributor = SearchResultBuilder.safe_text(
+                contrib.get("contributor_name"), "Unknown Contributor"
+            )
+            amount = SearchResultBuilder.safe_amount(contrib.get("contribution_receipt_amount"))
+            recipient = SearchResultBuilder.safe_text(
+                contrib.get("committee", {}).get("name"), "Unknown Committee"
+            )
             date = contrib.get("contribution_receipt_date", "")
 
-            title = f"${amount:,.2f} from {contributor} to {recipient}"
-            url = f"https://www.fec.gov/data/receipts/?data_type=processed"
-
-            snippet = f"Amount: ${amount:,.2f} | Date: {date} | Employer: {contrib.get('contributor_employer', 'N/A')}"
-
-            transformed = {
-                "title": title,
-                "url": url,
-                "snippet": snippet[:500],
-                "date": date,
-                "metadata": {
+            transformed = (SearchResultBuilder()
+                .title(f"{SearchResultBuilder.format_amount(amount)} from {contributor} to {recipient}")
+                .url("https://www.fec.gov/data/receipts/?data_type=processed")
+                .snippet(f"Amount: {SearchResultBuilder.format_amount(amount)} | Date: {date} | Employer: {contrib.get('contributor_employer', 'N/A')}")
+                .date(date)
+                .metadata({
                     "contributor_name": contributor,
                     "contributor_employer": contrib.get("contributor_employer"),
                     "contributor_occupation": contrib.get("contributor_occupation"),
@@ -470,8 +455,8 @@ class FECIntegration(DatabaseIntegration):
                     "recipient_committee": recipient,
                     "recipient_committee_id": contrib.get("committee_id"),
                     "transaction_id": contrib.get("transaction_id")
-                }
-            }
+                })
+                .build())
             transformed_results.append(transformed)
 
         return QueryResult(
@@ -607,33 +592,33 @@ class FECIntegration(DatabaseIntegration):
             request_params=params
         )
 
-        # Transform results
+        # Transform results using defensive builder
         transformed_results = []
         for expenditure in results[:limit]:
-            amount = safe_amount(expenditure.get("expenditure_amount"))
-            spender = expenditure.get("committee", {}).get("name", "Unknown")
-            candidate = expenditure.get("candidate_name", "Unknown")
+            amount = SearchResultBuilder.safe_amount(expenditure.get("expenditure_amount"))
+            spender = SearchResultBuilder.safe_text(
+                expenditure.get("committee", {}).get("name"), "Unknown"
+            )
+            candidate = SearchResultBuilder.safe_text(
+                expenditure.get("candidate_name"), "Unknown"
+            )
             support_oppose = expenditure.get("support_oppose_indicator", "")
+            action = "supporting" if support_oppose == "S" else "opposing"
 
-            title = f"${amount:,.2f} by {spender} {'supporting' if support_oppose == 'S' else 'opposing'} {candidate}"
-            url = "https://www.fec.gov/data/independent-expenditures/"
-
-            snippet = f"Amount: ${amount:,.2f} | Purpose: {expenditure.get('expenditure_description', 'N/A')[:100]}"
-
-            transformed = {
-                "title": title,
-                "url": url,
-                "snippet": snippet[:500],
-                "date": expenditure.get("expenditure_date"),
-                "metadata": {
+            transformed = (SearchResultBuilder()
+                .title(f"{SearchResultBuilder.format_amount(amount)} by {spender} {action} {candidate}")
+                .url("https://www.fec.gov/data/independent-expenditures/")
+                .snippet(f"Amount: {SearchResultBuilder.format_amount(amount)} | Purpose: {SearchResultBuilder.safe_text(expenditure.get('expenditure_description'), 'N/A', 100)}")
+                .date(expenditure.get("expenditure_date"))
+                .metadata({
                     "amount": amount,
                     "spender": spender,
                     "candidate_name": candidate,
                     "support_oppose": "Support" if support_oppose == "S" else "Oppose",
                     "purpose": expenditure.get("expenditure_description"),
                     "date": expenditure.get("expenditure_date")
-                }
-            }
+                })
+                .build())
             transformed_results.append(transformed)
 
         return QueryResult(
