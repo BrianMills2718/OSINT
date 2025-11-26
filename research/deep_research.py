@@ -1370,6 +1370,33 @@ class SimpleDeepResearch(
         display_names = [registry.get_display_name(id) for id in self.integrations]
         return sorted(set(display_names))  # Use set for dedup
 
+    def _get_source_metadata_for_prompts(self) -> List[Dict[str, str]]:
+        """
+        Get source metadata for LLM prompts (dynamic, from registry).
+
+        Returns list of dicts with name, description, and category for each
+        enabled integration. This eliminates the need for hardcoded source
+        descriptions in prompt templates - new integrations are automatically
+        visible after registration.
+
+        Returns:
+            List of dicts: [{"name": "SAM.gov", "description": "...", "category": "government"}, ...]
+        """
+        sources = []
+        all_metadata = registry.get_all_metadata()
+
+        for integration_id in self.integrations:
+            if integration_id in all_metadata:
+                meta = all_metadata[integration_id]
+                sources.append({
+                    "name": meta.name,
+                    "description": meta.description,
+                    "category": meta.category.value if hasattr(meta.category, 'value') else str(meta.category)
+                })
+
+        # Sort by category then name for consistent prompt rendering
+        return sorted(sources, key=lambda x: (x["category"], x["name"]))
+
     async def _search_brave(self, query: str, max_results: int = 20) -> List[Dict]:
         """
         Search open web using Brave Search API.

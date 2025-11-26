@@ -152,7 +152,8 @@ class MCPToolMixin:
         param_adjustments: Optional[Dict[str, Dict]] = None,
         task_id: Optional[int] = None,
         attempt: int = 0,
-        exec_logger: Optional['ExecutionLogger'] = None
+        exec_logger: Optional['ExecutionLogger'] = None,
+        skip_relevance_check: bool = False
     ) -> Dict:
         """
         Call a single MCP tool (extracted as class method for reuse).
@@ -164,6 +165,8 @@ class MCPToolMixin:
             task_id: Task ID for logging
             attempt: Retry attempt number
             exec_logger: Execution logger instance (ExecutionLogger)
+            skip_relevance_check: If True, skip is_relevant() check (use when source
+                was pre-selected by hypothesis generation with full context)
 
         Returns:
             Dict with 'success', 'results', 'source', 'total', 'error' keys
@@ -233,34 +236,37 @@ class MCPToolMixin:
                     raise ValueError(f"Integration {integration_id} not found in registry")
 
                 # Call integration directly using DatabaseIntegration interface
-                # 1. Check relevance
-                is_relevant = await integration.is_relevant(query)
-                if not is_relevant:
-                    logging.warning(f"{source_name} not relevant for query: {query}")
+                # 1. Check relevance (skip if source was pre-selected by hypothesis with full context)
+                is_relevant = True  # Default to relevant when skipping check
+                if not skip_relevance_check:
+                    is_relevant = await integration.is_relevant(query)
+                    if not is_relevant:
+                        logging.warning(f"{source_name} not relevant for query: {query}")
 
-                    # Log source skipped (Enhanced Structured Logging)
-                    if exec_logger and task_id is not None:
-                        try:
-                            exec_logger.log_source_skipped(
-                                task_id=task_id,
-                                hypothesis_id=None,  # Set by caller if hypothesis execution
-                                source_name=source_name,
-                                reason="is_relevant_false",
-                                stage="is_relevant",
-                                details={"query": query}
-                            )
-                        # Logging failure - non-critical, execution continues
-                        except Exception as log_error:
-                            logger.warning(f"Failed to log source_skipped: {log_error}", exc_info=True)
+                        # Log source skipped (Enhanced Structured Logging)
+                        if exec_logger and task_id is not None:
+                            try:
+                                exec_logger.log_source_skipped(
+                                    task_id=task_id,
+                                    hypothesis_id=None,  # Set by caller if hypothesis execution
+                                    source_name=source_name,
+                                    reason="is_relevant_false",
+                                    stage="is_relevant",
+                                    details={"query": query}
+                                )
+                            # Logging failure - non-critical, execution continues
+                            except Exception as log_error:
+                                logger.warning(f"Failed to log source_skipped: {log_error}", exc_info=True)
 
-                    result_data = {
-                        "success": False,
-                        "source": source_name,
-                        "total": 0,
-                        "results": [],
-                        "error": "Source not relevant for this query"
-                    }
-                else:
+                        result_data = {
+                            "success": False,
+                            "source": source_name,
+                            "total": 0,
+                            "results": [],
+                            "error": "Source not relevant for this query"
+                        }
+
+                if is_relevant:
                     # 2. Generate query parameters
                     query_gen_start = time.time()
                     query_params = await integration.generate_query(query)
@@ -585,8 +591,9 @@ class MCPToolMixin:
         sources_count = {}
 
         # Call filtered MCP tools in parallel (skip irrelevant sources) using class method
+        # skip_relevance_check=True because source selection already happened upstream with full context
         mcp_results = await asyncio.gather(*[
-            self._call_mcp_tool(tool, query, param_adjustments, task_id=task_id, attempt=attempt, exec_logger=self.logger)
+            self._call_mcp_tool(tool, query, param_adjustments, task_id=task_id, attempt=attempt, exec_logger=self.logger, skip_relevance_check=True)
             for tool in filtered_tools
         ])
 

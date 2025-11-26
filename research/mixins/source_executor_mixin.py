@@ -221,7 +221,8 @@ class SourceExecutorMixin:
                         param_adjustments=None,
                         task_id=task_id,
                         attempt=0,
-                        exec_logger=self.logger
+                        exec_logger=self.logger,
+                        skip_relevance_check=True  # Hypothesis already selected this source with full context
                     )
                     if tool_result.get("success"):
                         results = tool_result.get("results", [])
@@ -420,7 +421,8 @@ class SourceExecutorMixin:
                             param_adjustments=None,  # No param hints in direct hypothesis execution
                             task_id=task.id,
                             attempt=0,
-                            exec_logger=self.logger
+                            exec_logger=self.logger,
+                            skip_relevance_check=True  # Hypothesis already selected this source with full context
                         )
 
                         if tool_result.get("success"):

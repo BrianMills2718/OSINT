@@ -27,6 +27,7 @@ class HypothesisMixin:
 
     Requires host class to have:
         - self._get_available_source_names(): method returning List[str]
+        - self._get_source_metadata_for_prompts(): method returning List[Dict] with name, description, category
         - self.max_hypotheses_per_task: int
         - self.max_time_per_task_seconds: int
         - self.max_hypotheses_to_execute: int
@@ -57,6 +58,8 @@ class HypothesisMixin:
         """
         # Get available sources for hypothesis generation
         available_sources = self._get_available_source_names()
+        # Get full source metadata for dynamic prompt rendering
+        source_metadata = self._get_source_metadata_for_prompts()
 
         # Format existing tasks for prompt context
         formatted_tasks = [
@@ -74,6 +77,7 @@ class HypothesisMixin:
             research_question=research_question,
             task_query=task_query,
             available_sources=available_sources,
+            source_metadata=source_metadata,  # Full metadata for dynamic rendering
             max_hypotheses=self.max_hypotheses_per_task,
             existing_tasks=formatted_tasks,
             existing_hypotheses=existing_hypotheses or []
