@@ -234,6 +234,20 @@ class IntegrationRegistry:
             # Not an error - some integrations may not use LLM query generation
             pass
 
+        # Validation 5: SearchResultBuilder usage (warning only for now, will be enforced later)
+        # Check if the integration module has SearchResultBuilder imported
+        import inspect
+        try:
+            module = inspect.getmodule(integration_class)
+            if module and not hasattr(module, 'SearchResultBuilder'):
+                logger.warning(
+                    f"Integration '{integration_id}' should use SearchResultBuilder for defensive data transformation. "
+                    f"See core/result_builder.py and integrations/_integration_template.py"
+                )
+        except Exception as e:
+            # Don't fail registration on inspection errors
+            logger.debug(f"Could not check SearchResultBuilder usage for {integration_id}: {e}")
+
         # All validations passed - register it
         self._integration_classes[integration_id] = integration_class
         # Success message removed to avoid spam during startup

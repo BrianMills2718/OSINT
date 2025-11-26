@@ -22,6 +22,7 @@ from core.database_integration_base import (
     DatabaseCategory,
     QueryResult
 )
+from core.result_builder import SearchResultBuilder
 from core.api_request_tracker import log_request
 from config_loader import config
 
@@ -297,12 +298,12 @@ class ICIJOffshoreLeaksIntegration(DatabaseIntegration):
 
                 snippet = " | ".join(snippet_parts)
 
-                transformed = {
-                    "title": name,
-                    "url": url,
-                    "snippet": snippet[:500] if snippet else "",
-                    "date": None,  # Leak databases don't have a single publication date
-                    "metadata": {
+                transformed = (SearchResultBuilder()
+                    .title(name, default="Unknown Entity")
+                    .url(url)
+                    .snippet(snippet[:500] if snippet else "")
+                    .date(None)  # Leak databases don't have a single publication date
+                    .metadata({
                         "entity_id": entity_id,
                         "entity_type": entity_type_name,
                         "jurisdiction": jurisdiction,
@@ -310,8 +311,8 @@ class ICIJOffshoreLeaksIntegration(DatabaseIntegration):
                         "leak_source": sourceID,
                         "match_score": score,
                         "exact_match": match
-                    }
-                }
+                    })
+                    .build())
                 transformed_results.append(transformed)
 
             return QueryResult(
