@@ -400,6 +400,7 @@ class RecursiveResearchAgent:
             # === EXECUTE DIRECTLY ===
             result = await self._execute(goal, assessment.action, context)
             result.duration_seconds = (datetime.now() - start_time).total_seconds()
+            result.cost_dollars = context.cost_incurred  # Include cost from assessment LLM call
 
             self.logger.log("executed", goal, context.depth, parent_goal, {
                 "status": result.status.value,
@@ -498,7 +499,8 @@ class RecursiveResearchAgent:
             synthesis=synthesis.synthesis,
             confidence=synthesis.confidence,
             depth=context.depth,
-            duration_seconds=(datetime.now() - start_time).total_seconds()
+            duration_seconds=(datetime.now() - start_time).total_seconds(),
+            cost_dollars=context.cost_incurred
         )
 
     # =========================================================================
