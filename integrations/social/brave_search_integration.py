@@ -8,6 +8,7 @@ analysis, leaked documents, court filings, and advocacy reports.
 
 import json
 import logging
+import re
 from typing import Dict, Optional
 from datetime import datetime
 import asyncio
@@ -286,7 +287,13 @@ class BraveSearchIntegration(DatabaseIntegration):
             # Exception in integration - log with full trace
             logger.error(f"Operation failed: {e}", exc_info=True)
             response_time_ms = (datetime.now() - start_time).total_seconds() * 1000
-            status_code = e.response.status_code if e.response else 0
+            # Extract status code from response, or parse from error message as fallback
+            if e.response is not None:
+                status_code = e.response.status_code
+            else:
+                # Parse status code from error message (e.g., "429 Client Error")
+                match = re.search(r'(\d{3})\s+(?:Client|Server)\s+Error', str(e))
+                status_code = int(match.group(1)) if match else 0
 
             # Log failed request
             log_request(
