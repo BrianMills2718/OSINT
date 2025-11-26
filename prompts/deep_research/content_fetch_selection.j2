@@ -1,0 +1,59 @@
+{# temporal_context: true #}
+You are helping select which search results warrant fetching full page content.
+
+**Research Question**: {{ research_question }}
+
+**Budget**: You may select up to {{ max_fetches }} URLs for full content retrieval.
+
+**Search Results** ({{ results | length }} total):
+{% for result in results %}
+---
+**Result {{ loop.index }}**:
+- Title: {{ result.title }}
+- URL: {{ result.url }}
+- Snippet: {{ result.snippet or result.description or "No snippet available" }}
+- Source: {{ result.source or "Unknown" }}
+{% endfor %}
+---
+
+## Your Task
+
+Analyze these search results and decide which URLs would benefit from full page retrieval.
+
+**Fetch full content when**:
+- The snippet suggests substantial information relevant to the research question
+- The source is an authoritative document (report, filing, official announcement)
+- The snippet is truncated and hints at more valuable content
+- The page likely contains data, figures, or detailed analysis
+
+**Skip fetching when**:
+- The snippet already contains the key information needed
+- The source is a general news aggregator or low-value site
+- The URL appears to be a paywall, login page, or dynamic app
+- Similar content has already been selected from another URL
+
+**Consider**:
+- Diversity of sources (don't fetch 5 URLs from the same site)
+- Information density (longer articles > short blurbs)
+- Relevance to specific aspects of the research question
+
+## Response Format
+
+Return a JSON object:
+
+{% raw %}
+{
+  "selected_urls": [
+    {
+      "url": "https://example.com/article",
+      "reason": "Brief explanation of why this URL is worth fetching"
+    }
+  ],
+  "skip_reasoning": "Brief explanation of overall selection strategy and why other URLs were not selected"
+}
+{% endraw %}
+
+**Important**:
+- Return an empty array if no URLs warrant full fetch
+- You may select fewer than {{ max_fetches }} if fewer are valuable
+- URLs must exactly match the URLs provided in the results above

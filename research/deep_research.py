@@ -46,6 +46,7 @@ from core.prompt_loader import render_prompt
 
 # Mixins for god class decomposition
 from research.mixins import (
+    ContentEnrichmentMixin,
     FollowUpTaskMixin,
     HypothesisMixin,
     MCPToolMixin,
@@ -162,6 +163,7 @@ class ResearchProgress:
 
 
 class SimpleDeepResearch(
+    ContentEnrichmentMixin,
     FollowUpTaskMixin,
     HypothesisMixin,
     MCPToolMixin,
@@ -845,6 +847,29 @@ class SimpleDeepResearch(
                     "failed": batch_size - successful_in_batch
                 }
             )
+
+        # Step 2.5: Content enrichment (fetch full page content for selected results)
+        max_fetches = config.get_raw_config().get("research", {}).get("max_full_page_fetches", 0)
+        if max_fetches > 0:
+            # Collect all results across tasks for enrichment
+            all_results_for_enrichment = []
+            for task_id, task_results in self.results_by_task.items():
+                all_results_for_enrichment.extend(task_results.get('results', []))
+
+            if all_results_for_enrichment:
+                enriched_results = await self._enrich_results_with_content(
+                    research_question=question,
+                    results=all_results_for_enrichment,
+                    max_fetches=max_fetches
+                )
+
+                # Update results with enriched content (by URL matching)
+                enriched_by_url = {r.get('url'): r for r in enriched_results if r.get('url')}
+                for task_id, task_results in self.results_by_task.items():
+                    for i, result in enumerate(task_results.get('results', [])):
+                        url = result.get('url')
+                        if url and url in enriched_by_url:
+                            task_results['results'][i] = enriched_by_url[url]
 
         # Step 3: Synthesize report
         try:
