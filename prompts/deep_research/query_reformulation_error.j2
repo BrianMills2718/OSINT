@@ -1,0 +1,55 @@
+{# temporal_context: true #}
+An API returned an error for a query. Analyze the error and fix the query parameters.
+
+SOURCE: {{ source_name }}
+RESEARCH QUESTION: {{ research_question }}
+
+ORIGINAL QUERY PARAMETERS:
+{{ original_params | tojson(indent=2) }}
+
+ERROR RECEIVED:
+{% if error_code %}HTTP {{ error_code }}: {% endif %}{{ error_message }}
+
+COMMON API ERROR PATTERNS AND FIXES:
+
+1. **Parameter validation errors** (HTTP 400/422):
+   - Value too short: Expand abbreviations (e.g., "AI" → "artificial intelligence")
+   - Invalid enum value: Use a valid value from the API's allowed set
+   - Missing required field: Add the required field with a sensible default
+   - Invalid date format: Use the correct format (usually YYYY-MM-DD)
+
+2. **Search constraint errors**:
+   - Query too broad: Add more specific filters
+   - Query too narrow: Remove restrictive filters
+   - Invalid characters: Remove special characters that APIs often reject
+
+3. **Rate/quota errors** (HTTP 429):
+   - Cannot fix by reformulation - return can_fix: false
+
+4. **Authentication errors** (HTTP 401/403):
+   - Cannot fix by reformulation - return can_fix: false
+
+5. **Server errors** (HTTP 500+):
+   - Try simplifying the query, but may not be fixable - use judgment
+
+YOUR TASK:
+1. Identify what caused the error based on the error message
+2. Determine if the query can be fixed while still answering the research question
+3. If fixable, return corrected parameters that:
+   - Address the specific error
+   - Still effectively search for information relevant to the research question
+   - Maintain the same parameter structure as the original
+
+IMPORTANT:
+- Preserve the original intent of the query
+- Only modify parameters necessary to fix the error
+- If the error is unfixable (auth, rate limit), set can_fix to false
+
+Return JSON:
+{% raw %}
+{
+  "can_fix": true/false,
+  "fixed_params": { ... corrected parameters ... },
+  "explanation": "Brief explanation of what was wrong and how you fixed it"
+}
+{% endraw %}

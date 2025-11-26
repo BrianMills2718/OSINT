@@ -246,3 +246,72 @@ class QueryReformulationMixin:
         )
 
         return json.loads(response.choices[0].message.content)
+
+    async def _reformulate_on_api_error(
+        self: "SimpleDeepResearch",
+        source_name: str,
+        research_question: str,
+        original_params: Dict[str, Any],
+        error_message: str,
+        error_code: Optional[int] = None
+    ) -> Optional[Dict[str, Any]]:
+        """
+        Reformulate query parameters when an API returns a validation error.
+
+        This enables automatic recovery from API errors by letting the LLM
+        understand what went wrong and generate a corrected query.
+
+        Design principles:
+            - Generic: Works with any integration without source-specific code
+            - LLM-driven: LLM understands error and fixes it intelligently
+            - Fail-safe: Returns None if reformulation fails (caller handles gracefully)
+
+        Args:
+            source_name: Name of the source (e.g., "usaspending", "sam_gov")
+            research_question: The original research question
+            original_params: The query parameters that caused the error
+            error_message: The error message from the API
+            error_code: HTTP status code if available (e.g., 422, 400)
+
+        Returns:
+            Dict with reformulated query parameters, or None if cannot fix
+
+        Example:
+            If USAspending returns HTTP 422 "keyword 'AI' too short (min 3 chars)",
+            the LLM will reformulate to use "artificial intelligence" instead.
+        """
+        try:
+            prompt = render_prompt(
+                "deep_research/query_reformulation_error.j2",
+                source_name=source_name,
+                research_question=research_question,
+                original_params=original_params,
+                error_message=error_message,
+                error_code=error_code
+            )
+
+            # Use json_object mode (not strict schema) because fixed_params
+            # needs to be a flexible object matching the original params structure
+            # which varies by source. Gemini's strict mode rejects empty object schemas.
+            response = await acompletion(
+                model=config.get_model("query_generation"),
+                messages=[{"role": "user", "content": prompt}],
+                response_format={"type": "json_object"}
+            )
+
+            result = json.loads(response.choices[0].message.content)
+
+            if result.get("can_fix") and result.get("fixed_params"):
+                logger.info(
+                    f"[REFORMULATE] {source_name}: {result.get('explanation', 'Fixed query')}"
+                )
+                return result["fixed_params"]
+            else:
+                logger.warning(
+                    f"[REFORMULATE] {source_name}: Cannot fix error - {result.get('explanation', 'Unknown reason')}"
+                )
+                return None
+
+        except Exception as e:
+            logger.error(f"[REFORMULATE] {source_name}: Reformulation failed - {e}", exc_info=True)
+            return None

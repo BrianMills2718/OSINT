@@ -315,6 +315,52 @@ class MCPToolMixin:
                             "error": query_result.error
                         }
 
+                        # 4. ERROR REFORMULATION: If validation error, try to fix and retry
+                        if not query_result.success and query_result.error:
+                            error_str = str(query_result.error)
+                            # Detect validation errors (HTTP 400, 422) that LLM might fix
+                            is_validation_error = any(code in error_str for code in ["400", "422", "validation", "invalid"])
+
+                            if is_validation_error:
+                                # Extract error code if present
+                                error_code = None
+                                for code in ["422", "400"]:
+                                    if code in error_str:
+                                        error_code = int(code)
+                                        break
+
+                                # Try to reformulate the query
+                                logger.info(f"[RETRY] {source_name}: Attempting error-based reformulation")
+                                fixed_params = await self._reformulate_on_api_error(
+                                    source_name=source_name,
+                                    research_question=query,
+                                    original_params=query_params,
+                                    error_message=error_str,
+                                    error_code=error_code
+                                )
+
+                                if fixed_params:
+                                    # Retry with fixed parameters
+                                    logger.info(f"[RETRY] {source_name}: Retrying with reformulated query")
+                                    retry_result = await integration.execute_search(
+                                        query_params=fixed_params,
+                                        api_key=api_key,
+                                        limit=integration_limit
+                                    )
+
+                                    # Use retry result if successful
+                                    if retry_result.success:
+                                        result_data = {
+                                            "success": retry_result.success,
+                                            "source": retry_result.source,
+                                            "total": retry_result.total,
+                                            "results": retry_result.results,
+                                            "error": None
+                                        }
+                                        logger.info(f"[RETRY] {source_name}: Reformulation successful - {retry_result.total} results")
+                                    else:
+                                        logger.warning(f"[RETRY] {source_name}: Reformulation failed - {retry_result.error}")
+
                 response_time_ms = (time.time() - start_time) * 1000
 
             else:
