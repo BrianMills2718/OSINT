@@ -579,11 +579,12 @@ pip list | grep playwright
 ## CURRENT STATUS
 
 **Recently Completed** (2025-11-26 - Current Session):
-- ✅ **Phase 3: Feature Parity** - **COMPLETE** (commit 8e19f4c)
-  - All 9 features implemented: query reformulation, per-source prompts, filtering, temporal context, logging (15+ events), LLM reports, deduplication, entity extraction, summarization
-  - Fixed summarization index mismatch bug (seq_idx vs orig_idx)
-  - E2E validated: 20 results, 10 entities extracted, relationship graph built
-  - Output files: report.md, evidence.json, entities.json, execution_log.jsonl, result.json
+- ✅ **v2 MIGRATION COMPLETE** - All 5 phases done
+  - Phase 3 feature parity: 9 features (reformulation, filtering, temporal, logging, LLM reports, dedup, entities, summarization)
+  - Phase 4 comparison: v2 faster under API stress (33s vs v1 stalled)
+  - Phase 5 migration: v2 is now default (`run_research_cli.py`, Streamlit)
+  - v1 deprecated but accessible
+  - Fixed summarization index mismatch bug (commit 8e19f4c)
 - ✅ **SearchResultBuilder Migration** - **COMPLETE** (commits 34b89bf, 3e7df84, 39ba3a2, 741e1c4)
   - **Problem**: TypeError crashes from null API response values (e.g., FEC amount formatting bug)
   - **Solution**: Created `core/result_builder.py` with defensive builder pattern
