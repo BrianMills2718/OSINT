@@ -241,6 +241,7 @@ class TwitterIntegration(DatabaseIntegration):
             id="twitter",
             category=DatabaseCategory.SOCIAL_TWITTER,
             requires_api_key=True,
+            api_key_env_var="RAPIDAPI_KEY",  # RapidAPI key for twitter-api45
             cost_per_query_estimate=0.01,  # RapidAPI cost + LLM cost
             typical_response_time=3.0,     # seconds (API calls can be slow)
             rate_limit_daily=None,         # Depends on RapidAPI subscription

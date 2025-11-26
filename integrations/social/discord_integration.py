@@ -398,7 +398,14 @@ class DiscordIntegration(DatabaseIntegration):
                 continue
 
         # Sort by score (best matches first), then by recency
-        matches.sort(key=lambda x: (x["score"], x["timestamp"]), reverse=True)
+        # Score and timestamp are in metadata dict from SearchResultBuilder
+        matches.sort(
+            key=lambda x: (
+                x.get("metadata", {}).get("score", 0),
+                x.get("metadata", {}).get("timestamp", "")
+            ),
+            reverse=True
+        )
 
         return matches
 

@@ -308,7 +308,7 @@ def render_deep_research_tab(openai_api_key_from_ui):
                 st.markdown(f"**Output saved to:** `{output_dir}`")
 
                 # Export buttons
-                col_e1, col_e2 = st.columns(2)
+                col_e1, col_e2, col_e3, col_e4 = st.columns(4)
 
                 with col_e1:
                     # Export as markdown report
@@ -391,6 +391,58 @@ def render_deep_research_tab(openai_api_key_from_ui):
                         "application/json",
                         key="download_full_json"
                     )
+
+                with col_e3:
+                    # Export as PDF
+                    try:
+                        from core.report_exporter import ReportExporter
+                        import io
+
+                        exporter = ReportExporter()
+                        # Generate PDF to bytes buffer
+                        pdf_buffer = io.BytesIO()
+                        html_content = exporter._markdown_to_html(report_md)
+                        HTML, CSS = exporter._ensure_weasyprint()
+                        html_doc = HTML(string=html_content)
+                        from core.report_exporter import PDF_STYLESHEET
+                        css = CSS(string=PDF_STYLESHEET)
+                        html_doc.write_pdf(pdf_buffer, stylesheets=[css])
+                        pdf_buffer.seek(0)
+
+                        st.download_button(
+                            "Download Report (PDF)",
+                            pdf_buffer.getvalue(),
+                            f"research_report_{timestamp}.pdf",
+                            "application/pdf",
+                            key="download_report_pdf"
+                        )
+                    except Exception as pdf_err:
+                        st.button("PDF Export Failed", disabled=True, help=str(pdf_err))
+
+                with col_e4:
+                    # Export as Word
+                    try:
+                        from core.report_exporter import ReportExporter
+                        import io
+
+                        exporter = ReportExporter()
+                        # Generate Word doc to bytes buffer
+                        docx_buffer = io.BytesIO()
+                        docx_lib = exporter._ensure_docx()
+                        doc = docx_lib['Document']()
+                        exporter._parse_markdown_to_docx(doc, report_md)
+                        doc.save(docx_buffer)
+                        docx_buffer.seek(0)
+
+                        st.download_button(
+                            "Download Report (Word)",
+                            docx_buffer.getvalue(),
+                            f"research_report_{timestamp}.docx",
+                            "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+                            key="download_report_docx"
+                        )
+                    except Exception as docx_err:
+                        st.button("Word Export Failed", disabled=True, help=str(docx_err))
 
         except Exception as e:
             # Deep research failed

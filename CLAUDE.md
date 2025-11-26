@@ -505,8 +505,8 @@ pip list | grep playwright
 
 **Last Updated**: 2025-11-26
 **Current Branch**: `master`
-**Current Phase**: v2 Recursive Agent Migration - Phase 4 (Side-by-Side Comparison)
-**Status**: Phases 1-3 complete, ready for comparison testing
+**Current Phase**: v2 Migration COMPLETE
+**Status**: All 5 phases complete - v2 is now the default research system
 
 ---
 
@@ -521,8 +521,13 @@ pip list | grep playwright
 | 1 | Validation | **COMPLETE** |
 | 2 | CLI Entry Point | **COMPLETE** |
 | 3 | Feature Parity | **COMPLETE** |
-| **4** | Side-by-Side Comparison | **NEXT** |
-| 5 | Full Migration | Pending |
+| 4 | Side-by-Side Comparison | **COMPLETE** (partial - API issues) |
+| 5 | Full Migration | **COMPLETE** |
+
+**v2 is now the default research system!**
+- CLI: `python3 run_research_cli.py "your query"`
+- Streamlit: Deep Investigation tab uses v2
+- v1 deprecated but available for backward compatibility
 
 ### Phase 1: Validation - COMPLETE
 
