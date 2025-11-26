@@ -1272,7 +1272,7 @@ Return JSON:
         with open(report_path, 'w') as f:
             f.write(self._generate_report(result))
 
-        print(f"\nResults saved to: {self.output_dir}")
+        # Note: Output location is printed by the CLI, not here (avoid duplicate messages)
 
     def _result_to_dict(self, result: GoalResult) -> Dict:
         """Convert GoalResult to serializable dict."""
