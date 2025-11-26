@@ -66,13 +66,50 @@ class ActionType(Enum):
 
 @dataclass
 class Constraints:
-    """Limits to prevent runaway recursion."""
+    """
+    Configurable limits for recursive research.
+
+    All values are user-configurable via config.yaml or CLI args.
+    NO hardcoded magic numbers - everything goes here.
+    """
+    # === Core Limits ===
     max_depth: int = 15
     max_time_seconds: int = 1800  # 30 minutes
     max_cost_dollars: float = 5.0
     max_goals: int = 50
     max_results_per_source: int = 20
     max_concurrent_tasks: int = DEFAULT_MAX_CONCURRENT_TASKS
+
+    # === Prompt Context Limits ===
+    # How much context to include in LLM prompts
+    max_sources_in_prompt: int = 20  # Sources shown to LLM in assessment
+    max_evidence_in_prompt: int = 10  # Recent evidence pieces shown
+    max_evidence_for_analysis: int = 20  # Evidence included in analysis
+    max_sources_in_decompose: int = 15  # Sources shown in decomposition
+    max_goals_in_prompt: int = 10  # Existing goals shown (for redundancy check)
+    max_evidence_for_synthesis: int = 30  # Evidence pieces for synthesis
+    max_content_chars_in_synthesis: int = 500  # Content truncation in synthesis
+
+    # === LLM Cost Estimates (per call, in dollars) ===
+    # These are rough estimates - override if using different models
+    cost_per_assessment: float = 0.0002
+    cost_per_analysis: float = 0.0003
+    cost_per_decomposition: float = 0.0003
+    cost_per_achievement_check: float = 0.0001
+    cost_per_synthesis: float = 0.0005
+    cost_per_filter: float = 0.0002
+    cost_per_reformulation: float = 0.0002
+
+    # === Early Exit Thresholds ===
+    # When to check if goal achieved early
+    min_evidence_for_achievement_check: int = 5  # Minimum evidence before checking
+    min_successes_for_achievement_check: int = 2  # Minimum successful sub-goals
+    min_results_to_filter: int = 3  # Don't filter if fewer results than this
+
+    # === Output Limits ===
+    max_evidence_in_saved_result: int = 50  # Evidence saved to JSON
+    max_evidence_per_source_in_report: int = 5  # Per-source in markdown report
+    max_content_chars_in_report: int = 200  # Content truncation in report
 
 
 @dataclass
@@ -536,13 +573,13 @@ class RecursiveResearchAgent:
         # Format sources for prompt
         sources_text = "\n".join([
             f"- {s['name']}: {s['description']}"
-            for s in context.available_sources[:20]  # Limit for prompt size
+            for s in context.available_sources[:context.constraints.max_sources_in_prompt]
         ])
 
         # Format evidence summary
         evidence_text = "None yet." if not context.accumulated_evidence else "\n".join([
             f"- [{e.source}] {e.title}: {e.content[:100]}..."
-            for e in context.accumulated_evidence[-10:]  # Recent evidence
+            for e in context.accumulated_evidence[-context.constraints.max_evidence_in_prompt:]
         ])
 
         prompt = f"""You are a research agent assessing a goal.
@@ -602,8 +639,8 @@ Return JSON:
                 response_format={"type": "json_object"}
             )
 
-            # Track cost (estimate ~$0.0002 per assessment call)
-            context.add_cost(0.0002)
+            # Track cost
+            context.add_cost(context.constraints.cost_per_assessment)
 
             result = json.loads(response.choices[0].message.content)
 
@@ -776,7 +813,7 @@ Return JSON:
 
         evidence_text = "\n\n".join([
             f"[{e.source}] {e.title}\n{e.content}"
-            for e in context.accumulated_evidence[-20:]
+            for e in context.accumulated_evidence[-context.constraints.max_evidence_for_analysis:]
         ])
 
         prompt = action.prompt or f"Analyze the following evidence to address: {goal}"
@@ -788,8 +825,8 @@ Return JSON:
                 messages=[{"role": "user", "content": full_prompt}]
             )
 
-            # Track cost (estimate ~$0.0003 per analysis call)
-            context.add_cost(0.0003)
+            # Track cost
+            context.add_cost(context.constraints.cost_per_analysis)
 
             analysis = response.choices[0].message.content
 
@@ -822,11 +859,11 @@ Return JSON:
 
         sources_text = "\n".join([
             f"- {s['name']}: {s['description']}"
-            for s in context.available_sources[:15]
+            for s in context.available_sources[:context.constraints.max_sources_in_decompose]
         ])
 
         existing_goals = "\n".join([
-            f"  - {g}" for g in context.all_goals[-10:]
+            f"  - {g}" for g in context.all_goals[-context.constraints.max_goals_in_prompt:]
         ]) or "  (none yet)"
 
         prompt = f"""You are a research agent decomposing a goal into sub-goals.
@@ -882,8 +919,8 @@ Return JSON:
                 response_format={"type": "json_object"}
             )
 
-            # Track cost (estimate ~$0.0003 per decomposition call)
-            context.add_cost(0.0003)
+            # Track cost
+            context.add_cost(context.constraints.cost_per_decomposition)
 
             result = json.loads(response.choices[0].message.content)
 
@@ -922,7 +959,8 @@ Return JSON:
         successful_results = sum(1 for r in sub_results if r.status == GoalStatus.COMPLETED)
 
         # If we have substantial evidence, ask LLM
-        if total_evidence < 5 and successful_results < 2:
+        if (total_evidence < context.constraints.min_evidence_for_achievement_check and
+                successful_results < context.constraints.min_successes_for_achievement_check):
             return False  # Keep going
 
         results_summary = "\n".join([
@@ -960,8 +998,8 @@ Return JSON:
                 response_format={"type": "json_object"}
             )
 
-            # Track cost (estimate ~$0.0001 per achievement check)
-            context.add_cost(0.0001)
+            # Track cost
+            context.add_cost(context.constraints.cost_per_achievement_check)
 
             result = json.loads(response.choices[0].message.content)
             return result.get("achieved", False)
@@ -987,9 +1025,10 @@ Return JSON:
             all_evidence.extend(r.evidence)
 
         # Format for synthesis
+        max_content = context.constraints.max_content_chars_in_synthesis
         evidence_text = "\n\n".join([
-            f"[{e.source}] {e.title}\n{e.content[:500]}"
-            for e in all_evidence[:30]  # Limit for prompt
+            f"[{e.source}] {e.title}\n{e.content[:max_content]}"
+            for e in all_evidence[:context.constraints.max_evidence_for_synthesis]
         ])
 
         sub_syntheses = "\n".join([
@@ -1032,8 +1071,8 @@ Return JSON:
                 response_format={"type": "json_object"}
             )
 
-            # Track cost (estimate ~$0.0005 per synthesis call - larger context)
-            context.add_cost(0.0005)
+            # Track cost
+            context.add_cost(context.constraints.cost_per_synthesis)
 
             result = json.loads(response.choices[0].message.content)
 
@@ -1100,7 +1139,7 @@ Return JSON:
         Uses LLM to evaluate each result and keep only relevant ones.
         This improves signal-to-noise ratio in the final output.
         """
-        if len(evidence) <= 3:
+        if len(evidence) <= context.constraints.min_results_to_filter:
             # Too few results to filter
             return evidence
 
@@ -1140,7 +1179,7 @@ Only filter out results that are clearly off-topic or irrelevant."""
             )
 
             # Track cost
-            context.add_cost(0.0002)
+            context.add_cost(context.constraints.cost_per_filter)
 
             result = json.loads(response.choices[0].message.content)
             relevant_indices = result.get("relevant_indices", list(range(len(evidence))))
@@ -1213,7 +1252,7 @@ Return JSON:
                 response_format={"type": "json_object"}
             )
 
-            context.add_cost(0.0002)
+            context.add_cost(context.constraints.cost_per_reformulation)
 
             result = json.loads(response.choices[0].message.content)
 
@@ -1289,10 +1328,10 @@ Return JSON:
                 {
                     "source": e.source,
                     "title": e.title,
-                    "content": e.content[:500],
+                    "content": e.content[:self.constraints.max_content_chars_in_synthesis],
                     "url": e.url
                 }
-                for e in result.evidence[:50]  # Limit
+                for e in result.evidence[:self.constraints.max_evidence_in_saved_result]
             ],
             "sub_results": [
                 self._result_to_dict(sr) for sr in result.sub_results
@@ -1327,11 +1366,11 @@ Return JSON:
         for source, evidence in by_source.items():
             lines.append(f"### {source} ({len(evidence)} results)")
             lines.append("")
-            for e in evidence[:5]:
+            for e in evidence[:self.constraints.max_evidence_per_source_in_report]:
                 lines.append(f"- **{e.title}**")
                 if e.url:
                     lines.append(f"  - URL: {e.url}")
-                lines.append(f"  - {e.content[:200]}...")
+                lines.append(f"  - {e.content[:self.constraints.max_content_chars_in_report]}...")
                 lines.append("")
 
         return "\n".join(lines)

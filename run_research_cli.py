@@ -53,6 +53,7 @@ async def main():
     v1_config = raw_config.get("research", {}).get("deep_research", {})
 
     # Build constraints - CLI args override config, with legacy fallbacks
+    # Core limits (can be overridden by CLI args)
     max_goals = (
         args.max_goals if args.max_goals is not None
         else args.max_tasks if args.max_tasks is not None  # Legacy mapping
@@ -66,7 +67,7 @@ async def main():
 
     max_depth = (
         args.max_depth if args.max_depth is not None
-        else v2_config.get("max_depth", 10)
+        else v2_config.get("max_depth", 15)
     )
 
     max_cost = (
@@ -79,12 +80,43 @@ async def main():
         else v2_config.get("max_concurrent_tasks", v1_config.get("max_concurrent_tasks", 5))
     )
 
+    # Build constraints with ALL configurable fields from config.yaml
     constraints = Constraints(
+        # Core limits
         max_depth=max_depth,
         max_time_seconds=max_time_minutes * 60,
         max_goals=max_goals,
         max_cost_dollars=max_cost,
-        max_concurrent_tasks=max_concurrent
+        max_results_per_source=v2_config.get("max_results_per_source", 20),
+        max_concurrent_tasks=max_concurrent,
+
+        # Prompt context limits
+        max_sources_in_prompt=v2_config.get("max_sources_in_prompt", 20),
+        max_evidence_in_prompt=v2_config.get("max_evidence_in_prompt", 10),
+        max_evidence_for_analysis=v2_config.get("max_evidence_for_analysis", 20),
+        max_sources_in_decompose=v2_config.get("max_sources_in_decompose", 15),
+        max_goals_in_prompt=v2_config.get("max_goals_in_prompt", 10),
+        max_evidence_for_synthesis=v2_config.get("max_evidence_for_synthesis", 30),
+        max_content_chars_in_synthesis=v2_config.get("max_content_chars_in_synthesis", 500),
+
+        # LLM cost estimates
+        cost_per_assessment=v2_config.get("cost_per_assessment", 0.0002),
+        cost_per_analysis=v2_config.get("cost_per_analysis", 0.0003),
+        cost_per_decomposition=v2_config.get("cost_per_decomposition", 0.0003),
+        cost_per_achievement_check=v2_config.get("cost_per_achievement_check", 0.0001),
+        cost_per_synthesis=v2_config.get("cost_per_synthesis", 0.0005),
+        cost_per_filter=v2_config.get("cost_per_filter", 0.0002),
+        cost_per_reformulation=v2_config.get("cost_per_reformulation", 0.0002),
+
+        # Early exit thresholds
+        min_evidence_for_achievement_check=v2_config.get("min_evidence_for_achievement_check", 5),
+        min_successes_for_achievement_check=v2_config.get("min_successes_for_achievement_check", 2),
+        min_results_to_filter=v2_config.get("min_results_to_filter", 3),
+
+        # Output limits
+        max_evidence_in_saved_result=v2_config.get("max_evidence_in_saved_result", 50),
+        max_evidence_per_source_in_report=v2_config.get("max_evidence_per_source_in_report", 5),
+        max_content_chars_in_report=v2_config.get("max_content_chars_in_report", 200),
     )
 
     print(f"Constraints:")

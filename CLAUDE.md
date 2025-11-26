@@ -531,6 +531,13 @@ pip list | grep playwright
 ## CURRENT STATUS
 
 **Recently Completed** (2025-11-26 - Current Session):
+- ✅ **Source Classification Bug Fix** - **COMPLETE** (commit 80317a3)
+  - Fixed HTTP errors being misclassified as "zero results" instead of "errors"
+  - Now uses `source_execution_status` dict to distinguish error vs empty
+  - `status: "error"` → `sources_with_errors` (API failures, timeouts, HTTP 4xx/5xx)
+  - `status: "success"` + 0 results → `sources_with_zero_results`
+  - Impact: More accurate source performance tracking for LLM source re-selection
+  - Files modified: research/deep_research.py (8 lines changed)
 - ✅ **Phase 2: CLI Entry Point** - **COMPLETE** (commit dc005dd)
   - Created `apps/recursive_research.py` CLI wrapper
   - Supports: `--max-depth`, `--max-time`, `--max-goals`, `--max-cost`, `--max-concurrent`
