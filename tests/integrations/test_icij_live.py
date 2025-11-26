@@ -18,6 +18,8 @@ import os
 
 # Add parent directory to path for imports
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+from dotenv import load_dotenv
+load_dotenv()
 
 from integrations.investigative.icij_offshore_leaks import ICIJOffshoreLeaksIntegration
 

@@ -13,6 +13,8 @@ Tests ClearanceJobs integration with real Playwright browser automation to verif
 import asyncio
 import sys
 sys.path.insert(0, '/home/brian/sam_gov')
+from dotenv import load_dotenv
+load_dotenv()
 
 from integrations.government.clearancejobs_integration import ClearanceJobsIntegration
 

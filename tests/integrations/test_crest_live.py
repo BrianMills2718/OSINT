@@ -13,6 +13,8 @@ Tests CIA CREST (FOIA Reading Room) integration with real API/web calls to verif
 import asyncio
 import sys
 sys.path.insert(0, '/home/brian/sam_gov')
+from dotenv import load_dotenv
+load_dotenv()
 
 from integrations.government.crest_integration import CRESTIntegration
 

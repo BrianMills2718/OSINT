@@ -13,6 +13,8 @@ Tests DVIDS (Defense Visual Information Distribution Service) integration with r
 import asyncio
 import sys
 sys.path.insert(0, '/home/brian/sam_gov')
+from dotenv import load_dotenv
+load_dotenv()
 
 from integrations.government.dvids_integration import DVIDSIntegration
 

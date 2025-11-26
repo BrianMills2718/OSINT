@@ -13,6 +13,8 @@ Tests NewsAPI integration with real API calls to verify:
 import asyncio
 import sys
 sys.path.insert(0, '/home/brian/sam_gov')
+from dotenv import load_dotenv
+load_dotenv()
 
 from integrations.news.newsapi_integration import NewsAPIIntegration
 
