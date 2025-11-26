@@ -1797,10 +1797,14 @@ class SimpleDeepResearch(
                         source_results = [r for r in all_results if r.get('source') == source_display]
 
                         if not source_results:
-                            # Source returned no results - classify as zero results
-                            # Note: source_execution_status now available (passed to _validate_result_relevance)
-                            # This section could be enhanced to use it for better error/empty distinction
-                            sources_with_zero_results.append(source_display)
+                            # Check source_execution_status to distinguish errors from empty results
+                            source_status = source_execution_status.get(source, {})
+                            if source_status.get("status") == "error":
+                                # Source had an API error (HTTP 4xx/5xx, timeout, etc.)
+                                sources_with_errors.append(source_display)
+                            else:
+                                # Source succeeded but returned zero results
+                                sources_with_zero_results.append(source_display)
                         else:
                             # Check if any results from this source were kept
                             source_has_kept_results = any(
