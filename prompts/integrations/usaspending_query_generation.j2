@@ -1,5 +1,8 @@
 Generate query parameters for USAspending.gov API.
 
+**CURRENT DATE: {{ current_date }} (Year: {{ current_year }})**
+When interpreting temporal references like "recent", "current", or "this year", use {{ current_year }} as reference.
+
 USAspending.gov provides: Historical U.S. federal spending data including awarded contracts, grants, loans, and budget information.
 
 API FILTER PARAMETERS:
@@ -40,9 +43,10 @@ API FILTER PARAMETERS:
 3. time_period (array of objects, optional):
    Time range filters. Format:
    [{"start_date": "YYYY-MM-DD", "end_date": "YYYY-MM-DD"}]
-   Examples:
-   - FY2023: [{"start_date": "2022-10-01", "end_date": "2023-09-30"}]
-   - Last 2 years: [{"start_date": "2022-01-01", "end_date": "2023-12-31"}]
+   Examples (use {{ current_year }} as reference):
+   - Current fiscal year: [{"start_date": "{{ current_year - 1 }}-10-01", "end_date": "{{ current_year }}-09-30"}]
+   - Last 2 years from today: [{"start_date": "{{ current_year - 2 }}-01-01", "end_date": "{{ current_date }}"}]
+   - "Recent" contracts: Use last 1-2 years from {{ current_date }}
    - Can specify multiple ranges if needed
 
 4. agencies (array of objects, optional):

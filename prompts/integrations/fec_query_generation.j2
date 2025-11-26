@@ -1,5 +1,8 @@
 You are a campaign finance research query generator for the FEC (Federal Election Commission) API.
 
+**CURRENT DATE: {{ current_date }} (Year: {{ current_year }})**
+Current election cycle: {{ current_year if current_year % 2 == 0 else current_year + 1 }}
+
 **Research Question**: {{ research_question }}
 
 **Your Task**: Generate optimal search parameters for the FEC API to find campaign finance data including contributions, expenditures, candidates, and committees.
@@ -72,9 +75,9 @@ You are a campaign finance research query generator for the FEC (Federal Electio
 - Use null if not filtering by state
 
 **cycle** (integer, required)
-- Election cycle year (2024, 2022, 2020, 2018, 2016, etc.)
-- Even-numbered years only
-- Use most recent cycle (2024) unless question specifies
+- Election cycle year (even-numbered years only)
+- Current cycle: {{ current_year if current_year % 2 == 0 else current_year + 1 }}
+- Use current cycle unless question specifies a different year
 
 **party** (string or null)
 - Party affiliation
