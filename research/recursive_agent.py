@@ -107,6 +107,12 @@ class Constraints:
     min_successes_for_achievement_check: int = 2  # Minimum successful sub-goals
     min_results_to_filter: int = 3  # Don't filter if fewer results than this
 
+    # === Progressive Summarization ===
+    enable_summarization: bool = True  # Whether to summarize evidence
+    max_content_before_summarize: int = 300  # Summarize if content > this many chars
+    summary_target_chars: int = 150  # Target summary length
+    cost_per_summarization: float = 0.0003  # Cost per batch summarization
+
     # === Output Limits ===
     max_evidence_in_saved_result: int = 50  # Evidence saved to JSON
     max_evidence_per_source_in_report: int = 5  # Per-source in markdown report
@@ -1099,6 +1105,9 @@ Return JSON:
                 if entities:
                     print(f"    📊 Extracted {len(entities)} entities: {', '.join(entities[:5])}")
 
+                # Summarize long content to preserve key info in fewer tokens
+                evidence = await self._summarize_evidence(evidence, goal, context)
+
             return GoalResult(
                 goal=goal,
                 status=GoalStatus.COMPLETED if evidence else GoalStatus.FAILED,
@@ -1512,6 +1521,93 @@ Only filter out results that are clearly off-topic or irrelevant."""
 
         except Exception as e:
             logger.warning(f"Filtering failed: {e}, keeping all results")
+            return evidence
+
+    async def _summarize_evidence(
+        self,
+        evidence: List[Evidence],
+        goal: str,
+        context: GoalContext
+    ) -> List[Evidence]:
+        """
+        Summarize evidence content to preserve key information in fewer tokens.
+
+        Replaces truncation with intelligent summarization. Only summarizes
+        evidence items with content longer than max_content_before_summarize.
+
+        Args:
+            evidence: List of Evidence items to potentially summarize
+            goal: Current goal for context
+            context: GoalContext for constraints and cost tracking
+
+        Returns:
+            Evidence list with long content summarized
+        """
+        if not context.constraints.enable_summarization:
+            return evidence
+
+        # Find evidence needing summarization
+        needs_summary = [
+            (i, e) for i, e in enumerate(evidence)
+            if len(e.content) > context.constraints.max_content_before_summarize
+        ]
+
+        if not needs_summary:
+            return evidence
+
+        from llm_utils import acompletion
+
+        # Batch summarization for efficiency
+        items_text = "\n\n".join([
+            f"Item #{i}:\nTitle: {e.title}\nContent: {e.content}"
+            for i, e in needs_summary
+        ])
+
+        prompt = f"""Summarize each item to ~{context.constraints.summary_target_chars} characters.
+Preserve: key facts, numbers, names, dates, relationships.
+Remove: boilerplate, redundancy, filler.
+
+CONTEXT: {goal}
+
+ITEMS TO SUMMARIZE:
+{items_text}
+
+Return JSON:
+{{
+    "summaries": [
+        {{"item_index": 0, "summary": "Concise summary preserving key facts..."}},
+        {{"item_index": 1, "summary": "..."}}
+    ]
+}}"""
+
+        try:
+            response = await acompletion(
+                model="gemini/gemini-2.5-flash",
+                messages=[{"role": "user", "content": prompt}],
+                response_format={"type": "json_object"}
+            )
+
+            context.add_cost(context.constraints.cost_per_summarization)
+
+            result = json.loads(response.choices[0].message.content)
+            summaries = {s["item_index"]: s["summary"] for s in result.get("summaries", [])}
+
+            # Apply summaries
+            summarized_count = 0
+            for original_idx, e in needs_summary:
+                if original_idx in summaries:
+                    # Store original in metadata, replace content with summary
+                    e.metadata["original_content"] = e.content
+                    e.content = summaries[original_idx]
+                    summarized_count += 1
+
+            if summarized_count > 0:
+                logger.info(f"Summarized {summarized_count} evidence items")
+
+            return evidence
+
+        except Exception as e:
+            logger.warning(f"Summarization failed: {e}, keeping original content")
             return evidence
 
     async def _reformulate_on_error(
