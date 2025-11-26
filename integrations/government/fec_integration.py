@@ -355,12 +355,12 @@ class FECIntegration(DatabaseIntegration):
 
             snippet = " | ".join(snippet_parts) if snippet_parts else "Federal candidate"
 
-            transformed = {
-                "title": name,
-                "url": url,
-                "snippet": snippet[:500],
-                "date": None,  # Candidates don't have a single date
-                "metadata": {
+            transformed = (SearchResultBuilder()
+                .title(name, default="Unknown Candidate")
+                .url(url)
+                .snippet(snippet, max_length=500)
+                .date(None)  # Candidates don't have a single date
+                .metadata({
                     "candidate_id": candidate_id,
                     "office": candidate.get("office"),
                     "office_full": office_full,
@@ -371,8 +371,8 @@ class FECIntegration(DatabaseIntegration):
                     "cycles": cycles,
                     "incumbent_challenge": candidate.get("incumbent_challenge_full"),
                     "candidate_status": candidate.get("candidate_status")
-                }
-            }
+                })
+                .build())
             transformed_results.append(transformed)
 
         return QueryResult(
@@ -522,22 +522,23 @@ class FECIntegration(DatabaseIntegration):
 
             url = f"https://www.fec.gov/data/committee/{committee_id}/" if committee_id else ""
 
-            snippet = f"Type: {committee_type} | Party: {committee.get('party_full', 'N/A')}"
+            party_full = SearchResultBuilder.safe_text(committee.get('party_full'), default='N/A')
+            snippet = f"Type: {committee_type} | Party: {party_full}"
 
-            transformed = {
-                "title": name,
-                "url": url,
-                "snippet": snippet[:500],
-                "date": None,
-                "metadata": {
+            transformed = (SearchResultBuilder()
+                .title(name, default="Unknown Committee")
+                .url(url)
+                .snippet(snippet, max_length=500)
+                .date(None)
+                .metadata({
                     "committee_id": committee_id,
                     "committee_type": committee.get("committee_type"),
                     "committee_type_full": committee_type,
                     "party": committee.get("party"),
                     "designation": committee.get("designation_full"),
                     "treasurer_name": committee.get("treasurer_name")
-                }
-            }
+                })
+                .build())
             transformed_results.append(transformed)
 
         return QueryResult(

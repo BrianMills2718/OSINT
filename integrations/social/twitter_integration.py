@@ -597,13 +597,17 @@ class TwitterIntegration(DatabaseIntegration):
                 # Returns trending topics
                 trends = data.get("trends", [])
                 for trend in trends[:limit]:
-                    standardized_results.append({
-                        "title": trend.get("name", ""),
-                        "url": f"https://twitter.com/search?q={trend.get('name', '')}" if trend.get("name") else "",
-                        "description": trend.get("description", trend.get("context", "")),
-                        "trend_name": trend.get("name", ""),
-                        "trend_context": trend.get("context", "")
-                    })
+                    trend_name = SearchResultBuilder.safe_text(trend.get("name"))
+                    url = f"https://twitter.com/search?q={trend_name}" if trend_name else ""
+                    standardized_results.append(SearchResultBuilder()
+                        .title(trend_name, default="Trending Topic")
+                        .url(url)
+                        .snippet(trend.get("description") or trend.get("context"))
+                        .metadata({
+                            "trend_name": trend_name,
+                            "trend_context": trend.get("context", "")
+                        })
+                        .build())
 
             # Log successful request
             log_request(
