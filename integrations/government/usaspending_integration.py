@@ -26,65 +26,6 @@ from config_loader import config
 
 logger = logging.getLogger(__name__)
 
-# Common abbreviations that need expansion (USAspending API requires ≥3 chars per keyword)
-KEYWORD_EXPANSIONS = {
-    "AI": "artificial intelligence",
-    "ML": "machine learning",
-    "NLP": "natural language processing",
-    "CV": "computer vision",
-    "IT": "information technology",
-    "HQ": "headquarters",
-    "R&D": "research development",
-    "RD": "research development",
-    "DoD": "Department of Defense",
-    "DOD": "Department of Defense",
-    "DHS": "Department of Homeland Security",
-    "VA": "Veterans Affairs",
-    "IoT": "internet of things",
-    "IOT": "internet of things",
-    "HPC": "high performance computing",
-    "AWS": "Amazon Web Services",
-    "GCP": "Google Cloud Platform",
-    "API": "application programming interface",
-    "UAV": "unmanned aerial vehicle",
-    "UAS": "unmanned aircraft system",
-}
-
-
-def expand_short_keywords(keywords: List[str]) -> List[str]:
-    """
-    Expand short keywords to meet USAspending's 3-character minimum requirement.
-
-    The USAspending API requires each keyword to be at least 3 characters.
-    This function expands common abbreviations and filters out any that can't be expanded.
-
-    Args:
-        keywords: List of search keywords from LLM
-
-    Returns:
-        List of keywords with all items ≥3 characters
-    """
-    if not keywords:
-        return keywords
-
-    expanded = []
-    for kw in keywords:
-        if len(kw) >= 3:
-            # Already meets minimum, keep as-is
-            expanded.append(kw)
-        else:
-            # Try to expand the abbreviation
-            expansion = KEYWORD_EXPANSIONS.get(kw) or KEYWORD_EXPANSIONS.get(kw.upper())
-            if expansion:
-                logger.info(f"Expanding short keyword '{kw}' → '{expansion}'")
-                expanded.append(expansion)
-            else:
-                # Can't expand, drop it (would cause API error)
-                logger.warning(f"Dropping keyword '{kw}' (< 3 chars, no expansion available)")
-
-    return expanded
-
-
 class USASpendingIntegration(DatabaseIntegration):
     """
     Integration for USAspending.gov - Official U.S. federal spending data.
@@ -354,11 +295,63 @@ class USASpendingIntegration(DatabaseIntegration):
             logger.error(f"USAspending query generation failed: {e}", exc_info=True)
             return None
 
+    async def _fix_query_via_llm(self, query_params: Dict, api_error: str) -> Optional[Dict]:
+        """
+        Ask LLM to fix a failed query based on the API error message.
+
+        This keeps intelligence in the LLM rather than hardcoding heuristics.
+        The LLM sees the original query and the error, then suggests fixes.
+
+        Args:
+            query_params: The query that failed
+            api_error: The error message from the API
+
+        Returns:
+            Fixed query_params, or None if unfixable
+        """
+        prompt = f"""The USAspending API rejected this query with an error.
+
+ORIGINAL QUERY:
+{json.dumps(query_params.get('filters', {}), indent=2)}
+
+API ERROR:
+{api_error}
+
+Fix the query to avoid this error. Common issues:
+- Keywords must be at least 3 characters (expand abbreviations: AI→"artificial intelligence", ML→"machine learning")
+- award_type_codes must not mix contracts (A,B,C,D) with grants (02-11)
+
+Return the COMPLETE fixed filters object as JSON (include ALL fields from original, with fixes applied). If unfixable, return {{"unfixable": true}}"""
+
+        try:
+            response = await acompletion(
+                model="gpt-4o-mini",  # Fast, cheap model for error recovery
+                messages=[{"role": "user", "content": prompt}],
+                response_format={"type": "json_object"}
+            )
+
+            result = json.loads(response.choices[0].message.content)
+
+            if result.get("unfixable"):
+                logger.info("LLM determined query is unfixable")
+                return None
+
+            # Return fixed query params
+            fixed_params = query_params.copy()
+            fixed_params["filters"] = result
+            logger.info(f"LLM fixed query: {result}")
+            return fixed_params
+
+        except Exception as e:
+            logger.warning(f"LLM query fix failed: {e}", exc_info=True)
+            return None
+
     async def execute_search(
         self,
         query_params: Dict,
         api_key: Optional[str] = None,
-        limit: int = 100
+        limit: int = 100,
+        _is_retry: bool = False
     ) -> QueryResult:
         """
         Execute search against USAspending API.
@@ -367,6 +360,7 @@ class USASpendingIntegration(DatabaseIntegration):
             query_params: Query parameters from generate_query()
             api_key: Not used (USAspending is public)
             limit: Maximum results (overrides query_params['limit'] if provided)
+            _is_retry: Internal flag to prevent infinite retry loops
 
         Returns:
             QueryResult with normalized spending data
@@ -380,12 +374,6 @@ class USASpendingIntegration(DatabaseIntegration):
                 continue
             if isinstance(v, list) and len(v) == 0:
                 continue
-            # Expand short keywords (API requires each keyword to be ≥3 characters)
-            if k == "keywords" and isinstance(v, list):
-                v = expand_short_keywords(v)
-                if not v:  # All keywords were too short and couldn't be expanded
-                    logger.warning("All keywords were < 3 chars and couldn't be expanded, dropping keywords filter")
-                    continue
             cleaned_filters[k] = v
 
         request_body = {
@@ -418,6 +406,16 @@ class USASpendingIntegration(DatabaseIntegration):
 
                     if response.status != 200:
                         error_text = await response.text()
+
+                        # LLM-based error recovery for validation errors (422)
+                        if response.status == 422 and not _is_retry:
+                            logger.info(f"USAspending 422 error, attempting LLM-based query fix")
+                            fixed_params = await self._fix_query_via_llm(query_params, error_text)
+                            if fixed_params:
+                                # Retry with LLM-fixed query (single retry to prevent loops)
+                                return await self.execute_search(fixed_params, api_key, limit, _is_retry=True)
+                            logger.warning("LLM could not fix query, returning original error")
+
                         return QueryResult(
                             success=False,
                             source="USAspending",
