@@ -168,9 +168,18 @@ class MCPToolMixin:
         Returns:
             Dict with 'success', 'results', 'source', 'total', 'error' keys
         """
-        tool_name = tool_config["name"]
-        server = tool_config["server"]
-        api_key_name = tool_config["api_key_name"]
+        # Parameter validation guards
+        if not tool_config or not isinstance(tool_config, dict):
+            return {"success": False, "results": [], "source": "unknown", "total": 0, "error": "Invalid tool_config"}
+        if not query or not isinstance(query, str):
+            return {"success": False, "results": [], "source": tool_config.get("name", "unknown"), "total": 0, "error": "Invalid query"}
+
+        tool_name = tool_config.get("name")
+        if not tool_name:
+            return {"success": False, "results": [], "source": "unknown", "total": 0, "error": "Missing tool name"}
+
+        server = tool_config.get("server")
+        api_key_name = tool_config.get("api_key_name")
 
         try:
             # Get API key if needed
@@ -512,6 +521,16 @@ class MCPToolMixin:
         Returns:
             List of results with standardized format
         """
+        # Parameter validation guards
+        if not query or not isinstance(query, str):
+            logger.warning("_search_mcp_tools_selected called with empty/invalid query")
+            return []
+        if not selected_tool_names or not isinstance(selected_tool_names, list):
+            logger.warning("_search_mcp_tools_selected called with empty/invalid tool names")
+            return []
+        if limit < 1:
+            limit = 10  # Reset to default
+
         # Use pre-selected tool names (already filtered by LLM)
         candidate_tools = [
             tool for tool in self.mcp_tools

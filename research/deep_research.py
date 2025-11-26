@@ -63,6 +63,48 @@ load_dotenv()
 # Set up logger for this module
 logger = logging.getLogger(__name__)
 
+# Centralized default configuration values
+# These are used when config.yaml doesn't specify a value
+# All limits should be user-configurable, not hardcoded in code paths
+RESEARCH_DEFAULTS = {
+    # Core research limits
+    "max_tasks": 15,
+    "max_retries_per_task": 2,
+    "max_time_minutes": 120,
+    "min_results_per_task": 3,
+    "max_concurrent_tasks": 4,
+    "max_follow_ups_per_task": None,  # None = unlimited
+
+    # Query saturation (per-source limits)
+    "max_time_per_source_seconds": 300,
+    "max_queries_per_source": {
+        'SAM.gov': 10,
+        'DVIDS': 5,
+        'USAJobs': 5,
+        'ClearanceJobs': 5,
+        'Twitter': 3,
+        'Reddit': 3,
+        'Discord': 3,
+        'Brave Search': 5
+    },
+
+    # Hypothesis branching
+    "hypothesis_mode": "off",  # off | planning | execution
+    "max_hypotheses_per_task": 5,
+
+    # Manager agent (task prioritization + saturation)
+    "manager_enabled": True,
+    "saturation_detection_enabled": True,
+    "saturation_check_interval": 3,
+    "saturation_confidence_threshold": 70,
+    "allow_saturation_stop": True,
+    "reprioritize_after_task": True,
+
+    # Retry and timeout settings
+    "brave_search_max_retries": 3,
+    "brave_search_retry_delays": [1.0, 2.0, 4.0],  # Exponential backoff
+}
+
 
 class TaskStatus(Enum):
     """Task execution status."""
@@ -183,30 +225,22 @@ class SimpleDeepResearch(
             save_output: Whether to automatically save output to files (default: True)
             output_dir: Base directory for saved output (default: data/research_output)
         """
-        # Load config with fallbacks
+        # Load config with fallbacks to RESEARCH_DEFAULTS
         raw_config = config.get_raw_config()
         deep_config = raw_config.get("research", {}).get("deep_research", {})
 
-        self.max_tasks = max_tasks if max_tasks is not None else deep_config.get("max_tasks", 15)
-        self.max_retries_per_task = max_retries_per_task if max_retries_per_task is not None else deep_config.get("max_retries_per_task", 2)
-        self.max_time_minutes = max_time_minutes if max_time_minutes is not None else deep_config.get("max_time_minutes", 120)
-        self.min_results_per_task = min_results_per_task if min_results_per_task is not None else deep_config.get("min_results_per_task", 3)
-        self.max_concurrent_tasks = max_concurrent_tasks if max_concurrent_tasks is not None else deep_config.get("max_concurrent_tasks", 4)
+        # Core research limits (arg → config.yaml → RESEARCH_DEFAULTS)
+        self.max_tasks = max_tasks if max_tasks is not None else deep_config.get("max_tasks", RESEARCH_DEFAULTS["max_tasks"])
+        self.max_retries_per_task = max_retries_per_task if max_retries_per_task is not None else deep_config.get("max_retries_per_task", RESEARCH_DEFAULTS["max_retries_per_task"])
+        self.max_time_minutes = max_time_minutes if max_time_minutes is not None else deep_config.get("max_time_minutes", RESEARCH_DEFAULTS["max_time_minutes"])
+        self.min_results_per_task = min_results_per_task if min_results_per_task is not None else deep_config.get("min_results_per_task", RESEARCH_DEFAULTS["min_results_per_task"])
+        self.max_concurrent_tasks = max_concurrent_tasks if max_concurrent_tasks is not None else deep_config.get("max_concurrent_tasks", RESEARCH_DEFAULTS["max_concurrent_tasks"])
 
-        # Phase 1: Query saturation configuration
+        # Query saturation configuration
         saturation_config = deep_config.get("query_saturation", {})
         self.query_saturation_enabled = saturation_config.get("enabled", False)  # Feature flag
-        self.max_queries_per_source = max_queries_per_source or saturation_config.get("max_queries_per_source", {
-            'SAM.gov': 10,
-            'DVIDS': 5,
-            'USAJobs': 5,
-            'ClearanceJobs': 5,
-            'Twitter': 3,
-            'Reddit': 3,
-            'Discord': 3,
-            'Brave Search': 5
-        })
-        self.max_time_per_source_seconds = max_time_per_source_seconds if max_time_per_source_seconds is not None else saturation_config.get("max_time_per_source_seconds", 300)
+        self.max_queries_per_source = max_queries_per_source or saturation_config.get("max_queries_per_source", RESEARCH_DEFAULTS["max_queries_per_source"])
+        self.max_time_per_source_seconds = max_time_per_source_seconds if max_time_per_source_seconds is not None else saturation_config.get("max_time_per_source_seconds", RESEARCH_DEFAULTS["max_time_per_source_seconds"])
 
         self.progress_callback = progress_callback
         self.save_output = save_output
@@ -237,26 +271,26 @@ class SimpleDeepResearch(
                 self.hypothesis_mode = "planning"  # Legacy behavior preserved
                 logger.warning("⚠️  hypothesis_branching.enabled is deprecated, use mode: 'planning' instead")
             else:
-                self.hypothesis_mode = "off"
+                self.hypothesis_mode = RESEARCH_DEFAULTS["hypothesis_mode"]
         else:
             # New "mode" config (Phase 3B)
-            self.hypothesis_mode = hyp_config.get("mode", "off")  # off | planning | execution
+            self.hypothesis_mode = hyp_config.get("mode", RESEARCH_DEFAULTS["hypothesis_mode"])
 
         # Backward compatibility: set hypothesis_branching_enabled for existing code
         self.hypothesis_branching_enabled = self.hypothesis_mode in ("planning", "execution")
-        self.max_hypotheses_per_task = hyp_config.get("max_hypotheses_per_task", 5)
+        self.max_hypotheses_per_task = hyp_config.get("max_hypotheses_per_task", RESEARCH_DEFAULTS["max_hypotheses_per_task"])
 
         # Follow-up generation configuration
-        self.max_follow_ups_per_task = deep_config.get("max_follow_ups_per_task", None)  # None = unlimited
+        self.max_follow_ups_per_task = deep_config.get("max_follow_ups_per_task", RESEARCH_DEFAULTS["max_follow_ups_per_task"])
 
-        # Phase 4: Manager-Agent configuration (Task Prioritization + Saturation)
+        # Manager-Agent configuration (Task Prioritization + Saturation)
         manager_config = raw_config.get("research", {}).get("manager_agent", {})
-        self.manager_enabled = manager_config.get("enabled", True)
-        self.saturation_detection_enabled = manager_config.get("saturation_detection", True)
-        self.saturation_check_interval = manager_config.get("saturation_check_interval", 3)
-        self.saturation_confidence_threshold = manager_config.get("saturation_confidence_threshold", 70)
-        self.allow_saturation_stop = manager_config.get("allow_saturation_stop", True)
-        self.reprioritize_after_task = manager_config.get("reprioritize_after_task", True)
+        self.manager_enabled = manager_config.get("enabled", RESEARCH_DEFAULTS["manager_enabled"])
+        self.saturation_detection_enabled = manager_config.get("saturation_detection", RESEARCH_DEFAULTS["saturation_detection_enabled"])
+        self.saturation_check_interval = manager_config.get("saturation_check_interval", RESEARCH_DEFAULTS["saturation_check_interval"])
+        self.saturation_confidence_threshold = manager_config.get("saturation_confidence_threshold", RESEARCH_DEFAULTS["saturation_confidence_threshold"])
+        self.allow_saturation_stop = manager_config.get("allow_saturation_stop", RESEARCH_DEFAULTS["allow_saturation_stop"])
+        self.reprioritize_after_task = manager_config.get("reprioritize_after_task", RESEARCH_DEFAULTS["reprioritize_after_task"])
         self.last_saturation_check = None  # Will be set after first saturation check
 
         # Phase 3C: Coverage assessment configuration
