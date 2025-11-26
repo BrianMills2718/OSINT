@@ -330,6 +330,7 @@ class MCPToolMixin:
                                         break
 
                                 # Try to reformulate the query
+                                print(f"🔄 {source_name}: Validation error detected, attempting LLM reformulation...")
                                 logger.info(f"[RETRY] {source_name}: Attempting error-based reformulation")
                                 fixed_params = await self._reformulate_on_api_error(
                                     source_name=source_name,
@@ -341,6 +342,7 @@ class MCPToolMixin:
 
                                 if fixed_params:
                                     # Retry with fixed parameters
+                                    print(f"🔄 {source_name}: Retrying with reformulated query...")
                                     logger.info(f"[RETRY] {source_name}: Retrying with reformulated query")
                                     retry_result = await integration.execute_search(
                                         query_params=fixed_params,
@@ -357,9 +359,13 @@ class MCPToolMixin:
                                             "results": retry_result.results,
                                             "error": None
                                         }
+                                        print(f"✅ {source_name}: Reformulation successful - {retry_result.total} results")
                                         logger.info(f"[RETRY] {source_name}: Reformulation successful - {retry_result.total} results")
                                     else:
+                                        print(f"❌ {source_name}: Reformulation retry also failed")
                                         logger.warning(f"[RETRY] {source_name}: Reformulation failed - {retry_result.error}")
+                                else:
+                                    print(f"❌ {source_name}: LLM could not fix the query")
 
                 response_time_ms = (time.time() - start_time) * 1000
 
@@ -555,19 +561,32 @@ class MCPToolMixin:
             for tool in filtered_tools
         ])
 
+        # Track source execution status for relevance filter decision
+        source_execution_status = {}
+
         # Combine results and track per-source counts
         for tool_result in mcp_results:
+            source = tool_result.get("source", registry.get_display_name(tool_result["tool"]))
             if tool_result["success"]:
                 tool_results = tool_result["results"]
                 all_results.extend(tool_results)
-                # Get source from wrapper level (now passed through from call_mcp_tool)
-                source = tool_result.get("source", tool_result["tool"])
                 sources_count[source] = sources_count.get(source, 0) + len(tool_results)
                 # Log each successful source with counts
                 print(f"  ✓ {source}: {len(tool_results)} results")
+                # Track success
+                source_execution_status[source] = {
+                    "status": "success",
+                    "results_count": len(tool_results)
+                }
             else:
                 # Log failed sources
-                print(f"  ✗ {tool_result['tool']}: Failed - {tool_result.get('error', 'Unknown error')}")
+                error_msg = tool_result.get('error', 'Unknown error')
+                print(f"  ✗ {source}: Failed - {error_msg}")
+                # Track failure with error type
+                source_execution_status[source] = {
+                    "status": "error",
+                    "error": error_msg[:100]  # Truncate long errors
+                }
 
         # Log summary with per-source breakdown
         print(f"\n✓ MCP tools complete: {len(all_results)} total results from {len(sources_count)} sources")
@@ -576,4 +595,4 @@ class MCPToolMixin:
             for source, count in sorted(sources_count.items(), key=lambda x: x[1], reverse=True):
                 print(f"    • {source}: {count} results")
 
-        return all_results
+        return all_results, source_execution_status

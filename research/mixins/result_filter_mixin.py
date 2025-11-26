@@ -9,7 +9,7 @@ Extracted from SimpleDeepResearch to reduce god class complexity.
 import json
 import logging
 from datetime import datetime, timedelta, timezone
-from typing import Dict, List, Tuple, TYPE_CHECKING
+from typing import Dict, List, Tuple, Optional, TYPE_CHECKING
 
 from core.prompt_loader import render_prompt
 from config_loader import config
@@ -33,7 +33,8 @@ class ResultFilterMixin:
         self: "SimpleDeepResearch",
         task_query: str,
         research_question: str,
-        sample_results: List[Dict]
+        sample_results: List[Dict],
+        source_execution_status: Optional[Dict[str, Dict]] = None
     ) -> Tuple[bool, str, List[int], bool, str, Dict]:
         """
         Validate result relevance, filter to best results, and decide if more searching needed.
@@ -67,7 +68,8 @@ class ResultFilterMixin:
             "deep_research/relevance_evaluation.j2",
             research_question=research_question,
             task_query=task_query,
-            results_text=results_text
+            results_text=results_text,
+            source_execution_status=source_execution_status
         )
 
         schema = {
@@ -121,9 +123,13 @@ class ResultFilterMixin:
                         "patterns_noticed": {
                             "type": "string",
                             "description": "Patterns or trends observed across results"
+                        },
+                        "source_failure_analysis": {
+                            "type": "string",
+                            "description": "Analysis of source failures and their impact on continue/stop decision. Empty string if no failures."
                         }
                     },
-                    "required": ["filtering_strategy", "interesting_decisions", "patterns_noticed"],
+                    "required": ["filtering_strategy", "interesting_decisions", "patterns_noticed", "source_failure_analysis"],
                     "additionalProperties": False
                 }
             },

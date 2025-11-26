@@ -3,6 +3,23 @@ Evaluate these search results for relevance, filter to the best ones, and decide
 Original Research Question: "{{ research_question }}"
 Search Query Used: "{{ task_query }}"
 
+{% if source_execution_status %}
+SOURCE EXECUTION STATUS (CRITICAL for continue/stop decision):
+{% for source, status in source_execution_status.items() %}
+- {{ source }}: {{ status.status }}{% if status.error %} ({{ status.error }}){% endif %}{% if status.results_count is defined %}, {{ status.results_count }} results{% endif %}
+{% endfor %}
+
+**Source Failure Impact Analysis:**
+Before deciding to STOP searching, you MUST consider:
+1. **Which sources were expected to have relevant data?** (e.g., for federal contracts: USAspending, SAM.gov are primary sources)
+2. **Did those primary sources succeed or fail?**
+3. **If primary sources failed, results from secondary sources alone may be INSUFFICIENT**
+4. **Failures could be: API errors (422/429), timeouts, rate limits, or validation errors**
+
+**DO NOT STOP if primary sources failed** - the data likely exists but we couldn't access it.
+**DO CONTINUE** if important sources had errors/timeouts - try different queries or wait for rate limits to clear.
+{% endif %}
+
 Search Results (numbered):
 {{ results_text }}
 
@@ -54,6 +71,7 @@ Examples:
    - Highlight 3-5 interesting decisions (borderline cases, surprising keeps/rejects)
    - Describe your overall filtering strategy for this batch
    - Identify patterns you noticed across results
+   - **CRITICAL**: Analyze source failures and their impact on your continue/stop decision
 
 Return your decision in this format:
 {
@@ -61,7 +79,7 @@ Return your decision in this format:
   "reason": "brief explanation",
   "relevant_indices": [list of numbers],
   "continue_searching": true or false,
-  "continuation_reason": "why continue/stop",
+  "continuation_reason": "why continue/stop - MUST reference source failures if any occurred",
   "reasoning_breakdown": {
     "filtering_strategy": "Your overall approach to filtering this batch",
     "interesting_decisions": [
@@ -71,6 +89,7 @@ Return your decision in this format:
         "reasoning": "Why this specific decision was interesting or borderline"
       }
     ],
-    "patterns_noticed": "Patterns or trends you observed across the results"
+    "patterns_noticed": "Patterns or trends you observed across the results",
+    "source_failure_analysis": "Which sources failed? Were they primary sources for this query type? Should we continue searching because key sources are unavailable? Leave empty string if no failures."
   }
 }

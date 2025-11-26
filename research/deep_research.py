@@ -1512,8 +1512,9 @@ class SimpleDeepResearch(
 
                 # Search all selected tools
                 all_results = []
+                source_execution_status = {}
                 if selected_tool_names:
-                    all_results = await self._search_mcp_tools_selected(
+                    all_results, source_execution_status = await self._search_mcp_tools_selected(
                         task.query,
                         selected_tool_names,
                         limit=config.default_result_limit,
@@ -1528,6 +1529,7 @@ class SimpleDeepResearch(
                 # Validate result relevance, filter to relevant results, decide if continue
                 # LLM makes 3 decisions: ACCEPT/REJECT, which indices to keep, continue searching?
                 # Gemini 2.5 Flash has 65K token context - evaluate ALL results, no sampling needed
+                # Pass source execution status so LLM knows if primary sources failed
                 print(f"🔍 Validating relevance of {len(all_results)} results...")
 
                 # Track relevance filtering time (Enhanced Structured Logging)
@@ -1535,7 +1537,8 @@ class SimpleDeepResearch(
                 should_accept, relevance_reason, relevant_indices, should_continue, continuation_reason, reasoning_breakdown = await self._validate_result_relevance(
                     task_query=task.query,
                     research_question=self.original_question,
-                    sample_results=all_results  # Send ALL results to LLM
+                    sample_results=all_results,  # Send ALL results to LLM
+                    source_execution_status=source_execution_status  # NEW: Pass source failures for smarter continue/stop
                 )
                 filtering_time_ms = int((time.time() - filtering_start) * 1000)
 
