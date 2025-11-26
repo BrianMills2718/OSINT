@@ -83,49 +83,6 @@ This file tracks ongoing technical issues, bugs, and tech debt that need to be a
 
 ---
 
-### Dead Code: Experimental Monitoring Infrastructure (~900 lines)
-**Discovered**: 2025-11-26
-**Severity**: Low (not blocking, isolated code)
-**Status**: DEFERRED
-
-**What**: Unused adaptive search engine and parallel executor only called from experimental monitoring code.
-
-**Dead Code Chain**:
-```
-AdaptiveBooleanMonitor (experimental, never invoked)
-  → AdaptiveSearchEngine (488 lines)
-    → ParallelExecutor (408 lines)
-```
-
-**Files**:
-| File | Lines | Reason Dead |
-|------|-------|-------------|
-| `core/adaptive_search_engine.py` | 488 | Only used by experimental monitoring |
-| `core/parallel_executor.py` | 408 | Only used by adaptive_search_engine |
-| `monitoring/adaptive_boolean_monitor.py` | ~200 | Never invoked from anywhere |
-
-**Cleanup Action** (when prioritized):
-1. Verify AdaptiveBooleanMonitor is truly unused
-2. If unused, archive all 3 files to `archive/2025-XX-XX/`
-
----
-
-### Dead Code: Orphaned CLI Entry Point (~50 lines)
-**Discovered**: 2025-11-26
-**Severity**: Low (small file)
-**Status**: DEFERRED
-
-**What**: `apps/recursive_research.py` is a standalone CLI for v2 RecursiveResearchAgent that is never called.
-
-**Why Dead**:
-- Not imported anywhere
-- Not referenced in documentation
-- `run_research_cli.py` serves the same purpose and IS used
-
-**Cleanup Action**: Delete or merge functionality into `run_research_cli.py`
-
----
-
 ### Dead Code: Old Brave/Exa Search Methods (~150 lines)
 **Discovered**: 2025-11-26
 **Severity**: Low (cosmetic, no functional impact)
