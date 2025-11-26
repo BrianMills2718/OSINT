@@ -716,6 +716,8 @@ class RecursiveResearchAgent:
         child_context = context.with_parent(goal)
         sub_results: List[GoalResult] = []
         all_evidence: List[Evidence] = []
+        seen_urls: set = set()  # Track URLs for deduplication
+        duplicate_count: int = 0  # Track duplicates for logging
 
         # Group by dependency for parallelism
         goal_groups = self._group_by_dependency(sub_goals)
@@ -741,7 +743,18 @@ class RecursiveResearchAgent:
 
             for result in group_results:
                 sub_results.append(result)
-                all_evidence.extend(result.evidence)
+                # Deduplicate evidence by URL before accumulating
+                for evidence in result.evidence:
+                    url = evidence.url
+                    if url:
+                        if url not in seen_urls:
+                            seen_urls.add(url)
+                            all_evidence.append(evidence)
+                        else:
+                            duplicate_count += 1
+                    else:
+                        # No URL - can't deduplicate, keep it
+                        all_evidence.append(evidence)
 
             # === CHECK IF GOAL ACHIEVED ===
             achieved = await self._goal_achieved(goal, sub_results, context)
@@ -755,6 +768,12 @@ class RecursiveResearchAgent:
                     reasoning="Goal achieved early based on LLM assessment"
                 )
                 break
+
+        # Log deduplication stats if any duplicates were found
+        if duplicate_count > 0:
+            total_before_dedup = len(all_evidence) + duplicate_count
+            logger.info(f"Deduplication: {total_before_dedup} → {len(all_evidence)} "
+                       f"({duplicate_count} duplicates removed)")
 
         # === SYNTHESIZE RESULTS ===
         synthesis = await self._synthesize(goal, sub_results, context)
