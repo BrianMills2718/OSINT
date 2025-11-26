@@ -23,6 +23,21 @@ load_dotenv()
 
 logger = logging.getLogger(__name__)
 
+
+def _get_temporal_context() -> str:
+    """
+    Get temporal context header for prompts.
+
+    This ensures LLM understands the current date for time-relative queries
+    like "2024 contracts" or "recent awards".
+    """
+    now = datetime.now()
+    return f"""TEMPORAL CONTEXT:
+- Today's date: {now.strftime("%Y-%m-%d")}
+- Current year: {now.year}
+- When interpreting relative dates like "recent", "2024", or "last year", use this as reference.
+"""
+
 # Concurrency limit for parallel sub-goal execution
 DEFAULT_MAX_CONCURRENT_TASKS = 5
 
@@ -532,6 +547,8 @@ class RecursiveResearchAgent:
 
         prompt = f"""You are a research agent assessing a goal.
 
+{_get_temporal_context()}
+
 ORIGINAL OBJECTIVE: {context.original_objective}
 
 CURRENT GOAL TO ASSESS: {goal}
@@ -682,15 +699,36 @@ Return JSON:
                     depth=context.depth
                 )
 
-            # Execute search with generated params
-            result = await integration.execute_search(
-                query_params,
-                limit=context.constraints.max_results_per_source
-            )
+            # Execute search with generated params (with retry on error)
+            max_retries = 2
+            current_params = query_params
+            result = None
+
+            for attempt in range(max_retries):
+                result = await integration.execute_search(
+                    current_params,
+                    limit=context.constraints.max_results_per_source
+                )
+
+                # If successful or not a validation error, break
+                if result.success or not result.error:
+                    break
+
+                # Try to reformulate on error
+                if attempt < max_retries - 1:
+                    logger.warning(f"{source_id} error: {result.error}, attempting reformulation")
+                    fixed_params = await self._reformulate_on_error(
+                        source_id, goal, current_params, str(result.error), context
+                    )
+                    if fixed_params:
+                        current_params = fixed_params
+                        print(f"    ↻ {source_id}: Reformulating query...")
+                    else:
+                        break
 
             # Convert to evidence
             evidence = []
-            if result.success and result.results:
+            if result and result.success and result.results:
                 for item in result.results:
                     evidence.append(Evidence(
                         source=source_id,
@@ -700,14 +738,20 @@ Return JSON:
                         metadata=item
                     ))
 
-            print(f"    ✓ {source_id}: {len(evidence)} results")
+            # Filter for relevance
+            original_count = len(evidence)
+            if evidence:
+                evidence = await self._filter_results(goal, evidence, context)
+
+            filtered_msg = f" (filtered {original_count}→{len(evidence)})" if len(evidence) != original_count else ""
+            print(f"    ✓ {source_id}: {len(evidence)} results{filtered_msg}")
 
             return GoalResult(
                 goal=goal,
                 status=GoalStatus.COMPLETED if evidence else GoalStatus.FAILED,
                 evidence=evidence,
                 confidence=0.8 if evidence else 0.3,
-                reasoning=f"Searched {source_id}, found {len(evidence)} results",
+                reasoning=f"Searched {source_id}, found {len(evidence)} relevant results",
                 depth=context.depth
             )
 
@@ -786,6 +830,8 @@ Return JSON:
         ]) or "  (none yet)"
 
         prompt = f"""You are a research agent decomposing a goal into sub-goals.
+
+{_get_temporal_context()}
 
 ORIGINAL OBJECTIVE: {context.original_objective}
 
@@ -953,6 +999,8 @@ Return JSON:
 
         prompt = f"""Synthesize research findings for:
 
+{_get_temporal_context()}
+
 GOAL: {goal}
 
 ORIGINAL OBJECTIVE: {context.original_objective}
@@ -1039,6 +1087,146 @@ Return JSON:
 
         # Could add semantic similarity check here
         return False
+
+    async def _filter_results(
+        self,
+        goal: str,
+        evidence: List[Evidence],
+        context: GoalContext
+    ) -> List[Evidence]:
+        """
+        Filter results for relevance to the goal.
+
+        Uses LLM to evaluate each result and keep only relevant ones.
+        This improves signal-to-noise ratio in the final output.
+        """
+        if len(evidence) <= 3:
+            # Too few results to filter
+            return evidence
+
+        from llm_utils import acompletion
+
+        # Format evidence for evaluation
+        evidence_text = "\n\n".join([
+            f"Result #{i}:\nTitle: {e.title}\nContent: {e.content[:300]}..."
+            for i, e in enumerate(evidence)
+        ])
+
+        prompt = f"""You are filtering research results for relevance.
+
+{_get_temporal_context()}
+
+ORIGINAL OBJECTIVE: {context.original_objective}
+
+CURRENT GOAL: {goal}
+
+RESULTS TO FILTER:
+{evidence_text}
+
+Evaluate each result's relevance to the goal. Return a JSON object with:
+{{
+    "relevant_indices": [0, 2, 5],  // List of result indices that ARE relevant
+    "filtering_rationale": "Brief explanation of filtering decisions"
+}}
+
+Be generous - include results that have ANY connection to the goal.
+Only filter out results that are clearly off-topic or irrelevant."""
+
+        try:
+            response = await acompletion(
+                model="gemini/gemini-2.5-flash",
+                messages=[{"role": "user", "content": prompt}],
+                response_format={"type": "json_object"}
+            )
+
+            # Track cost
+            context.add_cost(0.0002)
+
+            result = json.loads(response.choices[0].message.content)
+            relevant_indices = result.get("relevant_indices", list(range(len(evidence))))
+
+            # Filter to relevant results
+            filtered = [evidence[i] for i in relevant_indices if i < len(evidence)]
+
+            # Assign relevance scores
+            for i, e in enumerate(filtered):
+                e.relevance_score = 1.0  # Marked as relevant by LLM
+
+            logger.info(f"Filtered {len(evidence)} → {len(filtered)} results")
+            return filtered
+
+        except Exception as e:
+            logger.warning(f"Filtering failed: {e}, keeping all results")
+            return evidence
+
+    async def _reformulate_on_error(
+        self,
+        source_id: str,
+        goal: str,
+        original_params: Dict[str, Any],
+        error_message: str,
+        context: GoalContext
+    ) -> Optional[Dict[str, Any]]:
+        """
+        Reformulate query parameters when API returns an error.
+
+        Uses LLM to understand the error and fix the query.
+        """
+        from llm_utils import acompletion
+
+        prompt = f"""An API returned an error. Analyze and fix the query parameters.
+
+{_get_temporal_context()}
+
+SOURCE: {source_id}
+RESEARCH GOAL: {goal}
+
+ORIGINAL PARAMETERS:
+{json.dumps(original_params, indent=2)}
+
+ERROR MESSAGE:
+{error_message}
+
+COMMON API ERROR PATTERNS AND FIXES:
+1. **Parameter validation errors** (HTTP 400/422):
+   - Value too short: Expand abbreviations (e.g., "AI" → "artificial intelligence")
+   - Invalid enum value: Use a valid value from the API's allowed set
+   - Invalid date format: Use YYYY-MM-DD
+
+2. **Search constraint errors**:
+   - Query too broad: Add specific filters
+   - Query too narrow: Remove restrictive filters
+
+3. **Unfixable errors** (rate limit, auth) - Return can_fix: false
+
+Return JSON:
+{{
+    "can_fix": true/false,
+    "fixed_params": {{ ... corrected parameters ... }},
+    "explanation": "Brief explanation of fix"
+}}"""
+
+        try:
+            response = await acompletion(
+                model="gemini/gemini-2.5-flash",
+                messages=[{"role": "user", "content": prompt}],
+                response_format={"type": "json_object"}
+            )
+
+            context.add_cost(0.0002)
+
+            result = json.loads(response.choices[0].message.content)
+
+            if result.get("can_fix") and result.get("fixed_params"):
+                logger.info(f"Reformulated query for {source_id}: {result.get('explanation', 'Fixed')}")
+                return result["fixed_params"]
+            else:
+                logger.warning(f"Cannot fix query for {source_id}: {result.get('explanation', 'Unknown')}")
+                return None
+
+        except Exception as e:
+            logger.error(f"Reformulation failed for {source_id}: {e}")
+            return None
 
     def _group_by_dependency(self, sub_goals: List[SubGoal]) -> List[List[SubGoal]]:
         """
