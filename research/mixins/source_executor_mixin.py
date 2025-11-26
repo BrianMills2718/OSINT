@@ -79,6 +79,12 @@ class SourceExecutorMixin:
         metadata = registry.get_metadata(source_name)
         source_metadata = asdict(metadata) if metadata else {}
 
+        # Convert DatabaseCategory enum to string for JSON serialization in prompts
+        if source_metadata and 'category' in source_metadata:
+            category = source_metadata['category']
+            if hasattr(category, 'value'):
+                source_metadata['category'] = category.value
+
         # Log saturation start
         if self.logger:
             self.logger.log_source_saturation_start(
