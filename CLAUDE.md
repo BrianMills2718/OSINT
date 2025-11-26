@@ -505,8 +505,8 @@ pip list | grep playwright
 
 **Last Updated**: 2025-11-26
 **Current Branch**: `master`
-**Current Phase**: v2 Recursive Agent Migration - Phase 3 (Feature Parity)
-**Status**: Phase 1 validated, Phase 2 CLI complete, ready for feature parity
+**Current Phase**: v2 Recursive Agent Migration - Phase 4 (Side-by-Side Comparison)
+**Status**: Phases 1-3 complete, ready for comparison testing
 
 ---
 
@@ -520,8 +520,8 @@ pip list | grep playwright
 |-------|------|--------|
 | 1 | Validation | **COMPLETE** |
 | 2 | CLI Entry Point | **COMPLETE** |
-| **3** | Feature Parity | **IN PROGRESS** |
-| 4 | Side-by-Side Comparison | Pending |
+| 3 | Feature Parity | **COMPLETE** |
+| **4** | Side-by-Side Comparison | **NEXT** |
 | 5 | Full Migration | Pending |
 
 ### Phase 1: Validation - COMPLETE
@@ -550,21 +550,35 @@ pip list | grep playwright
 
 **Output Files**: report.md, evidence.json, metadata.json, execution_log.jsonl, result.json
 
-### Phase 3: Feature Parity (Current)
+### Phase 3: Feature Parity - COMPLETE
 
 **Tasks**:
-- [ ] Query reformulation on API error
-- [ ] Per-source query generation prompts
-- [ ] Result relevance filtering
-- [ ] Temporal context injection
-- [ ] Execution logging
-- [ ] Report generation improvements
+- [x] Query reformulation on API error (`_reformulate_on_error()` method)
+- [x] Per-source query generation prompts (uses `integration.generate_query()`)
+- [x] Result relevance filtering (`_filter_results()` method with LLM)
+- [x] Temporal context injection (`_get_temporal_context()` in all prompts)
+- [x] Execution logging (15+ specialized event types, schema v2.0)
+- [x] Report generation improvements (LLM synthesis with v2_report_synthesis.j2)
+- [x] URL deduplication (seen_urls set, commit 8e19f4c)
+- [x] Entity extraction (EntityAnalyzer integration)
+- [x] Progressive summarization (replaces truncation with LLM summaries)
+
+**Validation Results** (2025-11-26):
+- E2E test: "Find federal cybersecurity contracts in 2024" → 20 results, 44s, $0.0004
+- Entity extraction: 10 entities discovered with relationship graph
+- All 9 feature tests pass in validation script
+- Summarization index mismatch bug found and fixed (commit 8e19f4c)
 
 ---
 
 ## CURRENT STATUS
 
 **Recently Completed** (2025-11-26 - Current Session):
+- ✅ **Phase 3: Feature Parity** - **COMPLETE** (commit 8e19f4c)
+  - All 9 features implemented: query reformulation, per-source prompts, filtering, temporal context, logging (15+ events), LLM reports, deduplication, entity extraction, summarization
+  - Fixed summarization index mismatch bug (seq_idx vs orig_idx)
+  - E2E validated: 20 results, 10 entities extracted, relationship graph built
+  - Output files: report.md, evidence.json, entities.json, execution_log.jsonl, result.json
 - ✅ **SearchResultBuilder Migration** - **COMPLETE** (commits 34b89bf, 3e7df84, 39ba3a2, 741e1c4)
   - **Problem**: TypeError crashes from null API response values (e.g., FEC amount formatting bug)
   - **Solution**: Created `core/result_builder.py` with defensive builder pattern
