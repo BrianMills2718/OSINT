@@ -1,0 +1,127 @@
+{# temporal_context: true #}
+You are synthesizing research findings into a comprehensive, well-structured report.
+
+## RESEARCH OBJECTIVE
+{{ objective }}
+
+## EVIDENCE GATHERED
+Total: {{ evidence_count }} pieces from {{ source_count }} sources
+
+{% if evidence_by_source %}
+### Evidence by Source
+{% for source, items in evidence_by_source.items() %}
+**{{ source }}** ({{ items|length }} results):
+{% for item in items[:5] %}
+- {{ item.title }}
+  URL: {{ item.url or 'N/A' }}
+  Content: {{ item.content[:300] }}...
+{% endfor %}
+{% if items|length > 5 %}
+... and {{ items|length - 5 }} more from {{ source }}
+{% endif %}
+
+{% endfor %}
+{% endif %}
+
+## SUB-GOAL RESULTS
+{% if sub_results %}
+{% for sub in sub_results %}
+- **{{ sub.goal }}**
+  Status: {{ sub.status }}
+  Evidence: {{ sub.evidence_count }} pieces
+  Confidence: {{ sub.confidence|round(2) }}
+{% if sub.synthesis %}
+  Summary: {{ sub.synthesis[:200] }}...
+{% endif %}
+
+{% endfor %}
+{% endif %}
+
+## SYNTHESIS REQUIREMENTS
+
+Create a comprehensive research report with:
+
+1. **Executive Summary**: 2-3 sentence overview answering the research objective
+2. **Key Findings**: Most important discoveries, organized by theme or source
+3. **Evidence Analysis**: What the evidence shows, patterns identified
+4. **Entity Network**: Key entities discovered and their relationships
+5. **Timeline**: Chronological events if dates are present
+6. **Methodology**: How research was conducted (sources used, goals pursued)
+7. **Limitations**: Gaps, uncertainties, areas needing more research
+
+## OUTPUT FORMAT
+
+Return a JSON object with this structure:
+{
+    "report": {
+        "title": "Report title based on objective",
+        "executive_summary": {
+            "text": "2-3 sentence overview",
+            "key_points": [
+                {
+                    "point": "Key finding statement",
+                    "inline_citations": [
+                        {"title": "Source title", "url": "url", "date": "date if known"}
+                    ]
+                }
+            ]
+        },
+        "source_groups": [
+            {
+                "group_name": "Theme or source category",
+                "group_description": "What this group covers",
+                "reliability_context": "How reliable/official are these sources",
+                "findings": [
+                    {
+                        "claim": "What the evidence shows",
+                        "inline_citations": [
+                            {"title": "Source title", "url": "url", "source": "source_name", "date": "date"}
+                        ],
+                        "supporting_detail": "Additional context"
+                    }
+                ]
+            }
+        ],
+        "entity_network": {
+            "description": "Overview of key entities and relationships",
+            "key_entities": [
+                {
+                    "name": "Entity name",
+                    "context": "Who/what this entity is",
+                    "relationships": ["Related to X", "Connected to Y"]
+                }
+            ]
+        },
+        "timeline": [
+            {
+                "date": "Date or date range",
+                "event": "What happened",
+                "sources": [{"title": "Source", "url": "url"}]
+            }
+        ],
+        "methodology": {
+            "approach": "Description of research approach",
+            "goals_pursued": {{ goals_pursued }},
+            "sources_queried": {{ sources_queried }},
+            "total_evidence": {{ evidence_count }},
+            "confidence_level": "Overall confidence (high/medium/low)"
+        },
+        "limitations": {
+            "gaps_identified": ["Gap 1", "Gap 2"],
+            "areas_for_further_research": ["Area 1"],
+            "data_quality_notes": "Any concerns about data quality"
+        },
+        "synthesis_quality_check": {
+            "all_claims_have_citations": true/false,
+            "source_grouping_reasoning": "Why sources were grouped this way",
+            "limitations_noted": "Summary of limitations"
+        }
+    }
+}
+
+IMPORTANT:
+- Every claim MUST have at least one inline citation with URL
+- Group findings logically by theme or source type
+- Be specific about what evidence supports each claim
+- Note confidence levels and limitations honestly
+- Include dates where known for timeline accuracy
