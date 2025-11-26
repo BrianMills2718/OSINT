@@ -75,7 +75,12 @@ class FECIntegration(DatabaseIntegration):
             cost_per_query_estimate=0.001,  # LLM cost only
             typical_response_time=1.5,      # seconds
             rate_limit_daily=24000,         # 1000/hour * 24 hours
-            description="Federal Election Commission campaign finance data: contributions, expenditures, PACs"
+            description="Federal Election Commission campaign finance data: contributions, expenditures, PACs",
+
+            # Rate Limit Recovery - FEC has 1,000 requests/hour (rolling)
+            # Source: https://api.open.fec.gov/developers/
+            rate_limit_recovery_seconds=60,  # Wait 1 min, quota partially refills
+            retry_on_rate_limit_within_session=True  # Worth retrying - hourly limit rolls
         )
 
     async def is_relevant(self, research_question: str) -> bool:

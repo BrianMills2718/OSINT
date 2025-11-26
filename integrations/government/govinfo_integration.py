@@ -80,6 +80,11 @@ class GovInfoIntegration(DatabaseIntegration):
             rate_limit_daily=120000,
             default_result_limit=30,
 
+            # Rate Limit Recovery - GovInfo uses api.data.gov (default 1,000/hour, some APIs get 5,000)
+            # Source: https://api.data.gov/docs/developer-manual/
+            rate_limit_recovery_seconds=60,  # Wait 1 min, quota partially refills
+            retry_on_rate_limit_within_session=True,  # Worth retrying - hourly limit rolls
+
             query_strategies=[
                 'collection_specific',
                 'keyword_search',

@@ -73,7 +73,12 @@ class CourtListenerIntegration(DatabaseIntegration):
             cost_per_query_estimate=0.001,  # LLM cost only (API is free)
             typical_response_time=2.0,      # seconds
             rate_limit_daily=120000,        # 5000/hour * 24 hours
-            description="Federal and state court opinions, RECAP filings, judicial disclosures"
+            description="Federal and state court opinions, RECAP filings, judicial disclosures",
+
+            # Rate Limit Recovery - CourtListener has 5,000 requests/hour (authenticated)
+            # Source: https://www.courtlistener.com/help/api/rest/
+            rate_limit_recovery_seconds=60,  # Wait 1 min, quota partially refills
+            retry_on_rate_limit_within_session=True  # Worth retrying - hourly limit rolls
         )
 
     async def is_relevant(self, research_question: str) -> bool:

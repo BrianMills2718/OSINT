@@ -100,8 +100,14 @@ class RedditIntegration(DatabaseIntegration):
             requires_api_key=False,  # Loads credentials from .env internally via _get_reddit_client()
             cost_per_query_estimate=0.01,  # LLM cost for query generation
             typical_response_time=2.0,     # seconds
-            rate_limit_daily=None,         # 60 req/min handled by PRAW
-            description="Reddit search for discussions, news, and community intelligence"
+            rate_limit_daily=None,         # 100 req/min (post-2023), handled by PRAW
+            description="Reddit search for discussions, news, and community intelligence",
+
+            # Rate Limit Recovery - Reddit has 100 requests/minute (post-2023 API changes)
+            # Source: https://support.reddithelp.com/hc/en-us/articles/16160319875092-Reddit-Data-API-Wiki
+            # PRAW handles rate limiting automatically (waits up to 600s internally)
+            rate_limit_recovery_seconds=60,  # If PRAW fails, wait 1 min
+            retry_on_rate_limit_within_session=True  # Worth retrying - per-minute limit
         )
 
     async def is_relevant(self, research_question: str) -> bool:
