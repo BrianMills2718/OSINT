@@ -2,7 +2,7 @@
 
 **Created**: 2025-11-26
 **Status**: In Progress
-**Current Phase**: Phase 2 (CLI Entry Point)
+**Current Phase**: Phase 3 (Feature Parity)
 
 ---
 
@@ -52,24 +52,31 @@ Migrate from v1 research system (`research/deep_research.py`, 4,392 lines) to v2
 
 ---
 
-### Phase 2: CLI Entry Point (Current)
+### Phase 2: CLI Entry Point ✅ COMPLETE
 **Goal**: Create user-facing CLI for v2
 
 **Tasks**:
-- [ ] Create `apps/recursive_research.py` CLI wrapper
-- [ ] Support same arguments as v1 (`--max-tasks`, `--max-time-minutes`, etc.)
-- [ ] Map v1 args to v2 Constraints
-- [ ] Add output directory structure (same as v1)
-- [ ] Test CLI end-to-end
+- [x] Create `apps/recursive_research.py` CLI wrapper (commit dc005dd)
+- [x] Support v2 arguments: `--max-depth`, `--max-time`, `--max-goals`, `--max-cost`, `--max-concurrent`
+- [x] Map CLI args to v2 Constraints dataclass
+- [x] Add output directory structure: `data/research_v2/YYYY-MM-DD_HH-MM-SS_query/`
+- [x] Test CLI end-to-end: 20 results, 10s, $0.0002 cost
 
-**Success Criteria**:
-- `python3 apps/recursive_research.py "query"` works
-- Output saved to `data/research_v2/`
-- Arguments respected
+**Output Files Generated**:
+- report.md - Markdown summary with evidence grouped by source
+- evidence.json - Full evidence details
+- metadata.json - Run metadata (status, confidence, duration, cost)
+- execution_log.jsonl - Structured event log
+- result.json - Complete result object
+
+**Success Criteria**: ✅ ALL MET
+- ✅ `python3 apps/recursive_research.py "query"` works
+- ✅ Output saved to `data/research_v2/`
+- ✅ Arguments respected
 
 ---
 
-### Phase 3: Feature Parity
+### Phase 3: Feature Parity (Current)
 **Goal**: Add v1 features missing from v2
 
 **Tasks**:
@@ -184,4 +191,5 @@ pursue_goal(goal, context):
 No fixed deadlines - proceed phase by phase, validate each before moving on.
 
 **Completed**: Phase 1 - Validation (2025-11-26)
-**Current**: Phase 2 - CLI Entry Point
+**Completed**: Phase 2 - CLI Entry Point (2025-11-26)
+**Current**: Phase 3 - Feature Parity

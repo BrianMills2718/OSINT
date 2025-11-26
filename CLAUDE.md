@@ -471,8 +471,8 @@ pip list | grep playwright
 
 **Last Updated**: 2025-11-26
 **Current Branch**: `master`
-**Current Phase**: v2 Recursive Agent Migration - Phase 2 (CLI Entry Point)
-**Status**: Phase 1 validated, building CLI wrapper for v2
+**Current Phase**: v2 Recursive Agent Migration - Phase 3 (Feature Parity)
+**Status**: Phase 1 validated, Phase 2 CLI complete, ready for feature parity
 
 ---
 
@@ -485,8 +485,8 @@ pip list | grep playwright
 | Phase | Name | Status |
 |-------|------|--------|
 | 1 | Validation | **COMPLETE** |
-| **2** | CLI Entry Point | **IN PROGRESS** |
-| 3 | Feature Parity | Pending |
+| 2 | CLI Entry Point | **COMPLETE** |
+| **3** | Feature Parity | **IN PROGRESS** |
 | 4 | Side-by-Side Comparison | Pending |
 | 5 | Full Migration | Pending |
 
@@ -505,25 +505,38 @@ pip list | grep playwright
 - Complex query: "Palantir contracts, lobbying, controversies" → 59 evidence, depth 3, synthesis generated
 - Cost tracking: Assessment LLM call cost ($0.0002) propagated to result
 
-### Phase 2: CLI Entry Point (Current)
+### Phase 2: CLI Entry Point - COMPLETE
 
 **Tasks**:
-- [ ] Create `apps/recursive_research.py` CLI wrapper
-- [ ] Support same arguments as v1 (`--max-tasks`, `--max-time-minutes`, etc.)
-- [ ] Map v1 args to v2 Constraints
-- [ ] Add output directory structure (same as v1)
-- [ ] Test CLI end-to-end
+- [x] Create `apps/recursive_research.py` CLI wrapper (commit dc005dd)
+- [x] Support v2 args: `--max-depth`, `--max-time`, `--max-goals`, `--max-cost`, `--max-concurrent`
+- [x] Map CLI args to v2 Constraints dataclass
+- [x] Add output directory structure: `data/research_v2/YYYY-MM-DD_HH-MM-SS_query/`
+- [x] Test CLI end-to-end: 20 results, 10s, $0.0002 cost
 
-**Success Criteria**:
-- `python3 apps/recursive_research.py "query"` works
-- Output saved to `data/research_v2/`
-- Arguments respected
+**Output Files**: report.md, evidence.json, metadata.json, execution_log.jsonl, result.json
+
+### Phase 3: Feature Parity (Current)
+
+**Tasks**:
+- [ ] Query reformulation on API error
+- [ ] Per-source query generation prompts
+- [ ] Result relevance filtering
+- [ ] Temporal context injection
+- [ ] Execution logging
+- [ ] Report generation improvements
 
 ---
 
 ## CURRENT STATUS
 
 **Recently Completed** (2025-11-26 - Current Session):
+- ✅ **Phase 2: CLI Entry Point** - **COMPLETE** (commit dc005dd)
+  - Created `apps/recursive_research.py` CLI wrapper
+  - Supports: `--max-depth`, `--max-time`, `--max-goals`, `--max-cost`, `--max-concurrent`
+  - Outputs to `data/research_v2/` with timestamped directories
+  - Generates: report.md, evidence.json, metadata.json, execution_log.jsonl
+  - E2E tested: 20 results, 10s, $0.0002 cost
 - ✅ **Phase 1: Validation** - **COMPLETE**
   - Simple query: 20 results, status completed, 9.1s
   - Complex query: 59 results, 3 sub-goals decomposed, depth 3
