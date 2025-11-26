@@ -87,7 +87,11 @@ class SAMIntegration(DatabaseIntegration):
                 'contract_ids': True
             },
             typical_result_count=50,
-            max_queries_recommended=10
+            max_queries_recommended=10,
+
+            # Rate Limit Recovery - SAM.gov has strict limits, ~1 day recovery
+            rate_limit_recovery_seconds=86400,  # ~1 day
+            retry_on_rate_limit_within_session=False  # Pointless to retry within session
         )
 
     async def is_relevant(self, research_question: str) -> bool:

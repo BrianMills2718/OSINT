@@ -608,6 +608,24 @@ class IntegrationRegistry:
         metadata = self.get_metadata(integration_id)
         return metadata.name if metadata else integration_id
 
+    def get_metadata_by_display_name(self, display_name: str) -> Optional[DatabaseMetadata]:
+        """
+        Get metadata by display name (e.g., "SAM.gov" -> DatabaseMetadata).
+
+        Uses normalize_source_name to convert display name to integration_id,
+        then returns metadata for that integration.
+
+        Args:
+            display_name: Display name (e.g., "SAM.gov", "Brave Search")
+
+        Returns:
+            DatabaseMetadata or None if not found
+        """
+        integration_id = self.normalize_source_name(display_name)
+        if integration_id:
+            return self.get_metadata(integration_id)
+        return None
+
     def get_all_metadata(self) -> Dict[str, DatabaseMetadata]:
         """
         Get metadata for all enabled integrations.

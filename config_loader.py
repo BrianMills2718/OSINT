@@ -247,6 +247,11 @@ class Config:
         """
         Get rate limiting configuration for a specific source.
 
+        Priority (highest to lowest):
+        1. config.yaml overrides (circuit_breaker_sources, critical_always_retry)
+        2. DatabaseMetadata defaults (retry_on_rate_limit_within_session, rate_limit_recovery_seconds)
+        3. Hardcoded fallbacks
+
         Args:
             source_name: Display name of the source (e.g., "SAM.gov", "USAJobs")
 
@@ -254,24 +259,63 @@ class Config:
             Dict with:
                 - use_circuit_breaker (bool): Whether to skip source after 429
                 - cooldown_minutes (int): Minutes to keep source blocked
+                - cooldown_seconds (int): Seconds to keep source blocked (more precise)
                 - is_critical (bool): Whether source should never be skipped
+                - retry_within_session (bool): Whether retrying within session is worthwhile
 
         Example:
             >>> config.get_rate_limit_config("SAM.gov")
-            {"use_circuit_breaker": True, "cooldown_minutes": 60, "is_critical": False}
+            {"use_circuit_breaker": True, "cooldown_seconds": 86400, "retry_within_session": False, ...}
 
-            >>> config.get_rate_limit_config("USAJobs")
-            {"use_circuit_breaker": False, "cooldown_minutes": 60, "is_critical": True}
+            >>> config.get_rate_limit_config("Brave Search")
+            {"use_circuit_breaker": True, "cooldown_seconds": 120, "retry_within_session": True, ...}
         """
+        # 1. Try to get metadata defaults from registry
+        metadata_defaults = {
+            "retry_within_session": True,  # Default: worth retrying
+            "cooldown_seconds": 60 * 60,   # Default: 1 hour
+        }
+
+        try:
+            from integrations.registry import registry
+            metadata = registry.get_metadata_by_display_name(source_name)
+            if metadata:
+                # Use metadata values if available
+                if hasattr(metadata, 'retry_on_rate_limit_within_session'):
+                    metadata_defaults["retry_within_session"] = metadata.retry_on_rate_limit_within_session
+                if hasattr(metadata, 'rate_limit_recovery_seconds') and metadata.rate_limit_recovery_seconds:
+                    metadata_defaults["cooldown_seconds"] = metadata.rate_limit_recovery_seconds
+        except ImportError:
+            pass  # Registry not available, use defaults
+
+        # 2. Get config.yaml overrides
         rate_config = self._config.get("rate_limiting", {})
         circuit_breaker_sources = rate_config.get("circuit_breaker_sources", ["SAM.gov"])
         critical_sources = rate_config.get("critical_always_retry", ["USAJobs"])
-        cooldown = rate_config.get("circuit_breaker_cooldown_minutes", 60)
+        cooldown_minutes = rate_config.get("circuit_breaker_cooldown_minutes", None)
+
+        # 3. Determine final values
+        # Use config.yaml cooldown_minutes if specified, otherwise use metadata cooldown_seconds
+        if cooldown_minutes is not None:
+            cooldown_seconds = cooldown_minutes * 60
+        else:
+            cooldown_seconds = metadata_defaults["cooldown_seconds"]
+
+        # Determine circuit breaker behavior:
+        # - If explicitly in circuit_breaker_sources config.yaml, use that
+        # - Otherwise, use metadata: skip circuit breaker if retry_within_session is False
+        if source_name in circuit_breaker_sources:
+            use_circuit_breaker = True
+        else:
+            # If metadata says don't retry within session, automatically enable circuit breaker
+            use_circuit_breaker = not metadata_defaults["retry_within_session"]
 
         return {
-            "use_circuit_breaker": source_name in circuit_breaker_sources,
-            "cooldown_minutes": cooldown,
-            "is_critical": source_name in critical_sources
+            "use_circuit_breaker": use_circuit_breaker,
+            "cooldown_minutes": cooldown_seconds // 60,  # Backward compatible
+            "cooldown_seconds": cooldown_seconds,
+            "is_critical": source_name in critical_sources,
+            "retry_within_session": metadata_defaults["retry_within_session"]
         }
 
     def get_integration_limit(self, integration_name: str) -> int:

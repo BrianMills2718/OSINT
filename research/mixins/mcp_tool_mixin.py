@@ -430,17 +430,27 @@ class MCPToolMixin:
             if error and ("429" in str(error) or "rate limit" in str(error).lower()):
                 rate_config = config.get_rate_limit_config(source_name)
 
-                if rate_config["use_circuit_breaker"]:
-                    if not rate_config["is_critical"]:
-                        self.rate_limited_sources.add(source_name)
-                        logger.warning(f"⚠️  {source_name} rate limited - added to circuit breaker")
-                        print(f"⚠️  {source_name} rate limited - skipping for remaining tasks")
-                    else:
-                        logger.warning(f"⚠️  {source_name} rate limited but CRITICAL - will continue retrying")
-                        print(f"⚠️  {source_name} rate limited (CRITICAL - continuing retries)")
+                # Use metadata-driven decision: retry_within_session determines behavior
+                if rate_config["is_critical"]:
+                    # Critical sources always retry
+                    logger.warning(f"⚠️  {source_name} rate limited but CRITICAL - will continue retrying")
+                    print(f"⚠️  {source_name} rate limited (CRITICAL - continuing retries)")
+                elif not rate_config["retry_within_session"]:
+                    # Source metadata says don't retry within session (e.g., SAM.gov ~1 day recovery)
+                    self.rate_limited_sources.add(source_name)
+                    cooldown_hours = rate_config["cooldown_seconds"] / 3600
+                    logger.warning(f"⚠️  {source_name} rate limited - circuit breaker active (recovery ~{cooldown_hours:.1f}h)")
+                    print(f"⚠️  {source_name} rate limited - skipping for remaining tasks (recovery ~{cooldown_hours:.1f}h)")
+                elif rate_config["use_circuit_breaker"]:
+                    # Config.yaml explicitly enables circuit breaker
+                    self.rate_limited_sources.add(source_name)
+                    logger.warning(f"⚠️  {source_name} rate limited - added to circuit breaker")
+                    print(f"⚠️  {source_name} rate limited - skipping for remaining tasks")
                 else:
-                    logger.info(f"ℹ️  {source_name} rate limited (no circuit breaker configured - will retry)")
-                    print(f"ℹ️  {source_name} rate limited (will retry)")
+                    # Source says retry is worthwhile (e.g., Brave ~2 min recovery)
+                    cooldown_secs = rate_config["cooldown_seconds"]
+                    logger.info(f"ℹ️  {source_name} rate limited (will retry after ~{cooldown_secs}s)")
+                    print(f"ℹ️  {source_name} rate limited (will retry after ~{cooldown_secs}s)")
 
             return {
                 "tool": tool_name,

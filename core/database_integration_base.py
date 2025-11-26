@@ -85,6 +85,15 @@ class DatabaseMetadata:
     typical_result_count: int = 50    # Typical number of results returned
     max_queries_recommended: int = 5  # Max queries before diminishing returns
 
+    # === Rate Limit Recovery Configuration ===
+    # These fields configure retry behavior when a source is rate-limited (HTTP 429)
+    rate_limit_recovery_seconds: Optional[int] = None  # Estimated recovery time. None = unknown
+    retry_on_rate_limit_within_session: bool = True    # Whether retrying within session is worthwhile
+    # Examples:
+    #   - SAM.gov: recovery ~86400s (1 day), retry_within_session=False (pointless to retry)
+    #   - Brave: recovery ~60-300s, retry_within_session=True (worth waiting)
+    #   - USAspending: no rate limit documented, retry_within_session=True (retry on transient errors)
+
     def __post_init__(self):
         """Set defaults for optional collections."""
         if self.query_strategies is None:

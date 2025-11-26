@@ -69,7 +69,11 @@ class BraveSearchIntegration(DatabaseIntegration):
             cost_per_query_estimate=0.005,  # $5/1000 queries + LLM cost
             typical_response_time=1.0,       # seconds
             rate_limit_daily=None,           # Monthly limit, not daily
-            description="Web search for investigative journalism, analysis, leaked docs, and news coverage"
+            description="Web search for investigative journalism, analysis, leaked docs, and news coverage",
+
+            # Rate Limit Recovery - Brave has 1 req/sec recommendation
+            rate_limit_recovery_seconds=120,  # 2 min wait, then retry
+            retry_on_rate_limit_within_session=True  # Worth waiting and retrying
         )
 
     async def is_relevant(self, research_question: str) -> bool:

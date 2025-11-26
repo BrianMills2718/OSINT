@@ -1681,8 +1681,8 @@ class SimpleDeepResearch(
 
                         if not source_results:
                             # Source returned no results - classify as zero results
-                            # Note: We can't distinguish errors from empty results at this point
-                            # since _search_mcp_tools_selected returns transformed results, not raw status
+                            # Note: source_execution_status now available (passed to _validate_result_relevance)
+                            # This section could be enhanced to use it for better error/empty distinction
                             sources_with_zero_results.append(source_display)
                         else:
                             # Check if any results from this source were kept

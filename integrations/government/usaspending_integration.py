@@ -98,7 +98,11 @@ class USASpendingIntegration(DatabaseIntegration):
                 'requires_verification': False
             },
             typical_result_count=100,
-            max_queries_recommended=7
+            max_queries_recommended=7,
+
+            # Rate Limit Recovery - USAspending has no documented limits
+            rate_limit_recovery_seconds=60,  # Short wait, retry on transient errors
+            retry_on_rate_limit_within_session=True  # Worth retrying for HTTP 422/429
         )
 
     async def is_relevant(self, research_question: str) -> bool:
