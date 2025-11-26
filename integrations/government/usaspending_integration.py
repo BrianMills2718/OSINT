@@ -26,6 +26,64 @@ from config_loader import config
 
 logger = logging.getLogger(__name__)
 
+# Common abbreviations that need expansion (USAspending API requires ≥3 chars per keyword)
+KEYWORD_EXPANSIONS = {
+    "AI": "artificial intelligence",
+    "ML": "machine learning",
+    "NLP": "natural language processing",
+    "CV": "computer vision",
+    "IT": "information technology",
+    "HQ": "headquarters",
+    "R&D": "research development",
+    "RD": "research development",
+    "DoD": "Department of Defense",
+    "DOD": "Department of Defense",
+    "DHS": "Department of Homeland Security",
+    "VA": "Veterans Affairs",
+    "IoT": "internet of things",
+    "IOT": "internet of things",
+    "HPC": "high performance computing",
+    "AWS": "Amazon Web Services",
+    "GCP": "Google Cloud Platform",
+    "API": "application programming interface",
+    "UAV": "unmanned aerial vehicle",
+    "UAS": "unmanned aircraft system",
+}
+
+
+def expand_short_keywords(keywords: List[str]) -> List[str]:
+    """
+    Expand short keywords to meet USAspending's 3-character minimum requirement.
+
+    The USAspending API requires each keyword to be at least 3 characters.
+    This function expands common abbreviations and filters out any that can't be expanded.
+
+    Args:
+        keywords: List of search keywords from LLM
+
+    Returns:
+        List of keywords with all items ≥3 characters
+    """
+    if not keywords:
+        return keywords
+
+    expanded = []
+    for kw in keywords:
+        if len(kw) >= 3:
+            # Already meets minimum, keep as-is
+            expanded.append(kw)
+        else:
+            # Try to expand the abbreviation
+            expansion = KEYWORD_EXPANSIONS.get(kw) or KEYWORD_EXPANSIONS.get(kw.upper())
+            if expansion:
+                logger.info(f"Expanding short keyword '{kw}' → '{expansion}'")
+                expanded.append(expansion)
+            else:
+                # Can't expand, drop it (would cause API error)
+                logger.warning(f"Dropping keyword '{kw}' (< 3 chars, no expansion available)")
+
+    return expanded
+
 
 class USASpendingIntegration(DatabaseIntegration):
     """
@@ -190,8 +248,8 @@ class USASpendingIntegration(DatabaseIntegration):
                     "properties": {
                         "keywords": {
                             "type": "array",
-                            "items": {"type": "string"},
-                            "description": "Search keywords"
+                            "items": {"type": "string", "minLength": 3},
+                            "description": "Search keywords (each must be at least 3 characters - expand abbreviations like AI→artificial intelligence)"
                         },
                         "award_type_codes": {
                             "type": "array",
@@ -315,7 +373,6 @@ class USASpendingIntegration(DatabaseIntegration):
         """
 
         # Build request body (filter out empty arrays - API rejects them)
-        # Also: keywords filter requires minimum 3 items per API spec
         filters = query_params.get("filters", {})
         cleaned_filters = {}
         for k, v in filters.items():
@@ -323,10 +380,12 @@ class USASpendingIntegration(DatabaseIntegration):
                 continue
             if isinstance(v, list) and len(v) == 0:
                 continue
-            # API requires minimum 3 keywords - drop filter if fewer
-            if k == "keywords" and isinstance(v, list) and len(v) < 3:
-                logger.debug(f"Dropping keywords filter (only {len(v)} items, API requires 3+)")
-                continue
+            # Expand short keywords (API requires each keyword to be ≥3 characters)
+            if k == "keywords" and isinstance(v, list):
+                v = expand_short_keywords(v)
+                if not v:  # All keywords were too short and couldn't be expanded
+                    logger.warning("All keywords were < 3 chars and couldn't be expanded, dropping keywords filter")
+                    continue
             cleaned_filters[k] = v
 
         request_body = {
