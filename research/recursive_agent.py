@@ -874,16 +874,28 @@ DECISION REQUIRED:
 Is this goal DIRECTLY EXECUTABLE (maps to a specific action like an API call or analysis)?
 Or does it need to be DECOMPOSED into smaller sub-goals?
 
-A goal is directly executable if:
-- It maps to a specific API call to one of the available sources
-- It's an analysis task on existing evidence
-- It's a synthesis task combining existing findings
-- It's simple enough to execute in one step
+IMPORTANT: Prefer THOROUGH research over quick results. A single API call rarely provides
+comprehensive coverage. Investigative research requires cross-referencing multiple sources.
 
-A goal needs decomposition if:
-- It requires multiple different sources
-- It has multiple distinct aspects to investigate
-- It's too broad to answer with a single query
+A goal is directly executable ONLY if:
+- It's extremely narrow (e.g., "get FEC filings for committee X")
+- It's an analysis/synthesis task on EXISTING evidence
+- We're at depth 3+ and need to start executing to avoid infinite decomposition
+
+A goal SHOULD BE DECOMPOSED if ANY of these apply:
+- It's about a company/person/entity → needs multiple source TYPES (contracts, filings, news, legal)
+- It mentions "investigate", "research", or "find" → needs comprehensive coverage
+- Multiple relevant sources exist → decompose by source type for parallel querying
+- A single source would give incomplete picture → decompose for cross-referencing
+- We're at depth 0-2 with budget remaining → invest in thorough decomposition
+
+Example: "Research Company X contracts" should decompose into:
+  - "Find Company X federal contracts in USAspending"
+  - "Find Company X contract opportunities in SAM.gov"
+  - "Find Company X contract announcements in news"
+  - "Find Company X disclosed contracts in SEC filings"
+
+This ensures comprehensive coverage, not just the first matching source.
 
 Return JSON:
 {{
@@ -1217,12 +1229,26 @@ CONSTRAINTS:
 - Remaining depth: {context.constraints.max_depth - context.depth} levels
 - Remaining goals: {context.constraints.max_goals - context.goals_created}
 
+DECOMPOSITION STRATEGY for thorough research:
+
+For INVESTIGATIVE goals (about companies, people, entities):
+- Create sub-goals BY SOURCE TYPE to ensure comprehensive coverage:
+  - Government contracts → USAspending, SAM.gov, GovInfo
+  - Political/lobbying → FEC, Congress.gov
+  - Legal/controversies → CourtListener, SEC enforcement
+  - News/media → NewsAPI, web search
+  - Financial → SEC filings (10-K, 8-K)
+
+For TOPICAL goals (about a topic/issue):
+- Create sub-goals BY ANGLE or PERSPECTIVE
+- Each angle can query different sources
+
 Create sub-goals that:
-1. Together fully address the parent goal
-2. Are as INDEPENDENT as possible (can run in parallel)
-3. Are appropriately sized (not too broad, not too narrow)
+1. Together provide COMPREHENSIVE coverage (not just the first matching source)
+2. Are INDEPENDENT (can run in parallel across different source types)
+3. Target SPECIFIC sources (e.g., "Find X in USAspending" not just "Find X contracts")
 4. DON'T duplicate existing goals
-5. Each sub-goal should be achievable with 1-3 data source queries
+5. Aim for 5-10 sub-goals for depth-1 decomposition of investigative queries
 
 Return JSON:
 {{
