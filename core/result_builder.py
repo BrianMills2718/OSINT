@@ -72,12 +72,17 @@ class SearchResultBuilder:
         """
         Safely extract text, with optional truncation.
 
-        Handles None, non-string types, and length limits.
+        Handles None, empty strings, non-string types, and length limits.
+        Returns default if value is None or empty after stripping.
         """
         if value is None:
             return default
 
         text = str(value).strip()
+
+        # Return default for empty strings (after stripping)
+        if not text:
+            return default
 
         if max_length and len(text) > max_length:
             return text[:max_length - 3] + "..."
