@@ -66,6 +66,7 @@ class CongressIntegration(DatabaseIntegration):
             id="congress",
             category=DatabaseCategory.GOV_CONGRESS,
             requires_api_key=True,
+            api_key_env_var="CONGRESS_API_KEY",
             cost_per_query_estimate=0.001,  # LLM cost only
             typical_response_time=1.5,      # seconds
             rate_limit_daily=120000,        # 5000/hour * 24 hours

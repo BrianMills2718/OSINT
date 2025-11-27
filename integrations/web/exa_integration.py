@@ -82,6 +82,7 @@ class ExaIntegration(DatabaseIntegration):
             id="exa",
             category=DatabaseCategory.WEB_SEARCH,
             requires_api_key=True,
+            api_key_env_var="EXA_API_KEY",
             cost_per_query_estimate=0.005,  # $5/1000 queries
             typical_response_time=1.5,
             rate_limit_daily=None,

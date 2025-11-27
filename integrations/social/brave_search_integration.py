@@ -68,6 +68,7 @@ class BraveSearchIntegration(DatabaseIntegration):
             id="brave_search",
             category=DatabaseCategory.WEB_SEARCH,
             requires_api_key=True,
+            api_key_env_var="BRAVE_SEARCH_API_KEY",
             cost_per_query_estimate=0.005,  # $5/1000 queries + LLM cost
             typical_response_time=1.0,       # seconds
             rate_limit_daily=None,           # Monthly limit, not daily

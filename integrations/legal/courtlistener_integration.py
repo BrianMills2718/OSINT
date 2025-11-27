@@ -71,6 +71,7 @@ class CourtListenerIntegration(DatabaseIntegration):
             id="courtlistener",
             category=DatabaseCategory.RESEARCH,
             requires_api_key=True,
+            api_key_env_var="COURTLISTENER_API_KEY",
             cost_per_query_estimate=0.001,  # LLM cost only (API is free)
             typical_response_time=2.0,      # seconds
             rate_limit_daily=120000,        # 5000/hour * 24 hours

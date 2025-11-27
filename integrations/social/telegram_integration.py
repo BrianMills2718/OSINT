@@ -108,6 +108,7 @@ class TelegramIntegration(DatabaseIntegration):
             id="telegram",
             category=DatabaseCategory.SOCIAL_GENERAL,
             requires_api_key=True,  # Requires TELEGRAM_API_ID and TELEGRAM_API_HASH
+            api_key_env_var="TELEGRAM_API_ID",  # Also requires TELEGRAM_API_HASH
             cost_per_query_estimate=0.0,  # Free (Telegram API has no costs)
             typical_response_time=2.0,
             rate_limit_daily=None,  # No official limits, but reasonable use expected

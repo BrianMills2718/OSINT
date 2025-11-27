@@ -63,7 +63,7 @@ class NewsAPIIntegration(DatabaseIntegration):
             id="newsapi",
             category=DatabaseCategory.NEWS,
             requires_api_key=True,
-            api_key_env_var="NEWSAPI_KEY",
+            api_key_env_var="NEWSAPI_API_KEY",
             cost_per_query_estimate=0.001,  # LLM cost only (API is free tier)
             typical_response_time=2.0,      # seconds
             rate_limit_daily=db_config.get("rate_limit_daily", 100),  # Free tier limit

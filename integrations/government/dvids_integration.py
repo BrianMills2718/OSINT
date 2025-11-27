@@ -55,6 +55,7 @@ class DVIDSIntegration(DatabaseIntegration):
             id="dvids",
             category=DatabaseCategory.MEDIA,
             requires_api_key=True,
+            api_key_env_var="DVIDS_API_KEY",
             cost_per_query_estimate=0.001,  # LLM cost only
             typical_response_time=2.0,      # seconds
             rate_limit_daily=None,          # Unknown

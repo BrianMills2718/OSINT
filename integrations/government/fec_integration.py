@@ -73,6 +73,7 @@ class FECIntegration(DatabaseIntegration):
             id="fec",
             category=DatabaseCategory.GOV_GENERAL,
             requires_api_key=True,
+            api_key_env_var="CONGRESS_API_KEY",  # Shares key with Congress.gov (api.data.gov)
             cost_per_query_estimate=0.001,  # LLM cost only
             typical_response_time=1.5,      # seconds
             rate_limit_daily=24000,         # 1000/hour * 24 hours
