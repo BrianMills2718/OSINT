@@ -2223,6 +2223,7 @@ Return JSON:
             "depth": result.depth,
             "duration_seconds": result.duration_seconds,
             "cost_dollars": result.cost_dollars,  # Bug fix: was missing
+            "rate_limited_sources": list(self.rate_limited_sources),  # Track which sources hit rate limits
             "evidence": [
                 {
                     "source": e.source,
@@ -2523,6 +2524,16 @@ Return JSON:
             if notes:
                 md.append(f"**Data Quality Notes:** {notes}\n\n")
 
+        # Source Availability (operational metadata - not from LLM synthesis)
+        # Surfaces rate-limited sources so users know which sources couldn't be queried
+        if self.rate_limited_sources:
+            md.append("## Source Availability\n\n")
+            md.append("**Rate-Limited Sources:**\n")
+            md.append("The following sources hit rate limits during this research session and couldn't be fully queried:\n\n")
+            for source in sorted(self.rate_limited_sources):
+                md.append(f"- {source}\n")
+            md.append("\n*Consider re-running research later when rate limits reset, or check API quota.*\n\n")
+
         return "".join(md)
 
     def _generate_basic_report(self, result: GoalResult, by_source: Dict[str, List[Dict]]) -> str:
@@ -2554,6 +2565,15 @@ Return JSON:
                     lines.append(f"  - URL: {e['url']}")
                 lines.append(f"  - {e['content'][:self.constraints.max_content_chars_in_report]}...")
                 lines.append("")
+
+        # Add rate-limited sources section
+        if self.rate_limited_sources:
+            lines.append("## Source Availability")
+            lines.append("")
+            lines.append("**Rate-Limited Sources:**")
+            for source in sorted(self.rate_limited_sources):
+                lines.append(f"- {source}")
+            lines.append("")
 
         return "\n".join(lines)
 
