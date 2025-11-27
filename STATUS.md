@@ -1,7 +1,7 @@
 # STATUS.md - Component Status Tracker
 
-**Last Updated**: 2025-11-25 (Temporal Context Fix + Documentation Refresh)
-**Current Phase**: 29 integrations working, temporal context fix validated - Research system production-ready ✅
+**Last Updated**: 2025-11-27 (V2 Critical Bug Fixes + 23/23 Integration Health)
+**Current Phase**: V2 agent bugs fixed, all 23 integrations passing health check ✅
 **Previous Phase**: GovInfo Integration + Performance Optimizations - COMPLETE ✅
 **Previous Phase**: 22 integrations working, Telegram OSINT source added - COMPLETE ✅
 **Previous Phase**: Quality Improvements (Report Synthesis, Logging, Source Context) - COMPLETE ✅
@@ -17,6 +17,79 @@
 **Previous Phase**: Phase 1.5 (Adaptive Search & Knowledge Graph) - Week 1 COMPLETE ✅
 **Previous Phase**: Phase 1 (Boolean Monitoring MVP) - 100% COMPLETE + **DEPLOYED IN PRODUCTION** ✅
 **Previous Phase**: Phase 0 (Foundation) - 100% COMPLETE
+
+---
+
+## Recent Updates (2025-11-27)
+
+**Status**: ✅ **COMPLETE** - V2 agent critical bug fixes + 23/23 integration health check
+**Impact**: V2 research now uses all available sources (was 7/23, now 23/23 potential)
+
+### 1. Integration Health Check ✅
+**Date**: 2025-11-27
+**Result**: **23/23 PASS, 0 FAIL, 0 SKIPPED**
+
+Created `tests/test_integration_health.py` - comprehensive health check for all integrations.
+
+**Bug Fixes During Health Check**:
+- **Discord**: Fixed `KeyError 'score'` - metadata was nested in `x.metadata.score`, not top-level
+- **Twitter**: Added missing `api_key_env_var="RAPIDAPI_KEY"` to metadata
+- **SAM.gov**: Increased timeout from 30s to 60s in config_default.yaml
+- **Test Queries**: Updated for ICIJ, SEC EDGAR, Federal Register, USAspending, CREST to trigger relevance
+
+### 2. V2 Recursive Agent Critical Bug Fixes ✅
+**Date**: 2025-11-27
+**Commits**: f06e449, 01a692f
+
+**Bug 1: API Key Not Passed (ROOT CAUSE of 16 source failures)**
+- **Problem**: `execute_search()` was called without `api_key` parameter
+- **Symptom**: GovInfo, SAM.gov, Brave Search, DVIDS all failed with "API key required"
+- **Fix**: Added `api_key = self.registry.get_api_key(source_id)` before execute_search()
+- **Impact**: 16+ sources now work that were previously failing
+
+**Bug 2: Cost Tracking Null**
+- **Problem**: `_result_to_dict()` was missing `cost_dollars` field
+- **Symptom**: `result.json` showed `"cost_dollars": null`
+- **Fix**: Added `"cost_dollars": result.cost_dollars` to serialization
+- **Validation**: Smoke test showed `$0.0011` (working!)
+
+**Bug 3: Invalid JSON in Synthesis Template**
+- **Problem**: Used `//` comments inside JSON schema (invalid JSON)
+- **Fix**: Removed comments, moved instructions outside JSON block
+
+### 3. Report Quality Improvements ✅
+**Date**: 2025-11-27
+
+**Timeline Filtering**:
+- Added `CRITICAL TIMELINE RULES` section to `v2_report_synthesis.j2`
+- Explicit instruction to only include events about the research subject
+- Example: Palantir research should NOT include unrelated Medicare/HISA regulations
+
+**Citation Quality**:
+- Added `IMPORTANT CITATION RULES` section
+- Instructions to use actual evidence URLs, not goal descriptions with "(N/A)"
+
+### 4. Synthesis Logging Added ✅
+**Date**: 2025-11-27
+
+New `_log_synthesis_decisions()` method captures:
+- Timeline events (logged to console + `execution_log.jsonl`)
+- Citation quality check results
+- Source group organization
+
+New event types in execution log:
+- `synthesis_timeline`: All timeline events with dates
+- `synthesis_quality`: Citation completeness check
+
+### 5. PDF/Word Export Feature ✅
+**Date**: 2025-11-27
+**Commit**: e281aa5
+
+Created `core/report_exporter.py` for professional report export:
+- PDF export via WeasyPrint
+- Word (.docx) export via python-docx
+- Added `--export` flag to `run_research_cli.py`
+- Added download buttons to Streamlit deep research tab
 
 ---
 
