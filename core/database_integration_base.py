@@ -7,11 +7,16 @@ database integrations must implement.
 """
 
 from abc import ABC, abstractmethod
-from typing import Dict, List, Optional, Any
+from typing import Dict, List, Optional, Any, Callable, TypeVar
 from dataclasses import dataclass
 from enum import Enum
+import asyncio
 import logging
+import random
 from pydantic import BaseModel, Field, field_validator
+
+# Type variable for generic retry function
+T = TypeVar('T')
 
 # Set up logger for this module
 logger = logging.getLogger(__name__)
@@ -424,3 +429,144 @@ If this database is not relevant to the research question, indicate that.
 Return your response as JSON following this schema:
 {{response_schema}}
 """
+
+    # =========================================================================
+    # Retry Helper Methods
+    # =========================================================================
+
+    @staticmethod
+    def is_retryable_error(error: Optional[str]) -> bool:
+        """
+        Determine if an error is retryable (transient network/server issue).
+
+        Retryable errors include:
+        - HTTP 5xx server errors
+        - Connection errors (broken pipe, connection refused, reset)
+        - Timeout errors
+        - DNS resolution failures
+
+        NOT retryable:
+        - HTTP 4xx client errors (bad request, unauthorized, not found)
+        - Rate limits (handled separately by session-level tracking)
+        - Validation errors
+        - API key issues
+
+        Args:
+            error: Error message string
+
+        Returns:
+            True if the error is likely transient and worth retrying
+        """
+        if not error:
+            return False
+
+        error_lower = error.lower()
+
+        # Server errors (5xx)
+        server_error_patterns = [
+            "500", "501", "502", "503", "504",
+            "internal server error",
+            "bad gateway",
+            "service unavailable",
+            "gateway timeout",
+        ]
+
+        # Network/connection errors
+        network_error_patterns = [
+            "broken pipe",
+            "connection refused",
+            "connection reset",
+            "connection closed",
+            "connection aborted",
+            "network unreachable",
+            "host unreachable",
+            "no route to host",
+            "dns",
+            "name resolution",
+            "temporary failure",
+            "timeout",
+            "timed out",
+        ]
+
+        # Check for retryable patterns
+        for pattern in server_error_patterns + network_error_patterns:
+            if pattern in error_lower:
+                return True
+
+        return False
+
+    async def execute_with_retry(
+        self,
+        request_fn: Callable[[], Any],
+        max_retries: int = 2,
+        backoff_base: float = 1.0,
+        backoff_max: float = 30.0,
+        operation_name: str = "request"
+    ) -> Any:
+        """
+        Execute an async function with automatic retry on transient errors.
+
+        This is a helper method that integrations can use for network operations.
+        It implements exponential backoff with jitter for retries.
+
+        Args:
+            request_fn: Async callable that performs the request (no arguments)
+            max_retries: Maximum number of retry attempts (default: 2)
+            backoff_base: Base time in seconds for exponential backoff (default: 1.0)
+            backoff_max: Maximum backoff time in seconds (default: 30.0)
+            operation_name: Name of the operation for logging (default: "request")
+
+        Returns:
+            The result of request_fn() if successful
+
+        Raises:
+            The last exception if all retries are exhausted
+
+        Example:
+            async def _make_api_call():
+                response = await session.get(url)
+                response.raise_for_status()
+                return response
+
+            result = await self.execute_with_retry(
+                _make_api_call,
+                max_retries=2,
+                operation_name="API call"
+            )
+        """
+        last_exception = None
+
+        for attempt in range(max_retries + 1):
+            try:
+                return await request_fn()
+            except Exception as e:
+                last_exception = e
+                error_str = str(e)
+
+                # Check if error is retryable
+                if not self.is_retryable_error(error_str):
+                    logger.debug(f"{self.metadata.name}: Non-retryable error: {error_str}")
+                    raise
+
+                # Check if we have retries left
+                if attempt >= max_retries:
+                    logger.warning(
+                        f"{self.metadata.name}: {operation_name} failed after "
+                        f"{max_retries + 1} attempts: {error_str}"
+                    )
+                    raise
+
+                # Calculate backoff with exponential increase and jitter
+                backoff = min(backoff_base * (2 ** attempt), backoff_max)
+                jitter = random.uniform(0, backoff * 0.1)  # 10% jitter
+                wait_time = backoff + jitter
+
+                logger.info(
+                    f"{self.metadata.name}: {operation_name} failed (attempt {attempt + 1}/"
+                    f"{max_retries + 1}), retrying in {wait_time:.1f}s: {error_str}"
+                )
+                await asyncio.sleep(wait_time)
+
+        # Should never reach here, but just in case
+        if last_exception:
+            raise last_exception
