@@ -1684,28 +1684,37 @@ Return JSON:
             for source, titles in evidence_by_source.items()
         ])
 
-        # Get rich entity data from EntityAnalyzer (not just title substrings)
-        # Sort by importance (mention count) and take top 15
+        # Get ALL entity data from EntityAnalyzer - let LLM decide what's important
+        # Philosophy: Give LLM full context, not pre-filtered samples
         entity_graph = self.entity_analyzer.get_entity_graph()
-        sorted_entities = sorted(
-            entity_graph.items(),
-            key=lambda x: x[1].get("source_count", 0) or len(x[1].get("evidence", [])),
-            reverse=True
-        )[:15]
 
-        entity_sample = []
-        for entity_name, data in sorted_entities:
+        # Format ALL entities with full context for LLM decision-making
+        entity_details = []
+        for entity_name, data in entity_graph.items():
             mention_count = data.get("source_count", 0) or len(data.get("evidence", []))
-            related = data.get("related_entities", [])[:3]  # Top 3 related
-            # Title-case for readability (entities stored lowercase for dedup)
+            related = data.get("related_entities", [])
+            evidence_sources = list(set(
+                e.get("source", "unknown") for e in data.get("evidence", [])
+            ))
+
+            # Title-case for readability
             display_name = entity_name.title()
-            entity_info = f"{display_name}"
-            if mention_count > 1:
-                entity_info += f" ({mention_count} mentions)"
+
+            # Build comprehensive entity info for LLM
+            entity_info = f"- {display_name}"
+            if mention_count > 0:
+                entity_info += f" (mentioned {mention_count}x"
+                if evidence_sources:
+                    entity_info += f" in: {', '.join(evidence_sources[:5])}"
+                entity_info += ")"
             if related:
-                related_display = [r.title() for r in related]
-                entity_info += f" - related to: {', '.join(related_display)}"
-            entity_sample.append(entity_info)
+                related_display = [r.title() for r in related[:5]]
+                entity_info += f"\n    Related to: {', '.join(related_display)}"
+
+            entity_details.append(entity_info)
+
+        # Join all entities - let LLM see full picture and decide importance
+        entity_section = "\n".join(entity_details) if entity_details else "(None extracted)"
 
         # Find unused sources
         used_source_ids = {s.lower().replace(" ", "_") for s in sources_used}
@@ -1730,7 +1739,7 @@ WHAT HAS BEEN GATHERED ({len(evidence)} pieces from {len(sources_used)} sources)
 {evidence_summary}
 
 KEY ENTITIES/ITEMS DISCOVERED (potential follow-up targets):
-{chr(10).join(f'  - {e}' for e in entity_sample) if entity_sample else '  (None extracted)'}
+{entity_section}
 
 UNTRIED STRATEGIES (from coverage assessment):
 {untried_text}
