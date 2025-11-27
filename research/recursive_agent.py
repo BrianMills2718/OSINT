@@ -1663,16 +1663,26 @@ Return JSON:
         ])
 
         # Get rich entity data from EntityAnalyzer (not just title substrings)
+        # Sort by importance (mention count) and take top 15
         entity_graph = self.entity_analyzer.get_entity_graph()
+        sorted_entities = sorted(
+            entity_graph.items(),
+            key=lambda x: x[1].get("source_count", 0) or len(x[1].get("evidence", [])),
+            reverse=True
+        )[:15]
+
         entity_sample = []
-        for entity_name, data in list(entity_graph.items())[:15]:
+        for entity_name, data in sorted_entities:
             mention_count = data.get("source_count", 0) or len(data.get("evidence", []))
             related = data.get("related_entities", [])[:3]  # Top 3 related
-            entity_info = f"{entity_name}"
+            # Title-case for readability (entities stored lowercase for dedup)
+            display_name = entity_name.title()
+            entity_info = f"{display_name}"
             if mention_count > 1:
                 entity_info += f" ({mention_count} mentions)"
             if related:
-                entity_info += f" - related to: {', '.join(related)}"
+                related_display = [r.title() for r in related]
+                entity_info += f" - related to: {', '.join(related_display)}"
             entity_sample.append(entity_info)
 
         # Find unused sources
