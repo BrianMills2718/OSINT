@@ -118,6 +118,14 @@ class Constraints:
     max_evidence_per_source_in_report: int = 5  # Per-source in markdown report
     max_content_chars_in_report: int = 200  # Content truncation in report
 
+    # === Iterative Research Loop ===
+    max_iterations: int = 10  # Maximum follow-up iterations
+    min_evidence_for_completion: int = 50  # Minimum evidence before considering done
+    min_sources_for_completion: int = 5  # Minimum distinct sources before done
+    coverage_confidence_threshold: float = 0.8  # Stop when coverage confidence > this
+    cost_per_coverage_check: float = 0.0003  # Cost per coverage assessment
+    cost_per_follow_up_generation: float = 0.0004  # Cost per follow-up generation
+
 
 @dataclass
 class Evidence:
@@ -586,6 +594,12 @@ class RecursiveResearchAgent:
         """
         Main entry point for research.
 
+        Runs an ITERATIVE research loop:
+        1. Pursue the main goal
+        2. Assess coverage gaps
+        3. Generate follow-up goals to fill gaps
+        4. Continue until coverage sufficient OR budget exhausted
+
         Args:
             question: The research question/objective
 
@@ -610,6 +624,7 @@ class RecursiveResearchAgent:
               f"time={self.constraints.max_time_seconds}s, "
               f"cost=${self.constraints.max_cost_dollars}")
         print(f"Sources: {len(self.available_sources)} available")
+        print(f"Max iterations: {self.constraints.max_iterations}")
         print(f"{'='*60}\n")
 
         # Log run start with enhanced logging
@@ -619,22 +634,117 @@ class RecursiveResearchAgent:
             sources_available=len(self.available_sources)
         )
 
-        result = await self.pursue_goal(question, context)
+        # === ITERATIVE RESEARCH LOOP ===
+        all_evidence: List[Evidence] = []
+        all_sub_results: List[GoalResult] = []
+        iteration = 0
+        total_cost = 0.0
+        start_time = datetime.now()
+
+        while iteration < self.constraints.max_iterations:
+            iteration += 1
+            print(f"\n--- Iteration {iteration}/{self.constraints.max_iterations} ---")
+
+            # Check budget constraints
+            elapsed = (datetime.now() - start_time).total_seconds()
+            if elapsed > self.constraints.max_time_seconds:
+                print(f"  ⏱️ Time limit reached ({elapsed:.0f}s > {self.constraints.max_time_seconds}s)")
+                break
+            if total_cost > self.constraints.max_cost_dollars:
+                print(f"  💰 Cost limit reached (${total_cost:.4f} > ${self.constraints.max_cost_dollars})")
+                break
+
+            if iteration == 1:
+                # First iteration: pursue the main goal
+                result = await self.pursue_goal(question, context)
+                all_evidence.extend(result.evidence)
+                all_sub_results.append(result)
+                total_cost += result.cost_dollars
+            else:
+                # Subsequent iterations: generate and pursue follow-ups
+                follow_ups = await self._generate_follow_ups(
+                    question, all_evidence, context
+                )
+                total_cost += self.constraints.cost_per_follow_up_generation
+
+                if not follow_ups:
+                    print("  ✓ No more follow-ups needed")
+                    break
+
+                print(f"  📋 Generated {len(follow_ups)} follow-up goals")
+                for fu in follow_ups:
+                    print(f"    - {fu[:60]}...")
+
+                # Pursue follow-ups (with fresh context but accumulated evidence)
+                for follow_up in follow_ups:
+                    # Check constraints before each follow-up
+                    elapsed = (datetime.now() - start_time).total_seconds()
+                    if elapsed > self.constraints.max_time_seconds:
+                        break
+                    if total_cost > self.constraints.max_cost_dollars:
+                        break
+
+                    fu_context = context.with_evidence(all_evidence)
+                    fu_result = await self.pursue_goal(follow_up, fu_context)
+                    all_evidence.extend(fu_result.evidence)
+                    all_sub_results.append(fu_result)
+                    total_cost += fu_result.cost_dollars
+
+            # Assess coverage after each iteration
+            coverage = await self._assess_coverage(question, all_evidence, context)
+            total_cost += self.constraints.cost_per_coverage_check
+
+            print(f"  📊 Coverage: {coverage['confidence']:.0%} "
+                  f"({len(all_evidence)} evidence, "
+                  f"{len(set(e.source for e in all_evidence))} sources)")
+
+            if coverage.get('sufficient', False):
+                print(f"  ✓ Coverage sufficient: {coverage.get('reasoning', '')[:60]}...")
+                break
+
+            # Log gaps for next iteration
+            gaps = coverage.get('gaps', [])
+            if gaps:
+                print(f"  🔍 Gaps identified: {', '.join(gaps[:3])}")
+
+        # === FINAL SYNTHESIS ===
+        print(f"\n--- Final Synthesis ---")
+        print(f"Total iterations: {iteration}")
+        print(f"Total evidence: {len(all_evidence)}")
+        print(f"Total cost: ${total_cost:.4f}")
+
+        # Create final result combining all iterations
+        final_result = GoalResult(
+            goal=question,
+            status=GoalStatus.COMPLETED,
+            evidence=all_evidence,
+            sub_results=all_sub_results,
+            confidence=coverage.get('confidence', 0.5),
+            reasoning=coverage.get('reasoning', 'Research completed'),
+            depth=0,
+            duration_seconds=(datetime.now() - start_time).total_seconds(),
+            cost_dollars=total_cost
+        )
+
+        # Generate synthesis
+        synthesis = await self._synthesize(question, all_sub_results, context)
+        final_result.synthesis = synthesis.text if hasattr(synthesis, 'text') else str(synthesis)
+        final_result.confidence = synthesis.confidence if hasattr(synthesis, 'confidence') else coverage.get('confidence', 0.5)
 
         # Log run complete
         self.logger.log_run_complete(
             objective=question,
-            status=result.status.value,
-            total_evidence=len(result.evidence),
+            status=final_result.status.value,
+            total_evidence=len(final_result.evidence),
             total_goals=context.goals_created,
-            elapsed_seconds=result.duration_seconds,
-            total_cost=result.cost_dollars
+            elapsed_seconds=final_result.duration_seconds,
+            total_cost=final_result.cost_dollars
         )
 
         # Save final result (async for LLM-based report synthesis)
-        await self._save_result(result)
+        await self._save_result(final_result)
 
-        return result
+        return final_result
 
     async def pursue_goal(self, goal: str, context: GoalContext) -> GoalResult:
         """
@@ -1358,6 +1468,182 @@ Return JSON:
         except Exception as e:
             logger.error(f"Achievement check failed: {e}")
             return False  # Keep going on error
+
+    async def _assess_coverage(
+        self,
+        objective: str,
+        evidence: List[Evidence],
+        context: GoalContext
+    ) -> Dict[str, Any]:
+        """
+        Assess whether research coverage is sufficient.
+
+        Returns dict with:
+            - sufficient: bool - whether to stop
+            - confidence: float - coverage confidence 0-1
+            - gaps: list - identified gaps for follow-up
+            - reasoning: str - explanation
+        """
+        from llm_utils import acompletion
+
+        # Quick heuristic checks
+        sources_used = set(e.source for e in evidence)
+        if (len(evidence) < self.constraints.min_evidence_for_completion or
+                len(sources_used) < self.constraints.min_sources_for_completion):
+            return {
+                "sufficient": False,
+                "confidence": len(evidence) / self.constraints.min_evidence_for_completion * 0.5,
+                "gaps": ["Need more evidence from more sources"],
+                "reasoning": f"Only {len(evidence)} evidence from {len(sources_used)} sources"
+            }
+
+        # LLM assessment for sophisticated gap analysis
+        evidence_summary = "\n".join([
+            f"- [{e.source}] {e.title}: {e.content[:100]}..."
+            for e in evidence[:30]  # Limit for context
+        ])
+
+        sources_summary = ", ".join(sorted(sources_used))
+
+        prompt = f"""Assess research coverage for this objective.
+
+OBJECTIVE: {objective}
+
+EVIDENCE GATHERED ({len(evidence)} pieces from {len(sources_used)} sources):
+Sources used: {sources_summary}
+
+Sample evidence:
+{evidence_summary}
+
+AVAILABLE SOURCES (not all used):
+{chr(10).join(f"- {s['name']}: {s['description'][:50]}..." for s in context.available_sources[:15])}
+
+Assess:
+1. Is the coverage SUFFICIENT to answer the objective comprehensively?
+2. What specific GAPS remain (topics not covered, sources not queried)?
+3. What is the overall confidence in the research coverage?
+
+Consider:
+- Are multiple source TYPES covered (government records, news, legal, financial)?
+- Are different ANGLES of the objective explored?
+- Are there obvious missing pieces?
+
+Return JSON:
+{{
+    "sufficient": true/false,
+    "confidence": 0.0-1.0,
+    "gaps": ["Specific gap 1", "Specific gap 2"],
+    "unexplored_sources": ["Source that should be queried"],
+    "reasoning": "Brief explanation of coverage assessment"
+}}"""
+
+        try:
+            response = await acompletion(
+                model="gemini/gemini-2.5-flash",
+                messages=[{"role": "user", "content": prompt}],
+                response_format={"type": "json_object"}
+            )
+
+            result = json.loads(response.choices[0].message.content)
+
+            # Override if confidence exceeds threshold
+            if result.get("confidence", 0) >= self.constraints.coverage_confidence_threshold:
+                result["sufficient"] = True
+
+            return result
+
+        except Exception as e:
+            logger.error(f"Coverage assessment failed: {e}")
+            return {
+                "sufficient": False,
+                "confidence": 0.5,
+                "gaps": ["Assessment failed - continue research"],
+                "reasoning": str(e)
+            }
+
+    async def _generate_follow_ups(
+        self,
+        objective: str,
+        evidence: List[Evidence],
+        context: GoalContext
+    ) -> List[str]:
+        """
+        Generate follow-up research goals based on gaps and findings.
+
+        Returns list of follow-up goal descriptions.
+        """
+        from llm_utils import acompletion
+
+        # Summarize what we have
+        sources_used = set(e.source for e in evidence)
+        evidence_summary = "\n".join([
+            f"- [{e.source}] {e.title}"
+            for e in evidence[:20]
+        ])
+
+        # Find unused sources
+        used_source_ids = {s.lower().replace(" ", "_") for s in sources_used}
+        unused_sources = [
+            s for s in context.available_sources
+            if s['id'].lower() not in used_source_ids
+        ]
+
+        prompt = f"""Generate follow-up research goals to fill coverage gaps.
+
+ORIGINAL OBJECTIVE: {objective}
+
+EVIDENCE GATHERED SO FAR ({len(evidence)} pieces):
+{evidence_summary}
+
+SOURCES ALREADY QUERIED: {', '.join(sorted(sources_used))}
+
+SOURCES NOT YET QUERIED:
+{chr(10).join(f"- {s['name']}: {s['description'][:60]}..." for s in unused_sources[:10])}
+
+Generate 2-5 follow-up goals that:
+1. Fill specific GAPS in the current evidence
+2. Query UNUSED sources that are relevant
+3. Explore different ANGLES of the objective
+4. Follow up on interesting FINDINGS (entities, connections discovered)
+5. Are SPECIFIC and actionable (target specific sources)
+
+DO NOT generate follow-ups that:
+- Duplicate existing evidence
+- Query sources already used with similar queries
+- Are too broad to be actionable
+
+Return JSON:
+{{
+    "follow_ups": [
+        {{
+            "goal": "Specific follow-up goal description",
+            "rationale": "Why this is needed",
+            "target_source": "Primary source to query"
+        }}
+    ],
+    "stop_reason": "Explanation if no follow-ups needed" // optional
+}}"""
+
+        try:
+            response = await acompletion(
+                model="gemini/gemini-2.5-flash",
+                messages=[{"role": "user", "content": prompt}],
+                response_format={"type": "json_object"}
+            )
+
+            result = json.loads(response.choices[0].message.content)
+
+            follow_ups = result.get("follow_ups", [])
+            if not follow_ups:
+                if result.get("stop_reason"):
+                    logger.info(f"No follow-ups: {result['stop_reason']}")
+                return []
+
+            return [fu["goal"] for fu in follow_ups if fu.get("goal")]
+
+        except Exception as e:
+            logger.error(f"Follow-up generation failed: {e}")
+            return []
 
     async def _synthesize(
         self,
