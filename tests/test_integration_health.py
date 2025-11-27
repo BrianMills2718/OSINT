@@ -24,13 +24,13 @@ from integrations.registry import registry
 TEST_QUERIES = {
     # Government
     "sam": "cybersecurity contracts",
-    "usaspending": "defense contracts 2024",
-    "federal_register": "artificial intelligence",
+    "usaspending": "Find federal spending on cybersecurity contracts",  # Needs spending-related keywords
+    "federal_register": "Find federal regulations on artificial intelligence",  # Needs regulation keywords
     "congress": "defense authorization",
     "govinfo": "government accountability",
     "fec": "campaign contributions",
-    "sec_edgar": "annual report",
-    "crest_selenium": "intelligence",
+    "sec_edgar": "Find SEC filings for Microsoft Corporation",  # Needs company name
+    "crest_selenium": "Find CIA documents about Cold War operations",
 
     # Jobs
     "usajobs": "software engineer",
