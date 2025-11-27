@@ -1165,7 +1165,17 @@ Return JSON:
                 if result.success or not result.error:
                     break
 
-                # Try to reformulate on error
+                # Try to reformulate on error (skip for rate limits - unfixable)
+                error_msg = str(result.error or "").lower()
+                is_rate_limit = any(term in error_msg for term in [
+                    "rate limit", "429", "quota exceeded", "too many requests",
+                    "throttl", "request limit", "daily limit"
+                ])
+
+                if is_rate_limit:
+                    logger.warning(f"{source_id}: Rate limit detected, skipping reformulation")
+                    break  # Exit retry loop - rate limits aren't fixable by reformulation
+
                 if attempt < max_retries - 1:
                     logger.warning(f"{source_id} error: {result.error}, attempting reformulation")
                     fixed_params = await self._reformulate_on_error(
