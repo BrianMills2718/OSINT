@@ -113,10 +113,14 @@ Return a JSON object with this structure:
         "timeline": [
             {
                 "date": "Date or date range",
-                "event": "What happened",
-                "sources": [{"title": "Source", "url": "url"}]
+                "event": "What happened - MUST be directly related to the research objective",
+                "sources": [{"title": "Source", "url": "url from evidence above"}]
             }
         ],
+        // CRITICAL: Timeline must ONLY include events directly related to the research objective.
+        // DO NOT include unrelated regulatory items (Federal Register) that happen to appear in results.
+        // For example, if researching "Palantir", do NOT include Medicare regulations, horse racing rules,
+        // or environmental plans that appeared in search results but are not about Palantir.
         "methodology": {
             "approach": "Description of research approach",
             "goals_pursued": {{ goals_pursued }},
@@ -137,9 +141,12 @@ Return a JSON object with this structure:
     }
 }
 
-IMPORTANT:
-- Every claim MUST have at least one inline citation with URL
+IMPORTANT CITATION RULES:
+- Every claim MUST have at least one inline citation with a REAL URL from the evidence above
+- URLs MUST come from the "URL:" field shown in the evidence - do not make up URLs
+- If evidence shows "URL: N/A", use the source name without a URL link
+- Do NOT use goal descriptions as citations - use actual evidence titles and URLs
 - Group findings logically by theme or source type
 - Be specific about what evidence supports each claim
 - Note confidence levels and limitations honestly
-- Include dates where known for timeline accuracy
+- Timeline should ONLY include events about the research subject - filter out unrelated regulatory items

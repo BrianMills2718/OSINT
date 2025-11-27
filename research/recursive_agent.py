@@ -119,12 +119,12 @@ class Constraints:
     max_content_chars_in_report: int = 200  # Content truncation in report
 
     # === Iterative Research Loop ===
-    max_iterations: int = 10  # Maximum follow-up iterations
-    min_evidence_for_completion: int = 50  # Minimum evidence before considering done
-    min_sources_for_completion: int = 5  # Minimum distinct sources before done
-    coverage_confidence_threshold: float = 0.8  # Stop when coverage confidence > this
+    max_iterations: int = 10  # Maximum follow-up iterations (safety limit only)
     cost_per_coverage_check: float = 0.0003  # Cost per coverage assessment
     cost_per_follow_up_generation: float = 0.0004  # Cost per follow-up generation
+
+    # NOTE: No hardcoded thresholds for "enough evidence" or "enough sources"
+    # The LLM reasons through what SHOULD exist and whether it has exhausted options
 
 
 @dataclass
@@ -640,6 +640,7 @@ class RecursiveResearchAgent:
         iteration = 0
         total_cost = 0.0
         start_time = datetime.now()
+        coverage: Dict[str, Any] = {}  # Will hold coverage assessment between iterations
 
         while iteration < self.constraints.max_iterations:
             iteration += 1
@@ -662,13 +663,15 @@ class RecursiveResearchAgent:
                 total_cost += result.cost_dollars
             else:
                 # Subsequent iterations: generate and pursue follow-ups
+                # Pass coverage reasoning so follow-ups address identified gaps
                 follow_ups = await self._generate_follow_ups(
-                    question, all_evidence, context
+                    question, all_evidence, context,
+                    coverage_reasoning=coverage  # From previous iteration
                 )
                 total_cost += self.constraints.cost_per_follow_up_generation
 
                 if not follow_ups:
-                    print("  ✓ No more follow-ups needed")
+                    print("  ✓ No more follow-ups needed - research exhausted")
                     break
 
                 print(f"  📋 Generated {len(follow_ups)} follow-up goals")
@@ -690,22 +693,22 @@ class RecursiveResearchAgent:
                     all_sub_results.append(fu_result)
                     total_cost += fu_result.cost_dollars
 
-            # Assess coverage after each iteration
+            # Assess coverage after each iteration - LLM reasons through completeness
             coverage = await self._assess_coverage(question, all_evidence, context)
             total_cost += self.constraints.cost_per_coverage_check
 
-            print(f"  📊 Coverage: {coverage['confidence']:.0%} "
-                  f"({len(all_evidence)} evidence, "
-                  f"{len(set(e.source for e in all_evidence))} sources)")
+            # Show reasoning-based assessment
+            print(f"  📊 Assessment: {len(all_evidence)} evidence from "
+                  f"{len(set(e.source for e in all_evidence))} sources")
 
             if coverage.get('sufficient', False):
-                print(f"  ✓ Coverage sufficient: {coverage.get('reasoning', '')[:60]}...")
+                print(f"  ✓ Research exhausted: {coverage.get('reasoning', '')[:80]}...")
                 break
 
-            # Log gaps for next iteration
+            # Show what LLM identified as untried strategies
             gaps = coverage.get('gaps', [])
             if gaps:
-                print(f"  🔍 Gaps identified: {', '.join(gaps[:3])}")
+                print(f"  🔍 Untried strategies: {', '.join(str(g)[:40] for g in gaps[:3])}")
 
         # === FINAL SYNTHESIS ===
         print(f"\n--- Final Synthesis ---")
@@ -1139,8 +1142,11 @@ Return JSON:
                 )
 
                 start_time = datetime.now()
+                # Bug fix: Get API key from registry (was missing, causing 16+ source failures)
+                api_key = self.registry.get_api_key(source_id)
                 result = await integration.execute_search(
                     current_params,
+                    api_key=api_key,
                     limit=context.constraints.max_results_per_source
                 )
                 response_time_ms = (datetime.now() - start_time).total_seconds() * 1000
@@ -1476,65 +1482,102 @@ Return JSON:
         context: GoalContext
     ) -> Dict[str, Any]:
         """
-        Assess whether research coverage is sufficient.
+        Reasoning-based assessment of whether research is complete.
+
+        NO arbitrary thresholds. The LLM reasons through:
+        1. What types of information SHOULD exist for this objective?
+        2. What sources COULD have this information?
+        3. What has been tried vs not tried?
+        4. Have all reasonable search strategies been exhausted?
+        5. What is still missing that could realistically be found?
 
         Returns dict with:
-            - sufficient: bool - whether to stop
-            - confidence: float - coverage confidence 0-1
-            - gaps: list - identified gaps for follow-up
-            - reasoning: str - explanation
+            - exhausted: bool - whether all reasonable options have been tried
+            - confidence: float - confidence in completeness (for reporting only)
+            - untried_strategies: list - strategies that haven't been attempted
+            - reasoning: str - full reasoning chain
         """
         from llm_utils import acompletion
 
-        # Quick heuristic checks
+        # Gather context for LLM reasoning
         sources_used = set(e.source for e in evidence)
-        if (len(evidence) < self.constraints.min_evidence_for_completion or
-                len(sources_used) < self.constraints.min_sources_for_completion):
-            return {
-                "sufficient": False,
-                "confidence": len(evidence) / self.constraints.min_evidence_for_completion * 0.5,
-                "gaps": ["Need more evidence from more sources"],
-                "reasoning": f"Only {len(evidence)} evidence from {len(sources_used)} sources"
-            }
+        sources_not_used = [
+            s for s in context.available_sources
+            if s['name'] not in sources_used and s['id'] not in {su.lower().replace(' ', '_') for su in sources_used}
+        ]
 
-        # LLM assessment for sophisticated gap analysis
+        # Sample of evidence titles by source
+        evidence_by_source = {}
+        for e in evidence:
+            if e.source not in evidence_by_source:
+                evidence_by_source[e.source] = []
+            if len(evidence_by_source[e.source]) < 5:
+                evidence_by_source[e.source].append(e.title[:80])
+
         evidence_summary = "\n".join([
-            f"- [{e.source}] {e.title}: {e.content[:100]}..."
-            for e in evidence[:30]  # Limit for context
+            f"  {source} ({len(titles)} items): {', '.join(titles[:3])}{'...' if len(titles) > 3 else ''}"
+            for source, titles in evidence_by_source.items()
         ])
 
-        sources_summary = ", ".join(sorted(sources_used))
+        unused_sources_text = "\n".join([
+            f"  - {s['name']}: {s['description'][:60]}..."
+            for s in sources_not_used[:12]
+        ]) or "  (All available sources have been queried)"
 
-        prompt = f"""Assess research coverage for this objective.
+        prompt = f"""You are a thorough investigative researcher. Reason through whether this research is complete.
 
-OBJECTIVE: {objective}
+RESEARCH OBJECTIVE:
+{objective}
 
-EVIDENCE GATHERED ({len(evidence)} pieces from {len(sources_used)} sources):
-Sources used: {sources_summary}
-
-Sample evidence:
+WHAT HAS BEEN GATHERED ({len(evidence)} pieces from {len(sources_used)} sources):
 {evidence_summary}
 
-AVAILABLE SOURCES (not all used):
-{chr(10).join(f"- {s['name']}: {s['description'][:50]}..." for s in context.available_sources[:15])}
+SOURCES NOT YET QUERIED:
+{unused_sources_text}
 
-Assess:
-1. Is the coverage SUFFICIENT to answer the objective comprehensively?
-2. What specific GAPS remain (topics not covered, sources not queried)?
-3. What is the overall confidence in the research coverage?
+REASON THROUGH THE FOLLOWING:
 
-Consider:
-- Are multiple source TYPES covered (government records, news, legal, financial)?
-- Are different ANGLES of the objective explored?
-- Are there obvious missing pieces?
+1. WHAT SHOULD EXIST?
+   For this objective, what types of information should theoretically exist?
+   (e.g., government records, news articles, legal filings, financial disclosures, social media, etc.)
+
+2. WHAT SOURCES COULD HAVE IT?
+   Which of the available sources (used and unused) could contain relevant information?
+   Which ones are ESSENTIAL vs nice-to-have?
+
+3. WHAT HAS BEEN TRIED?
+   Review what sources have been queried and what was found.
+   Were the queries comprehensive or narrow?
+
+4. WHAT STRATEGIES REMAIN?
+   Are there untried search strategies? Examples:
+   - Different query terms or angles
+   - Following up on discovered entities (people, organizations, contracts)
+   - Searching unused sources that could be relevant
+   - Cross-referencing findings across sources
+
+5. HAVE I EXHAUSTED REASONABLE OPTIONS?
+   Have all essential sources been queried?
+   Have major angles been explored?
+   Would additional searching likely yield significant NEW information?
+   Or am I just likely to find duplicates/minor additions?
+
+Based on your reasoning, decide:
+- If there are CLEAR, ACTIONABLE strategies that could yield significant new information → NOT exhausted
+- If you've tried the essential sources and major angles, and further searching would have diminishing returns → EXHAUSTED
 
 Return JSON:
 {{
-    "sufficient": true/false,
+    "reasoning_chain": {{
+        "what_should_exist": "Your analysis of what information types should exist...",
+        "relevant_sources": "Which sources are essential vs nice-to-have...",
+        "what_was_tried": "Summary of search efforts so far...",
+        "untried_strategies": ["Specific strategy 1", "Specific strategy 2"],
+        "diminishing_returns": "Whether further searching would likely yield significant new info..."
+    }},
+    "exhausted": true/false,
     "confidence": 0.0-1.0,
-    "gaps": ["Specific gap 1", "Specific gap 2"],
-    "unexplored_sources": ["Source that should be queried"],
-    "reasoning": "Brief explanation of coverage assessment"
+    "recommendation": "Brief recommendation on whether to continue or stop"
 }}"""
 
         try:
@@ -1546,11 +1589,15 @@ Return JSON:
 
             result = json.loads(response.choices[0].message.content)
 
-            # Override if confidence exceeds threshold
-            if result.get("confidence", 0) >= self.constraints.coverage_confidence_threshold:
-                result["sufficient"] = True
-
-            return result
+            # Extract for backward compatibility
+            reasoning_chain = result.get("reasoning_chain", {})
+            return {
+                "sufficient": result.get("exhausted", False),
+                "confidence": result.get("confidence", 0.5),
+                "gaps": reasoning_chain.get("untried_strategies", []),
+                "reasoning": result.get("recommendation", ""),
+                "full_reasoning": reasoning_chain
+            }
 
         except Exception as e:
             logger.error(f"Coverage assessment failed: {e}")
@@ -1565,10 +1612,14 @@ Return JSON:
         self,
         objective: str,
         evidence: List[Evidence],
-        context: GoalContext
+        context: GoalContext,
+        coverage_reasoning: Optional[Dict[str, Any]] = None
     ) -> List[str]:
         """
-        Generate follow-up research goals based on gaps and findings.
+        Generate strategic follow-up research goals based on reasoning.
+
+        Uses the untried_strategies from coverage assessment to guide follow-ups.
+        Focuses on what the LLM reasoned SHOULD be tried next.
 
         Returns list of follow-up goal descriptions.
         """
@@ -1576,10 +1627,27 @@ Return JSON:
 
         # Summarize what we have
         sources_used = set(e.source for e in evidence)
+
+        # Group evidence by source with sample titles
+        evidence_by_source = {}
+        for e in evidence:
+            if e.source not in evidence_by_source:
+                evidence_by_source[e.source] = []
+            if len(evidence_by_source[e.source]) < 3:
+                evidence_by_source[e.source].append(e.title[:60])
+
         evidence_summary = "\n".join([
-            f"- [{e.source}] {e.title}"
-            for e in evidence[:20]
+            f"  {source}: {', '.join(titles)}"
+            for source, titles in evidence_by_source.items()
         ])
+
+        # Extract key entities discovered (for follow-up queries)
+        entity_names = set()
+        for e in evidence:
+            # Extract potential entity names from titles
+            if e.title and len(e.title) > 3:
+                entity_names.add(e.title[:50])
+        entity_sample = list(entity_names)[:10]
 
         # Find unused sources
         used_source_ids = {s.lower().replace(" ", "_") for s in sources_used}
@@ -1588,40 +1656,52 @@ Return JSON:
             if s['id'].lower() not in used_source_ids
         ]
 
-        prompt = f"""Generate follow-up research goals to fill coverage gaps.
+        # Include untried strategies from coverage assessment if available
+        untried_strategies = []
+        if coverage_reasoning and coverage_reasoning.get("full_reasoning"):
+            untried_strategies = coverage_reasoning["full_reasoning"].get("untried_strategies", [])
 
-ORIGINAL OBJECTIVE: {objective}
+        untried_text = "\n".join([f"  - {s}" for s in untried_strategies]) if untried_strategies else "  (None identified)"
 
-EVIDENCE GATHERED SO FAR ({len(evidence)} pieces):
+        prompt = f"""You are a strategic research planner. Based on the coverage assessment, generate specific follow-up goals.
+
+RESEARCH OBJECTIVE:
+{objective}
+
+WHAT HAS BEEN GATHERED ({len(evidence)} pieces from {len(sources_used)} sources):
 {evidence_summary}
 
-SOURCES ALREADY QUERIED: {', '.join(sorted(sources_used))}
+KEY ENTITIES/ITEMS DISCOVERED (potential follow-up targets):
+{chr(10).join(f'  - {e}' for e in entity_sample) if entity_sample else '  (None extracted)'}
 
-SOURCES NOT YET QUERIED:
-{chr(10).join(f"- {s['name']}: {s['description'][:60]}..." for s in unused_sources[:10])}
+UNTRIED STRATEGIES (from coverage assessment):
+{untried_text}
 
-Generate 2-5 follow-up goals that:
-1. Fill specific GAPS in the current evidence
-2. Query UNUSED sources that are relevant
-3. Explore different ANGLES of the objective
-4. Follow up on interesting FINDINGS (entities, connections discovered)
-5. Are SPECIFIC and actionable (target specific sources)
+UNUSED SOURCES:
+{chr(10).join(f"  - {s['name']}: {s['description'][:50]}..." for s in unused_sources[:10]) or '  (All sources queried)'}
 
-DO NOT generate follow-ups that:
-- Duplicate existing evidence
-- Query sources already used with similar queries
-- Are too broad to be actionable
+Generate follow-up goals that:
+1. IMPLEMENT the untried strategies identified above
+2. Query UNUSED sources that are genuinely relevant (not just for the sake of it)
+3. FOLLOW UP on discovered entities - search for specific names/contracts/organizations found
+4. Explore DIFFERENT ANGLES not yet covered
+5. Are SPECIFIC and ACTIONABLE - clear what source to query and what to search for
+
+Each goal should be something that could yield SIGNIFICANT NEW information, not marginal additions.
+
+If there are no meaningful follow-ups remaining, return an empty list with explanation.
 
 Return JSON:
 {{
+    "strategic_reasoning": "Brief explanation of follow-up strategy",
     "follow_ups": [
         {{
-            "goal": "Specific follow-up goal description",
-            "rationale": "Why this is needed",
-            "target_source": "Primary source to query"
+            "goal": "Specific, actionable follow-up goal",
+            "strategy": "Which untried strategy this addresses",
+            "expected_value": "What new information this could yield"
         }}
     ],
-    "stop_reason": "Explanation if no follow-ups needed" // optional
+    "stop_reason": "If no follow-ups, explain why research is complete"
 }}"""
 
         try:
@@ -1635,9 +1715,13 @@ Return JSON:
 
             follow_ups = result.get("follow_ups", [])
             if not follow_ups:
-                if result.get("stop_reason"):
-                    logger.info(f"No follow-ups: {result['stop_reason']}")
+                stop_reason = result.get("stop_reason", "No follow-ups generated")
+                logger.info(f"No follow-ups: {stop_reason}")
                 return []
+
+            # Log the strategic reasoning
+            if result.get("strategic_reasoning"):
+                logger.info(f"Follow-up strategy: {result['strategic_reasoning']}")
 
             return [fu["goal"] for fu in follow_ups if fu.get("goal")]
 
@@ -2065,6 +2149,7 @@ Return JSON:
             "sub_results_count": len(result.sub_results),
             "depth": result.depth,
             "duration_seconds": result.duration_seconds,
+            "cost_dollars": result.cost_dollars,  # Bug fix: was missing
             "evidence": [
                 {
                     "source": e.source,
@@ -2153,6 +2238,9 @@ Return JSON:
 
             synthesis_json = json.loads(response.choices[0].message.content)
 
+            # Log synthesis decisions for debugging (timeline, citations, etc.)
+            self._log_synthesis_decisions(synthesis_json, result.goal)
+
             # Convert JSON to markdown
             report = self._format_synthesis_to_markdown(synthesis_json, result)
 
@@ -2162,6 +2250,53 @@ Return JSON:
             logger.error(f"Report synthesis failed: {e}", exc_info=True)
             # Fallback to basic report
             return self._generate_basic_report(result, by_source)
+
+    def _log_synthesis_decisions(self, synthesis_json: Dict, objective: str):
+        """
+        Log synthesis decisions for debugging and forensic analysis.
+
+        Captures timeline items, citation sources, and quality check results
+        to help diagnose issues like irrelevant timeline items or missing citations.
+        """
+        try:
+            report_data = synthesis_json.get("report", {})
+
+            # Log timeline decisions
+            timeline = report_data.get("timeline", [])
+            if timeline:
+                logger.info(f"[Synthesis] Timeline has {len(timeline)} events:")
+                for item in timeline:
+                    event = item.get("event", "")[:60]
+                    date = item.get("date", "Unknown")
+                    logger.info(f"  - {date}: {event}...")
+
+                # Log to execution log for forensics
+                self.logger._write_entry("synthesis_timeline", objective, 0, None, {
+                    "timeline_count": len(timeline),
+                    "events": [{"date": t.get("date"), "event": t.get("event", "")[:80]} for t in timeline]
+                })
+
+            # Log citation quality check
+            quality = report_data.get("synthesis_quality_check", {})
+            if quality:
+                all_cited = quality.get("all_claims_have_citations", False)
+                logger.info(f"[Synthesis] All claims cited: {all_cited}")
+                if not all_cited:
+                    logger.warning("[Synthesis] Some claims may be missing citations!")
+
+                self.logger._write_entry("synthesis_quality", objective, 0, None, {
+                    "all_claims_have_citations": all_cited,
+                    "source_grouping_reasoning": quality.get("source_grouping_reasoning", ""),
+                    "limitations_noted": quality.get("limitations_noted", "")
+                })
+
+            # Log source groups
+            source_groups = report_data.get("source_groups", [])
+            if source_groups:
+                logger.info(f"[Synthesis] Report organized into {len(source_groups)} source groups")
+
+        except Exception as e:
+            logger.warning(f"Failed to log synthesis decisions: {e}")
 
     def _format_synthesis_to_markdown(self, json_data: Dict, result: GoalResult) -> str:
         """Convert structured synthesis JSON to markdown report."""
