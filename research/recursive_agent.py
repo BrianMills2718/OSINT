@@ -1393,10 +1393,21 @@ Return JSON:
 
             sub_goals = []
             for sg_data in result.get("sub_goals", []):
+                # Sanitize dependencies - ensure they are integers
+                raw_deps = sg_data.get("dependencies", [])
+                deps = []
+                if isinstance(raw_deps, list):
+                    for d in raw_deps:
+                        if isinstance(d, int):
+                            deps.append(d)
+                        elif isinstance(d, str) and d.isdigit():
+                            deps.append(int(d))
+                        # Skip non-integer dependencies (LLM sometimes returns dicts)
+
                 sub_goals.append(SubGoal(
                     description=sg_data.get("description", ""),
                     rationale=sg_data.get("rationale", ""),
-                    dependencies=sg_data.get("dependencies", []),
+                    dependencies=deps,
                     estimated_complexity=sg_data.get("estimated_complexity", "moderate")
                 ))
 
