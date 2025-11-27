@@ -563,6 +563,10 @@ class RecursiveResearchAgent:
             progress_callback=lambda event, msg: logger.info(f"[Entity] {event}: {msg}")
         )
 
+        # Session-level rate limit tracking
+        # Sources in this set will be skipped for the rest of the session
+        self.rate_limited_sources: set = set()
+
         # Will be initialized
         self.registry = None
         self.available_sources: List[Dict[str, Any]] = []
@@ -1101,6 +1105,17 @@ Return JSON:
                 depth=context.depth
             )
 
+        # Session-level rate limit check: skip sources that hit rate limits earlier
+        if source_id in self.rate_limited_sources:
+            logger.info(f"{source_id}: Skipping - rate limited earlier in session")
+            print(f"    ⏭ {source_id}: Skipped (rate limited)")
+            return GoalResult(
+                goal=goal,
+                status=GoalStatus.FAILED,
+                error=f"Source {source_id} rate-limited earlier in session",
+                depth=context.depth
+            )
+
         try:
             integration = self.registry.get_instance(source_id)
             if not integration:
@@ -1173,7 +1188,9 @@ Return JSON:
                 ])
 
                 if is_rate_limit:
-                    logger.warning(f"{source_id}: Rate limit detected, skipping reformulation")
+                    logger.warning(f"{source_id}: Rate limit detected, adding to session blocklist")
+                    self.rate_limited_sources.add(source_id)  # Skip this source for rest of session
+                    print(f"    ⚠ {source_id}: Rate limited - will skip for rest of session")
                     break  # Exit retry loop - rate limits aren't fixable by reformulation
 
                 if attempt < max_retries - 1:

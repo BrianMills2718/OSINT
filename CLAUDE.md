@@ -503,10 +503,10 @@ pip list | grep playwright
 **END OF PERMANENT SECTION**
 # CLAUDE.md - Temporary Section (Condensed)
 
-**Last Updated**: 2025-11-26
+**Last Updated**: 2025-11-27
 **Current Branch**: `master`
-**Current Phase**: v2 Migration COMPLETE
-**Status**: All 5 phases complete - v2 is now the default research system
+**Current Phase**: v2 Production-Ready
+**Status**: All integrations configured, entity follow-up improved, rate limit optimization added
 
 ---
 
@@ -578,7 +578,33 @@ pip list | grep playwright
 
 ## CURRENT STATUS
 
-**Recently Completed** (2025-11-26 - Current Session):
+**Recently Completed** (2025-11-27 - Current Session):
+- ✅ **Empty String Fix in SearchResultBuilder** - **COMPLETE** (commit b63009e)
+  - **Problem**: `safe_text()` only returned default for `None`, not empty strings after stripping
+  - **Solution**: Added `if not text: return default` check after stripping
+  - **Impact**: CourtListener and other integrations now properly handle empty titles/snippets
+  - **Testing**: All 41 unit tests pass
+  - File: core/result_builder.py (2 lines changed)
+- ✅ **API Key Metadata Configuration** - **COMPLETE** (commit f386719)
+  - **Problem**: 9 integrations had missing or mismatched `api_key_env_var` in metadata
+  - **Solution**: Audited all integrations and fixed metadata to match actual env vars
+  - **Fixed**: NewsAPI (`NEWSAPI_KEY` → `NEWSAPI_API_KEY`), FEC, Telegram, Brave Search, Congress, CourtListener, DVIDS, Exa, USAJobs
+  - **Impact**: Registry's `get_api_key()` now works correctly for all sources
+  - Files: 9 integration files updated
+- ✅ **Rate Limit Optimization** - **COMPLETE** (commit 6bf1d21)
+  - **Problem**: LLM was trying to reformulate queries for rate limit errors (unfixable by reformulation)
+  - **Solution**: Added pattern matching to detect rate limit errors and skip reformulation
+  - **Patterns**: "rate limit", "429", "quota exceeded", "too many requests", "throttl", "daily limit"
+  - **Impact**: Saves LLM calls and time when sources are rate-limited
+  - File: research/recursive_agent.py (15 lines changed)
+- ✅ **Entity Follow-up Improvements** - **COMPLETE** (commits 0f1be42, 763b211)
+  - **Problem**: Entity follow-up used title substrings (low quality), unsorted, lowercase
+  - **Solution**: Now uses EntityAnalyzer's rich graph data with mention counts and relationships
+  - **Changes**: Sort entities by importance (mention count), title-case for readability, top 15 limit
+  - **Impact**: More relevant entity-based follow-up tasks, better prompt context
+  - File: research/recursive_agent.py (30 lines changed)
+
+**Recently Completed** (2025-11-26 - Previous Session):
 - ✅ **v2 MIGRATION COMPLETE** - All 5 phases done
   - Phase 3 feature parity: 9 features (reformulation, filtering, temporal, logging, LLM reports, dedup, entities, summarization)
   - Phase 4 comparison: v2 faster under API stress (33s vs v1 stalled)
