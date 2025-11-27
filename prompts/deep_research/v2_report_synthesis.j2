@@ -117,10 +117,6 @@ Return a JSON object with this structure:
                 "sources": [{"title": "Source", "url": "url from evidence above"}]
             }
         ],
-        // CRITICAL: Timeline must ONLY include events directly related to the research objective.
-        // DO NOT include unrelated regulatory items (Federal Register) that happen to appear in results.
-        // For example, if researching "Palantir", do NOT include Medicare regulations, horse racing rules,
-        // or environmental plans that appeared in search results but are not about Palantir.
         "methodology": {
             "approach": "Description of research approach",
             "goals_pursued": {{ goals_pursued }},
@@ -134,12 +130,18 @@ Return a JSON object with this structure:
             "data_quality_notes": "Any concerns about data quality"
         },
         "synthesis_quality_check": {
-            "all_claims_have_citations": true/false,
+            "all_claims_have_citations": true,
             "source_grouping_reasoning": "Why sources were grouped this way",
             "limitations_noted": "Summary of limitations"
         }
     }
 }
+
+CRITICAL TIMELINE RULES:
+- Timeline events MUST be directly about the research subject (e.g., if researching "Palantir", only Palantir events)
+- DO NOT include unrelated items that happen to appear in Federal Register or other results
+- Example: If searching for a company, exclude Medicare regulations, horse racing rules, environmental plans
+- Only include events where the research subject is a primary actor, not incidental mentions
 
 IMPORTANT CITATION RULES:
 - Every claim MUST have at least one inline citation with a REAL URL from the evidence above
