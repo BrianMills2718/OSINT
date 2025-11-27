@@ -1549,22 +1549,23 @@ Return JSON:
             if s['name'] not in sources_used and s['id'] not in {su.lower().replace(' ', '_') for su in sources_used}
         ]
 
-        # Sample of evidence titles by source
+        # Full evidence by source - let LLM decide what's important
+        # Philosophy: Give LLM full context, use the context window
         evidence_by_source = {}
         for e in evidence:
             if e.source not in evidence_by_source:
                 evidence_by_source[e.source] = []
-            if len(evidence_by_source[e.source]) < 5:
-                evidence_by_source[e.source].append(e.title[:80])
+            evidence_by_source[e.source].append(e.title)
 
         evidence_summary = "\n".join([
-            f"  {source} ({len(titles)} items): {', '.join(titles[:3])}{'...' if len(titles) > 3 else ''}"
+            f"  {source} ({len(titles)} items): {', '.join(titles)}"
             for source, titles in evidence_by_source.items()
         ])
 
+        # All unused sources with full descriptions
         unused_sources_text = "\n".join([
-            f"  - {s['name']}: {s['description'][:60]}..."
-            for s in sources_not_used[:12]
+            f"  - {s['name']}: {s['description']}"
+            for s in sources_not_used
         ]) or "  (All available sources have been queried)"
 
         prompt = f"""You are a thorough investigative researcher. Reason through whether this research is complete.
@@ -1671,13 +1672,13 @@ Return JSON:
         # Summarize what we have
         sources_used = set(e.source for e in evidence)
 
-        # Group evidence by source with sample titles
+        # Group evidence by source - full titles, let LLM decide importance
+        # Philosophy: Give LLM full context, use the context window
         evidence_by_source = {}
         for e in evidence:
             if e.source not in evidence_by_source:
                 evidence_by_source[e.source] = []
-            if len(evidence_by_source[e.source]) < 3:
-                evidence_by_source[e.source].append(e.title[:60])
+            evidence_by_source[e.source].append(e.title)
 
         evidence_summary = "\n".join([
             f"  {source}: {', '.join(titles)}"
@@ -1744,8 +1745,8 @@ KEY ENTITIES/ITEMS DISCOVERED (potential follow-up targets):
 UNTRIED STRATEGIES (from coverage assessment):
 {untried_text}
 
-UNUSED SOURCES:
-{chr(10).join(f"  - {s['name']}: {s['description'][:50]}..." for s in unused_sources[:10]) or '  (All sources queried)'}
+UNUSED SOURCES (give full context to LLM):
+{chr(10).join(f"  - {s['name']}: {s['description']}" for s in unused_sources) or '  (All sources queried)'}
 
 Generate follow-up goals that:
 1. IMPLEMENT the untried strategies identified above
@@ -2275,15 +2276,16 @@ Return JSON:
         entity_graph = self.entity_analyzer.get_entity_graph()
         entities_list = self.entity_analyzer.get_all_entities()
 
-        # Format entity relationships for prompt
+        # Format entity relationships for prompt - give LLM full context
+        # Philosophy: Use the full context window, let LLM decide what's important
         entity_relationships = []
         for entity_name, data in entity_graph.items():
             related = data.get("related_entities", [])
             evidence = data.get("evidence", [])
             entity_relationships.append({
                 "name": entity_name,
-                "related_to": related[:5],  # Limit for prompt size
-                "evidence": evidence[:2] if evidence else []
+                "related_to": related,  # Full relationship list
+                "evidence": evidence  # Full evidence list
             })
 
         try:
@@ -2298,7 +2300,7 @@ Return JSON:
                 goals_pursued=len(result.sub_results) + 1,
                 sources_queried=sources_queried,
                 entities_discovered=len(entities_list),
-                entity_relationships=entity_relationships[:20]  # Top 20 entities
+                entity_relationships=entity_relationships  # Full entity list
             )
 
             # Call LLM for structured synthesis

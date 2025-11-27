@@ -2247,7 +2247,7 @@ class SimpleDeepResearch(
                 "estimated_value": t.estimated_value,
                 "estimated_redundancy": t.estimated_redundancy
             }
-            for t in self.task_queue[:10]  # Top 10 pending
+            for t in self.task_queue  # Full pending queue - let LLM decide importance
         ]
 
         # Calculate stats
