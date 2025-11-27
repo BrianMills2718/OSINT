@@ -76,7 +76,7 @@ Migrate from v1 research system (`research/deep_research.py`, 4,392 lines) to v2
 
 ---
 
-### Phase 3: Feature Parity ✅ MOSTLY COMPLETE
+### Phase 3: Feature Parity ✅ COMPLETE
 **Goal**: Add v1 features missing from v2
 
 **Tasks**:
@@ -84,10 +84,10 @@ Migrate from v1 research system (`research/deep_research.py`, 4,392 lines) to v2
 - [x] **Per-source query generation prompts** - Uses existing Jinja2 templates via `integration.generate_query()`
 - [x] **Result relevance filtering** - Added `_filter_results()` method with LLM-based filtering
 - [x] **Query reformulation on API error** - Added `_reformulate_on_error()` with retry logic
-- [ ] **Execution logging** - Basic logging exists (lower priority for Phase 4)
-- [ ] **Report generation** - Basic report exists (lower priority for Phase 4)
+- [x] **Execution logging** - Added `_log_synthesis_decisions()` with `synthesis_timeline` and `synthesis_quality` events (2025-11-27)
+- [x] **Report generation** - Improved template with CRITICAL TIMELINE RULES and IMPORTANT CITATION RULES (2025-11-27)
 
-**Feature Comparison** (Updated):
+**Feature Comparison** (Updated 2025-11-27):
 | Feature | v1 | v2 |
 |---------|----|----|
 | Task decomposition | Yes | Yes (as goal decomposition) |
@@ -96,14 +96,16 @@ Migrate from v1 research system (`research/deep_research.py`, 4,392 lines) to v2
 | Query reformulation | Yes | ✅ Yes (_reformulate_on_error with retry) |
 | Relevance filtering | Yes | ✅ Yes (_filter_results method) |
 | Temporal context | Yes | ✅ Yes (_get_temporal_context in all prompts) |
-| Cost tracking | Yes | Yes (wired up) |
-| Execution logging | Rich events | Basic events (functional) |
-| Report synthesis | Detailed | Basic (functional) |
+| Cost tracking | Yes | ✅ Yes (fixed serialization 2025-11-27) |
+| Execution logging | Rich events | ✅ Yes (synthesis_timeline, synthesis_quality events) |
+| Report synthesis | Detailed | ✅ Yes (timeline filtering, citation rules) |
 
-**Success Criteria**:
+**Success Criteria**: ✅ ALL MET
 - ✅ Same query produces similar quality results on v1 and v2
 - ✅ API errors trigger reformulation
 - ✅ Results are relevance-filtered
+- ✅ Execution logging captures synthesis decisions (2025-11-27)
+- ✅ Report timeline filters irrelevant items (2025-11-27)
 
 ---
 
