@@ -1662,13 +1662,18 @@ Return JSON:
             for source, titles in evidence_by_source.items()
         ])
 
-        # Extract key entities discovered (for follow-up queries)
-        entity_names = set()
-        for e in evidence:
-            # Extract potential entity names from titles
-            if e.title and len(e.title) > 3:
-                entity_names.add(e.title[:50])
-        entity_sample = list(entity_names)[:10]
+        # Get rich entity data from EntityAnalyzer (not just title substrings)
+        entity_graph = self.entity_analyzer.get_entity_graph()
+        entity_sample = []
+        for entity_name, data in list(entity_graph.items())[:15]:
+            mention_count = data.get("source_count", 0) or len(data.get("evidence", []))
+            related = data.get("related_entities", [])[:3]  # Top 3 related
+            entity_info = f"{entity_name}"
+            if mention_count > 1:
+                entity_info += f" ({mention_count} mentions)"
+            if related:
+                entity_info += f" - related to: {', '.join(related)}"
+            entity_sample.append(entity_info)
 
         # Find unused sources
         used_source_ids = {s.lower().replace(" ", "_") for s in sources_used}
@@ -1704,11 +1709,16 @@ UNUSED SOURCES:
 Generate follow-up goals that:
 1. IMPLEMENT the untried strategies identified above
 2. Query UNUSED sources that are genuinely relevant (not just for the sake of it)
-3. FOLLOW UP on discovered entities - search for specific names/contracts/organizations found
+3. **ENTITY FOLLOW-UP (IMPORTANT)**: For each key entity discovered above, create specific follow-up queries:
+   - Company/Organization → Search SEC filings, USAspending contracts, FEC donations, CourtListener lawsuits
+   - Person → Search FEC contributions, news mentions, CourtListener cases
+   - Contract/Program → Search for related awards, amendments, congressional oversight
+   - Use the entity's EXACT NAME in queries for precision
 4. Explore DIFFERENT ANGLES not yet covered
 5. Are SPECIFIC and ACTIONABLE - clear what source to query and what to search for
 
-Each goal should be something that could yield SIGNIFICANT NEW information, not marginal additions.
+Each goal should yield SIGNIFICANT NEW information, not marginal additions.
+Prioritize entity follow-ups - they often uncover the most valuable connections.
 
 If there are no meaningful follow-ups remaining, return an empty list with explanation.
 
