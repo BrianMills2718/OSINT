@@ -1105,6 +1105,11 @@ Return JSON:
                 depth=context.depth
             )
 
+        # Normalize source name (LLM may return "Brave Search" or "brave_search")
+        normalized_id = self.registry.normalize_source_name(source_id)
+        if normalized_id:
+            source_id = normalized_id
+
         # Session-level rate limit check: skip sources that hit rate limits earlier
         if source_id in self.rate_limited_sources:
             logger.info(f"{source_id}: Skipping - rate limited earlier in session")
