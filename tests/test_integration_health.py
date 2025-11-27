@@ -50,7 +50,7 @@ TEST_QUERIES = {
     # Research/Legal
     "courtlistener": "government contract dispute",
     "propublica": "nonprofit",
-    "icij_offshore_leaks": "offshore",
+    "icij_offshore_leaks": "Find offshore connections for Mossack Fonseca",  # Needs entity name
     "fbi_vault": "investigation",
 
     # Media/Archive
