@@ -1701,15 +1701,16 @@ Return JSON:
             # Title-case for readability
             display_name = entity_name.title()
 
-            # Build comprehensive entity info for LLM
+            # Build comprehensive entity info for LLM - full context, no truncation
+            # Philosophy: Let LLM see all sources and relationships, it can decide importance
             entity_info = f"- {display_name}"
             if mention_count > 0:
                 entity_info += f" (mentioned {mention_count}x"
                 if evidence_sources:
-                    entity_info += f" in: {', '.join(evidence_sources[:5])}"
+                    entity_info += f" in: {', '.join(evidence_sources)}"  # Full source list
                 entity_info += ")"
             if related:
-                related_display = [r.title() for r in related[:5]]
+                related_display = [r.title() for r in related]  # Full relationship list
                 entity_info += f"\n    Related to: {', '.join(related_display)}"
 
             entity_details.append(entity_info)
