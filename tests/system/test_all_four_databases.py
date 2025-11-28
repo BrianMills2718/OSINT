@@ -18,10 +18,9 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-from integrations.sam_integration import SAMIntegration
-from integrations.dvids_integration import DVIDSIntegration
-from integrations.usajobs_integration import USAJobsIntegration
-from core.parallel_executor import ParallelExecutor
+from integrations.government.sam_integration import SAMIntegration
+from integrations.government.dvids_integration import DVIDSIntegration
+from integrations.government.usajobs_integration import USAJobsIntegration
 
 # Try to import Playwright - it may not be installed yet
 try:

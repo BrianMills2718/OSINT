@@ -20,6 +20,9 @@ python_functions = ["test_*"]
 asyncio_mode = "auto"
 asyncio_default_fixture_loop_scope = "function"
 
+# Ignore archived tests (old code references deleted modules)
+norecursedirs = ["tests/archived"]
+
 # Output options
 addopts = [
     "-v",                    # Verbose output
