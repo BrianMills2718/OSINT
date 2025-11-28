@@ -1694,9 +1694,10 @@ Return JSON:
         for entity_name, data in entity_graph.items():
             mention_count = data.get("source_count", 0) or len(data.get("evidence", []))
             related = data.get("related_entities", [])
-            evidence_sources = list(set(
-                e.get("source", "unknown") for e in data.get("evidence", [])
-            ))
+            # Note: evidence is List[str] (quotes/paraphrases), not List[Dict]
+            # We can't extract source names from evidence strings
+            evidence_list = data.get("evidence", [])
+            evidence_count = len(evidence_list) if isinstance(evidence_list, list) else 0
 
             # Title-case for readability
             display_name = entity_name.title()
@@ -1706,8 +1707,8 @@ Return JSON:
             entity_info = f"- {display_name}"
             if mention_count > 0:
                 entity_info += f" (mentioned {mention_count}x"
-                if evidence_sources:
-                    entity_info += f" in: {', '.join(evidence_sources)}"  # Full source list
+                if evidence_count > 0:
+                    entity_info += f", {evidence_count} evidence pieces"
                 entity_info += ")"
             if related:
                 related_display = [r.title() for r in related]  # Full relationship list
