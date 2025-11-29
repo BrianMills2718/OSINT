@@ -786,11 +786,10 @@ pip list | grep playwright
 
 ### P0 - CRITICAL BUGS (Must Fix)
 
-**1. Field Name Mismatch - Evidence Content Always Empty**
+**1. ~~Field Name Mismatch - Evidence Content Always Empty~~ FIXED (commit 68dc031)**
 - **Problem**: `SearchResultBuilder.build()` outputs `"snippet"` but `recursive_agent.py:1231` reads `item.get("description", item.get("content", ""))` - content is ALWAYS empty
-- **Impact**: All evidence has 0 chars content, filtering/synthesis sees only titles
-- **Fix**: `content=item.get("snippet", item.get("description", item.get("content", "")))`
-- **File**: research/recursive_agent.py:1231
+- **Solution**: Changed to `item.get("snippet", item.get("description", item.get("content", "")))`
+- **Validated**: Smoke test shows content length 120 chars (was 0)
 
 **2. Sub-Goal Context Loss - Irrelevant Results Pass Filter**
 - **Problem**: Sub-goals lose parent context. "Search FBI Vault for declassified documents" doesn't carry "about Palantir" context, so Bin Laden/Guantanamo docs pass filter
