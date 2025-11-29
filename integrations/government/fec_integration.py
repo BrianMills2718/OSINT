@@ -442,9 +442,13 @@ class FECIntegration(DatabaseIntegration):
             )
             date = contrib.get("contribution_receipt_date", "")
 
+            # Build specific URL to committee receipts page
+            committee_id = contrib.get("committee_id", "")
+            url = f"https://www.fec.gov/data/receipts/?committee_id={committee_id}&data_type=processed" if committee_id else "https://www.fec.gov/data/receipts/?data_type=processed"
+
             transformed = (SearchResultBuilder()
                 .title(f"{SearchResultBuilder.format_amount(amount)} from {contributor} to {recipient}")
-                .url("https://www.fec.gov/data/receipts/?data_type=processed")
+                .url(url)
                 .snippet(f"Amount: {SearchResultBuilder.format_amount(amount)} | Date: {date} | Employer: {contrib.get('contributor_employer', 'N/A')}")
                 .date(date)
                 .metadata({
@@ -607,9 +611,13 @@ class FECIntegration(DatabaseIntegration):
             support_oppose = expenditure.get("support_oppose_indicator", "")
             action = "supporting" if support_oppose == "S" else "opposing"
 
+            # Build specific URL to committee that made the expenditure
+            committee_id = expenditure.get("committee", {}).get("committee_id", "") or expenditure.get("committee_id", "")
+            url = f"https://www.fec.gov/data/committee/{committee_id}/" if committee_id else "https://www.fec.gov/data/independent-expenditures/"
+
             transformed = (SearchResultBuilder()
                 .title(f"{SearchResultBuilder.format_amount(amount)} by {spender} {action} {candidate}")
-                .url("https://www.fec.gov/data/independent-expenditures/")
+                .url(url)
                 .snippet(f"Amount: {SearchResultBuilder.format_amount(amount)} | Purpose: {SearchResultBuilder.safe_text(expenditure.get('expenditure_description'), 'N/A', 100)}")
                 .date(expenditure.get("expenditure_date"))
                 .metadata({
