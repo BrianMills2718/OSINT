@@ -1568,6 +1568,12 @@ Return JSON:
             for s in sources_not_used
         ]) or "  (All available sources have been queried)"
 
+        # Rate-limited sources that were attempted but failed
+        rate_limited_text = "\n".join([
+            f"  - {s}"
+            for s in self.rate_limited_sources
+        ]) if self.rate_limited_sources else "  (None)"
+
         prompt = f"""You are a thorough investigative researcher. Reason through whether this research is complete.
 
 RESEARCH OBJECTIVE:
@@ -1578,6 +1584,12 @@ WHAT HAS BEEN GATHERED ({len(evidence)} pieces from {len(sources_used)} sources)
 
 SOURCES NOT YET QUERIED:
 {unused_sources_text}
+
+SOURCES THAT WERE RATE-LIMITED (attempted but blocked by API limits):
+{rate_limited_text}
+
+IMPORTANT: Rate-limited sources may contain highly relevant information that was not retrieved.
+This represents a GAP in coverage that should reduce confidence in completeness.
 
 REASON THROUGH THE FOLLOWING:
 
