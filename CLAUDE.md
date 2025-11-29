@@ -846,6 +846,12 @@ pip list | grep playwright
 - **Decision Needed**: Is this a feature gap or acceptable limitation?
 - **Potential Fix**: Add PDF extraction for document-heavy sources (FBI Vault, GovInfo, CourtListener)
 
+**11. SAM.gov Rate Limit - No Retry Logic**
+- **Problem**: SAM.gov rate limits immediately and is skipped for entire session
+- **Impact**: Critical government contract source unavailable for contract research
+- **Fix**: Queue rate-limited sources for retry after cooldown (e.g., 5 min)
+- **File**: research/recursive_agent.py (rate_limited_sources handling)
+
 ### ARCHITECTURE NOTES
 
 **Evidence Content Sources**:
