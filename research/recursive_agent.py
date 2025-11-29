@@ -2565,7 +2565,12 @@ Return JSON:
                 lines.append(f"- **{e['title']}**")
                 if e.get('url'):
                     lines.append(f"  - URL: {e['url']}")
-                lines.append(f"  - {e['content'][:self.constraints.max_content_chars_in_report]}...")
+                # Only show truncation indicator if content was actually truncated
+                content = e['content']
+                max_chars = self.constraints.max_content_chars_in_report
+                was_truncated = len(content) > max_chars
+                display_content = content[:max_chars] + ("..." if was_truncated else "")
+                lines.append(f"  - {display_content}")
                 lines.append("")
 
         # Add rate-limited sources section
