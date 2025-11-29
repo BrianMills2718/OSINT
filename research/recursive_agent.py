@@ -1228,7 +1228,7 @@ Return JSON:
                     evidence.append(Evidence(
                         source=source_id,
                         title=item.get("title", "Untitled"),
-                        content=item.get("description", item.get("content", "")),
+                        content=item.get("snippet", item.get("description", item.get("content", ""))),
                         url=item.get("url"),
                         metadata=item
                     ))
