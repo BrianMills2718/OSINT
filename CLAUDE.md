@@ -784,37 +784,82 @@ pip list | grep playwright
 
 ## NEXT PLANNED WORK
 
-### HIGH PRIORITY
+### P0 - CRITICAL BUGS (Must Fix)
 
-**No high-priority architectural work pending** - All planned improvements from TODO_ARCHITECTURE.md (archived) are complete.
+**1. Field Name Mismatch - Evidence Content Always Empty**
+- **Problem**: `SearchResultBuilder.build()` outputs `"snippet"` but `recursive_agent.py:1231` reads `item.get("description", item.get("content", ""))` - content is ALWAYS empty
+- **Impact**: All evidence has 0 chars content, filtering/synthesis sees only titles
+- **Fix**: `content=item.get("snippet", item.get("description", item.get("content", "")))`
+- **File**: research/recursive_agent.py:1231
 
-**New Files Created**:
-- core/search_fallback.py (140 lines) - Generic fallback helper
-- tests/test_registry_validation.py (136 lines) - Smoke test framework validation
-- tests/test_architectural_validation.py (188 lines) - Comprehensive validation
-- tests/test_sec_edgar_fallback.py (157 lines) - SEC EDGAR fallback tests
-- tests/test_search_fallback_comprehensive.py (445 lines) - Fallback unit tests
+**2. Sub-Goal Context Loss - Irrelevant Results Pass Filter**
+- **Problem**: Sub-goals lose parent context. "Search FBI Vault for declassified documents" doesn't carry "about Palantir" context, so Bin Laden/Guantanamo docs pass filter
+- **Impact**: FBI Vault (and potentially other sources) return completely irrelevant results
+- **Root Cause**: Filter prompt checks relevance to CURRENT GOAL only, not full goal hierarchy
+- **Fix**: Propagate parent context into sub-goals OR require filter to check both goal AND original objective's subject
+- **File**: research/recursive_agent.py `_filter_results()` (line 1950)
 
-**Existing Files Enhanced**:
-- integrations/registry.py (+200 lines) - Registration validation + smoke tests
-- integrations/government/sec_edgar_integration.py (+242 lines) - 4-tier fallback
-- integrations/government/federal_register.py (+20 lines) - Parameter validation
-- prompts/integrations/federal_register_query_generation.j2 (+2 lines) - Document type warnings
-- core/search_fallback.py (+20 lines) - Type annotations, None checks, callable validation
+**3. SEC EDGAR Filter Rejects All Results**
+- **Problem**: 10 SEC filings found but filtered to 0 - relevance filter incorrectly rejects financial filings
+- **Impact**: No SEC data for public company research (10-K, 10-Q, 8-K missing)
+- **Fix**: Update SEC EDGAR relevance prompt to accept filings for company research
+- **File**: Likely prompts/integrations/sec_edgar_relevance.j2 or filter prompt logic
 
-**Validation Results**:
-- All integrations use DatabaseMetadata (single source of truth)
-- source_metadata.py deleted (646 lines) - no longer needed
-- Registry provides `normalize_source_name()` for all name variations
-- E2E tests passing with real API results
+### P1 - HIGH PRIORITY
 
-### MEDIUM PRIORITY
+**4. CourtListener URLs Are Relative**
+- **Problem**: URLs like `/opinion/5150237/...` don't work - missing base URL
+- **Fix**: Prepend `https://www.courtlistener.com` in integration
+- **File**: integrations/legal/courtlistener_integration.py
 
-**No pending medium-priority items**
+**5. FEC URLs Point to Generic Search Page**
+- **Problem**: All FEC citations link to same generic page, not specific receipts
+- **Fix**: Generate direct links with receipt/transaction IDs
+- **File**: integrations/government/fec_integration.py
 
-### LOW PRIORITY
+**6. Evidence Truncation Without Warning**
+- **Problem**: 124 evidence pieces truncated to 50 silently (`max_evidence_in_saved_result: 50`)
+- **Impact**: 74 evidence pieces dropped with no indication
+- **Fix**: Log warning when truncating, consider summarization of excess
+- **File**: research/recursive_agent.py:2236
 
-**No pending low-priority items**
+**7. Overconfident Assessment**
+- **Problem**: 65% confidence despite FBI false citations, SEC 0 results, SAM.gov rate limited
+- **Fix**: Lower confidence when >30% sources fail or return errors
+- **File**: research/recursive_agent.py (synthesis/confidence logic)
+
+### P2 - MEDIUM PRIORITY
+
+**8. No Date Metadata in Evidence**
+- **Problem**: `Dates present: 0/50` - timeline relies entirely on LLM inference
+- **Fix**: Parse dates from evidence content into metadata
+- **File**: research/recursive_agent.py evidence creation
+
+**9. Twitter API Crash**
+- **Problem**: `'list' object has no attribute 'split'` - type mismatch
+- **Fix**: Debug and fix type handling
+- **File**: integrations/social/twitter_integration.py
+
+**10. No Full Content or PDF Extraction**
+- **Problem**: We only capture API snippets (~200 chars), never fetch full pages or extract PDF text
+- **Impact**: FBI Vault, GovInfo return PDF links but we can't read content
+- **Decision Needed**: Is this a feature gap or acceptable limitation?
+- **Potential Fix**: Add PDF extraction for document-heavy sources (FBI Vault, GovInfo, CourtListener)
+
+### ARCHITECTURE NOTES
+
+**Evidence Content Sources**:
+| Source | Content Type | Full Text? | PDFs? |
+|--------|-------------|-----------|-------|
+| USAspending | Award metadata | No | N/A |
+| Brave Search | Page excerpts | No | No |
+| FBI Vault | Doc titles only | No | No (links only) |
+| GovInfo | Report abstracts | No | No (links only) |
+| CourtListener | Case summaries | No | No |
+| NewsAPI | Article snippets | No | N/A |
+
+**Filtering Architecture Issue**:
+Sub-goals decompose without carrying parent context. When "Investigate Palantir" decomposes to "Search FBI Vault", the sub-goal should implicitly mean "Search FBI Vault **for Palantir-related docs**" but filter only sees the generic sub-goal.
 
 ---
 
