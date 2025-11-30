@@ -525,9 +525,16 @@ pip list | grep playwright
 | 5 | Full Migration | **COMPLETE** |
 
 **v2 is now the default research system!**
-- CLI: `python3 run_research_cli.py "your query"`
+
+**CLI Entry Points** (both use v2 RecursiveResearchAgent):
+- **Recommended**: `python3 run_research_cli.py "your query"` (consolidated, backward compatible)
+- **Alternative**: `python3 apps/recursive_research.py "your query"` (original Phase 2 implementation)
+- **Both are v2!** They use RecursiveResearchAgent, not v1 SimpleDeepResearch
+
+**Important**: `depth=0` is valid v2 behavior! The LLM's `assess()` method may choose to execute a goal directly without decomposing it. This is not a bug - it's intelligent decision-making by the LLM.
+
 - Streamlit: Deep Investigation tab uses v2
-- v1 deprecated but available for backward compatibility
+- v1 (SimpleDeepResearch) deprecated but available in `research/deep_research.py`
 
 ### Phase 1: Validation - COMPLETE
 
