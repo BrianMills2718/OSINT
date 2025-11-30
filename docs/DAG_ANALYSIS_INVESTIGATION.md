@@ -292,3 +292,72 @@ The DAG infrastructure is **already 90% built**. We're not building new architec
 **Key Insight**: This is primarily a **prompt engineering challenge**, not a systems engineering challenge.
 
 **Recommendation**: Proceed with caution, measure everything, validate thoroughly.
+
+---
+
+## IMPLEMENTATION COMPLETED - 2025-11-30
+
+### Phases Completed
+
+**Phase 1: Logging Enhancements** - COMPLETE (commit 2753fae)
+- Enhanced log_goal_decomposed() to accept Union[List[str], List[SubGoal]]
+- Logs dependencies and complexity fields when SubGoal objects passed
+- Added log_dependency_groups() for DAG execution tracking
+- Added llm_decomposition_response event type (captures raw LLM output)
+- Smoke test: PASS - confirmed LLM returns empty dependencies before enhancement
+- Files: research/recursive_agent.py (+73 lines)
+
+**Phase 2: Test Suite** - COMPLETE (commits e3b7f11, c270b06)
+- 7 unit tests for _group_by_dependency (all passing)
+  - no_dependencies, linear, parallel, chain, diamond, circular, partial
+- Integration test: Forces dependencies, verifies 2 groups (A solo, then B+C parallel)
+- E2E test: Comparative query to validate Phase 3 (currently running)
+- Files: tests/test_dag_execution.py (+135 lines)
+
+**Phase 3: Prompt Engineering** - COMPLETE (commit 09b8c5a)
+- Added 38-line DEPENDENCY GUIDANCE section to decomposition prompt
+- 5 concrete examples:
+  1. COMPARATIVE analysis: "Compare X vs Y" → dependencies: [0, 1]
+  2. SYNTHESIS/INTEGRATION: Combining findings → dependencies
+  3. SEQUENTIAL data collection: Top contractors → investigate top 5
+  4. FOLLOW-UP investigation: Entity discovery → relationships
+  5. INDEPENDENT goals: Parallel data gathering → no dependencies
+- Added CRITICAL trigger words: "compare", "analyze relationship", "synthesize", "based on findings"
+- Explicit anti-patterns: when NOT to use dependencies
+- Files: research/recursive_agent.py (lines 1529-1560, +32 lines)
+
+### Validation Status
+
+**Completed**:
+- ✅ Infrastructure validated (SubGoal.dependencies exists, topological sort works)
+- ✅ Logging complete (3 new event types)
+- ✅ Unit tests passing (7/7)
+- ✅ Phase 1 smoke test PASS
+
+**In Progress**:
+- ⏳ E2E test running (comparative query validation)
+
+**Pending E2E Results**:
+- Dependencies declared by LLM for comparative query?
+- DAG execution groups logged?
+- Success criteria 1-2 validation
+
+### Files Modified
+
+| File | Changes | Purpose |
+|------|---------|---------|
+| research/recursive_agent.py | +105 lines (logging + prompt) | Phase 1 + 3 |
+| tests/test_dag_execution.py | +135 lines (new file) | Phase 2 |
+
+**Total**: +240 lines across 2 files, 4 commits
+
+### Branch
+
+feature/enable-dag-analysis (4 commits ahead of master)
+
+### Next Steps
+
+1. Await E2E test results
+2. If dependencies found: Merge to master
+3. If no dependencies: Iterate on prompt (add more explicit examples)
+4. Update STATUS.md with final results
