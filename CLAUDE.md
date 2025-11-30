@@ -626,6 +626,27 @@ pip list | grep playwright
 
   **Status**: Production-ready with known limitation documented
 
+**Next Tasks** (2025-11-30 - Current Session):
+- 🔍 **Investigate: Why E2E test didn't trigger recursive decomposition**
+  - E2E test used v2 correctly but showed depth=0
+  - LLM's assess() chose to execute root goal directly without decomposing
+  - Need to understand: Is this query-dependent? LLM reasoning? Prompt issue?
+  - Actions:
+    1. Examine execution_log.jsonl for goal_assessed events and reasoning
+    2. Review assess() prompt in prompts/deep_research/goal_assessment.j2
+    3. Test with different query complexity levels
+    4. Document when decomposition occurs vs direct execution
+
+- 🔍 **Investigate: How to reliably test P0 #2 cross-branch sharing**
+  - Integration test (test_cross_branch_evidence_sharing) validated infrastructure
+  - But real E2E usage didn't exercise cross-branch sharing (no decomposition)
+  - Need: Query patterns that reliably trigger deep decomposition
+  - Actions:
+    1. Analyze successful recursive runs (previous test: "Palantir" → 3 sub-goals, depth 3)
+    2. Identify query characteristics that trigger decomposition
+    3. Create test suite with queries guaranteed to decompose
+    4. Add to integration tests for consistent validation
+
 **Recently Completed** (2025-11-27 - Previous Session):
 - ✅ **Empty String Fix in SearchResultBuilder** - **COMPLETE** (commit b63009e)
   - **Problem**: `safe_text()` only returned default for `None`, not empty strings after stripping
