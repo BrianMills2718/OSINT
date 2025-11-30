@@ -606,12 +606,13 @@ pip list | grep playwright
      - Need: Verify execution_log.jsonl has "global_evidence_selection" events
      - Location: Create tests/test_global_evidence_index.py
 
-  **🟡 P2 - Memory Safety (Recommended)**:
+  **🟡 P2 - Memory Safety (Deferred to Tech Debt)**:
   3. **Missing max_index_size Limit** (research/recursive_agent.py:85-99)
      - ResearchRun.index and evidence_store grow unbounded
      - Current impact: Low (typical runs 50-100 evidence)
      - Long-term risk: Memory issues for continuous/long-running sessions
-     - Recommendation: Add max_index_size=1000 with FIFO eviction (optional for now)
+     - Status: **Documented in TECH_DEBT.md** - FIFO eviction too naive, needs LRU or LLM-based approach
+     - Workaround: Sessions are finite (max_time_seconds) and agents not reused, so memory naturally bounded
 
   **Architecture Validation** (All Correct):
   - ✅ Thread safety: Lock usage correct for asyncio
@@ -620,11 +621,12 @@ pip list | grep playwright
   - ✅ Prompt design: Clear, well-structured
   - ✅ Integration point: Correct location in _execute_analysis
 
-  **Next Tasks (In Priority Order)**:
-  1. Fix cost tracking (P1 blocker)
-  2. Write integration test for cross-branch sharing (P2 validation)
-  3. Add max_index_size constraint with FIFO eviction (P2 recommended)
-  4. Document memory limitation in code comments (P3)
+  **Completed Fixes**:
+  1. ✅ Fixed cost tracking (P1 blocker) - commit fc7ab72
+  2. ✅ Wrote integration test for cross-branch sharing (P2 validation) - commit ea15ac4
+  3. ✅ Documented memory limitation in TECH_DEBT.md (P2 deferred - FIFO too naive)
+
+  **Status**: Production-ready with known limitation documented
 
 **Recently Completed** (2025-11-27 - Previous Session):
 - ✅ **Empty String Fix in SearchResultBuilder** - **COMPLETE** (commit b63009e)
