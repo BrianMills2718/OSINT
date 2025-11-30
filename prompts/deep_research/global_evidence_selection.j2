@@ -1,0 +1,47 @@
+You are selecting relevant evidence from a global research index to help answer the current goal.
+
+CURRENT GOAL: {{ goal }}
+
+GOAL ANCESTRY (what led to this goal):
+{% if goal_ancestry %}
+{% for ancestor in goal_ancestry %}
+  {{ loop.index }}. {{ ancestor }}
+{% endfor %}
+{% else %}
+(root goal - no ancestry)
+{% endif %}
+
+BRANCH-LOCAL EVIDENCE: {{ local_evidence_count }} pieces already gathered in this branch
+
+GLOBAL INDEX: {{ index_size }} pieces of evidence from across ALL research branches
+
+The global index contains evidence gathered by sibling and cousin branches that may be relevant to your current goal, even though they were collected while pursuing different sub-goals.
+
+WHY CROSS-BRANCH EVIDENCE MATTERS:
+- A sibling branch investigating "Palantir lawsuits" found court opinions that mention contract violations
+- Those court opinions are relevant to YOUR goal of "Palantir contract awards"
+- Without cross-branch sharing, you'd have to re-query CourtListener
+
+SELECT RELEVANT EVIDENCE from the global index below. Consider:
+- Does the evidence directly relate to the current goal?
+- Does the evidence provide context or background for the current goal?
+- Would this evidence help answer the goal more comprehensively?
+
+GLOBAL INDEX (last {{ index_entries|length }} entries, most recent first):
+{% for entry in index_entries %}
+{{ loop.index }}. ID: {{ entry.evidence_id }}
+   From Goal: "{{ entry.goal }}"
+   Source: {{ entry.source }}
+   Title: {{ entry.title }}
+   Snippet: {{ entry.snippet }}
+
+{% endfor %}
+
+Return JSON with evidence IDs to include:
+{% raw %}
+{
+  "evidence_ids": ["id1", "id2", ...]
+}
+{% endraw %}
+
+If no evidence is relevant, return empty array: {"evidence_ids": []}

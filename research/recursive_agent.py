@@ -67,6 +67,39 @@ class ActionType(Enum):
 
 
 @dataclass
+class IndexEntry:
+    """
+    Compact evidence metadata for global index.
+
+    Used by LLM to select relevant evidence from global index without
+    loading full content (which would exceed token limits).
+    """
+    evidence_id: str  # UUID
+    goal: str  # Which goal produced this evidence
+    source: str  # Which integration (e.g., "usaspending", "sam")
+    title: str  # Evidence title
+    snippet: str  # First 200 chars of content (for LLM preview)
+    goal_ancestry: List[str]  # goal_stack at time of creation
+
+
+@dataclass
+class ResearchRun:
+    """
+    Global evidence index for cross-branch sharing.
+
+    Enables sub-goals to see evidence from sibling/cousin branches,
+    solving P0 #2 (cross-branch context loss).
+
+    Architecture: Stored in GoalContext (run-level shared state),
+    referenced (not copied) in all with_*() methods.
+    """
+    index: List[IndexEntry] = field(default_factory=list)
+    evidence_store: Dict[str, Evidence] = field(default_factory=dict)
+    lock: asyncio.Lock = field(default_factory=asyncio.Lock)
+    max_index_items_for_selection: int = 50  # Limit shown to LLM
+
+
+@dataclass
 class Constraints:
     """
     Configurable limits for recursive research.
@@ -185,15 +218,15 @@ class GoalContext:
 
     Key principle: No information loss between levels.
     Every decision sees everything.
+
+    Fields are categorized into:
+    - Run-level shared state (referenced, not copied in with_* methods)
+    - Branch-local state (copied per branch)
     """
-    # Never lost
-    original_objective: str
+    # === RUN-LEVEL SHARED STATE (referenced across all contexts) ===
 
-    # Full ancestry
-    goal_stack: List[str] = field(default_factory=list)
-
-    # All evidence gathered so far
-    accumulated_evidence: List[Evidence] = field(default_factory=list)
+    # Global evidence index for cross-branch sharing
+    research_run: Optional[ResearchRun] = None
 
     # Available capabilities (sources)
     available_sources: List[Dict[str, Any]] = field(default_factory=list)
@@ -203,6 +236,17 @@ class GoalContext:
 
     # All goals seen (for cycle detection and redundancy)
     all_goals: List[str] = field(default_factory=list)
+
+    # === BRANCH-LOCAL STATE (copied per context) ===
+
+    # Never lost
+    original_objective: str = ""
+
+    # Full ancestry
+    goal_stack: List[str] = field(default_factory=list)
+
+    # All evidence gathered so far (branch-local)
+    accumulated_evidence: List[Evidence] = field(default_factory=list)
 
     # Tracking
     depth: int = 0
@@ -216,13 +260,19 @@ class GoalContext:
     def with_parent(self, parent_goal: str) -> 'GoalContext':
         """Create child context with parent added to stack."""
         return GoalContext(
-            original_objective=self.original_objective,
-            goal_stack=[*self.goal_stack, parent_goal],
-            accumulated_evidence=self.accumulated_evidence.copy(),
+            # Run-level shared state (REFERENCED - same instance)
+            research_run=self.research_run,
             available_sources=self.available_sources,
             constraints=self.constraints,
             all_goals=self.all_goals,
+
+            # Branch-local state (copied)
+            original_objective=self.original_objective,
+            goal_stack=[*self.goal_stack, parent_goal],
+            accumulated_evidence=self.accumulated_evidence.copy(),
             depth=self.depth + 1,
+
+            # Tracking
             start_time=self.start_time,
             cost_incurred=self.cost_incurred,
             goals_created=self.goals_created,
@@ -232,13 +282,19 @@ class GoalContext:
     def with_evidence(self, new_evidence: List[Evidence]) -> 'GoalContext':
         """Create context with additional evidence."""
         return GoalContext(
-            original_objective=self.original_objective,
-            goal_stack=self.goal_stack,
-            accumulated_evidence=[*self.accumulated_evidence, *new_evidence],
+            # Run-level shared state (REFERENCED - same instance)
+            research_run=self.research_run,
             available_sources=self.available_sources,
             constraints=self.constraints,
             all_goals=self.all_goals,
+
+            # Branch-local state (copied/updated)
+            original_objective=self.original_objective,
+            goal_stack=self.goal_stack,
+            accumulated_evidence=[*self.accumulated_evidence, *new_evidence],
             depth=self.depth,
+
+            # Tracking
             start_time=self.start_time,
             cost_incurred=self.cost_incurred,
             goals_created=self.goals_created,
@@ -247,20 +303,25 @@ class GoalContext:
 
     def with_decomposition_rationale(self, rationale: str) -> 'GoalContext':
         """Create context with decomposition rationale."""
-        ctx = GoalContext(
-            original_objective=self.original_objective,
-            goal_stack=self.goal_stack,
-            accumulated_evidence=self.accumulated_evidence,
+        return GoalContext(
+            # Run-level shared state (REFERENCED - same instance)
+            research_run=self.research_run,
             available_sources=self.available_sources,
             constraints=self.constraints,
             all_goals=self.all_goals,
+
+            # Branch-local state
+            original_objective=self.original_objective,
+            goal_stack=self.goal_stack,
+            accumulated_evidence=self.accumulated_evidence,
             depth=self.depth,
+
+            # Tracking + update rationale
             start_time=self.start_time,
             cost_incurred=self.cost_incurred,
             goals_created=self.goals_created,
             decomposition_rationale=rationale
         )
-        return ctx
 
     def add_goal(self, goal: str) -> None:
         """Track a goal (mutates in place for efficiency)."""
@@ -610,8 +671,12 @@ class RecursiveResearchAgent:
         if not self.registry:
             await self.initialize()
 
+        # Initialize global evidence index for cross-branch sharing
+        research_run = ResearchRun()
+
         context = GoalContext(
             original_objective=question,
+            research_run=research_run,
             available_sources=self.available_sources,
             constraints=self.constraints,
             start_time=datetime.now()
@@ -1259,6 +1324,9 @@ Return JSON:
                 # Summarize long content to preserve key info in fewer tokens
                 evidence = await self._summarize_evidence(evidence, goal, context)
 
+                # Add to global research index for cross-branch sharing
+                await self._add_to_run_index(evidence, goal, context)
+
             return GoalResult(
                 goal=goal,
                 status=GoalStatus.COMPLETED if evidence else GoalStatus.FAILED,
@@ -1284,12 +1352,26 @@ Return JSON:
         return await self._execute_api_call(goal, action, context)
 
     async def _execute_analysis(self, goal: str, action: Action, context: GoalContext) -> GoalResult:
-        """Analyze existing evidence."""
+        """Analyze existing evidence (includes cross-branch evidence from global index)."""
         from llm_utils import acompletion
+
+        # Try to get relevant evidence from global index (cross-branch sharing)
+        global_evidence = []
+        if context.research_run:
+            try:
+                global_evidence = await self._select_relevant_evidence_ids(goal, context)
+            except Exception as e:
+                logger.warning(f"Global evidence selection failed: {e}, using local evidence only")
+
+        # Merge local + global evidence
+        all_evidence = [*context.accumulated_evidence, *global_evidence]
+
+        # Take most recent items up to limit
+        evidence_to_analyze = all_evidence[-context.constraints.max_evidence_for_analysis:]
 
         evidence_text = "\n\n".join([
             f"[{e.source}] {e.title}\n{e.content}"
-            for e in context.accumulated_evidence[-context.constraints.max_evidence_for_analysis:]
+            for e in evidence_to_analyze
         ])
 
         prompt = action.prompt or f"Analyze the following evidence to address: {goal}"
@@ -2086,6 +2168,152 @@ Return JSON with item_index matching the Item # shown above:
         except Exception as e:
             logger.warning(f"Summarization failed: {e}, keeping original content")
             return evidence
+
+    async def _add_to_run_index(
+        self,
+        evidence: List[Evidence],
+        goal: str,
+        context: GoalContext
+    ) -> None:
+        """
+        Add evidence to global research index for cross-branch sharing.
+
+        Thread-safe: Prepares data outside lock, only acquires for atomic writes.
+
+        Args:
+            evidence: List of Evidence objects to index
+            goal: The goal that produced this evidence
+            context: Current goal context (contains goal_stack and research_run)
+        """
+        import uuid
+
+        # Guard: Skip if no research_run (shouldn't happen, but defensive)
+        if not context.research_run:
+            return
+
+        # Prepare index entries outside lock (minimize lock-held time)
+        entries_to_add = []
+        for e in evidence:
+            evidence_id = str(uuid.uuid4())
+            entry = IndexEntry(
+                evidence_id=evidence_id,
+                goal=goal,
+                source=e.source,
+                title=e.title,
+                snippet=e.content[:200] if e.content else "",
+                goal_ancestry=context.goal_stack.copy()
+            )
+            entries_to_add.append((evidence_id, entry, e))
+
+        # Acquire lock only for atomic writes
+        async with context.research_run.lock:
+            for evidence_id, entry, e in entries_to_add:
+                context.research_run.index.append(entry)
+                context.research_run.evidence_store[evidence_id] = e
+
+    async def _select_relevant_evidence_ids(
+        self,
+        goal: str,
+        context: GoalContext
+    ) -> List[Evidence]:
+        """
+        Select relevant evidence from global index using LLM.
+
+        Shows LLM compact index (title, snippet) and asks it to select
+        evidence IDs that are relevant to the current goal.
+
+        Args:
+            goal: Current goal being pursued
+            context: Current goal context (contains research_run and goal_stack)
+
+        Returns:
+            List of Evidence objects from global index
+        """
+        from llm_utils import acompletion
+        from core.prompt_loader import render_prompt
+        import json
+
+        # Guard: Return empty if no research_run or empty index
+        if not context.research_run or not context.research_run.index:
+            return []
+
+        # Slice to last N entries (prevent token overflow)
+        max_items = context.research_run.max_index_items_for_selection
+        index_entries = context.research_run.index[-max_items:]
+
+        # Convert to dict for template (Jinja needs dict, not dataclass)
+        index_dicts = [
+            {
+                "evidence_id": e.evidence_id,
+                "goal": e.goal,
+                "source": e.source,
+                "title": e.title,
+                "snippet": e.snippet,
+                "goal_ancestry": e.goal_ancestry
+            }
+            for e in index_entries
+        ]
+
+        # Render prompt
+        prompt = render_prompt(
+            "deep_research/global_evidence_selection.j2",
+            goal=goal,
+            goal_ancestry=context.goal_stack,
+            local_evidence_count=len(context.accumulated_evidence),
+            index_size=len(context.research_run.index),
+            index_entries=index_dicts
+        )
+
+        # Define JSON schema
+        schema = {
+            "type": "object",
+            "properties": {
+                "evidence_ids": {
+                    "type": "array",
+                    "items": {"type": "string"},
+                    "description": "Array of evidence IDs to include"
+                }
+            },
+            "required": ["evidence_ids"],
+            "additionalProperties": False
+        }
+
+        # Call LLM
+        response = await acompletion(
+            model="gemini/gemini-2.0-flash-exp",
+            messages=[{"role": "user", "content": prompt}],
+            response_format={
+                "type": "json_schema",
+                "json_schema": {
+                    "strict": True,
+                    "name": "global_evidence_selection",
+                    "schema": schema
+                }
+            }
+        )
+
+        result = json.loads(response.choices[0].message.content)
+        selected_ids = result.get("evidence_ids", [])
+
+        # Filter to valid IDs and retrieve evidence
+        evidence_list = []
+        for evidence_id in selected_ids:
+            if evidence_id in context.research_run.evidence_store:
+                evidence_list.append(context.research_run.evidence_store[evidence_id])
+
+        # Log global evidence selection
+        parent_goal = context.goal_stack[-1] if context.goal_stack else None
+        self.logger.log(
+            event_type="global_evidence_selection",
+            goal=goal,
+            depth=context.depth,
+            parent_goal=parent_goal,
+            selected_count=len(evidence_list),
+            total_index_size=len(context.research_run.index),
+            selected_ids=selected_ids
+        )
+
+        return evidence_list
 
     async def _reformulate_on_error(
         self,

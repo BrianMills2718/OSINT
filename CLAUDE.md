@@ -578,7 +578,133 @@ pip list | grep playwright
 
 ## CURRENT STATUS
 
-**Recently Completed** (2025-11-27 - Current Session):
+**In Progress** (2025-11-29 - Current Session):
+- 🔄 **P0 #2: Global Evidence Index (Cross-Branch Evidence Sharing)** - **APPROVED, IMPLEMENTING OPTION B**
+  - **Problem**: Sub-goals cannot see evidence from sibling/cousin branches - leads to redundant API calls and incomplete synthesis
+  - **Example**: Goal "Research Company X" decomposes to "Contracts" and "Lawsuits" branches. Lawsuit branch can't see contracts evidence.
+  - **Solution**: Global evidence index (ResearchRun in GoalContext + IndexEntry + LLM-on-index selection)
+  - **External Review**: Two independent LLMs validated approach; Option B selected for clean architecture + agent reuse support
+
+  **Investigation Complete**:
+  1. ✅ Evidence creation: Single point at line 1225 (`Evidence.from_dict()`)
+  2. ✅ goal_stack: Properly maintained via `with_parent()` (lines 216-229, 842)
+  3. ✅ Parallel execution: Line 868 (`asyncio.gather(*group_tasks)`) - requires asyncio.Lock
+  4. ✅ Integration point: Line 1286-1293 in `_execute_analysis()`
+  5. ✅ Cost analysis: +1 LLM call per ANALYZE = ~$0.001-0.003 per run
+  6. ✅ Agent reuse: Option B supports future web/Streamlit deployments with agent reuse
+
+  **Architecture Decision: Option B (ResearchRun in GoalContext)**
+
+  **Why Option B:**
+  - ✅ Supports agent reuse across multiple research() calls (web API, Streamlit)
+  - ✅ Clean encapsulation (GoalContext remains single source of truth)
+  - ✅ Consistent with existing pattern (matches all_goals, constraints)
+  - ✅ No shared mutable state on agent (prevents cross-run contamination)
+  - ✅ Better testability (can inject mock ResearchRun)
+  - Complexity: +15 lines vs Option A (minimal cost for future-proofing)
+
+  **Final Architecture**:
+
+  ```python
+  # Data structures
+  @dataclass
+  class IndexEntry:
+      """Compact representation for LLM selection."""
+      evidence_id: str
+      goal: str
+      source: str
+      title: str
+      snippet: str  # Max 200 chars, truncated from evidence.snippet or content
+      goal_ancestry: List[str]
+
+  @dataclass
+  class ResearchRun:
+      """Global evidence index for cross-branch sharing."""
+      index: List[IndexEntry]
+      evidence_store: Dict[str, Evidence]
+      lock: asyncio.Lock
+      max_index_items_for_selection: int = 50  # Limit shown to LLM (prevents token overflow)
+
+  @dataclass
+  class GoalContext:
+      # Run-level shared state (referenced, not copied)
+      research_run: Optional[ResearchRun] = None
+      all_goals: List[str] = field(default_factory=list)
+      constraints: Constraints = field(default_factory=Constraints)
+
+      # Branch-local state (copied)
+      accumulated_evidence: List[Evidence] = field(default_factory=list)
+      goal_stack: List[str] = field(default_factory=list)
+
+      def with_parent(self, parent_goal: str) -> 'GoalContext':
+          return GoalContext(
+              research_run=self.research_run,  # REFERENCE (shared)
+              all_goals=self.all_goals,        # REFERENCE (shared)
+              # ... accumulated_evidence copied, goal_stack extended
+          )
+  ```
+
+  **Implementation Plan (5 Phases)**:
+
+  **Phase 1: Data Structures** (~35 lines)
+  - Add IndexEntry and ResearchRun dataclasses to recursive_agent.py
+  - Add `research_run: Optional[ResearchRun]` to GoalContext (line ~205)
+  - Update all with_*() methods to reference research_run (4 methods: with_parent, with_evidence, with_decomposition_rationale, add new with_run)
+  - Initialize ResearchRun in research() and attach to root GoalContext
+
+  **Phase 2: Evidence Capture** (~25 lines)
+  - Create `_add_to_run_index(evidence, goal, context)` helper
+  - Call from line 1225 after Evidence.from_dict()
+  - Build IndexEntry with: UUID, goal, source, title, snippet (robust: e.snippet or e.content or "")[:200], goal_stack
+  - Thread-safe: prepare entry outside lock, acquire lock only for append+store
+
+  **Phase 3: LLM Selection** (~50 lines)
+  - Create `_select_relevant_evidence_ids(goal, context)` method
+  - Slice index: `context.research_run.index[-50:]` (last 50 entries to prevent token overflow)
+  - Prompt template: `prompts/deep_research/global_evidence_selection.j2`
+  - Model: `gemini/gemini-2.5-flash` (existing fast model)
+  - JSON schema: `{"evidence_ids": ["id1", "id2", ...]}` (object, not bare array)
+  - Filter returned IDs to valid keys in evidence_store
+
+  **Phase 4: Integration** (~20 lines)
+  - Modify `_execute_analysis()` (line 1286)
+  - Guard: `if not context.research_run: global_evidence = []`
+  - Try/except with fallback: `except Exception: logger.warning(...); global_evidence = []`
+  - Merge: `all_evidence = [*context.accumulated_evidence, *global_evidence]`
+  - Use `all_evidence[-constraints.max_evidence_for_analysis:]` (existing constraint at line 89)
+
+  **Phase 5: Logging** (~15 lines)
+  - Log using execution_logger pattern: `self.logger.log(...)`
+  - Event type: `"global_evidence_selection"`
+  - Payload: goal, selected_count, total_index_size, selected_ids
+
+  **Technical Corrections Applied**:
+  1. ✅ JSON contract: `{"evidence_ids": [...]}` (object format)
+  2. ✅ Model: Use existing `gemini/gemini-2.5-flash`
+  3. ✅ Constraints: Use existing `max_evidence_for_analysis` (line 89)
+  4. ✅ Snippet: Robust fallback `(e.snippet or e.content or "")[:200]`
+  5. ✅ Guard: Check `if context.research_run` before use
+  6. ✅ Lock: Minimal critical section (prepare data outside)
+  7. ✅ Index size: Slice to last 50 entries (no global cap needed)
+
+  **Edge Cases**:
+  - Empty index → return []
+  - Invalid IDs → filter to valid only
+  - LLM failure → catch, log, fallback to local evidence
+  - No research_run → skip global selection gracefully
+
+  **Testing**:
+  - Unit test: ResearchRun add_evidence with Lock
+  - Integration test: Cross-branch evidence sharing (contracts branch → lawsuits ANALYZE sees contracts)
+  - E2E test: execution_log.jsonl has global_evidence_selection events
+
+  **Total Changes**: ~145 lines across 3 files
+  **Risk**: Medium (touches GoalContext, core flow) - mitigated by fallbacks
+  **Files**: recursive_agent.py, global_evidence_selection.j2 (new), execution_logger.py (optional helper)
+
+  **Status**: Implementation in progress (Phase 1-5)
+
+**Recently Completed** (2025-11-27 - Previous Session):
 - ✅ **Empty String Fix in SearchResultBuilder** - **COMPLETE** (commit b63009e)
   - **Problem**: `safe_text()` only returned default for `None`, not empty strings after stripping
   - **Solution**: Added `if not text: return default` check after stripping
