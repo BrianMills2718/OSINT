@@ -147,6 +147,95 @@ class SearchResult(BaseModel):
         return v
 
 
+class Evidence(SearchResult):
+    """
+    SearchResult enriched with research context.
+
+    ARCHITECTURE: Evidence EXTENDS SearchResult via inheritance.
+    This guarantees:
+    - All SearchResult fields are automatically inherited (zero drift)
+    - Type safety via Pydantic validation
+    - Single source of truth for field definitions
+
+    Additional fields (research enrichment):
+        - source_id: Which integration provided this result
+        - relevance_score: LLM-assigned relevance (0-1)
+
+    The 'content' property provides backward compatibility with code
+    that uses 'content' instead of 'snippet'.
+    """
+    source_id: str = Field(..., description="Integration ID that provided this result")
+    relevance_score: Optional[float] = Field(
+        default=None,
+        ge=0.0,
+        le=1.0,
+        description="LLM-assigned relevance score"
+    )
+
+    @property
+    def content(self) -> str:
+        """Backward compatibility alias for snippet."""
+        return self.snippet
+
+    @property
+    def source(self) -> str:
+        """Backward compatibility alias for source_id."""
+        return self.source_id
+
+    @classmethod
+    def from_search_result(
+        cls,
+        result: 'SearchResult',
+        source_id: str,
+        relevance_score: Optional[float] = None
+    ) -> 'Evidence':
+        """
+        Create Evidence from a validated SearchResult.
+
+        This is the ONLY way to create Evidence from integration results.
+        Type-safe: takes SearchResult, not Dict.
+        If SearchResult changes, type checker catches mismatches.
+        """
+        return cls(
+            source_id=source_id,
+            relevance_score=relevance_score,
+            **result.model_dump()
+        )
+
+    @classmethod
+    def from_dict(
+        cls,
+        data: Dict[str, Any],
+        source_id: str,
+        relevance_score: Optional[float] = None
+    ) -> 'Evidence':
+        """
+        Create Evidence from a raw dict (validates via SearchResult first).
+
+        Use this when receiving data from integrations that return dicts.
+        The dict is validated as SearchResult, then converted to Evidence.
+        """
+        # Validate as SearchResult first
+        search_result = SearchResult.model_validate(data)
+        return cls.from_search_result(search_result, source_id, relevance_score)
+
+    def to_dict(self, max_content_length: Optional[int] = None) -> Dict[str, Any]:
+        """
+        Convert to dict for JSON serialization or report generation.
+
+        Includes all inherited SearchResult fields plus enrichment fields.
+        """
+        data = self.model_dump()
+        # Add content alias for backward compatibility
+        data["content"] = self.content
+        data["source"] = self.source_id  # Alias
+        # Optionally truncate content
+        if max_content_length and len(data["snippet"]) > max_content_length:
+            data["snippet"] = data["snippet"][:max_content_length]
+            data["content"] = data["snippet"]
+        return data
+
+
 class QueryResult:
     """
     Standardized result from any database search.

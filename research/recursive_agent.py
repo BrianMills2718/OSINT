@@ -19,6 +19,7 @@ from enum import Enum
 
 from dotenv import load_dotenv
 from research.services.entity_analyzer import EntityAnalyzer
+from core.database_integration_base import Evidence, SearchResult
 
 load_dotenv()
 
@@ -127,53 +128,11 @@ class Constraints:
     # The LLM reasons through what SHOULD exist and whether it has exhausted options
 
 
-@dataclass
-class Evidence:
-    """A piece of evidence gathered during research."""
-    source: str
-    title: str
-    content: str
-    url: Optional[str] = None
-    date: Optional[str] = None
-    relevance_score: Optional[float] = None
-    metadata: Dict[str, Any] = field(default_factory=dict)
-
-    @staticmethod
-    def from_search_result(source_id: str, item: Dict[str, Any]) -> 'Evidence':
-        """
-        Factory method: Single point of SearchResult → Evidence conversion.
-
-        This ensures all SearchResult fields are mapped explicitly.
-        If SearchResult adds a new field, update THIS method (one place).
-        """
-        return Evidence(
-            source=source_id,
-            title=item.get("title", "Untitled"),
-            content=item.get("snippet", item.get("description", item.get("content", ""))),
-            url=item.get("url"),
-            date=item.get("date"),
-            metadata=item
-        )
-
-    def to_dict(self, max_content_length: Optional[int] = None) -> Dict[str, Any]:
-        """
-        Single point of Evidence → Dict conversion.
-
-        This ensures all Evidence fields are serialized consistently.
-        If Evidence adds a new field, update THIS method (one place).
-        """
-        content = self.content
-        if max_content_length and len(content) > max_content_length:
-            content = content[:max_content_length]
-        return {
-            "source": self.source,
-            "title": self.title,
-            "date": self.date,
-            "content": content,
-            "url": self.url,
-            "relevance_score": self.relevance_score,
-            "metadata": self.metadata
-        }
+# Evidence is now imported from core.database_integration_base
+# It extends SearchResult via inheritance, providing:
+# - Zero drift: SearchResult fields automatically inherited
+# - Type safety: Pydantic validation
+# - Single source of truth: Field definitions in one place
 
 
 @dataclass
@@ -1259,11 +1218,11 @@ Return JSON:
                     else:
                         break
 
-            # Convert to evidence using factory method (prevents data loss)
+            # Convert to evidence using factory method (Pydantic validation + type safety)
             evidence = []
             if result and result.success and result.results:
                 for item in result.results:
-                    evidence.append(Evidence.from_search_result(source_id, item))
+                    evidence.append(Evidence.from_dict(item, source_id))
 
             # Filter for relevance
             original_count = len(evidence)
