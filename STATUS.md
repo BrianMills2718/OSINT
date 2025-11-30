@@ -1,7 +1,7 @@
 # STATUS.md - Component Status Tracker
 
-**Last Updated**: 2025-11-27 (Bug Fixes + Entity Follow-up + Rate Limit Optimization)
-**Current Phase**: V2 agent production-ready, all integrations have proper metadata ✅
+**Last Updated**: 2025-11-30 (P0 #2: Global Evidence Index - COMPLETE)
+**Current Phase**: V2 agent production-ready with cross-branch evidence sharing ✅
 **Previous Phase**: GovInfo Integration + Performance Optimizations - COMPLETE ✅
 **Previous Phase**: 22 integrations working, Telegram OSINT source added - COMPLETE ✅
 **Previous Phase**: Quality Improvements (Report Synthesis, Logging, Source Context) - COMPLETE ✅
@@ -17,6 +17,62 @@
 **Previous Phase**: Phase 1.5 (Adaptive Search & Knowledge Graph) - Week 1 COMPLETE ✅
 **Previous Phase**: Phase 1 (Boolean Monitoring MVP) - 100% COMPLETE + **DEPLOYED IN PRODUCTION** ✅
 **Previous Phase**: Phase 0 (Foundation) - 100% COMPLETE
+
+---
+
+## Recent Updates (2025-11-30)
+
+**Status**: ✅ **COMPLETE** - P0 #2: Global Evidence Index (Cross-Branch Evidence Sharing)
+**Impact**: Sub-goals can now access evidence from sibling/cousin branches, eliminating redundant API calls
+
+### P0 #2: Global Evidence Index - COMPLETE ✅
+**Date**: 2025-11-30
+**Commits**: 34719db, fc7ab72, ea15ac4, a802851, 5e1853e
+**Total Changes**: +702 lines across 5 files
+
+**Problem Solved**:
+Sub-goals in v2 recursive agent could not see evidence collected by sibling/cousin branches, causing:
+- Redundant API calls for same data
+- Loss of valuable context when analyzing related topics
+- Higher costs and slower research
+
+**Architecture**:
+- **ResearchRun** dataclass in GoalContext (run-level shared state)
+- **IndexEntry** for compact evidence metadata shown to LLM
+- **Thread-safe** with asyncio.Lock for concurrent writes
+- **LLM-on-index selection** - LLM chooses relevant evidence by ID
+
+**Implementation** (5 phases, +422 lines):
+1. Data structures: ResearchRun, IndexEntry (lines 69-99 in recursive_agent.py)
+2. Evidence capture: _add_to_run_index() helper (lines 2155-2198)
+3. LLM selection: _select_relevant_evidence_ids() (lines 2200-2316)
+4. Integration: _execute_analysis() enhanced (lines 1354-1396)
+5. Logging: global_evidence_selection event type
+
+**Critical Bug Fixes**:
+- **Cost tracking** (commit fc7ab72): Added missing `context.add_cost()` after LLM selection call
+- **Test assertions** (commit a802851): Fixed incorrect log event checks
+
+**Testing**:
+- ✅ test_cross_branch_evidence_sharing() - 28 evidence, $0.0011 cost, 342s duration
+- ✅ test_global_index_populated() - Validates index population
+- ✅ All success criteria met (evidence_collected, status_completed, cost_tracked, log_exists)
+
+**Tech Debt**:
+- Unbounded index growth documented in TECH_DEBT.md
+- Low priority (sessions finite, agents not reused)
+- Better solutions proposed: LRU, LLM-based eviction, importance scoring
+
+**Files Created**:
+- prompts/deep_research/global_evidence_selection.j2 (47 lines)
+- tests/test_global_evidence_index.py (185 lines)
+- TECH_DEBT.md (69 lines)
+
+**Files Modified**:
+- research/recursive_agent.py (+422 lines)
+- CLAUDE.md (documentation updates)
+
+**Production Status**: ✅ Ready - All tests passing, architecture validated, tech debt documented
 
 ---
 

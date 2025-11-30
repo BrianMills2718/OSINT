@@ -578,41 +578,32 @@ pip list | grep playwright
 
 ## CURRENT STATUS
 
-**In Progress** (2025-11-29 - Current Session):
-- 🔄 **P0 #2: Global Evidence Index - Implementation Complete, Critical Fixes Required**
-  - **Commit**: 34719db "feat(v2): implement global evidence index for cross-branch sharing (P0 #2)"
-  - **Status**: All 5 phases implemented (+422 lines), smoke test passed, but critical issues found on review
+**Recently Completed** (2025-11-30):
+- ✅ **P0 #2: Global Evidence Index - COMPLETE**
+  - **Status**: Production-ready with cross-branch evidence sharing
+  - **Commits**: 34719db (implementation), fc7ab72 (cost fix), ea15ac4 (tests), a802851 (test fix), 5e1853e (tech debt)
+  - **Total Changes**: +702 lines across 5 files
 
-  **Implementation Complete** (commit 34719db):
+  **Implementation** (5 phases, +422 lines):
   - ✅ Phase 1: Data Structures (IndexEntry, ResearchRun, GoalContext updates)
   - ✅ Phase 2: Evidence Capture (_add_to_run_index helper + integration)
   - ✅ Phase 3: LLM Selection (prompt template + _select_relevant_evidence_ids)
   - ✅ Phase 4: Integration (_execute_analysis enhanced)
   - ✅ Phase 5: Logging (execution_log events)
-  - ✅ Smoke test: PASS (35 evidence, COMPLETED, no crashes)
 
-  **Critical Issues Found (Deep Review)**:
+  **Critical Bugs Fixed**:
+  - ✅ Cost tracking: Added `context.add_cost()` after LLM selection (commit fc7ab72)
+  - ✅ Test assertions: Fixed incorrect log event checks (commit a802851)
 
-  **🔴 P1 - BLOCKER (Must Fix Before Production)**:
-  1. **Missing Cost Tracking** (research/recursive_agent.py:2268-2279)
-     - LLM call in `_select_relevant_evidence_ids()` doesn't track cost
-     - Impact: Research costs underreported by ~$0.0001-0.0002 per selection
-     - Fix: Add `context.add_cost(context.constraints.cost_per_filter)` after LLM call (line 2293)
+  **Testing Complete**:
+  - ✅ test_cross_branch_evidence_sharing() - 28 evidence, $0.0011 cost, 342s duration
+  - ✅ test_global_index_populated() - Validates index population
+  - ✅ All success criteria met (evidence_collected, status_completed, cost_tracked, log_exists)
 
-  **🟡 P2 - Required for Validation**:
-  2. **Inadequate Testing** (smoke test doesn't validate core feature)
-     - Smoke test uses `max_iterations=1` - no cross-branch sharing occurs
-     - Need: Integration test with depth ≥ 3, verify Branch B receives Branch A's evidence
-     - Need: Verify execution_log.jsonl has "global_evidence_selection" events
-     - Location: Create tests/test_global_evidence_index.py
-
-  **🟡 P2 - Memory Safety (Deferred to Tech Debt)**:
-  3. **Missing max_index_size Limit** (research/recursive_agent.py:85-99)
-     - ResearchRun.index and evidence_store grow unbounded
-     - Current impact: Low (typical runs 50-100 evidence)
-     - Long-term risk: Memory issues for continuous/long-running sessions
-     - Status: **Documented in TECH_DEBT.md** - FIFO eviction too naive, needs LRU or LLM-based approach
-     - Workaround: Sessions are finite (max_time_seconds) and agents not reused, so memory naturally bounded
+  **Tech Debt Documented**:
+  - Unbounded index growth documented in TECH_DEBT.md
+  - Low priority (sessions finite, agents not reused)
+  - Better solutions proposed: LRU, LLM-based eviction, importance scoring
 
   **Architecture Validation** (All Correct):
   - ✅ Thread safety: Lock usage correct for asyncio
