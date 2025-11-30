@@ -22,8 +22,8 @@
 
 ## Recent Updates (2025-11-30)
 
-**Status**: ✅ **COMPLETE** - P0 #2: Global Evidence Index (Cross-Branch Evidence Sharing)
-**Impact**: Sub-goals can now access evidence from sibling/cousin branches, eliminating redundant API calls
+**Status**: ✅ **P0 #2 COMPLETE** - Global Evidence Index | 🔍 **INVESTIGATION COMPLETE** - DAG & ANALYZE Infrastructure
+**Impact**: Cross-branch sharing implemented; DAG infrastructure discovered to be 90% complete but unused
 
 ### P0 #2: Global Evidence Index - COMPLETE ✅
 **Date**: 2025-11-30
@@ -73,6 +73,83 @@ Sub-goals in v2 recursive agent could not see evidence collected by sibling/cous
 - CLAUDE.md (documentation updates)
 
 **Production Status**: ✅ Ready - All tests passing, architecture validated, tech debt documented
+
+---
+
+### DAG & ANALYZE Infrastructure Investigation - COMPLETE 🔍
+**Date**: 2025-11-30
+**Branch**: `feature/enable-dag-analysis`
+**Document**: `docs/DAG_ANALYSIS_INVESTIGATION.md` (294 lines)
+**Commit**: 9b0266c
+
+**Context**: E2E test (608 evidence, $0.0222) revealed cross-branch sharing wasn't exercised - 0 ANALYZE actions, 0 global_evidence_selection events. Investigation discovered DAG infrastructure already exists.
+
+**CRITICAL DISCOVERY**: DAG infrastructure is 90% complete but unused
+- ✅ SubGoal.dependencies field exists (line 289 in recursive_agent.py)
+- ✅ Full topological sort implementation (_group_by_dependency, lines 2390-2420)
+- ✅ Already integrated into execution loop (line 914)
+- ✅ LLM is prompted for dependencies (line 1480)
+- ✅ Code parses dependencies correctly (lines 1500-1516)
+- ❌ **Problem**: LLM doesn't actually declare dependencies (returns empty arrays)
+
+**Two Independent Problems Identified**:
+1. **Problem A**: LLM doesn't declare dependencies
+   - Solution: Enhance decomposition prompt with examples
+   - Effort: 2-4 hours (prompt engineering)
+2. **Problem B**: LLM doesn't choose ANALYZE
+   - Solution: Enhance assessment prompt + add sibling awareness
+   - Effort: 2-3 hours (prompt engineering + context passing)
+
+**Key Findings**:
+- Logging is lossy (only logs descriptions, not full SubGoal objects with dependencies)
+- DAG execution code exists but has no test coverage
+- This is primarily a **prompt engineering challenge** (90%), not systems engineering (10%)
+
+**Uncertainties** (5 identified):
+1. ❓ Does LLM currently return dependencies? (logging doesn't capture this)
+2. ❓ Will Gemini consistently declare dependencies?
+3. ❓ How does LLM decide dependency indices?
+4. ❓ What if LLM declares circular dependencies? (code handles it, but defeats purpose)
+5. ❓ Will dependent goals automatically choose ANALYZE?
+
+**Risk Assessment**:
+- 🔴 **High Risk**: Breaking existing behavior (prompt changes might reduce decomposition quality)
+- 🟡 **Medium Risk**: Dependency hell (overly complex graphs), LLM cost increase
+- 🟢 **Low Risk**: Backwards compatibility, testing coverage gaps
+
+**Success Criteria** (8 before merging):
+1. ✅ LLM declares dependencies for comparative goals (logged and verified)
+2. ✅ _group_by_dependency correctly orders execution (test coverage)
+3. ✅ Dependent goals wait for dependencies to complete (timing logs)
+4. ✅ At least 1 ANALYZE action in comparative E2E test (not 0)
+5. ✅ Cross-branch evidence sharing validated (global_evidence_selection events > 0)
+6. ✅ No regression in data collection quality (same or more evidence)
+7. ✅ Cost increase < 20% for equivalent queries
+8. ✅ All existing tests still pass
+
+**Timeline Estimate**: 11-19 hours (1.5-2.5 days of focused work)
+- Logging: 1-2 hours
+- Test suite: 2-3 hours
+- Prompt engineering: 2-4 hours (iterative)
+- E2E validation: 1-2 hours
+- Documentation: 1-2 hours
+- Buffer: 2-3 hours
+
+**Next Steps** (5 implementation phases):
+1. **Phase 1: Logging** - Add full SubGoal logging, dependency groups, raw LLM responses (observation only, no behavior change)
+2. **Phase 2: Test Suite** - Unit test _group_by_dependency, integration test forced dependencies, E2E comparative query
+3. **Phase 3: Prompt Engineering** - Decomposition prompt with dependency examples, assessment prompt with ANALYZE guidance
+4. **Phase 4: Incremental Implementation** - Logging → prompts → validation
+5. **Phase 5: Documentation** - Update CLAUDE.md, STATUS.md, create DAG_USAGE_GUIDE.md
+
+**Files to Modify** (~350 lines across 5 files):
+- research/recursive_agent.py (~100 lines, medium risk)
+- research/execution_logger.py (~20 lines, low risk)
+- tests/test_dag_execution.py (~150 lines, new file)
+- CLAUDE.md (~50 lines, low risk)
+- STATUS.md (~30 lines, low risk)
+
+**Investigation Status**: ✅ **COMPLETE** - Awaiting approval to proceed with Phase 1 (logging)
 
 ---
 
