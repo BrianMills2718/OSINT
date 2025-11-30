@@ -2295,6 +2295,9 @@ Return JSON with item_index matching the Item # shown above:
         result = json.loads(response.choices[0].message.content)
         selected_ids = result.get("evidence_ids", [])
 
+        # Track cost for global evidence selection LLM call
+        context.add_cost(context.constraints.cost_per_filter)
+
         # Filter to valid IDs and retrieve evidence
         evidence_list = []
         for evidence_id in selected_ids:
