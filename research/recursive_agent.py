@@ -456,12 +456,62 @@ class ExecutionLogger:
         })
 
     def log_goal_decomposed(self, goal: str, depth: int, parent_goal: Optional[str],
-                            sub_goals: List[str], rationale: str):
-        """Log goal decomposition into sub-goals."""
+                            sub_goals: Union[List[str], List['SubGoal']], rationale: str):
+        """
+        Log goal decomposition into sub-goals.
+
+        Args:
+            sub_goals: Either List[str] (legacy) or List[SubGoal] (with dependencies)
+        """
+        # Handle both legacy List[str] and new List[SubGoal]
+        if sub_goals and hasattr(sub_goals[0], 'description'):
+            # New format: List[SubGoal] with dependencies
+            sub_goals_data = [
+                {
+                    "description": sg.description[:80],
+                    "dependencies": sg.dependencies,
+                    "complexity": sg.estimated_complexity
+                }
+                for sg in sub_goals
+            ]
+        else:
+            # Legacy format: List[str]
+            sub_goals_data = [sg[:80] for sg in sub_goals]
+
         self._write_entry("goal_decomposed", goal, depth, parent_goal, {
             "sub_goal_count": len(sub_goals),
-            "sub_goals": [sg[:80] for sg in sub_goals],
+            "sub_goals": sub_goals_data,
             "decomposition_rationale": rationale[:200]
+        })
+
+    def log_dependency_groups(self, goal: str, depth: int, parent_goal: Optional[str],
+                               groups: List[List['SubGoal']]):
+        """
+        Log DAG execution groups after topological sort.
+
+        Each group contains sub-goals that can execute in parallel.
+        Groups execute sequentially (group N+1 waits for group N to complete).
+        """
+        groups_data = []
+        for group_idx, group in enumerate(groups):
+            group_info = {
+                "group_index": group_idx,
+                "goal_count": len(group),
+                "goals": [
+                    {
+                        "description": sg.description[:60],
+                        "dependencies": sg.dependencies,
+                        "complexity": sg.estimated_complexity
+                    }
+                    for sg in group
+                ]
+            }
+            groups_data.append(group_info)
+
+        self._write_entry("dependency_groups_execution", goal, depth, parent_goal, {
+            "total_groups": len(groups),
+            "groups": groups_data,
+            "execution_note": "Groups execute sequentially, goals within groups execute in parallel"
         })
 
     def log_goal_completed(self, goal: str, depth: int, parent_goal: Optional[str],
@@ -889,7 +939,7 @@ class RecursiveResearchAgent:
 
         self.logger.log_goal_decomposed(
             goal, context.depth, parent_goal,
-            sub_goals=[sg.description for sg in sub_goals],
+            sub_goals=sub_goals,  # Pass full SubGoal objects (includes dependencies)
             rationale=assessment.decomposition_rationale or "Goal too complex for direct execution"
         )
 
@@ -912,6 +962,11 @@ class RecursiveResearchAgent:
 
         # Group by dependency for parallelism
         goal_groups = self._group_by_dependency(sub_goals)
+
+        # Log dependency groups execution plan
+        if len(goal_groups) > 1 or (goal_groups and any(sg.dependencies for sg in goal_groups[0])):
+            # Only log if there are multiple groups or dependencies declared
+            self.logger.log_dependency_groups(goal, context.depth, parent_goal, goal_groups)
 
         # Bug fix: Add semaphore to limit concurrent tasks
         semaphore = asyncio.Semaphore(context.constraints.max_concurrent_tasks)
@@ -1495,6 +1550,20 @@ Return JSON:
             context.add_cost(context.constraints.cost_per_decomposition)
 
             result = json.loads(response.choices[0].message.content)
+
+            # Log raw LLM response (to verify dependencies are being returned)
+            self.logger.log("llm_decomposition_response", goal, context.depth,
+                            context.goal_stack[-2] if len(context.goal_stack) > 1 else None, {
+                                "sub_goal_count": len(result.get("sub_goals", [])),
+                                "raw_dependencies": [
+                                    {
+                                        "description": sg.get("description", "")[:60],
+                                        "dependencies": sg.get("dependencies", []),
+                                        "complexity": sg.get("estimated_complexity", "moderate")
+                                    }
+                                    for sg in result.get("sub_goals", [])
+                                ]
+                            })
 
             sub_goals = []
             for sg_data in result.get("sub_goals", []):
