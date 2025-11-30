@@ -1526,6 +1526,38 @@ Create sub-goals that:
 4. DON'T duplicate existing goals
 5. Aim for 5-10 sub-goals for depth-1 decomposition of investigative queries
 
+DEPENDENCY GUIDANCE - When to declare dependencies:
+
+INDEPENDENT goals (dependencies: []):
+- Data collection from different sources (can run in parallel)
+- Example: Research Company A contracts, Research Company B contracts
+- Example: Find USAspending data, Find FEC data, Find NewsAPI articles
+
+DEPENDENT goals (dependencies: [0, 1, ...]):
+- COMPARATIVE analysis: "Compare X vs Y" requires both X and Y data first
+  Example: Goal 0: "Find Palantir contracts", Goal 1: "Find Anduril contracts",
+           Goal 2 (depends on [0,1]): "Compare contract portfolios and identify competitive positioning"
+
+- SYNTHESIS/INTEGRATION: Combining findings from multiple sub-goals
+  Example: Goal 0: "Government contracts", Goal 1: "Legal issues",
+           Goal 2 (depends on [0,1]): "Identify patterns between contract awards and legal problems"
+
+- SEQUENTIAL data collection: Later goal needs results from earlier goal
+  Example: Goal 0: "Find top contractors by spending",
+           Goal 1 (depends on [0]): "Research controversies for top 5 contractors identified"
+
+- FOLLOW-UP investigation: Deep-dive into specific entities/topics discovered
+  Example: Goal 0: "Extract key entities from initial research",
+           Goal 1 (depends on [0]): "Investigate relationships between identified entities"
+
+WHEN NOT to use dependencies:
+- Independent data gathering across different sources → dependencies: []
+- Parallel exploration of different angles → dependencies: []
+- Broad coverage queries → dependencies: []
+
+CRITICAL: If goal description contains "compare", "analyze relationship", "synthesize",
+"based on findings", or "after identifying" → likely needs dependencies!
+
 Return JSON:
 {{
     "sub_goals": [
