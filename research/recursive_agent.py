@@ -134,8 +134,46 @@ class Evidence:
     title: str
     content: str
     url: Optional[str] = None
+    date: Optional[str] = None
     relevance_score: Optional[float] = None
     metadata: Dict[str, Any] = field(default_factory=dict)
+
+    @staticmethod
+    def from_search_result(source_id: str, item: Dict[str, Any]) -> 'Evidence':
+        """
+        Factory method: Single point of SearchResult → Evidence conversion.
+
+        This ensures all SearchResult fields are mapped explicitly.
+        If SearchResult adds a new field, update THIS method (one place).
+        """
+        return Evidence(
+            source=source_id,
+            title=item.get("title", "Untitled"),
+            content=item.get("snippet", item.get("description", item.get("content", ""))),
+            url=item.get("url"),
+            date=item.get("date"),
+            metadata=item
+        )
+
+    def to_dict(self, max_content_length: Optional[int] = None) -> Dict[str, Any]:
+        """
+        Single point of Evidence → Dict conversion.
+
+        This ensures all Evidence fields are serialized consistently.
+        If Evidence adds a new field, update THIS method (one place).
+        """
+        content = self.content
+        if max_content_length and len(content) > max_content_length:
+            content = content[:max_content_length]
+        return {
+            "source": self.source,
+            "title": self.title,
+            "date": self.date,
+            "content": content,
+            "url": self.url,
+            "relevance_score": self.relevance_score,
+            "metadata": self.metadata
+        }
 
 
 @dataclass
@@ -1221,17 +1259,11 @@ Return JSON:
                     else:
                         break
 
-            # Convert to evidence
+            # Convert to evidence using factory method (prevents data loss)
             evidence = []
             if result and result.success and result.results:
                 for item in result.results:
-                    evidence.append(Evidence(
-                        source=source_id,
-                        title=item.get("title", "Untitled"),
-                        content=item.get("snippet", item.get("description", item.get("content", ""))),
-                        url=item.get("url"),
-                        metadata=item
-                    ))
+                    evidence.append(Evidence.from_search_result(source_id, item))
 
             # Filter for relevance
             original_count = len(evidence)
@@ -2263,15 +2295,10 @@ Return JSON:
         from core.prompt_loader import render_prompt
         from config_loader import config
 
-        # Group evidence by source
+        # Group evidence by source (using to_dict for consistent serialization)
         by_source: Dict[str, List[Dict]] = {}
         for e in result.evidence:
-            by_source.setdefault(e.source, []).append({
-                "title": e.title,
-                "content": e.content[:500],
-                "url": e.url,
-                "metadata": e.metadata
-            })
+            by_source.setdefault(e.source, []).append(e.to_dict(max_content_length=500))
 
         # Prepare sub-results summary
         sub_results_summary = []
@@ -2575,6 +2602,8 @@ Return JSON:
             lines.append("")
             for e in evidence_list[:self.constraints.max_evidence_per_source_in_report]:
                 lines.append(f"- **{e['title']}**")
+                if e.get('date'):
+                    lines.append(f"  - Date: {e['date']}")
                 if e.get('url'):
                     lines.append(f"  - URL: {e['url']}")
                 # Only show truncation indicator if content was actually truncated
