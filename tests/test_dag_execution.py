@@ -6,7 +6,7 @@ Tests the dependency-based execution order of sub-goals.
 """
 
 import pytest
-from research.recursive_agent import RecursiveResearchAgent, SubGoal
+from research.recursive_agent import RecursiveResearchAgent, SubGoal, Constraints
 
 
 class TestGroupByDependency:
