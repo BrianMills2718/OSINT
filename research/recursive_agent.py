@@ -1003,17 +1003,25 @@ class RecursiveResearchAgent:
                         all_evidence.append(evidence)
 
             # === CHECK IF GOAL ACHIEVED ===
-            achieved = await self._goal_achieved(goal, sub_results, context)
-            if achieved:
-                self.logger.log_achievement_check(
-                    goal, context.depth, parent_goal,
-                    sub_goals_completed=len(sub_results),
-                    total_sub_goals=len(sub_goals),
-                    total_evidence=len(all_evidence),
-                    achieved=True,
-                    reasoning="Goal achieved early based on LLM assessment"
-                )
-                break
+            # Skip early exit for comparative/synthesis goals to ensure all dependency groups complete
+            goal_appears_comparative = any(
+                word in goal.lower()
+                for word in ["compare", "vs", "versus", "analysis", "competitive", "contrast",
+                            "synthesis", "analyze", "assess", "evaluate"]
+            )
+
+            if not goal_appears_comparative:
+                achieved = await self._goal_achieved(goal, sub_results, context)
+                if achieved:
+                    self.logger.log_achievement_check(
+                        goal, context.depth, parent_goal,
+                        sub_goals_completed=len(sub_results),
+                        total_sub_goals=len(sub_goals),
+                        total_evidence=len(all_evidence),
+                        achieved=True,
+                        reasoning="Goal achieved early based on LLM assessment"
+                    )
+                    break
 
         # Log deduplication stats if any duplicates were found
         if duplicate_count > 0:
