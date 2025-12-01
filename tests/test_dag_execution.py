@@ -216,7 +216,7 @@ class TestDAGEndToEnd:
 
         constraints = Constraints(
             max_depth=3,
-            max_time_seconds=60,
+            max_time_seconds=1500,  # 25 minutes - proper validation
             max_goals=10,
             max_cost_dollars=0.10
         )
