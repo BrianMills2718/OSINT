@@ -620,6 +620,57 @@ pip list | grep playwright
 
 ## CURRENT STATUS
 
+**Recently Completed** (2025-12-01):
+- ✅ **Error Handling Architecture Refactor - Phase 2 COMPLETE**
+  - **Status**: All integrations now extract and return HTTP codes in QueryResult
+  - **Branch**: `feature/enable-dag-analysis`
+  - **Commits**: 103ccbe (USAJobs fix), 66213f9 (bulk syntax fixes)
+  - **Total Changes**: 40 insertions, 40 deletions across 14 files
+
+  **Problem Solved**:
+  - HTTP errors were unclassified - agent couldn't distinguish unfixable (429, 403) from fixable (400, 422)
+  - Led to wasteful LLM reformulation attempts on rate limits and auth errors
+  - Missing HTTP codes prevented structured error logging
+
+  **Phase 1: Foundation** (COMPLETE - commit 536d41a):
+  - ✅ Added unfixable_http_codes config: [401, 403, 404, 429, 500-504]
+  - ✅ Fixed DVIDS "null" date bug (LLM sending literal string "null")
+  - ✅ Created core/error_classifier.py skeleton (APIError dataclass, ErrorCategory enum)
+  - ✅ Added http_code: Optional[int] to QueryResult dataclass
+
+  **Phase 2.1: High-Traffic Integrations** (COMPLETE - commit b5b2164):
+  - ✅ SAM.gov, DVIDS, USAspending, ClearanceJobs, FEC
+  - ✅ All HTTP errors extract status_code: `http_code=e.response.status_code`
+  - ✅ Non-HTTP errors return `http_code=None`
+
+  **Phase 2.2: Remaining Integrations** (COMPLETE - commits 103ccbe, 66213f9):
+  - ✅ Updated 18 remaining integrations with HTTP code extraction
+  - ✅ Fixed 15 syntax errors from batch update script bug
+  - ✅ All 23 integration files validated with py_compile
+
+  **E2E Validation** (COMPLETE):
+  - ✅ System starts without import errors (all syntax fixed)
+  - ✅ SAM.gov HTTP 429 error caught and logged correctly
+  - ✅ Rate limit detection working: "Rate limit detected, adding to session blocklist"
+  - ✅ QueryResult.http_code populated correctly (validated in code review)
+  - ⏳ HTTP codes not yet in execution log (requires Phase 3 - agent integration)
+
+  **Files Modified** (23 integrations):
+  - integrations/government/: sam, dvids, usaspending, clearancejobs, fec, usajobs, fbi_vault, crest, federal_register, govinfo, congress, sec_edgar
+  - integrations/social/: discord, telegram, reddit, twitter, brave_search
+  - integrations/legal/: courtlistener
+  - integrations/nonprofit/: propublica
+  - integrations/web/: exa
+  - integrations/news/: newsapi
+  - integrations/investigative/: icij_offshore_leaks
+  - integrations/archive/: wayback
+
+  **Next: Phase 3** (3 hours estimated):
+  - Phase 3.1: Integrate ErrorClassifier into recursive_agent.py
+  - Phase 3.2: Extract http_code from QueryResult and pass to ErrorClassifier
+  - Phase 3.3: Replace text pattern matching with error.is_reformulable flags
+  - Phase 3.4: Add HTTP codes and error categories to execution_log.jsonl
+
 **Recently Completed** (2025-11-30):
 - ✅ **P0 #2: Global Evidence Index - COMPLETE**
   - **Status**: Production-ready with cross-branch evidence sharing

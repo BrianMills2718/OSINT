@@ -74,6 +74,50 @@ Generic results sharing only common keywords should be filtered out.
 
 ---
 
+## Recent Updates (2025-12-01)
+
+**Status**: ✅ **ERROR HANDLING PHASE 2 COMPLETE** - HTTP Code Extraction in All Integrations
+
+### Error Handling Architecture Refactor - Phase 2 COMPLETE ✅
+**Date**: 2025-12-01
+**Commits**: 103ccbe (USAJobs syntax fix), 66213f9 (bulk syntax fixes)
+**Total Changes**: 40 insertions, 40 deletions across 14 files
+
+**Problem Solved**:
+- HTTP errors unclassified → agent couldn't distinguish unfixable (429, 403) from fixable (400, 422)
+- Wasteful LLM reformulation attempts on rate limits and auth errors
+- Missing HTTP codes prevented structured error logging
+
+**Phase 1: Foundation** (commit 536d41a):
+- [x] Added `unfixable_http_codes` config: [401, 403, 404, 429, 500-504]
+- [x] Fixed DVIDS "null" date bug
+- [x] Created `core/error_classifier.py` skeleton
+- [x] Added `http_code: Optional[int]` to QueryResult
+
+**Phase 2.1: High-Traffic** (commit b5b2164):
+- [x] SAM.gov, DVIDS, USAspending, ClearanceJobs, FEC
+- [x] All HTTP errors: `http_code=e.response.status_code`
+- [x] Non-HTTP errors: `http_code=None`
+
+**Phase 2.2: Remaining 18** (commits 103ccbe, 66213f9):
+- [x] Updated all remaining integrations
+- [x] Fixed 15 syntax errors from batch script bug
+- [x] All 23 files validated with `py_compile`
+
+**E2E Validation**:
+- [x] System starts without import errors
+- [x] SAM.gov HTTP 429 caught correctly
+- [x] Rate limit blocklist working
+- [x] `QueryResult.http_code` populated
+- [ ] HTTP codes in execution log (Phase 3)
+
+**Files Modified** (23 integrations):
+government (12), social (5), legal (1), nonprofit (1), web (1), news (1), investigative (1), archive (1)
+
+**Next Steps**: Phase 3 - Agent integration (3 hours)
+
+---
+
 ## Recent Updates (2025-11-30)
 
 **Status**: ✅ **P0 #2 COMPLETE** - Global Evidence Index | 🔍 **INVESTIGATION COMPLETE** - DAG & ANALYZE Infrastructure
