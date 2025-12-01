@@ -20,6 +20,7 @@ from enum import Enum
 from dotenv import load_dotenv
 from research.services.entity_analyzer import EntityAnalyzer
 from core.database_integration_base import Evidence, SearchResult
+from core.error_classifier import ErrorClassifier, ErrorCategory, APIError
 
 load_dotenv()
 
@@ -538,15 +539,24 @@ class ExecutionLogger:
 
     def log_api_response(self, goal: str, depth: int, parent_goal: Optional[str],
                          source: str, success: bool, result_count: int,
-                         response_time_ms: float, error: Optional[str] = None):
-        """Log API response received."""
-        self._write_entry("api_response", goal, depth, parent_goal, {
+                         response_time_ms: float, error: Optional[str] = None,
+                         http_code: Optional[int] = None, error_category: Optional[str] = None):
+        """Log API response received with structured error info."""
+        data = {
             "source": source,
             "success": success,
             "result_count": result_count,
             "response_time_ms": response_time_ms,
             "error": error
-        })
+        }
+
+        # Add structured error fields if present
+        if http_code is not None:
+            data["http_code"] = http_code
+        if error_category is not None:
+            data["error_category"] = error_category
+
+        self._write_entry("api_response", goal, depth, parent_goal, data)
 
     def log_query_reformulation(self, goal: str, depth: int, parent_goal: Optional[str],
                                 source: str, original_params: Dict[str, Any],
@@ -679,6 +689,9 @@ class RecursiveResearchAgent:
         # Session-level rate limit tracking
         # Sources in this set will be skipped for the rest of the session
         self.rate_limited_sources: set = set()
+
+        # Error classifier for structured error handling
+        self.error_classifier = ErrorClassifier(self.config)
 
         # Will be initialized
         self.registry = None
@@ -1257,56 +1270,55 @@ class RecursiveResearchAgent:
                 )
                 response_time_ms = (datetime.now() - start_time).total_seconds() * 1000
 
-                # Log API response
+                # Classify error if present (for structured logging and error handling)
+                error_info = None
+                if not result.success and result.error:
+                    error_info = self.error_classifier.classify(
+                        error_str=str(result.error),
+                        http_code=result.http_code,  # Extract HTTP code from QueryResult
+                        source_id=source_id
+                    )
+
+                    # Log structured error with category and HTTP code
+                    logger.warning(
+                        f"{source_id}: {error_info.category.value} error "
+                        f"(HTTP {error_info.http_code if error_info.http_code else 'N/A'}): {result.error}"
+                    )
+
+                # Log API response with structured error info
                 self.logger.log_api_response(
                     goal, context.depth, parent_goal,
                     source=source_id,
                     success=result.success,
                     result_count=len(result.results) if result.results else 0,
                     response_time_ms=response_time_ms,
-                    error=result.error
+                    error=result.error,
+                    http_code=result.http_code if error_info else None,
+                    error_category=error_info.category.value if error_info else None
                 )
 
                 # If successful or not a validation error, break
                 if result.success or not result.error:
                     break
 
-                # Try to reformulate on error (skip for unfixable errors like rate limits/timeouts)
-                error_msg = str(result.error or "").lower()
-
-                # Load unfixable error patterns from config (defaults if not found)
-                raw_config = self.config.get_raw_config()
-                unfixable_patterns = raw_config.get('research', {}).get('error_handling', {}).get('unfixable_error_patterns', [
-                    # Fallback defaults if config not found
-                    "rate limit", "429", "quota exceeded", "too many requests",
-                    "throttl", "request limit", "daily limit",
-                    "timed out", "timeout", "TimeoutError", "ReadTimeoutError",
-                    "ConnectTimeout", "handshake operation timed out"
-                ])
-
-                is_unfixable = any(term.lower() in error_msg for term in unfixable_patterns)
-
-                if is_unfixable:
-                    # Determine error type for better logging
-                    is_rate_limit = any(term.lower() in error_msg for term in [
-                        "rate limit", "429", "quota exceeded", "too many requests", "throttl"
-                    ])
-                    is_timeout = any(term.lower() in error_msg for term in [
-                        "timed out", "timeout", "TimeoutError", "ReadTimeoutError"
-                    ])
-
-                    if is_rate_limit:
+                # Check if error is reformulable (replaces pattern matching)
+                if not error_info.is_reformulable:
+                    # Log category-specific message
+                    if error_info.category == ErrorCategory.RATE_LIMIT:
                         logger.warning(f"{source_id}: Rate limit detected, adding to session blocklist")
                         self.rate_limited_sources.add(source_id)  # Skip this source for rest of session
                         print(f"    ⚠ {source_id}: Rate limited - will skip for rest of session")
-                    elif is_timeout:
+                    elif error_info.category == ErrorCategory.TIMEOUT:
                         logger.warning(f"{source_id}: Timeout detected (infrastructure issue), skipping reformulation")
                         print(f"    ⚠ {source_id}: Timeout error - cannot fix with query reformulation")
+                    elif error_info.category == ErrorCategory.AUTHENTICATION:
+                        logger.warning(f"{source_id}: Authentication error (invalid API key), skipping reformulation")
+                        print(f"    ⚠ {source_id}: Auth error - check API key configuration")
                     else:
-                        logger.warning(f"{source_id}: Unfixable error detected, skipping reformulation")
-                        print(f"    ⚠ {source_id}: Infrastructure/API error - cannot fix with query reformulation")
+                        logger.warning(f"{source_id}: {error_info.category.value} error detected, skipping reformulation")
+                        print(f"    ⚠ {source_id}: {error_info.category.value} error - cannot fix with query reformulation")
 
-                    break  # Exit retry loop - unfixable errors aren't fixable by reformulation
+                    break  # Exit retry loop - unreformulable errors can't be fixed by query changes
 
                 if attempt < max_retries - 1:
                     logger.warning(f"{source_id} error: {result.error}, attempting reformulation")
