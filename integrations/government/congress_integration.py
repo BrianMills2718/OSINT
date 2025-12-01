@@ -223,7 +223,8 @@ class CongressIntegration(DatabaseIntegration):
                 total=0,
                 results=[],
                 query_params=query_params,
-                error="Congress.gov API key not found. Get one at: https://api.congress.gov/sign-up/"
+                error="Congress.gov API key not found. Get one at: https://api.congress.gov/sign-up/",
+                http_code=None  # Configuration error, not HTTP
             )
 
         try:
@@ -414,10 +415,11 @@ class CongressIntegration(DatabaseIntegration):
 
         except requests.exceptions.HTTPError as e:
             logger.error(f"Congress.gov HTTP error: {e}", exc_info=True)
-            error_msg = f"HTTP {e.response.status_code}: {e.response.reason}"
-            if e.response.status_code == 401:
+            status_code = e.response.status_code if e.response else None
+            error_msg = f"HTTP {status_code}: {e.response.reason if e.response else 'Unknown'}"
+            if status_code == 401:
                 error_msg = "Invalid API key. Get one at: https://api.congress.gov/sign-up/"
-            elif e.response.status_code == 429:
+            elif status_code == 429:
                 error_msg = "Rate limit exceeded (5000/hour). Wait before retrying."
 
             return QueryResult(
@@ -426,7 +428,8 @@ class CongressIntegration(DatabaseIntegration):
                 total=0,
                 results=[],
                 query_params=query_params,
-                error=error_msg
+                error=error_msg,
+                http_code=status_code
             )
 
         except Exception as e:
@@ -438,7 +441,8 @@ class CongressIntegration(DatabaseIntegration):
                 total=0,
                 results=[],
                 query_params=query_params,
-                error=f"Congress.gov API error: {str(e)}"
+                error=f"Congress.gov API error: {str(e)}",
+                http_code=None  # Non-HTTP error
             )
 
     async def _fetch_bill_summaries(

@@ -224,6 +224,7 @@ class ClearanceJobsIntegration(DatabaseIntegration):
             results=[],
             query_params=query_params,
             error=f"Failed after {max_retries} attempts: {last_error}",
+            http_code=None,  # Non-HTTP error (Playwright/scraping)
             response_time_ms=response_time_ms,
             metadata={
                 "scraper": "playwright",

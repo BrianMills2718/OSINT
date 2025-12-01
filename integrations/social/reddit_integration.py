@@ -368,7 +368,8 @@ class RedditIntegration(DatabaseIntegration):
                 source="Reddit",
                 total=0,
                 results=[],
-                error=f"Reddit configuration error: {str(e)}",
+                error=f"Reddit configuration error: {str(e,
+                http_code=None  # Non-HTTP error)}",
                 query_params=query_params,
                 response_time_ms=response_time_ms
             )
@@ -396,7 +397,8 @@ class RedditIntegration(DatabaseIntegration):
                 source="Reddit",
                 total=0,
                 results=[],
-                error=f"Reddit search failed: {str(e)}",
+                error=f"Reddit search failed: {str(e,
+                http_code=None  # Non-HTTP error)}",
                 query_params=query_params,
                 response_time_ms=response_time_ms
             )

@@ -265,7 +265,8 @@ class FBIVaultIntegration(DatabaseIntegration):
                     total=0,
                     results=[],
                     query_params=query_params,
-                    error="No query provided for search"
+                    error="No query provided for search",
+                http_code=None  # Non-HTTP error
                 )
 
             # FBI Vault search URL
@@ -324,6 +325,7 @@ class FBIVaultIntegration(DatabaseIntegration):
                 total=0,
                 results=[],
                 query_params=query_params,
-                error=f"Cloudflare bypass failed: {str(e)}",
+                error=f"Cloudflare bypass failed: {str(e,
+                http_code=None  # Non-HTTP error)}",
                 response_time_ms=response_time_ms
             )

@@ -276,7 +276,8 @@ Return JSON with your decision:
                 total=0,
                 results=[],
                 query_params=query_params,
-                error="CourtListener API key not found. Get one at: https://www.courtlistener.com/sign-in/register/"
+                error="CourtListener API key not found. Get one at: https://www.courtlistener.com/sign-in/register/",
+                http_code=None  # Non-HTTP error
             )
 
         try:
@@ -468,7 +469,8 @@ Return JSON with your decision:
                 results=[],
                 query_params=query_params,
                 error=error_msg,
-                response_time_ms=response_time_ms
+                response_time_ms=response_time_ms,
+                http_code=status_code
             )
 
         except Exception as e:
@@ -492,6 +494,7 @@ Return JSON with your decision:
                 total=0,
                 results=[],
                 query_params=query_params,
-                error=f"CourtListener API error: {str(e)}",
+                error=f"CourtListener API error: {str(e,
+                http_code=None  # Non-HTTP error)}",
                 response_time_ms=response_time_ms
             )

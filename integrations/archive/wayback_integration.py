@@ -234,7 +234,8 @@ Return JSON:
                 total=0,
                 results=[],
                 query_params=query_params,
-                error="No URLs provided to check in Wayback Machine"
+                error="No URLs provided to check in Wayback Machine",
+                http_code=None  # Non-HTTP error
             )
 
         try:
@@ -319,6 +320,7 @@ Return JSON:
             )
 
         except requests.exceptions.HTTPError as e:
+            status_code = e.response.status_code if e.response else None
             # Wayback Machine HTTP error
             logger.error(f"Wayback Machine HTTP error: {e}", exc_info=True)
             return QueryResult(
@@ -327,7 +329,8 @@ Return JSON:
                 total=0,
                 results=[],
                 query_params=query_params,
-                error=f"Wayback Machine HTTP error: {str(e)}"
+                error=f"Wayback Machine HTTP error: {str(e,
+                http_code=status_code)}"
             )
 
         except Exception as e:
@@ -339,5 +342,6 @@ Return JSON:
                 total=0,
                 results=[],
                 query_params=query_params,
-                error=f"Wayback Machine search failed: {str(e)}"
+                error=f"Wayback Machine search failed: {str(e,
+                http_code=None  # Non-HTTP error)}"
             )

@@ -350,7 +350,8 @@ class ProPublicaIntegration(DatabaseIntegration):
                 total=0,
                 results=[],
                 query_params=query_params,
-                error=f"HTTP {status_code}: {str(e)}",
+                error=f"HTTP {status_code}: {str(e,
+                http_code=status_code)}",
                 response_time_ms=response_time_ms
             )
 
@@ -375,6 +376,7 @@ class ProPublicaIntegration(DatabaseIntegration):
                 total=0,
                 results=[],
                 query_params=query_params,
-                error=str(e),
+                error=str(e,
+                http_code=None  # Non-HTTP error),
                 response_time_ms=response_time_ms
             )

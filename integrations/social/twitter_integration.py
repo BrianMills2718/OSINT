@@ -509,7 +509,8 @@ class TwitterIntegration(DatabaseIntegration):
                 total=0,
                 results=[],
                 query_params=query_params,
-                error="API key required for Twitter (RapidAPI)"
+                error="API key required for Twitter (RapidAPI,
+                http_code=None  # Non-HTTP error)"
             )
 
         try:
@@ -554,7 +555,8 @@ class TwitterIntegration(DatabaseIntegration):
                     results=[],
                     error=result["error"],
                     query_params=query_params,
-                    response_time_ms=response_time_ms
+                    response_time_ms=response_time_ms,
+                    http_code=None  # Non-HTTP error
                 )
 
             # Transform results based on pattern/endpoint type
@@ -655,7 +657,8 @@ class TwitterIntegration(DatabaseIntegration):
                 source="Twitter",
                 total=0,
                 results=[],
-                error=f"Twitter API call failed: {str(e)}",
+                error=f"Twitter API call failed: {str(e,
+                http_code=None  # Non-HTTP error)}",
                 query_params=query_params,
                 response_time_ms=response_time_ms
             )

@@ -240,7 +240,8 @@ class ExaIntegration(DatabaseIntegration):
                 results=[],
                 query_params=query_params,
                 error="API key required for Exa",
-                response_time_ms=0
+                response_time_ms=0,
+                http_code=None  # Non-HTTP error
             )
 
         try:
@@ -300,6 +301,7 @@ class ExaIntegration(DatabaseIntegration):
                             results=[],
                             query_params=query_params,
                             error=f"HTTP {response.status}: {error_text}",
+                            http_code=response.status,
                             response_time_ms=response_time_ms
                         )
 
@@ -367,6 +369,7 @@ class ExaIntegration(DatabaseIntegration):
                 results=[],
                 query_params=query_params,
                 error="Request timeout after 30s",
+                http_code=None,  # Timeout, not HTTP error
                 response_time_ms=response_time_ms
             )
 
@@ -387,6 +390,7 @@ class ExaIntegration(DatabaseIntegration):
                 total=0,
                 results=[],
                 query_params=query_params,
-                error=str(e),
+                error=str(e,
+                http_code=None  # Non-HTTP error),
                 response_time_ms=response_time_ms
             )

@@ -188,7 +188,8 @@ class DiscordIntegration(DatabaseIntegration):
                     total=0,
                     results=[],
                     query_params=query_params,
-                    error="No keywords provided"
+                    error="No keywords provided",
+                http_code=None  # Non-HTTP error
                 )
 
             # Search messages
@@ -224,7 +225,8 @@ class DiscordIntegration(DatabaseIntegration):
                 total=0,
                 results=[],
                 query_params=query_params,
-                error=str(e),
+                error=str(e,
+                http_code=None  # Non-HTTP error),
                 response_time_ms=response_time_ms
             )
 

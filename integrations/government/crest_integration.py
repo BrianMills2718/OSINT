@@ -161,7 +161,8 @@ class CRESTIntegration(DatabaseIntegration):
                 total=0,
                 results=[],
                 query_params=params,
-                error="No keyword provided"
+                error="No keyword provided",
+                http_code=None  # Validation error, not HTTP
             )
 
         # Import playwright only when needed (lazy import)
@@ -174,7 +175,8 @@ class CRESTIntegration(DatabaseIntegration):
                 total=0,
                 results=[],
                 query_params=params,
-                error="Playwright not installed. Run: pip install playwright && playwright install chromium"
+                error="Playwright not installed. Run: pip install playwright && playwright install chromium",
+                http_code=None  # Dependency error, not HTTP
             )
 
         documents = []
@@ -310,5 +312,6 @@ class CRESTIntegration(DatabaseIntegration):
                 total=0,
                 results=[],
                 query_params=params,
-                error=f"CREST scraping failed: {str(e)}"
+                error=f"CREST scraping failed: {str(e,
+                http_code=None  # Non-HTTP error)}"
             )

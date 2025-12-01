@@ -243,7 +243,8 @@ class FECIntegration(DatabaseIntegration):
                 total=0,
                 results=[],
                 query_params=query_params,
-                error="FEC API key not found. Get one at: https://api.data.gov/signup/"
+                error="FEC API key not found. Get one at: https://api.data.gov/signup/",
+                http_code=None  # Configuration error, not HTTP
             )
 
         endpoint_type = query_params.get("endpoint", "candidates")
@@ -265,7 +266,8 @@ class FECIntegration(DatabaseIntegration):
                     total=0,
                     results=[],
                     query_params=query_params,
-                    error=f"Unknown endpoint type: {endpoint_type}"
+                    error=f"Unknown endpoint type: {endpoint_type}",
+                    http_code=None  # Validation error, not HTTP
                 )
 
         except Exception as e:
@@ -279,6 +281,7 @@ class FECIntegration(DatabaseIntegration):
                 results=[],
                 query_params=query_params,
                 error=f"FEC API error: {str(e)}",
+                http_code=None,  # Non-HTTP error
                 response_time_ms=response_time_ms
             )
 

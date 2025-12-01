@@ -359,7 +359,8 @@ class SECEdgarIntegration(DatabaseIntegration):
                     total=0,
                     results=[],
                     query_params={"cik": cik},
-                    error=f"No filings found for CIK {cik}"
+                    error=f"No filings found for CIK {cik}",
+                http_code=None  # Non-HTTP error
                 )
 
             # Build results using defensive builder (simplified for fallback)
@@ -405,7 +406,8 @@ class SECEdgarIntegration(DatabaseIntegration):
                 total=0,
                 results=[],
                 query_params={"cik": cik},
-                error=f"CIK search failed: {str(e)}"
+                error=f"CIK search failed: {str(e,
+                http_code=None  # Non-HTTP error)}"
             )
 
     async def _search_by_ticker(self, ticker: str) -> QueryResult:
@@ -446,7 +448,8 @@ class SECEdgarIntegration(DatabaseIntegration):
                     total=0,
                     results=[],
                     query_params={"ticker": ticker},
-                    error=f"Ticker '{ticker}' not found"
+                    error=f"Ticker '{ticker}' not found",
+                    http_code=None  # Not found, not HTTP
                 )
 
             # Use CIK search
@@ -461,7 +464,8 @@ class SECEdgarIntegration(DatabaseIntegration):
                 total=0,
                 results=[],
                 query_params={"ticker": ticker},
-                error=f"Ticker search failed: {str(e)}"
+                error=f"Ticker search failed: {str(e,
+                http_code=None  # Non-HTTP error)}"
             )
 
     async def _search_by_name_exact(self, company_name: str) -> QueryResult:
@@ -482,7 +486,8 @@ class SECEdgarIntegration(DatabaseIntegration):
                 total=0,
                 results=[],
                 query_params={"company_name": company_name},
-                error=f"Company '{company_name}' not found (exact match)"
+                error=f"Company '{company_name}' not found (exact match)",
+                http_code=None  # Not found, not HTTP
             )
 
         return await self._search_by_cik(cik)
@@ -528,7 +533,8 @@ class SECEdgarIntegration(DatabaseIntegration):
                     total=0,
                     results=[],
                     query_params={"company_name": company_name},
-                    error=f"No fuzzy matches found for '{company_name}'"
+                    error=f"No fuzzy matches found for '{company_name}'",
+                    http_code=None  # Not found, not HTTP
                 )
 
             # Use first match
@@ -544,7 +550,8 @@ class SECEdgarIntegration(DatabaseIntegration):
                 total=0,
                 results=[],
                 query_params={"company_name": company_name},
-                error=f"Fuzzy search failed: {str(e)}"
+                error=f"Fuzzy search failed: {str(e,
+                http_code=None  # Non-HTTP error)}"
             )
 
     async def execute_search(
@@ -611,7 +618,8 @@ class SECEdgarIntegration(DatabaseIntegration):
                         total=0,
                         results=[],
                         query_params=query_params,
-                        error=f"Company '{company_name}' not found in SEC database"
+                        error=f"Company '{company_name}' not found in SEC database",
+                        http_code=None  # Not found, not HTTP
                     )
 
             # Step 2: Get company filings
@@ -728,10 +736,12 @@ class SECEdgarIntegration(DatabaseIntegration):
                     total=0,
                     results=[],
                     query_params=query_params,
-                    error=f"Query type '{query_type}' not yet implemented or missing company_name"
+                    error=f"Query type '{query_type}' not yet implemented or missing company_name",
+                    http_code=None  # Validation error, not HTTP
                 )
 
         except requests.exceptions.HTTPError as e:
+            status_code = e.response.status_code if e.response else None
             # HTTP errors from SEC EDGAR API
             logger.error(f"SEC EDGAR HTTP error: {e}", exc_info=True)
             if e.response.status_code == 429:
@@ -741,7 +751,8 @@ class SECEdgarIntegration(DatabaseIntegration):
                     total=0,
                     results=[],
                     query_params=query_params,
-                    error="SEC EDGAR rate limit exceeded (10 requests/second). Please wait and retry."
+                    error="SEC EDGAR rate limit exceeded (10 requests/second). Please wait and retry.",
+                    http_code=status_code
                 )
             else:
                 return QueryResult(
@@ -750,7 +761,8 @@ class SECEdgarIntegration(DatabaseIntegration):
                     total=0,
                     results=[],
                     query_params=query_params,
-                    error=f"SEC EDGAR API error: {str(e)}"
+                    error=f"SEC EDGAR API error: {str(e)}",
+                    http_code=status_code
                 )
 
         except Exception as e:
@@ -762,5 +774,6 @@ class SECEdgarIntegration(DatabaseIntegration):
                 total=0,
                 results=[],
                 query_params=query_params,
-                error=f"SEC EDGAR search failed: {str(e)}"
+                error=f"SEC EDGAR search failed: {str(e,
+                http_code=None  # Non-HTTP error)}"
             )

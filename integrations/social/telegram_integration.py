@@ -309,7 +309,8 @@ Return JSON:
                     results=[],
                     query_params=query_params,
                     error=f"Unknown pattern: {pattern}",
-                    response_time_ms=(datetime.now() - start_time).total_seconds() * 1000
+                    response_time_ms=(datetime.now(,
+                http_code=None  # Non-HTTP error) - start_time).total_seconds() * 1000
                 )
 
             response_time_ms = (datetime.now() - start_time).total_seconds() * 1000
@@ -333,7 +334,8 @@ Return JSON:
                 total=0,
                 results=[],
                 query_params=query_params,
-                error=str(e),
+                error=str(e,
+                http_code=None  # Non-HTTP error),
                 response_time_ms=response_time_ms
             )
 

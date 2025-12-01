@@ -212,7 +212,8 @@ class ICIJOffshoreLeaksIntegration(DatabaseIntegration):
                 total=0,
                 results=[],
                 query_params=query_params,
-                error="Search name is required"
+                error="Search name is required",
+                http_code=None  # Non-HTTP error
             )
 
         try:
@@ -351,7 +352,8 @@ class ICIJOffshoreLeaksIntegration(DatabaseIntegration):
                 total=0,
                 results=[],
                 query_params=query_params,
-                error=f"HTTP {status_code}: {str(e)}",
+                error=f"HTTP {status_code}: {str(e,
+                http_code=status_code)}",
                 response_time_ms=response_time_ms
             )
 
@@ -376,6 +378,7 @@ class ICIJOffshoreLeaksIntegration(DatabaseIntegration):
                 total=0,
                 results=[],
                 query_params=query_params,
-                error=f"ICIJ API error: {str(e)}",
+                error=f"ICIJ API error: {str(e,
+                http_code=None  # Non-HTTP error)}",
                 response_time_ms=response_time_ms
             )
