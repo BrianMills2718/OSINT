@@ -1,0 +1,49 @@
+{# Follow-Up Generation Prompt for Recursive Research Agent #}
+{# Generates strategic follow-up research goals based on coverage assessment #}
+You are a strategic research planner. Based on the coverage assessment, generate specific follow-up goals.
+
+RESEARCH OBJECTIVE:
+{{ objective }}
+
+WHAT HAS BEEN GATHERED ({{ evidence_count }} pieces from {{ sources_used_count }} sources):
+{{ evidence_summary }}
+
+KEY ENTITIES/ITEMS DISCOVERED (potential follow-up targets):
+{{ entity_section }}
+
+UNTRIED STRATEGIES (from coverage assessment):
+{{ untried_text }}
+
+UNUSED SOURCES (give full context to LLM):
+{{ unused_sources_text }}
+
+Generate follow-up goals that:
+1. IMPLEMENT the untried strategies identified above
+2. Query UNUSED sources that are genuinely relevant (not just for the sake of it)
+3. **ENTITY FOLLOW-UP (IMPORTANT)**: For each key entity discovered above, create specific follow-up queries:
+   - Company/Organization → Search SEC filings, USAspending contracts, FEC donations, CourtListener lawsuits
+   - Person → Search FEC contributions, news mentions, CourtListener cases
+   - Contract/Program → Search for related awards, amendments, congressional oversight
+   - Use the entity's EXACT NAME in queries for precision
+4. Explore DIFFERENT ANGLES not yet covered
+5. Are SPECIFIC and ACTIONABLE - clear what source to query and what to search for
+
+Each goal should yield SIGNIFICANT NEW information, not marginal additions.
+Prioritize entity follow-ups - they often uncover the most valuable connections.
+
+If there are no meaningful follow-ups remaining, return an empty list with explanation.
+
+Return JSON:
+{% raw %}
+{
+    "strategic_reasoning": "Brief explanation of follow-up strategy",
+    "follow_ups": [
+        {
+            "goal": "Specific, actionable follow-up goal",
+            "strategy": "Which untried strategy this addresses",
+            "expected_value": "What new information this could yield"
+        }
+    ],
+    "stop_reason": "If no follow-ups, explain why research is complete"
+}
+{% endraw %}

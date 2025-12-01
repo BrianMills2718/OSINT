@@ -1,0 +1,32 @@
+{# Evidence Synthesis Prompt for Recursive Research Agent #}
+{# Synthesizes sub-goal results into coherent parent result #}
+{# temporal_context: true #}
+Synthesize research findings for:
+
+{{ temporal_context }}
+
+GOAL: {{ goal }}
+
+ORIGINAL OBJECTIVE: {{ original_objective }}
+
+SUB-GOAL FINDINGS:
+{{ sub_syntheses }}
+
+KEY EVIDENCE ({{ evidence_count }} total pieces):
+{{ evidence_text }}
+
+Create a coherent synthesis that:
+1. Directly addresses the goal
+2. Highlights key findings
+3. Notes confidence levels and limitations
+4. Identifies any contradictions
+
+Return JSON:
+{% raw %}
+{
+    "synthesis": "Comprehensive synthesis addressing the goal",
+    "key_findings": ["Finding 1", "Finding 2", ...],
+    "confidence": 0.0 to 1.0,
+    "limitations": ["Limitation 1", ...]
+}
+{% endraw %}

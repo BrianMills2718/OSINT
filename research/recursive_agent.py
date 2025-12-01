@@ -1433,6 +1433,7 @@ class RecursiveResearchAgent:
         Decompose a goal into sub-goals.
         """
         from llm_utils import acompletion
+        from core.prompt_loader import render_prompt
 
         sources_text = "\n".join([
             f"- {s['name']}: {s['description']}"
@@ -1443,97 +1444,19 @@ class RecursiveResearchAgent:
             f"  - {g}" for g in context.all_goals[-context.constraints.max_goals_in_prompt:]
         ]) or "  (none yet)"
 
-        prompt = f"""You are a research agent decomposing a goal into sub-goals.
-
-{_get_temporal_context()}
-
-ORIGINAL OBJECTIVE: {context.original_objective}
-
-GOAL TO DECOMPOSE: {goal}
-
-WHY DECOMPOSITION IS NEEDED:
-{context.decomposition_rationale or "Goal is too broad for direct execution"}
-
-GOAL ANCESTRY:
-{chr(10).join(f"  {i+1}. {g}" for i, g in enumerate(context.goal_stack)) or "  (root goal)"}
-
-EVIDENCE SO FAR: {context.evidence_summary}
-
-AVAILABLE DATA SOURCES:
-{sources_text}
-
-EXISTING GOALS (avoid redundancy):
-{existing_goals}
-
-CONSTRAINTS:
-- Remaining depth: {context.constraints.max_depth - context.depth} levels
-- Remaining goals: {context.constraints.max_goals - context.goals_created}
-
-DECOMPOSITION STRATEGY for thorough research:
-
-For INVESTIGATIVE goals (about companies, people, entities):
-- Create sub-goals BY SOURCE TYPE to ensure comprehensive coverage:
-  - Government contracts → USAspending, SAM.gov, GovInfo
-  - Political/lobbying → FEC, Congress.gov
-  - Legal/controversies → CourtListener, SEC enforcement
-  - News/media → NewsAPI, web search
-  - Financial → SEC filings (10-K, 8-K)
-
-For TOPICAL goals (about a topic/issue):
-- Create sub-goals BY ANGLE or PERSPECTIVE
-- Each angle can query different sources
-
-Create sub-goals that:
-1. Together provide COMPREHENSIVE coverage (not just the first matching source)
-2. Are INDEPENDENT (can run in parallel across different source types)
-3. Target SPECIFIC sources (e.g., "Find X in USAspending" not just "Find X contracts")
-4. DON'T duplicate existing goals
-5. Aim for 5-10 sub-goals for depth-1 decomposition of investigative queries
-
-DEPENDENCY GUIDANCE - When to declare dependencies:
-
-INDEPENDENT goals (dependencies: []):
-- Data collection from different sources (can run in parallel)
-- Example: Research Company A contracts, Research Company B contracts
-- Example: Find USAspending data, Find FEC data, Find NewsAPI articles
-
-DEPENDENT goals (dependencies: [0, 1, ...]):
-- COMPARATIVE analysis: "Compare X vs Y" requires both X and Y data first
-  Example: Goal 0: "Find Palantir contracts", Goal 1: "Find Anduril contracts",
-           Goal 2 (depends on [0,1]): "Compare contract portfolios and identify competitive positioning"
-
-- SYNTHESIS/INTEGRATION: Combining findings from multiple sub-goals
-  Example: Goal 0: "Government contracts", Goal 1: "Legal issues",
-           Goal 2 (depends on [0,1]): "Identify patterns between contract awards and legal problems"
-
-- SEQUENTIAL data collection: Later goal needs results from earlier goal
-  Example: Goal 0: "Find top contractors by spending",
-           Goal 1 (depends on [0]): "Research controversies for top 5 contractors identified"
-
-- FOLLOW-UP investigation: Deep-dive into specific entities/topics discovered
-  Example: Goal 0: "Extract key entities from initial research",
-           Goal 1 (depends on [0]): "Investigate relationships between identified entities"
-
-WHEN NOT to use dependencies:
-- Independent data gathering across different sources → dependencies: []
-- Parallel exploration of different angles → dependencies: []
-- Broad coverage queries → dependencies: []
-
-CRITICAL: If goal description contains "compare", "analyze relationship", "synthesize",
-"based on findings", or "after identifying" → likely needs dependencies!
-
-Return JSON:
-{{
-    "sub_goals": [
-        {{
-            "description": "Clear, actionable goal description",
-            "rationale": "How this helps achieve the parent goal",
-            "dependencies": [0, 1],  // Indices of sub-goals this depends on (empty if independent)
-            "estimated_complexity": "atomic|simple|moderate|complex"
-        }}
-    ],
-    "coverage_assessment": "How these sub-goals cover the parent goal"
-}}"""
+        prompt = render_prompt(
+            "recursive_agent/goal_decomposition.j2",
+            temporal_context=_get_temporal_context(),
+            original_objective=context.original_objective,
+            goal=goal,
+            decomposition_rationale=context.decomposition_rationale or "Goal is too broad for direct execution",
+            goal_stack=context.goal_stack,
+            evidence_summary=context.evidence_summary,
+            sources_text=sources_text,
+            existing_goals=existing_goals,
+            remaining_depth=context.constraints.max_depth - context.depth,
+            remaining_goals=context.constraints.max_goals - context.goals_created
+        )
 
         try:
             response = await acompletion(
@@ -1597,6 +1520,7 @@ Return JSON:
         Check if a goal has been sufficiently achieved.
         """
         from llm_utils import acompletion
+        from core.prompt_loader import render_prompt
 
         # Quick heuristic checks first
         if not sub_results:
@@ -1616,28 +1540,13 @@ Return JSON:
             for r in sub_results
         ])
 
-        prompt = f"""GOAL: {goal}
-
-ORIGINAL OBJECTIVE: {context.original_objective}
-
-SUB-GOAL RESULTS:
-{results_summary}
-
-TOTAL EVIDENCE GATHERED: {total_evidence} pieces
-
-Has this goal been SUFFICIENTLY achieved to stop pursuing more sub-goals?
-
-Consider:
-- Do we have enough evidence to answer the goal?
-- Are there obvious critical gaps?
-- Is continuing likely to add significant new value?
-
-Return JSON:
-{{
-    "achieved": true or false,
-    "confidence": 0.0 to 1.0,
-    "reasoning": "Brief explanation"
-}}"""
+        prompt = render_prompt(
+            "recursive_agent/achievement_check.j2",
+            goal=goal,
+            original_objective=context.original_objective,
+            results_summary=results_summary,
+            total_evidence=total_evidence
+        )
 
         try:
             response = await acompletion(
@@ -1679,6 +1588,7 @@ Return JSON:
             - reasoning: str - full reasoning chain
         """
         from llm_utils import acompletion
+        from core.prompt_loader import render_prompt
 
         # Gather context for LLM reasoning
         sources_used = set(e.source for e in evidence)
@@ -1712,67 +1622,15 @@ Return JSON:
             for s in self.rate_limited_sources
         ]) if self.rate_limited_sources else "  (None)"
 
-        prompt = f"""You are a thorough investigative researcher. Reason through whether this research is complete.
-
-RESEARCH OBJECTIVE:
-{objective}
-
-WHAT HAS BEEN GATHERED ({len(evidence)} pieces from {len(sources_used)} sources):
-{evidence_summary}
-
-SOURCES NOT YET QUERIED:
-{unused_sources_text}
-
-SOURCES THAT WERE RATE-LIMITED (attempted but blocked by API limits):
-{rate_limited_text}
-
-IMPORTANT: Rate-limited sources may contain highly relevant information that was not retrieved.
-This represents a GAP in coverage that should reduce confidence in completeness.
-
-REASON THROUGH THE FOLLOWING:
-
-1. WHAT SHOULD EXIST?
-   For this objective, what types of information should theoretically exist?
-   (e.g., government records, news articles, legal filings, financial disclosures, social media, etc.)
-
-2. WHAT SOURCES COULD HAVE IT?
-   Which of the available sources (used and unused) could contain relevant information?
-   Which ones are ESSENTIAL vs nice-to-have?
-
-3. WHAT HAS BEEN TRIED?
-   Review what sources have been queried and what was found.
-   Were the queries comprehensive or narrow?
-
-4. WHAT STRATEGIES REMAIN?
-   Are there untried search strategies? Examples:
-   - Different query terms or angles
-   - Following up on discovered entities (people, organizations, contracts)
-   - Searching unused sources that could be relevant
-   - Cross-referencing findings across sources
-
-5. HAVE I EXHAUSTED REASONABLE OPTIONS?
-   Have all essential sources been queried?
-   Have major angles been explored?
-   Would additional searching likely yield significant NEW information?
-   Or am I just likely to find duplicates/minor additions?
-
-Based on your reasoning, decide:
-- If there are CLEAR, ACTIONABLE strategies that could yield significant new information → NOT exhausted
-- If you've tried the essential sources and major angles, and further searching would have diminishing returns → EXHAUSTED
-
-Return JSON:
-{{
-    "reasoning_chain": {{
-        "what_should_exist": "Your analysis of what information types should exist...",
-        "relevant_sources": "Which sources are essential vs nice-to-have...",
-        "what_was_tried": "Summary of search efforts so far...",
-        "untried_strategies": ["Specific strategy 1", "Specific strategy 2"],
-        "diminishing_returns": "Whether further searching would likely yield significant new info..."
-    }},
-    "exhausted": true/false,
-    "confidence": 0.0-1.0,
-    "recommendation": "Brief recommendation on whether to continue or stop"
-}}"""
+        prompt = render_prompt(
+            "recursive_agent/coverage_assessment.j2",
+            objective=objective,
+            evidence_count=len(evidence),
+            sources_used_count=len(sources_used),
+            evidence_summary=evidence_summary,
+            unused_sources_text=unused_sources_text,
+            rate_limited_text=rate_limited_text
+        )
 
         try:
             response = await acompletion(
@@ -1818,6 +1676,7 @@ Return JSON:
         Returns list of follow-up goal descriptions.
         """
         from llm_utils import acompletion
+        from core.prompt_loader import render_prompt
 
         # Summarize what we have
         sources_used = set(e.source for e in evidence)
@@ -1876,6 +1735,11 @@ Return JSON:
             if s['id'].lower() not in used_source_ids
         ]
 
+        unused_sources_text = "\n".join([
+            f"  - {s['name']}: {s['description']}"
+            for s in unused_sources
+        ]) or "  (All sources queried)"
+
         # Include untried strategies from coverage assessment if available
         untried_strategies = []
         if coverage_reasoning and coverage_reasoning.get("full_reasoning"):
@@ -1883,51 +1747,16 @@ Return JSON:
 
         untried_text = "\n".join([f"  - {s}" for s in untried_strategies]) if untried_strategies else "  (None identified)"
 
-        prompt = f"""You are a strategic research planner. Based on the coverage assessment, generate specific follow-up goals.
-
-RESEARCH OBJECTIVE:
-{objective}
-
-WHAT HAS BEEN GATHERED ({len(evidence)} pieces from {len(sources_used)} sources):
-{evidence_summary}
-
-KEY ENTITIES/ITEMS DISCOVERED (potential follow-up targets):
-{entity_section}
-
-UNTRIED STRATEGIES (from coverage assessment):
-{untried_text}
-
-UNUSED SOURCES (give full context to LLM):
-{chr(10).join(f"  - {s['name']}: {s['description']}" for s in unused_sources) or '  (All sources queried)'}
-
-Generate follow-up goals that:
-1. IMPLEMENT the untried strategies identified above
-2. Query UNUSED sources that are genuinely relevant (not just for the sake of it)
-3. **ENTITY FOLLOW-UP (IMPORTANT)**: For each key entity discovered above, create specific follow-up queries:
-   - Company/Organization → Search SEC filings, USAspending contracts, FEC donations, CourtListener lawsuits
-   - Person → Search FEC contributions, news mentions, CourtListener cases
-   - Contract/Program → Search for related awards, amendments, congressional oversight
-   - Use the entity's EXACT NAME in queries for precision
-4. Explore DIFFERENT ANGLES not yet covered
-5. Are SPECIFIC and ACTIONABLE - clear what source to query and what to search for
-
-Each goal should yield SIGNIFICANT NEW information, not marginal additions.
-Prioritize entity follow-ups - they often uncover the most valuable connections.
-
-If there are no meaningful follow-ups remaining, return an empty list with explanation.
-
-Return JSON:
-{{
-    "strategic_reasoning": "Brief explanation of follow-up strategy",
-    "follow_ups": [
-        {{
-            "goal": "Specific, actionable follow-up goal",
-            "strategy": "Which untried strategy this addresses",
-            "expected_value": "What new information this could yield"
-        }}
-    ],
-    "stop_reason": "If no follow-ups, explain why research is complete"
-}}"""
+        prompt = render_prompt(
+            "recursive_agent/follow_up_generation.j2",
+            objective=objective,
+            evidence_count=len(evidence),
+            sources_used_count=len(sources_used),
+            evidence_summary=evidence_summary,
+            entity_section=entity_section,
+            untried_text=untried_text,
+            unused_sources_text=unused_sources_text
+        )
 
         try:
             response = await acompletion(
@@ -1964,6 +1793,7 @@ Return JSON:
         Synthesize sub-goal results into a coherent parent result.
         """
         from llm_utils import acompletion
+        from core.prompt_loader import render_prompt
 
         # Gather all evidence
         all_evidence = []
@@ -1982,33 +1812,15 @@ Return JSON:
             for r in sub_results if r.synthesis or r.reasoning
         ])
 
-        prompt = f"""Synthesize research findings for:
-
-{_get_temporal_context()}
-
-GOAL: {goal}
-
-ORIGINAL OBJECTIVE: {context.original_objective}
-
-SUB-GOAL FINDINGS:
-{sub_syntheses}
-
-KEY EVIDENCE ({len(all_evidence)} total pieces):
-{evidence_text}
-
-Create a coherent synthesis that:
-1. Directly addresses the goal
-2. Highlights key findings
-3. Notes confidence levels and limitations
-4. Identifies any contradictions
-
-Return JSON:
-{{
-    "synthesis": "Comprehensive synthesis addressing the goal",
-    "key_findings": ["Finding 1", "Finding 2", ...],
-    "confidence": 0.0 to 1.0,
-    "limitations": ["Limitation 1", ...]
-}}"""
+        prompt = render_prompt(
+            "recursive_agent/evidence_synthesis.j2",
+            temporal_context=_get_temporal_context(),
+            goal=goal,
+            original_objective=context.original_objective,
+            sub_syntheses=sub_syntheses,
+            evidence_count=len(all_evidence),
+            evidence_text=evidence_text
+        )
 
         try:
             response = await acompletion(
@@ -2090,6 +1902,7 @@ Return JSON:
             return evidence
 
         from llm_utils import acompletion
+        from core.prompt_loader import render_prompt
 
         # Format evidence for evaluation
         evidence_text = "\n\n".join([
@@ -2097,25 +1910,13 @@ Return JSON:
             for i, e in enumerate(evidence)
         ])
 
-        prompt = f"""You are filtering research results for relevance.
-
-{_get_temporal_context()}
-
-ORIGINAL OBJECTIVE: {context.original_objective}
-
-CURRENT GOAL: {goal}
-
-RESULTS TO FILTER:
-{evidence_text}
-
-Evaluate each result's relevance to the goal. Return a JSON object with:
-{{
-    "relevant_indices": [0, 2, 5],  // List of result indices that ARE relevant
-    "filtering_rationale": "Brief explanation of filtering decisions"
-}}
-
-Be generous - include results that have ANY connection to the goal.
-Only filter out results that are clearly off-topic or irrelevant."""
+        prompt = render_prompt(
+            "recursive_agent/result_filtering.j2",
+            temporal_context=_get_temporal_context(),
+            original_objective=context.original_objective,
+            goal=goal,
+            evidence_text=evidence_text
+        )
 
         try:
             response = await acompletion(
@@ -2180,6 +1981,7 @@ Only filter out results that are clearly off-topic or irrelevant."""
             return evidence
 
         from llm_utils import acompletion
+        from core.prompt_loader import render_prompt
 
         # Batch summarization for efficiency - use sequential indices (0, 1, 2...)
         items_text = "\n\n".join([
@@ -2187,22 +1989,12 @@ Only filter out results that are clearly off-topic or irrelevant."""
             for seq_idx, orig_idx, e in needs_summary
         ])
 
-        prompt = f"""Summarize each item to ~{context.constraints.summary_target_chars} characters.
-Preserve: key facts, numbers, names, dates, relationships.
-Remove: boilerplate, redundancy, filler.
-
-CONTEXT: {goal}
-
-ITEMS TO SUMMARIZE:
-{items_text}
-
-Return JSON with item_index matching the Item # shown above:
-{{
-    "summaries": [
-        {{"item_index": 0, "summary": "Concise summary preserving key facts..."}},
-        {{"item_index": 1, "summary": "..."}}
-    ]
-}}"""
+        prompt = render_prompt(
+            "recursive_agent/result_summarization.j2",
+            summary_target_chars=context.constraints.summary_target_chars,
+            goal=goal,
+            items_text=items_text
+        )
 
         try:
             response = await acompletion(
@@ -2399,38 +2191,16 @@ Return JSON with item_index matching the Item # shown above:
         Uses LLM to understand the error and fix the query.
         """
         from llm_utils import acompletion
+        from core.prompt_loader import render_prompt
 
-        prompt = f"""An API returned an error. Analyze and fix the query parameters.
-
-{_get_temporal_context()}
-
-SOURCE: {source_id}
-RESEARCH GOAL: {goal}
-
-ORIGINAL PARAMETERS:
-{json.dumps(original_params, indent=2)}
-
-ERROR MESSAGE:
-{error_message}
-
-COMMON API ERROR PATTERNS AND FIXES:
-1. **Parameter validation errors** (HTTP 400/422):
-   - Value too short: Expand abbreviations (e.g., "AI" → "artificial intelligence")
-   - Invalid enum value: Use a valid value from the API's allowed set
-   - Invalid date format: Use YYYY-MM-DD
-
-2. **Search constraint errors**:
-   - Query too broad: Add specific filters
-   - Query too narrow: Remove restrictive filters
-
-3. **Unfixable errors** (rate limit, auth) - Return can_fix: false
-
-Return JSON:
-{{
-    "can_fix": true/false,
-    "fixed_params": {{ ... corrected parameters ... }},
-    "explanation": "Brief explanation of fix"
-}}"""
+        prompt = render_prompt(
+            "recursive_agent/query_reformulation.j2",
+            temporal_context=_get_temporal_context(),
+            source_id=source_id,
+            goal=goal,
+            original_params_json=json.dumps(original_params, indent=2),
+            error_message=error_message
+        )
 
         try:
             response = await acompletion(

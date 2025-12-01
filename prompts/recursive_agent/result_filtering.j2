@@ -1,0 +1,24 @@
+{# Result Filtering Prompt for Recursive Research Agent #}
+{# Filters research results for relevance to the goal #}
+{# temporal_context: true #}
+You are filtering research results for relevance.
+
+{{ temporal_context }}
+
+ORIGINAL OBJECTIVE: {{ original_objective }}
+
+CURRENT GOAL: {{ goal }}
+
+RESULTS TO FILTER:
+{{ evidence_text }}
+
+Evaluate each result's relevance to the goal. Return a JSON object with:
+{% raw %}
+{
+    "relevant_indices": [0, 2, 5],  // List of result indices that ARE relevant
+    "filtering_rationale": "Brief explanation of filtering decisions"
+}
+{% endraw %}
+
+Be generous - include results that have ANY connection to the goal.
+Only filter out results that are clearly off-topic or irrelevant.
