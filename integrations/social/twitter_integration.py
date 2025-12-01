@@ -509,8 +509,8 @@ class TwitterIntegration(DatabaseIntegration):
                 total=0,
                 results=[],
                 query_params=query_params,
-                error="API key required for Twitter (RapidAPI,
-                http_code=None  # Non-HTTP error)"
+                error="API key required for Twitter (RapidAPI)",
+                http_code=None,  # Non-HTTP error
             )
 
         try:
@@ -657,8 +657,8 @@ class TwitterIntegration(DatabaseIntegration):
                 source="Twitter",
                 total=0,
                 results=[],
-                error=f"Twitter API call failed: {str(e,
-                http_code=None  # Non-HTTP error)}",
+                error=f"Twitter API call failed: {str(e)}",
+                http_code=None,  # Non-HTTP error
                 query_params=query_params,
                 response_time_ms=response_time_ms
             )

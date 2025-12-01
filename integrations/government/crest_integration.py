@@ -312,6 +312,6 @@ class CRESTIntegration(DatabaseIntegration):
                 total=0,
                 results=[],
                 query_params=params,
-                error=f"CREST scraping failed: {str(e,
-                http_code=None  # Non-HTTP error)}"
+                error=f"CREST scraping failed: {str(e)}",
+                http_code=None  # Non-HTTP error"
             )

@@ -406,8 +406,8 @@ class SECEdgarIntegration(DatabaseIntegration):
                 total=0,
                 results=[],
                 query_params={"cik": cik},
-                error=f"CIK search failed: {str(e,
-                http_code=None  # Non-HTTP error)}"
+                error=f"CIK search failed: {str(e)}",
+                http_code=None  # Non-HTTP error"
             )
 
     async def _search_by_ticker(self, ticker: str) -> QueryResult:
@@ -464,8 +464,8 @@ class SECEdgarIntegration(DatabaseIntegration):
                 total=0,
                 results=[],
                 query_params={"ticker": ticker},
-                error=f"Ticker search failed: {str(e,
-                http_code=None  # Non-HTTP error)}"
+                error=f"Ticker search failed: {str(e)}",
+                http_code=None  # Non-HTTP error"
             )
 
     async def _search_by_name_exact(self, company_name: str) -> QueryResult:
@@ -550,8 +550,8 @@ class SECEdgarIntegration(DatabaseIntegration):
                 total=0,
                 results=[],
                 query_params={"company_name": company_name},
-                error=f"Fuzzy search failed: {str(e,
-                http_code=None  # Non-HTTP error)}"
+                error=f"Fuzzy search failed: {str(e)}",
+                http_code=None  # Non-HTTP error"
             )
 
     async def execute_search(
@@ -774,6 +774,6 @@ class SECEdgarIntegration(DatabaseIntegration):
                 total=0,
                 results=[],
                 query_params=query_params,
-                error=f"SEC EDGAR search failed: {str(e,
-                http_code=None  # Non-HTTP error)}"
+                error=f"SEC EDGAR search failed: {str(e)}",
+                http_code=None  # Non-HTTP error"
             )

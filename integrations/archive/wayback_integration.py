@@ -342,6 +342,6 @@ Return JSON:
                 total=0,
                 results=[],
                 query_params=query_params,
-                error=f"Wayback Machine search failed: {str(e,
-                http_code=None  # Non-HTTP error)}"
+                error=f"Wayback Machine search failed: {str(e)}",
+                http_code=None  # Non-HTTP error"
             )

@@ -325,7 +325,7 @@ class FBIVaultIntegration(DatabaseIntegration):
                 total=0,
                 results=[],
                 query_params=query_params,
-                error=f"Cloudflare bypass failed: {str(e,
-                http_code=None  # Non-HTTP error)}",
+                error=f"Cloudflare bypass failed: {str(e)}",
+                http_code=None,  # Non-HTTP error
                 response_time_ms=response_time_ms
             )
