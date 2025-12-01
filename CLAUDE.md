@@ -926,6 +926,32 @@ pip list | grep playwright
 
 ## NEXT PLANNED WORK
 
+### P0 - DAG VALIDATION ISSUES (From 2025-11-30 Test)
+
+**1. Decomposition Prompt - Missing Comparison/Synthesis Goals**
+- **Problem**: "Compare X vs Y" query decomposed into only "Get X" + "Get Y" without creating "Compare X and Y (depends on [0,1])"
+- **Impact**: Comparative queries don't produce actual comparisons, just parallel data collection
+- **Evidence**: DAG test showed achievement declared after 2 data collection goals, skipping synthesis
+- **Fix**: Enhance decomposition prompt to REQUIRE synthesis/comparison goal for comparative queries
+- **File**: Likely prompts/deep_research/task_decomposition.j2 or similar
+- **Success Metric**: "Compare A vs B" creates 3 goals: Get A, Get B, Compare (depends on [0,1])
+
+**2. Achievement Check - Premature Success Declaration**
+- **Problem**: System declares "goal achieved" after completing sub-goals without verifying SYNTHESIS occurred
+- **Impact**: Research stops before performing the requested analysis/comparison
+- **Evidence**: DAG test line 18 shows achievement after 2/2 goals despite no comparison performed
+- **Fix**: Achievement check must verify that comparative/analytical goals actually synthesized results
+- **File**: research/recursive_agent.py `_goal_achieved()` method
+- **Success Metric**: Comparative queries cannot achieve until synthesis goal completes
+
+**3. API Integration Failures - 50% Failure Rate**
+- **Problem**: NewsAPI, Federal Register, GovInfo, CourtListener consistently failing in DAG test
+- **Impact**: Half of attempted goals fail, reducing research quality
+- **Evidence**: 23 failed / 46 total goals in validation test
+- **Fix**: Debug each failing integration (rate limits, API keys, parameter validation)
+- **Files**: integrations/news/newsapi_integration.py, integrations/government/federal_register.py, etc.
+- **Success Metric**: <20% failure rate in E2E tests
+
 ### P0 - CRITICAL BUGS (Must Fix)
 
 **1. ~~Field Name Mismatch - Evidence Content Always Empty~~ FIXED (commit 68dc031)**

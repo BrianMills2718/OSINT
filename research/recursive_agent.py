@@ -2256,9 +2256,9 @@ Return JSON with item_index matching the Item # shown above:
             summarized_count = 0
             for seq_idx, orig_idx, e in needs_summary:
                 if seq_idx in summaries:
-                    # Store original in metadata, replace content with summary
+                    # Store original in metadata, replace snippet with summary
                     e.metadata["original_content"] = e.content
-                    e.content = summaries[seq_idx]
+                    e.snippet = summaries[seq_idx]  # Use snippet (writable), not content (read-only property)
                     summarized_count += 1
 
             if summarized_count > 0:
@@ -2412,9 +2412,11 @@ Return JSON with item_index matching the Item # shown above:
             goal=goal,
             depth=context.depth,
             parent_goal=parent_goal,
-            selected_count=len(evidence_list),
-            total_index_size=len(context.research_run.index),
-            selected_ids=selected_ids
+            data={
+                "selected_count": len(evidence_list),
+                "total_index_size": len(context.research_run.index),
+                "selected_ids": selected_ids
+            }
         )
 
         return evidence_list
