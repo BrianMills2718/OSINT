@@ -254,6 +254,7 @@ class QueryResult:
                  results: List[Dict],
                  query_params: Dict,
                  error: Optional[str] = None,
+                 http_code: Optional[int] = None,
                  response_time_ms: float = 0,
                  metadata: Optional[Dict] = None,
                  validate: bool = True):
@@ -267,6 +268,7 @@ class QueryResult:
             results: List of result items (max = limit requested)
             query_params: The query parameters that were used
             error: Error message if success=False
+            http_code: HTTP status code (for HTTP errors, None for non-HTTP)
             response_time_ms: Time taken for the query in milliseconds
             metadata: Optional database-specific metadata
             validate: Whether to validate results using SearchResult model (default True)
@@ -279,6 +281,7 @@ class QueryResult:
         self.total = total
         self.query_params = query_params
         self.error = error
+        self.http_code = http_code
         self.response_time_ms = response_time_ms
         self.metadata = metadata or {}
 
