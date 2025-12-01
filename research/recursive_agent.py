@@ -666,6 +666,10 @@ class RecursiveResearchAgent:
             self.output_dir = Path(output_dir) if isinstance(output_dir, str) else output_dir
         self.logger = ExecutionLogger(self.output_dir)
 
+        # Load default model from config (single source of truth)
+        from config_loader import config
+        self.model = config.default_model
+
         # Entity analyzer for relationship tracking
         self.entity_analyzer = EntityAnalyzer(
             progress_callback=lambda event, msg: logger.info(f"[Entity] {event}: {msg}")
@@ -1110,7 +1114,7 @@ class RecursiveResearchAgent:
 
         try:
             response = await acompletion(
-                model="gemini/gemini-2.5-flash",
+                model=self.model,
                 messages=[{"role": "user", "content": prompt}],
                 response_format={"type": "json_object"}
             )
@@ -1398,7 +1402,7 @@ class RecursiveResearchAgent:
 
         try:
             response = await acompletion(
-                model="gemini/gemini-2.5-flash",
+                model=self.model,
                 messages=[{"role": "user", "content": full_prompt}]
             )
 
@@ -1460,7 +1464,7 @@ class RecursiveResearchAgent:
 
         try:
             response = await acompletion(
-                model="gemini/gemini-2.5-flash",
+                model=self.model,
                 messages=[{"role": "user", "content": prompt}],
                 response_format={"type": "json_object"}
             )
@@ -1550,7 +1554,7 @@ class RecursiveResearchAgent:
 
         try:
             response = await acompletion(
-                model="gemini/gemini-2.5-flash",
+                model=self.model,
                 messages=[{"role": "user", "content": prompt}],
                 response_format={"type": "json_object"}
             )
@@ -1634,7 +1638,7 @@ class RecursiveResearchAgent:
 
         try:
             response = await acompletion(
-                model="gemini/gemini-2.5-flash",
+                model=self.model,
                 messages=[{"role": "user", "content": prompt}],
                 response_format={"type": "json_object"}
             )
@@ -1760,7 +1764,7 @@ class RecursiveResearchAgent:
 
         try:
             response = await acompletion(
-                model="gemini/gemini-2.5-flash",
+                model=self.model,
                 messages=[{"role": "user", "content": prompt}],
                 response_format={"type": "json_object"}
             )
@@ -1824,7 +1828,7 @@ class RecursiveResearchAgent:
 
         try:
             response = await acompletion(
-                model="gemini/gemini-2.5-flash",
+                model=self.model,
                 messages=[{"role": "user", "content": prompt}],
                 response_format={"type": "json_object"}
             )
@@ -1920,7 +1924,7 @@ class RecursiveResearchAgent:
 
         try:
             response = await acompletion(
-                model="gemini/gemini-2.5-flash",
+                model=self.model,
                 messages=[{"role": "user", "content": prompt}],
                 response_format={"type": "json_object"}
             )
@@ -1998,7 +2002,7 @@ class RecursiveResearchAgent:
 
         try:
             response = await acompletion(
-                model="gemini/gemini-2.5-flash",
+                model=self.model,
                 messages=[{"role": "user", "content": prompt}],
                 response_format={"type": "json_object"}
             )
@@ -2137,7 +2141,7 @@ class RecursiveResearchAgent:
 
         # Call LLM
         response = await acompletion(
-            model="gemini/gemini-2.0-flash-exp",
+            model=self.model,
             messages=[{"role": "user", "content": prompt}],
             response_format={
                 "type": "json_schema",
@@ -2204,7 +2208,7 @@ class RecursiveResearchAgent:
 
         try:
             response = await acompletion(
-                model="gemini/gemini-2.5-flash",
+                model=self.model,
                 messages=[{"role": "user", "content": prompt}],
                 response_format={"type": "json_object"}
             )
