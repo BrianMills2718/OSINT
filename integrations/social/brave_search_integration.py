@@ -365,6 +365,7 @@ class BraveSearchIntegration(DatabaseIntegration):
                 results=[],
                 query_params=query_params,
                 error=f"HTTP {status_code}: {str(e)}",
+                http_code=status_code if status_code > 0 else None,
                 response_time_ms=response_time_ms
             )
 
@@ -390,5 +391,6 @@ class BraveSearchIntegration(DatabaseIntegration):
                 results=[],
                 query_params=query_params,
                 error=str(e),
+                http_code=None,  # Non-HTTP error
                 response_time_ms=response_time_ms
             )

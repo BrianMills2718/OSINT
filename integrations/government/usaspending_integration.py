@@ -449,7 +449,8 @@ class USASpendingIntegration(DatabaseIntegration):
                             total=0,
                             results=[],
                             query_params=query_params,
-                            error=f"HTTP {response.status}: {error_text}"
+                            error=f"HTTP {response.status}: {error_text}",
+                            http_code=response.status
                         )
 
                     data = await response.json()
@@ -507,7 +508,8 @@ class USASpendingIntegration(DatabaseIntegration):
                 total=0,
                 results=[],
                 query_params=query_params,
-                error="Request timeout after 30 seconds"
+                error="Request timeout after 30 seconds",
+                http_code=None  # Timeout, not HTTP error
             )
         except Exception as e:
             # Catch-all for unexpected errors at integration boundary
@@ -519,7 +521,8 @@ class USASpendingIntegration(DatabaseIntegration):
                 total=0,
                 results=[],
                 query_params=query_params,
-                error=f"Search failed: {str(e)}"
+                error=f"Search failed: {str(e)}",
+                http_code=None  # Non-HTTP error
             )
 
     def _build_award_url(self, award_id: str) -> str:

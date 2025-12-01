@@ -390,23 +390,26 @@ Return JSON:
 
         except requests.exceptions.HTTPError as e:
             logger.error(f"NewsAPI HTTP error: {e}", exc_info=True)
-            if e.response.status_code == 429:
+            status_code = e.response.status_code if e.response else None
+            if status_code == 429:
                 return QueryResult(
                     success=False,
                     source="NewsAPI",
                     total=0,
                     results=[],
                     query_params=query_params,
-                    error="NewsAPI rate limit exceeded (100 requests/day on free tier)"
+                    error="NewsAPI rate limit exceeded (100 requests/day on free tier)",
+                    http_code=429
                 )
-            elif e.response.status_code == 401:
+            elif status_code == 401:
                 return QueryResult(
                     success=False,
                     source="NewsAPI",
                     total=0,
                     results=[],
                     query_params=query_params,
-                    error="NewsAPI authentication failed. Check API key in .env"
+                    error="NewsAPI authentication failed. Check API key in .env",
+                    http_code=401
                 )
             else:
                 return QueryResult(
@@ -415,7 +418,8 @@ Return JSON:
                     total=0,
                     results=[],
                     query_params=query_params,
-                    error=f"NewsAPI HTTP error: {str(e)}"
+                    error=f"NewsAPI HTTP error: {str(e)}",
+                    http_code=status_code
                 )
 
         except Exception as e:
@@ -427,5 +431,6 @@ Return JSON:
                 total=0,
                 results=[],
                 query_params=query_params,
-                error=f"NewsAPI search failed: {str(e)}"
+                error=f"NewsAPI search failed: {str(e)}",
+                http_code=None  # Non-HTTP error
             )
