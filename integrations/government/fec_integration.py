@@ -165,28 +165,27 @@ class FECIntegration(DatabaseIntegration):
                     "description": "Contributor/donor name to search"
                 },
                 "office": {
-                    "type": ["string", "null"],
-                    "description": "Office sought: 'P' (President), 'S' (Senate), 'H' (House), or null"
+                    "type": "string",
+                    "description": "Office sought: 'P' (President), 'S' (Senate), 'H' (House), (optional)"
                 },
                 "state": {
-                    "type": ["string", "null"],
-                    "description": "Two-letter state code or null"
+                    "type": "string",
+                    "description": "Two-letter state code (optional)"
                 },
                 "cycle": {
                     "type": "integer",
                     "description": "Election cycle year (2024, 2022, 2020, etc.)"
                 },
                 "party": {
-                    "type": ["string", "null"],
-                    "description": "Party code: 'DEM', 'REP', 'IND', etc. or null"
+                    "type": "string",
+                    "description": "Party code: 'DEM', 'REP', 'IND', etc. (optional)"
                 },
                 "reasoning": {
                     "type": "string",
                     "description": "Brief explanation of the query strategy"
                 }
             },
-            "required": ["endpoint", "candidate_name", "committee_name", "contributor_name",
-                        "office", "state", "cycle", "party", "reasoning"],
+            "required": ["endpoint", "candidate_name", "committee_name", "contributor_name", "office", "state", "party", "reasoning"],
             "additionalProperties": False
         }
 

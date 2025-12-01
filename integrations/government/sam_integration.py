@@ -155,8 +155,8 @@ class SAMIntegration(DatabaseIntegration):
                     "description": "List of procurement types, empty if not specified"
                 },
                 "set_aside": {
-                    "type": ["string", "null"],
-                    "description": "Set-aside type code or null"
+                    "type": "string",
+                    "description": "Set-aside type code (optional)"
                 },
                 "naics_codes": {
                     "type": "array",
@@ -164,8 +164,8 @@ class SAMIntegration(DatabaseIntegration):
                     "description": "List of NAICS codes, empty if not specified"
                 },
                 "organization": {
-                    "type": ["string", "null"],
-                    "description": "Agency/organization name or null"
+                    "type": "string",
+                    "description": "Agency/organization name (optional)"
                 },
                 "date_range_days": {
                     "type": "integer",
@@ -178,11 +178,11 @@ class SAMIntegration(DatabaseIntegration):
                     "description": "Brief explanation of the query strategy"
                 },
                 "suggested_reformulation": {
-                    "type": ["string", "null"],
-                    "description": "Suggested query reformulation if not relevant, null if relevant"
+                    "type": "string",
+                    "description": "Suggested query reformulation if not relevant (optional)"
                 }
             },
-            "required": ["relevant", "keywords", "procurement_types", "set_aside", "naics_codes", "organization", "date_range_days", "reasoning", "suggested_reformulation"],
+            "required": ["relevant", "keywords", "procurement_types", "naics_codes", "date_range_days", "reasoning"],
             "additionalProperties": False
         }
 

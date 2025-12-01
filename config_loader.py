@@ -349,15 +349,23 @@ class Config:
     # ========================================================================
 
     @property
+    def default_model(self) -> str:
+        """Default LLM model to use for all calls."""
+        llm_config = self._config.get("llm", {})
+        return llm_config.get("default_model", "gpt-4o-mini")
+
+    @property
     def fallback_enabled(self) -> bool:
         """Whether provider fallback is enabled."""
-        fallback_config = self._config.get("provider_fallback", {})
+        llm_config = self._config.get("llm", {})
+        fallback_config = llm_config.get("provider_fallback", {})
         return fallback_config.get("enabled", False)
 
     @property
     def fallback_models(self) -> List[str]:
         """List of fallback models to try if primary fails."""
-        fallback_config = self._config.get("provider_fallback", {})
+        llm_config = self._config.get("llm", {})
+        fallback_config = llm_config.get("provider_fallback", {})
         return fallback_config.get("fallback_models", [])
 
     # ========================================================================

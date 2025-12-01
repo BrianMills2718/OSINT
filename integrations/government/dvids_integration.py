@@ -138,23 +138,23 @@ class DVIDSIntegration(DatabaseIntegration):
                     "description": "List of military branches, empty if not specified"
                 },
                 "country": {
-                    "type": ["string", "null"],
-                    "description": "Country name or null"
+                    "type": "string",
+                    "description": "Country name (optional)"
                 },
                 "from_date": {
-                    "type": ["string", "null"],
-                    "description": "Start date in YYYY-MM-DD format or null"
+                    "type": "string",
+                    "description": "Start date in YYYY-MM-DD format (optional)"
                 },
                 "to_date": {
-                    "type": ["string", "null"],
-                    "description": "End date in YYYY-MM-DD format or null"
+                    "type": "string",
+                    "description": "End date in YYYY-MM-DD format (optional)"
                 },
                 "reasoning": {
                     "type": "string",
                     "description": "Brief explanation of the query strategy"
                 }
             },
-            "required": ["keywords", "media_types", "branches", "country", "from_date", "to_date", "reasoning"],
+            "required": ["media_types", "branches", "country", "from_date", "to_date", "reasoning"],
             "additionalProperties": False
         }
 

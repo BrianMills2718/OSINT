@@ -140,24 +140,24 @@ class ExaIntegration(DatabaseIntegration):
                     "maximum": 25
                 },
                 "category": {
-                    "type": ["string", "null"],
+                    "type": "string",
                     "enum": ["company", "research paper", "news", "pdf", "github", "tweet", "personal site", "linkedin profile", "financial report", None],
                     "description": "Optional category filter"
                 },
                 "start_published_date": {
-                    "type": ["string", "null"],
-                    "description": "Start date filter (YYYY-MM-DD format) or null"
+                    "type": "string",
+                    "description": "Start date filter (YYYY-MM-DD format) (optional)"
                 },
                 "end_published_date": {
-                    "type": ["string", "null"],
-                    "description": "End date filter (YYYY-MM-DD format) or null"
+                    "type": "string",
+                    "description": "End date filter (YYYY-MM-DD format) (optional)"
                 },
                 "include_text": {
-                    "type": ["string", "null"],
+                    "type": "string",
                     "description": "Only include results containing this text"
                 },
                 "exclude_text": {
-                    "type": ["string", "null"],
+                    "type": "string",
                     "description": "Exclude results containing this text"
                 },
                 "reasoning": {
@@ -165,7 +165,7 @@ class ExaIntegration(DatabaseIntegration):
                     "description": "Brief explanation of the search strategy"
                 }
             },
-            "required": ["pattern", "query", "num_results", "category", "start_published_date", "end_published_date", "include_text", "exclude_text", "reasoning"],
+            "required": ["pattern", "query", "num_results", "category", "include_text", "exclude_text", "reasoning"],
             "additionalProperties": False
         }
 

@@ -173,15 +173,15 @@ Return JSON:
                         "description": "URLs to check in Wayback Machine (full URLs with http/https)"
                     },
                     "timestamp": {
-                        "type": ["string", "null"],
-                        "description": "Optional timestamp in YYYYMMDD format to find snapshots near this date (null for most recent)"
+                        "type": "string",
+                        "description": "Optional timestamp in YYYYMMDD format to find snapshots near this date (optional)"
                     },
                     "description": {
                         "type": "string",
                         "description": "Brief description of what we're looking for"
                     }
                 },
-                "required": ["relevant", "reasoning", "urls", "timestamp", "description"],
+                "required": ["relevant", "reasoning", "urls", "description"],
                 "additionalProperties": False
             }
         }

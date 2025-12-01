@@ -189,8 +189,8 @@ class GovInfoIntegration(DatabaseIntegration):
                     "description": "Which GovInfo collections to search (1-3 most relevant)"
                 },
                 "date_range_years": {
-                    "type": ["integer", "null"],
-                    "description": "How many years back to search (1-10, null for all)"
+                    "type": "integer",
+                    "description": "How many years back to search (1-10, optional)"
                 },
                 "sort_by": {
                     "type": "string",
@@ -202,7 +202,7 @@ class GovInfoIntegration(DatabaseIntegration):
                     "description": "Brief explanation of query strategy"
                 }
             },
-            "required": ["relevant", "query", "collections", "date_range_years", "sort_by", "reasoning"],
+            "required": ["relevant", "query", "collections", "sort_by", "reasoning"],
             "additionalProperties": False
         }
 

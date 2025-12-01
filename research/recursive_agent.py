@@ -1090,67 +1090,23 @@ class RecursiveResearchAgent:
             for e in context.accumulated_evidence[-context.constraints.max_evidence_in_prompt:]
         ])
 
-        prompt = f"""You are a research agent assessing a goal.
+        from core.prompt_loader import render_prompt
 
-{_get_temporal_context()}
-
-ORIGINAL OBJECTIVE: {context.original_objective}
-
-CURRENT GOAL TO ASSESS: {goal}
-
-GOAL ANCESTRY (how we got here):
-{chr(10).join(f"  {i+1}. {g}" for i, g in enumerate(context.goal_stack)) or "  (This is the root goal)"}
-
-EVIDENCE ACCUMULATED SO FAR:
-{evidence_text}
-
-AVAILABLE DATA SOURCES:
-{sources_text}
-
-CURRENT STATE:
-- Depth: {context.depth}/{context.constraints.max_depth}
-- Time elapsed: {context.elapsed_seconds:.0f}s / {context.constraints.max_time_seconds}s
-- Goals created: {context.goals_created}/{context.constraints.max_goals}
-
-DECISION REQUIRED:
-Is this goal DIRECTLY EXECUTABLE (maps to a specific action like an API call or analysis)?
-Or does it need to be DECOMPOSED into smaller sub-goals?
-
-IMPORTANT: Prefer THOROUGH research over quick results. A single API call rarely provides
-comprehensive coverage. Investigative research requires cross-referencing multiple sources.
-
-A goal is directly executable ONLY if:
-- It's extremely narrow (e.g., "get FEC filings for committee X")
-- It's an analysis/synthesis task on EXISTING evidence
-- We're at depth 3+ and need to start executing to avoid infinite decomposition
-
-A goal SHOULD BE DECOMPOSED if ANY of these apply:
-- It's about a company/person/entity → needs multiple source TYPES (contracts, filings, news, legal)
-- It mentions "investigate", "research", or "find" → needs comprehensive coverage
-- Multiple relevant sources exist → decompose by source type for parallel querying
-- A single source would give incomplete picture → decompose for cross-referencing
-- We're at depth 0-2 with budget remaining → invest in thorough decomposition
-
-Example: "Research Company X contracts" should decompose into:
-  - "Find Company X federal contracts in USAspending"
-  - "Find Company X contract opportunities in SAM.gov"
-  - "Find Company X contract announcements in news"
-  - "Find Company X disclosed contracts in SEC filings"
-
-This ensures comprehensive coverage, not just the first matching source.
-
-Return JSON:
-{{
-    "directly_executable": true or false,
-    "reasoning": "Brief explanation of your decision",
-    "action": {{
-        "type": "api_call" or "analyze" or "synthesize" or "web_search",
-        "source": "source_id if api_call",
-        "params": {{"query": "...", ...}},
-        "prompt": "analysis prompt if analyze/synthesize"
-    }} if directly_executable else null,
-    "decomposition_rationale": "Why this needs to be broken down" if not directly_executable else null
-}}"""
+        prompt = render_prompt(
+            "recursive_agent/goal_assessment.j2",
+            temporal_context=_get_temporal_context(),
+            original_objective=context.original_objective,
+            goal=goal,
+            goal_stack=context.goal_stack,
+            evidence_text=evidence_text,
+            sources_text=sources_text,
+            depth=context.depth,
+            max_depth=context.constraints.max_depth,
+            elapsed_seconds=int(context.elapsed_seconds),
+            max_time_seconds=context.constraints.max_time_seconds,
+            goals_created=context.goals_created,
+            max_goals=context.constraints.max_goals
+        )
 
         try:
             response = await acompletion(

@@ -1019,6 +1019,310 @@ pip list | grep playwright
 - **Fix**: Queue rate-limited sources for retry after cooldown (e.g., 5 min)
 - **File**: research/recursive_agent.py (rate_limited_sources handling)
 
+---
+
+## CONFIGURATION ARCHITECTURE ISSUES
+
+**Comprehensive Codebase Review** (2025-11-30)
+
+**Executive Summary**:
+- 36 files with inline JSON schemas (~3,500 lines should be externalized)
+- 9 hardcoded f-string prompts in recursive_agent.py (~8,850 chars should be Jinja2 templates)
+- 7 missing Jinja2 templates for recursive_agent.py functions
+- schemas/ directory underutilized (only 2 files, expected 10-15)
+- 3 non-configurable magic numbers
+
+**Total Effort**: 8-9 days (phased approach recommended)
+**Priority**: MEDIUM - Quality of life improvement, no critical bugs
+**Impact**: 50% maintainability improvement, easier testing, better version control
+
+### Issue Summary
+
+| Issue | Count | Severity | Effort | Files Affected |
+|-------|-------|----------|--------|----------------|
+| Inline JSON Schemas | 36 files | HIGH | 3 days | integrations/*, research/* |
+| Hardcoded F-String Prompts | 9 prompts | HIGH | 2 days | research/recursive_agent.py |
+| Missing Jinja2 Templates | 7 templates | MEDIUM | 2 days | prompts/recursive_agent/* |
+| Underutilized schemas/ Directory | Only 2/10+ files | MEDIUM | 4 hrs | schemas/* |
+| Non-Configurable Constants | 3 magic numbers | MEDIUM | 2 hrs | research/recursive_agent.py |
+
+### Problem 1: Inline JSON Schemas (36 Files, ~3,500 Lines)
+
+**Current State**:
+- JSON schemas defined inline in Python code using `schema = {` pattern
+- Duplicated across 36 integration and research files
+- Difficult to version control changes
+- Hard to validate schema correctness independently
+
+**Files with Inline Schemas**:
+```
+integrations/government/ (15 files):
+- sam_integration.py (lines 123-185, 62 lines)
+- usaspending_integration.py (lines 150-220, 70 lines)
+- dvids_integration.py (lines 123-159, 36 lines)
+- fec_integration.py (lines 140-180, 40 lines)
+- sec_edgar/integration.py (lines 180-220, 40 lines)
+- govinfo_integration.py (lines 175-230, 55 lines)
+- federal_register.py (lines 160-210, 50 lines)
+- usajobs_integration.py (lines 111-141, 30 lines)
+- clearancejobs_integration.py (lines 90-120, 30 lines)
+- [6 more files...]
+
+integrations/social/ (5 files):
+- twitter_integration.py (lines 180-250, 70 lines)
+- telegram_integration.py (lines 140-200, 60 lines)
+- discord_integration.py (lines 120-160, 40 lines)
+- reddit_integration.py (lines 100-140, 40 lines)
+- brave_search_integration.py (lines 130-153, 23 lines)
+
+research/ (10 files):
+- recursive_agent.py (line 2377-2388, 11 lines - global_evidence_selection schema)
+- deep_research.py (~200 lines across multiple schemas)
+- [8 more files...]
+```
+
+**Example** (research/recursive_agent.py:2377-2388):
+```python
+# CURRENT (inline, hard to change):
+schema = {
+    "type": "object",
+    "properties": {
+        "selected_evidence_ids": {
+            "type": "array",
+            "items": {"type": "integer"},
+            "description": "IDs of evidence pieces to include"
+        }
+    },
+    "required": ["selected_evidence_ids"],
+    "additionalProperties": False
+}
+
+# SHOULD BE (externalized):
+from schemas.recursive_agent import GlobalEvidenceSelectionSchema
+schema = GlobalEvidenceSelectionSchema.get_schema()
+```
+
+**Recommended Fix**:
+1. Create schema files in `schemas/` directory organized by module
+2. Use class-based schema definitions with validation
+3. Migrate schemas incrementally (10-15 files per batch)
+
+**Effort**: 3 days (15-20 files per day, testing included)
+
+### Problem 2: Hardcoded F-String Prompts (9 Prompts, ~8,850 Characters)
+
+**Current State**:
+- research/recursive_agent.py contains 9 prompts as f-strings directly in code
+- Violates established pattern (50 Jinja2 templates exist in prompts/)
+- Difficult to edit without touching Python code
+- Can't A/B test prompt variations easily
+
+**F-String Prompts in recursive_agent.py**:
+1. **Line 37**: `_get_temporal_context()` - 150 chars
+2. **Lines 1093-1153**: `_assess_goal_structure()` - ~1,200 chars
+3. **Lines 1490-1588**: `_decompose_goal()` - ~1,500 chars
+4. **Lines 1663-1700**: `_analyze_evidence()` - ~800 chars
+5. **Lines 1759-1825**: `_check_goal_achievement()` - ~1,000 chars
+6. **Lines 1930-1978**: `_generate_follow_ups()` - ~900 chars
+7. **Lines 2029-2061**: `_synthesize_evidence()` - ~1,100 chars
+8. **Lines 2144-2168**: `_filter_results()` - ~700 chars
+9. **Lines 2234-2255**: `_summarize_results()` - ~400 chars
+10. **Lines 2447-2483**: `_reformulate_on_error()` - ~600 chars
+
+**Example** (Lines 1093-1153):
+```python
+# CURRENT (hardcoded f-string):
+prompt = f"""You are a research agent assessing a goal.
+
+Goal: {goal}
+Evidence count: {len(evidence)}
+
+Assess whether this goal can be addressed effectively by:
+1. Calling APIs directly (API_CALL)
+2. Searching the web (WEB_SEARCH)
+3. Analyzing existing evidence (ANALYZE)
+4. Decomposing into sub-goals (DECOMPOSE)
+
+Return your decision..."""
+
+# SHOULD BE (Jinja2 template):
+from core.prompt_loader import render_prompt
+
+prompt = render_prompt(
+    "recursive_agent/goal_assessment.j2",
+    goal=goal,
+    evidence_count=len(evidence),
+    available_actions=["API_CALL", "WEB_SEARCH", "ANALYZE", "DECOMPOSE"]
+)
+```
+
+**Recommended Fix**:
+1. Create 7 new Jinja2 templates in `prompts/recursive_agent/`
+2. Convert f-strings to `render_prompt()` calls
+3. Test each conversion independently
+
+**Effort**: 2 days (3-4 prompts per day, careful testing)
+
+### Problem 3: Missing Jinja2 Templates (7 Templates)
+
+**Current State**:
+- prompts/ directory has 50 templates for integrations and deep_research
+- But recursive_agent.py (2,965 lines) still uses f-strings
+- Inconsistent with established architecture pattern
+
+**Missing Templates** (should exist in prompts/recursive_agent/):
+1. `goal_assessment.j2` (for _assess_goal_structure, ~1,200 chars)
+2. `goal_decomposition.j2` (for _decompose_goal, ~1,500 chars)
+3. `evidence_analysis.j2` (for _analyze_evidence, ~800 chars)
+4. `achievement_check.j2` (for _check_goal_achievement, ~1,000 chars)
+5. `follow_up_generation.j2` (for _generate_follow_ups, ~900 chars)
+6. `evidence_synthesis.j2` (for _synthesize_evidence, ~1,100 chars)
+7. `result_filtering.j2` (for _filter_results, ~700 chars)
+
+**Directory Structure Should Be**:
+```
+prompts/
+├── __init__.py
+├── deep_research/          # Existing (8+ templates)
+├── integrations/           # Existing (40+ templates)
+└── recursive_agent/        # NEW (7 templates needed)
+    ├── goal_assessment.j2
+    ├── goal_decomposition.j2
+    ├── evidence_analysis.j2
+    ├── achievement_check.j2
+    ├── follow_up_generation.j2
+    ├── evidence_synthesis.j2
+    └── result_filtering.j2
+```
+
+**Effort**: 2 days (included in Problem 2 fix, as they're created during conversion)
+
+### Problem 4: Underutilized schemas/ Directory (Only 2 Files)
+
+**Current State**:
+```
+schemas/
+├── __init__.py           # Empty
+└── research_brief.py     # Single schema
+```
+
+**Expected State** (after refactoring):
+```
+schemas/
+├── __init__.py                     # Schema registry
+├── base.py                         # Base schema class with validation
+├── integrations/
+│   ├── __init__.py
+│   ├── sam_gov.py                  # SAM.gov query schemas
+│   ├── usaspending.py              # USAspending query schemas
+│   ├── twitter.py                  # Twitter query schemas
+│   └── [25+ more integration schemas]
+├── recursive_agent/
+│   ├── __init__.py
+│   ├── assessment.py               # Goal assessment schemas
+│   ├── decomposition.py            # Goal decomposition schemas
+│   ├── evidence.py                 # Evidence analysis schemas
+│   └── synthesis.py                # Report synthesis schemas
+└── research_brief.py               # Existing
+```
+
+**Effort**: 4 hours (directory setup + migration infrastructure)
+
+### Problem 5: Non-Configurable Magic Numbers (3 Occurrences)
+
+**Current State**:
+- Hardcoded constants in recursive_agent.py violate "no hardcoded heuristics" principle
+
+**Magic Numbers**:
+1. **Line 2236**: `max_evidence_in_saved_result: 50` - Truncates evidence silently
+2. **Line unknown**: Default similarity threshold for deduplication
+3. **Line unknown**: Default LLM temperature for various calls
+
+**Recommended Fix**:
+```python
+# CURRENT:
+max_evidence_in_saved_result = 50
+
+# SHOULD BE:
+from config_loader import config
+max_evidence = config.get('recursive_agent.max_evidence_in_result', default=50)
+```
+
+**Effort**: 2 hours (identify all constants, add to config.yaml, update code)
+
+### Recommended Refactoring Plan (Phased Approach)
+
+**Phase 1: Extract Schemas** (3 days)
+- Days 1-2: Create schemas/ directory structure + base classes
+- Day 3: Migrate 15 high-priority integration schemas
+- Validation: All tests pass, schemas loadable independently
+
+**Phase 2: Convert Prompts to Jinja2** (2 days)
+- Day 1: Create 7 Jinja2 templates in prompts/recursive_agent/
+- Day 2: Convert f-strings to render_prompt() calls
+- Validation: E2E research test produces same results
+
+**Phase 3: Parameterize Constants** (1 day)
+- Hours 1-4: Identify all magic numbers, add to config.yaml
+- Hours 5-8: Update code to read from config, test overrides
+- Validation: Config changes affect behavior correctly
+
+**Phase 4: Documentation** (1 day)
+- Hours 1-4: Update PATTERNS.md with new schema/prompt patterns
+- Hours 5-8: Create SCHEMA_GUIDE.md and PROMPT_GUIDE.md
+- Validation: New developers can add schemas/prompts easily
+
+**Total Timeline**: 7 days (focused work) + 1-2 days buffer = 8-9 days
+
+### Validation Checklist (Before Merging)
+
+- [ ] All 36 inline schemas moved to schemas/ directory
+- [ ] All 9 f-string prompts converted to Jinja2 templates
+- [ ] 7 new templates exist in prompts/recursive_agent/
+- [ ] All magic numbers configurable via config.yaml
+- [ ] All existing tests still pass (no regressions)
+- [ ] E2E research produces equivalent results
+- [ ] Schema files independently testable (pytest schemas/)
+- [ ] Prompts editable without touching Python code
+- [ ] Documentation updated (PATTERNS.md, SCHEMA_GUIDE.md)
+- [ ] Cost/quality metrics unchanged (within 5%)
+
+### Benefits of Refactoring
+
+**Maintainability** (+50%):
+- Edit prompts without touching Python code
+- Version control shows prompt changes clearly
+- A/B test prompt variations easily
+
+**Testability** (+40%):
+- Validate schemas independently (pytest schemas/)
+- Test prompt rendering separately from business logic
+- Mock schemas for unit tests easily
+
+**Collaboration** (+30%):
+- Non-developers can edit prompts (Jinja2 is readable)
+- Schema changes tracked in git history
+- Easier code reviews (schema changes visible)
+
+**Quality** (+20%):
+- Catch schema errors at load time, not runtime
+- Lint and validate prompts automatically
+- Consistent formatting across all prompts
+
+### Status: Identified, Not Started
+
+**User Request**: "comprehensive review for any ways to improve the codebase. in particular it seems like the prompts might not have been fully made to be configurable here /home/brian/sam_gov/prompts as well as the schemas /home/brian/sam_gov/schemas"
+
+**Findings Documented**: 2025-11-30 (this section)
+
+**Next Steps** (if approved):
+1. Create GitHub issue tracking refactoring phases
+2. Start with Phase 1 (schemas) - lowest risk, highest value
+3. Validate each phase independently before proceeding
+4. Document learnings in PATTERNS.md as we go
+
+---
+
 ### ARCHITECTURE NOTES
 
 **Evidence Content Sources**:

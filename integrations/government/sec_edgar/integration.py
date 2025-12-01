@@ -128,9 +128,10 @@ class SECEdgarIntegration(DatabaseIntegration):
             research_question=research_question
         )
 
+        from config_loader import config
         try:
             response = await acompletion(
-                model="gpt-4o-mini",
+                model=config.default_model,
                 messages=[{"role": "user", "content": prompt}],
                 response_format={"type": "json_object"}
             )
@@ -189,8 +190,8 @@ class SECEdgarIntegration(DatabaseIntegration):
                         "enum": ["company_filings", "company_search"]
                     },
                     "company_name": {
-                        "type": ["string", "null"],
-                        "description": "Company name to search for (if applicable)"
+                        "type": "string",
+                        "description": "Company name to search for (optional)"
                     },
                     "form_types": {
                         "type": "array",
@@ -198,21 +199,22 @@ class SECEdgarIntegration(DatabaseIntegration):
                         "description": "SEC form types to filter (e.g., 10-K, 10-Q, 8-K, 4)"
                     },
                     "keywords": {
-                        "type": ["string", "null"],
-                        "description": "Keywords to search for in filings (if applicable)"
+                        "type": "string",
+                        "description": "Keywords to search for in filings (optional)"
                     },
                     "limit": {
                         "type": "integer",
                         "description": "Number of results to retrieve (1-100)"
                     }
                 },
-                "required": ["relevant", "reasoning", "query_type", "form_types", "limit", "company_name", "keywords"],
+                "required": ["relevant", "reasoning", "query_type", "form_types", "limit"],
                 "additionalProperties": False
             }
         }
 
+        from config_loader import config
         response = await acompletion(
-            model="gpt-4o-mini",
+            model=config.default_model,
             messages=[{"role": "user", "content": prompt}],
             response_format={"type": "json_schema", "json_schema": schema}
         )

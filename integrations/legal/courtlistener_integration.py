@@ -203,12 +203,12 @@ Return JSON with your decision:
                     "description": "Court ID(s) separated by spaces (e.g., 'scotus ca9' for Supreme Court + 9th Circuit), empty for all courts"
                 },
                 "filed_after": {
-                    "type": ["string", "null"],
-                    "description": "Start date for filing date range (YYYY-MM-DD) or null"
+                    "type": "string",
+                    "description": "Start date for filing date range (YYYY-MM-DD, optional)"
                 },
                 "filed_before": {
-                    "type": ["string", "null"],
-                    "description": "End date for filing date range (YYYY-MM-DD) or null"
+                    "type": "string",
+                    "description": "End date for filing date range (YYYY-MM-DD, optional)"
                 },
                 "case_name": {
                     "type": "string",
@@ -219,7 +219,7 @@ Return JSON with your decision:
                     "description": "Brief explanation of the query strategy"
                 }
             },
-            "required": ["q", "type", "court", "filed_after", "filed_before", "case_name", "reasoning"],
+            "required": ["q", "type", "court", "case_name", "reasoning"],
             "additionalProperties": False
         }
 

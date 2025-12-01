@@ -138,8 +138,8 @@ class BraveSearchIntegration(DatabaseIntegration):
                     "maximum": 20
                 },
                 "freshness": {
-                    "type": ["string", "null"],
-                    "description": "Time filter: pd, pw, pm, py, or null"
+                    "type": "string",
+                    "description": "Time filter: pd, pw, pm, py (optional)"
                 },
                 "country": {
                     "type": "string",
@@ -150,7 +150,7 @@ class BraveSearchIntegration(DatabaseIntegration):
                     "description": "Brief explanation of the query strategy"
                 }
             },
-            "required": ["query", "count", "freshness", "country", "reasoning"],
+            "required": ["query", "count", "country", "reasoning"],
             "additionalProperties": False
         }
 

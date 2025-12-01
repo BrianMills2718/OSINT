@@ -134,9 +134,10 @@ Return JSON:
   "reasoning": "1-2 sentences explaining why NewsAPI is/isn't relevant"
 }}"""
 
+        from config_loader import config
         try:
             response = await acompletion(
-                model="gpt-4o-mini",
+                model=config.default_model,
                 messages=[{"role": "user", "content": prompt}],
                 response_format={"type": "json_object"}
             )
@@ -197,12 +198,12 @@ Return JSON:
                         "description": "Search keywords (max 500 chars, supports AND/OR/NOT, quotes for exact match)"
                     },
                     "from_date": {
-                        "type": ["string", "null"],
-                        "description": "Start date in YYYY-MM-DD format (null for oldest available)"
+                        "type": "string",
+                        "description": "Start date in YYYY-MM-DD format (optional)"
                     },
                     "to_date": {
-                        "type": ["string", "null"],
-                        "description": "End date in YYYY-MM-DD format (null for most recent)"
+                        "type": "string",
+                        "description": "End date in YYYY-MM-DD format (optional)"
                     },
                     "language": {
                         "type": "string",
@@ -219,13 +220,14 @@ Return JSON:
                         "description": "Number of results to retrieve (1-100)"
                     }
                 },
-                "required": ["relevant", "reasoning", "query", "from_date", "to_date", "language", "sort_by", "limit"],
+                "required": ["relevant", "reasoning", "query", "language", "sort_by", "limit"],
                 "additionalProperties": False
             }
         }
 
+        from config_loader import config
         response = await acompletion(
-            model="gpt-4o-mini",
+            model=config.default_model,
             messages=[{"role": "user", "content": prompt}],
             response_format={"type": "json_schema", "json_schema": schema}
         )

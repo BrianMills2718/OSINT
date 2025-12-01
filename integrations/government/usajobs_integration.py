@@ -116,27 +116,27 @@ class USAJobsIntegration(DatabaseIntegration):
                     "description": "Search keywords for job titles and descriptions"
                 },
                 "location": {
-                    "type": ["string", "null"],
-                    "description": "Geographic location or null"
+                    "type": "string",
+                    "description": "Geographic location (optional)"
                 },
                 "organization": {
-                    "type": ["string", "null"],
-                    "description": "Federal agency/organization name or null"
+                    "type": "string",
+                    "description": "Federal agency/organization name (optional)"
                 },
                 "pay_grade_low": {
-                    "type": ["integer", "null"],
-                    "description": "Minimum GS pay grade (1-15) or null"
+                    "type": "integer",
+                    "description": "Minimum GS pay grade (1-15) (optional)"
                 },
                 "pay_grade_high": {
-                    "type": ["integer", "null"],
-                    "description": "Maximum GS pay grade (1-15) or null"
+                    "type": "integer",
+                    "description": "Maximum GS pay grade (1-15) (optional)"
                 },
                 "reasoning": {
                     "type": "string",
                     "description": "Brief explanation of the query strategy"
                 }
             },
-            "required": ["keywords", "location", "organization", "pay_grade_low", "pay_grade_high", "reasoning"],
+            "required": ["keywords", "organization", "pay_grade_low", "pay_grade_high", "reasoning"],
             "additionalProperties": False
         }
 

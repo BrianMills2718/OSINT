@@ -153,18 +153,18 @@ class ProPublicaIntegration(DatabaseIntegration):
                     "description": "Search query string"
                 },
                 "state_id": {
-                    "type": ["string", "null"],
-                    "description": "Two-letter state code or null"
+                    "type": "string",
+                    "description": "Two-letter state code (optional)"
                 },
                 "ntee_id": {
-                    "type": ["integer", "null"],
-                    "description": "NTEE category 1-10 or null",
+                    "type": "integer",
+                    "description": "NTEE category 1-10 (optional)",
                     "minimum": 1,
                     "maximum": 10
                 },
                 "c_code_id": {
-                    "type": ["integer", "null"],
-                    "description": "501(c) subsection code or null"
+                    "type": "integer",
+                    "description": "501(c) subsection code (optional)"
                 },
                 "reasoning": {
                     "type": "string",
