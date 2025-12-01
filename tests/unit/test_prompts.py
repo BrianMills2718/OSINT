@@ -41,6 +41,103 @@ def mock_context():
         "task_query": "Test query",
         "question": "Test question",
         "context": {"test": "value"},
+        # task_prioritization.j2 variables
+        "elapsed_minutes": 5.0,
+        "completed_count": 2,
+        "pending_count": 3,
+        "deduplication_rate": 65.5,
+        "global_coverage_summary": "Test coverage summary",
+        "completed_tasks": [
+            {
+                "id": 1,
+                "query": "Task 1 query",
+                "results_count": 10,
+                "entities_count": 5,
+                "assessment": "Good coverage",
+                "gaps_identified": ["Gap 1", "Gap 2"]
+            }
+        ],
+        "pending_tasks": [
+            {
+                "id": 2,
+                "query": "Task 2 query",
+                "rationale": "Test rationale",
+                "parent_task_id": 1,
+                "priority": 5
+            }
+        ],
+        # follow_up_generation.j2 variables
+        "parent_task": {
+            "query": "Parent task query",
+            "entities_found": ["Entity 1", "Entity 2"],
+            "status": "completed",
+            "id": 1
+        },
+        "latest_assessment": "Assessment text",
+        "all_tasks": [
+            {
+                "status": "completed",
+                "id": 1,
+                "query": "Completed task"
+            }
+        ],
+        "gaps_identified": ["Gap 1", "Gap 2"],
+        # coverage_assessment.j2 variables
+        "time_elapsed_seconds": 120.5,
+        "max_time_seconds": 300.0,
+        "max_hypotheses": 10,
+        "task_id": 1,
+        "executed_count": 2,
+        "total_hypotheses": 5,
+        "hypotheses": [
+            {
+                "hypothesis_id": 1,
+                "priority": 1,
+                "confidence": 80,
+                "statement": "Test hypothesis",
+                "delta_metrics": {
+                    "results_new": 10,
+                    "results_duplicate": 5,
+                    "total_results": 15,
+                    "entities_new": 3,
+                    "entities_duplicate": 2,
+                    "total_entities": 5
+                },
+                "sources": ["source1", "source2"]
+            }
+        ],
+        # exa_query_generation.j2 variables - expects dict not list
+        "query_patterns": {
+            "news": {"description": "News pattern"},
+            "research": {"description": "Research pattern"}
+        },
+        # query_reformulation_error.j2 and source_saturation.j2 variables
+        "error_message": "Test error",
+        "error_code": 422,
+        "original_query": "Original query",
+        "original_params": {"keyword": "test", "limit": 10},
+        "attempts": 1,
+        "source_name": "Test Source",
+        "queries_tried": ["Query 1", "Query 2"],
+        "strategies_used": ["Strategy 1"],
+        # source_saturation.j2 variables
+        "hypothesis_statement": "Test hypothesis",
+        "source_metadata": {
+            "name": "Test Source",
+            "description": "Test description"
+        },
+        "query_history": [
+            {
+                "query": "Query 1",
+                "results_total": 15,
+                "results_accepted": 10,
+                "results_rejected": 5,
+                "results_duplicate": 2,
+                "effectiveness": 0.67,
+                "rejection_themes": ["Theme 1", "Theme 2"]
+            }
+        ],
+        "total_results_accepted": 10,
     }
 
 
