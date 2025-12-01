@@ -186,12 +186,13 @@ class TestPromptTemplates:
             "recursive_agent/result_filtering.j2",
             goal="Test goal",
             evidence_text="Test evidence",
-            original_objective="Test objective"
+            original_objective="Test objective",
+            temporal_context="Today's date: 2025-12-01\nCurrent year: 2025"
         )
 
-        # Should have temporal context header (injected by prompt_loader)
-        assert "TEMPORAL CONTEXT" in result or "Today's date:" in result or "2025" in result, \
-            "Temporal context not found in filter prompt"
+        # Should have temporal context (passed as variable)
+        assert "2025" in result, \
+            f"Temporal context not found in filter prompt. Result:\n{result}"
 
     def test_json_examples_preserved(self, mock_context):
         """JSON in {% raw %} blocks should not be interpreted."""
