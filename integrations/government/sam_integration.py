@@ -244,7 +244,8 @@ class SAMIntegration(DatabaseIntegration):
                 total=0,
                 results=[],
                 query_params=query_params,
-                error="API key required for SAM.gov"
+                error="API key required for SAM.gov",
+                http_code=None  # Configuration error, not HTTP
             )
 
         try:
@@ -353,6 +354,7 @@ class SAMIntegration(DatabaseIntegration):
                     results=[],
                     query_params=query_params,
                     error=f"SAM.gov quota exceeded. {error_msg}. Next access: {next_access}",
+                    http_code=None,  # Quota error (not HTTP 429, custom handling)
                     response_time_ms=response_time_ms
                 )
 

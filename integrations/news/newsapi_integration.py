@@ -287,7 +287,8 @@ Return JSON:
                 total=0,
                 results=[],
                 query_params=query_params,
-                error="No search query provided"
+                error="No search query provided",
+                http_code=None  # Validation error, not HTTP
             )
 
         # Get API key
@@ -304,7 +305,8 @@ Return JSON:
                 total=0,
                 results=[],
                 query_params=query_params,
-                error="NewsAPI key not found. Set NEWSAPI_API_KEY in .env file."
+                error="NewsAPI key not found. Set NEWSAPI_API_KEY in .env file.",
+                http_code=None  # Configuration error, not HTTP
             )
 
         try:
@@ -346,7 +348,8 @@ Return JSON:
                     total=0,
                     results=[],
                     query_params=query_params,
-                    error=f"NewsAPI error ({error_code}): {error_message}"
+                    error=f"NewsAPI error ({error_code}): {error_message}",
+                    http_code=None  # Error from JSON response body
                 )
 
             # Extract articles

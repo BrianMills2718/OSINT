@@ -207,7 +207,8 @@ class DVIDSIntegration(DatabaseIntegration):
                 total=0,
                 results=[],
                 query_params=query_params,
-                error="API key required for DVIDS"
+                error="API key required for DVIDS",
+                http_code=None  # Configuration error, not HTTP
             )
 
         try:

@@ -271,6 +271,7 @@ class BraveSearchIntegration(DatabaseIntegration):
                 results=[],
                 query_params=query_params,
                 error="API key required for Brave Search",
+                http_code=None,  # Configuration error, not HTTP
                 response_time_ms=0
             )
 
