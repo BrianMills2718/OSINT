@@ -354,7 +354,7 @@ class USAJobsIntegration(DatabaseIntegration):
                 total=0,
                 results=[],
                 query_params=query_params,
-                error=str(e,
-                http_code=None  # Non-HTTP error),
+                error=str(e),
+                http_code=None,  # Non-HTTP error
                 response_time_ms=response_time_ms
             )
