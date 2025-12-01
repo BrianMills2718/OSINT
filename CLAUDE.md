@@ -433,11 +433,31 @@ for item in api_results:
 
 ## TESTING
 
+### Current State
+
+**Coverage**: 94% integration coverage (18/19 integrations tested)
+**Quality**: Excellent (100% have metadata, relevance, query gen, execution, error tests)
+**Gaps**: Zero unit tests for core logic, no CI/CD automation
+
+**See**: `docs/TEST_IMPROVEMENT_PLAN.md` for comprehensive improvement roadmap
+**See**: `docs/TESTING_QUICK_REFERENCE.md` for developer guide
+
 ### Categories
 
-1. **Unit**: Isolated, may mock, fast
-2. **Integration**: Multiple components, real APIs
+1. **Unit**: Isolated, may mock, fast (MISSING - P0 priority)
+2. **Integration**: Multiple components, real APIs (EXCELLENT - 68 tests)
 3. **E2E** (REQUIRED for success claims): User-facing entry points, no mocks
+
+### Test Structure
+
+```
+tests/
+├── integrations/        # 68 tests (94% coverage) - EXCELLENT
+├── system/              # 16 tests
+├── unit/                # 0 tests - CRITICAL GAP
+├── performance/         # 2 tests
+└── features/            # Feature-specific tests
+```
 
 ### Checklist (Before Claiming Success)
 
@@ -453,6 +473,21 @@ ALL must be true:
 - [ ] Cost tracking (if LLM)
 
 **If ANY false → NOT succeeded**
+
+### Priority Test Improvements
+
+**P0 - Critical** (4-6 hours):
+1. Create pytest.ini configuration
+2. Set up GitHub Actions CI/CD
+3. Add prompt template validator (59 .j2 files untested)
+4. Add recursive agent unit tests (2,965-line file has zero tests)
+
+**P1 - High Value** (6-8 hours):
+5. Add SearchResultBuilder validation tests
+6. Add error scenario tests (rate limits, timeouts)
+7. Add code coverage tracking (pytest-cov)
+
+**See docs/TEST_IMPROVEMENT_PLAN.md** for detailed implementation plan
 
 ---
 
