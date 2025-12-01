@@ -12,13 +12,21 @@ CURRENT GOAL: {{ goal }}
 RESULTS TO FILTER:
 {{ evidence_text }}
 
-Evaluate each result's relevance to the goal. Return a JSON object with:
+Your task: Determine which results are genuinely relevant to achieving this goal.
+
+Consider for each result:
+- Does this result provide information that helps answer or achieve the goal?
+- Is this result about the same subject/entity as the goal?
+- Would a researcher working on this goal find this result useful?
+
+Important principles:
+- Keyword overlap alone is not relevance. Results about different entities that happen to share common terms are not relevant.
+- Be thoughtful about what "relevant" means in the context of the specific goal and original objective.
+
+Return a JSON object with:
 {% raw %}
 {
     "relevant_indices": [0, 2, 5],  // List of result indices that ARE relevant
     "filtering_rationale": "Brief explanation of filtering decisions"
 }
 {% endraw %}
-
-Be generous - include results that have ANY connection to the goal.
-Only filter out results that are clearly off-topic or irrelevant.
