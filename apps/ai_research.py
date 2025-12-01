@@ -11,6 +11,7 @@ import litellm
 import requests
 from datetime import datetime, timedelta
 import logging
+from config_loader import config
 
 # Configure file logging for query debugging
 logging.basicConfig(
@@ -181,9 +182,9 @@ Return JSON array of selected sources."""
         "additionalProperties": False
     }
 
-    # Call gpt-5-mini with structured output
+    # Call default model with structured output
     response = litellm.responses(
-        model="gpt-5-mini",
+        model=config.default_model,
         input=prompt,
         text={
             "format": {
@@ -374,9 +375,9 @@ Provide a comprehensive summary that:
 
 Be concise but thorough. Focus on insights that directly relate to the research question."""
 
-    # Call AI for summary (free-form text, no structured output)
+    # Call default model for summary (free-form text, no structured output)
     response = litellm.responses(
-        model="gpt-5-mini",
+        model=config.default_model,
         input=prompt
         # No text parameter needed for free-form text output
     )
