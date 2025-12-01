@@ -351,6 +351,32 @@ research:
     # - Falls back to all hypotheses if LLM keeps saying "continue" (respects hard ceilings)
 
 # ============================================================================
+# Research Configuration (v2 Recursive Agent & Deep Research)
+# ============================================================================
+research:
+  # Error handling configuration for query reformulation
+  error_handling:
+    # Errors that cannot be fixed by query reformulation
+    # These errors indicate infrastructure/API issues, not query problems
+    # When detected, the system skips reformulation and moves on
+    unfixable_error_patterns:
+      # Rate limiting patterns
+      - "rate limit"
+      - "429"
+      - "quota exceeded"
+      - "too many requests"
+      - "throttl"
+      - "request limit"
+      - "daily limit"
+      # Timeout patterns (infrastructure failures)
+      - "timed out"
+      - "timeout"
+      - "TimeoutError"
+      - "ReadTimeoutError"
+      - "ConnectTimeout"
+      - "handshake operation timed out"
+
+# ============================================================================
 # Logging Configuration
 # ============================================================================
 logging:

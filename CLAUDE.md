@@ -959,12 +959,23 @@ pip list | grep playwright
 - **Solution**: Changed to `item.get("snippet", item.get("description", item.get("content", "")))`
 - **Validated**: Smoke test shows content length 120 chars (was 0)
 
-**2. Sub-Goal Context Loss - Irrelevant Results Pass Filter**
-- **Problem**: Sub-goals lose parent context. "Search FBI Vault for declassified documents" doesn't carry "about Palantir" context, so Bin Laden/Guantanamo docs pass filter
-- **Impact**: FBI Vault (and potentially other sources) return completely irrelevant results
-- **Root Cause**: Filter prompt checks relevance to CURRENT GOAL only, not full goal hierarchy
-- **Fix**: Propagate parent context into sub-goals OR require filter to check both goal AND original objective's subject
-- **File**: research/recursive_agent.py `_filter_results()` (line 1950)
+**2. Filter Prompt Too Lenient - Keyword Matching Passes Irrelevant Results**
+- **Problem**: Filter prompt says "Be generous - include results that have ANY connection to the goal." LLM interprets "ANY connection" as keyword overlap, passing irrelevant results.
+- **Example**: Goal "Anduril Industries executives" returns results about "Consumer Reports executives" because both mention "executive" keyword. Filter passes it despite different companies.
+- **Evidence**: Real logs show extraction of entities like "Communion and Liberation", "CAIR", "Consumer Reports" when researching Anduril executives.
+- **Impact**: Irrelevant entities pollute entity graph, degrade report quality, waste tokens on noise.
+- **Root Cause**: Filter prompt at `prompts/recursive_agent/result_filtering.j2` is too lenient:
+  - Says "include results that have ANY connection" (keyword overlap qualifies)
+  - Says "only filter out results that are clearly off-topic" (high bar)
+  - Says "Be generous" (encourages false positives)
+- **Fix**: Replace lenient language with strict company-specific matching:
+  ```
+  Only include results that are SPECIFICALLY about the goal's subject.
+  For company-specific goals: Results MUST mention the specific company by name.
+  Generic results sharing only common keywords should be filtered out.
+  ```
+- **File**: prompts/recursive_agent/result_filtering.j2
+- **Success Metric**: Goal "Anduril executives" should filter OUT "Consumer Reports executives" (different company)
 
 **3. SEC EDGAR Filter Rejects All Results**
 - **Problem**: 10 SEC filings found but filtered to 0 - relevance filter incorrectly rejects financial filings
@@ -1344,7 +1355,7 @@ max_evidence = config.get('recursive_agent.max_evidence_in_result', default=50)
 | NewsAPI | Article snippets | No | N/A |
 
 **Filtering Architecture Issue**:
-Sub-goals decompose without carrying parent context. When "Investigate Palantir" decomposes to "Search FBI Vault", the sub-goal should implicitly mean "Search FBI Vault **for Palantir-related docs**" but filter only sees the generic sub-goal.
+Filter prompt is too lenient - says "Be generous - include results that have ANY connection to the goal." This causes the LLM to pass results with mere keyword overlap. For example, goal "Anduril Industries executives" passes results about "Consumer Reports executives" because both mention "executive". The filter needs to require company-specific matching, not just keyword overlap. See P0 Critical Bug #2 for details and fix.
 
 ---
 

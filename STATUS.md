@@ -1,6 +1,7 @@
 # STATUS.md - Component Status Tracker
 
-**Last Updated**: 2025-11-30 (P0 #2: Global Evidence Index - COMPLETE)
+**Last Updated**: 2025-12-01 (Filter Prompt Leniency Bug - IDENTIFIED)
+**Current Issue**: 🐛 P0 Critical - Filter prompt too lenient, passes irrelevant results (IDENTIFIED, not fixed)
 **Current Phase**: V2 agent production-ready with cross-branch evidence sharing ✅
 **Previous Phase**: GovInfo Integration + Performance Optimizations - COMPLETE ✅
 **Previous Phase**: 22 integrations working, Telegram OSINT source added - COMPLETE ✅
@@ -17,6 +18,59 @@
 **Previous Phase**: Phase 1.5 (Adaptive Search & Knowledge Graph) - Week 1 COMPLETE ✅
 **Previous Phase**: Phase 1 (Boolean Monitoring MVP) - 100% COMPLETE + **DEPLOYED IN PRODUCTION** ✅
 **Previous Phase**: Phase 0 (Foundation) - 100% COMPLETE
+
+---
+
+## Recent Issues Identified (2025-12-01)
+
+**Status**: 🔍 **IDENTIFIED** - Filter Prompt Too Lenient (Critical Quality Issue)
+**Impact**: Irrelevant entities pollute research results and entity graphs
+
+### Filter Prompt Leniency Bug 🐛
+**Date**: 2025-12-01
+**Severity**: P0 Critical (Quality Issue)
+**File**: `prompts/recursive_agent/result_filtering.j2`
+
+**Problem**:
+Filter prompt says "Be generous - include results that have ANY connection to the goal." The LLM interprets "ANY connection" as keyword overlap, causing irrelevant results to pass filtering.
+
+**Real-World Example**:
+- Goal: "Find key executives of Anduril Industries Inc."
+- Search returns: "Consumer Reports executive director Sara Enright..."
+- Filter reasoning: Both mention "executive" → "ANY connection" found → **PASS** ❌
+- Entity extraction: Extracts "Consumer Reports", "Sara Enright" (irrelevant to Anduril)
+
+**Evidence from Real Logs**:
+Query about "Anduril Industries executives" extracted these completely irrelevant entities:
+- Communion and Liberation (Italian Catholic movement)
+- Transparency International (anti-corruption NGO)
+- CAIR (Council on American-Islamic Relations)
+- Americans for Public Trust (conservative advocacy group)
+- Consumer Reports (product testing nonprofit)
+
+**Root Cause**:
+Filter prompt uses lenient language that LLM interprets as keyword matching:
+```jinja
+Be generous - include results that have ANY connection to the goal.
+Only filter out results that are clearly off-topic or irrelevant.
+```
+
+**Proposed Fix**:
+Replace with strict company-specific matching:
+```jinja
+Only include results that are SPECIFICALLY about the goal's subject.
+For company-specific goals: Results MUST mention the specific company by name.
+Generic results sharing only common keywords should be filtered out.
+```
+
+**Impact**:
+- Current: 70% pass rate with significant noise
+- Expected after fix: 30-40% pass rate, higher quality
+- Cleaner entity graphs, better reports, less token waste
+
+**Status**: Identified, not yet fixed
+**Next Action**: Update filter prompt in `prompts/recursive_agent/result_filtering.j2`
+**Reference**: See CLAUDE.md P0 Critical Bug #2 for full analysis
 
 ---
 

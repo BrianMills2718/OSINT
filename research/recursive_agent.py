@@ -669,6 +669,7 @@ class RecursiveResearchAgent:
         # Load default model from config (single source of truth)
         from config_loader import config
         self.model = config.default_model
+        self.config = config  # Store config reference for error handling patterns
 
         # Entity analyzer for relationship tracking
         self.entity_analyzer = EntityAnalyzer(
@@ -1270,18 +1271,42 @@ class RecursiveResearchAgent:
                 if result.success or not result.error:
                     break
 
-                # Try to reformulate on error (skip for rate limits - unfixable)
+                # Try to reformulate on error (skip for unfixable errors like rate limits/timeouts)
                 error_msg = str(result.error or "").lower()
-                is_rate_limit = any(term in error_msg for term in [
+
+                # Load unfixable error patterns from config (defaults if not found)
+                raw_config = self.config.get_raw_config()
+                unfixable_patterns = raw_config.get('research', {}).get('error_handling', {}).get('unfixable_error_patterns', [
+                    # Fallback defaults if config not found
                     "rate limit", "429", "quota exceeded", "too many requests",
-                    "throttl", "request limit", "daily limit"
+                    "throttl", "request limit", "daily limit",
+                    "timed out", "timeout", "TimeoutError", "ReadTimeoutError",
+                    "ConnectTimeout", "handshake operation timed out"
                 ])
 
-                if is_rate_limit:
-                    logger.warning(f"{source_id}: Rate limit detected, adding to session blocklist")
-                    self.rate_limited_sources.add(source_id)  # Skip this source for rest of session
-                    print(f"    ⚠ {source_id}: Rate limited - will skip for rest of session")
-                    break  # Exit retry loop - rate limits aren't fixable by reformulation
+                is_unfixable = any(term.lower() in error_msg for term in unfixable_patterns)
+
+                if is_unfixable:
+                    # Determine error type for better logging
+                    is_rate_limit = any(term.lower() in error_msg for term in [
+                        "rate limit", "429", "quota exceeded", "too many requests", "throttl"
+                    ])
+                    is_timeout = any(term.lower() in error_msg for term in [
+                        "timed out", "timeout", "TimeoutError", "ReadTimeoutError"
+                    ])
+
+                    if is_rate_limit:
+                        logger.warning(f"{source_id}: Rate limit detected, adding to session blocklist")
+                        self.rate_limited_sources.add(source_id)  # Skip this source for rest of session
+                        print(f"    ⚠ {source_id}: Rate limited - will skip for rest of session")
+                    elif is_timeout:
+                        logger.warning(f"{source_id}: Timeout detected (infrastructure issue), skipping reformulation")
+                        print(f"    ⚠ {source_id}: Timeout error - cannot fix with query reformulation")
+                    else:
+                        logger.warning(f"{source_id}: Unfixable error detected, skipping reformulation")
+                        print(f"    ⚠ {source_id}: Infrastructure/API error - cannot fix with query reformulation")
+
+                    break  # Exit retry loop - unfixable errors aren't fixable by reformulation
 
                 if attempt < max_retries - 1:
                     logger.warning(f"{source_id} error: {result.error}, attempting reformulation")
