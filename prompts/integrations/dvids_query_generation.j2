@@ -42,11 +42,15 @@ API Parameters:
 - from_date (string or null, optional):
     Start date for results in YYYY-MM-DD format.
     ONLY set if question asks for specific timeframe.
-    Default: null (no date filter)
+    IMPORTANT: Use JSON null (not string "null") if no date filter needed.
+    Example: "from_date": null  (CORRECT)
+    Example: "from_date": "null"  (WRONG - causes API error)
 
 - to_date (string or null, optional):
     End date for results in YYYY-MM-DD format.
-    Default: null (no date filter)
+    IMPORTANT: Use JSON null (not string "null") if no date filter needed.
+    Example: "to_date": null  (CORRECT)
+    Example: "to_date": "null"  (WRONG - causes API error)
 
 Research Question: {{ research_question }}
 

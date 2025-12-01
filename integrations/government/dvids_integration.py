@@ -234,11 +234,15 @@ class DVIDSIntegration(DatabaseIntegration):
                 base_params["country"] = query_params["country"]
 
             # Add date filters (DVIDS uses ISO 8601 format with Z)
-            if query_params.get("from_date"):
-                base_params["from_publishdate"] = f"{query_params['from_date']}T00:00:00Z"
+            # Validate dates are not string "null" (LLM sometimes returns this)
+            from_date = query_params.get("from_date")
+            to_date = query_params.get("to_date")
 
-            if query_params.get("to_date"):
-                base_params["to_publishdate"] = f"{query_params['to_date']}T23:59:59Z"
+            if from_date and from_date != "null" and isinstance(from_date, str):
+                base_params["from_publishdate"] = f"{from_date}T00:00:00Z"
+
+            if to_date and to_date != "null" and isinstance(to_date, str):
+                base_params["to_publishdate"] = f"{to_date}T23:59:59Z"
 
             # Get keywords and check for OR operators
             keywords_str = query_params.get("keywords", "")

@@ -1067,6 +1067,93 @@ pip list | grep playwright
 
 ---
 
+## ERROR HANDLING ARCHITECTURE REFACTOR
+
+**Document**: `docs/ERROR_HANDLING_ARCHITECTURE.md`
+**Status**: Planning → Implementation
+**Priority**: P1 - Critical for reliability
+**Effort**: 12 hours (2-3 days)
+
+### Problem Summary
+
+**Current Issues**:
+1. ❌ Brittle text pattern matching for error classification
+2. ❌ Missing HTTP codes (401, 403, 404, 500-504) trigger reformulation wastefully
+3. ❌ DVIDS sends "nullT00:00:00Z" (malformed dates from LLM string "null")
+4. ❌ HTTP status codes not propagated from integrations
+5. ❌ Agent does complex text parsing (mixed concerns)
+
+**Discovered From**:
+- E2E test showing DVIDS HTTP 400 → HTTP 403 reformulation attempt
+- "Iteration 2/10" follow-up loop generating 14 goals from gaps
+
+### Architecture Solution
+
+**Structured Error Model** (4 layers):
+1. **Layer 1**: `core/error_classifier.py` - Centralized classification
+   - `APIError` dataclass with `is_reformulable`, `is_retryable` flags
+   - `ErrorCategory` enum (AUTH, RATE_LIMIT, VALIDATION, TIMEOUT, etc.)
+   - HTTP code-based classification (primary), text patterns (fallback)
+
+2. **Layer 2**: Integration changes
+   - Add `http_code: Optional[int]` to `QueryResult` dataclass
+   - Extract HTTP codes in exception handlers
+   - Return structured error data
+
+3. **Layer 3**: Agent simplification
+   - Replace pattern matching with `error_classifier.classify()`
+   - Use boolean flags for decisions (`if error.is_reformulable`)
+   - Structured error logging
+
+4. **Layer 4**: Configuration
+   - Add `unfixable_http_codes: [401, 403, 404, 429, 500-504]`
+   - Add `fixable_http_codes: [400, 422]`
+   - Keep text patterns for non-HTTP errors
+
+### Implementation Plan (5 Phases)
+
+**Phase 1: Foundation** (2 hours) - P0 Blocking
+- Task 1.1: Add missing HTTP codes to config (15 min)
+- Task 1.2: Fix DVIDS "null" date bug (30 min)
+- Task 1.3: Create ErrorClassifier skeleton (45 min)
+- Task 1.4: Update QueryResult dataclass (30 min)
+
+**Phase 2: Integrations** (4 hours) - P1 High Value
+- Task 2.1: Update 5 high-traffic integrations (2 hours)
+- Task 2.2: Update remaining 24 integrations (2 hours)
+
+**Phase 3: Agent Refactor** (3 hours) - P1 Simplifies Core
+- Task 3.1: Integrate ErrorClassifier into agent (1 hour)
+- Task 3.2: Simplify error handling logic (1 hour)
+- Task 3.3: Add structured error logging (1 hour)
+
+**Phase 4: Testing** (2 hours) - P1 No Regressions
+- Task 4.1: Unit tests for ErrorClassifier (45 min)
+- Task 4.2: Integration error tests (45 min)
+- Task 4.3: E2E error handling test (30 min)
+
+**Phase 5: Documentation** (1 hour) - P2 Polish
+- Task 5.1: Update PATTERNS.md (20 min)
+- Task 5.2: Update STATUS.md (20 min)
+- Task 5.3: Remove deprecated code (20 min)
+
+### Success Criteria
+
+**Before**:
+- ❌ 403 errors trigger reformulation
+- ❌ DVIDS sends "nullT00:00:00Z"
+- ❌ No HTTP codes in QueryResult
+
+**After**:
+- ✅ 403 errors skip reformulation immediately
+- ✅ DVIDS validates dates before API call
+- ✅ All integrations return HTTP codes
+- ✅ 100% test coverage for error classification
+
+**See**: `docs/ERROR_HANDLING_ARCHITECTURE.md` for full design
+
+---
+
 ## CONFIGURATION ARCHITECTURE ISSUES
 
 **Comprehensive Codebase Review** (2025-11-30)

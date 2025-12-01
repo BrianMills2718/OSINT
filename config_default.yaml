@@ -356,7 +356,25 @@ research:
 research:
   # Error handling configuration for query reformulation
   error_handling:
-    # Errors that cannot be fixed by query reformulation
+    # HTTP Status Codes - Unfixable (cannot be resolved by query reformulation)
+    # These indicate auth, rate limits, or server issues
+    unfixable_http_codes:
+      - 401  # Unauthorized - invalid/missing API key
+      - 403  # Forbidden - valid key but no permission
+      - 404  # Not Found - endpoint/resource doesn't exist
+      - 429  # Too Many Requests - rate limit
+      - 500  # Internal Server Error - server bug
+      - 502  # Bad Gateway - upstream server error
+      - 503  # Service Unavailable - temporary overload
+      - 504  # Gateway Timeout - upstream timeout
+
+    # HTTP Status Codes - Fixable (can be resolved by query reformulation)
+    # These indicate validation/semantic errors with the request
+    fixable_http_codes:
+      - 400  # Bad Request - malformed parameters
+      - 422  # Unprocessable Entity - semantic validation error
+
+    # Text Pattern Fallbacks - Unfixable Errors (for non-HTTP errors)
     # These errors indicate infrastructure/API issues, not query problems
     # When detected, the system skips reformulation and moves on
     unfixable_error_patterns:
@@ -375,6 +393,15 @@ research:
       - "ReadTimeoutError"
       - "ConnectTimeout"
       - "handshake operation timed out"
+      # Authentication patterns
+      - "401"
+      - "403"
+      - "unauthorized"
+      - "forbidden"
+
+    # Retry configuration
+    max_reformulation_attempts: 2
+    rate_limit_cooldown_seconds: 300  # 5 minutes
 
 # ============================================================================
 # Logging Configuration
