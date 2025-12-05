@@ -259,6 +259,10 @@ class TwitterIntegration(DatabaseIntegration):
         from core.prompt_loader import render_prompt
         import json
 
+        # Handle case where research_question is a list (defensive)
+        if isinstance(research_question, list):
+            research_question = " ".join(str(q) for q in research_question)
+
         prompt = render_prompt(
             "integrations/twitter_relevance.j2",
             research_question=research_question
@@ -300,6 +304,11 @@ class TwitterIntegration(DatabaseIntegration):
                 "reasoning": "Get recent tweets from @bellingcat"
             }
         """
+
+        # Handle case where research_question is a list (defensive)
+        if isinstance(research_question, list):
+            research_question = " ".join(str(q) for q in research_question)
+            logger.warning(f"Twitter generate_query received list, converted to: {research_question}")
 
         # Handle simple keywords from Boolean monitors
         # If research_question is just 1-3 words, treat as keyword search

@@ -2335,12 +2335,26 @@ class RecursiveResearchAgent:
         - date: Structured date from API
         - metadata: Additional source-specific data
         """
+        # Check for evidence truncation and warn
+        total_evidence = len(result.evidence)
+        max_saved = self.constraints.max_evidence_in_saved_result
+        if total_evidence > max_saved:
+            truncated_count = total_evidence - max_saved
+            logger.warning(
+                f"Evidence truncated: {total_evidence} pieces collected, "
+                f"only {max_saved} saved to result.json ({truncated_count} dropped). "
+                f"Increase max_evidence_in_saved_result to preserve all evidence."
+            )
+            print(f"  ⚠ Warning: {truncated_count} evidence pieces truncated ({total_evidence} → {max_saved})")
+
         return {
             "goal": result.goal,
             "status": result.status.value,
             "synthesis": result.synthesis,
             "confidence": result.confidence,
             "evidence_count": len(result.evidence),
+            "evidence_saved": min(total_evidence, max_saved),  # NEW: How many actually saved
+            "evidence_truncated": max(0, total_evidence - max_saved),  # NEW: How many dropped
             "sub_results_count": len(result.sub_results),
             "depth": result.depth,
             "duration_seconds": result.duration_seconds,
