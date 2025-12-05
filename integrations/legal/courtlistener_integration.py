@@ -263,7 +263,8 @@ Return JSON with your decision:
             QueryResult with standardized format
         """
         start_time = datetime.now()
-        endpoint = "https://www.courtlistener.com/api/rest/v3/search/"
+        # Use V4 API - V3 requires legacy account (new users get 403)
+        endpoint = "https://www.courtlistener.com/api/rest/v4/search/"
 
         if not api_key:
             # Try loading from environment variable

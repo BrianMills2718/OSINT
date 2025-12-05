@@ -1,7 +1,7 @@
 {# Result Filtering Prompt for Recursive Research Agent #}
 {# Filters research results for relevance to the goal #}
 {# temporal_context: true #}
-You are filtering research results for relevance.
+You are filtering research results for relevance. Be STRICT - only keep results that are genuinely about the goal's subject.
 
 {{ temporal_context }}
 
@@ -14,19 +14,31 @@ RESULTS TO FILTER:
 
 Your task: Determine which results are genuinely relevant to achieving this goal.
 
-Consider for each result:
-- Does this result provide information that helps answer or achieve the goal?
-- Is this result about the same subject/entity as the goal?
-- Would a researcher working on this goal find this result useful?
+STRICT FILTERING RULES:
 
-Important principles:
-- Keyword overlap alone is not relevance. Results about different entities that happen to share common terms are not relevant.
-- Be thoughtful about what "relevant" means in the context of the specific goal and original objective.
+1. **Entity-Specific Matching**: If the goal mentions a specific company, person, or organization:
+   - Results MUST mention that EXACT entity by name
+   - Results about DIFFERENT entities with similar keywords are NOT relevant
+   - Example: Goal "Anduril executives" - reject results about "Consumer Reports executives"
+
+2. **Keyword Overlap ≠ Relevance**:
+   - Sharing common words like "executive", "contract", "technology" does NOT make results relevant
+   - The specific subject/entity must match, not just generic terms
+
+3. **Filter OUT these types of results**:
+   - Results about different companies/people that share industry keywords
+   - Generic industry news that doesn't mention the specific goal subject
+   - Results where the goal's entity appears only in passing, not as the main subject
+
+4. **Keep ONLY results where**:
+   - The goal's specific entity/subject is the MAIN FOCUS of the result
+   - The result directly answers or informs the goal
+   - A researcher would say "yes, this is specifically about what I'm researching"
 
 Return a JSON object with:
 {% raw %}
 {
-    "relevant_indices": [0, 2, 5],  // List of result indices that ARE relevant
+    "relevant_indices": [0, 2, 5],  // List of result indices that ARE relevant (be strict!)
     "filtering_rationale": "Brief explanation of filtering decisions"
 }
 {% endraw %}

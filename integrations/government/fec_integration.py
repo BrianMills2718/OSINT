@@ -11,6 +11,7 @@ import logging
 import os
 from typing import Dict, Optional
 from datetime import datetime
+from urllib.parse import quote
 import asyncio
 import requests
 from dotenv import load_dotenv
@@ -447,9 +448,17 @@ class FECIntegration(DatabaseIntegration):
             )
             date = contrib.get("contribution_receipt_date", "")
 
-            # Build specific URL to committee receipts page
+            # Build specific URL to receipt with all available filters
             committee_id = contrib.get("committee_id", "")
-            url = f"https://www.fec.gov/data/receipts/?committee_id={committee_id}&data_type=processed" if committee_id else "https://www.fec.gov/data/receipts/?data_type=processed"
+            contributor_name = contrib.get("contributor_name", "")
+            url_params = ["data_type=processed"]
+            if committee_id:
+                url_params.append(f"committee_id={committee_id}")
+            if contributor_name:
+                url_params.append(f"contributor_name={quote(contributor_name)}")
+            if date:
+                url_params.append(f"min_date={date}&max_date={date}")
+            url = f"https://www.fec.gov/data/receipts/?{'&'.join(url_params)}"
 
             snippet_text = f"Amount: {SearchResultBuilder.format_amount(amount)} | Date: {date} | Employer: {contrib.get('contributor_employer', 'N/A')}"
             # Three-tier model: preserve full content with build_with_raw()
