@@ -522,10 +522,20 @@ Return JSON:
 
             channel_title = SearchResultBuilder.safe_text(getattr(channel, 'title', ''), default=channel_username)
             description = SearchResultBuilder.safe_text(full_channel.full_chat.about, default="No description")
+            # Three-tier model: preserve full content with build_with_raw()
             return [SearchResultBuilder()
                 .title(f"Telegram Channel: @{channel_username}", default="Telegram Channel")
                 .url(f"https://t.me/{channel_username}")
                 .snippet(description)
+                .raw_content(description)  # Full content, never truncated
+                .api_response({  # Preserve channel data
+                    "channel_id": channel.id,
+                    "username": channel_username,
+                    "title": channel_title,
+                    "members": getattr(channel, 'participants_count', None),
+                    "verified": getattr(channel, 'verified', False),
+                    "description": getattr(full_channel.full_chat, 'about', '')
+                })
                 .metadata({
                     "channel_id": channel.id,
                     "username": channel_username,
@@ -534,7 +544,7 @@ Return JSON:
                     "verified": getattr(channel, 'verified', False),
                     "description": description
                 })
-                .build()]
+                .build_with_raw()]
 
         except Exception as e:
             # Catch-all at integration boundary - acceptable to return empty results instead of crashing
