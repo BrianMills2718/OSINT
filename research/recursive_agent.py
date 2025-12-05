@@ -2326,7 +2326,15 @@ class RecursiveResearchAgent:
         print(f"\nResults saved to: {self.output_dir}")
 
     def _result_to_dict(self, result: GoalResult) -> Dict:
-        """Convert GoalResult to serializable dict."""
+        """
+        Convert GoalResult to serializable dict.
+
+        Three-tier model preservation:
+        - raw_content: Full content, never truncated (for reprocessing)
+        - content: Truncated content (for backward compatibility)
+        - date: Structured date from API
+        - metadata: Additional source-specific data
+        """
         return {
             "goal": result.goal,
             "status": result.status.value,
@@ -2336,14 +2344,19 @@ class RecursiveResearchAgent:
             "sub_results_count": len(result.sub_results),
             "depth": result.depth,
             "duration_seconds": result.duration_seconds,
-            "cost_dollars": result.cost_dollars,  # Bug fix: was missing
-            "rate_limited_sources": list(self.rate_limited_sources),  # Track which sources hit rate limits
+            "cost_dollars": result.cost_dollars,
+            "rate_limited_sources": list(self.rate_limited_sources),
             "evidence": [
                 {
                     "source": e.source,
                     "title": e.title,
+                    # Backward compatible: truncated content for existing tools
                     "content": e.content[:self.constraints.max_content_chars_in_synthesis],
-                    "url": e.url
+                    "url": e.url,
+                    # NEW: Three-tier model fields
+                    "raw_content": e.full_content,  # Full content, never truncated
+                    "date": e.date,  # Structured date from API
+                    "relevance_score": e.relevance_score,  # LLM-assigned score
                 }
                 for e in result.evidence[:self.constraints.max_evidence_in_saved_result]
             ],
