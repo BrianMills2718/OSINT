@@ -35,6 +35,13 @@ STRICT FILTERING RULES:
    - The result directly answers or informs the goal
    - A researcher would say "yes, this is specifically about what I'm researching"
 
+5. **EXCEPTION - Official Filings and Records**:
+   When the goal is about a specific company AND results are from official filing sources (SEC EDGAR, CourtListener, government databases):
+   - SEC filings (10-K, 10-Q, 8-K, S-1, Form 4, etc.) for a company ARE relevant even if the snippet only shows filing metadata
+   - Court cases filed BY or AGAINST the company ARE relevant
+   - Government contract awards TO the company ARE relevant
+   - These are official records that were specifically queried for that entity - KEEP THEM
+
 Return a JSON object with:
 {% raw %}
 {

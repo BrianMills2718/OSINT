@@ -40,6 +40,15 @@ A goal is directly executable ONLY if:
 - It's an analysis/synthesis task on EXISTING evidence
 - We're at depth 3+ and need to start executing to avoid infinite decomposition
 
+CRITICAL - SYNTHESIS/COMPARISON GOALS:
+If the goal contains "compare", "vs", "contrast", "analyze", "synthesize", "assess patterns",
+"relationship between", or similar analytical language:
+→ Use action type "analyze" (NOT api_call or web_search)
+→ This performs reasoning over the accumulated evidence
+→ Example: Goal "Compare Palantir vs Anduril contracts" should use:
+  { "type": "analyze", "prompt": "Compare the contract portfolios..." }
+  NOT { "type": "api_call", "source": "usaspending" }
+
 A goal SHOULD BE DECOMPOSED if ANY of these apply:
 - It's about a company/person/entity → needs multiple source TYPES (contracts, filings, news, legal)
 - It mentions "investigate", "research", or "find" → needs comprehensive coverage

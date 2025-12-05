@@ -83,8 +83,36 @@ WHEN NOT to use dependencies:
 - Parallel exploration of different angles → dependencies: []
 - Broad coverage queries → dependencies: []
 
-CRITICAL: If goal description contains "compare", "analyze relationship", "synthesize",
-"based on findings", or "after identifying" → likely needs dependencies!
+CRITICAL RULES FOR COMPARATIVE/ANALYTICAL QUERIES:
+
+If the ORIGINAL OBJECTIVE or GOAL contains any of these patterns:
+- "compare", "vs", "versus", "contrast", "difference between"
+- "analyze", "assess", "evaluate", "examine"
+- "relationship between", "connection between", "how does X relate to Y"
+- "patterns", "trends", "implications"
+
+Then you MUST create a SYNTHESIS goal as the FINAL sub-goal that:
+1. Depends on ALL data-gathering sub-goals (e.g., dependencies: [0, 1, 2, ...])
+2. Explicitly states the analytical task (compare, synthesize, assess)
+3. Will be executed AFTER all data is collected
+
+EXAMPLE - CORRECT decomposition for "Compare Palantir vs Anduril government contracts":
+```
+sub_goals: [
+  { description: "Find Palantir federal contracts and spending data", dependencies: [] },
+  { description: "Find Anduril federal contracts and spending data", dependencies: [] },
+  { description: "Compare Palantir vs Anduril: contract volumes, agency relationships, growth trends", dependencies: [0, 1] }
+]
+```
+
+EXAMPLE - WRONG decomposition (missing synthesis):
+```
+sub_goals: [
+  { description: "Find Palantir federal contracts", dependencies: [] },
+  { description: "Find Anduril federal contracts", dependencies: [] }
+]
+// WRONG! No comparison goal - user asked to COMPARE, not just collect data!
+```
 
 Return JSON:
 {% raw %}

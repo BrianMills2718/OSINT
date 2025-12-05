@@ -11,8 +11,36 @@ TOTAL EVIDENCE GATHERED: {{ total_evidence }} pieces
 
 Has this goal been SUFFICIENTLY achieved to stop pursuing more sub-goals?
 
+CRITICAL - COMPARATIVE/ANALYTICAL GOALS:
+If the GOAL or ORIGINAL OBJECTIVE contains:
+- "compare", "vs", "versus", "contrast", "difference between"
+- "analyze", "assess", "evaluate", "examine", "relationship between"
+- "synthesize", "patterns", "trends", "implications"
+
+Then the goal is NOT achieved unless:
+1. Data was collected for ALL entities/topics being compared
+2. A synthesis/comparison sub-goal actually COMPLETED (not just data collection)
+3. The results summary shows an analytical conclusion, not just raw data
+
+Example - NOT ACHIEVED:
+  Goal: "Compare Palantir vs Anduril contracts"
+  Results:
+    - "Find Palantir contracts": completed, 25 evidence
+    - "Find Anduril contracts": completed, 18 evidence
+  WRONG: achieved=true (No comparison was performed!)
+  RIGHT: achieved=false (Need to run the comparison sub-goal)
+
+Example - ACHIEVED:
+  Goal: "Compare Palantir vs Anduril contracts"
+  Results:
+    - "Find Palantir contracts": completed, 25 evidence
+    - "Find Anduril contracts": completed, 18 evidence
+    - "Compare contract portfolios": completed (synthesis shows Palantir has 3x more...)
+  RIGHT: achieved=true (Comparison was performed)
+
 Consider:
 - Do we have enough evidence to answer the goal?
+- For comparative goals: Was the comparison/analysis actually performed?
 - Are there obvious critical gaps?
 - Is continuing likely to add significant new value?
 
@@ -21,6 +49,7 @@ Return JSON:
 {
     "achieved": true or false,
     "confidence": 0.0 to 1.0,
-    "reasoning": "Brief explanation"
+    "reasoning": "Brief explanation",
+    "missing_synthesis": "Description of missing analysis/comparison if applicable"
 }
 {% endraw %}
