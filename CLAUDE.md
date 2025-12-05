@@ -1118,6 +1118,152 @@ pip list | grep playwright
 
 ---
 
+## EVIDENCE ARCHITECTURE REFACTOR (CURRENT PRIORITY)
+
+**Document**: `docs/EVIDENCE_ARCHITECTURE_PLAN.md`
+**Status**: IN PROGRESS - Phase 1 Starting
+**Priority**: P0 - Foundation for data quality
+**Effort**: 22-32 hours (3-4 days)
+**Branch**: `feature/enable-dag-analysis`
+
+### Problem Summary
+
+**Current Issues** (Verified 2025-12-05):
+1. **Silent Truncation Chain** - Data truncated at 7 points without logging
+2. **Dates Not Preserved** - 100% of date fields lost in saved output
+3. **Metadata Discarded** - Rich API data lost in _result_to_dict()
+4. **Evidence Count Capped** - Only 50 of 255+ evidence saved (80% loss)
+5. **Overloaded snippet Field** - Raw + processed in same field
+
+**Verified Truncation Points**:
+| Location | Truncation | Line |
+|----------|-----------|------|
+| Pydantic validator | 500 chars | db_base.py:140-147 |
+| Entity extraction | 300 chars | agent.py:1373 |
+| Global index | 200 chars | agent.py:2101 |
+| Assessment prompt | 100 chars | agent.py:1107 |
+| Saved result | 500 chars, 50 items | agent.py:2345-2348 |
+
+### Implementation Plan (6 Phases)
+
+#### Phase 1: Data Model Refactor (4-6 hours) - IN PROGRESS
+
+**Tasks**:
+- [ ] 1.1: Create `core/raw_result.py` with RawResult dataclass
+- [ ] 1.2: Create `core/processed_evidence.py` with ProcessedEvidence dataclass
+- [ ] 1.3: Update Evidence class to compose RawResult + ProcessedEvidence
+- [ ] 1.4: Add `Evidence.from_raw()` factory method
+- [ ] 1.5: Maintain backward compatibility (.content, .snippet properties)
+
+**Tests**:
+- [ ] Test RawResult creation from sample API response
+- [ ] Test ProcessedEvidence with extracted facts/entities
+- [ ] Test Evidence backward compatibility (old code still works)
+- [ ] Test serialization/deserialization roundtrip
+
+**Files**:
+- `core/raw_result.py` (NEW)
+- `core/processed_evidence.py` (NEW)
+- `core/database_integration_base.py` (MODIFY)
+
+#### Phase 2: Integration Updates (6-8 hours)
+
+**Tasks**:
+- [ ] 2.1: Update SearchResultBuilder to preserve full content
+- [ ] 2.2: Update SAM.gov integration (high-traffic)
+- [ ] 2.3: Update USAspending integration (already stores raw)
+- [ ] 2.4: Update Brave Search integration
+- [ ] 2.5: Update remaining 20 integrations
+
+**Tests**:
+- [ ] Test SAM.gov returns complete api_response
+- [ ] Test USAspending preserves full award data
+- [ ] Test each integration returns RawResult with raw_content
+
+**Files**:
+- `core/result_builder.py` (MODIFY)
+- All 23 integration files (MODIFY)
+
+#### Phase 3: Agent Refactor (4-6 hours)
+
+**Tasks**:
+- [ ] 3.1: Update `_execute_api_call()` to create Evidence from RawResult
+- [ ] 3.2: Implement `_extract_evidence()` LLM call for goal-focused extraction
+- [ ] 3.3: Update `_add_to_run_index()` to store complete Evidence
+- [ ] 3.4: Update `_result_to_dict()` to preserve all fields
+- [ ] 3.5: Add date extraction from content (LLM-based)
+
+**Tests**:
+- [ ] Test Evidence creation preserves raw content
+- [ ] Test extraction populates facts/entities/dates
+- [ ] Test saved result.json has all fields
+
+**Files**:
+- `research/recursive_agent.py` (MODIFY)
+
+#### Phase 4: Prompt Updates (2-3 hours)
+
+**Tasks**:
+- [ ] 4.1: Update filtering to use `.llm_context` for decisions
+- [ ] 4.2: Create `evidence_extraction.j2` prompt
+- [ ] 4.3: Update synthesis to use structured ProcessedEvidence
+
+**Tests**:
+- [ ] Test filtering uses summary not full content
+- [ ] Test extraction prompt produces valid JSON
+- [ ] Test synthesis uses extracted facts
+
+**Files**:
+- `prompts/recursive_agent/result_filtering.j2` (MODIFY)
+- `prompts/recursive_agent/evidence_extraction.j2` (NEW)
+- `prompts/deep_research/v2_report_synthesis.j2` (MODIFY)
+
+#### Phase 5: Storage Refactor (2-3 hours)
+
+**Tasks**:
+- [ ] 5.1: Save raw responses to `raw_responses/` directory
+- [ ] 5.2: Save processed evidence with full fields
+- [ ] 5.3: Create both full and summary result files
+- [ ] 5.4: Log data preservation metrics
+
+**Tests**:
+- [ ] Test raw_responses/ contains complete API data
+- [ ] Test result.json has dates/metadata
+- [ ] Test no silent truncation (warnings logged)
+
+**Files**:
+- `research/recursive_agent.py` (_save_result method)
+
+#### Phase 6: Testing and Validation (4-6 hours)
+
+**Tasks**:
+- [ ] 6.1: Unit tests for new data models
+- [ ] 6.2: Integration tests for each source
+- [ ] 6.3: E2E test verifying no data loss
+- [ ] 6.4: Regression test comparing output quality
+
+**Tests**:
+- [ ] 100% of collected evidence saved (not capped at 50)
+- [ ] 100% of dates preserved
+- [ ] 100% of metadata preserved
+- [ ] Report quality unchanged or improved
+
+**Files**:
+- `tests/test_evidence_model.py` (NEW)
+- `tests/test_evidence_storage.py` (NEW)
+
+### Success Criteria
+
+- [ ] 100% of collected evidence saved (not capped at 50)
+- [ ] 100% of dates preserved (structured + extracted)
+- [ ] 100% of metadata preserved (raw API responses)
+- [ ] 0 silent truncations (all truncation logged with warning)
+- [ ] All existing tests pass
+- [ ] LLM prompt sizes unchanged (use summaries)
+- [ ] Report quality unchanged or improved
+
+---
+
 ## ERROR HANDLING ARCHITECTURE REFACTOR
 
 **Document**: `docs/ERROR_HANDLING_ARCHITECTURE.md`
