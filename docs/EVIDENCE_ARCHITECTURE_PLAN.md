@@ -80,18 +80,18 @@ _filter_results() → filters for relevance
 _summarize_evidence() → stores original in metadata["original_content"]
         ↓                replaces snippet with summary
         │
-        ├─→ Entity extraction: e.content[:300] (TRUNCATED AGAIN)
-        ├─→ Global index: e.content[:200] (TRUNCATED AGAIN)
-        ├─→ Analysis prompts: uses e.content (already truncated)
-        └─→ Report synthesis: item.content[:300] (TRUNCATED AGAIN)
+        ├─→ Entity extraction: e.content[:300] (line 1373, TRUNCATED)
+        ├─→ Global index: e.content[:200] (line 2101, TRUNCATED)
+        ├─→ Analysis prompts: e.content[:100] (line 1107, TRUNCATED)
+        └─→ Report synthesis: content[:max_chars] (line 2681, TRUNCATED)
         ↓
-_save_result() → _result_to_dict()
+_save_result() → _result_to_dict() (lines 2345-2348)
         ↓
 Saved JSON: {source, title, content[:500], url}
         ↑
         │ FIELDS LOST: date, metadata, relevance_score
-        │ CONTENT TRUNCATED: to max_content_chars_in_synthesis (500)
-        │ EVIDENCE CAPPED: to max_evidence_in_saved_result (50)
+        │ CONTENT TRUNCATED: max_content_chars_in_synthesis (line 2345)
+        │ EVIDENCE CAPPED: max_evidence_in_saved_result (line 2348)
         ↓
 Final Output: 50 evidence items, no dates, no metadata
 ```
@@ -662,7 +662,21 @@ class Evidence:
 
 ---
 
-**Document Status**: Ready for Review
+**Document Status**: Ready for Review (Verified 2025-12-05)
+
+**Verification Complete**:
+The double-check process confirmed all key architectural claims:
+
+| Claim | Location | Status |
+|-------|----------|--------|
+| Pydantic validator truncates to 500 chars | database_integration_base.py:140-147 | ✅ VERIFIED |
+| IndexEntry snippet is 200 chars | recursive_agent.py:82 | ✅ VERIFIED |
+| max_content_before_summarize = 300 | recursive_agent.py:147 | ✅ VERIFIED |
+| max_evidence_in_saved_result = 50 | recursive_agent.py:152, used at line 2348 | ✅ VERIFIED |
+| max_content_chars_in_synthesis = 500 | recursive_agent.py:127, used at line 2345 | ✅ VERIFIED |
+| max_content_chars_in_report = 200 | recursive_agent.py:154, used at line 2679 | ✅ VERIFIED |
+
+All constraints are user-configurable via Constraints dataclass. The architecture issues are real - storage/LLM truncation points are validated.
 
 **Next Steps**:
 1. Review and approve this plan
