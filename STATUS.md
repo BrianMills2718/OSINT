@@ -74,47 +74,80 @@ Generic results sharing only common keywords should be filtered out.
 
 ---
 
-## Recent Updates (2025-12-01)
+## Recent Updates (2025-12-05)
 
-**Status**: ✅ **ERROR HANDLING PHASE 2 COMPLETE** - HTTP Code Extraction in All Integrations
+**Status**: ✅ **ERROR HANDLING ARCHITECTURE COMPLETE** - All 5 Phases Done
 
-### Error Handling Architecture Refactor - Phase 2 COMPLETE ✅
-**Date**: 2025-12-01
-**Commits**: 103ccbe (USAJobs syntax fix), 66213f9 (bulk syntax fixes)
-**Total Changes**: 40 insertions, 40 deletions across 14 files
+### Error Handling Architecture Refactor - COMPLETE ✅
+**Date**: 2025-12-05
+**Commits**: 536d41a, b5b2164, 103ccbe, 66213f9, 14a0044, 4058f5c
+**Total Changes**: +800 lines implementation, +101 tests (all passing)
 
 **Problem Solved**:
 - HTTP errors unclassified → agent couldn't distinguish unfixable (429, 403) from fixable (400, 422)
 - Wasteful LLM reformulation attempts on rate limits and auth errors
 - Missing HTTP codes prevented structured error logging
 
-**Phase 1: Foundation** (commit 536d41a):
+**Phase 1: Foundation** (commit 536d41a) ✅:
 - [x] Added `unfixable_http_codes` config: [401, 403, 404, 429, 500-504]
 - [x] Fixed DVIDS "null" date bug
-- [x] Created `core/error_classifier.py` skeleton
+- [x] Created `core/error_classifier.py` (287 lines)
 - [x] Added `http_code: Optional[int]` to QueryResult
 
-**Phase 2.1: High-Traffic** (commit b5b2164):
-- [x] SAM.gov, DVIDS, USAspending, ClearanceJobs, FEC
-- [x] All HTTP errors: `http_code=e.response.status_code`
-- [x] Non-HTTP errors: `http_code=None`
-
-**Phase 2.2: Remaining 18** (commits 103ccbe, 66213f9):
-- [x] Updated all remaining integrations
+**Phase 2: Integration Updates** (commits b5b2164, 103ccbe, 66213f9) ✅:
+- [x] Updated all 23 integrations with HTTP code extraction
 - [x] Fixed 15 syntax errors from batch script bug
-- [x] All 23 files validated with `py_compile`
+- [x] All files validated with `py_compile`
 
-**E2E Validation**:
-- [x] System starts without import errors
-- [x] SAM.gov HTTP 429 caught correctly
-- [x] Rate limit blocklist working
-- [x] `QueryResult.http_code` populated
-- [ ] HTTP codes in execution log (Phase 3)
+**Phase 3: Agent Integration** (commit 4058f5c) ✅:
+- [x] ErrorClassifier integrated into recursive_agent.py
+- [x] Replaced 40+ lines pattern matching with ErrorClassifier.classify()
+- [x] Added http_code and error_category to execution log
+- [x] Rate limit detection uses ErrorCategory.RATE_LIMIT
+
+**Phase 4: Test Suite** ✅:
+- [x] Unit tests: 47 tests (tests/unit/test_error_classifier.py)
+- [x] Integration tests: 24 tests (tests/integration/test_error_handling_integration.py)
+- [x] E2E tests: 30 tests (tests/e2e/test_error_handling_e2e.py)
+- [x] Total: 101 tests, all passing
+
+**Phase 5: Documentation** ✅:
+- [x] PATTERNS.md updated with ErrorClassifier pattern
+- [x] STATUS.md updated with completion status
+- [ ] Deprecated code cleanup (optional - code still works)
+
+**Error Categories Implemented**:
+| Category | HTTP Codes | is_retryable | is_reformulable | Action |
+|----------|------------|--------------|-----------------|--------|
+| AUTHENTICATION | 401, 403 | False | False | Skip source |
+| RATE_LIMIT | 429 | True | False | Blocklist |
+| VALIDATION | 400, 422 | False | True | Reformulate |
+| NOT_FOUND | 404 | False | False | Skip |
+| SERVER_ERROR | 500-504 | True | False | Retry later |
+| TIMEOUT | (pattern) | True | False | Retry later |
+
+**Files Created**:
+- `core/error_classifier.py` (287 lines)
+- `tests/unit/test_error_classifier.py` (480 lines)
+- `tests/integration/test_error_handling_integration.py` (540 lines)
+- `tests/e2e/test_error_handling_e2e.py` (450 lines)
+
+**Validation Results**:
+- SAM.gov 429 → correctly classified as RATE_LIMIT, blocklisted
+- DVIDS 400 → correctly classified as VALIDATION, reformulated
+- NewsAPI 403 → correctly classified as AUTHENTICATION, skipped
+- Execution logs now include http_code and error_category fields
+
+---
+
+## Previous Updates (2025-12-01)
+
+### Error Handling Architecture Refactor - Phase 2 COMPLETE
+**Date**: 2025-12-01
+**Commits**: 103ccbe (USAJobs syntax fix), 66213f9 (bulk syntax fixes)
 
 **Files Modified** (23 integrations):
 government (12), social (5), legal (1), nonprofit (1), web (1), news (1), investigative (1), archive (1)
-
-**Next Steps**: Phase 3 - Agent integration (3 hours)
 
 ---
 

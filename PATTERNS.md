@@ -377,6 +377,159 @@ log_request(
 
 ---
 
+## Error Classification Pattern
+
+**Use ErrorClassifier for structured error handling** - replaces brittle text pattern matching.
+
+### Basic Usage
+
+```python
+from core.error_classifier import ErrorClassifier, ErrorCategory, APIError
+
+# Initialize with config
+classifier = ErrorClassifier(config)
+
+# Classify error from QueryResult
+if not result.success and result.error:
+    error = classifier.classify(
+        error_str=result.error,
+        http_code=result.http_code,  # From QueryResult.http_code
+        source_id="sam_gov"
+    )
+
+    # Use structured flags for decisions
+    if error.category == ErrorCategory.RATE_LIMIT:
+        # Add to session blocklist
+        rate_limited_sources.add(error.source_id)
+
+    elif error.is_reformulable:
+        # HTTP 400, 422 - query can be fixed
+        await reformulate_query(error.message)
+
+    elif error.category == ErrorCategory.AUTHENTICATION:
+        # HTTP 401, 403 - skip entirely, can't fix
+        logger.warning(f"Auth error for {error.source_id}, skipping")
+```
+
+### Error Categories
+
+| Category | HTTP Codes | is_retryable | is_reformulable | Action |
+|----------|------------|--------------|-----------------|--------|
+| AUTHENTICATION | 401, 403 | False | False | Skip source entirely |
+| RATE_LIMIT | 429 | True | False | Add to blocklist |
+| VALIDATION | 400, 422 | False | True | Reformulate query |
+| NOT_FOUND | 404 | False | False | Skip source |
+| SERVER_ERROR | 500, 502, 503, 504 | True | False | Mark for later retry |
+| TIMEOUT | (pattern) | True | False | Mark for later retry |
+| NETWORK | (pattern) | True | False | Mark for later retry |
+| UNKNOWN | other | False | False | Skip (conservative) |
+
+### HTTP Code Extraction in Integrations
+
+**All integrations must extract HTTP codes** from exceptions:
+
+```python
+async def execute_search(self, query_params, api_key, limit) -> QueryResult:
+    try:
+        response = await client.get(url, params=params)
+        response.raise_for_status()
+        # ... process results ...
+        return QueryResult(success=True, results=results, http_code=None, ...)
+
+    except httpx.HTTPStatusError as e:
+        # HTTP error - extract status code
+        http_code = e.response.status_code if e.response else None
+        return QueryResult(
+            success=False,
+            results=[],
+            error=f"HTTP {http_code}: {str(e)}",
+            http_code=http_code  # ← Critical: pass HTTP code
+        )
+
+    except Exception as e:
+        # Non-HTTP error (timeout, network, etc.)
+        return QueryResult(
+            success=False,
+            results=[],
+            error=str(e),
+            http_code=None  # ← Non-HTTP errors have no code
+        )
+```
+
+### Structured Error Logging
+
+**Log errors with http_code and error_category** for analysis:
+
+```python
+# In agent code
+if error_info:
+    self.logger.log_api_response(
+        goal=goal,
+        depth=depth,
+        parent_goal=parent_goal,
+        source=source_id,
+        success=result.success,
+        result_count=len(result.results),
+        response_time_ms=response_time_ms,
+        error=result.error,
+        http_code=result.http_code,  # ← Include HTTP code
+        error_category=error_info.category.value  # ← Include category
+    )
+```
+
+**Execution log entry example**:
+```json
+{
+  "event_type": "api_response",
+  "source": "sam_gov",
+  "success": false,
+  "error": "HTTP 429: Rate limit exceeded",
+  "http_code": 429,
+  "error_category": "rate_limit"
+}
+```
+
+### Configuration
+
+**Error handling is config-driven** via `config.yaml`:
+
+```yaml
+research:
+  error_handling:
+    unfixable_http_codes: [401, 403, 404, 429, 500, 502, 503, 504]
+    fixable_http_codes: [400, 422]
+    timeout_patterns:
+      - "timed out"
+      - "timeout"
+      - "TimeoutError"
+    rate_limit_patterns:
+      - "rate limit"
+      - "429"
+      - "quota exceeded"
+      - "too many requests"
+```
+
+### APIError Dataclass
+
+```python
+@dataclass
+class APIError:
+    http_code: Optional[int]    # HTTP status code (None for non-HTTP)
+    category: ErrorCategory      # Semantic category
+    message: str                 # Original error message
+    is_retryable: bool          # Can retry same query later?
+    is_reformulable: bool       # Can fix by changing query?
+    source_id: str              # Which integration failed
+```
+
+**String representation**:
+```
+HTTP 429 rate_limit error from sam_gov: Rate limit exceeded
+Non-HTTP timeout error from brave_search: Connection timed out
+```
+
+---
+
 ## Configuration Pattern
 
 ```python
