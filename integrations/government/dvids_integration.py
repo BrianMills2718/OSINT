@@ -80,7 +80,7 @@ class DVIDSIntegration(DatabaseIntegration):
 
         try:
             response = await acompletion(
-                model="gpt-4o-mini",
+                model=config.default_model,
                 messages=[{"role": "user", "content": prompt}],
                 response_format={"type": "json_object"}
             )
@@ -138,23 +138,23 @@ class DVIDSIntegration(DatabaseIntegration):
                     "description": "List of military branches, empty if not specified"
                 },
                 "country": {
-                    "type": ["string", "null"],
-                    "description": "Country name or null"
+                    "type": "string",
+                    "description": "Country name (optional)"
                 },
                 "from_date": {
-                    "type": ["string", "null"],
-                    "description": "Start date in YYYY-MM-DD format or null"
+                    "type": "string",
+                    "description": "Start date in YYYY-MM-DD format (optional)"
                 },
                 "to_date": {
-                    "type": ["string", "null"],
-                    "description": "End date in YYYY-MM-DD format or null"
+                    "type": "string",
+                    "description": "End date in YYYY-MM-DD format (optional)"
                 },
                 "reasoning": {
                     "type": "string",
                     "description": "Brief explanation of the query strategy"
                 }
             },
-            "required": ["keywords", "media_types", "branches", "country", "from_date", "to_date", "reasoning"],
+            "required": ["media_types", "branches", "country", "from_date", "to_date", "reasoning"],
             "additionalProperties": False
         }
 
@@ -207,7 +207,8 @@ class DVIDSIntegration(DatabaseIntegration):
                 total=0,
                 results=[],
                 query_params=query_params,
-                error="API key required for DVIDS"
+                error="API key required for DVIDS",
+                http_code=None  # Configuration error, not HTTP
             )
 
         try:
@@ -234,11 +235,15 @@ class DVIDSIntegration(DatabaseIntegration):
                 base_params["country"] = query_params["country"]
 
             # Add date filters (DVIDS uses ISO 8601 format with Z)
-            if query_params.get("from_date"):
-                base_params["from_publishdate"] = f"{query_params['from_date']}T00:00:00Z"
+            # Validate dates are not string "null" (LLM sometimes returns this)
+            from_date = query_params.get("from_date")
+            to_date = query_params.get("to_date")
 
-            if query_params.get("to_date"):
-                base_params["to_publishdate"] = f"{query_params['to_date']}T23:59:59Z"
+            if from_date and from_date != "null" and isinstance(from_date, str):
+                base_params["from_publishdate"] = f"{from_date}T00:00:00Z"
+
+            if to_date and to_date != "null" and isinstance(to_date, str):
+                base_params["to_publishdate"] = f"{to_date}T23:59:59Z"
 
             # Get keywords and check for OR operators
             keywords_str = query_params.get("keywords", "")
@@ -322,20 +327,24 @@ class DVIDSIntegration(DatabaseIntegration):
             )
 
             # Transform results to standardized format using defensive builder
+            # Three-tier model: preserve full content with build_with_raw()
             documents = []
             for item in results[:limit]:
                 doc = (SearchResultBuilder()
                     .title(item.get("title"), default="Untitled")
                     .url(item.get("url"))
                     .snippet(item.get("description") or item.get("caption", ""))
+                    .raw_content(item.get("description") or item.get("caption", ""))  # Full content
                     .date(item.get("date"))
+                    .api_response(item)  # Preserve complete API response
+                    .response_time(response_time_ms)
                     .metadata({
                         "id": item.get("id"),
                         "type": item.get("type"),
                         "branch": item.get("branch"),
                         "date": item.get("date")
                     })
-                    .build())
+                    .build_with_raw())
                 documents.append(doc)
 
             return QueryResult(
@@ -373,6 +382,7 @@ class DVIDSIntegration(DatabaseIntegration):
                 results=[],
                 query_params=query_params,
                 error=f"HTTP {status_code}: {str(e)}",
+                http_code=status_code if status_code > 0 else None,
                 response_time_ms=response_time_ms
             )
 
@@ -398,5 +408,6 @@ class DVIDSIntegration(DatabaseIntegration):
                 results=[],
                 query_params=query_params,
                 error=str(e),
+                http_code=None,  # Non-HTTP error
                 response_time_ms=response_time_ms
             )

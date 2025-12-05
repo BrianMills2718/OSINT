@@ -130,7 +130,7 @@ class DiscordIntegration(DatabaseIntegration):
             }
 
             response = await acompletion(
-                model="gpt-4o-mini",
+                model=config.default_model,
                 messages=[{"role": "user", "content": prompt}],
                 response_format={
                     "type": "json_schema",
@@ -188,7 +188,8 @@ class DiscordIntegration(DatabaseIntegration):
                     total=0,
                     results=[],
                     query_params=query_params,
-                    error="No keywords provided"
+                    error="No keywords provided",
+                http_code=None  # Non-HTTP error
                 )
 
             # Search messages
@@ -225,6 +226,7 @@ class DiscordIntegration(DatabaseIntegration):
                 results=[],
                 query_params=query_params,
                 error=str(e),
+                http_code=None,  # Non-HTTP error
                 response_time_ms=response_time_ms
             )
 
@@ -360,11 +362,14 @@ class DiscordIntegration(DatabaseIntegration):
                         channel_id = SearchResultBuilder.safe_text(channel.get('id'))
                         msg_id = SearchResultBuilder.safe_text(msg.get('id'))
 
+                        # Three-tier model: preserve full content with build_with_raw()
                         matches.append(SearchResultBuilder()
                             .title(f"Discord message from {author_name}", default="Discord Message")
                             .url(f"https://discord.com/channels/{guild_id}/{channel_id}/{msg_id}")
                             .snippet(content_text)
+                            .raw_content(content_text)  # Full content, never truncated
                             .date(msg.get("timestamp"))
+                            .api_response(msg)  # Preserve complete message data
                             .metadata({
                                 "content": content_text,
                                 "author": author_name,
@@ -375,7 +380,7 @@ class DiscordIntegration(DatabaseIntegration):
                                 "matched_keywords": matched_keywords,
                                 "timestamp": msg.get("timestamp", "")
                             })
-                            .build())
+                            .build_with_raw())
 
             except json.JSONDecodeError as e:
                 # Skip malformed files (0.14% of exports have DiscordChatExporter bugs)

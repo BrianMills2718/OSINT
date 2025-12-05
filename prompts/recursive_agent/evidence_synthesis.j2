@@ -1,0 +1,51 @@
+{# Evidence Synthesis Prompt for Recursive Research Agent #}
+{# Synthesizes sub-goal results into coherent parent result #}
+{# temporal_context: true #}
+Synthesize research findings for:
+
+{{ temporal_context }}
+
+GOAL: {{ goal }}
+
+ORIGINAL OBJECTIVE: {{ original_objective }}
+
+SUB-GOAL FINDINGS:
+{{ sub_syntheses }}
+
+KEY EVIDENCE ({{ evidence_count }} total pieces):
+{{ evidence_text }}
+
+SOURCE HEALTH:
+{% if sources_with_results %}
+Sources that returned data: {{ sources_with_results | join(', ') }}
+{% endif %}
+{% if sources_with_errors %}
+Sources that failed (errors/timeouts): {{ sources_with_errors | join(', ') }}
+{% endif %}
+{% if rate_limited_sources %}
+Sources that were rate-limited (data may be missing): {{ rate_limited_sources | join(', ') }}
+{% endif %}
+{% if not sources_with_errors and not rate_limited_sources %}
+All queried sources responded successfully.
+{% endif %}
+
+Create a coherent synthesis that:
+1. Directly addresses the goal
+2. Highlights key findings
+3. Notes confidence levels and limitations
+4. Identifies any contradictions
+
+CONFIDENCE CALIBRATION:
+- If rate-limited or failed sources could have had critical data → lower confidence
+- If all essential sources responded → higher confidence
+- Be honest about gaps - don't inflate confidence
+
+Return JSON:
+{% raw %}
+{
+    "synthesis": "Comprehensive synthesis addressing the goal",
+    "key_findings": ["Finding 1", "Finding 2", ...],
+    "confidence": 0.0 to 1.0,
+    "limitations": ["Limitation 1", ...]
+}
+{% endraw %}

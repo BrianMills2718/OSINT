@@ -136,7 +136,7 @@ class USASpendingIntegration(DatabaseIntegration):
 
         try:
             response = await acompletion(
-                model="gpt-4o-mini",
+                model=config.default_model,
                 messages=[{"role": "user", "content": prompt}],
                 response_format={"type": "json_object"}
             )
@@ -449,7 +449,8 @@ class USASpendingIntegration(DatabaseIntegration):
                             total=0,
                             results=[],
                             query_params=query_params,
-                            error=f"HTTP {response.status}: {error_text}"
+                            error=f"HTTP {response.status}: {error_text}",
+                            http_code=response.status
                         )
 
                     data = await response.json()
@@ -465,14 +466,17 @@ class USASpendingIntegration(DatabaseIntegration):
                         )
 
                         # Build normalized result using builder pattern
+                        # Three-tier model: preserve full content with build_with_raw()
                         result = (SearchResultBuilder()
                             .title(title)
                             .url(self._build_award_url(award.get("Award ID", "")))
                             .snippet(self._build_snippet(award))
+                            .raw_content(self._build_snippet(award))  # Full content, never truncated
                             .date(SearchResultBuilder.safe_text(award.get("Start Date")))
+                            .api_response(award)  # Preserve complete API response
                             .metadata(award)  # Full award data
                             .add_metadata("source", "USAspending")
-                            .build())
+                            .build_with_raw())
 
                         results.append(result)
 
@@ -507,7 +511,8 @@ class USASpendingIntegration(DatabaseIntegration):
                 total=0,
                 results=[],
                 query_params=query_params,
-                error="Request timeout after 30 seconds"
+                error="Request timeout after 30 seconds",
+                http_code=None  # Timeout, not HTTP error
             )
         except Exception as e:
             # Catch-all for unexpected errors at integration boundary
@@ -519,7 +524,8 @@ class USASpendingIntegration(DatabaseIntegration):
                 total=0,
                 results=[],
                 query_params=query_params,
-                error=f"Search failed: {str(e)}"
+                error=f"Search failed: {str(e)}",
+                http_code=None  # Non-HTTP error
             )
 
     def _build_award_url(self, award_id: str) -> str:

@@ -225,12 +225,15 @@ class CRESTSeleniumIntegration(DatabaseIntegration):
                         pass
 
                     # Create document using defensive builder
+                    # Three-tier model: preserve full content with build_with_raw()
                     doc = (SearchResultBuilder()
                         .title(title or doc_link.get('title'), default="CIA Document")
                         .url(doc_link.get('url'))
                         .snippet(snippet)
+                        .raw_content(snippet)  # Full content, never truncated
+                        .api_response({"metadata": metadata, "url": doc_link.get('url'), "title": title})
                         .metadata(metadata)
-                        .build())
+                        .build_with_raw())
                     documents.append(doc)
 
                 except Exception as e:

@@ -218,17 +218,27 @@ class FBIVaultIntegration(DatabaseIntegration):
                 # Determine document type from class
                 doc_type = "Folder" if "contenttype-folder" in item.get('class', []) else "File"
 
+                # Three-tier model: preserve full content with build_with_raw()
                 results.append(SearchResultBuilder()
                     .title(title, default="FBI Document")
                     .url(url)
                     .snippet(snippet)
+                    .raw_content(snippet)  # Full content, never truncated
                     .date(date)
+                    .api_response({
+                        "title": title,
+                        "url": url,
+                        "snippet": snippet,
+                        "date": date,
+                        "doc_type": doc_type,
+                        "query": query
+                    })  # Preserve scraped data as API response
                     .metadata({
                         "document_type": doc_type,
                         "query": query,
                         "source": "FBI Vault"
                     })
-                    .build())
+                    .build_with_raw())
 
             except Exception as e:
                 # Skip malformed results in parsing loop - acceptable to continue
@@ -265,7 +275,8 @@ class FBIVaultIntegration(DatabaseIntegration):
                     total=0,
                     results=[],
                     query_params=query_params,
-                    error="No query provided for search"
+                    error="No query provided for search",
+                http_code=None  # Non-HTTP error
                 )
 
             # FBI Vault search URL
@@ -325,5 +336,6 @@ class FBIVaultIntegration(DatabaseIntegration):
                 results=[],
                 query_params=query_params,
                 error=f"Cloudflare bypass failed: {str(e)}",
+                http_code=None,  # Non-HTTP error
                 response_time_ms=response_time_ms
             )

@@ -259,6 +259,10 @@ class TwitterIntegration(DatabaseIntegration):
         from core.prompt_loader import render_prompt
         import json
 
+        # Handle case where research_question is a list (defensive)
+        if isinstance(research_question, list):
+            research_question = " ".join(str(q) for q in research_question)
+
         prompt = render_prompt(
             "integrations/twitter_relevance.j2",
             research_question=research_question
@@ -266,7 +270,7 @@ class TwitterIntegration(DatabaseIntegration):
 
         try:
             response = await acompletion(
-                model="gpt-4o-mini",
+                model=config.default_model,
                 messages=[{"role": "user", "content": prompt}],
                 response_format={"type": "json_object"}
             )
@@ -300,6 +304,11 @@ class TwitterIntegration(DatabaseIntegration):
                 "reasoning": "Get recent tweets from @bellingcat"
             }
         """
+
+        # Handle case where research_question is a list (defensive)
+        if isinstance(research_question, list):
+            research_question = " ".join(str(q) for q in research_question)
+            logger.warning(f"Twitter generate_query received list, converted to: {research_question}")
 
         # Handle simple keywords from Boolean monitors
         # If research_question is just 1-3 words, treat as keyword search
@@ -430,7 +439,9 @@ class TwitterIntegration(DatabaseIntegration):
             .title(text[:100] + ("..." if len(text) > 100 else "") if text else "", default="Tweet")
             .url(url)
             .snippet(text)
+            .raw_content(text)  # Full tweet content, never truncated
             .date(tweet.get("created_at"))
+            .api_response(tweet)  # Preserve complete API response
             .metadata({
                 "author": screen_name,
                 "author_name": user_info.get("name", ""),
@@ -445,7 +456,7 @@ class TwitterIntegration(DatabaseIntegration):
                 "engagement_total": int(favorites + retweets + replies),
                 "description": text
             })
-            .build())
+            .build_with_raw())
 
     def _transform_user_to_standard(self, user: Dict) -> Dict:
         """
@@ -463,11 +474,14 @@ class TwitterIntegration(DatabaseIntegration):
         name = SearchResultBuilder.safe_text(user.get("name"), default="Unknown")
         description = SearchResultBuilder.safe_text(user.get("description") or user.get("desc"))
 
+        # Three-tier model: preserve full content with build_with_raw()
         return (SearchResultBuilder()
             .title(f"@{screen_name} - {name}", default="Twitter User")
             .url(f"https://twitter.com/{screen_name}")
             .snippet(description)
+            .raw_content(description)  # Full content
             .date(user.get("created_at"))
+            .api_response(user)  # Preserve complete API response
             .metadata({
                 "author": screen_name,
                 "author_name": name,
@@ -479,7 +493,7 @@ class TwitterIntegration(DatabaseIntegration):
                 "user_id": user.get("user_id") or user.get("id") or user.get("rest_id", ""),
                 "description": description
             })
-            .build())
+            .build_with_raw())
 
     async def execute_search(self,
                            query_params: Dict,
@@ -509,7 +523,8 @@ class TwitterIntegration(DatabaseIntegration):
                 total=0,
                 results=[],
                 query_params=query_params,
-                error="API key required for Twitter (RapidAPI)"
+                error="API key required for Twitter (RapidAPI)",
+                http_code=None,  # Non-HTTP error
             )
 
         try:
@@ -554,7 +569,8 @@ class TwitterIntegration(DatabaseIntegration):
                     results=[],
                     error=result["error"],
                     query_params=query_params,
-                    response_time_ms=response_time_ms
+                    response_time_ms=response_time_ms,
+                    http_code=None  # Non-HTTP error
                 )
 
             # Transform results based on pattern/endpoint type
@@ -600,15 +616,19 @@ class TwitterIntegration(DatabaseIntegration):
                 for trend in trends[:limit]:
                     trend_name = SearchResultBuilder.safe_text(trend.get("name"))
                     url = f"https://twitter.com/search?q={trend_name}" if trend_name else ""
+                    snippet_text = trend.get("description") or trend.get("context")
+                    # Three-tier model: preserve full content with build_with_raw()
                     standardized_results.append(SearchResultBuilder()
                         .title(trend_name, default="Trending Topic")
                         .url(url)
-                        .snippet(trend.get("description") or trend.get("context"))
+                        .snippet(snippet_text)
+                        .raw_content(snippet_text)  # Full content
+                        .api_response(trend)  # Preserve complete API response
                         .metadata({
                             "trend_name": trend_name,
                             "trend_context": trend.get("context", "")
                         })
-                        .build())
+                        .build_with_raw())
 
             # Log successful request
             log_request(
@@ -656,6 +676,7 @@ class TwitterIntegration(DatabaseIntegration):
                 total=0,
                 results=[],
                 error=f"Twitter API call failed: {str(e)}",
+                http_code=None,  # Non-HTTP error
                 query_params=query_params,
                 response_time_ms=response_time_ms
             )

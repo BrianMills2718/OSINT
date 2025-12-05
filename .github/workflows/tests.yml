@@ -1,0 +1,106 @@
+name: Tests
+
+on:
+  push:
+    branches: [ main, master, develop, feature/* ]
+  pull_request:
+    branches: [ main, master, develop ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ['3.12']
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v4
+      with:
+        python-version: ${{ matrix.python-version }}
+
+    - name: Cache pip dependencies
+      uses: actions/cache@v3
+      with:
+        path: ~/.cache/pip
+        key: ${{ runner.os }}-pip-${{ hashFiles('requirements.txt') }}
+        restore-keys: |
+          ${{ runner.os }}-pip-
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        pip install pytest pytest-asyncio pytest-cov
+
+    - name: Run unit tests
+      run: |
+        pytest tests/unit -v --tb=short
+      continue-on-error: true  # Don't fail build yet (unit tests being added)
+
+    - name: Run integration tests (quick)
+      run: |
+        pytest tests/integrations -m "not slow" -v --tb=short
+      env:
+        # Add your secrets in GitHub repository settings
+        SAM_GOV_API_KEY: ${{ secrets.SAM_GOV_API_KEY }}
+        OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        RAPIDAPI_KEY: ${{ secrets.RAPIDAPI_KEY }}
+        NEWSAPI_API_KEY: ${{ secrets.NEWSAPI_API_KEY }}
+      continue-on-error: true  # Integration tests may fail due to rate limits
+
+    - name: Run contract tests
+      run: |
+        pytest tests/contracts -v --tb=short
+      continue-on-error: true
+
+    - name: Generate coverage report
+      if: always()
+      run: |
+        pytest tests/unit --cov=research --cov=integrations --cov=core --cov-report=term --cov-report=html
+      continue-on-error: true
+
+    - name: Upload coverage HTML
+      if: always()
+      uses: actions/upload-artifact@v3
+      with:
+        name: coverage-report
+        path: htmlcov/
+        retention-days: 7
+
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.12'
+
+    - name: Install linting tools
+      run: |
+        python -m pip install --upgrade pip
+        pip install flake8 black isort
+
+    - name: Check code formatting (black)
+      run: |
+        black --check --diff .
+      continue-on-error: true  # Don't fail build on formatting issues yet
+
+    - name: Check import sorting (isort)
+      run: |
+        isort --check-only --diff .
+      continue-on-error: true
+
+    - name: Lint with flake8
+      run: |
+        # Stop the build if there are Python syntax errors or undefined names
+        flake8 . --count --select=E9,F63,F7,F82 --show-source --statistics
+        # Exit-zero treats all errors as warnings
+        flake8 . --count --exit-zero --max-complexity=10 --max-line-length=120 --statistics
+      continue-on-error: true

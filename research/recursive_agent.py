@@ -20,6 +20,7 @@ from enum import Enum
 from dotenv import load_dotenv
 from research.services.entity_analyzer import EntityAnalyzer
 from core.database_integration_base import Evidence, SearchResult
+from core.error_classifier import ErrorClassifier, ErrorCategory, APIError
 
 load_dotenv()
 
@@ -456,12 +457,62 @@ class ExecutionLogger:
         })
 
     def log_goal_decomposed(self, goal: str, depth: int, parent_goal: Optional[str],
-                            sub_goals: List[str], rationale: str):
-        """Log goal decomposition into sub-goals."""
+                            sub_goals: Union[List[str], List['SubGoal']], rationale: str):
+        """
+        Log goal decomposition into sub-goals.
+
+        Args:
+            sub_goals: Either List[str] (legacy) or List[SubGoal] (with dependencies)
+        """
+        # Handle both legacy List[str] and new List[SubGoal]
+        if sub_goals and hasattr(sub_goals[0], 'description'):
+            # New format: List[SubGoal] with dependencies
+            sub_goals_data = [
+                {
+                    "description": sg.description[:80],
+                    "dependencies": sg.dependencies,
+                    "complexity": sg.estimated_complexity
+                }
+                for sg in sub_goals
+            ]
+        else:
+            # Legacy format: List[str]
+            sub_goals_data = [sg[:80] for sg in sub_goals]
+
         self._write_entry("goal_decomposed", goal, depth, parent_goal, {
             "sub_goal_count": len(sub_goals),
-            "sub_goals": [sg[:80] for sg in sub_goals],
+            "sub_goals": sub_goals_data,
             "decomposition_rationale": rationale[:200]
+        })
+
+    def log_dependency_groups(self, goal: str, depth: int, parent_goal: Optional[str],
+                               groups: List[List['SubGoal']]):
+        """
+        Log DAG execution groups after topological sort.
+
+        Each group contains sub-goals that can execute in parallel.
+        Groups execute sequentially (group N+1 waits for group N to complete).
+        """
+        groups_data = []
+        for group_idx, group in enumerate(groups):
+            group_info = {
+                "group_index": group_idx,
+                "goal_count": len(group),
+                "goals": [
+                    {
+                        "description": sg.description[:60],
+                        "dependencies": sg.dependencies,
+                        "complexity": sg.estimated_complexity
+                    }
+                    for sg in group
+                ]
+            }
+            groups_data.append(group_info)
+
+        self._write_entry("dependency_groups_execution", goal, depth, parent_goal, {
+            "total_groups": len(groups),
+            "groups": groups_data,
+            "execution_note": "Groups execute sequentially, goals within groups execute in parallel"
         })
 
     def log_goal_completed(self, goal: str, depth: int, parent_goal: Optional[str],
@@ -488,15 +539,24 @@ class ExecutionLogger:
 
     def log_api_response(self, goal: str, depth: int, parent_goal: Optional[str],
                          source: str, success: bool, result_count: int,
-                         response_time_ms: float, error: Optional[str] = None):
-        """Log API response received."""
-        self._write_entry("api_response", goal, depth, parent_goal, {
+                         response_time_ms: float, error: Optional[str] = None,
+                         http_code: Optional[int] = None, error_category: Optional[str] = None):
+        """Log API response received with structured error info."""
+        data = {
             "source": source,
             "success": success,
             "result_count": result_count,
             "response_time_ms": response_time_ms,
             "error": error
-        })
+        }
+
+        # Add structured error fields if present
+        if http_code is not None:
+            data["http_code"] = http_code
+        if error_category is not None:
+            data["error_category"] = error_category
+
+        self._write_entry("api_response", goal, depth, parent_goal, data)
 
     def log_query_reformulation(self, goal: str, depth: int, parent_goal: Optional[str],
                                 source: str, original_params: Dict[str, Any],
@@ -616,6 +676,11 @@ class RecursiveResearchAgent:
             self.output_dir = Path(output_dir) if isinstance(output_dir, str) else output_dir
         self.logger = ExecutionLogger(self.output_dir)
 
+        # Load default model from config (single source of truth)
+        from config_loader import config
+        self.model = config.default_model
+        self.config = config  # Store config reference for error handling patterns
+
         # Entity analyzer for relationship tracking
         self.entity_analyzer = EntityAnalyzer(
             progress_callback=lambda event, msg: logger.info(f"[Entity] {event}: {msg}")
@@ -624,6 +689,9 @@ class RecursiveResearchAgent:
         # Session-level rate limit tracking
         # Sources in this set will be skipped for the rest of the session
         self.rate_limited_sources: set = set()
+
+        # Error classifier for structured error handling
+        self.error_classifier = ErrorClassifier(self.config)
 
         # Will be initialized
         self.registry = None
@@ -889,7 +957,7 @@ class RecursiveResearchAgent:
 
         self.logger.log_goal_decomposed(
             goal, context.depth, parent_goal,
-            sub_goals=[sg.description for sg in sub_goals],
+            sub_goals=sub_goals,  # Pass full SubGoal objects (includes dependencies)
             rationale=assessment.decomposition_rationale or "Goal too complex for direct execution"
         )
 
@@ -912,6 +980,11 @@ class RecursiveResearchAgent:
 
         # Group by dependency for parallelism
         goal_groups = self._group_by_dependency(sub_goals)
+
+        # Log dependency groups execution plan
+        if len(goal_groups) > 1 or (goal_groups and any(sg.dependencies for sg in goal_groups[0])):
+            # Only log if there are multiple groups or dependencies declared
+            self.logger.log_dependency_groups(goal, context.depth, parent_goal, goal_groups)
 
         # Bug fix: Add semaphore to limit concurrent tasks
         semaphore = asyncio.Semaphore(context.constraints.max_concurrent_tasks)
@@ -948,17 +1021,25 @@ class RecursiveResearchAgent:
                         all_evidence.append(evidence)
 
             # === CHECK IF GOAL ACHIEVED ===
-            achieved = await self._goal_achieved(goal, sub_results, context)
-            if achieved:
-                self.logger.log_achievement_check(
-                    goal, context.depth, parent_goal,
-                    sub_goals_completed=len(sub_results),
-                    total_sub_goals=len(sub_goals),
-                    total_evidence=len(all_evidence),
-                    achieved=True,
-                    reasoning="Goal achieved early based on LLM assessment"
-                )
-                break
+            # Skip early exit for comparative/synthesis goals to ensure all dependency groups complete
+            goal_appears_comparative = any(
+                word in goal.lower()
+                for word in ["compare", "vs", "versus", "analysis", "competitive", "contrast",
+                            "synthesis", "analyze", "assess", "evaluate"]
+            )
+
+            if not goal_appears_comparative:
+                achieved = await self._goal_achieved(goal, sub_results, context)
+                if achieved:
+                    self.logger.log_achievement_check(
+                        goal, context.depth, parent_goal,
+                        sub_goals_completed=len(sub_results),
+                        total_sub_goals=len(sub_goals),
+                        total_evidence=len(all_evidence),
+                        achieved=True,
+                        reasoning="Goal achieved early based on LLM assessment"
+                    )
+                    break
 
         # Log deduplication stats if any duplicates were found
         if duplicate_count > 0:
@@ -1027,71 +1108,27 @@ class RecursiveResearchAgent:
             for e in context.accumulated_evidence[-context.constraints.max_evidence_in_prompt:]
         ])
 
-        prompt = f"""You are a research agent assessing a goal.
+        from core.prompt_loader import render_prompt
 
-{_get_temporal_context()}
-
-ORIGINAL OBJECTIVE: {context.original_objective}
-
-CURRENT GOAL TO ASSESS: {goal}
-
-GOAL ANCESTRY (how we got here):
-{chr(10).join(f"  {i+1}. {g}" for i, g in enumerate(context.goal_stack)) or "  (This is the root goal)"}
-
-EVIDENCE ACCUMULATED SO FAR:
-{evidence_text}
-
-AVAILABLE DATA SOURCES:
-{sources_text}
-
-CURRENT STATE:
-- Depth: {context.depth}/{context.constraints.max_depth}
-- Time elapsed: {context.elapsed_seconds:.0f}s / {context.constraints.max_time_seconds}s
-- Goals created: {context.goals_created}/{context.constraints.max_goals}
-
-DECISION REQUIRED:
-Is this goal DIRECTLY EXECUTABLE (maps to a specific action like an API call or analysis)?
-Or does it need to be DECOMPOSED into smaller sub-goals?
-
-IMPORTANT: Prefer THOROUGH research over quick results. A single API call rarely provides
-comprehensive coverage. Investigative research requires cross-referencing multiple sources.
-
-A goal is directly executable ONLY if:
-- It's extremely narrow (e.g., "get FEC filings for committee X")
-- It's an analysis/synthesis task on EXISTING evidence
-- We're at depth 3+ and need to start executing to avoid infinite decomposition
-
-A goal SHOULD BE DECOMPOSED if ANY of these apply:
-- It's about a company/person/entity → needs multiple source TYPES (contracts, filings, news, legal)
-- It mentions "investigate", "research", or "find" → needs comprehensive coverage
-- Multiple relevant sources exist → decompose by source type for parallel querying
-- A single source would give incomplete picture → decompose for cross-referencing
-- We're at depth 0-2 with budget remaining → invest in thorough decomposition
-
-Example: "Research Company X contracts" should decompose into:
-  - "Find Company X federal contracts in USAspending"
-  - "Find Company X contract opportunities in SAM.gov"
-  - "Find Company X contract announcements in news"
-  - "Find Company X disclosed contracts in SEC filings"
-
-This ensures comprehensive coverage, not just the first matching source.
-
-Return JSON:
-{{
-    "directly_executable": true or false,
-    "reasoning": "Brief explanation of your decision",
-    "action": {{
-        "type": "api_call" or "analyze" or "synthesize" or "web_search",
-        "source": "source_id if api_call",
-        "params": {{"query": "...", ...}},
-        "prompt": "analysis prompt if analyze/synthesize"
-    }} if directly_executable else null,
-    "decomposition_rationale": "Why this needs to be broken down" if not directly_executable else null
-}}"""
+        prompt = render_prompt(
+            "recursive_agent/goal_assessment.j2",
+            temporal_context=_get_temporal_context(),
+            original_objective=context.original_objective,
+            goal=goal,
+            goal_stack=context.goal_stack,
+            evidence_text=evidence_text,
+            sources_text=sources_text,
+            depth=context.depth,
+            max_depth=context.constraints.max_depth,
+            elapsed_seconds=int(context.elapsed_seconds),
+            max_time_seconds=context.constraints.max_time_seconds,
+            goals_created=context.goals_created,
+            max_goals=context.constraints.max_goals
+        )
 
         try:
             response = await acompletion(
-                model="gemini/gemini-2.5-flash",
+                model=self.model,
                 messages=[{"role": "user", "content": prompt}],
                 response_format={"type": "json_object"}
             )
@@ -1233,32 +1270,55 @@ Return JSON:
                 )
                 response_time_ms = (datetime.now() - start_time).total_seconds() * 1000
 
-                # Log API response
+                # Classify error if present (for structured logging and error handling)
+                error_info = None
+                if not result.success and result.error:
+                    error_info = self.error_classifier.classify(
+                        error_str=str(result.error),
+                        http_code=result.http_code,  # Extract HTTP code from QueryResult
+                        source_id=source_id
+                    )
+
+                    # Log structured error with category and HTTP code
+                    logger.warning(
+                        f"{source_id}: {error_info.category.value} error "
+                        f"(HTTP {error_info.http_code if error_info.http_code else 'N/A'}): {result.error}"
+                    )
+
+                # Log API response with structured error info
                 self.logger.log_api_response(
                     goal, context.depth, parent_goal,
                     source=source_id,
                     success=result.success,
                     result_count=len(result.results) if result.results else 0,
                     response_time_ms=response_time_ms,
-                    error=result.error
+                    error=result.error,
+                    http_code=result.http_code if error_info else None,
+                    error_category=error_info.category.value if error_info else None
                 )
 
                 # If successful or not a validation error, break
                 if result.success or not result.error:
                     break
 
-                # Try to reformulate on error (skip for rate limits - unfixable)
-                error_msg = str(result.error or "").lower()
-                is_rate_limit = any(term in error_msg for term in [
-                    "rate limit", "429", "quota exceeded", "too many requests",
-                    "throttl", "request limit", "daily limit"
-                ])
+                # Check if error is reformulable (replaces pattern matching)
+                if not error_info.is_reformulable:
+                    # Log category-specific message
+                    if error_info.category == ErrorCategory.RATE_LIMIT:
+                        logger.warning(f"{source_id}: Rate limit detected, adding to session blocklist")
+                        self.rate_limited_sources.add(source_id)  # Skip this source for rest of session
+                        print(f"    ⚠ {source_id}: Rate limited - will skip for rest of session")
+                    elif error_info.category == ErrorCategory.TIMEOUT:
+                        logger.warning(f"{source_id}: Timeout detected (infrastructure issue), skipping reformulation")
+                        print(f"    ⚠ {source_id}: Timeout error - cannot fix with query reformulation")
+                    elif error_info.category == ErrorCategory.AUTHENTICATION:
+                        logger.warning(f"{source_id}: Authentication error (invalid API key), skipping reformulation")
+                        print(f"    ⚠ {source_id}: Auth error - check API key configuration")
+                    else:
+                        logger.warning(f"{source_id}: {error_info.category.value} error detected, skipping reformulation")
+                        print(f"    ⚠ {source_id}: {error_info.category.value} error - cannot fix with query reformulation")
 
-                if is_rate_limit:
-                    logger.warning(f"{source_id}: Rate limit detected, adding to session blocklist")
-                    self.rate_limited_sources.add(source_id)  # Skip this source for rest of session
-                    print(f"    ⚠ {source_id}: Rate limited - will skip for rest of session")
-                    break  # Exit retry loop - rate limits aren't fixable by reformulation
+                    break  # Exit retry loop - unreformulable errors can't be fixed by query changes
 
                 if attempt < max_retries - 1:
                     logger.warning(f"{source_id} error: {result.error}, attempting reformulation")
@@ -1379,7 +1439,7 @@ Return JSON:
 
         try:
             response = await acompletion(
-                model="gemini/gemini-2.5-flash",
+                model=self.model,
                 messages=[{"role": "user", "content": full_prompt}]
             )
 
@@ -1414,6 +1474,7 @@ Return JSON:
         Decompose a goal into sub-goals.
         """
         from llm_utils import acompletion
+        from core.prompt_loader import render_prompt
 
         sources_text = "\n".join([
             f"- {s['name']}: {s['description']}"
@@ -1424,69 +1485,23 @@ Return JSON:
             f"  - {g}" for g in context.all_goals[-context.constraints.max_goals_in_prompt:]
         ]) or "  (none yet)"
 
-        prompt = f"""You are a research agent decomposing a goal into sub-goals.
-
-{_get_temporal_context()}
-
-ORIGINAL OBJECTIVE: {context.original_objective}
-
-GOAL TO DECOMPOSE: {goal}
-
-WHY DECOMPOSITION IS NEEDED:
-{context.decomposition_rationale or "Goal is too broad for direct execution"}
-
-GOAL ANCESTRY:
-{chr(10).join(f"  {i+1}. {g}" for i, g in enumerate(context.goal_stack)) or "  (root goal)"}
-
-EVIDENCE SO FAR: {context.evidence_summary}
-
-AVAILABLE DATA SOURCES:
-{sources_text}
-
-EXISTING GOALS (avoid redundancy):
-{existing_goals}
-
-CONSTRAINTS:
-- Remaining depth: {context.constraints.max_depth - context.depth} levels
-- Remaining goals: {context.constraints.max_goals - context.goals_created}
-
-DECOMPOSITION STRATEGY for thorough research:
-
-For INVESTIGATIVE goals (about companies, people, entities):
-- Create sub-goals BY SOURCE TYPE to ensure comprehensive coverage:
-  - Government contracts → USAspending, SAM.gov, GovInfo
-  - Political/lobbying → FEC, Congress.gov
-  - Legal/controversies → CourtListener, SEC enforcement
-  - News/media → NewsAPI, web search
-  - Financial → SEC filings (10-K, 8-K)
-
-For TOPICAL goals (about a topic/issue):
-- Create sub-goals BY ANGLE or PERSPECTIVE
-- Each angle can query different sources
-
-Create sub-goals that:
-1. Together provide COMPREHENSIVE coverage (not just the first matching source)
-2. Are INDEPENDENT (can run in parallel across different source types)
-3. Target SPECIFIC sources (e.g., "Find X in USAspending" not just "Find X contracts")
-4. DON'T duplicate existing goals
-5. Aim for 5-10 sub-goals for depth-1 decomposition of investigative queries
-
-Return JSON:
-{{
-    "sub_goals": [
-        {{
-            "description": "Clear, actionable goal description",
-            "rationale": "How this helps achieve the parent goal",
-            "dependencies": [0, 1],  // Indices of sub-goals this depends on (empty if independent)
-            "estimated_complexity": "atomic|simple|moderate|complex"
-        }}
-    ],
-    "coverage_assessment": "How these sub-goals cover the parent goal"
-}}"""
+        prompt = render_prompt(
+            "recursive_agent/goal_decomposition.j2",
+            temporal_context=_get_temporal_context(),
+            original_objective=context.original_objective,
+            goal=goal,
+            decomposition_rationale=context.decomposition_rationale or "Goal is too broad for direct execution",
+            goal_stack=context.goal_stack,
+            evidence_summary=context.evidence_summary,
+            sources_text=sources_text,
+            existing_goals=existing_goals,
+            remaining_depth=context.constraints.max_depth - context.depth,
+            remaining_goals=context.constraints.max_goals - context.goals_created
+        )
 
         try:
             response = await acompletion(
-                model="gemini/gemini-2.5-flash",
+                model=self.model,
                 messages=[{"role": "user", "content": prompt}],
                 response_format={"type": "json_object"}
             )
@@ -1495,6 +1510,20 @@ Return JSON:
             context.add_cost(context.constraints.cost_per_decomposition)
 
             result = json.loads(response.choices[0].message.content)
+
+            # Log raw LLM response (to verify dependencies are being returned)
+            self.logger.log("llm_decomposition_response", goal, context.depth,
+                            context.goal_stack[-2] if len(context.goal_stack) > 1 else None, {
+                                "sub_goal_count": len(result.get("sub_goals", [])),
+                                "raw_dependencies": [
+                                    {
+                                        "description": sg.get("description", "")[:60],
+                                        "dependencies": sg.get("dependencies", []),
+                                        "complexity": sg.get("estimated_complexity", "moderate")
+                                    }
+                                    for sg in result.get("sub_goals", [])
+                                ]
+                            })
 
             sub_goals = []
             for sg_data in result.get("sub_goals", []):
@@ -1532,6 +1561,7 @@ Return JSON:
         Check if a goal has been sufficiently achieved.
         """
         from llm_utils import acompletion
+        from core.prompt_loader import render_prompt
 
         # Quick heuristic checks first
         if not sub_results:
@@ -1551,32 +1581,17 @@ Return JSON:
             for r in sub_results
         ])
 
-        prompt = f"""GOAL: {goal}
-
-ORIGINAL OBJECTIVE: {context.original_objective}
-
-SUB-GOAL RESULTS:
-{results_summary}
-
-TOTAL EVIDENCE GATHERED: {total_evidence} pieces
-
-Has this goal been SUFFICIENTLY achieved to stop pursuing more sub-goals?
-
-Consider:
-- Do we have enough evidence to answer the goal?
-- Are there obvious critical gaps?
-- Is continuing likely to add significant new value?
-
-Return JSON:
-{{
-    "achieved": true or false,
-    "confidence": 0.0 to 1.0,
-    "reasoning": "Brief explanation"
-}}"""
+        prompt = render_prompt(
+            "recursive_agent/achievement_check.j2",
+            goal=goal,
+            original_objective=context.original_objective,
+            results_summary=results_summary,
+            total_evidence=total_evidence
+        )
 
         try:
             response = await acompletion(
-                model="gemini/gemini-2.5-flash",
+                model=self.model,
                 messages=[{"role": "user", "content": prompt}],
                 response_format={"type": "json_object"}
             )
@@ -1614,6 +1629,7 @@ Return JSON:
             - reasoning: str - full reasoning chain
         """
         from llm_utils import acompletion
+        from core.prompt_loader import render_prompt
 
         # Gather context for LLM reasoning
         sources_used = set(e.source for e in evidence)
@@ -1647,71 +1663,19 @@ Return JSON:
             for s in self.rate_limited_sources
         ]) if self.rate_limited_sources else "  (None)"
 
-        prompt = f"""You are a thorough investigative researcher. Reason through whether this research is complete.
-
-RESEARCH OBJECTIVE:
-{objective}
-
-WHAT HAS BEEN GATHERED ({len(evidence)} pieces from {len(sources_used)} sources):
-{evidence_summary}
-
-SOURCES NOT YET QUERIED:
-{unused_sources_text}
-
-SOURCES THAT WERE RATE-LIMITED (attempted but blocked by API limits):
-{rate_limited_text}
-
-IMPORTANT: Rate-limited sources may contain highly relevant information that was not retrieved.
-This represents a GAP in coverage that should reduce confidence in completeness.
-
-REASON THROUGH THE FOLLOWING:
-
-1. WHAT SHOULD EXIST?
-   For this objective, what types of information should theoretically exist?
-   (e.g., government records, news articles, legal filings, financial disclosures, social media, etc.)
-
-2. WHAT SOURCES COULD HAVE IT?
-   Which of the available sources (used and unused) could contain relevant information?
-   Which ones are ESSENTIAL vs nice-to-have?
-
-3. WHAT HAS BEEN TRIED?
-   Review what sources have been queried and what was found.
-   Were the queries comprehensive or narrow?
-
-4. WHAT STRATEGIES REMAIN?
-   Are there untried search strategies? Examples:
-   - Different query terms or angles
-   - Following up on discovered entities (people, organizations, contracts)
-   - Searching unused sources that could be relevant
-   - Cross-referencing findings across sources
-
-5. HAVE I EXHAUSTED REASONABLE OPTIONS?
-   Have all essential sources been queried?
-   Have major angles been explored?
-   Would additional searching likely yield significant NEW information?
-   Or am I just likely to find duplicates/minor additions?
-
-Based on your reasoning, decide:
-- If there are CLEAR, ACTIONABLE strategies that could yield significant new information → NOT exhausted
-- If you've tried the essential sources and major angles, and further searching would have diminishing returns → EXHAUSTED
-
-Return JSON:
-{{
-    "reasoning_chain": {{
-        "what_should_exist": "Your analysis of what information types should exist...",
-        "relevant_sources": "Which sources are essential vs nice-to-have...",
-        "what_was_tried": "Summary of search efforts so far...",
-        "untried_strategies": ["Specific strategy 1", "Specific strategy 2"],
-        "diminishing_returns": "Whether further searching would likely yield significant new info..."
-    }},
-    "exhausted": true/false,
-    "confidence": 0.0-1.0,
-    "recommendation": "Brief recommendation on whether to continue or stop"
-}}"""
+        prompt = render_prompt(
+            "recursive_agent/coverage_assessment.j2",
+            objective=objective,
+            evidence_count=len(evidence),
+            sources_used_count=len(sources_used),
+            evidence_summary=evidence_summary,
+            unused_sources_text=unused_sources_text,
+            rate_limited_text=rate_limited_text
+        )
 
         try:
             response = await acompletion(
-                model="gemini/gemini-2.5-flash",
+                model=self.model,
                 messages=[{"role": "user", "content": prompt}],
                 response_format={"type": "json_object"}
             )
@@ -1753,6 +1717,7 @@ Return JSON:
         Returns list of follow-up goal descriptions.
         """
         from llm_utils import acompletion
+        from core.prompt_loader import render_prompt
 
         # Summarize what we have
         sources_used = set(e.source for e in evidence)
@@ -1811,6 +1776,11 @@ Return JSON:
             if s['id'].lower() not in used_source_ids
         ]
 
+        unused_sources_text = "\n".join([
+            f"  - {s['name']}: {s['description']}"
+            for s in unused_sources
+        ]) or "  (All sources queried)"
+
         # Include untried strategies from coverage assessment if available
         untried_strategies = []
         if coverage_reasoning and coverage_reasoning.get("full_reasoning"):
@@ -1818,55 +1788,20 @@ Return JSON:
 
         untried_text = "\n".join([f"  - {s}" for s in untried_strategies]) if untried_strategies else "  (None identified)"
 
-        prompt = f"""You are a strategic research planner. Based on the coverage assessment, generate specific follow-up goals.
-
-RESEARCH OBJECTIVE:
-{objective}
-
-WHAT HAS BEEN GATHERED ({len(evidence)} pieces from {len(sources_used)} sources):
-{evidence_summary}
-
-KEY ENTITIES/ITEMS DISCOVERED (potential follow-up targets):
-{entity_section}
-
-UNTRIED STRATEGIES (from coverage assessment):
-{untried_text}
-
-UNUSED SOURCES (give full context to LLM):
-{chr(10).join(f"  - {s['name']}: {s['description']}" for s in unused_sources) or '  (All sources queried)'}
-
-Generate follow-up goals that:
-1. IMPLEMENT the untried strategies identified above
-2. Query UNUSED sources that are genuinely relevant (not just for the sake of it)
-3. **ENTITY FOLLOW-UP (IMPORTANT)**: For each key entity discovered above, create specific follow-up queries:
-   - Company/Organization → Search SEC filings, USAspending contracts, FEC donations, CourtListener lawsuits
-   - Person → Search FEC contributions, news mentions, CourtListener cases
-   - Contract/Program → Search for related awards, amendments, congressional oversight
-   - Use the entity's EXACT NAME in queries for precision
-4. Explore DIFFERENT ANGLES not yet covered
-5. Are SPECIFIC and ACTIONABLE - clear what source to query and what to search for
-
-Each goal should yield SIGNIFICANT NEW information, not marginal additions.
-Prioritize entity follow-ups - they often uncover the most valuable connections.
-
-If there are no meaningful follow-ups remaining, return an empty list with explanation.
-
-Return JSON:
-{{
-    "strategic_reasoning": "Brief explanation of follow-up strategy",
-    "follow_ups": [
-        {{
-            "goal": "Specific, actionable follow-up goal",
-            "strategy": "Which untried strategy this addresses",
-            "expected_value": "What new information this could yield"
-        }}
-    ],
-    "stop_reason": "If no follow-ups, explain why research is complete"
-}}"""
+        prompt = render_prompt(
+            "recursive_agent/follow_up_generation.j2",
+            objective=objective,
+            evidence_count=len(evidence),
+            sources_used_count=len(sources_used),
+            evidence_summary=evidence_summary,
+            entity_section=entity_section,
+            untried_text=untried_text,
+            unused_sources_text=unused_sources_text
+        )
 
         try:
             response = await acompletion(
-                model="gemini/gemini-2.5-flash",
+                model=self.model,
                 messages=[{"role": "user", "content": prompt}],
                 response_format={"type": "json_object"}
             )
@@ -1899,6 +1834,7 @@ Return JSON:
         Synthesize sub-goal results into a coherent parent result.
         """
         from llm_utils import acompletion
+        from core.prompt_loader import render_prompt
 
         # Gather all evidence
         all_evidence = []
@@ -1917,37 +1853,38 @@ Return JSON:
             for r in sub_results if r.synthesis or r.reasoning
         ])
 
-        prompt = f"""Synthesize research findings for:
+        # Collect source health for confidence calibration
+        sources_with_results = list(set(e.source for e in all_evidence))
 
-{_get_temporal_context()}
+        # Extract failed source names by searching goal/error text for known sources
+        known_sources = [s['name'] for s in self.available_sources] if self.available_sources else []
+        sources_with_errors = []
+        for r in sub_results:
+            if r.status == GoalStatus.FAILED and r.error:
+                # Search for known source names in goal or error text
+                search_text = f"{r.goal} {r.error}".lower()
+                for source in known_sources:
+                    if source.lower() in search_text:
+                        sources_with_errors.append(source)
+                        break  # Only add first match per failed goal
+        sources_with_errors = list(set(sources_with_errors))  # Deduplicate
 
-GOAL: {goal}
-
-ORIGINAL OBJECTIVE: {context.original_objective}
-
-SUB-GOAL FINDINGS:
-{sub_syntheses}
-
-KEY EVIDENCE ({len(all_evidence)} total pieces):
-{evidence_text}
-
-Create a coherent synthesis that:
-1. Directly addresses the goal
-2. Highlights key findings
-3. Notes confidence levels and limitations
-4. Identifies any contradictions
-
-Return JSON:
-{{
-    "synthesis": "Comprehensive synthesis addressing the goal",
-    "key_findings": ["Finding 1", "Finding 2", ...],
-    "confidence": 0.0 to 1.0,
-    "limitations": ["Limitation 1", ...]
-}}"""
+        prompt = render_prompt(
+            "recursive_agent/evidence_synthesis.j2",
+            temporal_context=_get_temporal_context(),
+            goal=goal,
+            original_objective=context.original_objective,
+            sub_syntheses=sub_syntheses,
+            evidence_count=len(all_evidence),
+            evidence_text=evidence_text,
+            sources_with_results=sources_with_results,
+            sources_with_errors=sources_with_errors,
+            rate_limited_sources=list(self.rate_limited_sources)
+        )
 
         try:
             response = await acompletion(
-                model="gemini/gemini-2.5-flash",
+                model=self.model,
                 messages=[{"role": "user", "content": prompt}],
                 response_format={"type": "json_object"}
             )
@@ -2025,6 +1962,7 @@ Return JSON:
             return evidence
 
         from llm_utils import acompletion
+        from core.prompt_loader import render_prompt
 
         # Format evidence for evaluation
         evidence_text = "\n\n".join([
@@ -2032,29 +1970,17 @@ Return JSON:
             for i, e in enumerate(evidence)
         ])
 
-        prompt = f"""You are filtering research results for relevance.
-
-{_get_temporal_context()}
-
-ORIGINAL OBJECTIVE: {context.original_objective}
-
-CURRENT GOAL: {goal}
-
-RESULTS TO FILTER:
-{evidence_text}
-
-Evaluate each result's relevance to the goal. Return a JSON object with:
-{{
-    "relevant_indices": [0, 2, 5],  // List of result indices that ARE relevant
-    "filtering_rationale": "Brief explanation of filtering decisions"
-}}
-
-Be generous - include results that have ANY connection to the goal.
-Only filter out results that are clearly off-topic or irrelevant."""
+        prompt = render_prompt(
+            "recursive_agent/result_filtering.j2",
+            temporal_context=_get_temporal_context(),
+            original_objective=context.original_objective,
+            goal=goal,
+            evidence_text=evidence_text
+        )
 
         try:
             response = await acompletion(
-                model="gemini/gemini-2.5-flash",
+                model=self.model,
                 messages=[{"role": "user", "content": prompt}],
                 response_format={"type": "json_object"}
             )
@@ -2115,6 +2041,7 @@ Only filter out results that are clearly off-topic or irrelevant."""
             return evidence
 
         from llm_utils import acompletion
+        from core.prompt_loader import render_prompt
 
         # Batch summarization for efficiency - use sequential indices (0, 1, 2...)
         items_text = "\n\n".join([
@@ -2122,26 +2049,16 @@ Only filter out results that are clearly off-topic or irrelevant."""
             for seq_idx, orig_idx, e in needs_summary
         ])
 
-        prompt = f"""Summarize each item to ~{context.constraints.summary_target_chars} characters.
-Preserve: key facts, numbers, names, dates, relationships.
-Remove: boilerplate, redundancy, filler.
-
-CONTEXT: {goal}
-
-ITEMS TO SUMMARIZE:
-{items_text}
-
-Return JSON with item_index matching the Item # shown above:
-{{
-    "summaries": [
-        {{"item_index": 0, "summary": "Concise summary preserving key facts..."}},
-        {{"item_index": 1, "summary": "..."}}
-    ]
-}}"""
+        prompt = render_prompt(
+            "recursive_agent/result_summarization.j2",
+            summary_target_chars=context.constraints.summary_target_chars,
+            goal=goal,
+            items_text=items_text
+        )
 
         try:
             response = await acompletion(
-                model="gemini/gemini-2.5-flash",
+                model=self.model,
                 messages=[{"role": "user", "content": prompt}],
                 response_format={"type": "json_object"}
             )
@@ -2155,9 +2072,9 @@ Return JSON with item_index matching the Item # shown above:
             summarized_count = 0
             for seq_idx, orig_idx, e in needs_summary:
                 if seq_idx in summaries:
-                    # Store original in metadata, replace content with summary
+                    # Store original in metadata, replace snippet with summary
                     e.metadata["original_content"] = e.content
-                    e.content = summaries[seq_idx]
+                    e.snippet = summaries[seq_idx]  # Use snippet (writable), not content (read-only property)
                     summarized_count += 1
 
             if summarized_count > 0:
@@ -2280,7 +2197,7 @@ Return JSON with item_index matching the Item # shown above:
 
         # Call LLM
         response = await acompletion(
-            model="gemini/gemini-2.0-flash-exp",
+            model=self.model,
             messages=[{"role": "user", "content": prompt}],
             response_format={
                 "type": "json_schema",
@@ -2311,9 +2228,11 @@ Return JSON with item_index matching the Item # shown above:
             goal=goal,
             depth=context.depth,
             parent_goal=parent_goal,
-            selected_count=len(evidence_list),
-            total_index_size=len(context.research_run.index),
-            selected_ids=selected_ids
+            data={
+                "selected_count": len(evidence_list),
+                "total_index_size": len(context.research_run.index),
+                "selected_ids": selected_ids
+            }
         )
 
         return evidence_list
@@ -2332,42 +2251,20 @@ Return JSON with item_index matching the Item # shown above:
         Uses LLM to understand the error and fix the query.
         """
         from llm_utils import acompletion
+        from core.prompt_loader import render_prompt
 
-        prompt = f"""An API returned an error. Analyze and fix the query parameters.
-
-{_get_temporal_context()}
-
-SOURCE: {source_id}
-RESEARCH GOAL: {goal}
-
-ORIGINAL PARAMETERS:
-{json.dumps(original_params, indent=2)}
-
-ERROR MESSAGE:
-{error_message}
-
-COMMON API ERROR PATTERNS AND FIXES:
-1. **Parameter validation errors** (HTTP 400/422):
-   - Value too short: Expand abbreviations (e.g., "AI" → "artificial intelligence")
-   - Invalid enum value: Use a valid value from the API's allowed set
-   - Invalid date format: Use YYYY-MM-DD
-
-2. **Search constraint errors**:
-   - Query too broad: Add specific filters
-   - Query too narrow: Remove restrictive filters
-
-3. **Unfixable errors** (rate limit, auth) - Return can_fix: false
-
-Return JSON:
-{{
-    "can_fix": true/false,
-    "fixed_params": {{ ... corrected parameters ... }},
-    "explanation": "Brief explanation of fix"
-}}"""
+        prompt = render_prompt(
+            "recursive_agent/query_reformulation.j2",
+            temporal_context=_get_temporal_context(),
+            source_id=source_id,
+            goal=goal,
+            original_params_json=json.dumps(original_params, indent=2),
+            error_message=error_message
+        )
 
         try:
             response = await acompletion(
-                model="gemini/gemini-2.5-flash",
+                model=self.model,
                 messages=[{"role": "user", "content": prompt}],
                 response_format={"type": "json_object"}
             )
@@ -2448,24 +2345,51 @@ Return JSON:
         print(f"\nResults saved to: {self.output_dir}")
 
     def _result_to_dict(self, result: GoalResult) -> Dict:
-        """Convert GoalResult to serializable dict."""
+        """
+        Convert GoalResult to serializable dict.
+
+        Three-tier model preservation:
+        - raw_content: Full content, never truncated (for reprocessing)
+        - content: Truncated content (for backward compatibility)
+        - date: Structured date from API
+        - metadata: Additional source-specific data
+        """
+        # Check for evidence truncation and warn
+        total_evidence = len(result.evidence)
+        max_saved = self.constraints.max_evidence_in_saved_result
+        if total_evidence > max_saved:
+            truncated_count = total_evidence - max_saved
+            logger.warning(
+                f"Evidence truncated: {total_evidence} pieces collected, "
+                f"only {max_saved} saved to result.json ({truncated_count} dropped). "
+                f"Increase max_evidence_in_saved_result to preserve all evidence."
+            )
+            print(f"  ⚠ Warning: {truncated_count} evidence pieces truncated ({total_evidence} → {max_saved})")
+
         return {
             "goal": result.goal,
             "status": result.status.value,
             "synthesis": result.synthesis,
             "confidence": result.confidence,
             "evidence_count": len(result.evidence),
+            "evidence_saved": min(total_evidence, max_saved),  # NEW: How many actually saved
+            "evidence_truncated": max(0, total_evidence - max_saved),  # NEW: How many dropped
             "sub_results_count": len(result.sub_results),
             "depth": result.depth,
             "duration_seconds": result.duration_seconds,
-            "cost_dollars": result.cost_dollars,  # Bug fix: was missing
-            "rate_limited_sources": list(self.rate_limited_sources),  # Track which sources hit rate limits
+            "cost_dollars": result.cost_dollars,
+            "rate_limited_sources": list(self.rate_limited_sources),
             "evidence": [
                 {
                     "source": e.source,
                     "title": e.title,
+                    # Backward compatible: truncated content for existing tools
                     "content": e.content[:self.constraints.max_content_chars_in_synthesis],
-                    "url": e.url
+                    "url": e.url,
+                    # NEW: Three-tier model fields
+                    "raw_content": e.full_content,  # Full content, never truncated
+                    "date": e.date,  # Structured date from API
+                    "relevance_score": e.relevance_score,  # LLM-assigned score
                 }
                 for e in result.evidence[:self.constraints.max_evidence_in_saved_result]
             ],

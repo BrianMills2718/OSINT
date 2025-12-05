@@ -1,0 +1,20 @@
+{# Result Summarization Prompt for Recursive Research Agent #}
+{# Summarizes evidence content to preserve key information in fewer tokens #}
+Summarize each item to ~{{ summary_target_chars }} characters.
+Preserve: key facts, numbers, names, dates, relationships.
+Remove: boilerplate, redundancy, filler.
+
+CONTEXT: {{ goal }}
+
+ITEMS TO SUMMARIZE:
+{{ items_text }}
+
+Return JSON with item_index matching the Item # shown above:
+{% raw %}
+{
+    "summaries": [
+        {"item_index": 0, "summary": "Concise summary preserving key facts..."},
+        {"item_index": 1, "summary": "..."}
+    ]
+}
+{% endraw %}

@@ -98,6 +98,84 @@ Be specific enough to be useful, but not so narrow that you miss relevant inform
 **Too narrow:**
 - "Trump tweet about F-35 on March 15 2024" → Too specific, may miss related content
 
+# COMPARATIVE AND SYNTHESIS ANGLES
+
+When the research question asks for **comparison**, **analysis**, or **synthesis** of multiple entities or topics, structure your decomposition to support this:
+
+**Recognition Patterns** - Questions requiring synthesis angles contain:
+- "Compare X vs Y" or "X versus Y"
+- "Competitive positioning" or "market comparison"
+- "Analyze differences between X and Y"
+- "Contrast X and Y"
+- "Which is better: X or Y?"
+
+**Decomposition Structure for Comparative Questions:**
+
+1. **Create independent data collection angles first** (no dependencies)
+   - One angle for each entity/topic being compared
+   - These angles gather raw information in parallel
+
+2. **Create dependent synthesis angle(s)** (depends on data collection angles)
+   - Synthesis angle analyzes, compares, or contrasts the collected data
+   - MUST specify `"dependencies": [0, 1, ...]` pointing to required angles
+   - Executes AFTER all dependency angles complete
+
+**Example - "Compare Lockheed Martin vs Northrop Grumman federal contracts in 2024":**
+
+```json
+{
+  "sub_goals": [
+    {
+      "description": "Federal contract awards for Lockheed Martin in 2024",
+      "rationale": "Collect contract data for first company",
+      "dependencies": [],
+      "complexity": "simple"
+    },
+    {
+      "description": "Federal contract awards for Northrop Grumman in 2024",
+      "rationale": "Collect contract data for second company",
+      "dependencies": [],
+      "complexity": "simple"
+    },
+    {
+      "description": "Compare contract portfolios and competitive positioning",
+      "rationale": "Synthesize findings to answer comparison question",
+      "dependencies": [0, 1],
+      "complexity": "moderate"
+    }
+  ]
+}
+```
+
+**Example - "Analyze the competitive landscape of defense AI companies":**
+
+```json
+{
+  "sub_goals": [
+    {
+      "description": "Defense AI market leaders and their capabilities",
+      "rationale": "Identify key players",
+      "dependencies": [],
+      "complexity": "simple"
+    },
+    {
+      "description": "Government AI procurement trends and requirements",
+      "rationale": "Understand demand side",
+      "dependencies": [],
+      "complexity": "simple"
+    },
+    {
+      "description": "Competitive analysis of market positioning and differentiation",
+      "rationale": "Synthesize market intelligence",
+      "dependencies": [0, 1],
+      "complexity": "moderate"
+    }
+  ]
+}
+```
+
+**CRITICAL**: If synthesis angles are not declared with dependencies, the system will treat all angles as independent and may complete the research prematurely before synthesis occurs.
+
 # OUTPUT
 
 Return 3-5 research angles in priority order (most important first).
@@ -106,3 +184,4 @@ Each angle should:
 1. Explore a DISTINCT facet of the research question
 2. Be specific enough to yield focused results
 3. NOT contain source names or search syntax
+4. **If the angle synthesizes or compares prior angles**: Include `"dependencies": [list of indices]`

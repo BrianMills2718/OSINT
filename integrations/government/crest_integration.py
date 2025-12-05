@@ -119,7 +119,7 @@ class CRESTIntegration(DatabaseIntegration):
         }
 
         response = await acompletion(
-            model="gpt-4o-mini",
+            model=config.default_model,
             messages=[{"role": "user", "content": prompt}],
             response_format={"type": "json_schema", "json_schema": schema}
         )
@@ -161,7 +161,8 @@ class CRESTIntegration(DatabaseIntegration):
                 total=0,
                 results=[],
                 query_params=params,
-                error="No keyword provided"
+                error="No keyword provided",
+                http_code=None  # Validation error, not HTTP
             )
 
         # Import playwright only when needed (lazy import)
@@ -174,7 +175,8 @@ class CRESTIntegration(DatabaseIntegration):
                 total=0,
                 results=[],
                 query_params=params,
-                error="Playwright not installed. Run: pip install playwright && playwright install chromium"
+                error="Playwright not installed. Run: pip install playwright && playwright install chromium",
+                http_code=None  # Dependency error, not HTTP
             )
 
         documents = []
@@ -267,13 +269,16 @@ class CRESTIntegration(DatabaseIntegration):
                         """)
 
                         # Create document using defensive builder
+                        # Three-tier model: preserve full content with build_with_raw()
                         doc = (SearchResultBuilder()
                             .title(content.get('title') or doc_link.get('title'),
                                    default="CIA Document")
                             .url(doc_link.get('url'))
                             .snippet(content.get('snippet'))
+                            .raw_content(content.get('snippet'))  # Full content
+                            .api_response(content)  # Preserve complete scraped data
                             .metadata(content.get('metadata', {}))
-                            .build())
+                            .build_with_raw())
                         documents.append(doc)
 
                     except Exception as e:
@@ -310,5 +315,6 @@ class CRESTIntegration(DatabaseIntegration):
                 total=0,
                 results=[],
                 query_params=params,
-                error=f"CREST scraping failed: {str(e)}"
+                error=f"CREST scraping failed: {str(e)}",
+                http_code=None  # Non-HTTP error
             )

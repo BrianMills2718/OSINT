@@ -128,7 +128,7 @@ class RedditIntegration(DatabaseIntegration):
 
         try:
             response = await acompletion(
-                model="gpt-4o-mini",
+                model=config.default_model,
                 messages=[{"role": "user", "content": prompt}],
                 response_format={"type": "json_object"}
             )
@@ -304,11 +304,23 @@ class RedditIntegration(DatabaseIntegration):
                 score = int(SearchResultBuilder.safe_amount(getattr(submission, 'score', 0)))
                 num_comments = int(SearchResultBuilder.safe_amount(getattr(submission, 'num_comments', 0)))
 
+                # Three-tier model: preserve full content with build_with_raw()
                 standardized_results.append(SearchResultBuilder()
                     .title(title, default="Reddit Post")
                     .url(f"https://reddit.com{submission.permalink}")
                     .snippet(selftext[:500] if selftext else "")
+                    .raw_content(selftext)  # Full content, never truncated
                     .date(created_dt.strftime("%Y-%m-%d"))
+                    .api_response({
+                        "id": submission.id,
+                        "title": title,
+                        "selftext": selftext,
+                        "author": author_name,
+                        "score": score,
+                        "subreddit": submission.subreddit.display_name,
+                        "permalink": submission.permalink,
+                        "created_utc": submission.created_utc
+                    })  # Preserve submission data
                     .metadata({
                         "description": selftext[:500] if selftext else "",
                         "subreddit": submission.subreddit.display_name,
@@ -322,7 +334,7 @@ class RedditIntegration(DatabaseIntegration):
                         "link_flair_text": getattr(submission, 'link_flair_text', None),
                         "engagement_total": score + num_comments
                     })
-                    .build())
+                    .build_with_raw())
 
             # Log successful request
             log_request(
@@ -369,6 +381,7 @@ class RedditIntegration(DatabaseIntegration):
                 total=0,
                 results=[],
                 error=f"Reddit configuration error: {str(e)}",
+                http_code=None,  # Non-HTTP error
                 query_params=query_params,
                 response_time_ms=response_time_ms
             )
@@ -397,6 +410,7 @@ class RedditIntegration(DatabaseIntegration):
                 total=0,
                 results=[],
                 error=f"Reddit search failed: {str(e)}",
+                http_code=None,  # Non-HTTP error
                 query_params=query_params,
                 response_time_ms=response_time_ms
             )

@@ -134,9 +134,10 @@ Return JSON:
   "reasoning": "1-2 sentences explaining why NewsAPI is/isn't relevant"
 }}"""
 
+        from config_loader import config
         try:
             response = await acompletion(
-                model="gpt-4o-mini",
+                model=config.default_model,
                 messages=[{"role": "user", "content": prompt}],
                 response_format={"type": "json_object"}
             )
@@ -197,12 +198,12 @@ Return JSON:
                         "description": "Search keywords (max 500 chars, supports AND/OR/NOT, quotes for exact match)"
                     },
                     "from_date": {
-                        "type": ["string", "null"],
-                        "description": "Start date in YYYY-MM-DD format (null for oldest available)"
+                        "type": "string",
+                        "description": "Start date in YYYY-MM-DD format (optional)"
                     },
                     "to_date": {
-                        "type": ["string", "null"],
-                        "description": "End date in YYYY-MM-DD format (null for most recent)"
+                        "type": "string",
+                        "description": "End date in YYYY-MM-DD format (optional)"
                     },
                     "language": {
                         "type": "string",
@@ -219,13 +220,14 @@ Return JSON:
                         "description": "Number of results to retrieve (1-100)"
                     }
                 },
-                "required": ["relevant", "reasoning", "query", "from_date", "to_date", "language", "sort_by", "limit"],
+                "required": ["relevant", "reasoning", "query", "language", "sort_by", "limit"],
                 "additionalProperties": False
             }
         }
 
+        from config_loader import config
         response = await acompletion(
-            model="gpt-4o-mini",
+            model=config.default_model,
             messages=[{"role": "user", "content": prompt}],
             response_format={"type": "json_schema", "json_schema": schema}
         )
@@ -285,7 +287,8 @@ Return JSON:
                 total=0,
                 results=[],
                 query_params=query_params,
-                error="No search query provided"
+                error="No search query provided",
+                http_code=None  # Validation error, not HTTP
             )
 
         # Get API key
@@ -302,7 +305,8 @@ Return JSON:
                 total=0,
                 results=[],
                 query_params=query_params,
-                error="NewsAPI key not found. Set NEWSAPI_API_KEY in .env file."
+                error="NewsAPI key not found. Set NEWSAPI_API_KEY in .env file.",
+                http_code=None  # Configuration error, not HTTP
             )
 
         try:
@@ -344,7 +348,8 @@ Return JSON:
                     total=0,
                     results=[],
                     query_params=query_params,
-                    error=f"NewsAPI error ({error_code}): {error_message}"
+                    error=f"NewsAPI error ({error_code}): {error_message}",
+                    http_code=None  # Error from JSON response body
                 )
 
             # Extract articles
@@ -361,11 +366,14 @@ Return JSON:
                 content = SearchResultBuilder.safe_text(article.get("content"))
                 published_at = article.get("publishedAt", "")
 
+                # Three-tier model: preserve full content with build_with_raw()
                 doc = (SearchResultBuilder()
                     .title(article.get("title"), default="No title")
                     .url(article.get("url"))
                     .snippet(description[:500] if description else "")
+                    .raw_content(content if content else description)  # Full content
                     .date(published_at[:10] if published_at else None)
+                    .api_response(article)  # Preserve complete API response
                     .metadata({
                         "source": source_name,
                         "author": article.get("author"),
@@ -373,7 +381,7 @@ Return JSON:
                         "url_to_image": article.get("urlToImage"),
                         "content_preview": content[:200] if content else None
                     })
-                    .build())
+                    .build_with_raw())
                 documents.append(doc)
 
             return QueryResult(
@@ -388,23 +396,26 @@ Return JSON:
 
         except requests.exceptions.HTTPError as e:
             logger.error(f"NewsAPI HTTP error: {e}", exc_info=True)
-            if e.response.status_code == 429:
+            status_code = e.response.status_code if e.response else None
+            if status_code == 429:
                 return QueryResult(
                     success=False,
                     source="NewsAPI",
                     total=0,
                     results=[],
                     query_params=query_params,
-                    error="NewsAPI rate limit exceeded (100 requests/day on free tier)"
+                    error="NewsAPI rate limit exceeded (100 requests/day on free tier)",
+                    http_code=429
                 )
-            elif e.response.status_code == 401:
+            elif status_code == 401:
                 return QueryResult(
                     success=False,
                     source="NewsAPI",
                     total=0,
                     results=[],
                     query_params=query_params,
-                    error="NewsAPI authentication failed. Check API key in .env"
+                    error="NewsAPI authentication failed. Check API key in .env",
+                    http_code=401
                 )
             else:
                 return QueryResult(
@@ -413,7 +424,8 @@ Return JSON:
                     total=0,
                     results=[],
                     query_params=query_params,
-                    error=f"NewsAPI HTTP error: {str(e)}"
+                    error=f"NewsAPI HTTP error: {str(e)}",
+                    http_code=status_code
                 )
 
         except Exception as e:
@@ -425,5 +437,6 @@ Return JSON:
                 total=0,
                 results=[],
                 query_params=query_params,
-                error=f"NewsAPI search failed: {str(e)}"
+                error=f"NewsAPI search failed: {str(e)}",
+                http_code=None  # Non-HTTP error
             )

@@ -47,6 +47,63 @@ For now, research sessions are finite (max_time_seconds) and agent instances are
 
 ---
 
+### 2. Schema Externalization: Inline JSON Schemas in 36 Files
+
+**Component**: 36 integration and research files with inline JSON schemas (~3,500 lines)
+
+**Issue**:
+JSON schemas are defined inline in Python code using `schema = { "type": "object", ... }` pattern rather than externalized to a central `schemas/` directory.
+
+**Files Affected**:
+- `integrations/government/` (15 files: sam_integration.py, usaspending_integration.py, dvids_integration.py, fec_integration.py, sec_edgar/integration.py, govinfo_integration.py, federal_register.py, usajobs_integration.py, clearancejobs_integration.py, +6 more)
+- `integrations/social/` (5 files: twitter_integration.py, telegram_integration.py, discord_integration.py, reddit_integration.py, brave_search_integration.py)
+- `research/` (10 files: recursive_agent.py, deep_research.py, +8 more)
+
+**Current Impact**:
+- **Low** for schema stability - Schemas rarely change after initial implementation
+- **Low** for maintainability - Inline schemas are colocated with usage, easy to understand
+- **Medium** for version control - Schema changes mixed with code changes in git diffs
+- **Medium** for reusability - Can't share schemas across integrations (though rarely needed)
+
+**Why Deferred** (2025-11-30):
+1. **Questionable value**: Schemas are edited infrequently (maybe once per quarter)
+2. **High risk**: Refactoring 36 files with working structured output = high regression risk
+3. **Large effort**: 8-9 days estimated (3 days schemas + testing burden)
+4. **System stability**: Just completed Gemini 2.5 Flash migration - schemas are stable
+5. **Opportunity cost**: Time better spent on new integrations or fixing SAM.gov timeouts
+
+**Better Solutions** (for future implementation):
+1. **Class-based schemas**: Create `schemas/` directory with schema classes
+   ```python
+   from schemas.recursive_agent import GlobalEvidenceSelectionSchema
+   schema = GlobalEvidenceSelectionSchema.get_schema()
+   ```
+2. **Schema registry**: Central registry for validation and documentation
+3. **Provider-specific schemas**: Separate schemas for OpenAI vs Gemini compatibility
+4. **Schema validation**: pytest tests to validate all schemas independently
+
+**Recommended Approach**:
+- Create `schemas/` directory structure organized by module
+- Migrate 10-15 files per batch with comprehensive testing
+- Start with most-edited integrations (if we identify which those are)
+- Add schema validation tests before migration
+
+**Estimated Effort**: 8-9 days (3 days implementation + 5-6 days testing across 36 integrations)
+
+**When to Address**:
+- When we're editing the same schema across multiple files (copy-paste pain)
+- When building a schema library for reusable patterns
+- When onboarding new developers who need centralized schema documentation
+- When we identify integrations with frequently-changing schemas
+
+**Workaround**:
+Inline schemas work fine for now. Use Ctrl+F to find schema definitions when editing. Git diffs show schema changes clearly in context with code changes.
+
+**Decision Date**: 2025-11-30
+**Decision Maker**: User approved deferral, prioritizing prompt refactoring instead
+
+---
+
 ## Resolved Tech Debt
 
 (None yet - this section will track items as they're addressed)

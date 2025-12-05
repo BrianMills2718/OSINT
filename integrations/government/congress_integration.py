@@ -96,7 +96,7 @@ class CongressIntegration(DatabaseIntegration):
 
         try:
             response = await acompletion(
-                model="gpt-4o-mini",
+                model=config.default_model,
                 messages=[{"role": "user", "content": prompt}],
                 response_format={"type": "json_object"}
             )
@@ -173,7 +173,7 @@ class CongressIntegration(DatabaseIntegration):
         }
 
         response = await acompletion(
-            model="gpt-4o-mini",
+            model=config.default_model,
             messages=[{"role": "user", "content": prompt}],
             response_format={"type": "json_schema", "json_schema": schema}
         )
@@ -223,7 +223,8 @@ class CongressIntegration(DatabaseIntegration):
                 total=0,
                 results=[],
                 query_params=query_params,
-                error="Congress.gov API key not found. Get one at: https://api.congress.gov/sign-up/"
+                error="Congress.gov API key not found. Get one at: https://api.congress.gov/sign-up/",
+                http_code=None  # Configuration error, not HTTP
             )
 
         try:
@@ -305,12 +306,16 @@ class CongressIntegration(DatabaseIntegration):
                     bill_type = SearchResultBuilder.safe_text(bill.get("type"))
                     bill_number = SearchResultBuilder.safe_text(bill.get("number"))
 
+                    # Three-tier model: preserve full content with build_with_raw()
+                    snippet_text = " | ".join(snippet_parts)
                     doc = (SearchResultBuilder()
                         .title(f"{bill_type} {bill_number} - {title}" if bill_type or bill_number else title,
                                default="Untitled Bill")
                         .url(bill.get("url"))
-                        .snippet(" | ".join(snippet_parts))
+                        .snippet(snippet_text)
+                        .raw_content(summary if summary else snippet_text)  # Full content
                         .date(bill.get('introducedDate'))
+                        .api_response(bill)  # Preserve complete API response
                         .metadata({
                             "bill_type": bill.get("type"),
                             "bill_number": bill.get("number"),
@@ -321,7 +326,7 @@ class CongressIntegration(DatabaseIntegration):
                             "has_summary": bool(summary),
                             "description": summary if summary else latest_action
                         })
-                        .build())
+                        .build_with_raw())
                     documents.append(doc)
 
             elif endpoint == "member":
@@ -336,11 +341,15 @@ class CongressIntegration(DatabaseIntegration):
                     chamber = SearchResultBuilder.safe_text(member.get("chamber"))
                     district = SearchResultBuilder.safe_text(member.get("district"), default="N/A")
 
+                    # Three-tier model: preserve full content with build_with_raw()
+                    snippet_text = f"Chamber: {chamber} | District: {district}"
                     doc = (SearchResultBuilder()
                         .title(f"{name} ({state}-{party})" if name else "Unknown Member",
                                default="Unknown Member")
                         .url(member.get("url"))
-                        .snippet(f"Chamber: {chamber} | District: {district}")
+                        .snippet(snippet_text)
+                        .raw_content(snippet_text)  # Full content
+                        .api_response(member)  # Preserve complete API response
                         .metadata({
                             "member_id": member.get("bioguideId"),
                             "party": member.get("party"),
@@ -348,7 +357,7 @@ class CongressIntegration(DatabaseIntegration):
                             "chamber": member.get("chamber"),
                             "description": f"{name} - {chamber} member from {state}"
                         })
-                        .build())
+                        .build_with_raw())
                     documents.append(doc)
 
             elif endpoint == "hearing":
@@ -370,11 +379,15 @@ class CongressIntegration(DatabaseIntegration):
 
                     snippet_desc = description[:300] if description else "No description available"
 
+                    # Three-tier model: preserve full content with build_with_raw()
+                    snippet_text = f"{snippet_desc} | Chamber: {chamber} | Updated: {update_date}"
                     doc = (SearchResultBuilder()
                         .title(f"{title} - {chamber} (Congress {congress_num})", default="Untitled Hearing")
                         .url(hearing.get("url"))
-                        .snippet(f"{snippet_desc} | Chamber: {chamber} | Updated: {update_date}")
+                        .snippet(snippet_text)
+                        .raw_content(description if description else snippet_text)  # Full content
                         .date(hearing.get("updateDate"))
+                        .api_response(hearing)  # Preserve complete API response
                         .metadata({
                             "chamber": chamber,
                             "number": number,
@@ -384,7 +397,7 @@ class CongressIntegration(DatabaseIntegration):
                             "title": title,
                             "description": description if description else f"{chamber} hearing #{number}"
                         })
-                        .build())
+                        .build_with_raw())
                     documents.append(doc)
 
             # Limit results to limit
@@ -414,10 +427,11 @@ class CongressIntegration(DatabaseIntegration):
 
         except requests.exceptions.HTTPError as e:
             logger.error(f"Congress.gov HTTP error: {e}", exc_info=True)
-            error_msg = f"HTTP {e.response.status_code}: {e.response.reason}"
-            if e.response.status_code == 401:
+            status_code = e.response.status_code if e.response else None
+            error_msg = f"HTTP {status_code}: {e.response.reason if e.response else 'Unknown'}"
+            if status_code == 401:
                 error_msg = "Invalid API key. Get one at: https://api.congress.gov/sign-up/"
-            elif e.response.status_code == 429:
+            elif status_code == 429:
                 error_msg = "Rate limit exceeded (5000/hour). Wait before retrying."
 
             return QueryResult(
@@ -426,7 +440,8 @@ class CongressIntegration(DatabaseIntegration):
                 total=0,
                 results=[],
                 query_params=query_params,
-                error=error_msg
+                error=error_msg,
+                http_code=status_code
             )
 
         except Exception as e:
@@ -438,7 +453,8 @@ class CongressIntegration(DatabaseIntegration):
                 total=0,
                 results=[],
                 query_params=query_params,
-                error=f"Congress.gov API error: {str(e)}"
+                error=f"Congress.gov API error: {str(e)}",
+                http_code=None  # Non-HTTP error
             )
 
     async def _fetch_bill_summaries(

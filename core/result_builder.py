@@ -5,9 +5,15 @@ All integrations MUST use this builder to construct search results.
 This ensures consistent handling of None values, type mismatches,
 and edge cases across all 29+ integrations.
 
+ARCHITECTURE (Three-Tier Model):
+    - build() returns dict for legacy SearchResult (backward compatible)
+    - build_raw() returns RawResult for three-tier model (no truncation)
+    - Both methods share the same builder chain
+
 Usage:
     from core.result_builder import SearchResultBuilder
 
+    # Legacy usage (still works):
     result = (SearchResultBuilder()
         .title(f"${builder.format_amount(amount)} from {contributor}")
         .url(data.get("url"))
@@ -15,12 +21,24 @@ Usage:
         .date(data.get("created_at"))
         .metadata({"source_id": data.get("id")})
         .build())
+
+    # NEW: Three-tier model (preserves full content):
+    raw_result = (SearchResultBuilder()
+        .title(data.get("name"))
+        .url(data.get("link"))
+        .raw_content(data.get("full_description"))  # No truncation!
+        .date(data.get("created_at"))
+        .api_response(data)  # Store complete API response
+        .build_raw(source_id="sam", query_params={"q": "AI"}))
 """
 
 from dataclasses import dataclass, field
-from typing import Any, Dict, Optional, Union
+from typing import Any, Dict, Optional, Union, TYPE_CHECKING
 from datetime import datetime, date
 import logging
+
+if TYPE_CHECKING:
+    from core.raw_result import RawResult
 
 logger = logging.getLogger(__name__)
 
@@ -32,6 +50,10 @@ class SearchResultBuilder:
 
     Handles None values, type mismatches, and edge cases automatically.
     All setter methods return self for chaining.
+
+    Two build modes:
+        - build() -> Dict for legacy SearchResult (truncates snippet)
+        - build_raw() -> RawResult for three-tier model (no truncation)
     """
 
     _title: str = ""
@@ -39,6 +61,11 @@ class SearchResultBuilder:
     _snippet: str = ""
     _date: Optional[str] = None
     _metadata: Dict[str, Any] = field(default_factory=dict)
+
+    # NEW: Three-tier model fields
+    _raw_content: Optional[str] = None  # Full content, never truncated
+    _api_response: Dict[str, Any] = field(default_factory=dict)  # Complete API response
+    _response_time_ms: float = 0.0
 
     # === Safe Value Extractors (static methods for use in f-strings) ===
 
@@ -184,13 +211,44 @@ class SearchResultBuilder:
         self._metadata[key] = value
         return self
 
+    # === NEW: Three-tier model builder methods ===
+
+    def raw_content(self, value: Any) -> 'SearchResultBuilder':
+        """
+        Set raw content (NEVER truncated).
+
+        Use this for three-tier model to preserve full text.
+        If not set, build_raw() will use snippet value.
+        """
+        if value is None:
+            self._raw_content = None
+        else:
+            self._raw_content = str(value)  # No truncation!
+        return self
+
+    def api_response(self, value: Dict[str, Any]) -> 'SearchResultBuilder':
+        """
+        Set complete API response (stored as-is).
+
+        Use this for three-tier model to preserve raw data.
+        """
+        if value and isinstance(value, dict):
+            self._api_response = value
+        return self
+
+    def response_time(self, ms: float) -> 'SearchResultBuilder':
+        """Set API response time in milliseconds."""
+        self._response_time_ms = ms
+        return self
+
     # === Build Method ===
 
     def build(self) -> Dict[str, Any]:
         """
-        Build the final result dictionary.
+        Build the final result dictionary (legacy mode).
 
         Returns the standard format expected by QueryResult.results[].
+        Snippet is truncated to 500 chars.
         """
         return {
             "title": self._title,
@@ -199,6 +257,56 @@ class SearchResultBuilder:
             "date": self._date,
             "metadata": self._metadata
         }
+
+    def build_raw(
+        self,
+        source_id: str,
+        query_params: Optional[Dict[str, Any]] = None
+    ) -> 'RawResult':
+        """
+        Build RawResult for three-tier model (no truncation).
+
+        This is the NEW build method for preserving complete data.
+        Use this instead of build() when you want to preserve full content.
+
+        Args:
+            source_id: Integration ID (e.g., "sam", "usaspending")
+            query_params: Query parameters used (optional)
+
+        Returns:
+            RawResult with complete data preserved
+        """
+        from core.raw_result import RawResult
+
+        # Use raw_content if set, otherwise fall back to snippet
+        content = self._raw_content if self._raw_content is not None else self._snippet
+
+        return RawResult.from_api_response(
+            api_response=self._api_response,
+            source_id=source_id,
+            query_params=query_params or {},
+            title=self._title,
+            raw_content=content,  # Full content, never truncated
+            url=self._url,
+            structured_date=self._date,
+            response_time_ms=self._response_time_ms
+        )
+
+    def build_with_raw(self) -> Dict[str, Any]:
+        """
+        Build result dict that includes raw_content field.
+
+        Returns standard dict format but with additional raw_content
+        field for full text. Use this for gradual migration.
+        """
+        result = self.build()
+        # Add raw_content if available (for three-tier model)
+        if self._raw_content is not None:
+            result["raw_content"] = self._raw_content
+        elif self._snippet:
+            # If no raw_content set but snippet exists, use snippet as raw
+            result["raw_content"] = self._snippet
+        return result
 
     # === Convenience Class Method ===
 

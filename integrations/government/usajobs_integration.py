@@ -116,27 +116,27 @@ class USAJobsIntegration(DatabaseIntegration):
                     "description": "Search keywords for job titles and descriptions"
                 },
                 "location": {
-                    "type": ["string", "null"],
-                    "description": "Geographic location or null"
+                    "type": "string",
+                    "description": "Geographic location (optional)"
                 },
                 "organization": {
-                    "type": ["string", "null"],
-                    "description": "Federal agency/organization name or null"
+                    "type": "string",
+                    "description": "Federal agency/organization name (optional)"
                 },
                 "pay_grade_low": {
-                    "type": ["integer", "null"],
-                    "description": "Minimum GS pay grade (1-15) or null"
+                    "type": "integer",
+                    "description": "Minimum GS pay grade (1-15) (optional)"
                 },
                 "pay_grade_high": {
-                    "type": ["integer", "null"],
-                    "description": "Maximum GS pay grade (1-15) or null"
+                    "type": "integer",
+                    "description": "Maximum GS pay grade (1-15) (optional)"
                 },
                 "reasoning": {
                     "type": "string",
                     "description": "Brief explanation of the query strategy"
                 }
             },
-            "required": ["keywords", "location", "organization", "pay_grade_low", "pay_grade_high", "reasoning"],
+            "required": ["keywords", "organization", "pay_grade_low", "pay_grade_high", "reasoning"],
             "additionalProperties": False
         }
 
@@ -199,7 +199,8 @@ class USAJobsIntegration(DatabaseIntegration):
                 total=0,
                 results=[],
                 query_params=query_params,
-                error="API key required for USAJobs"
+                error="API key required for USAJobs",
+                http_code=None  # Non-HTTP error
             )
 
         try:
@@ -264,17 +265,20 @@ class USAJobsIntegration(DatabaseIntegration):
                     if apply_uri and len(apply_uri) > 0:
                         url = apply_uri[0].get("ApplicationURI")
 
+                # Three-tier model: preserve full content with build_with_raw()
                 normalized = (SearchResultBuilder()
                     .title(matched_obj.get("PositionTitle"), default="Untitled Position")
                     .url(url)
                     .snippet(matched_obj.get("QualificationSummary"), max_length=200)
+                    .raw_content(matched_obj.get("QualificationSummary"))  # Full content
+                    .api_response(item)  # Preserve complete API response
                     .metadata({
                         **matched_obj,  # Keep all raw fields for specialized consumers
                         "description": SearchResultBuilder.safe_text(
                             matched_obj.get("QualificationSummary"), max_length=500
                         )
                     })
-                    .build())
+                    .build_with_raw())
 
                 results.append(normalized)
 
@@ -327,7 +331,8 @@ class USAJobsIntegration(DatabaseIntegration):
                 total=0,
                 results=[],
                 query_params=query_params,
-                error=f"HTTP {status_code}: {str(e)}",
+                error=f"HTTP {status_code}: {str(e,
+                http_code=status_code)}",
                 response_time_ms=response_time_ms
             )
 
@@ -353,5 +358,6 @@ class USAJobsIntegration(DatabaseIntegration):
                 results=[],
                 query_params=query_params,
                 error=str(e),
+                http_code=None,  # Non-HTTP error
                 response_time_ms=response_time_ms
             )

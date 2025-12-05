@@ -31,6 +31,7 @@ async def main():
     # v2 arguments (map to Constraints)
     parser.add_argument('--max-depth', type=int, help='Maximum recursion depth (overrides config.yaml)')
     parser.add_argument('--max-time-minutes', type=int, help='Maximum time in minutes (overrides config.yaml)')
+    parser.add_argument('--max-time', type=int, help='Maximum time in SECONDS (common CLI convention, overrides config.yaml)')
     parser.add_argument('--max-goals', type=int, help='Maximum total goals to pursue (overrides config.yaml)')
     parser.add_argument('--max-cost', type=float, help='Maximum cost in dollars (overrides config.yaml)')
     parser.add_argument('--max-concurrent', type=int, help='Max concurrent tasks (overrides config.yaml)')
@@ -65,10 +66,18 @@ async def main():
         else v2_config.get("max_goals", v1_config.get("max_tasks", 50))
     )
 
-    max_time_minutes = (
-        args.max_time_minutes if args.max_time_minutes is not None
-        else v2_config.get("max_time_minutes", v1_config.get("max_time_minutes", 30))
-    )
+    # Handle time: --max-time is in SECONDS, --max-time-minutes is in minutes
+    # We compute max_time_seconds directly to avoid precision loss
+    if args.max_time is not None:
+        # Exact seconds from CLI
+        max_time_seconds = args.max_time
+        max_time_minutes = max_time_seconds / 60  # For display only
+    elif args.max_time_minutes is not None:
+        max_time_minutes = args.max_time_minutes
+        max_time_seconds = max_time_minutes * 60
+    else:
+        max_time_minutes = v2_config.get("max_time_minutes", v1_config.get("max_time_minutes", 30))
+        max_time_seconds = max_time_minutes * 60
 
     max_depth = (
         args.max_depth if args.max_depth is not None
@@ -89,7 +98,7 @@ async def main():
     constraints = Constraints(
         # Core limits
         max_depth=max_depth,
-        max_time_seconds=max_time_minutes * 60,
+        max_time_seconds=max_time_seconds,
         max_goals=max_goals,
         max_cost_dollars=max_cost,
         max_results_per_source=v2_config.get("max_results_per_source", 20),
@@ -126,7 +135,7 @@ async def main():
 
     print(f"Constraints:")
     print(f"  Max depth: {constraints.max_depth}")
-    print(f"  Max time: {max_time_minutes} minutes")
+    print(f"  Max time: {max_time_seconds}s ({max_time_minutes:.1f} minutes)")
     print(f"  Max goals: {constraints.max_goals}")
     print(f"  Max cost: ${constraints.max_cost_dollars:.2f}")
     print(f"  Max concurrent: {constraints.max_concurrent_tasks}")

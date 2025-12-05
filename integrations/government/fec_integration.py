@@ -11,6 +11,7 @@ import logging
 import os
 from typing import Dict, Optional
 from datetime import datetime
+from urllib.parse import quote
 import asyncio
 import requests
 from dotenv import load_dotenv
@@ -103,7 +104,7 @@ class FECIntegration(DatabaseIntegration):
 
         try:
             response = await acompletion(
-                model="gpt-4o-mini",
+                model=config.default_model,
                 messages=[{"role": "user", "content": prompt}],
                 response_format={"type": "json_object"}
             )
@@ -165,28 +166,27 @@ class FECIntegration(DatabaseIntegration):
                     "description": "Contributor/donor name to search"
                 },
                 "office": {
-                    "type": ["string", "null"],
-                    "description": "Office sought: 'P' (President), 'S' (Senate), 'H' (House), or null"
+                    "type": "string",
+                    "description": "Office sought: 'P' (President), 'S' (Senate), 'H' (House), (optional)"
                 },
                 "state": {
-                    "type": ["string", "null"],
-                    "description": "Two-letter state code or null"
+                    "type": "string",
+                    "description": "Two-letter state code (optional)"
                 },
                 "cycle": {
                     "type": "integer",
                     "description": "Election cycle year (2024, 2022, 2020, etc.)"
                 },
                 "party": {
-                    "type": ["string", "null"],
-                    "description": "Party code: 'DEM', 'REP', 'IND', etc. or null"
+                    "type": "string",
+                    "description": "Party code: 'DEM', 'REP', 'IND', etc. (optional)"
                 },
                 "reasoning": {
                     "type": "string",
                     "description": "Brief explanation of the query strategy"
                 }
             },
-            "required": ["endpoint", "candidate_name", "committee_name", "contributor_name",
-                        "office", "state", "cycle", "party", "reasoning"],
+            "required": ["endpoint", "candidate_name", "committee_name", "contributor_name", "office", "state", "party", "reasoning"],
             "additionalProperties": False
         }
 
@@ -244,7 +244,8 @@ class FECIntegration(DatabaseIntegration):
                 total=0,
                 results=[],
                 query_params=query_params,
-                error="FEC API key not found. Get one at: https://api.data.gov/signup/"
+                error="FEC API key not found. Get one at: https://api.data.gov/signup/",
+                http_code=None  # Configuration error, not HTTP
             )
 
         endpoint_type = query_params.get("endpoint", "candidates")
@@ -266,7 +267,8 @@ class FECIntegration(DatabaseIntegration):
                     total=0,
                     results=[],
                     query_params=query_params,
-                    error=f"Unknown endpoint type: {endpoint_type}"
+                    error=f"Unknown endpoint type: {endpoint_type}",
+                    http_code=None  # Validation error, not HTTP
                 )
 
         except Exception as e:
@@ -280,6 +282,7 @@ class FECIntegration(DatabaseIntegration):
                 results=[],
                 query_params=query_params,
                 error=f"FEC API error: {str(e)}",
+                http_code=None,  # Non-HTTP error
                 response_time_ms=response_time_ms
             )
 
@@ -356,11 +359,14 @@ class FECIntegration(DatabaseIntegration):
 
             snippet = " | ".join(snippet_parts) if snippet_parts else "Federal candidate"
 
+            # Three-tier model: preserve full content with build_with_raw()
             transformed = (SearchResultBuilder()
                 .title(name, default="Unknown Candidate")
                 .url(url)
                 .snippet(snippet, max_length=500)
+                .raw_content(snippet)  # Full content, never truncated
                 .date(None)  # Candidates don't have a single date
+                .api_response(candidate)  # Preserve complete API response
                 .metadata({
                     "candidate_id": candidate_id,
                     "office": candidate.get("office"),
@@ -373,7 +379,7 @@ class FECIntegration(DatabaseIntegration):
                     "incumbent_challenge": candidate.get("incumbent_challenge_full"),
                     "candidate_status": candidate.get("candidate_status")
                 })
-                .build())
+                .build_with_raw())
             transformed_results.append(transformed)
 
         return QueryResult(
@@ -442,15 +448,27 @@ class FECIntegration(DatabaseIntegration):
             )
             date = contrib.get("contribution_receipt_date", "")
 
-            # Build specific URL to committee receipts page
+            # Build specific URL to receipt with all available filters
             committee_id = contrib.get("committee_id", "")
-            url = f"https://www.fec.gov/data/receipts/?committee_id={committee_id}&data_type=processed" if committee_id else "https://www.fec.gov/data/receipts/?data_type=processed"
+            contributor_name = contrib.get("contributor_name", "")
+            url_params = ["data_type=processed"]
+            if committee_id:
+                url_params.append(f"committee_id={committee_id}")
+            if contributor_name:
+                url_params.append(f"contributor_name={quote(contributor_name)}")
+            if date:
+                url_params.append(f"min_date={date}&max_date={date}")
+            url = f"https://www.fec.gov/data/receipts/?{'&'.join(url_params)}"
 
+            snippet_text = f"Amount: {SearchResultBuilder.format_amount(amount)} | Date: {date} | Employer: {contrib.get('contributor_employer', 'N/A')}"
+            # Three-tier model: preserve full content with build_with_raw()
             transformed = (SearchResultBuilder()
                 .title(f"{SearchResultBuilder.format_amount(amount)} from {contributor} to {recipient}")
                 .url(url)
-                .snippet(f"Amount: {SearchResultBuilder.format_amount(amount)} | Date: {date} | Employer: {contrib.get('contributor_employer', 'N/A')}")
+                .snippet(snippet_text)
+                .raw_content(snippet_text)  # Full content, never truncated
                 .date(date)
+                .api_response(contrib)  # Preserve complete API response
                 .metadata({
                     "contributor_name": contributor,
                     "contributor_employer": contrib.get("contributor_employer"),
@@ -461,7 +479,7 @@ class FECIntegration(DatabaseIntegration):
                     "recipient_committee_id": contrib.get("committee_id"),
                     "transaction_id": contrib.get("transaction_id")
                 })
-                .build())
+                .build_with_raw())
             transformed_results.append(transformed)
 
         return QueryResult(
@@ -530,11 +548,14 @@ class FECIntegration(DatabaseIntegration):
             party_full = SearchResultBuilder.safe_text(committee.get('party_full'), default='N/A')
             snippet = f"Type: {committee_type} | Party: {party_full}"
 
+            # Three-tier model: preserve full content with build_with_raw()
             transformed = (SearchResultBuilder()
                 .title(name, default="Unknown Committee")
                 .url(url)
                 .snippet(snippet, max_length=500)
+                .raw_content(snippet)  # Full content, never truncated
                 .date(None)
+                .api_response(committee)  # Preserve complete API response
                 .metadata({
                     "committee_id": committee_id,
                     "committee_type": committee.get("committee_type"),
@@ -543,7 +564,7 @@ class FECIntegration(DatabaseIntegration):
                     "designation": committee.get("designation_full"),
                     "treasurer_name": committee.get("treasurer_name")
                 })
-                .build())
+                .build_with_raw())
             transformed_results.append(transformed)
 
         return QueryResult(
@@ -615,11 +636,15 @@ class FECIntegration(DatabaseIntegration):
             committee_id = expenditure.get("committee", {}).get("committee_id", "") or expenditure.get("committee_id", "")
             url = f"https://www.fec.gov/data/committee/{committee_id}/" if committee_id else "https://www.fec.gov/data/independent-expenditures/"
 
+            snippet_text = f"Amount: {SearchResultBuilder.format_amount(amount)} | Purpose: {SearchResultBuilder.safe_text(expenditure.get('expenditure_description'), 'N/A', 100)}"
+            # Three-tier model: preserve full content with build_with_raw()
             transformed = (SearchResultBuilder()
                 .title(f"{SearchResultBuilder.format_amount(amount)} by {spender} {action} {candidate}")
                 .url(url)
-                .snippet(f"Amount: {SearchResultBuilder.format_amount(amount)} | Purpose: {SearchResultBuilder.safe_text(expenditure.get('expenditure_description'), 'N/A', 100)}")
+                .snippet(snippet_text)
+                .raw_content(expenditure.get("expenditure_description") or snippet_text)  # Full content
                 .date(expenditure.get("expenditure_date"))
+                .api_response(expenditure)  # Preserve complete API response
                 .metadata({
                     "amount": amount,
                     "spender": spender,
@@ -628,7 +653,7 @@ class FECIntegration(DatabaseIntegration):
                     "purpose": expenditure.get("expenditure_description"),
                     "date": expenditure.get("expenditure_date")
                 })
-                .build())
+                .build_with_raw())
             transformed_results.append(transformed)
 
         return QueryResult(

@@ -708,6 +708,12 @@ class IntegrationRegistry:
             if base in self._name_lookup_cache:
                 return self._name_lookup_cache[base]
 
+        # 3.5. Handle _api suffix (LLM sometimes adds this)
+        if name_lower.endswith("_api"):
+            base = name_lower[:-4]  # Remove "_api" suffix
+            if base in self._name_lookup_cache:
+                return self._name_lookup_cache[base]
+
         # 4. Try removing common suffixes (.gov, .com, .org)
         for suffix in [".gov", ".com", ".org"]:
             if name_lower.endswith(suffix):

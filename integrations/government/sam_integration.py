@@ -155,8 +155,8 @@ class SAMIntegration(DatabaseIntegration):
                     "description": "List of procurement types, empty if not specified"
                 },
                 "set_aside": {
-                    "type": ["string", "null"],
-                    "description": "Set-aside type code or null"
+                    "type": "string",
+                    "description": "Set-aside type code (optional)"
                 },
                 "naics_codes": {
                     "type": "array",
@@ -164,8 +164,8 @@ class SAMIntegration(DatabaseIntegration):
                     "description": "List of NAICS codes, empty if not specified"
                 },
                 "organization": {
-                    "type": ["string", "null"],
-                    "description": "Agency/organization name or null"
+                    "type": "string",
+                    "description": "Agency/organization name (optional)"
                 },
                 "date_range_days": {
                     "type": "integer",
@@ -178,11 +178,11 @@ class SAMIntegration(DatabaseIntegration):
                     "description": "Brief explanation of the query strategy"
                 },
                 "suggested_reformulation": {
-                    "type": ["string", "null"],
-                    "description": "Suggested query reformulation if not relevant, null if relevant"
+                    "type": "string",
+                    "description": "Suggested query reformulation if not relevant (optional)"
                 }
             },
-            "required": ["relevant", "keywords", "procurement_types", "set_aside", "naics_codes", "organization", "date_range_days", "reasoning", "suggested_reformulation"],
+            "required": ["relevant", "keywords", "procurement_types", "naics_codes", "date_range_days", "reasoning"],
             "additionalProperties": False
         }
 
@@ -244,7 +244,8 @@ class SAMIntegration(DatabaseIntegration):
                 total=0,
                 results=[],
                 query_params=query_params,
-                error="API key required for SAM.gov"
+                error="API key required for SAM.gov",
+                http_code=None  # Configuration error, not HTTP
             )
 
         try:
@@ -353,6 +354,7 @@ class SAMIntegration(DatabaseIntegration):
                     results=[],
                     query_params=query_params,
                     error=f"SAM.gov quota exceeded. {error_msg}. Next access: {next_access}",
+                    http_code=None,  # Quota error (not HTTP 429, custom handling)
                     response_time_ms=response_time_ms
                 )
 
@@ -361,14 +363,19 @@ class SAMIntegration(DatabaseIntegration):
 
             # Transform results using SearchResultBuilder
             # FIX: SAM.gov returns 'uiLink' but Pydantic expects 'url'
+            # Three-tier model: preserve full content with build_with_raw()
             transformed_results = []
             for opp in opportunities[:limit]:
                 # Build transformed result with defensive value extraction
+                # Use build_with_raw() to preserve full content for three-tier model
                 transformed = (SearchResultBuilder()
                     .title(opp.get("title"))
                     .url(opp.get("uiLink") or opp.get("url"))
                     .snippet(opp.get("description"), max_length=500)
+                    .raw_content(opp.get("description"))  # Full content, never truncated
                     .date(opp.get("postedDate") or opp.get("publishedDate"))
+                    .api_response(opp)  # Preserve complete API response
+                    .response_time(response_time_ms)
                     .metadata({
                         "noticeId": opp.get("noticeId"),
                         "solicitationNumber": opp.get("solicitationNumber"),
@@ -379,7 +386,7 @@ class SAMIntegration(DatabaseIntegration):
                         "responseDeadLine": opp.get("responseDeadLine"),
                         "archiveDate": opp.get("archiveDate")
                     })
-                    .build())
+                    .build_with_raw())  # Includes raw_content field
                 transformed_results.append(transformed)
 
             # Mask API key in params for logging
@@ -436,6 +443,7 @@ class SAMIntegration(DatabaseIntegration):
                 results=[],
                 query_params=query_params,
                 error=f"HTTP {status_code}: {str(e)}",
+                http_code=status_code if status_code > 0 else None,
                 response_time_ms=response_time_ms
             )
 
@@ -461,5 +469,6 @@ class SAMIntegration(DatabaseIntegration):
                 results=[],
                 query_params=query_params,
                 error=str(e),
+                http_code=None,  # Non-HTTP error
                 response_time_ms=response_time_ms
             )

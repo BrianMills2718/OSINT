@@ -1,0 +1,78 @@
+{# Goal Assessment Prompt for Recursive Research Agent #}
+{# Determines if a goal should be directly executed or decomposed into sub-goals #}
+You are a research agent assessing a goal.
+
+{{ temporal_context }}
+
+ORIGINAL OBJECTIVE: {{ original_objective }}
+
+CURRENT GOAL TO ASSESS: {{ goal }}
+
+GOAL ANCESTRY (how we got here):
+{% if goal_stack %}
+{% for g in goal_stack %}
+  {{ loop.index }}. {{ g }}
+{% endfor %}
+{% else %}
+  (This is the root goal)
+{% endif %}
+
+EVIDENCE ACCUMULATED SO FAR:
+{{ evidence_text }}
+
+AVAILABLE DATA SOURCES:
+{{ sources_text }}
+
+CURRENT STATE:
+- Depth: {{ depth }}/{{ max_depth }}
+- Time elapsed: {{ elapsed_seconds }}s / {{ max_time_seconds }}s
+- Goals created: {{ goals_created }}/{{ max_goals }}
+
+DECISION REQUIRED:
+Is this goal DIRECTLY EXECUTABLE (maps to a specific action like an API call or analysis)?
+Or does it need to be DECOMPOSED into smaller sub-goals?
+
+IMPORTANT: Prefer THOROUGH research over quick results. A single API call rarely provides
+comprehensive coverage. Investigative research requires cross-referencing multiple sources.
+
+A goal is directly executable ONLY if:
+- It's extremely narrow (e.g., "get FEC filings for committee X")
+- It's an analysis/synthesis task on EXISTING evidence
+- We're at depth 3+ and need to start executing to avoid infinite decomposition
+
+CRITICAL - SYNTHESIS/COMPARISON GOALS:
+If the goal contains "compare", "vs", "contrast", "analyze", "synthesize", "assess patterns",
+"relationship between", or similar analytical language:
+→ Use action type "analyze" (NOT api_call or web_search)
+→ This performs reasoning over the accumulated evidence
+→ Example: Goal "Compare Palantir vs Anduril contracts" should use:
+  { "type": "analyze", "prompt": "Compare the contract portfolios..." }
+  NOT { "type": "api_call", "source": "usaspending" }
+
+A goal SHOULD BE DECOMPOSED if ANY of these apply:
+- It's about a company/person/entity → needs multiple source TYPES (contracts, filings, news, legal)
+- It mentions "investigate", "research", or "find" → needs comprehensive coverage
+- Multiple relevant sources exist → decompose by source type for parallel querying
+- A single source would give incomplete picture → decompose for cross-referencing
+- We're at depth 0-2 with budget remaining → invest in thorough decomposition
+
+Example: "Research Company X contracts" should decompose into:
+  - "Find Company X federal contracts in USAspending"
+  - "Find Company X contract opportunities in SAM.gov"
+  - "Find Company X contract announcements in news"
+  - "Find Company X disclosed contracts in SEC filings"
+
+This ensures comprehensive coverage, not just the first matching source.
+
+Return JSON:
+{
+    "directly_executable": true or false,
+    "reasoning": "Brief explanation of your decision",
+    "action": {
+        "type": "api_call" or "analyze" or "synthesize" or "web_search",
+        "source": "source_id if api_call",
+        "params": {"query": "...", ...},
+        "prompt": "analysis prompt if analyze/synthesize"
+    } if directly_executable else null,
+    "decomposition_rationale": "Why this needs to be broken down" if not directly_executable else null
+}

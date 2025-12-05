@@ -114,7 +114,7 @@ Return JSON:
 
         try:
             response = await acompletion(
-                model="gpt-4o-mini",
+                model=config.default_model,
                 messages=[{"role": "user", "content": prompt}],
                 response_format={"type": "json_object"}
             )
@@ -173,21 +173,21 @@ Return JSON:
                         "description": "URLs to check in Wayback Machine (full URLs with http/https)"
                     },
                     "timestamp": {
-                        "type": ["string", "null"],
-                        "description": "Optional timestamp in YYYYMMDD format to find snapshots near this date (null for most recent)"
+                        "type": "string",
+                        "description": "Optional timestamp in YYYYMMDD format to find snapshots near this date (optional)"
                     },
                     "description": {
                         "type": "string",
                         "description": "Brief description of what we're looking for"
                     }
                 },
-                "required": ["relevant", "reasoning", "urls", "timestamp", "description"],
+                "required": ["relevant", "reasoning", "urls", "description"],
                 "additionalProperties": False
             }
         }
 
         response = await acompletion(
-            model="gpt-4o-mini",
+            model=config.default_model,
             messages=[{"role": "user", "content": prompt}],
             response_format={"type": "json_schema", "json_schema": schema}
         )
@@ -234,7 +234,8 @@ Return JSON:
                 total=0,
                 results=[],
                 query_params=query_params,
-                error="No URLs provided to check in Wayback Machine"
+                error="No URLs provided to check in Wayback Machine",
+                http_code=None  # Non-HTTP error
             )
 
         try:
@@ -283,11 +284,20 @@ Return JSON:
                         formatted_date = "Unknown date"
 
                     # Build document using defensive builder
+                    # Three-tier model: preserve full content with build_with_raw()
+                    snippet_text = f"Snapshot from {formatted_date} (HTTP {snapshot_status})"
                     doc = (SearchResultBuilder()
                         .title(f"Archived Snapshot: {url}", default="Wayback Archive")
                         .url(snapshot_url)
-                        .snippet(f"Snapshot from {formatted_date} (HTTP {snapshot_status})")
+                        .snippet(snippet_text)
+                        .raw_content(snippet_text)  # Full content
                         .date(snapshot_timestamp[:8] if snapshot_timestamp else None)
+                        .api_response({
+                            "original_url": url,
+                            "archive_url": snapshot_url,
+                            "snapshot_timestamp": snapshot_timestamp,
+                            "snapshot_status": snapshot_status
+                        })  # Preserve wayback data
                         .metadata({
                             "original_url": url,
                             "archive_url": snapshot_url,
@@ -296,7 +306,7 @@ Return JSON:
                             "http_status": snapshot_status,
                             "requested_timestamp": timestamp
                         })
-                        .build())
+                        .build_with_raw())
                     documents.append(doc)
 
             if not documents:
@@ -319,6 +329,7 @@ Return JSON:
             )
 
         except requests.exceptions.HTTPError as e:
+            status_code = e.response.status_code if e.response else None
             # Wayback Machine HTTP error
             logger.error(f"Wayback Machine HTTP error: {e}", exc_info=True)
             return QueryResult(
@@ -327,7 +338,8 @@ Return JSON:
                 total=0,
                 results=[],
                 query_params=query_params,
-                error=f"Wayback Machine HTTP error: {str(e)}"
+                error=f"Wayback Machine HTTP error: {str(e)}",
+                http_code=status_code
             )
 
         except Exception as e:
@@ -339,5 +351,6 @@ Return JSON:
                 total=0,
                 results=[],
                 query_params=query_params,
-                error=f"Wayback Machine search failed: {str(e)}"
+                error=f"Wayback Machine search failed: {str(e)}",
+                http_code=None  # Non-HTTP error
             )

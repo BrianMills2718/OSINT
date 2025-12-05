@@ -128,9 +128,10 @@ class SECEdgarIntegration(DatabaseIntegration):
             research_question=research_question
         )
 
+        from config_loader import config
         try:
             response = await acompletion(
-                model="gpt-4o-mini",
+                model=config.default_model,
                 messages=[{"role": "user", "content": prompt}],
                 response_format={"type": "json_object"}
             )
@@ -189,8 +190,8 @@ class SECEdgarIntegration(DatabaseIntegration):
                         "enum": ["company_filings", "company_search"]
                     },
                     "company_name": {
-                        "type": ["string", "null"],
-                        "description": "Company name to search for (if applicable)"
+                        "type": "string",
+                        "description": "Company name to search for (optional)"
                     },
                     "form_types": {
                         "type": "array",
@@ -198,21 +199,22 @@ class SECEdgarIntegration(DatabaseIntegration):
                         "description": "SEC form types to filter (e.g., 10-K, 10-Q, 8-K, 4)"
                     },
                     "keywords": {
-                        "type": ["string", "null"],
-                        "description": "Keywords to search for in filings (if applicable)"
+                        "type": "string",
+                        "description": "Keywords to search for in filings (optional)"
                     },
                     "limit": {
                         "type": "integer",
                         "description": "Number of results to retrieve (1-100)"
                     }
                 },
-                "required": ["relevant", "reasoning", "query_type", "form_types", "limit", "company_name", "keywords"],
+                "required": ["relevant", "reasoning", "query_type", "form_types", "limit"],
                 "additionalProperties": False
             }
         }
 
+        from config_loader import config
         response = await acompletion(
-            model="gpt-4o-mini",
+            model=config.default_model,
             messages=[{"role": "user", "content": prompt}],
             response_format={"type": "json_schema", "json_schema": schema}
         )
@@ -357,7 +359,8 @@ class SECEdgarIntegration(DatabaseIntegration):
                     total=0,
                     results=[],
                     query_params={"cik": cik},
-                    error=f"No filings found for CIK {cik}"
+                    error=f"No filings found for CIK {cik}",
+                http_code=None  # Non-HTTP error
                 )
 
             # Build results using defensive builder (simplified for fallback)
@@ -371,18 +374,22 @@ class SECEdgarIntegration(DatabaseIntegration):
                 filing_date = filing_dates[i] if i < len(filing_dates) else ""
                 accession = accession_numbers[i] if i < len(accession_numbers) else "N/A"
 
+                # Three-tier model: preserve full content with build_with_raw()
+                snippet_text = f"Accession: {accession}"
                 doc = (SearchResultBuilder()
                     .title(f"{form_type} Filing - {company_name} ({filing_date})",
                            default="SEC Filing")
                     .url(f"https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK={cik_padded}")
-                    .snippet(f"Accession: {accession}")
+                    .snippet(snippet_text)
+                    .raw_content(snippet_text)  # Full content
                     .date(filing_date)
+                    .api_response(data)  # Preserve complete API response
                     .metadata({
                         "form_type": form_type,
                         "cik": cik_padded,
                         "company_name": data.get("name")
                     })
-                    .build())
+                    .build_with_raw())
                 documents.append(doc)
 
             return QueryResult(
@@ -403,7 +410,8 @@ class SECEdgarIntegration(DatabaseIntegration):
                 total=0,
                 results=[],
                 query_params={"cik": cik},
-                error=f"CIK search failed: {str(e)}"
+                error=f"CIK search failed: {str(e)}",
+                http_code=None  # Non-HTTP error"
             )
 
     async def _search_by_ticker(self, ticker: str) -> QueryResult:
@@ -444,7 +452,8 @@ class SECEdgarIntegration(DatabaseIntegration):
                     total=0,
                     results=[],
                     query_params={"ticker": ticker},
-                    error=f"Ticker '{ticker}' not found"
+                    error=f"Ticker '{ticker}' not found",
+                    http_code=None  # Not found, not HTTP
                 )
 
             # Use CIK search
@@ -459,7 +468,8 @@ class SECEdgarIntegration(DatabaseIntegration):
                 total=0,
                 results=[],
                 query_params={"ticker": ticker},
-                error=f"Ticker search failed: {str(e)}"
+                error=f"Ticker search failed: {str(e)}",
+                http_code=None  # Non-HTTP error"
             )
 
     async def _search_by_name_exact(self, company_name: str) -> QueryResult:
@@ -480,7 +490,8 @@ class SECEdgarIntegration(DatabaseIntegration):
                 total=0,
                 results=[],
                 query_params={"company_name": company_name},
-                error=f"Company '{company_name}' not found (exact match)"
+                error=f"Company '{company_name}' not found (exact match)",
+                http_code=None  # Not found, not HTTP
             )
 
         return await self._search_by_cik(cik)
@@ -526,7 +537,8 @@ class SECEdgarIntegration(DatabaseIntegration):
                     total=0,
                     results=[],
                     query_params={"company_name": company_name},
-                    error=f"No fuzzy matches found for '{company_name}'"
+                    error=f"No fuzzy matches found for '{company_name}'",
+                    http_code=None  # Not found, not HTTP
                 )
 
             # Use first match
@@ -542,7 +554,8 @@ class SECEdgarIntegration(DatabaseIntegration):
                 total=0,
                 results=[],
                 query_params={"company_name": company_name},
-                error=f"Fuzzy search failed: {str(e)}"
+                error=f"Fuzzy search failed: {str(e)}",
+                http_code=None  # Non-HTTP error"
             )
 
     async def execute_search(
@@ -609,7 +622,8 @@ class SECEdgarIntegration(DatabaseIntegration):
                         total=0,
                         results=[],
                         query_params=query_params,
-                        error=f"Company '{company_name}' not found in SEC database"
+                        error=f"Company '{company_name}' not found in SEC database",
+                        http_code=None  # Not found, not HTTP
                     )
 
             # Step 2: Get company filings
@@ -691,7 +705,9 @@ class SECEdgarIntegration(DatabaseIntegration):
                                default="SEC Filing")
                         .url(doc_url)
                         .snippet(snippet)
+                        .raw_content(extracted_content if extracted_content else snippet)  # Full content
                         .date(filing_date)
+                        .api_response(data)  # Preserve complete API response
                         .metadata({
                             "form_type": form,
                             "filing_date": filing_date,
@@ -704,7 +720,7 @@ class SECEdgarIntegration(DatabaseIntegration):
                             "filing_viewer_url": filing_url,
                             "extracted_content": extracted_content
                         })
-                        .build())
+                        .build_with_raw())
                     documents.append(doc)
 
                     if len(documents) >= limit:
@@ -726,10 +742,12 @@ class SECEdgarIntegration(DatabaseIntegration):
                     total=0,
                     results=[],
                     query_params=query_params,
-                    error=f"Query type '{query_type}' not yet implemented or missing company_name"
+                    error=f"Query type '{query_type}' not yet implemented or missing company_name",
+                    http_code=None  # Validation error, not HTTP
                 )
 
         except requests.exceptions.HTTPError as e:
+            status_code = e.response.status_code if e.response else None
             # HTTP errors from SEC EDGAR API
             logger.error(f"SEC EDGAR HTTP error: {e}", exc_info=True)
             if e.response.status_code == 429:
@@ -739,7 +757,8 @@ class SECEdgarIntegration(DatabaseIntegration):
                     total=0,
                     results=[],
                     query_params=query_params,
-                    error="SEC EDGAR rate limit exceeded (10 requests/second). Please wait and retry."
+                    error="SEC EDGAR rate limit exceeded (10 requests/second). Please wait and retry.",
+                    http_code=status_code
                 )
             else:
                 return QueryResult(
@@ -748,7 +767,8 @@ class SECEdgarIntegration(DatabaseIntegration):
                     total=0,
                     results=[],
                     query_params=query_params,
-                    error=f"SEC EDGAR API error: {str(e)}"
+                    error=f"SEC EDGAR API error: {str(e)}",
+                    http_code=status_code
                 )
 
         except Exception as e:
@@ -760,5 +780,6 @@ class SECEdgarIntegration(DatabaseIntegration):
                 total=0,
                 results=[],
                 query_params=query_params,
-                error=f"SEC EDGAR search failed: {str(e)}"
+                error=f"SEC EDGAR search failed: {str(e)}",
+                http_code=None  # Non-HTTP error"
             )

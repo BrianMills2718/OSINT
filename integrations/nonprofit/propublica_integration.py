@@ -153,18 +153,18 @@ class ProPublicaIntegration(DatabaseIntegration):
                     "description": "Search query string"
                 },
                 "state_id": {
-                    "type": ["string", "null"],
-                    "description": "Two-letter state code or null"
+                    "type": "string",
+                    "description": "Two-letter state code (optional)"
                 },
                 "ntee_id": {
-                    "type": ["integer", "null"],
-                    "description": "NTEE category 1-10 or null",
+                    "type": "integer",
+                    "description": "NTEE category 1-10 (optional)",
                     "minimum": 1,
                     "maximum": 10
                 },
                 "c_code_id": {
-                    "type": ["integer", "null"],
-                    "description": "501(c) subsection code or null"
+                    "type": "integer",
+                    "description": "501(c) subsection code (optional)"
                 },
                 "reasoning": {
                     "type": "string",
@@ -294,11 +294,14 @@ class ProPublicaIntegration(DatabaseIntegration):
                     # strein format like "501(c)(3)" or "4947(a)(1)"
                     tax_code = strein
 
+                # Three-tier model: preserve full content with build_with_raw()
                 transformed = (SearchResultBuilder()
                     .title(org.get("name"), default="Unnamed Organization")
                     .url(url)
                     .snippet(snippet[:500] if snippet else "")
+                    .raw_content(snippet)  # Full content, never truncated
                     .date(None)  # ProPublica doesn't have a single publication date
+                    .api_response(org)  # Preserve complete API response
                     .metadata({
                         "ein": ein,
                         "city": org.get("city"),
@@ -311,7 +314,7 @@ class ProPublicaIntegration(DatabaseIntegration):
                         "filing_date": org.get("filing_date"),
                         "subsection_code": org.get("subseccd")
                     })
-                    .build())
+                    .build_with_raw())
                 transformed_orgs.append(transformed)
 
             return QueryResult(
@@ -351,6 +354,7 @@ class ProPublicaIntegration(DatabaseIntegration):
                 results=[],
                 query_params=query_params,
                 error=f"HTTP {status_code}: {str(e)}",
+                http_code=status_code,
                 response_time_ms=response_time_ms
             )
 
@@ -376,5 +380,6 @@ class ProPublicaIntegration(DatabaseIntegration):
                 results=[],
                 query_params=query_params,
                 error=str(e),
+                http_code=None,  # Non-HTTP error
                 response_time_ms=response_time_ms
             )

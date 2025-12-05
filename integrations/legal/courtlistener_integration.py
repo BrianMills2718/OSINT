@@ -143,7 +143,7 @@ Return JSON with your decision:
 
         try:
             response = await acompletion(
-                model="gpt-4o-mini",
+                model=config.default_model,
                 messages=[{"role": "user", "content": prompt}],
                 response_format={"type": "json_object"}
             )
@@ -203,12 +203,12 @@ Return JSON with your decision:
                     "description": "Court ID(s) separated by spaces (e.g., 'scotus ca9' for Supreme Court + 9th Circuit), empty for all courts"
                 },
                 "filed_after": {
-                    "type": ["string", "null"],
-                    "description": "Start date for filing date range (YYYY-MM-DD) or null"
+                    "type": "string",
+                    "description": "Start date for filing date range (YYYY-MM-DD, optional)"
                 },
                 "filed_before": {
-                    "type": ["string", "null"],
-                    "description": "End date for filing date range (YYYY-MM-DD) or null"
+                    "type": "string",
+                    "description": "End date for filing date range (YYYY-MM-DD, optional)"
                 },
                 "case_name": {
                     "type": "string",
@@ -219,7 +219,7 @@ Return JSON with your decision:
                     "description": "Brief explanation of the query strategy"
                 }
             },
-            "required": ["q", "type", "court", "filed_after", "filed_before", "case_name", "reasoning"],
+            "required": ["q", "type", "court", "case_name", "reasoning"],
             "additionalProperties": False
         }
 
@@ -263,7 +263,8 @@ Return JSON with your decision:
             QueryResult with standardized format
         """
         start_time = datetime.now()
-        endpoint = "https://www.courtlistener.com/api/rest/v3/search/"
+        # Use V4 API - V3 requires legacy account (new users get 403)
+        endpoint = "https://www.courtlistener.com/api/rest/v4/search/"
 
         if not api_key:
             # Try loading from environment variable
@@ -276,7 +277,8 @@ Return JSON with your decision:
                 total=0,
                 results=[],
                 query_params=query_params,
-                error="CourtListener API key not found. Get one at: https://www.courtlistener.com/sign-in/register/"
+                error="CourtListener API key not found. Get one at: https://www.courtlistener.com/sign-in/register/",
+                http_code=None  # Non-HTTP error
             )
 
         try:
@@ -368,11 +370,14 @@ Return JSON with your decision:
                     snippet = " | ".join(snippet_parts) if snippet_parts else "Court opinion"
 
                     url = result.get("absolute_url") or f"https://www.courtlistener.com{result.get('url', '')}"
+                    # Three-tier model: preserve full content with build_with_raw()
                     transformed = (SearchResultBuilder()
                         .title(case_name, default="Untitled Case")
                         .url(url)
                         .snippet(snippet[:500] if snippet else "")
+                        .raw_content(snippet)  # Full content, never truncated
                         .date(date_filed)
+                        .api_response(result)  # Preserve complete API response
                         .metadata({
                             "court": court_name,
                             "date_filed": date_filed,
@@ -381,7 +386,7 @@ Return JSON with your decision:
                             "status": result.get("status", ""),
                             "result_type": "opinion"
                         })
-                        .build())
+                        .build_with_raw())
 
                 elif result_type == "r":  # RECAP
                     docket = result.get("docket", {})
@@ -393,11 +398,14 @@ Return JSON with your decision:
                     snippet = f"Court: {court} | Filed: {date_filed} | {description[:200]}"
                     url = result.get("absolute_url") or f"https://www.courtlistener.com{result.get('url', '')}"
 
+                    # Three-tier model: preserve full content with build_with_raw()
                     transformed = (SearchResultBuilder()
                         .title(case_name, default="Untitled Filing")
                         .url(url)
                         .snippet(snippet[:500] if snippet else "")
+                        .raw_content(description)  # Full content, never truncated
                         .date(date_filed)
+                        .api_response(result)  # Preserve complete API response
                         .metadata({
                             "court": court,
                             "date_filed": date_filed,
@@ -405,23 +413,25 @@ Return JSON with your decision:
                             "description": description,
                             "result_type": "recap"
                         })
-                        .build())
+                        .build_with_raw())
 
                 else:  # Other types (dockets, oral arguments, etc.)
                     title = SearchResultBuilder.safe_text(result.get("case_name") or result.get("title"))
                     url = result.get("absolute_url") or f"https://www.courtlistener.com{result.get('url', '')}"
                     date = result.get("date_filed", "") or result.get("date_created", "")
 
+                    # Three-tier model: preserve full content with build_with_raw()
                     transformed = (SearchResultBuilder()
                         .title(title, default="Untitled Result")
                         .url(url)
                         .snippet(str(result)[:500])
+                        .raw_content(str(result))  # Full content, never truncated
                         .date(date)
+                        .api_response(result)  # Preserve complete API response
                         .metadata({
-                            "result_type": result_type,
-                            "raw_result": result
+                            "result_type": result_type
                         })
-                        .build())
+                        .build_with_raw())
 
                 transformed_results.append(transformed)
 
@@ -445,7 +455,12 @@ Return JSON with your decision:
             response_time_ms = (datetime.now() - start_time).total_seconds() * 1000
             status_code = e.response.status_code if e.response else 0
 
-            error_msg = f"HTTP {status_code}: {e.response.reason}"
+            # Build error message - use reason if available, otherwise str(e)
+            if e.response is not None and hasattr(e.response, 'reason'):
+                error_msg = f"HTTP {status_code}: {e.response.reason}"
+            else:
+                error_msg = str(e)
+
             if status_code == 401:
                 error_msg = "Invalid API token. Get one at: https://www.courtlistener.com/sign-in/register/"
             elif status_code == 429:
@@ -468,7 +483,9 @@ Return JSON with your decision:
                 results=[],
                 query_params=query_params,
                 error=error_msg,
-                response_time_ms=response_time_ms
+                response_time_ms=response_time_ms,
+                # Pass None if status_code is 0 (e.response was None)
+                http_code=status_code if status_code > 0 else None
             )
 
         except Exception as e:
@@ -493,5 +510,6 @@ Return JSON with your decision:
                 results=[],
                 query_params=query_params,
                 error=f"CourtListener API error: {str(e)}",
+                http_code=None,  # Non-HTTP error
                 response_time_ms=response_time_ms
             )

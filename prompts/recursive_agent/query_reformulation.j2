@@ -1,0 +1,36 @@
+{# Query Reformulation Prompt for Recursive Research Agent #}
+{# Analyzes API errors and fixes query parameters #}
+{# temporal_context: true #}
+An API returned an error. Analyze and fix the query parameters.
+
+{{ temporal_context }}
+
+SOURCE: {{ source_id }}
+RESEARCH GOAL: {{ goal }}
+
+ORIGINAL PARAMETERS:
+{{ original_params_json }}
+
+ERROR MESSAGE:
+{{ error_message }}
+
+COMMON API ERROR PATTERNS AND FIXES:
+1. **Parameter validation errors** (HTTP 400/422):
+   - Value too short: Expand abbreviations (e.g., "AI" → "artificial intelligence")
+   - Invalid enum value: Use a valid value from the API's allowed set
+   - Invalid date format: Use YYYY-MM-DD
+
+2. **Search constraint errors**:
+   - Query too broad: Add specific filters
+   - Query too narrow: Remove restrictive filters
+
+3. **Unfixable errors** (rate limit, auth) - Return can_fix: false
+
+Return JSON:
+{% raw %}
+{
+    "can_fix": true/false,
+    "fixed_params": { ... corrected parameters ... },
+    "explanation": "Brief explanation of fix"
+}
+{% endraw %}

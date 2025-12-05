@@ -140,24 +140,24 @@ class ExaIntegration(DatabaseIntegration):
                     "maximum": 25
                 },
                 "category": {
-                    "type": ["string", "null"],
+                    "type": "string",
                     "enum": ["company", "research paper", "news", "pdf", "github", "tweet", "personal site", "linkedin profile", "financial report", None],
                     "description": "Optional category filter"
                 },
                 "start_published_date": {
-                    "type": ["string", "null"],
-                    "description": "Start date filter (YYYY-MM-DD format) or null"
+                    "type": "string",
+                    "description": "Start date filter (YYYY-MM-DD format) (optional)"
                 },
                 "end_published_date": {
-                    "type": ["string", "null"],
-                    "description": "End date filter (YYYY-MM-DD format) or null"
+                    "type": "string",
+                    "description": "End date filter (YYYY-MM-DD format) (optional)"
                 },
                 "include_text": {
-                    "type": ["string", "null"],
+                    "type": "string",
                     "description": "Only include results containing this text"
                 },
                 "exclude_text": {
-                    "type": ["string", "null"],
+                    "type": "string",
                     "description": "Exclude results containing this text"
                 },
                 "reasoning": {
@@ -165,7 +165,7 @@ class ExaIntegration(DatabaseIntegration):
                     "description": "Brief explanation of the search strategy"
                 }
             },
-            "required": ["pattern", "query", "num_results", "category", "start_published_date", "end_published_date", "include_text", "exclude_text", "reasoning"],
+            "required": ["pattern", "query", "num_results", "category", "include_text", "exclude_text", "reasoning"],
             "additionalProperties": False
         }
 
@@ -240,7 +240,8 @@ class ExaIntegration(DatabaseIntegration):
                 results=[],
                 query_params=query_params,
                 error="API key required for Exa",
-                response_time_ms=0
+                response_time_ms=0,
+                http_code=None  # Non-HTTP error
             )
 
         try:
@@ -300,6 +301,7 @@ class ExaIntegration(DatabaseIntegration):
                             results=[],
                             query_params=query_params,
                             error=f"HTTP {response.status}: {error_text}",
+                            http_code=response.status,
                             response_time_ms=response_time_ms
                         )
 
@@ -309,6 +311,7 @@ class ExaIntegration(DatabaseIntegration):
             exa_results = data.get("results", [])
 
             # Transform to standardized format using defensive builder
+            # Three-tier model: preserve full content with build_with_raw()
             standardized_results = []
             for item in exa_results:
                 description = SearchResultBuilder.safe_text(item.get("text") or item.get("snippet"))
@@ -316,14 +319,16 @@ class ExaIntegration(DatabaseIntegration):
                     .title(item.get("title"), default="Untitled")
                     .url(item.get("url"))
                     .snippet(description)
+                    .raw_content(item.get("text") or description)  # Full content
                     .date(item.get("publishedDate"))
+                    .api_response(item)  # Preserve complete API response
                     .metadata({
                         "author": item.get("author", ""),
                         "score": SearchResultBuilder.safe_amount(item.get("score"), 0),
                         "source": "Exa",
                         "description": description
                     })
-                    .build())
+                    .build_with_raw())
 
             # Log successful request
             log_request(
@@ -367,6 +372,7 @@ class ExaIntegration(DatabaseIntegration):
                 results=[],
                 query_params=query_params,
                 error="Request timeout after 30s",
+                http_code=None,  # Timeout, not HTTP error
                 response_time_ms=response_time_ms
             )
 
@@ -388,5 +394,6 @@ class ExaIntegration(DatabaseIntegration):
                 results=[],
                 query_params=query_params,
                 error=str(e),
+                http_code=None,  # Non-HTTP error
                 response_time_ms=response_time_ms
             )

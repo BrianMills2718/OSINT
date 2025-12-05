@@ -138,8 +138,8 @@ class BraveSearchIntegration(DatabaseIntegration):
                     "maximum": 20
                 },
                 "freshness": {
-                    "type": ["string", "null"],
-                    "description": "Time filter: pd, pw, pm, py, or null"
+                    "type": "string",
+                    "description": "Time filter: pd, pw, pm, py (optional)"
                 },
                 "country": {
                     "type": "string",
@@ -150,7 +150,7 @@ class BraveSearchIntegration(DatabaseIntegration):
                     "description": "Brief explanation of the query strategy"
                 }
             },
-            "required": ["query", "count", "freshness", "country", "reasoning"],
+            "required": ["query", "count", "country", "reasoning"],
             "additionalProperties": False
         }
 
@@ -271,6 +271,7 @@ class BraveSearchIntegration(DatabaseIntegration):
                 results=[],
                 query_params=query_params,
                 error="API key required for Brave Search",
+                http_code=None,  # Configuration error, not HTTP
                 response_time_ms=0
             )
 
@@ -298,19 +299,22 @@ class BraveSearchIntegration(DatabaseIntegration):
             web_results = data.get("web", {}).get("results", [])
 
             # Transform to standardized format using defensive builder
+            # Three-tier model: preserve full content with build_with_raw()
             standardized_results = []
             for item in web_results[:limit]:
                 standardized_results.append(SearchResultBuilder()
                     .title(item.get("title"), default="Untitled")
                     .url(item.get("url"))
                     .snippet(item.get("description"))
+                    .raw_content(item.get("description"))  # Full content
+                    .api_response(item)  # Preserve complete API response
                     .metadata({
                         "age": item.get("age", ""),
                         "language": item.get("language", "en"),
                         "profile": item.get("profile", {}),
                         "source": "Brave Search"
                     })
-                    .build())
+                    .build_with_raw())
 
             # Log successful request
             log_request(
@@ -365,6 +369,7 @@ class BraveSearchIntegration(DatabaseIntegration):
                 results=[],
                 query_params=query_params,
                 error=f"HTTP {status_code}: {str(e)}",
+                http_code=status_code if status_code > 0 else None,
                 response_time_ms=response_time_ms
             )
 
@@ -390,5 +395,6 @@ class BraveSearchIntegration(DatabaseIntegration):
                 results=[],
                 query_params=query_params,
                 error=str(e),
+                http_code=None,  # Non-HTTP error
                 response_time_ms=response_time_ms
             )

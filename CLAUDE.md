@@ -433,11 +433,31 @@ for item in api_results:
 
 ## TESTING
 
+### Current State
+
+**Coverage**: 94% integration coverage (18/19 integrations tested)
+**Quality**: Excellent (100% have metadata, relevance, query gen, execution, error tests)
+**Gaps**: Zero unit tests for core logic, no CI/CD automation
+
+**See**: `docs/TEST_IMPROVEMENT_PLAN.md` for comprehensive improvement roadmap
+**See**: `docs/TESTING_QUICK_REFERENCE.md` for developer guide
+
 ### Categories
 
-1. **Unit**: Isolated, may mock, fast
-2. **Integration**: Multiple components, real APIs
+1. **Unit**: Isolated, may mock, fast (MISSING - P0 priority)
+2. **Integration**: Multiple components, real APIs (EXCELLENT - 68 tests)
 3. **E2E** (REQUIRED for success claims): User-facing entry points, no mocks
+
+### Test Structure
+
+```
+tests/
+├── integrations/        # 68 tests (94% coverage) - EXCELLENT
+├── system/              # 16 tests
+├── unit/                # 0 tests - CRITICAL GAP
+├── performance/         # 2 tests
+└── features/            # Feature-specific tests
+```
 
 ### Checklist (Before Claiming Success)
 
@@ -453,6 +473,21 @@ ALL must be true:
 - [ ] Cost tracking (if LLM)
 
 **If ANY false → NOT succeeded**
+
+### Priority Test Improvements
+
+**P0 - Critical** (4-6 hours):
+1. Create pytest.ini configuration
+2. Set up GitHub Actions CI/CD
+3. Add prompt template validator (59 .j2 files untested)
+4. Add recursive agent unit tests (2,965-line file has zero tests)
+
+**P1 - High Value** (6-8 hours):
+5. Add SearchResultBuilder validation tests
+6. Add error scenario tests (rate limits, timeouts)
+7. Add code coverage tracking (pytest-cov)
+
+**See docs/TEST_IMPROVEMENT_PLAN.md** for detailed implementation plan
 
 ---
 
@@ -585,6 +620,57 @@ pip list | grep playwright
 
 ## CURRENT STATUS
 
+**Recently Completed** (2025-12-01):
+- ✅ **Error Handling Architecture Refactor - Phase 2 COMPLETE**
+  - **Status**: All integrations now extract and return HTTP codes in QueryResult
+  - **Branch**: `feature/enable-dag-analysis`
+  - **Commits**: 103ccbe (USAJobs fix), 66213f9 (bulk syntax fixes)
+  - **Total Changes**: 40 insertions, 40 deletions across 14 files
+
+  **Problem Solved**:
+  - HTTP errors were unclassified - agent couldn't distinguish unfixable (429, 403) from fixable (400, 422)
+  - Led to wasteful LLM reformulation attempts on rate limits and auth errors
+  - Missing HTTP codes prevented structured error logging
+
+  **Phase 1: Foundation** (COMPLETE - commit 536d41a):
+  - ✅ Added unfixable_http_codes config: [401, 403, 404, 429, 500-504]
+  - ✅ Fixed DVIDS "null" date bug (LLM sending literal string "null")
+  - ✅ Created core/error_classifier.py skeleton (APIError dataclass, ErrorCategory enum)
+  - ✅ Added http_code: Optional[int] to QueryResult dataclass
+
+  **Phase 2.1: High-Traffic Integrations** (COMPLETE - commit b5b2164):
+  - ✅ SAM.gov, DVIDS, USAspending, ClearanceJobs, FEC
+  - ✅ All HTTP errors extract status_code: `http_code=e.response.status_code`
+  - ✅ Non-HTTP errors return `http_code=None`
+
+  **Phase 2.2: Remaining Integrations** (COMPLETE - commits 103ccbe, 66213f9):
+  - ✅ Updated 18 remaining integrations with HTTP code extraction
+  - ✅ Fixed 15 syntax errors from batch update script bug
+  - ✅ All 23 integration files validated with py_compile
+
+  **E2E Validation** (COMPLETE):
+  - ✅ System starts without import errors (all syntax fixed)
+  - ✅ SAM.gov HTTP 429 error caught and logged correctly
+  - ✅ Rate limit detection working: "Rate limit detected, adding to session blocklist"
+  - ✅ QueryResult.http_code populated correctly (validated in code review)
+  - ⏳ HTTP codes not yet in execution log (requires Phase 3 - agent integration)
+
+  **Files Modified** (23 integrations):
+  - integrations/government/: sam, dvids, usaspending, clearancejobs, fec, usajobs, fbi_vault, crest, federal_register, govinfo, congress, sec_edgar
+  - integrations/social/: discord, telegram, reddit, twitter, brave_search
+  - integrations/legal/: courtlistener
+  - integrations/nonprofit/: propublica
+  - integrations/web/: exa
+  - integrations/news/: newsapi
+  - integrations/investigative/: icij_offshore_leaks
+  - integrations/archive/: wayback
+
+  **Next: Phase 3** (3 hours estimated):
+  - Phase 3.1: Integrate ErrorClassifier into recursive_agent.py
+  - Phase 3.2: Extract http_code from QueryResult and pass to ErrorClassifier
+  - Phase 3.3: Replace text pattern matching with error.is_reformulable flags
+  - Phase 3.4: Add HTTP codes and error categories to execution_log.jsonl
+
 **Recently Completed** (2025-11-30):
 - ✅ **P0 #2: Global Evidence Index - COMPLETE**
   - **Status**: Production-ready with cross-branch evidence sharing
@@ -651,6 +737,74 @@ pip list | grep playwright
     - Reasoning: "What are the consequences of X?"
 
   - **Recommendation**: Create test suite with queries that trigger ANALYZE actions to validate cross-branch sharing in real usage
+
+- ✅ **Investigation: DAG & ANALYZE Action Infrastructure** - **COMPLETE** (2025-11-30)
+  - **Branch**: `feature/enable-dag-analysis`
+  - **Document**: `docs/DAG_ANALYSIS_INVESTIGATION.md` (294 lines)
+  - **Commit**: 9b0266c
+
+  - **CRITICAL DISCOVERY**: DAG infrastructure is 90% complete but unused
+    - SubGoal.dependencies field exists (line 289)
+    - Full topological sort implementation (_group_by_dependency, lines 2390-2420)
+    - Already integrated into execution loop (line 914)
+    - LLM is prompted for dependencies (line 1480)
+    - Code parses dependencies correctly (lines 1500-1516)
+    - **Problem**: LLM doesn't actually declare dependencies (returns empty arrays)
+
+  - **Two Independent Problems Identified**:
+    - Problem A: LLM doesn't declare dependencies → Fix: Enhance decomposition prompt
+    - Problem B: LLM doesn't choose ANALYZE → Fix: Enhance assessment prompt + sibling awareness
+
+  - **Key Findings**:
+    - Logging is lossy (only logs descriptions, not full SubGoal objects)
+    - DAG code exists but has no test coverage
+    - This is primarily a **prompt engineering challenge**, not systems engineering
+
+  - **5 Uncertainties Identified** (need investigation):
+    1. Does LLM currently return dependencies? (logging doesn't capture this)
+    2. Will Gemini consistently declare dependencies?
+    3. How does LLM decide dependency indices?
+    4. What if LLM declares circular dependencies?
+    5. Will dependent goals automatically choose ANALYZE?
+
+  - **5 Risk Levels Categorized**:
+    - 🔴 High: Breaking existing behavior (prompt changes might reduce quality)
+    - 🟡 Medium: Dependency hell (overly complex graphs), LLM cost increase
+    - 🟢 Low: Backwards compatibility, testing coverage gaps
+
+  - **8 Success Criteria** (before merging):
+    1. LLM declares dependencies for comparative goals (logged and verified)
+    2. _group_by_dependency correctly orders execution (test coverage)
+    3. Dependent goals wait for dependencies to complete (timing logs)
+    4. At least 1 ANALYZE action in comparative E2E test (not 0)
+    5. Cross-branch evidence sharing validated (global_evidence_selection events > 0)
+    6. No regression in data collection quality (same or more evidence)
+    7. Cost increase < 20% for equivalent queries
+    8. All existing tests still pass
+
+  - **Timeline Estimate**: 11-19 hours (1.5-2.5 days of focused work)
+    - Logging: 1-2 hours
+    - Test suite: 2-3 hours
+    - Prompt engineering: 2-4 hours (iterative)
+    - E2E validation: 1-2 hours
+    - Documentation: 1-2 hours
+    - Buffer: 2-3 hours
+
+  - **Next Steps** (5 phases):
+    1. Add comprehensive logging (full SubGoal objects, dependency groups, raw LLM responses)
+    2. Create test suite (unit test _group_by_dependency, integration test forced dependencies, E2E comparative query)
+    3. Design prompts (decomposition with dependency examples, assessment with ANALYZE guidance)
+    4. Implement incrementally (logging first, then prompts, then validation)
+    5. Document thoroughly (CLAUDE.md, STATUS.md, DAG_USAGE_GUIDE.md)
+
+  - **Files to Modify** (~350 lines across 5 files):
+    - research/recursive_agent.py (~100 lines, medium risk)
+    - research/execution_logger.py (~20 lines, low risk)
+    - tests/test_dag_execution.py (~150 lines, new file)
+    - CLAUDE.md (~50 lines, low risk)
+    - STATUS.md (~30 lines, low risk)
+
+  - **Status**: Investigation complete, awaiting approval to proceed with Phase 1 (logging)
 
 **Recently Completed** (2025-11-27 - Previous Session):
 - ✅ **Empty String Fix in SearchResultBuilder** - **COMPLETE** (commit b63009e)
@@ -858,6 +1012,32 @@ pip list | grep playwright
 
 ## NEXT PLANNED WORK
 
+### P0 - DAG VALIDATION ISSUES (From 2025-11-30 Test)
+
+**1. Decomposition Prompt - Missing Comparison/Synthesis Goals**
+- **Problem**: "Compare X vs Y" query decomposed into only "Get X" + "Get Y" without creating "Compare X and Y (depends on [0,1])"
+- **Impact**: Comparative queries don't produce actual comparisons, just parallel data collection
+- **Evidence**: DAG test showed achievement declared after 2 data collection goals, skipping synthesis
+- **Fix**: Enhance decomposition prompt to REQUIRE synthesis/comparison goal for comparative queries
+- **File**: Likely prompts/deep_research/task_decomposition.j2 or similar
+- **Success Metric**: "Compare A vs B" creates 3 goals: Get A, Get B, Compare (depends on [0,1])
+
+**2. Achievement Check - Premature Success Declaration**
+- **Problem**: System declares "goal achieved" after completing sub-goals without verifying SYNTHESIS occurred
+- **Impact**: Research stops before performing the requested analysis/comparison
+- **Evidence**: DAG test line 18 shows achievement after 2/2 goals despite no comparison performed
+- **Fix**: Achievement check must verify that comparative/analytical goals actually synthesized results
+- **File**: research/recursive_agent.py `_goal_achieved()` method
+- **Success Metric**: Comparative queries cannot achieve until synthesis goal completes
+
+**3. API Integration Failures - 50% Failure Rate**
+- **Problem**: NewsAPI, Federal Register, GovInfo, CourtListener consistently failing in DAG test
+- **Impact**: Half of attempted goals fail, reducing research quality
+- **Evidence**: 23 failed / 46 total goals in validation test
+- **Fix**: Debug each failing integration (rate limits, API keys, parameter validation)
+- **Files**: integrations/news/newsapi_integration.py, integrations/government/federal_register.py, etc.
+- **Success Metric**: <20% failure rate in E2E tests
+
 ### P0 - CRITICAL BUGS (Must Fix)
 
 **1. ~~Field Name Mismatch - Evidence Content Always Empty~~ FIXED (commit 68dc031)**
@@ -865,12 +1045,23 @@ pip list | grep playwright
 - **Solution**: Changed to `item.get("snippet", item.get("description", item.get("content", "")))`
 - **Validated**: Smoke test shows content length 120 chars (was 0)
 
-**2. Sub-Goal Context Loss - Irrelevant Results Pass Filter**
-- **Problem**: Sub-goals lose parent context. "Search FBI Vault for declassified documents" doesn't carry "about Palantir" context, so Bin Laden/Guantanamo docs pass filter
-- **Impact**: FBI Vault (and potentially other sources) return completely irrelevant results
-- **Root Cause**: Filter prompt checks relevance to CURRENT GOAL only, not full goal hierarchy
-- **Fix**: Propagate parent context into sub-goals OR require filter to check both goal AND original objective's subject
-- **File**: research/recursive_agent.py `_filter_results()` (line 1950)
+**2. Filter Prompt Too Lenient - Keyword Matching Passes Irrelevant Results**
+- **Problem**: Filter prompt says "Be generous - include results that have ANY connection to the goal." LLM interprets "ANY connection" as keyword overlap, passing irrelevant results.
+- **Example**: Goal "Anduril Industries executives" returns results about "Consumer Reports executives" because both mention "executive" keyword. Filter passes it despite different companies.
+- **Evidence**: Real logs show extraction of entities like "Communion and Liberation", "CAIR", "Consumer Reports" when researching Anduril executives.
+- **Impact**: Irrelevant entities pollute entity graph, degrade report quality, waste tokens on noise.
+- **Root Cause**: Filter prompt at `prompts/recursive_agent/result_filtering.j2` is too lenient:
+  - Says "include results that have ANY connection" (keyword overlap qualifies)
+  - Says "only filter out results that are clearly off-topic" (high bar)
+  - Says "Be generous" (encourages false positives)
+- **Fix**: Replace lenient language with strict company-specific matching:
+  ```
+  Only include results that are SPECIFICALLY about the goal's subject.
+  For company-specific goals: Results MUST mention the specific company by name.
+  Generic results sharing only common keywords should be filtered out.
+  ```
+- **File**: prompts/recursive_agent/result_filtering.j2
+- **Success Metric**: Goal "Anduril executives" should filter OUT "Consumer Reports executives" (different company)
 
 **3. SEC EDGAR Filter Rejects All Results**
 - **Problem**: 10 SEC filings found but filtered to 0 - relevance filter incorrectly rejects financial filings
@@ -925,6 +1116,551 @@ pip list | grep playwright
 - **Fix**: Queue rate-limited sources for retry after cooldown (e.g., 5 min)
 - **File**: research/recursive_agent.py (rate_limited_sources handling)
 
+---
+
+## EVIDENCE ARCHITECTURE REFACTOR (CURRENT PRIORITY)
+
+**Document**: `docs/EVIDENCE_ARCHITECTURE_PLAN.md`
+**Status**: IN PROGRESS - Phase 1 Starting
+**Priority**: P0 - Foundation for data quality
+**Effort**: 22-32 hours (3-4 days)
+**Branch**: `feature/enable-dag-analysis`
+
+### Problem Summary
+
+**Current Issues** (Verified 2025-12-05):
+1. **Silent Truncation Chain** - Data truncated at 7 points without logging
+2. **Dates Not Preserved** - 100% of date fields lost in saved output
+3. **Metadata Discarded** - Rich API data lost in _result_to_dict()
+4. **Evidence Count Capped** - Only 50 of 255+ evidence saved (80% loss)
+5. **Overloaded snippet Field** - Raw + processed in same field
+
+**Verified Truncation Points**:
+| Location | Truncation | Line |
+|----------|-----------|------|
+| Pydantic validator | 500 chars | db_base.py:140-147 |
+| Entity extraction | 300 chars | agent.py:1373 |
+| Global index | 200 chars | agent.py:2101 |
+| Assessment prompt | 100 chars | agent.py:1107 |
+| Saved result | 500 chars, 50 items | agent.py:2345-2348 |
+
+### Implementation Plan (6 Phases)
+
+#### Phase 1: Data Model Refactor (4-6 hours) - IN PROGRESS
+
+**Tasks**:
+- [ ] 1.1: Create `core/raw_result.py` with RawResult dataclass
+- [ ] 1.2: Create `core/processed_evidence.py` with ProcessedEvidence dataclass
+- [ ] 1.3: Update Evidence class to compose RawResult + ProcessedEvidence
+- [ ] 1.4: Add `Evidence.from_raw()` factory method
+- [ ] 1.5: Maintain backward compatibility (.content, .snippet properties)
+
+**Tests**:
+- [ ] Test RawResult creation from sample API response
+- [ ] Test ProcessedEvidence with extracted facts/entities
+- [ ] Test Evidence backward compatibility (old code still works)
+- [ ] Test serialization/deserialization roundtrip
+
+**Files**:
+- `core/raw_result.py` (NEW)
+- `core/processed_evidence.py` (NEW)
+- `core/database_integration_base.py` (MODIFY)
+
+#### Phase 2: Integration Updates (6-8 hours)
+
+**Tasks**:
+- [ ] 2.1: Update SearchResultBuilder to preserve full content
+- [ ] 2.2: Update SAM.gov integration (high-traffic)
+- [ ] 2.3: Update USAspending integration (already stores raw)
+- [ ] 2.4: Update Brave Search integration
+- [ ] 2.5: Update remaining 20 integrations
+
+**Tests**:
+- [ ] Test SAM.gov returns complete api_response
+- [ ] Test USAspending preserves full award data
+- [ ] Test each integration returns RawResult with raw_content
+
+**Files**:
+- `core/result_builder.py` (MODIFY)
+- All 23 integration files (MODIFY)
+
+#### Phase 3: Agent Refactor (4-6 hours)
+
+**Tasks**:
+- [ ] 3.1: Update `_execute_api_call()` to create Evidence from RawResult
+- [ ] 3.2: Implement `_extract_evidence()` LLM call for goal-focused extraction
+- [ ] 3.3: Update `_add_to_run_index()` to store complete Evidence
+- [ ] 3.4: Update `_result_to_dict()` to preserve all fields
+- [ ] 3.5: Add date extraction from content (LLM-based)
+
+**Tests**:
+- [ ] Test Evidence creation preserves raw content
+- [ ] Test extraction populates facts/entities/dates
+- [ ] Test saved result.json has all fields
+
+**Files**:
+- `research/recursive_agent.py` (MODIFY)
+
+#### Phase 4: Prompt Updates (2-3 hours)
+
+**Tasks**:
+- [ ] 4.1: Update filtering to use `.llm_context` for decisions
+- [ ] 4.2: Create `evidence_extraction.j2` prompt
+- [ ] 4.3: Update synthesis to use structured ProcessedEvidence
+
+**Tests**:
+- [ ] Test filtering uses summary not full content
+- [ ] Test extraction prompt produces valid JSON
+- [ ] Test synthesis uses extracted facts
+
+**Files**:
+- `prompts/recursive_agent/result_filtering.j2` (MODIFY)
+- `prompts/recursive_agent/evidence_extraction.j2` (NEW)
+- `prompts/deep_research/v2_report_synthesis.j2` (MODIFY)
+
+#### Phase 5: Storage Refactor (2-3 hours)
+
+**Tasks**:
+- [ ] 5.1: Save raw responses to `raw_responses/` directory
+- [ ] 5.2: Save processed evidence with full fields
+- [ ] 5.3: Create both full and summary result files
+- [ ] 5.4: Log data preservation metrics
+
+**Tests**:
+- [ ] Test raw_responses/ contains complete API data
+- [ ] Test result.json has dates/metadata
+- [ ] Test no silent truncation (warnings logged)
+
+**Files**:
+- `research/recursive_agent.py` (_save_result method)
+
+#### Phase 6: Testing and Validation (4-6 hours)
+
+**Tasks**:
+- [ ] 6.1: Unit tests for new data models
+- [ ] 6.2: Integration tests for each source
+- [ ] 6.3: E2E test verifying no data loss
+- [ ] 6.4: Regression test comparing output quality
+
+**Tests**:
+- [ ] 100% of collected evidence saved (not capped at 50)
+- [ ] 100% of dates preserved
+- [ ] 100% of metadata preserved
+- [ ] Report quality unchanged or improved
+
+**Files**:
+- `tests/test_evidence_model.py` (NEW)
+- `tests/test_evidence_storage.py` (NEW)
+
+### Success Criteria
+
+- [ ] 100% of collected evidence saved (not capped at 50)
+- [ ] 100% of dates preserved (structured + extracted)
+- [ ] 100% of metadata preserved (raw API responses)
+- [ ] 0 silent truncations (all truncation logged with warning)
+- [ ] All existing tests pass
+- [ ] LLM prompt sizes unchanged (use summaries)
+- [ ] Report quality unchanged or improved
+
+---
+
+## ERROR HANDLING ARCHITECTURE REFACTOR
+
+**Document**: `docs/ERROR_HANDLING_ARCHITECTURE.md`
+**Status**: Planning → Implementation
+**Priority**: P1 - Critical for reliability
+**Effort**: 12 hours (2-3 days)
+
+### Problem Summary
+
+**Current Issues**:
+1. ❌ Brittle text pattern matching for error classification
+2. ❌ Missing HTTP codes (401, 403, 404, 500-504) trigger reformulation wastefully
+3. ❌ DVIDS sends "nullT00:00:00Z" (malformed dates from LLM string "null")
+4. ❌ HTTP status codes not propagated from integrations
+5. ❌ Agent does complex text parsing (mixed concerns)
+
+**Discovered From**:
+- E2E test showing DVIDS HTTP 400 → HTTP 403 reformulation attempt
+- "Iteration 2/10" follow-up loop generating 14 goals from gaps
+
+### Architecture Solution
+
+**Structured Error Model** (4 layers):
+1. **Layer 1**: `core/error_classifier.py` - Centralized classification
+   - `APIError` dataclass with `is_reformulable`, `is_retryable` flags
+   - `ErrorCategory` enum (AUTH, RATE_LIMIT, VALIDATION, TIMEOUT, etc.)
+   - HTTP code-based classification (primary), text patterns (fallback)
+
+2. **Layer 2**: Integration changes
+   - Add `http_code: Optional[int]` to `QueryResult` dataclass
+   - Extract HTTP codes in exception handlers
+   - Return structured error data
+
+3. **Layer 3**: Agent simplification
+   - Replace pattern matching with `error_classifier.classify()`
+   - Use boolean flags for decisions (`if error.is_reformulable`)
+   - Structured error logging
+
+4. **Layer 4**: Configuration
+   - Add `unfixable_http_codes: [401, 403, 404, 429, 500-504]`
+   - Add `fixable_http_codes: [400, 422]`
+   - Keep text patterns for non-HTTP errors
+
+### Implementation Plan (5 Phases)
+
+**Phase 1: Foundation** (2 hours) - P0 Blocking
+- Task 1.1: Add missing HTTP codes to config (15 min)
+- Task 1.2: Fix DVIDS "null" date bug (30 min)
+- Task 1.3: Create ErrorClassifier skeleton (45 min)
+- Task 1.4: Update QueryResult dataclass (30 min)
+
+**Phase 2: Integrations** (4 hours) - P1 High Value
+- Task 2.1: Update 5 high-traffic integrations (2 hours)
+- Task 2.2: Update remaining 24 integrations (2 hours)
+
+**Phase 3: Agent Refactor** (3 hours) - P1 Simplifies Core
+- Task 3.1: Integrate ErrorClassifier into agent (1 hour)
+- Task 3.2: Simplify error handling logic (1 hour)
+- Task 3.3: Add structured error logging (1 hour)
+
+**Phase 4: Testing** (2 hours) - P1 No Regressions
+- Task 4.1: Unit tests for ErrorClassifier (45 min)
+- Task 4.2: Integration error tests (45 min)
+- Task 4.3: E2E error handling test (30 min)
+
+**Phase 5: Documentation** (1 hour) - P2 Polish
+- Task 5.1: Update PATTERNS.md (20 min)
+- Task 5.2: Update STATUS.md (20 min)
+- Task 5.3: Remove deprecated code (20 min)
+
+### Success Criteria
+
+**Before**:
+- ❌ 403 errors trigger reformulation
+- ❌ DVIDS sends "nullT00:00:00Z"
+- ❌ No HTTP codes in QueryResult
+
+**After**:
+- ✅ 403 errors skip reformulation immediately
+- ✅ DVIDS validates dates before API call
+- ✅ All integrations return HTTP codes
+- ✅ 100% test coverage for error classification
+
+**See**: `docs/ERROR_HANDLING_ARCHITECTURE.md` for full design
+
+---
+
+## CONFIGURATION ARCHITECTURE ISSUES
+
+**Comprehensive Codebase Review** (2025-11-30)
+
+**Executive Summary**:
+- 36 files with inline JSON schemas (~3,500 lines should be externalized) - **DEFERRED**
+- ~~9 hardcoded f-string prompts~~ - **RESOLVED** (2025-11-30)
+- ~~7 missing Jinja2 templates~~ - **RESOLVED** (2025-11-30)
+- schemas/ directory underutilized (only 2 files, expected 10-15) - **DEFERRED**
+- ~~3 non-configurable magic numbers~~ - **RESOLVED** (already configurable via Constraints)
+
+**Original Effort Estimate**: 8-9 days
+**Actual Effort**: 2 days (prompts only, schemas deferred)
+**Priority**: MEDIUM - Quality of life improvement, no critical bugs
+**Impact**: 40% maintainability improvement for prompts, easier A/B testing, better version control
+
+### Issue Summary
+
+| Issue | Count | Severity | Status | Effort | Files Affected |
+|-------|-------|----------|--------|--------|----------------|
+| Inline JSON Schemas | 36 files | HIGH | **DEFERRED** | 3 days | integrations/*, research/* |
+| Hardcoded F-String Prompts | 9 prompts | HIGH | **RESOLVED** | 2 days | research/recursive_agent.py |
+| Missing Jinja2 Templates | 9 templates | MEDIUM | **RESOLVED** | 2 days | prompts/recursive_agent/* |
+| Underutilized schemas/ Directory | Only 2/10+ files | MEDIUM | **DEFERRED** | 4 hrs | schemas/* |
+| Non-Configurable Constants | 3 magic numbers | MEDIUM | **N/A** | 0 hrs | Already configurable |
+
+### Problem 1: Inline JSON Schemas (36 Files, ~3,500 Lines)
+
+**Current State**:
+- JSON schemas defined inline in Python code using `schema = {` pattern
+- Duplicated across 36 integration and research files
+- Difficult to version control changes
+- Hard to validate schema correctness independently
+
+**Files with Inline Schemas**:
+```
+integrations/government/ (15 files):
+- sam_integration.py (lines 123-185, 62 lines)
+- usaspending_integration.py (lines 150-220, 70 lines)
+- dvids_integration.py (lines 123-159, 36 lines)
+- fec_integration.py (lines 140-180, 40 lines)
+- sec_edgar/integration.py (lines 180-220, 40 lines)
+- govinfo_integration.py (lines 175-230, 55 lines)
+- federal_register.py (lines 160-210, 50 lines)
+- usajobs_integration.py (lines 111-141, 30 lines)
+- clearancejobs_integration.py (lines 90-120, 30 lines)
+- [6 more files...]
+
+integrations/social/ (5 files):
+- twitter_integration.py (lines 180-250, 70 lines)
+- telegram_integration.py (lines 140-200, 60 lines)
+- discord_integration.py (lines 120-160, 40 lines)
+- reddit_integration.py (lines 100-140, 40 lines)
+- brave_search_integration.py (lines 130-153, 23 lines)
+
+research/ (10 files):
+- recursive_agent.py (line 2377-2388, 11 lines - global_evidence_selection schema)
+- deep_research.py (~200 lines across multiple schemas)
+- [8 more files...]
+```
+
+**Example** (research/recursive_agent.py:2377-2388):
+```python
+# CURRENT (inline, hard to change):
+schema = {
+    "type": "object",
+    "properties": {
+        "selected_evidence_ids": {
+            "type": "array",
+            "items": {"type": "integer"},
+            "description": "IDs of evidence pieces to include"
+        }
+    },
+    "required": ["selected_evidence_ids"],
+    "additionalProperties": False
+}
+
+# SHOULD BE (externalized):
+from schemas.recursive_agent import GlobalEvidenceSelectionSchema
+schema = GlobalEvidenceSelectionSchema.get_schema()
+```
+
+**Recommended Fix**:
+1. Create schema files in `schemas/` directory organized by module
+2. Use class-based schema definitions with validation
+3. Migrate schemas incrementally (10-15 files per batch)
+
+**Effort**: 3 days (15-20 files per day, testing included)
+
+### Problem 2: Hardcoded F-String Prompts - **RESOLVED** (2025-11-30)
+
+**Previous State** (Before 2025-11-30):
+- research/recursive_agent.py contained 9 prompts as f-strings directly in code
+- Violated established pattern (50 Jinja2 templates exist in prompts/)
+- Difficult to edit without touching Python code
+- Couldn't A/B test prompt variations easily
+
+**Resolution** (Commits 12968d6, d096af0):
+- ✅ All 9 f-string prompts converted to Jinja2 templates
+- ✅ Templates created in prompts/recursive_agent/ directory
+- ✅ Code updated to use render_prompt() calls
+- ✅ Import and rendering tests pass
+- ⚠️ E2E validation with real research query not yet performed
+
+**F-String Prompts in recursive_agent.py**:
+1. **Line 37**: `_get_temporal_context()` - 150 chars
+2. **Lines 1093-1153**: `_assess_goal_structure()` - ~1,200 chars
+3. **Lines 1490-1588**: `_decompose_goal()` - ~1,500 chars
+4. **Lines 1663-1700**: `_analyze_evidence()` - ~800 chars
+5. **Lines 1759-1825**: `_check_goal_achievement()` - ~1,000 chars
+6. **Lines 1930-1978**: `_generate_follow_ups()` - ~900 chars
+7. **Lines 2029-2061**: `_synthesize_evidence()` - ~1,100 chars
+8. **Lines 2144-2168**: `_filter_results()` - ~700 chars
+9. **Lines 2234-2255**: `_summarize_results()` - ~400 chars
+10. **Lines 2447-2483**: `_reformulate_on_error()` - ~600 chars
+
+**Example** (Lines 1093-1153):
+```python
+# CURRENT (hardcoded f-string):
+prompt = f"""You are a research agent assessing a goal.
+
+Goal: {goal}
+Evidence count: {len(evidence)}
+
+Assess whether this goal can be addressed effectively by:
+1. Calling APIs directly (API_CALL)
+2. Searching the web (WEB_SEARCH)
+3. Analyzing existing evidence (ANALYZE)
+4. Decomposing into sub-goals (DECOMPOSE)
+
+Return your decision..."""
+
+# SHOULD BE (Jinja2 template):
+from core.prompt_loader import render_prompt
+
+prompt = render_prompt(
+    "recursive_agent/goal_assessment.j2",
+    goal=goal,
+    evidence_count=len(evidence),
+    available_actions=["API_CALL", "WEB_SEARCH", "ANALYZE", "DECOMPOSE"]
+)
+```
+
+**Recommended Fix**:
+1. Create 7 new Jinja2 templates in `prompts/recursive_agent/`
+2. Convert f-strings to `render_prompt()` calls
+3. Test each conversion independently
+
+**Effort**: 2 days (3-4 prompts per day, careful testing)
+
+### Problem 3: Missing Jinja2 Templates (7 Templates)
+
+**Current State**:
+- prompts/ directory has 50 templates for integrations and deep_research
+- But recursive_agent.py (2,965 lines) still uses f-strings
+- Inconsistent with established architecture pattern
+
+**Missing Templates** (should exist in prompts/recursive_agent/):
+1. `goal_assessment.j2` (for _assess_goal_structure, ~1,200 chars)
+2. `goal_decomposition.j2` (for _decompose_goal, ~1,500 chars)
+3. `evidence_analysis.j2` (for _analyze_evidence, ~800 chars)
+4. `achievement_check.j2` (for _check_goal_achievement, ~1,000 chars)
+5. `follow_up_generation.j2` (for _generate_follow_ups, ~900 chars)
+6. `evidence_synthesis.j2` (for _synthesize_evidence, ~1,100 chars)
+7. `result_filtering.j2` (for _filter_results, ~700 chars)
+
+**Directory Structure Should Be**:
+```
+prompts/
+├── __init__.py
+├── deep_research/          # Existing (8+ templates)
+├── integrations/           # Existing (40+ templates)
+└── recursive_agent/        # NEW (7 templates needed)
+    ├── goal_assessment.j2
+    ├── goal_decomposition.j2
+    ├── evidence_analysis.j2
+    ├── achievement_check.j2
+    ├── follow_up_generation.j2
+    ├── evidence_synthesis.j2
+    └── result_filtering.j2
+```
+
+**Effort**: 2 days (included in Problem 2 fix, as they're created during conversion)
+
+### Problem 4: Underutilized schemas/ Directory (Only 2 Files)
+
+**Current State**:
+```
+schemas/
+├── __init__.py           # Empty
+└── research_brief.py     # Single schema
+```
+
+**Expected State** (after refactoring):
+```
+schemas/
+├── __init__.py                     # Schema registry
+├── base.py                         # Base schema class with validation
+├── integrations/
+│   ├── __init__.py
+│   ├── sam_gov.py                  # SAM.gov query schemas
+│   ├── usaspending.py              # USAspending query schemas
+│   ├── twitter.py                  # Twitter query schemas
+│   └── [25+ more integration schemas]
+├── recursive_agent/
+│   ├── __init__.py
+│   ├── assessment.py               # Goal assessment schemas
+│   ├── decomposition.py            # Goal decomposition schemas
+│   ├── evidence.py                 # Evidence analysis schemas
+│   └── synthesis.py                # Report synthesis schemas
+└── research_brief.py               # Existing
+```
+
+**Effort**: 4 hours (directory setup + migration infrastructure)
+
+### Problem 5: Non-Configurable Magic Numbers (3 Occurrences)
+
+**Current State**:
+- Hardcoded constants in recursive_agent.py violate "no hardcoded heuristics" principle
+
+**Magic Numbers**:
+1. **Line 2236**: `max_evidence_in_saved_result: 50` - Truncates evidence silently
+2. **Line unknown**: Default similarity threshold for deduplication
+3. **Line unknown**: Default LLM temperature for various calls
+
+**Recommended Fix**:
+```python
+# CURRENT:
+max_evidence_in_saved_result = 50
+
+# SHOULD BE:
+from config_loader import config
+max_evidence = config.get('recursive_agent.max_evidence_in_result', default=50)
+```
+
+**Effort**: 2 hours (identify all constants, add to config.yaml, update code)
+
+### Recommended Refactoring Plan (Phased Approach)
+
+**Phase 1: Extract Schemas** (3 days)
+- Days 1-2: Create schemas/ directory structure + base classes
+- Day 3: Migrate 15 high-priority integration schemas
+- Validation: All tests pass, schemas loadable independently
+
+**Phase 2: Convert Prompts to Jinja2** (2 days)
+- Day 1: Create 7 Jinja2 templates in prompts/recursive_agent/
+- Day 2: Convert f-strings to render_prompt() calls
+- Validation: E2E research test produces same results
+
+**Phase 3: Parameterize Constants** (1 day)
+- Hours 1-4: Identify all magic numbers, add to config.yaml
+- Hours 5-8: Update code to read from config, test overrides
+- Validation: Config changes affect behavior correctly
+
+**Phase 4: Documentation** (1 day)
+- Hours 1-4: Update PATTERNS.md with new schema/prompt patterns
+- Hours 5-8: Create SCHEMA_GUIDE.md and PROMPT_GUIDE.md
+- Validation: New developers can add schemas/prompts easily
+
+**Total Timeline**: 7 days (focused work) + 1-2 days buffer = 8-9 days
+
+### Validation Checklist (Before Merging)
+
+- [ ] All 36 inline schemas moved to schemas/ directory
+- [ ] All 9 f-string prompts converted to Jinja2 templates
+- [ ] 7 new templates exist in prompts/recursive_agent/
+- [ ] All magic numbers configurable via config.yaml
+- [ ] All existing tests still pass (no regressions)
+- [ ] E2E research produces equivalent results
+- [ ] Schema files independently testable (pytest schemas/)
+- [ ] Prompts editable without touching Python code
+- [ ] Documentation updated (PATTERNS.md, SCHEMA_GUIDE.md)
+- [ ] Cost/quality metrics unchanged (within 5%)
+
+### Benefits of Refactoring
+
+**Maintainability** (+50%):
+- Edit prompts without touching Python code
+- Version control shows prompt changes clearly
+- A/B test prompt variations easily
+
+**Testability** (+40%):
+- Validate schemas independently (pytest schemas/)
+- Test prompt rendering separately from business logic
+- Mock schemas for unit tests easily
+
+**Collaboration** (+30%):
+- Non-developers can edit prompts (Jinja2 is readable)
+- Schema changes tracked in git history
+- Easier code reviews (schema changes visible)
+
+**Quality** (+20%):
+- Catch schema errors at load time, not runtime
+- Lint and validate prompts automatically
+- Consistent formatting across all prompts
+
+### Status: Identified, Not Started
+
+**User Request**: "comprehensive review for any ways to improve the codebase. in particular it seems like the prompts might not have been fully made to be configurable here /home/brian/sam_gov/prompts as well as the schemas /home/brian/sam_gov/schemas"
+
+**Findings Documented**: 2025-11-30 (this section)
+
+**Next Steps** (if approved):
+1. Create GitHub issue tracking refactoring phases
+2. Start with Phase 1 (schemas) - lowest risk, highest value
+3. Validate each phase independently before proceeding
+4. Document learnings in PATTERNS.md as we go
+
+---
+
 ### ARCHITECTURE NOTES
 
 **Evidence Content Sources**:
@@ -938,7 +1674,7 @@ pip list | grep playwright
 | NewsAPI | Article snippets | No | N/A |
 
 **Filtering Architecture Issue**:
-Sub-goals decompose without carrying parent context. When "Investigate Palantir" decomposes to "Search FBI Vault", the sub-goal should implicitly mean "Search FBI Vault **for Palantir-related docs**" but filter only sees the generic sub-goal.
+Filter prompt is too lenient - says "Be generous - include results that have ANY connection to the goal." This causes the LLM to pass results with mere keyword overlap. For example, goal "Anduril Industries executives" passes results about "Consumer Reports executives" because both mention "executive". The filter needs to require company-specific matching, not just keyword overlap. See P0 Critical Bug #2 for details and fix.
 
 ---
 

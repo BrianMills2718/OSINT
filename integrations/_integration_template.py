@@ -261,6 +261,7 @@ class NewSourceIntegration(DatabaseIntegration):
 
             # CRITICAL: Use SearchResultBuilder for defensive data transformation
             # The builder handles None values, type mismatches, and edge cases
+            # Three-tier model: preserve full content with build_with_raw()
             transformed_results = []
             for doc in raw_results[:limit]:
                 # CUSTOMIZE: Map API fields using the builder
@@ -269,13 +270,15 @@ class NewSourceIntegration(DatabaseIntegration):
                     .title(doc.get("api_title_field"))  # safe_text handles None
                     .url(doc.get("api_url_field"))      # safe_url validates URLs
                     .snippet(doc.get("api_summary_field"), max_length=500)  # truncates safely
+                    .raw_content(doc.get("api_summary_field"))  # Full content, never truncated
                     .date(doc.get("publish_date"))      # safe_date normalizes dates
+                    .api_response(doc)  # Preserve complete API response
                     .metadata({
                         # CUSTOMIZE: Add source-specific fields here
                         "doc_id": doc.get("id"),
                         "author": doc.get("author")
                     })
-                    .build())
+                    .build_with_raw())  # Use build_with_raw() to include raw_content field
                 transformed_results.append(transformed)
 
                 # For amounts/currency, use format_amount() which never crashes on None:

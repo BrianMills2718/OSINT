@@ -157,7 +157,12 @@ class Evidence(SearchResult):
     - Type safety via Pydantic validation
     - Single source of truth for field definitions
 
-    Additional fields (research enrichment):
+    Three-Tier Data Model (NEW):
+        - raw_result_id: Reference to complete raw API response (RawResult)
+        - processed_id: Reference to LLM-extracted data (ProcessedEvidence)
+        - raw_content: Full content (NEVER TRUNCATED) - optional for backward compat
+
+    Legacy fields (backward compatibility):
         - source_id: Which integration provided this result
         - relevance_score: LLM-assigned relevance (0-1)
 
@@ -172,22 +177,88 @@ class Evidence(SearchResult):
         description="LLM-assigned relevance score"
     )
 
+    # === NEW: Three-tier data model fields ===
+    # These are optional for backward compatibility with existing code
+    raw_result_id: Optional[str] = Field(
+        default=None,
+        description="Reference to RawResult with complete API response"
+    )
+    processed_id: Optional[str] = Field(
+        default=None,
+        description="Reference to ProcessedEvidence with extracted data"
+    )
+    raw_content: Optional[str] = Field(
+        default=None,
+        description="Full content (never truncated) - use this for full text"
+    )
+
+    # Extracted data (populated from ProcessedEvidence if available)
+    extracted_facts: Optional[List[str]] = Field(
+        default=None,
+        description="Key facts extracted by LLM"
+    )
+    extracted_entities: Optional[List[str]] = Field(
+        default=None,
+        description="Named entities extracted by LLM"
+    )
+    extracted_dates: Optional[List[str]] = Field(
+        default=None,
+        description="Dates extracted from content"
+    )
+
     @property
     def content(self) -> str:
-        """Backward compatibility alias for snippet."""
+        """
+        Backward compatibility alias for snippet.
+
+        If raw_content is available (three-tier model), prefer it.
+        Otherwise fall back to snippet (legacy model).
+        """
+        if self.raw_content:
+            return self.raw_content
         return self.snippet
+
+    @property
+    def full_content(self) -> str:
+        """
+        Get full content without truncation.
+
+        Use this when you need the complete text, not truncated snippet.
+        """
+        return self.raw_content or self.snippet
 
     @property
     def source(self) -> str:
         """Backward compatibility alias for source_id."""
         return self.source_id
 
+    @property
+    def llm_context(self) -> str:
+        """
+        Token-efficient representation for LLM prompts.
+
+        Uses snippet (truncated) to control token usage.
+        For full content, use .full_content or .raw_content.
+        """
+        return self.snippet
+
+    @property
+    def has_raw_data(self) -> bool:
+        """Whether this Evidence has linked raw data (three-tier model)."""
+        return self.raw_result_id is not None
+
+    @property
+    def has_processed_data(self) -> bool:
+        """Whether this Evidence has LLM-extracted data."""
+        return self.processed_id is not None or bool(self.extracted_facts)
+
     @classmethod
     def from_search_result(
         cls,
         result: 'SearchResult',
         source_id: str,
-        relevance_score: Optional[float] = None
+        relevance_score: Optional[float] = None,
+        raw_content: Optional[str] = None
     ) -> 'Evidence':
         """
         Create Evidence from a validated SearchResult.
@@ -195,10 +266,17 @@ class Evidence(SearchResult):
         This is the ONLY way to create Evidence from integration results.
         Type-safe: takes SearchResult, not Dict.
         If SearchResult changes, type checker catches mismatches.
+
+        Args:
+            result: Validated SearchResult object
+            source_id: Integration ID
+            relevance_score: Optional LLM-assigned relevance score
+            raw_content: Optional full content (from three-tier model)
         """
         return cls(
             source_id=source_id,
             relevance_score=relevance_score,
+            raw_content=raw_content,  # Preserve full content if provided
             **result.model_dump()
         )
 
@@ -214,14 +292,76 @@ class Evidence(SearchResult):
 
         Use this when receiving data from integrations that return dicts.
         The dict is validated as SearchResult, then converted to Evidence.
-        """
-        # Validate as SearchResult first
-        search_result = SearchResult.model_validate(data)
-        return cls.from_search_result(search_result, source_id, relevance_score)
 
-    def to_dict(self, max_content_length: Optional[int] = None) -> Dict[str, Any]:
+        NOTE: If data contains 'raw_content' field (from build_with_raw()),
+        it will be preserved separately and passed through.
+        """
+        # Extract raw_content before validation (SearchResult doesn't have this field)
+        raw_content = data.get("raw_content")
+
+        # Validate as SearchResult first (strips unknown fields)
+        search_result = SearchResult.model_validate(data)
+
+        return cls.from_search_result(
+            search_result,
+            source_id,
+            relevance_score,
+            raw_content=raw_content  # Pass through preserved raw_content
+        )
+
+    @classmethod
+    def from_raw(
+        cls,
+        raw_result: 'RawResult',
+        processed: Optional['ProcessedEvidence'] = None,
+        source_id: Optional[str] = None
+    ) -> 'Evidence':
+        """
+        Create Evidence from RawResult and optional ProcessedEvidence.
+
+        This is the NEW factory method for the three-tier model.
+        Preserves complete data while providing backward-compatible interface.
+
+        Args:
+            raw_result: Complete raw API response
+            processed: Optional LLM-extracted data
+            source_id: Override source (defaults to raw_result.source_id)
+
+        Returns:
+            Evidence with full data lineage
+        """
+        # Import here to avoid circular imports
+        from core.raw_result import RawResult
+        from core.processed_evidence import ProcessedEvidence
+
+        return cls(
+            # Core fields (backward compatible)
+            source_id=source_id or raw_result.source_id,
+            title=raw_result.title,
+            url=raw_result.url,
+            snippet=raw_result.raw_content[:497] + "..." if len(raw_result.raw_content) > 500 else raw_result.raw_content,
+            date=raw_result.structured_date,
+            metadata=raw_result.api_response.get("metadata", {}),
+            relevance_score=processed.relevance_score if processed else None,
+
+            # Three-tier model fields (NEW)
+            raw_result_id=raw_result.id,
+            processed_id=processed.id if processed else None,
+            raw_content=raw_result.raw_content,  # Full content, never truncated
+
+            # Extracted data
+            extracted_facts=processed.extracted_facts if processed else None,
+            extracted_entities=processed.extracted_entities if processed else None,
+            extracted_dates=processed.date_strings if processed else None
+        )
+
+    def to_dict(self, max_content_length: Optional[int] = None, include_raw: bool = False) -> Dict[str, Any]:
         """
         Convert to dict for JSON serialization or report generation.
+
+        Args:
+            max_content_length: Optional truncation for content field
+            include_raw: If True, include raw_content and extracted data
 
         Includes all inherited SearchResult fields plus enrichment fields.
         """
@@ -229,11 +369,28 @@ class Evidence(SearchResult):
         # Add content alias for backward compatibility
         data["content"] = self.content
         data["source"] = self.source_id  # Alias
-        # Optionally truncate content
+
+        # Optionally truncate content (legacy behavior)
         if max_content_length and len(data["snippet"]) > max_content_length:
             data["snippet"] = data["snippet"][:max_content_length]
             data["content"] = data["snippet"]
+
+        # Clean up None values from new fields unless include_raw
+        if not include_raw:
+            for key in ["raw_result_id", "processed_id", "raw_content",
+                       "extracted_facts", "extracted_entities", "extracted_dates"]:
+                if key in data and data[key] is None:
+                    del data[key]
+
         return data
+
+    def to_full_dict(self) -> Dict[str, Any]:
+        """
+        Convert to dict with ALL data, no truncation.
+
+        Use this when saving to storage (not for LLM prompts).
+        """
+        return self.to_dict(include_raw=True)
 
 
 class QueryResult:
@@ -254,6 +411,7 @@ class QueryResult:
                  results: List[Dict],
                  query_params: Dict,
                  error: Optional[str] = None,
+                 http_code: Optional[int] = None,
                  response_time_ms: float = 0,
                  metadata: Optional[Dict] = None,
                  validate: bool = True):
@@ -267,6 +425,7 @@ class QueryResult:
             results: List of result items (max = limit requested)
             query_params: The query parameters that were used
             error: Error message if success=False
+            http_code: HTTP status code (for HTTP errors, None for non-HTTP)
             response_time_ms: Time taken for the query in milliseconds
             metadata: Optional database-specific metadata
             validate: Whether to validate results using SearchResult model (default True)
@@ -279,6 +438,7 @@ class QueryResult:
         self.total = total
         self.query_params = query_params
         self.error = error
+        self.http_code = http_code
         self.response_time_ms = response_time_ms
         self.metadata = metadata or {}
 

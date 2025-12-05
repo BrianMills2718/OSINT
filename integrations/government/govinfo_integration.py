@@ -189,8 +189,8 @@ class GovInfoIntegration(DatabaseIntegration):
                     "description": "Which GovInfo collections to search (1-3 most relevant)"
                 },
                 "date_range_years": {
-                    "type": ["integer", "null"],
-                    "description": "How many years back to search (1-10, null for all)"
+                    "type": "integer",
+                    "description": "How many years back to search (1-10, optional)"
                 },
                 "sort_by": {
                     "type": "string",
@@ -202,7 +202,7 @@ class GovInfoIntegration(DatabaseIntegration):
                     "description": "Brief explanation of query strategy"
                 }
             },
-            "required": ["relevant", "query", "collections", "date_range_years", "sort_by", "reasoning"],
+            "required": ["relevant", "query", "collections", "sort_by", "reasoning"],
             "additionalProperties": False
         }
 
@@ -259,7 +259,8 @@ class GovInfoIntegration(DatabaseIntegration):
                 total=0,
                 results=[],
                 query_params=query_params,
-                error="API key required for GovInfo (api.data.gov key)"
+                error="API key required for GovInfo (api.data.gov key)",
+                http_code=None  # Non-HTTP error
             )
 
         try:
@@ -337,11 +338,14 @@ class GovInfoIntegration(DatabaseIntegration):
                 if not snippet:
                     snippet = doc.get("abstract", "")
 
+                # Three-tier model: preserve full content with build_with_raw()
                 transformed = (SearchResultBuilder()
                     .title(SearchResultBuilder.safe_text(doc.get("title"), default="Untitled Document"))
                     .url(url)
                     .snippet(SearchResultBuilder.safe_text(snippet, max_length=500))
+                    .raw_content(snippet)  # Full content, never truncated
                     .date(SearchResultBuilder.safe_date(doc.get("publishDate")))
+                    .api_response(doc)  # Preserve complete API response
                     .metadata({
                         "package_id": package_id,
                         "collection": doc.get("collectionCode"),
@@ -351,7 +355,7 @@ class GovInfoIntegration(DatabaseIntegration):
                         "doc_class": doc.get("docClass"),
                         "government_author": doc.get("governmentAuthor1")
                     })
-                    .build())
+                    .build_with_raw())
                 transformed_results.append(transformed)
 
             # Log successful request
@@ -400,7 +404,8 @@ class GovInfoIntegration(DatabaseIntegration):
                 total=0,
                 results=[],
                 query_params=query_params,
-                error=f"HTTP {status_code}: {str(e)}",
+                error=f"HTTP {status_code}: {str(e,
+                http_code=status_code)}",
                 response_time_ms=response_time_ms
             )
 
@@ -426,5 +431,6 @@ class GovInfoIntegration(DatabaseIntegration):
                 results=[],
                 query_params=query_params,
                 error=str(e),
+                http_code=None,  # Non-HTTP error
                 response_time_ms=response_time_ms
             )
