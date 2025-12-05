@@ -446,7 +446,12 @@ Return JSON with your decision:
             response_time_ms = (datetime.now() - start_time).total_seconds() * 1000
             status_code = e.response.status_code if e.response else 0
 
-            error_msg = f"HTTP {status_code}: {e.response.reason}"
+            # Build error message - use reason if available, otherwise str(e)
+            if e.response is not None and hasattr(e.response, 'reason'):
+                error_msg = f"HTTP {status_code}: {e.response.reason}"
+            else:
+                error_msg = str(e)
+
             if status_code == 401:
                 error_msg = "Invalid API token. Get one at: https://www.courtlistener.com/sign-in/register/"
             elif status_code == 429:
@@ -470,7 +475,8 @@ Return JSON with your decision:
                 query_params=query_params,
                 error=error_msg,
                 response_time_ms=response_time_ms,
-                http_code=status_code
+                # Pass None if status_code is 0 (e.response was None)
+                http_code=status_code if status_code > 0 else None
             )
 
         except Exception as e:

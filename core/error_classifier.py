@@ -119,6 +119,16 @@ class ErrorClassifier:
             ]
         ]
 
+        # Network error patterns (connection failures, server disconnects)
+        self.network_patterns = [
+            p.lower() for p in error_config.get('network_patterns', [
+                "server disconnected", "connection refused", "connection reset",
+                "connection closed", "connection aborted", "network unreachable",
+                "host unreachable", "no route to host", "connection error",
+                "clientconnectorerror", "serverdisconnectederror"
+            ])
+        ]
+
         logger.info(
             f"ErrorClassifier initialized: "
             f"{len(self.unfixable_http_codes)} unfixable codes, "
@@ -144,12 +154,74 @@ class ErrorClassifier:
         Returns:
             APIError with categorization and decision flags
         """
+        # Treat http_code=0 as None (bug in some integrations where e.response is None)
+        if http_code == 0:
+            http_code = None
+
+        # Try to extract HTTP code from error message if not provided
+        # This handles cases like "HTTP 0: 500 Server Error" where response was None
+        if http_code is None:
+            http_code = self._extract_http_code_from_message(error_str)
+
         # HTTP code-based classification (most reliable)
         if http_code is not None:
             return self._classify_by_http_code(error_str, http_code, source_id)
 
         # Text pattern fallback (for non-HTTP errors)
         return self._classify_by_pattern(error_str, source_id)
+
+    def _extract_http_code_from_message(self, error_str: str) -> Optional[int]:
+        """
+        Extract HTTP status code from error message text.
+
+        Handles cases where e.response was None but the error message
+        contains the actual status code (e.g., "500 Server Error").
+
+        Args:
+            error_str: Error message text
+
+        Returns:
+            HTTP status code if found, None otherwise
+        """
+        import re
+
+        # Pattern 1: "HTTP X:" at the start (from our own formatting)
+        # Skip "HTTP 0:" as that indicates missing code
+        match = re.search(r'HTTP (\d{3}):', error_str)
+        if match and match.group(1) != '000':
+            code = int(match.group(1))
+            if code > 0:
+                return code
+
+        # Pattern 2: "NNN Status Message" common HTTP error format
+        # e.g., "500 Server Error", "429 Too Many Requests", "403 Forbidden"
+        # Note: Added "Client|Error" alternatives to catch "NNN Client Error" format
+        http_error_patterns = [
+            (r'500\s+(?:Server|Internal|Error)', 500),
+            (r'502\s+(?:Bad|Gateway|Error)', 502),
+            (r'503\s+(?:Service|Unavailable|Error)', 503),
+            (r'504\s+(?:Gateway|Timeout|Error)', 504),
+            (r'429\s+(?:Too\s+Many|Rate|Client|Error)', 429),
+            (r'403\s+(?:Forbidden|Access|Client|Error)', 403),
+            (r'401\s+(?:Unauthorized|Auth|Client|Error)', 401),
+            (r'404\s+(?:Not\s+Found|Client|Error)', 404),
+            (r'400\s+(?:Bad\s+Request|Client|Error)', 400),
+            (r'422\s+(?:Unprocessable|Client|Error)', 422),
+        ]
+
+        for pattern, code in http_error_patterns:
+            if re.search(pattern, error_str, re.IGNORECASE):
+                return code
+
+        # Pattern 3: Just the code word (Forbidden, Unauthorized, etc.)
+        # Only use this for clear authentication/rate limit cases
+        error_lower = error_str.lower()
+        if 'forbidden' in error_lower and '403' not in error_str:
+            return 403
+        if 'unauthorized' in error_lower and '401' not in error_str:
+            return 401
+
+        return None
 
     def _classify_by_http_code(
         self,
@@ -264,6 +336,17 @@ class ErrorClassifier:
                 message=error_str,
                 is_retryable=False,      # API key issues don't self-resolve
                 is_reformulable=False,   # Query changes won't fix auth
+                source_id=source_id
+            )
+
+        # Network error patterns
+        if any(pattern in error_lower for pattern in self.network_patterns):
+            return APIError(
+                http_code=None,
+                category=ErrorCategory.NETWORK,
+                message=error_str,
+                is_retryable=True,       # Network issues may resolve
+                is_reformulable=False,   # Query changes won't fix network
                 source_id=source_id
             )
 
