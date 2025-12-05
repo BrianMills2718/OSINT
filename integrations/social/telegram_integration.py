@@ -360,17 +360,26 @@ Return JSON:
                 if hasattr(chat, 'username') and chat.username:
                     title = SearchResultBuilder.safe_text(getattr(chat, 'title', ''), default="Telegram Channel")
                     members = getattr(chat, 'participants_count', 'Unknown')
+                    # Three-tier model: preserve full content with build_with_raw()
+                    snippet_text = f"Members: {members}"
                     results.append(SearchResultBuilder()
                         .title(title, default="Telegram Channel")
                         .url(f"https://t.me/{chat.username}")
-                        .snippet(f"Members: {members}")
+                        .snippet(snippet_text)
+                        .raw_content(snippet_text)  # Full content
+                        .api_response({
+                            "id": chat.id,
+                            "username": chat.username,
+                            "title": title,
+                            "members": members
+                        })  # Preserve channel data
                         .metadata({
                             "channel_id": chat.id,
                             "username": chat.username,
                             "members": members if members != 'Unknown' else None,
                             "verified": getattr(chat, 'verified', False)
                         })
-                        .build())
+                        .build_with_raw())
 
         except Exception as e:
             # Catch-all at integration boundary - acceptable to return partial results instead of crashing
@@ -398,19 +407,27 @@ Return JSON:
             for msg in messages:
                 if msg.message:  # Skip empty messages
                     msg_text = SearchResultBuilder.safe_text(msg.message)
+                    # Three-tier model: preserve full content with build_with_raw()
                     results.append(SearchResultBuilder()
                         .title(f"@{channel_username}: {msg_text[:100]}..." if msg_text else "Telegram Message",
                                default="Telegram Message")
                         .url(f"https://t.me/{channel_username}/{msg.id}")
                         .snippet(msg_text[:500] if msg_text else "")
+                        .raw_content(msg_text)  # Full content, never truncated
                         .date(msg.date.isoformat() if msg.date else None)
+                        .api_response({
+                            "id": msg.id,
+                            "message": msg_text,
+                            "date": msg.date.isoformat() if msg.date else None,
+                            "channel": channel_username
+                        })  # Preserve message data
                         .metadata({
                             "message_id": msg.id,
                             "channel": channel_username,
                             "views": getattr(msg, 'views', None),
                             "forwards": getattr(msg, 'forwards', None)
                         })
-                        .build())
+                        .build_with_raw())
 
         except Exception as e:
             # Catch-all at integration boundary - acceptable to return empty results instead of crashing
@@ -450,19 +467,27 @@ Return JSON:
                             for msg in messages:
                                 if msg.message and any(kw.lower() in msg.message.lower() for kw in keywords):
                                     msg_text = SearchResultBuilder.safe_text(msg.message)
+                                    # Three-tier model: preserve full content with build_with_raw()
                                     results.append(SearchResultBuilder()
                                         .title(f"@{chat.username}: {msg_text[:100]}..." if msg_text else "Telegram Message",
                                                default="Telegram Message")
                                         .url(f"https://t.me/{chat.username}/{msg.id}")
                                         .snippet(msg_text[:500] if msg_text else "")
+                                        .raw_content(msg_text)  # Full content, never truncated
                                         .date(msg.date.isoformat() if msg.date else None)
+                                        .api_response({
+                                            "id": msg.id,
+                                            "message": msg_text,
+                                            "date": msg.date.isoformat() if msg.date else None,
+                                            "channel": chat.username
+                                        })  # Preserve message data
                                         .metadata({
                                             "message_id": msg.id,
                                             "channel": chat.username,
                                             "keyword_match": keyword,
                                             "views": getattr(msg, 'views', None)
                                         })
-                                        .build())
+                                        .build_with_raw())
 
                                     if len(results) >= limit:
                                         break

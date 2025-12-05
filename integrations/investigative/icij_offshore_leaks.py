@@ -299,11 +299,14 @@ class ICIJOffshoreLeaksIntegration(DatabaseIntegration):
 
                 snippet = " | ".join(snippet_parts)
 
+                # Three-tier model: preserve full content with build_with_raw()
                 transformed = (SearchResultBuilder()
                     .title(name, default="Unknown Entity")
                     .url(url)
                     .snippet(snippet[:500] if snippet else "")
+                    .raw_content(snippet)  # Full content, never truncated
                     .date(None)  # Leak databases don't have a single publication date
+                    .api_response(entity)  # Preserve complete API response
                     .metadata({
                         "entity_id": entity_id,
                         "entity_type": entity_type_name,
@@ -313,7 +316,7 @@ class ICIJOffshoreLeaksIntegration(DatabaseIntegration):
                         "match_score": score,
                         "exact_match": match
                     })
-                    .build())
+                    .build_with_raw())
                 transformed_results.append(transformed)
 
             return QueryResult(
@@ -352,8 +355,8 @@ class ICIJOffshoreLeaksIntegration(DatabaseIntegration):
                 total=0,
                 results=[],
                 query_params=query_params,
-                error=f"HTTP {status_code}: {str(e,
-                http_code=status_code)}",
+                error=f"HTTP {status_code}: {str(e)}",
+                http_code=status_code,
                 response_time_ms=response_time_ms
             )
 

@@ -374,18 +374,22 @@ class SECEdgarIntegration(DatabaseIntegration):
                 filing_date = filing_dates[i] if i < len(filing_dates) else ""
                 accession = accession_numbers[i] if i < len(accession_numbers) else "N/A"
 
+                # Three-tier model: preserve full content with build_with_raw()
+                snippet_text = f"Accession: {accession}"
                 doc = (SearchResultBuilder()
                     .title(f"{form_type} Filing - {company_name} ({filing_date})",
                            default="SEC Filing")
                     .url(f"https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK={cik_padded}")
-                    .snippet(f"Accession: {accession}")
+                    .snippet(snippet_text)
+                    .raw_content(snippet_text)  # Full content
                     .date(filing_date)
+                    .api_response(data)  # Preserve complete API response
                     .metadata({
                         "form_type": form_type,
                         "cik": cik_padded,
                         "company_name": data.get("name")
                     })
-                    .build())
+                    .build_with_raw())
                 documents.append(doc)
 
             return QueryResult(
@@ -701,7 +705,9 @@ class SECEdgarIntegration(DatabaseIntegration):
                                default="SEC Filing")
                         .url(doc_url)
                         .snippet(snippet)
+                        .raw_content(extracted_content if extracted_content else snippet)  # Full content
                         .date(filing_date)
+                        .api_response(data)  # Preserve complete API response
                         .metadata({
                             "form_type": form,
                             "filing_date": filing_date,
@@ -714,7 +720,7 @@ class SECEdgarIntegration(DatabaseIntegration):
                             "filing_viewer_url": filing_url,
                             "extracted_content": extracted_content
                         })
-                        .build())
+                        .build_with_raw())
                     documents.append(doc)
 
                     if len(documents) >= limit:

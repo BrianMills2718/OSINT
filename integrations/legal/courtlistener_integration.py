@@ -369,11 +369,14 @@ Return JSON with your decision:
                     snippet = " | ".join(snippet_parts) if snippet_parts else "Court opinion"
 
                     url = result.get("absolute_url") or f"https://www.courtlistener.com{result.get('url', '')}"
+                    # Three-tier model: preserve full content with build_with_raw()
                     transformed = (SearchResultBuilder()
                         .title(case_name, default="Untitled Case")
                         .url(url)
                         .snippet(snippet[:500] if snippet else "")
+                        .raw_content(snippet)  # Full content, never truncated
                         .date(date_filed)
+                        .api_response(result)  # Preserve complete API response
                         .metadata({
                             "court": court_name,
                             "date_filed": date_filed,
@@ -382,7 +385,7 @@ Return JSON with your decision:
                             "status": result.get("status", ""),
                             "result_type": "opinion"
                         })
-                        .build())
+                        .build_with_raw())
 
                 elif result_type == "r":  # RECAP
                     docket = result.get("docket", {})
@@ -394,11 +397,14 @@ Return JSON with your decision:
                     snippet = f"Court: {court} | Filed: {date_filed} | {description[:200]}"
                     url = result.get("absolute_url") or f"https://www.courtlistener.com{result.get('url', '')}"
 
+                    # Three-tier model: preserve full content with build_with_raw()
                     transformed = (SearchResultBuilder()
                         .title(case_name, default="Untitled Filing")
                         .url(url)
                         .snippet(snippet[:500] if snippet else "")
+                        .raw_content(description)  # Full content, never truncated
                         .date(date_filed)
+                        .api_response(result)  # Preserve complete API response
                         .metadata({
                             "court": court,
                             "date_filed": date_filed,
@@ -406,23 +412,25 @@ Return JSON with your decision:
                             "description": description,
                             "result_type": "recap"
                         })
-                        .build())
+                        .build_with_raw())
 
                 else:  # Other types (dockets, oral arguments, etc.)
                     title = SearchResultBuilder.safe_text(result.get("case_name") or result.get("title"))
                     url = result.get("absolute_url") or f"https://www.courtlistener.com{result.get('url', '')}"
                     date = result.get("date_filed", "") or result.get("date_created", "")
 
+                    # Three-tier model: preserve full content with build_with_raw()
                     transformed = (SearchResultBuilder()
                         .title(title, default="Untitled Result")
                         .url(url)
                         .snippet(str(result)[:500])
+                        .raw_content(str(result))  # Full content, never truncated
                         .date(date)
+                        .api_response(result)  # Preserve complete API response
                         .metadata({
-                            "result_type": result_type,
-                            "raw_result": result
+                            "result_type": result_type
                         })
-                        .build())
+                        .build_with_raw())
 
                 transformed_results.append(transformed)
 

@@ -306,12 +306,16 @@ class CongressIntegration(DatabaseIntegration):
                     bill_type = SearchResultBuilder.safe_text(bill.get("type"))
                     bill_number = SearchResultBuilder.safe_text(bill.get("number"))
 
+                    # Three-tier model: preserve full content with build_with_raw()
+                    snippet_text = " | ".join(snippet_parts)
                     doc = (SearchResultBuilder()
                         .title(f"{bill_type} {bill_number} - {title}" if bill_type or bill_number else title,
                                default="Untitled Bill")
                         .url(bill.get("url"))
-                        .snippet(" | ".join(snippet_parts))
+                        .snippet(snippet_text)
+                        .raw_content(summary if summary else snippet_text)  # Full content
                         .date(bill.get('introducedDate'))
+                        .api_response(bill)  # Preserve complete API response
                         .metadata({
                             "bill_type": bill.get("type"),
                             "bill_number": bill.get("number"),
@@ -322,7 +326,7 @@ class CongressIntegration(DatabaseIntegration):
                             "has_summary": bool(summary),
                             "description": summary if summary else latest_action
                         })
-                        .build())
+                        .build_with_raw())
                     documents.append(doc)
 
             elif endpoint == "member":
@@ -337,11 +341,15 @@ class CongressIntegration(DatabaseIntegration):
                     chamber = SearchResultBuilder.safe_text(member.get("chamber"))
                     district = SearchResultBuilder.safe_text(member.get("district"), default="N/A")
 
+                    # Three-tier model: preserve full content with build_with_raw()
+                    snippet_text = f"Chamber: {chamber} | District: {district}"
                     doc = (SearchResultBuilder()
                         .title(f"{name} ({state}-{party})" if name else "Unknown Member",
                                default="Unknown Member")
                         .url(member.get("url"))
-                        .snippet(f"Chamber: {chamber} | District: {district}")
+                        .snippet(snippet_text)
+                        .raw_content(snippet_text)  # Full content
+                        .api_response(member)  # Preserve complete API response
                         .metadata({
                             "member_id": member.get("bioguideId"),
                             "party": member.get("party"),
@@ -349,7 +357,7 @@ class CongressIntegration(DatabaseIntegration):
                             "chamber": member.get("chamber"),
                             "description": f"{name} - {chamber} member from {state}"
                         })
-                        .build())
+                        .build_with_raw())
                     documents.append(doc)
 
             elif endpoint == "hearing":
@@ -371,11 +379,15 @@ class CongressIntegration(DatabaseIntegration):
 
                     snippet_desc = description[:300] if description else "No description available"
 
+                    # Three-tier model: preserve full content with build_with_raw()
+                    snippet_text = f"{snippet_desc} | Chamber: {chamber} | Updated: {update_date}"
                     doc = (SearchResultBuilder()
                         .title(f"{title} - {chamber} (Congress {congress_num})", default="Untitled Hearing")
                         .url(hearing.get("url"))
-                        .snippet(f"{snippet_desc} | Chamber: {chamber} | Updated: {update_date}")
+                        .snippet(snippet_text)
+                        .raw_content(description if description else snippet_text)  # Full content
                         .date(hearing.get("updateDate"))
+                        .api_response(hearing)  # Preserve complete API response
                         .metadata({
                             "chamber": chamber,
                             "number": number,
@@ -385,7 +397,7 @@ class CongressIntegration(DatabaseIntegration):
                             "title": title,
                             "description": description if description else f"{chamber} hearing #{number}"
                         })
-                        .build())
+                        .build_with_raw())
                     documents.append(doc)
 
             # Limit results to limit

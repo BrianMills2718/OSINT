@@ -325,11 +325,14 @@ class FederalRegisterIntegration(DatabaseIntegration):
                 agencies = doc.get("agencies", [])
                 agency_names = [a.get("name") if isinstance(a, dict) else str(a) for a in agencies]
 
+                # Three-tier model: preserve full content with build_with_raw()
                 transformed = (SearchResultBuilder()
                     .title(doc.get("title"), default="Untitled Document")
                     .url(url)
                     .snippet(snippet, max_length=500)
+                    .raw_content(doc.get("abstract"))  # Full abstract, never truncated
                     .date(doc.get("publication_date"))
+                    .api_response(doc)  # Preserve complete API response
                     .metadata({
                         "document_number": doc.get("document_number"),
                         "type": doc.get("type"),
@@ -340,7 +343,7 @@ class FederalRegisterIntegration(DatabaseIntegration):
                         "pdf_url": doc.get("pdf_url"),
                         "html_url": doc.get("html_url")
                     })
-                    .build())
+                    .build_with_raw())
                 transformed_docs.append(transformed)
 
             return QueryResult(

@@ -172,6 +172,7 @@ class ClearanceJobsIntegration(DatabaseIntegration):
                 response_time_ms = (datetime.now() - start_time).total_seconds() * 1000
 
                 # Success case - normalize fields using defensive builder
+                # Three-tier model: preserve full content with build_with_raw()
                 if result.get("success"):
                     normalized_jobs = []
                     for job in result.get("jobs", []):
@@ -179,11 +180,13 @@ class ClearanceJobsIntegration(DatabaseIntegration):
                             .title(job.get("title"), default="Untitled Position")
                             .url(job.get("url"))
                             .snippet(job.get("description"))
+                            .raw_content(job.get("description"))  # Full content, never truncated
+                            .api_response(job)  # Preserve complete API response
                             .metadata({
                                 **job,  # Keep all raw fields
                                 "clearance_level": job.get("clearance", "")
                             })
-                            .build())
+                            .build_with_raw())
                         normalized_jobs.append(normalized_job)
 
                     return QueryResult(

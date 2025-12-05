@@ -299,19 +299,22 @@ class BraveSearchIntegration(DatabaseIntegration):
             web_results = data.get("web", {}).get("results", [])
 
             # Transform to standardized format using defensive builder
+            # Three-tier model: preserve full content with build_with_raw()
             standardized_results = []
             for item in web_results[:limit]:
                 standardized_results.append(SearchResultBuilder()
                     .title(item.get("title"), default="Untitled")
                     .url(item.get("url"))
                     .snippet(item.get("description"))
+                    .raw_content(item.get("description"))  # Full content
+                    .api_response(item)  # Preserve complete API response
                     .metadata({
                         "age": item.get("age", ""),
                         "language": item.get("language", "en"),
                         "profile": item.get("profile", {}),
                         "source": "Brave Search"
                     })
-                    .build())
+                    .build_with_raw())
 
             # Log successful request
             log_request(

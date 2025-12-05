@@ -327,20 +327,24 @@ class DVIDSIntegration(DatabaseIntegration):
             )
 
             # Transform results to standardized format using defensive builder
+            # Three-tier model: preserve full content with build_with_raw()
             documents = []
             for item in results[:limit]:
                 doc = (SearchResultBuilder()
                     .title(item.get("title"), default="Untitled")
                     .url(item.get("url"))
                     .snippet(item.get("description") or item.get("caption", ""))
+                    .raw_content(item.get("description") or item.get("caption", ""))  # Full content
                     .date(item.get("date"))
+                    .api_response(item)  # Preserve complete API response
+                    .response_time(response_time_ms)
                     .metadata({
                         "id": item.get("id"),
                         "type": item.get("type"),
                         "branch": item.get("branch"),
                         "date": item.get("date")
                     })
-                    .build())
+                    .build_with_raw())
                 documents.append(doc)
 
             return QueryResult(

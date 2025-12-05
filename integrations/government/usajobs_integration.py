@@ -265,17 +265,20 @@ class USAJobsIntegration(DatabaseIntegration):
                     if apply_uri and len(apply_uri) > 0:
                         url = apply_uri[0].get("ApplicationURI")
 
+                # Three-tier model: preserve full content with build_with_raw()
                 normalized = (SearchResultBuilder()
                     .title(matched_obj.get("PositionTitle"), default="Untitled Position")
                     .url(url)
                     .snippet(matched_obj.get("QualificationSummary"), max_length=200)
+                    .raw_content(matched_obj.get("QualificationSummary"))  # Full content
+                    .api_response(item)  # Preserve complete API response
                     .metadata({
                         **matched_obj,  # Keep all raw fields for specialized consumers
                         "description": SearchResultBuilder.safe_text(
                             matched_obj.get("QualificationSummary"), max_length=500
                         )
                     })
-                    .build())
+                    .build_with_raw())
 
                 results.append(normalized)
 

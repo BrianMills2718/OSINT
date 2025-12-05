@@ -311,6 +311,7 @@ class ExaIntegration(DatabaseIntegration):
             exa_results = data.get("results", [])
 
             # Transform to standardized format using defensive builder
+            # Three-tier model: preserve full content with build_with_raw()
             standardized_results = []
             for item in exa_results:
                 description = SearchResultBuilder.safe_text(item.get("text") or item.get("snippet"))
@@ -318,14 +319,16 @@ class ExaIntegration(DatabaseIntegration):
                     .title(item.get("title"), default="Untitled")
                     .url(item.get("url"))
                     .snippet(description)
+                    .raw_content(item.get("text") or description)  # Full content
                     .date(item.get("publishedDate"))
+                    .api_response(item)  # Preserve complete API response
                     .metadata({
                         "author": item.get("author", ""),
                         "score": SearchResultBuilder.safe_amount(item.get("score"), 0),
                         "source": "Exa",
                         "description": description
                     })
-                    .build())
+                    .build_with_raw())
 
             # Log successful request
             log_request(

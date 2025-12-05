@@ -366,11 +366,14 @@ Return JSON:
                 content = SearchResultBuilder.safe_text(article.get("content"))
                 published_at = article.get("publishedAt", "")
 
+                # Three-tier model: preserve full content with build_with_raw()
                 doc = (SearchResultBuilder()
                     .title(article.get("title"), default="No title")
                     .url(article.get("url"))
                     .snippet(description[:500] if description else "")
+                    .raw_content(content if content else description)  # Full content
                     .date(published_at[:10] if published_at else None)
+                    .api_response(article)  # Preserve complete API response
                     .metadata({
                         "source": source_name,
                         "author": article.get("author"),
@@ -378,7 +381,7 @@ Return JSON:
                         "url_to_image": article.get("urlToImage"),
                         "content_preview": content[:200] if content else None
                     })
-                    .build())
+                    .build_with_raw())
                 documents.append(doc)
 
             return QueryResult(

@@ -257,7 +257,8 @@ class Evidence(SearchResult):
         cls,
         result: 'SearchResult',
         source_id: str,
-        relevance_score: Optional[float] = None
+        relevance_score: Optional[float] = None,
+        raw_content: Optional[str] = None
     ) -> 'Evidence':
         """
         Create Evidence from a validated SearchResult.
@@ -265,10 +266,17 @@ class Evidence(SearchResult):
         This is the ONLY way to create Evidence from integration results.
         Type-safe: takes SearchResult, not Dict.
         If SearchResult changes, type checker catches mismatches.
+
+        Args:
+            result: Validated SearchResult object
+            source_id: Integration ID
+            relevance_score: Optional LLM-assigned relevance score
+            raw_content: Optional full content (from three-tier model)
         """
         return cls(
             source_id=source_id,
             relevance_score=relevance_score,
+            raw_content=raw_content,  # Preserve full content if provided
             **result.model_dump()
         )
 
@@ -284,10 +292,22 @@ class Evidence(SearchResult):
 
         Use this when receiving data from integrations that return dicts.
         The dict is validated as SearchResult, then converted to Evidence.
+
+        NOTE: If data contains 'raw_content' field (from build_with_raw()),
+        it will be preserved separately and passed through.
         """
-        # Validate as SearchResult first
+        # Extract raw_content before validation (SearchResult doesn't have this field)
+        raw_content = data.get("raw_content")
+
+        # Validate as SearchResult first (strips unknown fields)
         search_result = SearchResult.model_validate(data)
-        return cls.from_search_result(search_result, source_id, relevance_score)
+
+        return cls.from_search_result(
+            search_result,
+            source_id,
+            relevance_score,
+            raw_content=raw_content  # Pass through preserved raw_content
+        )
 
     @classmethod
     def from_raw(

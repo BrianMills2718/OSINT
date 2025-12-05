@@ -259,6 +259,33 @@ class TestEvidenceBackwardCompatibility:
         assert evidence.source_id == "legacy_source"
         assert not evidence.has_raw_data
 
+    def test_from_dict_preserves_raw_content(self):
+        """Test from_dict() preserves raw_content from build_with_raw()."""
+        # This is the key three-tier model test - integrations now return
+        # dicts with raw_content via build_with_raw(), and from_dict()
+        # must preserve it through SearchResult validation.
+        data = {
+            "title": "Contract Award",
+            "snippet": "Short snippet for LLM",
+            "url": "https://sam.gov/123",
+            "raw_content": "Full raw content that should not be truncated even if very long " * 20
+        }
+
+        evidence = Evidence.from_dict(data, source_id="sam")
+
+        # Snippet should be short (for LLM prompts)
+        assert evidence.snippet == "Short snippet for LLM"
+
+        # raw_content should be preserved without truncation
+        assert len(evidence.raw_content) > 500
+        assert evidence.raw_content.startswith("Full raw content")
+
+        # .content should prefer raw_content
+        assert evidence.content == evidence.raw_content
+
+        # .full_content should return raw_content
+        assert evidence.full_content == evidence.raw_content
+
     def test_from_search_result_still_works(self):
         """Test legacy from_search_result() method still works."""
         search_result = SearchResult(

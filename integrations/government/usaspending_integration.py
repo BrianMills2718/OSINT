@@ -466,14 +466,17 @@ class USASpendingIntegration(DatabaseIntegration):
                         )
 
                         # Build normalized result using builder pattern
+                        # Three-tier model: preserve full content with build_with_raw()
                         result = (SearchResultBuilder()
                             .title(title)
                             .url(self._build_award_url(award.get("Award ID", "")))
                             .snippet(self._build_snippet(award))
+                            .raw_content(self._build_snippet(award))  # Full content, never truncated
                             .date(SearchResultBuilder.safe_text(award.get("Start Date")))
+                            .api_response(award)  # Preserve complete API response
                             .metadata(award)  # Full award data
                             .add_metadata("source", "USAspending")
-                            .build())
+                            .build_with_raw())
 
                         results.append(result)
 

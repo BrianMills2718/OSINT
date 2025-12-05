@@ -363,14 +363,19 @@ class SAMIntegration(DatabaseIntegration):
 
             # Transform results using SearchResultBuilder
             # FIX: SAM.gov returns 'uiLink' but Pydantic expects 'url'
+            # Three-tier model: preserve full content with build_with_raw()
             transformed_results = []
             for opp in opportunities[:limit]:
                 # Build transformed result with defensive value extraction
+                # Use build_with_raw() to preserve full content for three-tier model
                 transformed = (SearchResultBuilder()
                     .title(opp.get("title"))
                     .url(opp.get("uiLink") or opp.get("url"))
                     .snippet(opp.get("description"), max_length=500)
+                    .raw_content(opp.get("description"))  # Full content, never truncated
                     .date(opp.get("postedDate") or opp.get("publishedDate"))
+                    .api_response(opp)  # Preserve complete API response
+                    .response_time(response_time_ms)
                     .metadata({
                         "noticeId": opp.get("noticeId"),
                         "solicitationNumber": opp.get("solicitationNumber"),
@@ -381,7 +386,7 @@ class SAMIntegration(DatabaseIntegration):
                         "responseDeadLine": opp.get("responseDeadLine"),
                         "archiveDate": opp.get("archiveDate")
                     })
-                    .build())
+                    .build_with_raw())  # Includes raw_content field
                 transformed_results.append(transformed)
 
             # Mask API key in params for logging

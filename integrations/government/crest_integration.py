@@ -269,13 +269,16 @@ class CRESTIntegration(DatabaseIntegration):
                         """)
 
                         # Create document using defensive builder
+                        # Three-tier model: preserve full content with build_with_raw()
                         doc = (SearchResultBuilder()
                             .title(content.get('title') or doc_link.get('title'),
                                    default="CIA Document")
                             .url(doc_link.get('url'))
                             .snippet(content.get('snippet'))
+                            .raw_content(content.get('snippet'))  # Full content
+                            .api_response(content)  # Preserve complete scraped data
                             .metadata(content.get('metadata', {}))
-                            .build())
+                            .build_with_raw())
                         documents.append(doc)
 
                     except Exception as e:
@@ -313,5 +316,5 @@ class CRESTIntegration(DatabaseIntegration):
                 results=[],
                 query_params=params,
                 error=f"CREST scraping failed: {str(e)}",
-                http_code=None  # Non-HTTP error"
+                http_code=None  # Non-HTTP error
             )

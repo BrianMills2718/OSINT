@@ -338,11 +338,14 @@ class GovInfoIntegration(DatabaseIntegration):
                 if not snippet:
                     snippet = doc.get("abstract", "")
 
+                # Three-tier model: preserve full content with build_with_raw()
                 transformed = (SearchResultBuilder()
                     .title(SearchResultBuilder.safe_text(doc.get("title"), default="Untitled Document"))
                     .url(url)
                     .snippet(SearchResultBuilder.safe_text(snippet, max_length=500))
+                    .raw_content(snippet)  # Full content, never truncated
                     .date(SearchResultBuilder.safe_date(doc.get("publishDate")))
+                    .api_response(doc)  # Preserve complete API response
                     .metadata({
                         "package_id": package_id,
                         "collection": doc.get("collectionCode"),
@@ -352,7 +355,7 @@ class GovInfoIntegration(DatabaseIntegration):
                         "doc_class": doc.get("docClass"),
                         "government_author": doc.get("governmentAuthor1")
                     })
-                    .build())
+                    .build_with_raw())
                 transformed_results.append(transformed)
 
             # Log successful request

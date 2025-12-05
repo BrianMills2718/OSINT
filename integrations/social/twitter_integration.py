@@ -430,7 +430,9 @@ class TwitterIntegration(DatabaseIntegration):
             .title(text[:100] + ("..." if len(text) > 100 else "") if text else "", default="Tweet")
             .url(url)
             .snippet(text)
+            .raw_content(text)  # Full tweet content, never truncated
             .date(tweet.get("created_at"))
+            .api_response(tweet)  # Preserve complete API response
             .metadata({
                 "author": screen_name,
                 "author_name": user_info.get("name", ""),
@@ -445,7 +447,7 @@ class TwitterIntegration(DatabaseIntegration):
                 "engagement_total": int(favorites + retweets + replies),
                 "description": text
             })
-            .build())
+            .build_with_raw())
 
     def _transform_user_to_standard(self, user: Dict) -> Dict:
         """
@@ -463,11 +465,14 @@ class TwitterIntegration(DatabaseIntegration):
         name = SearchResultBuilder.safe_text(user.get("name"), default="Unknown")
         description = SearchResultBuilder.safe_text(user.get("description") or user.get("desc"))
 
+        # Three-tier model: preserve full content with build_with_raw()
         return (SearchResultBuilder()
             .title(f"@{screen_name} - {name}", default="Twitter User")
             .url(f"https://twitter.com/{screen_name}")
             .snippet(description)
+            .raw_content(description)  # Full content
             .date(user.get("created_at"))
+            .api_response(user)  # Preserve complete API response
             .metadata({
                 "author": screen_name,
                 "author_name": name,
@@ -479,7 +484,7 @@ class TwitterIntegration(DatabaseIntegration):
                 "user_id": user.get("user_id") or user.get("id") or user.get("rest_id", ""),
                 "description": description
             })
-            .build())
+            .build_with_raw())
 
     async def execute_search(self,
                            query_params: Dict,
@@ -602,15 +607,19 @@ class TwitterIntegration(DatabaseIntegration):
                 for trend in trends[:limit]:
                     trend_name = SearchResultBuilder.safe_text(trend.get("name"))
                     url = f"https://twitter.com/search?q={trend_name}" if trend_name else ""
+                    snippet_text = trend.get("description") or trend.get("context")
+                    # Three-tier model: preserve full content with build_with_raw()
                     standardized_results.append(SearchResultBuilder()
                         .title(trend_name, default="Trending Topic")
                         .url(url)
-                        .snippet(trend.get("description") or trend.get("context"))
+                        .snippet(snippet_text)
+                        .raw_content(snippet_text)  # Full content
+                        .api_response(trend)  # Preserve complete API response
                         .metadata({
                             "trend_name": trend_name,
                             "trend_context": trend.get("context", "")
                         })
-                        .build())
+                        .build_with_raw())
 
             # Log successful request
             log_request(
