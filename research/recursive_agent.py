@@ -1853,6 +1853,22 @@ class RecursiveResearchAgent:
             for r in sub_results if r.synthesis or r.reasoning
         ])
 
+        # Collect source health for confidence calibration
+        sources_with_results = list(set(e.source for e in all_evidence))
+
+        # Extract failed source names by searching goal/error text for known sources
+        known_sources = [s['name'] for s in self.available_sources] if self.available_sources else []
+        sources_with_errors = []
+        for r in sub_results:
+            if r.status == GoalStatus.FAILED and r.error:
+                # Search for known source names in goal or error text
+                search_text = f"{r.goal} {r.error}".lower()
+                for source in known_sources:
+                    if source.lower() in search_text:
+                        sources_with_errors.append(source)
+                        break  # Only add first match per failed goal
+        sources_with_errors = list(set(sources_with_errors))  # Deduplicate
+
         prompt = render_prompt(
             "recursive_agent/evidence_synthesis.j2",
             temporal_context=_get_temporal_context(),
@@ -1860,7 +1876,10 @@ class RecursiveResearchAgent:
             original_objective=context.original_objective,
             sub_syntheses=sub_syntheses,
             evidence_count=len(all_evidence),
-            evidence_text=evidence_text
+            evidence_text=evidence_text,
+            sources_with_results=sources_with_results,
+            sources_with_errors=sources_with_errors,
+            rate_limited_sources=list(self.rate_limited_sources)
         )
 
         try:
