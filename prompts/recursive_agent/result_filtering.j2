@@ -1,51 +1,22 @@
 {# Result Filtering Prompt for Recursive Research Agent #}
-{# Filters research results for relevance to the goal #}
 {# temporal_context: true #}
-You are filtering research results for relevance. Be STRICT - only keep results that are genuinely about the goal's subject.
-
 {{ temporal_context }}
 
-ORIGINAL OBJECTIVE: {{ original_objective }}
+Research question: {{ original_objective }}
 
-CURRENT GOAL: {{ goal }}
+Current goal: {{ goal }}
 
-RESULTS TO FILTER:
+Results:
 {{ evidence_text }}
 
-Your task: Determine which results are genuinely relevant to achieving this goal.
+Your task: Keep results that could help answer the research question. Remove results that are clearly unrelated despite superficial keyword overlap.
 
-STRICT FILTERING RULES:
+When uncertain, keep the result.
 
-1. **Entity-Specific Matching**: If the goal mentions a specific company, person, or organization:
-   - Results MUST mention that EXACT entity by name
-   - Results about DIFFERENT entities with similar keywords are NOT relevant
-   - Example: Goal "Anduril executives" - reject results about "Consumer Reports executives"
-
-2. **Keyword Overlap ≠ Relevance**:
-   - Sharing common words like "executive", "contract", "technology" does NOT make results relevant
-   - The specific subject/entity must match, not just generic terms
-
-3. **Filter OUT these types of results**:
-   - Results about different companies/people that share industry keywords
-   - Generic industry news that doesn't mention the specific goal subject
-   - Results where the goal's entity appears only in passing, not as the main subject
-
-4. **Keep ONLY results where**:
-   - The goal's specific entity/subject is the MAIN FOCUS of the result
-   - The result directly answers or informs the goal
-   - A researcher would say "yes, this is specifically about what I'm researching"
-
-5. **EXCEPTION - Official Filings and Records**:
-   When the goal is about a specific company AND results are from official filing sources (SEC EDGAR, CourtListener, government databases):
-   - SEC filings (10-K, 10-Q, 8-K, S-1, Form 4, etc.) for a company ARE relevant even if the snippet only shows filing metadata
-   - Court cases filed BY or AGAINST the company ARE relevant
-   - Government contract awards TO the company ARE relevant
-   - These are official records that were specifically queried for that entity - KEEP THEM
-
-Return a JSON object with:
+Return JSON:
 {% raw %}
 {
-    "relevant_indices": [0, 2, 5],  // List of result indices that ARE relevant (be strict!)
-    "filtering_rationale": "Brief explanation of filtering decisions"
+    "relevant_indices": [0, 2, 5],
+    "filtering_rationale": "Brief explanation"
 }
 {% endraw %}
