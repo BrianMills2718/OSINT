@@ -964,6 +964,7 @@ class SimpleDeepResearch(
                 import traceback
                 logger.error(traceback.format_exc(), exc_info=True)
                 # Attempt a minimal fallback save to preserve artifacts
+                logger.warning("FALLBACK TRIGGERED: Normal save failed, attempting minimal artifact preservation")
                 try:
                     from pathlib import Path
                     import json as _json
@@ -1425,7 +1426,7 @@ class SimpleDeepResearch(
         """
         api_key = os.getenv('BRAVE_SEARCH_API_KEY')
         if not api_key:
-            logger.warning("BRAVE_SEARCH_API_KEY not found, trying Exa failover")
+            logger.warning("FALLBACK TRIGGERED: BRAVE_SEARCH_API_KEY not found, switching to Exa")
             return await self._search_exa_fallback(query, max_results)
 
         # Ensure only 1 Brave Search call at a time (1 req/sec limit)
@@ -1464,12 +1465,12 @@ class SimpleDeepResearch(
                                     logger.warning(f"Brave Search: HTTP 429 (rate limit), retry {attempt + 1}/{max_retries}")
                                     continue  # Retry with exponential backoff
                                 else:
-                                    logger.warning(f"Brave Search: HTTP 429 after {max_retries} retries, falling back to Exa")
+                                    logger.warning(f"FALLBACK TRIGGERED: Brave Search HTTP 429 after {max_retries} retries, switching to Exa")
                                     return await self._search_exa_fallback(query, max_results)
 
                             # Handle other errors
                             if resp.status != 200:
-                                logger.error(f"Brave Search API error: HTTP {resp.status}")
+                                logger.error(f"FALLBACK TRIGGERED: Brave Search API error HTTP {resp.status}, switching to Exa")
                                 return await self._search_exa_fallback(query, max_results)
 
                             data = await resp.json()
@@ -1494,16 +1495,18 @@ class SimpleDeepResearch(
                     logger.error(f"Brave Search timeout for query: {query}")
                     if attempt < max_retries - 1:
                         continue  # Retry
+                    logger.warning(f"FALLBACK TRIGGERED: Brave Search timeout after {max_retries} retries, switching to Exa")
                     return await self._search_exa_fallback(query, max_results)
 
-                # Query reformulation failure - acceptable to proceed with existing query
                 except Exception as e:
                     logger.error(f"Brave Search error: {type(e).__name__}: {str(e)}", exc_info=True)
                     if attempt < max_retries - 1:
                         continue  # Retry
+                    logger.warning(f"FALLBACK TRIGGERED: Brave Search exception after {max_retries} retries, switching to Exa")
                     return await self._search_exa_fallback(query, max_results)
 
         # Should never reach here, but try Exa as fallback
+        logger.warning("FALLBACK TRIGGERED: Brave Search loop exhausted unexpectedly, switching to Exa")
         return await self._search_exa_fallback(query, max_results)
 
     async def _search_exa_fallback(self, query: str, max_results: int = 20) -> List[Dict]:
