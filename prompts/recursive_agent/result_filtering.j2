@@ -9,14 +9,32 @@ Current goal: {{ goal }}
 Results:
 {{ evidence_text }}
 
-Your task: Keep results that could help answer the research question. Remove results that are clearly unrelated despite superficial keyword overlap.
+## Filtering Rules
 
-When uncertain, keep the result.
+**STRICT ENTITY MATCHING**: If the goal mentions a specific entity (company, person, organization):
+- The result MUST mention that specific entity by name
+- Generic results with keyword overlap should be EXCLUDED
+- Example: Goal "Anduril Industries executives" → Keep only results mentioning "Anduril"
+- Example: Goal "Palmer Luckey background" → Keep only results mentioning "Palmer Luckey"
+
+**TOPIC RELEVANCE**: If the goal is about a topic (not a specific entity):
+- Keep results with substantive information on the topic
+- Exclude results with mere keyword mentions but no useful content
+
+**FALSE POSITIVE EXAMPLES** (these should be EXCLUDED):
+- Goal: "Anduril executives" → Result about "Consumer Reports executives" (wrong company)
+- Goal: "SpaceX contracts" → Result about "NASA contracts" (different company, even if related)
+- Goal: "Palantir controversies" → Result about "tech industry controversies" in general
+
+**EDGE CASES** (when to INCLUDE):
+- The entity is mentioned in a different form (e.g., "Anduril" vs "Anduril Industries")
+- The result provides direct context (e.g., a subsidiary or parent company)
+- The person/entity is directly quoted or discussed
 
 Return JSON:
 {% raw %}
 {
     "relevant_indices": [0, 2, 5],
-    "filtering_rationale": "Brief explanation"
+    "filtering_rationale": "Brief explanation of why results were kept/excluded"
 }
 {% endraw %}

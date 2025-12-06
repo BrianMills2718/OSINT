@@ -1074,14 +1074,14 @@ pip list | grep playwright
 - **Solution**: Changed to `item.get("snippet", item.get("description", item.get("content", "")))`
 - **Validated**: Smoke test shows content length 120 chars (was 0)
 
-**2. ~~Filter Prompt Too Lenient - Keyword Matching Passes Irrelevant Results~~ FIXED (commit 1834030)**
-- **Problem**: Filter prompt was overly prescriptive (52 lines of rules) telling LLM how to think
-- **Root Cause**: We weren't clearly stating the goal - just giving arbitrary rules
-- **Fix**: Simplified to 22 lines that state the objective clearly:
-  - "Keep results that could help answer the research question"
-  - "Remove results that are clearly unrelated despite superficial keyword overlap"
-  - "When uncertain, keep the result"
-- **Philosophy**: Trust the LLM to understand relevance - just give it context and the goal
+**2. ~~Filter Prompt Too Lenient - Keyword Matching Passes Irrelevant Results~~ FIXED (2025-12-06)**
+- **Problem**: Filter prompt allowed keyword overlap to pass (e.g., "Consumer Reports executives" passed for "Anduril executives")
+- **Root Cause**: Prompt said "When uncertain, keep the result" - too permissive
+- **Fix**: Added strict entity matching rules:
+  - Entity-specific goals MUST have entity name in result
+  - Explicit false positive examples to guide LLM
+  - Clear edge cases (subsidiaries, alternate names)
+- **Philosophy**: Trust LLM with clear rules, not vague guidance
 - **File**: prompts/recursive_agent/result_filtering.j2
 
 **3. ~~SEC EDGAR Filter Rejects All Results~~ FIXED (commit 66d25c2)**
