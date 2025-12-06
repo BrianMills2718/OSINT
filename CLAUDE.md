@@ -667,11 +667,6 @@ pip list | grep playwright
 - **Fix**: Achievement check must verify comparative/analytical goals actually synthesized
 - **File**: research/recursive_agent.py `_goal_achieved()` method
 
-**3. API Integration Failures - NewsAPI, Federal Register, CourtListener**
-- **Problem**: 50% failure rate in DAG test (23/46 goals failed)
-- **Fix**: Debug each failing integration (rate limits, API keys, parameter validation)
-- **Note**: GovInfo already fixed (commit 0dd7f40)
-
 ### P2 - Medium Priority
 
 **4. SAM.gov Rate Limit - No Retry Logic**
@@ -708,6 +703,7 @@ pip list | grep playwright
 | Twitter API Crash | (already impl) | Defensive code handles list inputs |
 | PDF Extraction | fbc1a84, eec649e | PyMuPDF extraction for GovInfo, FBI Vault |
 | GovInfo 0 Results | 0dd7f40, c1ffb1e | Fixed search syntax + date filtering |
+| API Integration Failures | c871605 | CourtListener "null" string filtering; NewsAPI/FedReg already working |
 
 ---
 
