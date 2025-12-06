@@ -1097,10 +1097,10 @@ pip list | grep playwright
 - **Fix**: Added robust URL handling - checks for http://, leading slash, or bare path
 - **File**: integrations/legal/courtlistener_integration.py (3 locations updated)
 
-**5. FEC URLs Point to Generic Search Page**
-- **Problem**: All FEC citations link to same generic page, not specific receipts
-- **Fix**: Generate direct links with receipt/transaction IDs
-- **File**: integrations/government/fec_integration.py
+**5. ~~FEC URLs Point to Generic Search Page~~ FIXED (already implemented)**
+- **Problem**: All FEC citations link to same generic page
+- **Fix**: Already implemented - uses candidate_id, committee_id, contributor filters
+- **File**: integrations/government/fec_integration.py (lines 348, 456-463, 548, 639)
 
 **6. ~~Evidence Truncation Without Warning~~ FIXED (already implemented)**
 - **Problem**: 124 evidence pieces truncated to 50 silently
@@ -1122,10 +1122,10 @@ pip list | grep playwright
 - **Fix**: Parse dates from evidence content into metadata
 - **File**: research/recursive_agent.py evidence creation
 
-**9. Twitter API Crash**
-- **Problem**: `'list' object has no attribute 'split'` - type mismatch
-- **Fix**: Debug and fix type handling
-- **File**: integrations/social/twitter_integration.py
+**9. Twitter API Crash** - **FIXED** (defensive code already exists)
+- ~~**Problem**: `'list' object has no attribute 'split'` - type mismatch~~
+- **Status**: Already fixed - defensive code at lines 263-264 and 311-313 converts list inputs to strings before calling `.split()`
+- **Validated**: All 3 test cases pass (string, list, is_relevant with list)
 
 **10. No Full Content or PDF Extraction**
 - **Problem**: We only capture API snippets (~200 chars), never fetch full pages or extract PDF text
