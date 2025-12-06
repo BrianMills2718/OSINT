@@ -1077,11 +1077,11 @@ pip list | grep playwright
 - **Philosophy**: Trust the LLM to understand relevance - just give it context and the goal
 - **File**: prompts/recursive_agent/result_filtering.j2
 
-**3. SEC EDGAR Filter Rejects All Results**
-- **Problem**: 10 SEC filings found but filtered to 0 - relevance filter incorrectly rejects financial filings
-- **Impact**: No SEC data for public company research (10-K, 10-Q, 8-K missing)
-- **Fix**: Update SEC EDGAR relevance prompt to accept filings for company research
-- **File**: Likely prompts/integrations/sec_edgar_relevance.j2 or filter prompt logic
+**3. ~~SEC EDGAR Filter Rejects All Results~~ FIXED (commit 66d25c2)**
+- **Investigation**: Filter was working correctly - it rejected irrelevant Form 4 (insider trading) filings
+- **Root Cause**: `supports_fallback: True` in metadata triggered broken code path that ignored `form_types` parameter
+- **Fix**: Removed fallback abstraction entirely (~240 lines + 140-line dead file)
+- **Validated**: Palantir 10-Q query now returns 10-Q filing (not Form 4)
 
 ### P1 - HIGH PRIORITY
 
