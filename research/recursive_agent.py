@@ -2477,15 +2477,15 @@ class RecursiveResearchAgent:
             return report
 
         except Exception as e:
-            logger.error(f"FALLBACK TRIGGERED: Report synthesis failed: {e}", exc_info=True)
+            logger.error(f"Report synthesis FAILED: {e}", exc_info=True)
             # Log to execution log for forensic traceability
-            self.logger._write_entry("fallback_triggered", result.goal, 0, None, {
-                "fallback_type": "llm_synthesis_to_basic_report",
+            self.logger._write_entry("synthesis_failed", result.goal, 0, None, {
                 "error": str(e),
                 "error_type": type(e).__name__,
-                "reason": "LLM report synthesis failed, generating basic markdown report"
+                "evidence_count": len(result.evidence)
             })
-            return self._generate_basic_report(result, by_source)
+            # Re-raise - no fallbacks, fail loudly
+            raise
 
     def _log_synthesis_decisions(self, synthesis_json: Dict, objective: str):
         """

@@ -958,33 +958,10 @@ class SimpleDeepResearch(
                 output_path = self._save_research_output(question, result)
                 result["output_directory"] = output_path
                 print(f"\n💾 Research output saved to: {output_path}")
-            # Output persistence failure - non-critical, research completed
             except Exception as e:
-                logger.error(f"Failed to save research output: {type(e).__name__}: {str(e)}", exc_info=True)
-                import traceback
-                logger.error(traceback.format_exc(), exc_info=True)
-                # Attempt a minimal fallback save to preserve artifacts
-                logger.warning("FALLBACK TRIGGERED: Normal save failed, attempting minimal artifact preservation")
-                try:
-                    from pathlib import Path
-                    import json as _json
-                    slug = "fallback_" + datetime.now().strftime("%Y-%m-%d_%H-%M-%S")
-                    output_path = Path(self.output_dir) / slug
-                    output_path.mkdir(parents=True, exist_ok=True)
-                    # Minimal report
-                    report_file = output_path / "report.md"
-                    report_file.write_text(result.get("report", "Report unavailable due to save error."), encoding="utf-8")
-                    # Minimal results
-                    results_file = output_path / "results.json"
-                    _json.dump(result, results_file.open("w", encoding="utf-8"), indent=2, ensure_ascii=False)
-                    # Minimal metadata
-                    metadata_file = output_path / "metadata.json"
-                    _json.dump({"error": f"{type(e).__name__}: {str(e)}", "research_question": question}, metadata_file.open("w", encoding="utf-8"), indent=2, ensure_ascii=False)
-                    result["output_directory"] = str(output_path)
-                    print(f"\n⚠️  Partial output saved to: {output_path}")
-                # LLM fallback model failure - expected possibility, try next model in chain
-                except Exception as fallback_error:
-                    logger.error(f"Fallback save failed: {type(fallback_error).__name__}: {fallback_error}", exc_info=True)
+                logger.error(f"Save research output FAILED: {type(e).__name__}: {str(e)}", exc_info=True)
+                # No fallback - fail loudly so we can fix the root cause
+                raise
 
         # Log run completion
         if self.logger:
@@ -1418,16 +1395,16 @@ class SimpleDeepResearch(
 
     async def _search_brave(self, query: str, max_results: int = 20) -> List[Dict]:
         """
-        Search open web using Brave Search API with Exa failover.
+        Search open web using Brave Search API.
 
         Includes rate limiting (1 req/sec) and retry logic for HTTP 429 errors.
         Uses lock to ensure rate limit respected across parallel tasks.
-        If Brave fails with 429 after retries, falls back to Exa semantic search.
+        FAILS LOUDLY if Brave Search fails - no silent fallbacks.
         """
         api_key = os.getenv('BRAVE_SEARCH_API_KEY')
         if not api_key:
-            logger.warning("FALLBACK TRIGGERED: BRAVE_SEARCH_API_KEY not found, switching to Exa")
-            return await self._search_exa_fallback(query, max_results)
+            logger.error("Brave Search FAILED: BRAVE_SEARCH_API_KEY not configured")
+            return []  # Fail loudly with empty results
 
         # Ensure only 1 Brave Search call at a time (1 req/sec limit)
         async with self._brave_lock:
@@ -1456,7 +1433,6 @@ class SimpleDeepResearch(
                         # Always wait 1 second between calls to respect rate limit
                         await asyncio.sleep(1.0)
 
-                    # Codex fix: Move aiohttp.ClientSession inside try block for proper error handling
                     async with aiohttp.ClientSession() as session:
                         async with session.get(url, headers=headers, params=params, timeout=aiohttp.ClientTimeout(total=30)) as resp:
                             # Handle rate limiting
@@ -1465,13 +1441,13 @@ class SimpleDeepResearch(
                                     logger.warning(f"Brave Search: HTTP 429 (rate limit), retry {attempt + 1}/{max_retries}")
                                     continue  # Retry with exponential backoff
                                 else:
-                                    logger.warning(f"FALLBACK TRIGGERED: Brave Search HTTP 429 after {max_retries} retries, switching to Exa")
-                                    return await self._search_exa_fallback(query, max_results)
+                                    logger.error(f"Brave Search FAILED: HTTP 429 after {max_retries} retries")
+                                    return []  # Fail loudly
 
                             # Handle other errors
                             if resp.status != 200:
-                                logger.error(f"FALLBACK TRIGGERED: Brave Search API error HTTP {resp.status}, switching to Exa")
-                                return await self._search_exa_fallback(query, max_results)
+                                logger.error(f"Brave Search FAILED: HTTP {resp.status}")
+                                return []  # Fail loudly
 
                             data = await resp.json()
 
@@ -1482,8 +1458,8 @@ class SimpleDeepResearch(
                         results.append({
                             'source': 'Brave Search',
                             'title': item.get('title', ''),
-                            'description': description,  # Use 'description' for consistency
-                            'snippet': description,      # Also include 'snippet' for backward compatibility
+                            'description': description,
+                            'snippet': description,
                             'url': item.get('url', ''),
                             'date': item.get('published_date')
                         })
@@ -1495,77 +1471,19 @@ class SimpleDeepResearch(
                     logger.error(f"Brave Search timeout for query: {query}")
                     if attempt < max_retries - 1:
                         continue  # Retry
-                    logger.warning(f"FALLBACK TRIGGERED: Brave Search timeout after {max_retries} retries, switching to Exa")
-                    return await self._search_exa_fallback(query, max_results)
+                    logger.error(f"Brave Search FAILED: Timeout after {max_retries} retries")
+                    return []  # Fail loudly
 
                 except Exception as e:
                     logger.error(f"Brave Search error: {type(e).__name__}: {str(e)}", exc_info=True)
                     if attempt < max_retries - 1:
                         continue  # Retry
-                    logger.warning(f"FALLBACK TRIGGERED: Brave Search exception after {max_retries} retries, switching to Exa")
-                    return await self._search_exa_fallback(query, max_results)
+                    logger.error(f"Brave Search FAILED: {type(e).__name__} after {max_retries} retries")
+                    return []  # Fail loudly
 
-        # Should never reach here, but try Exa as fallback
-        logger.warning("FALLBACK TRIGGERED: Brave Search loop exhausted unexpectedly, switching to Exa")
-        return await self._search_exa_fallback(query, max_results)
-
-    async def _search_exa_fallback(self, query: str, max_results: int = 20) -> List[Dict]:
-        """
-        Fallback to Exa semantic search when Brave fails.
-
-        Args:
-            query: Search query string
-            max_results: Maximum results to return
-
-        Returns:
-            List of results in standard format (same as Brave)
-        """
-        exa_api_key = os.getenv('EXA_API_KEY')
-        if not exa_api_key:
-            logger.warning("EXA_API_KEY not found, cannot use Exa fallback")
-            return []
-
-        try:
-            logger.info(f"Exa fallback: Searching for '{query}'")
-
-            # Use Exa integration directly
-            from integrations.web.exa_integration import ExaIntegration
-            exa = ExaIntegration()
-
-            # Build simple query params for semantic search
-            query_params = {
-                "pattern": "semantic_search",
-                "query": query,
-                "num_results": min(max_results, 25)  # Exa max is 25
-            }
-
-            # Execute search
-            result = await exa.execute_search(query_params, api_key=exa_api_key, limit=max_results)
-
-            if not result.success:
-                logger.error(f"Exa fallback failed: {result.error}")
-                return []
-
-            # Convert Exa results to Brave-compatible format
-            results = []
-            for item in result.results:
-                results.append({
-                    'source': 'Exa (Brave fallback)',
-                    'title': item.get('title', ''),
-                    'description': item.get('description', ''),
-                    'snippet': item.get('description', ''),
-                    'url': item.get('url', ''),
-                    'date': item.get('published_date')
-                })
-
-            logger.info(f"Exa fallback: {len(results)} results for query: {query}")
-            return results
-
-        except Exception as e:
-            logger.error(f"Exa fallback error: {type(e).__name__}: {str(e)}", exc_info=True)
-            return []
-
-
+        # Should never reach here
+        logger.error("Brave Search FAILED: Loop exhausted unexpectedly")
+        return []
 
     async def _execute_task_with_retry(self, task: ResearchTask) -> bool:
         """
