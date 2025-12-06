@@ -76,16 +76,10 @@ class SECEdgarIntegration(DatabaseIntegration):
             # Query generation guidance
             query_strategies=['cik_lookup', 'ticker_lookup', 'company_name_search', 'form_type_filter'],
             characteristics={
-                'supports_fallback': True,
-                'search_strategies': [
-                    {'method': 'cik', 'reliability': 'high', 'param': 'cik'},
-                    {'method': 'ticker', 'reliability': 'high', 'param': 'ticker'},
-                    {'method': 'name_exact', 'reliability': 'medium', 'param': 'company_name'},
-                    {'method': 'name_fuzzy', 'reliability': 'low', 'param': 'company_name'},
-                ],
                 'structured_data': True,
                 'rich_metadata': True,
-                'date_filtering': True
+                'date_filtering': True,
+                'form_type_filtering': True
             },
             typical_result_count=20,
             max_queries_recommended=5,
@@ -321,243 +315,6 @@ class SECEdgarIntegration(DatabaseIntegration):
         """Extract relevant sections using imported utility."""
         return extract_relevant_sections(content, form_type, keywords)
 
-    async def _search_by_cik(self, cik: str) -> QueryResult:
-        """
-        Search SEC EDGAR by CIK (Central Index Key) directly.
-
-        Args:
-            cik: 10-digit CIK number
-
-        Returns:
-            QueryResult with filings found
-        """
-        try:
-            # Ensure CIK is 10 digits with leading zeros
-            cik_padded = str(cik).zfill(10)
-
-            user_agent = self._get_user_agent()
-            headers = {"User-Agent": user_agent}
-
-            # Fetch company submissions
-            response = requests.get(
-                f"https://data.sec.gov/submissions/CIK{cik_padded}.json",
-                headers=headers,
-                timeout=15
-            )
-
-            response.raise_for_status()
-            data = response.json()
-
-            # Get recent filings
-            filings = data.get("filings", {}).get("recent", {})
-            forms = filings.get("form", [])
-
-            if not forms:
-                return QueryResult(
-                    success=False,
-                    source="SEC EDGAR",
-                    total=0,
-                    results=[],
-                    query_params={"cik": cik},
-                    error=f"No filings found for CIK {cik}",
-                http_code=None  # Non-HTTP error
-                )
-
-            # Build results using defensive builder (simplified for fallback)
-            documents = []
-            accession_numbers = filings.get("accessionNumber", [])
-            filing_dates = filings.get("filingDate", [])
-            company_name = SearchResultBuilder.safe_text(data.get("name"), default="Unknown")
-
-            for i in range(min(10, len(forms))):  # Limit to 10 for fallback
-                form_type = SearchResultBuilder.safe_text(forms[i])
-                filing_date = filing_dates[i] if i < len(filing_dates) else ""
-                accession = accession_numbers[i] if i < len(accession_numbers) else "N/A"
-
-                # Three-tier model: preserve full content with build_with_raw()
-                snippet_text = f"Accession: {accession}"
-                doc = (SearchResultBuilder()
-                    .title(f"{form_type} Filing - {company_name} ({filing_date})",
-                           default="SEC Filing")
-                    .url(f"https://www.sec.gov/cgi-bin/browse-edgar?action=getcompany&CIK={cik_padded}")
-                    .snippet(snippet_text)
-                    .raw_content(snippet_text)  # Full content
-                    .date(filing_date)
-                    .api_response(data)  # Preserve complete API response
-                    .metadata({
-                        "form_type": form_type,
-                        "cik": cik_padded,
-                        "company_name": data.get("name")
-                    })
-                    .build_with_raw())
-                documents.append(doc)
-
-            return QueryResult(
-                success=True,
-                source="SEC EDGAR",
-                total=len(documents),
-                results=documents,
-                query_params={"cik": cik},
-                response_time_ms=int(response.elapsed.total_seconds() * 1000)
-            )
-
-        except Exception as e:
-            # Catch-all at integration boundary - acceptable to return error instead of crashing
-            logger.error(f"SEC EDGAR CIK search failed: {e}", exc_info=True)
-            return QueryResult(
-                success=False,
-                source="SEC EDGAR",
-                total=0,
-                results=[],
-                query_params={"cik": cik},
-                error=f"CIK search failed: {str(e)}",
-                http_code=None  # Non-HTTP error"
-            )
-
-    async def _search_by_ticker(self, ticker: str) -> QueryResult:
-        """
-        Search SEC EDGAR by stock ticker symbol.
-
-        Args:
-            ticker: Stock ticker (e.g., AAPL, MSFT)
-
-        Returns:
-            QueryResult with filings found
-        """
-        try:
-            user_agent = self._get_user_agent()
-
-            # Use company_tickers.json to find CIK from ticker
-            response = requests.get(
-                "https://www.sec.gov/files/company_tickers.json",
-                headers={"User-Agent": user_agent},
-                timeout=10
-            )
-
-            response.raise_for_status()
-            data = response.json()
-
-            # Find ticker match
-            ticker_upper = ticker.upper()
-            cik = None
-            for entry in data.values():
-                if entry.get("ticker", "").upper() == ticker_upper:
-                    cik = str(entry.get("cik_str")).zfill(10)
-                    break
-
-            if not cik:
-                return QueryResult(
-                    success=False,
-                    source="SEC EDGAR",
-                    total=0,
-                    results=[],
-                    query_params={"ticker": ticker},
-                    error=f"Ticker '{ticker}' not found",
-                    http_code=None  # Not found, not HTTP
-                )
-
-            # Use CIK search
-            return await self._search_by_cik(cik)
-
-        except Exception as e:
-            # Catch-all at integration boundary - acceptable to return error instead of crashing
-            logger.error(f"SEC EDGAR ticker search failed: {e}", exc_info=True)
-            return QueryResult(
-                success=False,
-                source="SEC EDGAR",
-                total=0,
-                results=[],
-                query_params={"ticker": ticker},
-                error=f"Ticker search failed: {str(e)}",
-                http_code=None  # Non-HTTP error"
-            )
-
-    async def _search_by_name_exact(self, company_name: str) -> QueryResult:
-        """
-        Search SEC EDGAR by exact company name match.
-
-        Args:
-            company_name: Company name to search
-
-        Returns:
-            QueryResult with filings found
-        """
-        cik = await self._search_company_cik(company_name)
-        if not cik:
-            return QueryResult(
-                success=False,
-                source="SEC EDGAR",
-                total=0,
-                results=[],
-                query_params={"company_name": company_name},
-                error=f"Company '{company_name}' not found (exact match)",
-                http_code=None  # Not found, not HTTP
-            )
-
-        return await self._search_by_cik(cik)
-
-    async def _search_by_name_fuzzy(self, company_name: str) -> QueryResult:
-        """
-        Search SEC EDGAR by fuzzy company name match (partial matching).
-
-        Args:
-            company_name: Company name to search
-
-        Returns:
-            QueryResult with filings found
-        """
-        try:
-            user_agent = self._get_user_agent()
-
-            # Use company_tickers.json for fuzzy matching
-            response = requests.get(
-                "https://www.sec.gov/files/company_tickers.json",
-                headers={"User-Agent": user_agent},
-                timeout=10
-            )
-
-            response.raise_for_status()
-            data = response.json()
-
-            # Fuzzy search: find any company with partial name match
-            company_lower = company_name.lower()
-            matches = []
-
-            for entry in data.values():
-                title = entry.get("title", "").lower()
-                # Check if ANY word from company_name is in title
-                words = company_lower.split()
-                if any(word in title for word in words if len(word) > 2):  # Skip short words
-                    matches.append((entry.get("cik_str"), entry.get("title")))
-
-            if not matches:
-                return QueryResult(
-                    success=False,
-                    source="SEC EDGAR",
-                    total=0,
-                    results=[],
-                    query_params={"company_name": company_name},
-                    error=f"No fuzzy matches found for '{company_name}'",
-                    http_code=None  # Not found, not HTTP
-                )
-
-            # Use first match
-            cik = str(matches[0][0]).zfill(10)
-            return await self._search_by_cik(cik)
-
-        except Exception as e:
-            # Catch-all at integration boundary - acceptable to return error instead of crashing
-            logger.error(f"SEC EDGAR fuzzy search failed: {e}", exc_info=True)
-            return QueryResult(
-                success=False,
-                source="SEC EDGAR",
-                total=0,
-                results=[],
-                query_params={"company_name": company_name},
-                error=f"Fuzzy search failed: {str(e)}",
-                http_code=None  # Non-HTTP error"
-            )
-
     async def execute_search(
         self,
         query_params: Dict,
@@ -565,42 +322,16 @@ class SECEdgarIntegration(DatabaseIntegration):
         limit: int = 20
     ) -> QueryResult:
         """
-        Execute SEC EDGAR search via public APIs with intelligent fallback.
-
-        Uses generic fallback pattern: tries search strategies in order of
-        reliability (CIK → ticker → name exact → name fuzzy) until one succeeds.
+        Execute SEC EDGAR search via public APIs.
 
         Args:
-            params: Query parameters from generate_query()
+            query_params: Query parameters from generate_query()
             api_key: Not used (SEC EDGAR doesn't require API key)
             limit: Maximum results to return
 
         Returns:
             QueryResult with filings/documents found
         """
-        from core.search_fallback import execute_with_fallback
-
-        # Use self.metadata (single source of truth)
-        metadata = self.metadata
-
-        # Check if fallback is supported (configured in DatabaseMetadata.characteristics)
-        if metadata and metadata.characteristics.get('supports_fallback'):
-            # Define search methods for fallback
-            search_methods = {
-                'cik': self._search_by_cik,
-                'ticker': self._search_by_ticker,
-                'name_exact': self._search_by_name_exact,
-                'name_fuzzy': self._search_by_name_fuzzy,
-            }
-
-            return await execute_with_fallback(
-                "SEC EDGAR",
-                query_params,
-                search_methods,
-                metadata
-            )
-
-        # Fallback to old logic if metadata doesn't support fallback
         query_type = query_params.get("query_type", "company_filings")
         company_name = query_params.get("company_name")
         form_types = query_params.get("form_types", [])
