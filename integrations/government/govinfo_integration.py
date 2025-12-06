@@ -249,7 +249,6 @@ class GovInfoIntegration(DatabaseIntegration):
             QueryResult with standardized format
         """
         start_time = datetime.now()
-        endpoint = "https://api.govinfo.gov/search"
 
         # Check for API key
         if not api_key:
@@ -264,63 +263,97 @@ class GovInfoIntegration(DatabaseIntegration):
             )
 
         try:
-            # Build search query string
+            # Extract parameters
             search_terms = query_params.get("query", "")
             collections = query_params.get("collections", [])
-
-            # Build collection filter: collection:(GAOREPORTS OR CRPT)
-            if collections:
-                collection_filter = " OR ".join(collections)
-                full_query = f"{search_terms} AND collection:({collection_filter})"
-            else:
-                full_query = search_terms
-
-            # Add date filter if specified
             date_range_years = query_params.get("date_range_years")
+
+            # Calculate start date
+            from datetime import timedelta
             if date_range_years:
-                from datetime import timedelta
-                cutoff_date = (datetime.now() - timedelta(days=365 * date_range_years)).strftime("%Y-%m-%d")
-                full_query += f" AND publishdate:>={cutoff_date}"
-
-            # Build request payload
-            payload = {
-                "query": full_query,
-                "pageSize": min(limit, 100),  # API max is 100
-                "offsetMark": "*",  # Start from beginning
-                "sorts": [
-                    {
-                        "field": query_params.get("sort_by", "publishdate"),
-                        "sortOrder": "DESC"
-                    }
-                ]
-            }
-
-            # Execute search (POST request)
-            loop = asyncio.get_event_loop()
-            response = await loop.run_in_executor(
-                None,
-                lambda: requests.post(
-                    endpoint,
-                    params={"api_key": api_key},
-                    json=payload,
-                    headers={"Content-Type": "application/json"},
-                    timeout=30
-                )
-            )
-            response.raise_for_status()
-            response_time_ms = (datetime.now() - start_time).total_seconds() * 1000
-
-            # Parse response
-            data = response.json()
-
-            # Handle different response structures
-            if "results" in data:
-                raw_results = data["results"]
-                total = data.get("count", len(raw_results))
+                cutoff_date = datetime.now() - timedelta(days=365 * date_range_years)
             else:
-                # Fallback if API structure is different
-                raw_results = []
-                total = 0
+                cutoff_date = datetime.now() - timedelta(days=365 * 5)  # Default 5 years
+
+            # Use collections API only if NO search terms and single collection
+            # Otherwise use search API for better keyword matching
+            if len(collections) == 1 and not search_terms:
+                # Collections API: https://api.govinfo.gov/collections/{collectionCode}/{startDate}
+                collection_code = collections[0]
+                start_date_iso = cutoff_date.strftime("%Y-%m-%dT%H:%M:%SZ")
+                endpoint = f"https://api.govinfo.gov/collections/{collection_code}/{start_date_iso}"
+
+                loop = asyncio.get_event_loop()
+                response = await loop.run_in_executor(
+                    None,
+                    lambda: requests.get(
+                        endpoint,
+                        params={
+                            "api_key": api_key,
+                            "offset": 0,
+                            "pageSize": min(limit, 100)
+                        },
+                        timeout=30
+                    )
+                )
+                response.raise_for_status()
+                response_time_ms = (datetime.now() - start_time).total_seconds() * 1000
+
+                data = response.json()
+                raw_results = data.get("packages", [])
+                total = data.get("count", len(raw_results))
+
+                # Filter by search terms if provided
+                if search_terms:
+                    search_lower = search_terms.lower()
+                    filtered_results = [
+                        doc for doc in raw_results
+                        if search_lower in doc.get("title", "").lower()
+                    ]
+                    raw_results = filtered_results
+
+            else:
+                # Fall back to search API for multiple collections or no collection
+                endpoint = "https://api.govinfo.gov/search"
+
+                # Build query
+                if collections:
+                    collection_filter = " OR ".join(collections)
+                    full_query = f"{search_terms} AND collection:({collection_filter})"
+                else:
+                    full_query = search_terms
+
+                # Note: Search API has issues with date filtering, so we skip it
+
+                payload = {
+                    "query": full_query,
+                    "pageSize": min(limit, 100),
+                    "offsetMark": "*",
+                    "sorts": [
+                        {
+                            "field": query_params.get("sort_by", "publishdate"),
+                            "sortOrder": "DESC"
+                        }
+                    ]
+                }
+
+                loop = asyncio.get_event_loop()
+                response = await loop.run_in_executor(
+                    None,
+                    lambda: requests.post(
+                        endpoint,
+                        params={"api_key": api_key},
+                        json=payload,
+                        headers={"Content-Type": "application/json"},
+                        timeout=30
+                    )
+                )
+                response.raise_for_status()
+                response_time_ms = (datetime.now() - start_time).total_seconds() * 1000
+
+                data = response.json()
+                raw_results = data.get("results", [])
+                total = data.get("count", len(raw_results))
 
             # Transform to standardized format
             transformed_results = []
@@ -329,7 +362,8 @@ class GovInfoIntegration(DatabaseIntegration):
                 package_id = doc.get("packageId", "")
 
                 # Build GovInfo URL
-                url = doc.get("packageLink", "")
+                # Collections API uses packageLink, search API uses resultLink
+                url = doc.get("packageLink") or doc.get("resultLink", "")
                 if not url and package_id:
                     url = f"https://www.govinfo.gov/app/details/{package_id}"
 
@@ -338,22 +372,25 @@ class GovInfoIntegration(DatabaseIntegration):
                 if not snippet:
                     snippet = doc.get("abstract", "")
 
+                # Handle date field (collections API uses dateIssued, search API uses publishDate)
+                date_value = doc.get("dateIssued") or doc.get("publishDate")
+
                 # Three-tier model: preserve full content with build_with_raw()
                 transformed = (SearchResultBuilder()
                     .title(SearchResultBuilder.safe_text(doc.get("title"), default="Untitled Document"))
                     .url(url)
                     .snippet(SearchResultBuilder.safe_text(snippet, max_length=500))
                     .raw_content(snippet)  # Full content, never truncated
-                    .date(SearchResultBuilder.safe_date(doc.get("publishDate")))
+                    .date(SearchResultBuilder.safe_date(date_value))
                     .api_response(doc)  # Preserve complete API response
                     .metadata({
                         "package_id": package_id,
                         "collection": doc.get("collectionCode"),
                         "collection_name": doc.get("collectionName"),
-                        "publish_date": doc.get("publishDate"),
+                        "publish_date": date_value,
                         "last_modified": doc.get("lastModified"),
                         "doc_class": doc.get("docClass"),
-                        "government_author": doc.get("governmentAuthor1")
+                        "government_author": doc.get("governmentAuthor1") or doc.get("governmentAuthor")
                     })
                     .build_with_raw())
                 transformed_results.append(transformed)
@@ -365,7 +402,7 @@ class GovInfoIntegration(DatabaseIntegration):
                 status_code=response.status_code,
                 response_time_ms=response_time_ms,
                 error_message=None,
-                request_params=payload
+                request_params=query_params
             )
 
             return QueryResult(
@@ -377,7 +414,7 @@ class GovInfoIntegration(DatabaseIntegration):
                 response_time_ms=response_time_ms,
                 metadata={
                     "api_url": endpoint,
-                    "full_query": full_query,
+                    "search_terms": search_terms,
                     "collections_searched": collections
                 }
             )
@@ -404,8 +441,8 @@ class GovInfoIntegration(DatabaseIntegration):
                 total=0,
                 results=[],
                 query_params=query_params,
-                error=f"HTTP {status_code}: {str(e,
-                http_code=status_code)}",
+                error=f"HTTP {status_code}: {str(e)}",
+                http_code=status_code,
                 response_time_ms=response_time_ms
             )
 
