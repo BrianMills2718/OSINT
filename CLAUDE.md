@@ -1127,11 +1127,15 @@ pip list | grep playwright
 - **Status**: Already fixed - defensive code at lines 263-264 and 311-313 converts list inputs to strings before calling `.split()`
 - **Validated**: All 3 test cases pass (string, list, is_relevant with list)
 
-**10. No Full Content or PDF Extraction**
-- **Problem**: We only capture API snippets (~200 chars), never fetch full pages or extract PDF text
-- **Impact**: FBI Vault, GovInfo return PDF links but we can't read content
-- **Decision Needed**: Is this a feature gap or acceptable limitation?
-- **Potential Fix**: Add PDF extraction for document-heavy sources (FBI Vault, GovInfo, CourtListener)
+**10. ~~No Full Content or PDF Extraction~~ FIXED (2025-12-06, commits fbc1a84, eec649e)**
+- **Problem**: We only captured API snippets (~200 chars), never fetched full pages or extracted PDF text
+- **Solution**: Added PDF extraction infrastructure with PyMuPDF:
+  - `core/pdf_extractor.py` - Async PDF download + text extraction with caching
+  - GovInfo integration - `extract_pdf=True` parameter extracts GAO reports (191K chars from single PDF)
+  - FBI Vault integration - Extracts PDFs from document links
+  - `raw_content` field added to SearchResult - preserves full text through pipeline
+- **Validated**: GAO report PDF extraction working (191,717 chars preserved)
+- **Usage**: Pass `extract_pdf=True` to `execute_search()` for document-heavy sources
 
 **11. SAM.gov Rate Limit - No Retry Logic**
 - **Problem**: SAM.gov rate limits immediately and is skipped for entire session
@@ -1198,14 +1202,14 @@ pip list | grep playwright
 
 ### Implementation Plan (6 Phases)
 
-#### Phase 1: Data Model Refactor (4-6 hours) - IN PROGRESS
+#### Phase 1: Data Model Refactor (4-6 hours) - PARTIAL PROGRESS
 
 **Tasks**:
 - [ ] 1.1: Create `core/raw_result.py` with RawResult dataclass
 - [ ] 1.2: Create `core/processed_evidence.py` with ProcessedEvidence dataclass
 - [ ] 1.3: Update Evidence class to compose RawResult + ProcessedEvidence
 - [ ] 1.4: Add `Evidence.from_raw()` factory method
-- [ ] 1.5: Maintain backward compatibility (.content, .snippet properties)
+- [x] 1.5: Maintain backward compatibility - **DONE** (2025-12-06): Added `raw_content: Optional[str]` to SearchResult, fixed Evidence.from_search_result() regression
 
 **Tests**:
 - [ ] Test RawResult creation from sample API response
@@ -1218,14 +1222,16 @@ pip list | grep playwright
 - `core/processed_evidence.py` (NEW)
 - `core/database_integration_base.py` (MODIFY)
 
-#### Phase 2: Integration Updates (6-8 hours)
+#### Phase 2: Integration Updates (6-8 hours) - PARTIAL PROGRESS
 
 **Tasks**:
-- [ ] 2.1: Update SearchResultBuilder to preserve full content
+- [x] 2.1: Update SearchResultBuilder to preserve full content - **DONE**: `build_with_raw()` method exists
 - [ ] 2.2: Update SAM.gov integration (high-traffic)
 - [ ] 2.3: Update USAspending integration (already stores raw)
 - [ ] 2.4: Update Brave Search integration
-- [ ] 2.5: Update remaining 20 integrations
+- [x] 2.5a: GovInfo integration - **DONE** (2025-12-06): PDF extraction with `extract_pdf=True` parameter
+- [x] 2.5b: FBI Vault integration - **DONE** (2025-12-06): PDF extraction for document links
+- [ ] 2.5c: Update remaining 18 integrations
 
 **Tests**:
 - [ ] Test SAM.gov returns complete api_response
