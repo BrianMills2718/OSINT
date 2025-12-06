@@ -653,20 +653,6 @@ pip list | grep playwright
 
 ## OPEN ISSUES
 
-### P0 - Critical (Must Fix)
-
-**1. Decomposition Prompt - Missing Comparison/Synthesis Goals**
-- **Problem**: "Compare X vs Y" decomposed into only "Get X" + "Get Y" without "Compare (depends on [0,1])"
-- **Impact**: Comparative queries don't produce comparisons, just parallel data collection
-- **Fix**: Enhance decomposition prompt to REQUIRE synthesis goal for comparative queries
-- **File**: prompts/deep_research/task_decomposition.j2
-- **Success Metric**: "Compare A vs B" creates 3 goals: Get A, Get B, Compare (depends on [0,1])
-
-**2. Achievement Check - Premature Success Declaration**
-- **Problem**: System declares "goal achieved" after sub-goals without verifying SYNTHESIS occurred
-- **Fix**: Achievement check must verify comparative/analytical goals actually synthesized
-- **File**: research/recursive_agent.py `_goal_achieved()` method
-
 ### P2 - Medium Priority
 
 **4. SAM.gov Rate Limit - No Retry Logic**
@@ -704,6 +690,8 @@ pip list | grep playwright
 | PDF Extraction | fbc1a84, eec649e | PyMuPDF extraction for GovInfo, FBI Vault |
 | GovInfo 0 Results | 0dd7f40, c1ffb1e | Fixed search syntax + date filtering |
 | API Integration Failures | c871605 | CourtListener "null" string filtering; NewsAPI/FedReg already working |
+| Decomposition/Synthesis | (working) | Tested: "Compare X vs Y" creates 3 goals with deps: [0,1] |
+| Achievement Check | (working) | Synthesis goal waits for dependencies before executing |
 
 ---
 
