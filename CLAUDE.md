@@ -272,10 +272,16 @@ For each task:
 - 8+ prompts for different LLM agents
 - All prompts version-controlled separately from code
 
-**8 integrations** (via MCP + direct):
-- Government: SAM.gov, DVIDS, USAJobs, ClearanceJobs
-- Social: Twitter, Reddit, Discord
-- Web: Brave Search
+**23 integrations** (via registry):
+- **Contracts** (2): SAM.gov, USAspending
+- **Government** (7): Congress.gov, FBI Vault, Federal Register, CIA CREST, FEC, GovInfo, SEC EDGAR
+- **Jobs** (2): ClearanceJobs, USAJobs
+- **Media** (1): DVIDS
+- **News** (1): NewsAPI
+- **Research** (3): CourtListener, ICIJ Offshore Leaks, ProPublica
+- **Social** (4): Discord, Telegram, Reddit, Twitter
+- **Web Search** (2): Brave Search, Exa
+- **Archive** (1): Wayback Machine
 
 ### Output Structure
 
@@ -632,7 +638,7 @@ pip list | grep playwright
 
 ### Key Milestones
 - ✅ v2 Migration complete (5 phases)
-- ✅ 29 integrations working
+- ✅ 23 integrations registered
 - ✅ PDF extraction infrastructure (GovInfo, FBI Vault)
 - ✅ Error handling with HTTP code classification
 - ✅ Global evidence index for cross-branch sharing
