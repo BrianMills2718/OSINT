@@ -149,14 +149,13 @@ Return JSON with your decision:
             )
 
             result = json.loads(response.choices[0].message.content)
-            return result.get("relevant", True)  # Default to True if parsing fails
+            if "relevant" not in result:
+                raise ValueError(f"LLM response missing 'relevant' field: {result}")
+            return result["relevant"]
 
         except Exception as e:
-            # Exception in integration - log with full trace
-            logger.error(f"Operation failed: {e}", exc_info=True)
-            # On error, default to True (let query generation and filtering handle it)
-            print(f"[WARN] CourtListener relevance check failed: {e}, defaulting to True")
-            return True
+            logger.error(f"CourtListener relevance check FAILED: {e}", exc_info=True)
+            raise  # No fallbacks - fail loudly
 
     async def generate_query(self, research_question: str) -> Optional[Dict]:
         """

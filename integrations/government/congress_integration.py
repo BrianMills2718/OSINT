@@ -102,11 +102,13 @@ class CongressIntegration(DatabaseIntegration):
             )
 
             result = json.loads(response.choices[0].message.content)
-            return result.get("relevant", True)
+            if "relevant" not in result:
+                raise ValueError(f"LLM response missing 'relevant' field: {result}")
+            return result["relevant"]
 
         except Exception as e:
-            logger.warning(f"Congress relevance check failed, defaulting to True: {e}", exc_info=True)
-            return True
+            logger.error(f"Congress relevance check FAILED: {e}", exc_info=True)
+            raise  # No fallbacks - fail loudly
 
     async def generate_query(self, research_question: str) -> Optional[Dict]:
         """
