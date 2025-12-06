@@ -1067,23 +1067,15 @@ pip list | grep playwright
 - **Solution**: Changed to `item.get("snippet", item.get("description", item.get("content", "")))`
 - **Validated**: Smoke test shows content length 120 chars (was 0)
 
-**2. Filter Prompt Too Lenient - Keyword Matching Passes Irrelevant Results**
-- **Problem**: Filter prompt says "Be generous - include results that have ANY connection to the goal." LLM interprets "ANY connection" as keyword overlap, passing irrelevant results.
-- **Example**: Goal "Anduril Industries executives" returns results about "Consumer Reports executives" because both mention "executive" keyword. Filter passes it despite different companies.
-- **Evidence**: Real logs show extraction of entities like "Communion and Liberation", "CAIR", "Consumer Reports" when researching Anduril executives.
-- **Impact**: Irrelevant entities pollute entity graph, degrade report quality, waste tokens on noise.
-- **Root Cause**: Filter prompt at `prompts/recursive_agent/result_filtering.j2` is too lenient:
-  - Says "include results that have ANY connection" (keyword overlap qualifies)
-  - Says "only filter out results that are clearly off-topic" (high bar)
-  - Says "Be generous" (encourages false positives)
-- **Fix**: Replace lenient language with strict company-specific matching:
-  ```
-  Only include results that are SPECIFICALLY about the goal's subject.
-  For company-specific goals: Results MUST mention the specific company by name.
-  Generic results sharing only common keywords should be filtered out.
-  ```
+**2. ~~Filter Prompt Too Lenient - Keyword Matching Passes Irrelevant Results~~ FIXED (commit 1834030)**
+- **Problem**: Filter prompt was overly prescriptive (52 lines of rules) telling LLM how to think
+- **Root Cause**: We weren't clearly stating the goal - just giving arbitrary rules
+- **Fix**: Simplified to 22 lines that state the objective clearly:
+  - "Keep results that could help answer the research question"
+  - "Remove results that are clearly unrelated despite superficial keyword overlap"
+  - "When uncertain, keep the result"
+- **Philosophy**: Trust the LLM to understand relevance - just give it context and the goal
 - **File**: prompts/recursive_agent/result_filtering.j2
-- **Success Metric**: Goal "Anduril executives" should filter OUT "Consumer Reports executives" (different company)
 
 **3. SEC EDGAR Filter Rejects All Results**
 - **Problem**: 10 SEC filings found but filtered to 0 - relevance filter incorrectly rejects financial filings
