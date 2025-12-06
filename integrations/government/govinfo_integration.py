@@ -71,7 +71,7 @@ class GovInfoIntegration(DatabaseIntegration):
             name="GovInfo",
             id="govinfo",
             category=DatabaseCategory.GOV_GENERAL,
-            description="Government publications: GAO reports, IG audits, Congressional hearings, court opinions, federal regulations",
+            description="Government publications: GAO reports (historical through 2008), Congressional hearings, court opinions, federal regulations. Note: Recent GAO reports may require gao.gov directly.",
 
             requires_api_key=True,
             api_key_env_var="DATA_GOV_API_KEY",
@@ -313,17 +313,32 @@ class GovInfoIntegration(DatabaseIntegration):
                     raw_results = filtered_results
 
             else:
-                # Fall back to search API for multiple collections or no collection
+                # Use Search API for keyword queries
+                # Ref: https://www.govinfo.gov/features/search-service-overview
                 endpoint = "https://api.govinfo.gov/search"
 
-                # Build query
-                if collections:
-                    collection_filter = " OR ".join(collections)
-                    full_query = f"{search_terms} AND collection:({collection_filter})"
-                else:
-                    full_query = search_terms
+                # Build query using correct syntax: collection:CODE (not collection:(CODE))
+                query_parts = []
+                if search_terms:
+                    query_parts.append(search_terms)
 
-                # Note: Search API has issues with date filtering, so we skip it
+                # Add collection filter(s)
+                if collections:
+                    if len(collections) == 1:
+                        query_parts.append(f"collection:{collections[0]}")
+                    else:
+                        # Multiple collections: collection:(CODE1 OR CODE2)
+                        collection_filter = " OR ".join(collections)
+                        query_parts.append(f"collection:({collection_filter})")
+
+                # Add date range using lastModified (publishdate range doesn't work reliably)
+                # Note: GAOREPORTS collection only has historical data through 2008
+                # For recent data, consider FR, BILLS, CFR collections instead
+                if date_range_years:
+                    cutoff_iso = cutoff_date.strftime("%Y-%m-%dT00:00:00Z")
+                    query_parts.append(f"lastModified:range({cutoff_iso},)")
+
+                full_query = " ".join(query_parts)
 
                 payload = {
                     "query": full_query,
