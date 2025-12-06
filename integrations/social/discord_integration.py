@@ -146,10 +146,8 @@ class DiscordIntegration(DatabaseIntegration):
             keywords = [term.lower() for term in result.get("terms", [])]
 
         except Exception as e:
-            # Fallback to simple extraction on LLM failure
-            # This is acceptable - query generation can fallback gracefully
-            logger.warning(f"Discord LLM keyword extraction failed, using simple fallback: {e}", exc_info=True)
-            keywords = self._extract_keywords(research_question)
+            logger.error(f"Discord LLM keyword extraction FAILED: {e}", exc_info=True)
+            raise  # No fallbacks - fail loudly
 
         if not keywords:
             return None
