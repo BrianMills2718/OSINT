@@ -2697,54 +2697,6 @@ class RecursiveResearchAgent:
 
         return "".join(md)
 
-    def _generate_basic_report(self, result: GoalResult, by_source: Dict[str, List[Dict]]) -> str:
-        """Fallback basic report when LLM synthesis fails."""
-        lines = [
-            f"# Research Report",
-            f"",
-            f"**Objective:** {result.goal}",
-            f"",
-            f"**Status:** {result.status.value}",
-            f"**Confidence:** {result.confidence:.0%}",
-            f"**Duration:** {result.duration_seconds:.1f}s",
-            f"**Evidence:** {len(result.evidence)} pieces",
-            f"",
-            f"## Summary",
-            f"",
-            result.synthesis or "No synthesis available.",
-            f"",
-            f"## Evidence Sources",
-            f""
-        ]
-
-        for source, evidence_list in by_source.items():
-            lines.append(f"### {source} ({len(evidence_list)} results)")
-            lines.append("")
-            for e in evidence_list[:self.constraints.max_evidence_per_source_in_report]:
-                lines.append(f"- **{e['title']}**")
-                if e.get('date'):
-                    lines.append(f"  - Date: {e['date']}")
-                if e.get('url'):
-                    lines.append(f"  - URL: {e['url']}")
-                # Only show truncation indicator if content was actually truncated
-                content = e['content']
-                max_chars = self.constraints.max_content_chars_in_report
-                was_truncated = len(content) > max_chars
-                display_content = content[:max_chars] + ("..." if was_truncated else "")
-                lines.append(f"  - {display_content}")
-                lines.append("")
-
-        # Add rate-limited sources section
-        if self.rate_limited_sources:
-            lines.append("## Source Availability")
-            lines.append("")
-            lines.append("**Rate-Limited Sources:**")
-            for source in sorted(self.rate_limited_sources):
-                lines.append(f"- {source}")
-            lines.append("")
-
-        return "\n".join(lines)
-
 
 # =============================================================================
 # CLI Entry Point
