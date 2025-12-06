@@ -1158,6 +1158,15 @@ pip list | grep playwright
 - **Effort**: 4-6 hours (document existing knowledge + create structure)
 - **Benefit**: Faster debugging, consistent API usage, onboarding documentation
 
+**13. Add GAO.gov as Direct Source**
+- **Problem**: GovInfo GAOREPORTS only has historical data (1994-2008)
+- **Impact**: Missing recent GAO oversight reports for government accountability research
+- **Solution**: Create new `integrations/government/gao_integration.py` using gao.gov directly
+- **API**: https://www.gao.gov/reports-testimonies (may need scraping or RSS)
+- **Effort**: 4-6 hours (investigate API, implement integration, test)
+- **Priority**: After all P0-P2 issues resolved
+- **Benefit**: Complete GAO coverage (historical via GovInfo + recent via gao.gov)
+
 ---
 
 ## EVIDENCE ARCHITECTURE REFACTOR (CURRENT PRIORITY)
