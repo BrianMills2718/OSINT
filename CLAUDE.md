@@ -620,6 +620,23 @@ pip list | grep playwright
 
 ## CURRENT STATUS
 
+**Recently Completed** (2025-12-05):
+- ✅ **GovInfo Integration Fix - COMPLETE** (commits 0dd7f40, c1ffb1e)
+  - **Problem**: GovInfo returning 0 results for all queries
+  - **Root Causes Found**:
+    1. Syntax error in error handling (line 407 malformed `str()` call)
+    2. Wrong search syntax: `collection:(CODE)` → should be `collection:CODE`
+    3. GAOREPORTS collection only has historical data (1994-2008)
+    4. Collections API filters by `lastModified`, not `dateIssued`
+  - **Investigation**: Fetched official docs from github.com/usgpo/api and govinfo.gov
+  - **Fixes Applied**:
+    - Corrected search syntax per official documentation
+    - Added `lastModified:range()` date filtering
+    - Documented GAOREPORTS limitation in metadata
+    - Updated description to note recent GAO reports require gao.gov
+  - **Collections with Recent Data**: FR, CHRG, USCOURTS, BILLS (not GAOREPORTS)
+  - **Validation**: 4/4 tests pass (GAO historical, FR recent, CHRG, USCOURTS)
+
 **Recently Completed** (2025-12-01):
 - ✅ **Error Handling Architecture Refactor - Phase 2 COMPLETE**
   - **Status**: All integrations now extract and return HTTP codes in QueryResult
@@ -1031,12 +1048,17 @@ pip list | grep playwright
 - **Success Metric**: Comparative queries cannot achieve until synthesis goal completes
 
 **3. API Integration Failures - 50% Failure Rate**
-- **Problem**: NewsAPI, Federal Register, GovInfo, CourtListener consistently failing in DAG test
+- **Problem**: NewsAPI, Federal Register, ~~GovInfo~~, CourtListener consistently failing in DAG test
 - **Impact**: Half of attempted goals fail, reducing research quality
 - **Evidence**: 23 failed / 46 total goals in validation test
 - **Fix**: Debug each failing integration (rate limits, API keys, parameter validation)
 - **Files**: integrations/news/newsapi_integration.py, integrations/government/federal_register.py, etc.
 - **Success Metric**: <20% failure rate in E2E tests
+- **GovInfo FIXED** (2025-12-05, commits 0dd7f40, c1ffb1e):
+  - Root cause: Wrong search syntax + GAOREPORTS only has 1994-2008 data
+  - Fix: Correct `collection:CODE` syntax, add `lastModified:range()` filter
+  - Note: Recent GAO reports not in GovInfo - use gao.gov directly
+  - Collections with recent data: FR, CHRG, USCOURTS, BILLS
 
 ### P0 - CRITICAL BUGS (Must Fix)
 
@@ -1115,6 +1137,26 @@ pip list | grep playwright
 - **Impact**: Critical government contract source unavailable for contract research
 - **Fix**: Queue rate-limited sources for retry after cooldown (e.g., 5 min)
 - **File**: research/recursive_agent.py (rate_limited_sources handling)
+
+### P3 - INFRASTRUCTURE IMPROVEMENTS
+
+**12. Systematic API Documentation Storage**
+- **Problem**: API documentation discovered ad-hoc during debugging (e.g., GovInfo search syntax)
+- **Impact**: Knowledge lost between sessions, repeated investigation of same APIs
+- **Motivation**: GovInfo investigation revealed correct syntax from official docs that wasn't in codebase
+- **Proposed Solution**: Create `docs/api_reference/` directory with per-integration API notes
+- **Structure**:
+  ```
+  docs/api_reference/
+  ├── govinfo.md          # Search syntax, collection codes, date limitations
+  ├── sam_gov.md          # Rate limits, auth, entity structure
+  ├── usaspending.md      # Keyword constraints, award types
+  ├── fec.md              # Endpoint patterns, pagination
+  └── README.md           # Index of all API references
+  ```
+- **Content per file**: Official doc URLs, correct query syntax, known limitations, rate limits, auth requirements
+- **Effort**: 4-6 hours (document existing knowledge + create structure)
+- **Benefit**: Faster debugging, consistent API usage, onboarding documentation
 
 ---
 
