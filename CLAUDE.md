@@ -14,6 +14,7 @@
 - ❌ Rule-based decision trees ("if X then Y")
 - ❌ Premature optimization for cost/speed over quality
 - ❌ **Artificial timeouts on tests** (`timeout 600`, Bash tool timeout parameter on research tasks)
+- ❌ **FALLBACKS** - Silent source substitution that masks bugs and makes debugging impossible. If Brave fails, FAIL LOUDLY - don't secretly switch to Exa. Example of bug this caused: SEC EDGAR "fallback" code path ignored form_types parameter, returning wrong data for months.
 
 **Correct Approach** (REQUIRED):
 - ✅ Give LLM full context and ask for intelligent decisions
