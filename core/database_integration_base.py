@@ -274,13 +274,19 @@ class Evidence(SearchResult):
             result: Validated SearchResult object
             source_id: Integration ID
             relevance_score: Optional LLM-assigned relevance score
-            raw_content: Optional full content (from three-tier model)
+            raw_content: Optional full content (overrides SearchResult.raw_content if provided)
         """
+        # Get base fields from SearchResult, excluding raw_content to avoid duplicate
+        result_dict = result.model_dump(exclude={'raw_content'})
+
+        # Use provided raw_content if given, otherwise use SearchResult's raw_content
+        final_raw_content = raw_content if raw_content is not None else result.raw_content
+
         return cls(
             source_id=source_id,
             relevance_score=relevance_score,
-            raw_content=raw_content,  # Preserve full content if provided
-            **result.model_dump()
+            raw_content=final_raw_content,
+            **result_dict
         )
 
     @classmethod
