@@ -295,19 +295,23 @@ Return JSON with your decision:
             if query_params.get("type"):
                 params["type"] = query_params["type"]
 
-            # Add court filter
-            if query_params.get("court"):
-                params["court"] = query_params["court"]
+            # Add court filter (filter out empty strings from LLM)
+            court = query_params.get("court")
+            if court and court not in ("null", "None", ""):
+                params["court"] = court
 
-            # Add date range filters
-            if query_params.get("filed_after"):
-                params["filed_after"] = query_params["filed_after"]
-            if query_params.get("filed_before"):
-                params["filed_before"] = query_params["filed_before"]
+            # Add date range filters (filter out "null" strings from LLM)
+            filed_after = query_params.get("filed_after")
+            if filed_after and filed_after not in ("null", "None", ""):
+                params["filed_after"] = filed_after
+            filed_before = query_params.get("filed_before")
+            if filed_before and filed_before not in ("null", "None", ""):
+                params["filed_before"] = filed_before
 
-            # Add case name filter
-            if query_params.get("case_name"):
-                params["case_name"] = query_params["case_name"]
+            # Add case name filter (filter out empty strings)
+            case_name = query_params.get("case_name")
+            if case_name and case_name not in ("null", "None", ""):
+                params["case_name"] = case_name
 
             # Execute API call with authentication
             headers = {
