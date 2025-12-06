@@ -46,6 +46,12 @@
 - **TEMPORARY only**: Tasks complete, blockers change, next actions shift
 - **PERMANENT**: Major architecture changes, new systematic failure patterns
 
+**Maintenance Requirements** (CRITICAL):
+- **REMOVE resolved issues** from P0/P1/P2 lists when fixed - stale issues cause confusion
+- **Update STATUS.md** after completing significant work
+- **Verify before claiming fixed**: Test the fix, don't just edit code and assume it works
+- **Mark with commit hash**: When fixing issues, note the commit (e.g., "FIXED - commit abc123")
+
 ---
 
 ## VISION
@@ -539,7 +545,7 @@ pip list | grep playwright
 **END OF PERMANENT SECTION**
 # CLAUDE.md - Temporary Section (Condensed)
 
-**Last Updated**: 2025-11-27
+**Last Updated**: 2025-12-06
 **Current Branch**: `master`
 **Current Phase**: v2 Production-Ready
 **Status**: All integrations configured, entity follow-up improved, rate limit optimization added
@@ -1086,21 +1092,23 @@ pip list | grep playwright
 
 ### P1 - HIGH PRIORITY
 
-**4. CourtListener URLs Are Relative**
+**4. ~~CourtListener URLs Are Relative~~ FIXED (2025-12-06)**
 - **Problem**: URLs like `/opinion/5150237/...` don't work - missing base URL
-- **Fix**: Prepend `https://www.courtlistener.com` in integration
-- **File**: integrations/legal/courtlistener_integration.py
+- **Fix**: Added robust URL handling - checks for http://, leading slash, or bare path
+- **File**: integrations/legal/courtlistener_integration.py (3 locations updated)
 
 **5. FEC URLs Point to Generic Search Page**
 - **Problem**: All FEC citations link to same generic page, not specific receipts
 - **Fix**: Generate direct links with receipt/transaction IDs
 - **File**: integrations/government/fec_integration.py
 
-**6. Evidence Truncation Without Warning**
-- **Problem**: 124 evidence pieces truncated to 50 silently (`max_evidence_in_saved_result: 50`)
-- **Impact**: 74 evidence pieces dropped with no indication
-- **Fix**: Log warning when truncating, consider summarization of excess
-- **File**: research/recursive_agent.py:2236
+**6. ~~Evidence Truncation Without Warning~~ FIXED (already implemented)**
+- **Problem**: 124 evidence pieces truncated to 50 silently
+- **Fix**: Warning already implemented at lines 2704-2714:
+  - `logger.warning()` with counts
+  - Console warning with emoji
+  - `evidence_truncated` field in saved JSON
+- **File**: research/recursive_agent.py:2704-2714
 
 **7. Overconfident Assessment**
 - **Problem**: 65% confidence despite FBI false citations, SEC 0 results, SAM.gov rate limited
@@ -1716,9 +1724,6 @@ max_evidence = config.get('recursive_agent.max_evidence_in_result', default=50)
 | GovInfo | Report abstracts | No | No (links only) |
 | CourtListener | Case summaries | No | No |
 | NewsAPI | Article snippets | No | N/A |
-
-**Filtering Architecture Issue**:
-Filter prompt is too lenient - says "Be generous - include results that have ANY connection to the goal." This causes the LLM to pass results with mere keyword overlap. For example, goal "Anduril Industries executives" passes results about "Consumer Reports executives" because both mention "executive". The filter needs to require company-specific matching, not just keyword overlap. See P0 Critical Bug #2 for details and fix.
 
 ---
 

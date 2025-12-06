@@ -368,7 +368,16 @@ Return JSON with your decision:
 
                     snippet = " | ".join(snippet_parts) if snippet_parts else "Court opinion"
 
-                    url = result.get("absolute_url") or f"https://www.courtlistener.com{result.get('url', '')}"
+                    # Build absolute URL - handle relative paths correctly
+                    raw_url = result.get("absolute_url") or result.get("url", "")
+                    if raw_url.startswith("http"):
+                        url = raw_url
+                    elif raw_url.startswith("/"):
+                        url = f"https://www.courtlistener.com{raw_url}"
+                    elif raw_url:
+                        url = f"https://www.courtlistener.com/{raw_url}"
+                    else:
+                        url = None
                     # Three-tier model: preserve full content with build_with_raw()
                     transformed = (SearchResultBuilder()
                         .title(case_name, default="Untitled Case")
@@ -395,7 +404,16 @@ Return JSON with your decision:
                     description = SearchResultBuilder.safe_text(result.get("description"))
 
                     snippet = f"Court: {court} | Filed: {date_filed} | {description[:200]}"
-                    url = result.get("absolute_url") or f"https://www.courtlistener.com{result.get('url', '')}"
+                    # Build absolute URL - handle relative paths correctly
+                    raw_url = result.get("absolute_url") or result.get("url", "")
+                    if raw_url.startswith("http"):
+                        url = raw_url
+                    elif raw_url.startswith("/"):
+                        url = f"https://www.courtlistener.com{raw_url}"
+                    elif raw_url:
+                        url = f"https://www.courtlistener.com/{raw_url}"
+                    else:
+                        url = None
 
                     # Three-tier model: preserve full content with build_with_raw()
                     transformed = (SearchResultBuilder()
@@ -416,7 +434,16 @@ Return JSON with your decision:
 
                 else:  # Other types (dockets, oral arguments, etc.)
                     title = SearchResultBuilder.safe_text(result.get("case_name") or result.get("title"))
-                    url = result.get("absolute_url") or f"https://www.courtlistener.com{result.get('url', '')}"
+                    # Build absolute URL - handle relative paths correctly
+                    raw_url = result.get("absolute_url") or result.get("url", "")
+                    if raw_url.startswith("http"):
+                        url = raw_url
+                    elif raw_url.startswith("/"):
+                        url = f"https://www.courtlistener.com{raw_url}"
+                    elif raw_url:
+                        url = f"https://www.courtlistener.com/{raw_url}"
+                    else:
+                        url = None
                     date = result.get("date_filed", "") or result.get("date_created", "")
 
                     # Three-tier model: preserve full content with build_with_raw()

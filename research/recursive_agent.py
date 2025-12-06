@@ -11,6 +11,7 @@ The LLM decides the structure, not hardcoded hierarchy.
 import asyncio
 import json
 import logging
+import time
 from dataclasses import dataclass, field, asdict
 from datetime import datetime
 from pathlib import Path
@@ -19,8 +20,8 @@ from enum import Enum
 
 from dotenv import load_dotenv
 from research.services.entity_analyzer import EntityAnalyzer
-from core.database_integration_base import Evidence, SearchResult
-from core.error_classifier import ErrorClassifier, ErrorCategory, APIError
+from core.database_integration_base import Evidence
+from core.error_classifier import ErrorClassifier, ErrorCategory
 
 load_dotenv()
 
@@ -632,6 +633,101 @@ class ExecutionLogger:
             "goal_stack": goal_stack
         })
 
+    # === LLM Call Tracing Events ===
+
+    def log_llm_call(self, goal: str, depth: int, parent_goal: Optional[str],
+                     call_type: str, prompt: str, response: str,
+                     cost_dollars: float, model: str, duration_ms: float):
+        """
+        Log any LLM call with full prompt/response for debugging.
+
+        Args:
+            call_type: Type of LLM call (assess, decompose, analyze, filter, synthesize, etc.)
+            prompt: Full prompt sent to LLM (truncated to 2000 chars in log)
+            response: Full LLM response (truncated to 1000 chars in log)
+            cost_dollars: Estimated cost of this call
+            model: Model used
+            duration_ms: Call duration in milliseconds
+        """
+        self._write_entry("llm_call", goal, depth, parent_goal, {
+            "call_type": call_type,
+            "prompt_preview": prompt[:2000] + ("..." if len(prompt) > 2000 else ""),
+            "prompt_length": len(prompt),
+            "response_preview": response[:1000] + ("..." if len(response) > 1000 else ""),
+            "response_length": len(response),
+            "cost_dollars": cost_dollars,
+            "model": model,
+            "duration_ms": duration_ms
+        })
+
+    def log_analyze_evidence(self, goal: str, depth: int, parent_goal: Optional[str],
+                             evidence_count: int, analysis_result: str,
+                             key_findings: List[str], reasoning: str):
+        """Log ANALYZE action execution."""
+        self._write_entry("analyze_evidence", goal, depth, parent_goal, {
+            "evidence_count": evidence_count,
+            "analysis_preview": analysis_result[:500] if analysis_result else "",
+            "key_findings": key_findings[:5],
+            "reasoning": reasoning[:300]
+        })
+
+    def log_global_evidence_selection(self, goal: str, depth: int, parent_goal: Optional[str],
+                                       total_available: int, selected_count: int,
+                                       selected_ids: List[int], reasoning: str):
+        """Log cross-branch evidence selection for ANALYZE actions."""
+        self._write_entry("global_evidence_selection", goal, depth, parent_goal, {
+            "total_available": total_available,
+            "selected_count": selected_count,
+            "selected_ids": selected_ids[:20],  # Limit to first 20
+            "selection_ratio": selected_count / total_available if total_available > 0 else 0,
+            "reasoning": reasoning[:300]
+        })
+
+    def log_follow_up_generation(self, goal: str, depth: int, parent_goal: Optional[str],
+                                  existing_goals: int, follow_ups_generated: List[str],
+                                  reasoning: str):
+        """Log follow-up goal generation."""
+        self._write_entry("follow_up_generation", goal, depth, parent_goal, {
+            "existing_goals_count": existing_goals,
+            "follow_ups_count": len(follow_ups_generated),
+            "follow_ups": [f[:100] for f in follow_ups_generated[:10]],
+            "reasoning": reasoning[:300]
+        })
+
+    def log_summarization(self, goal: str, depth: int, parent_goal: Optional[str],
+                          original_length: int, summarized_length: int,
+                          result_index: int, source: str):
+        """Log individual result summarization."""
+        self._write_entry("summarization", goal, depth, parent_goal, {
+            "result_index": result_index,
+            "source": source,
+            "original_length": original_length,
+            "summarized_length": summarized_length,
+            "compression_ratio": summarized_length / original_length if original_length > 0 else 1
+        })
+
+    def log_is_relevant_decision(self, goal: str, depth: int, parent_goal: Optional[str],
+                                  source: str, is_relevant: bool, reasoning: str,
+                                  duration_ms: float):
+        """Log integration is_relevant() decision."""
+        self._write_entry("is_relevant_decision", goal, depth, parent_goal, {
+            "source": source,
+            "is_relevant": is_relevant,
+            "reasoning": reasoning[:200],
+            "duration_ms": duration_ms
+        })
+
+    def log_generate_query(self, goal: str, depth: int, parent_goal: Optional[str],
+                           source: str, query_params: Optional[Dict[str, Any]],
+                           success: bool, duration_ms: float):
+        """Log integration generate_query() output."""
+        self._write_entry("generate_query", goal, depth, parent_goal, {
+            "source": source,
+            "success": success,
+            "query_params": query_params if query_params else None,
+            "duration_ms": duration_ms
+        })
+
     # === Utility Methods ===
 
     def save_raw_response(self, source: str, goal_hash: str, results: List[Dict]) -> str:
@@ -1127,16 +1223,35 @@ class RecursiveResearchAgent:
         )
 
         try:
+            start_time = time.time()
+
             response = await acompletion(
                 model=self.model,
                 messages=[{"role": "user", "content": prompt}],
                 response_format={"type": "json_object"}
             )
 
+            duration_ms = (time.time() - start_time) * 1000
+
             # Track cost
             context.add_cost(context.constraints.cost_per_assessment)
 
             result = json.loads(response.choices[0].message.content)
+            response_text = response.choices[0].message.content
+
+            # Log LLM call
+            parent_goal = context.goal_stack[-1] if context.goal_stack else None
+            self.logger.log_llm_call(
+                goal=goal,
+                depth=context.depth,
+                parent_goal=parent_goal,
+                call_type="assess",
+                prompt=prompt,
+                response=response_text,
+                cost_dollars=context.constraints.cost_per_assessment,
+                model=self.model,
+                duration_ms=duration_ms
+            )
 
             action = None
             if result.get("directly_executable") and result.get("action"):
@@ -1233,7 +1348,22 @@ class RecursiveResearchAgent:
             # Use integration's generate_query to get proper API parameters
             # This leverages the existing LLM-driven query generation per source
             query_text = action.params.get("query", goal)
+
+            gen_query_start = time.time()
             query_params = await integration.generate_query(query_text)
+            gen_query_duration = (time.time() - gen_query_start) * 1000
+
+            # Log generate_query result (this is an LLM call inside integration)
+            parent_goal = context.goal_stack[-1] if context.goal_stack else None
+            self.logger.log_generate_query(
+                goal=goal,
+                depth=context.depth,
+                parent_goal=parent_goal,
+                source=source_id,
+                query_params=query_params,
+                success=query_params is not None,
+                duration_ms=gen_query_duration
+            )
 
             if not query_params:
                 logger.warning(f"No query params generated for {source_id}")
@@ -1438,15 +1568,39 @@ class RecursiveResearchAgent:
         full_prompt = f"{prompt}\n\nEVIDENCE:\n{evidence_text}"
 
         try:
+            start_time = time.time()
+
             response = await acompletion(
                 model=self.model,
                 messages=[{"role": "user", "content": full_prompt}]
             )
 
+            duration_ms = (time.time() - start_time) * 1000
+
             # Track cost
             context.add_cost(context.constraints.cost_per_analysis)
 
             analysis = response.choices[0].message.content
+
+            # Log the analysis
+            self.logger.log_analyze_evidence(
+                goal, context.depth, context.parent_goal,
+                evidence_count=len(evidence_to_analyze),
+                analysis_result=analysis,
+                key_findings=[],  # Could extract from analysis
+                reasoning=f"Analyzed {len(evidence_to_analyze)} evidence pieces"
+            )
+
+            # Log LLM call with prompt/response
+            self.logger.log_llm_call(
+                goal, context.depth, context.parent_goal,
+                call_type="analyze",
+                prompt=full_prompt,
+                response=analysis,
+                cost_dollars=context.constraints.cost_per_analysis,
+                model=self.model,
+                duration_ms=duration_ms
+            )
 
             return GoalResult(
                 goal=goal,
@@ -1500,16 +1654,35 @@ class RecursiveResearchAgent:
         )
 
         try:
+            start_time = time.time()
+
             response = await acompletion(
                 model=self.model,
                 messages=[{"role": "user", "content": prompt}],
                 response_format={"type": "json_object"}
             )
 
+            duration_ms = (time.time() - start_time) * 1000
+
             # Track cost
             context.add_cost(context.constraints.cost_per_decomposition)
 
             result = json.loads(response.choices[0].message.content)
+            response_text = response.choices[0].message.content
+
+            # Log full LLM call with prompt/response
+            parent_goal = context.goal_stack[-2] if len(context.goal_stack) > 1 else None
+            self.logger.log_llm_call(
+                goal=goal,
+                depth=context.depth,
+                parent_goal=parent_goal,
+                call_type="decompose",
+                prompt=prompt,
+                response=response_text,
+                cost_dollars=context.constraints.cost_per_decomposition,
+                model=self.model,
+                duration_ms=duration_ms
+            )
 
             # Log raw LLM response (to verify dependencies are being returned)
             self.logger.log("llm_decomposition_response", goal, context.depth,
@@ -1590,17 +1763,38 @@ class RecursiveResearchAgent:
         )
 
         try:
+            start_time = time.time()
+
             response = await acompletion(
                 model=self.model,
                 messages=[{"role": "user", "content": prompt}],
                 response_format={"type": "json_object"}
             )
 
+            duration_ms = (time.time() - start_time) * 1000
+
             # Track cost
             context.add_cost(context.constraints.cost_per_achievement_check)
 
             result = json.loads(response.choices[0].message.content)
-            return result.get("achieved", False)
+            response_text = response.choices[0].message.content
+            achieved = result.get("achieved", False)
+
+            # Log LLM call
+            parent_goal = context.goal_stack[-1] if context.goal_stack else None
+            self.logger.log_llm_call(
+                goal=goal,
+                depth=context.depth,
+                parent_goal=parent_goal,
+                call_type="achievement_check",
+                prompt=prompt,
+                response=response_text,
+                cost_dollars=context.constraints.cost_per_achievement_check,
+                model=self.model,
+                duration_ms=duration_ms
+            )
+
+            return achieved
 
         except Exception as e:
             logger.error(f"Achievement check failed: {e}")
@@ -1674,13 +1868,32 @@ class RecursiveResearchAgent:
         )
 
         try:
+            start_time = time.time()
+
             response = await acompletion(
                 model=self.model,
                 messages=[{"role": "user", "content": prompt}],
                 response_format={"type": "json_object"}
             )
 
+            duration_ms = (time.time() - start_time) * 1000
+
             result = json.loads(response.choices[0].message.content)
+            response_text = response.choices[0].message.content
+
+            # Log LLM call
+            parent_goal = context.goal_stack[-1] if context.goal_stack else None
+            self.logger.log_llm_call(
+                goal=objective,
+                depth=context.depth,
+                parent_goal=parent_goal,
+                call_type="coverage_assessment",
+                prompt=prompt,
+                response=response_text,
+                cost_dollars=context.constraints.cost_per_filter,  # No specific cost for coverage
+                model=self.model,
+                duration_ms=duration_ms
+            )
 
             # Extract for backward compatibility
             reasoning_chain = result.get("reasoning_chain", {})
@@ -1800,15 +2013,46 @@ class RecursiveResearchAgent:
         )
 
         try:
+            start_time = time.time()
+
             response = await acompletion(
                 model=self.model,
                 messages=[{"role": "user", "content": prompt}],
                 response_format={"type": "json_object"}
             )
 
+            duration_ms = (time.time() - start_time) * 1000
+
             result = json.loads(response.choices[0].message.content)
+            response_text = response.choices[0].message.content
 
             follow_ups = result.get("follow_ups", [])
+            follow_up_goals = [fu["goal"] for fu in follow_ups if fu.get("goal")]
+
+            # Log LLM call
+            parent_goal = context.goal_stack[-1] if context.goal_stack else None
+            self.logger.log_llm_call(
+                goal=objective,
+                depth=context.depth,
+                parent_goal=parent_goal,
+                call_type="follow_up_generation",
+                prompt=prompt,
+                response=response_text,
+                cost_dollars=context.constraints.cost_per_filter,  # No specific cost
+                model=self.model,
+                duration_ms=duration_ms
+            )
+
+            # Log follow-up generation with specialized logger
+            self.logger.log_follow_up_generation(
+                goal=objective,
+                depth=context.depth,
+                parent_goal=parent_goal,
+                existing_goals=len(context.all_goals) if hasattr(context, 'all_goals') else 0,
+                follow_ups_generated=follow_up_goals,
+                reasoning=result.get("strategic_reasoning", "")
+            )
+
             if not follow_ups:
                 stop_reason = result.get("stop_reason", "No follow-ups generated")
                 logger.info(f"No follow-ups: {stop_reason}")
@@ -1818,7 +2062,7 @@ class RecursiveResearchAgent:
             if result.get("strategic_reasoning"):
                 logger.info(f"Follow-up strategy: {result['strategic_reasoning']}")
 
-            return [fu["goal"] for fu in follow_ups if fu.get("goal")]
+            return follow_up_goals
 
         except Exception as e:
             logger.error(f"Follow-up generation failed: {e}")
@@ -1883,16 +2127,35 @@ class RecursiveResearchAgent:
         )
 
         try:
+            start_time = time.time()
+
             response = await acompletion(
                 model=self.model,
                 messages=[{"role": "user", "content": prompt}],
                 response_format={"type": "json_object"}
             )
 
+            duration_ms = (time.time() - start_time) * 1000
+
             # Track cost
             context.add_cost(context.constraints.cost_per_synthesis)
 
             result = json.loads(response.choices[0].message.content)
+            response_text = response.choices[0].message.content
+
+            # Log LLM call
+            parent_goal = context.goal_stack[-1] if context.goal_stack else None
+            self.logger.log_llm_call(
+                goal=goal,
+                depth=context.depth,
+                parent_goal=parent_goal,
+                call_type="synthesize",
+                prompt=prompt,
+                response=response_text,
+                cost_dollars=context.constraints.cost_per_synthesis,
+                model=self.model,
+                duration_ms=duration_ms
+            )
 
             return GoalResult(
                 goal=goal,
@@ -1979,20 +2242,39 @@ class RecursiveResearchAgent:
         )
 
         try:
+            start_time = time.time()
+
             response = await acompletion(
                 model=self.model,
                 messages=[{"role": "user", "content": prompt}],
                 response_format={"type": "json_object"}
             )
 
+            duration_ms = (time.time() - start_time) * 1000
+
             # Track cost
             context.add_cost(context.constraints.cost_per_filter)
 
             result = json.loads(response.choices[0].message.content)
+            response_text = response.choices[0].message.content
             relevant_indices = result.get("relevant_indices", list(range(len(evidence))))
 
             # Filter to relevant results
             filtered = [evidence[i] for i in relevant_indices if i < len(evidence)]
+
+            # Log LLM call
+            parent_goal = context.goal_stack[-1] if context.goal_stack else None
+            self.logger.log_llm_call(
+                goal=goal,
+                depth=context.depth,
+                parent_goal=parent_goal,
+                call_type="filter_results",
+                prompt=prompt,
+                response=response_text,
+                cost_dollars=context.constraints.cost_per_filter,
+                model=self.model,
+                duration_ms=duration_ms
+            )
 
             # Assign relevance scores
             for i, e in enumerate(filtered):
@@ -2057,16 +2339,35 @@ class RecursiveResearchAgent:
         )
 
         try:
+            start_time = time.time()
+
             response = await acompletion(
                 model=self.model,
                 messages=[{"role": "user", "content": prompt}],
                 response_format={"type": "json_object"}
             )
 
+            duration_ms = (time.time() - start_time) * 1000
+
             context.add_cost(context.constraints.cost_per_summarization)
 
             result = json.loads(response.choices[0].message.content)
+            response_text = response.choices[0].message.content
             summaries = {s["item_index"]: s["summary"] for s in result.get("summaries", [])}
+
+            # Log LLM call
+            parent_goal = context.goal_stack[-1] if context.goal_stack else None
+            self.logger.log_llm_call(
+                goal=goal,
+                depth=context.depth,
+                parent_goal=parent_goal,
+                call_type="summarize_evidence",
+                prompt=prompt,
+                response=response_text,
+                cost_dollars=context.constraints.cost_per_summarization,
+                model=self.model,
+                duration_ms=duration_ms
+            )
 
             # Apply summaries using sequential index mapping
             summarized_count = 0
@@ -2076,6 +2377,17 @@ class RecursiveResearchAgent:
                     e.metadata["original_content"] = e.content
                     e.snippet = summaries[seq_idx]  # Use snippet (writable), not content (read-only property)
                     summarized_count += 1
+
+                    # Log individual summarization
+                    self.logger.log_summarization(
+                        goal=goal,
+                        depth=context.depth,
+                        parent_goal=parent_goal,
+                        original_length=len(e.metadata.get("original_content", "")),
+                        summarized_length=len(summaries[seq_idx]),
+                        result_index=orig_idx,
+                        source=e.source
+                    )
 
             if summarized_count > 0:
                 logger.info(f"Summarized {summarized_count} evidence items")
@@ -2196,6 +2508,8 @@ class RecursiveResearchAgent:
         }
 
         # Call LLM
+        start_time = time.time()
+
         response = await acompletion(
             model=self.model,
             messages=[{"role": "user", "content": prompt}],
@@ -2209,7 +2523,10 @@ class RecursiveResearchAgent:
             }
         )
 
+        duration_ms = (time.time() - start_time) * 1000
+
         result = json.loads(response.choices[0].message.content)
+        response_text = response.choices[0].message.content
         selected_ids = result.get("evidence_ids", [])
 
         # Track cost for global evidence selection LLM call
@@ -2221,18 +2538,29 @@ class RecursiveResearchAgent:
             if evidence_id in context.research_run.evidence_store:
                 evidence_list.append(context.research_run.evidence_store[evidence_id])
 
-        # Log global evidence selection
+        # Log LLM call with full prompt/response
         parent_goal = context.goal_stack[-1] if context.goal_stack else None
-        self.logger.log(
-            event_type="global_evidence_selection",
+        self.logger.log_llm_call(
             goal=goal,
             depth=context.depth,
             parent_goal=parent_goal,
-            data={
-                "selected_count": len(evidence_list),
-                "total_index_size": len(context.research_run.index),
-                "selected_ids": selected_ids
-            }
+            call_type="global_evidence_selection",
+            prompt=prompt,
+            response=response_text,
+            cost_dollars=context.constraints.cost_per_filter,
+            model=self.model,
+            duration_ms=duration_ms
+        )
+
+        # Also use specialized logger for structured data
+        self.logger.log_global_evidence_selection(
+            goal=goal,
+            depth=context.depth,
+            parent_goal=parent_goal,
+            total_available=len(context.research_run.index),
+            selected_count=len(evidence_list),
+            selected_ids=selected_ids,
+            reasoning=""  # No reasoning in this schema
         )
 
         return evidence_list
@@ -2263,15 +2591,34 @@ class RecursiveResearchAgent:
         )
 
         try:
+            start_time = time.time()
+
             response = await acompletion(
                 model=self.model,
                 messages=[{"role": "user", "content": prompt}],
                 response_format={"type": "json_object"}
             )
 
+            duration_ms = (time.time() - start_time) * 1000
+
             context.add_cost(context.constraints.cost_per_reformulation)
 
             result = json.loads(response.choices[0].message.content)
+            response_text = response.choices[0].message.content
+
+            # Log LLM call
+            parent_goal = context.goal_stack[-1] if context.goal_stack else None
+            self.logger.log_llm_call(
+                goal=goal,
+                depth=context.depth,
+                parent_goal=parent_goal,
+                call_type="reformulate_on_error",
+                prompt=prompt,
+                response=response_text,
+                cost_dollars=context.constraints.cost_per_reformulation,
+                model=self.model,
+                duration_ms=duration_ms
+            )
 
             if result.get("can_fix") and result.get("fixed_params"):
                 logger.info(f"Reformulated query for {source_id}: {result.get('explanation', 'Fixed')}")
@@ -2460,13 +2807,29 @@ class RecursiveResearchAgent:
             )
 
             # Call LLM for structured synthesis
+            start_time = time.time()
             response = await acompletion(
                 model=config.get_model("synthesis"),
                 messages=[{"role": "user", "content": prompt}],
                 response_format={"type": "json_object"}
             )
+            duration_ms = (time.time() - start_time) * 1000
 
             synthesis_json = json.loads(response.choices[0].message.content)
+            response_text = response.choices[0].message.content
+
+            # Log LLM call for debugging
+            self.logger.log_llm_call(
+                goal=result.goal,
+                depth=0,
+                parent_goal=None,
+                call_type="report_synthesis",
+                prompt=prompt,
+                response=response_text,
+                cost_dollars=self.constraints.cost_per_synthesis,
+                model=config.get_model("synthesis"),
+                duration_ms=duration_ms
+            )
 
             # Log synthesis decisions for debugging (timeline, citations, etc.)
             self._log_synthesis_decisions(synthesis_json, result.goal)
