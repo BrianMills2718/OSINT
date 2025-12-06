@@ -15,6 +15,7 @@ import asyncio
 import requests
 from llm_utils import acompletion
 from core.prompt_loader import render_prompt
+from core.pdf_extractor import get_pdf_extractor
 
 from core.database_integration_base import (
     DatabaseIntegration,
@@ -236,7 +237,8 @@ class GovInfoIntegration(DatabaseIntegration):
     async def execute_search(self,
                            query_params: Dict,
                            api_key: Optional[str] = None,
-                           limit: int = 10) -> QueryResult:
+                           limit: int = 10,
+                           extract_pdf: bool = False) -> QueryResult:
         """
         Execute GovInfo search with generated parameters.
 
@@ -244,6 +246,7 @@ class GovInfoIntegration(DatabaseIntegration):
             query_params: Parameters from generate_query()
             api_key: api.data.gov API key (required)
             limit: Maximum number of results to return
+            extract_pdf: If True, download and extract text from PDFs (slower)
 
         Returns:
             QueryResult with standardized format
@@ -372,6 +375,8 @@ class GovInfoIntegration(DatabaseIntegration):
 
             # Transform to standardized format
             transformed_results = []
+            pdf_extractor = get_pdf_extractor() if extract_pdf else None
+
             for doc in raw_results[:limit]:
                 # Extract fields from GovInfo response
                 package_id = doc.get("packageId", "")
@@ -382,6 +387,11 @@ class GovInfoIntegration(DatabaseIntegration):
                 if not url and package_id:
                     url = f"https://www.govinfo.gov/app/details/{package_id}"
 
+                # Build PDF URL (standard GovInfo pattern)
+                pdf_url = None
+                if package_id:
+                    pdf_url = f"https://www.govinfo.gov/content/pkg/{package_id}/pdf/{package_id}.pdf"
+
                 # Get snippet/summary
                 snippet = doc.get("summary", "")
                 if not snippet:
@@ -390,23 +400,41 @@ class GovInfoIntegration(DatabaseIntegration):
                 # Handle date field (collections API uses dateIssued, search API uses publishDate)
                 date_value = doc.get("dateIssued") or doc.get("publishDate")
 
+                # Extract PDF text if requested and PDF URL exists
+                raw_content = snippet
+                pdf_metadata = None
+                if extract_pdf and pdf_url and pdf_extractor:
+                    try:
+                        pdf_text, pdf_meta = await pdf_extractor.extract_from_url(pdf_url)
+                        if pdf_text:
+                            raw_content = pdf_text
+                            pdf_metadata = pdf_meta
+                            logger.info(f"GovInfo: Extracted {pdf_meta.get('char_count', 0)} chars from PDF: {package_id}")
+                    except Exception as e:
+                        logger.warning(f"GovInfo: PDF extraction failed for {package_id}: {e}")
+
                 # Three-tier model: preserve full content with build_with_raw()
+                metadata_dict = {
+                    "package_id": package_id,
+                    "collection": doc.get("collectionCode"),
+                    "collection_name": doc.get("collectionName"),
+                    "publish_date": date_value,
+                    "last_modified": doc.get("lastModified"),
+                    "doc_class": doc.get("docClass"),
+                    "government_author": doc.get("governmentAuthor1") or doc.get("governmentAuthor"),
+                    "pdf_url": pdf_url
+                }
+                if pdf_metadata:
+                    metadata_dict["pdf_extraction"] = pdf_metadata
+
                 transformed = (SearchResultBuilder()
                     .title(SearchResultBuilder.safe_text(doc.get("title"), default="Untitled Document"))
                     .url(url)
                     .snippet(SearchResultBuilder.safe_text(snippet, max_length=500))
-                    .raw_content(snippet)  # Full content, never truncated
+                    .raw_content(raw_content)  # Full content from PDF if extracted
                     .date(SearchResultBuilder.safe_date(date_value))
                     .api_response(doc)  # Preserve complete API response
-                    .metadata({
-                        "package_id": package_id,
-                        "collection": doc.get("collectionCode"),
-                        "collection_name": doc.get("collectionName"),
-                        "publish_date": date_value,
-                        "last_modified": doc.get("lastModified"),
-                        "doc_class": doc.get("docClass"),
-                        "government_author": doc.get("governmentAuthor1") or doc.get("governmentAuthor")
-                    })
+                    .metadata(metadata_dict)
                     .build_with_raw())
                 transformed_results.append(transformed)
 

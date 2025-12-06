@@ -10,7 +10,7 @@ with SeleniumBase UC Mode to bypass Cloudflare protection.
 import json
 import logging
 import asyncio
-from typing import Dict, Optional
+from typing import Dict, Optional, List
 from datetime import datetime
 from urllib.parse import quote_plus
 from functools import partial
@@ -21,6 +21,7 @@ from functools import partial
 
 from llm_utils import acompletion
 from core.prompt_loader import render_prompt
+from core.pdf_extractor import get_pdf_extractor
 
 from core.database_integration_base import (
     DatabaseIntegration,
@@ -250,7 +251,8 @@ class FBIVaultIntegration(DatabaseIntegration):
     async def execute_search(self,
                            query_params: Dict,
                            api_key: Optional[str] = None,
-                           limit: int = 10) -> QueryResult:
+                           limit: int = 10,
+                           extract_pdf: bool = False) -> QueryResult:
         """
         Execute FBI Vault search using SeleniumBase UC Mode to bypass Cloudflare.
 
@@ -258,6 +260,7 @@ class FBIVaultIntegration(DatabaseIntegration):
             query_params: Parameters from generate_query()
             api_key: Not used (FBI Vault doesn't require auth)
             limit: Maximum number of results to return
+            extract_pdf: If True, extract text from PDF URLs (slower)
 
         Returns:
             QueryResult with standardized format
@@ -289,6 +292,26 @@ class FBIVaultIntegration(DatabaseIntegration):
                 partial(self._scrape_fbi_vault_sync, search_url, query, limit)
             )
 
+            # Extract PDFs if requested
+            pdfs_extracted = 0
+            if extract_pdf and results:
+                pdf_extractor = get_pdf_extractor()
+                for result in results:
+                    url = result.get("url", "")
+                    # Check if URL is a direct PDF link
+                    if url and url.lower().endswith(".pdf"):
+                        try:
+                            pdf_text, pdf_meta = await pdf_extractor.extract_from_url(url)
+                            if pdf_text:
+                                result["raw_content"] = pdf_text
+                                if "metadata" not in result:
+                                    result["metadata"] = {}
+                                result["metadata"]["pdf_extraction"] = pdf_meta
+                                pdfs_extracted += 1
+                                logger.info(f"FBI Vault: Extracted {pdf_meta.get('char_count', 0)} chars from PDF: {url}")
+                        except Exception as e:
+                            logger.warning(f"FBI Vault: PDF extraction failed for {url}: {e}")
+
             response_time_ms = (datetime.now() - start_time).total_seconds() * 1000
 
             # Log the request
@@ -310,7 +333,8 @@ class FBIVaultIntegration(DatabaseIntegration):
                 response_time_ms=response_time_ms,
                 metadata={
                     "scraping_method": "SeleniumBase UC Mode (Cloudflare bypass)",
-                    "search_url": search_url
+                    "search_url": search_url,
+                    "pdfs_extracted": pdfs_extracted
                 }
             )
 
